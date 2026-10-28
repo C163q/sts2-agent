@@ -1,0 +1,12 @@
+{
+  "id": "Sts2Agent",
+  "name": "STS2 Agent Roundtrip Spike",
+  "author": "sts2_agent",
+  "description": "Local state/action roundtrip validation prototype.",
+  "version": "0.1.0",
+  "has_dll": true,
+  "has_pck": false,
+  "affects_gameplay": true,
+  "min_game_version": "0.107.1",
+  "dependencies": []
+}
