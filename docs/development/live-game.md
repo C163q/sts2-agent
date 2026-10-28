@@ -1,0 +1,53 @@
+# 在正常游戏中加载 Mod 并读取状态
+
+当前原型可以响应 `get_state` 请求，输出战斗中的敌人标识、生命、格挡，以及玩家手牌和回合信息。它按请求返回 JSON，不会持续自动输出。敌人暂以 `LEAF_SLIME_M` 这样的模型标识表示。
+
+以下步骤面向本机 Linux Steam 游戏 `v0.107.1`，依据已核对的 Mod 加载器和现有接口整理。独立无头实例已完成验证；正常 Steam 图形界面的加载和读取需在游戏中按下述方式确认。
+
+## 安装文件
+
+退出游戏后，把构建产物中的 `Sts2Agent.dll` 与 `Sts2Agent.json` 放入：
+
+```text
+~/.local/share/Steam/steamapps/common/Slay the Spire 2/mods/Sts2Agent/
+```
+
+需要重新构建时，先按 [验证指南](roundtrip.md) 的构建步骤生成产物，再在项目根目录分别执行以下两条命令：
+
+```sh
+mkdir -p "$HOME/.local/share/Steam/steamapps/common/Slay the Spire 2/mods/Sts2Agent"
+```
+
+```sh
+cp spikes/roundtrip/bin/Debug/net9.0/Sts2Agent.dll spikes/roundtrip/bin/Debug/net9.0/Sts2Agent.json "$HOME/.local/share/Steam/steamapps/common/Slay the Spire 2/mods/Sts2Agent/"
+```
+
+该 Mod 清单声明仅加载 DLL，没有 PCK 或社区库依赖。
+
+## Steam 启动配置
+
+在 Steam 游戏库中打开游戏的“属性 → 通用 → 启动选项”，加入下列配置。下面的绝对路径对应本机项目位置，移动项目后应同步修改：
+
+```text
+env STS2_AGENT_IPC_DIR=/home/c163q/Program/workspace/project/sts2_agent/.tmp/live/ipc %command%
+```
+
+`%command%` 保留 Steam 原有启动命令，在它前面通过 `env` 设置通信目录；Steam 启动选项的包装方式参见 [Steam 官方支持说明](https://help.steampowered.com/en/faqs/view/145A-FE54-F37B-278A)。已有启动选项时应合并保留原设置。
+
+正常启动不设置 `STS2_AGENT_TEST_MODE=1`。此流程使用游戏自身的 Mod 存档规则，与独立测试实例的临时存档不同。
+
+启动游戏后，在游戏的 Mod 界面完成首次加载提示并启用 `STS2 Agent Roundtrip Spike`；按游戏提示重启，使其在启动时加载。游戏不会在运行中直接加载刚复制进去的 DLL。
+
+## 读取敌人
+
+进入战斗后，在项目根目录执行：
+
+```sh
+python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state
+```
+
+成功响应中，`state.scene` 为 `combat`，`state.enemies` 列出敌人；每项包含 `id`、`model`、`hp` 和 `block`。主菜单没有战斗敌人，返回 `enemies: null` 属于正常情况。
+
+每运行一次命令读取一次当前状态。只调用 `get_state` 不会提交游戏动作。
+
+如果请求超时，先检查 Mod 是否已启用并重启、Steam 启动选项是否生效，以及客户端与 Mod 是否使用同一个通信目录。日志出现 `[Sts2Agent] Main-thread pump attached.` 表示通信处理入口已连接；若出现 `STS2_AGENT_IPC_DIR is unset, bridge disabled.`，则表示环境变量没有传入游戏。

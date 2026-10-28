@@ -52,5 +52,6 @@
 - [Codex 环境约定](docs/ai/codex.md)：沙箱权限、命令拆分及子代理模型选择入口。
 - [Cursor 模型选择](docs/ai/cursor-model-selection.md)：Cursor 环境适用的约定。
 - [最小流程验证指南](docs/development/roundtrip.md)：构建、独立实例启动、客户端调用及协议边界。
+- [正常游戏加载与读取](docs/development/live-game.md)：Steam 安装位置、启动配置和读取敌人的操作步骤；图形界面流程待实测确认。
 - [最小流程验证记录](docs/research/2026-10-28-roundtrip-validation.md)：当前版本 API 依据和真实游戏验证结果。
 - [Mod 接入基线调研](docs/research/2026-10-28-modding-baseline.md)：本地版本证据、上游资料及待验证事项。
