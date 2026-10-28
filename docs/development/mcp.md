@@ -1,0 +1,128 @@
+# 本地 MCP 接入
+
+本项目提供 Linux 本地 stdio MCP server，供支持 MCP 的 agent 读取《杀戮尖塔 2》并结束回合。服务在游戏外运行，通过现有文件 IPC 与 Mod 通信；不调用模型 API，也不需要在游戏里配置模型密钥。
+
+当前公开两个无参数工具：
+
+| 工具 | 行为 |
+| --- | --- |
+| `get_observation()` | 读取当前静态画面的英语玩法 JSON，并在服务内保存本次观察对应的动作令牌 |
+| `end_turn()` | 消耗最近一次显式观察的令牌，通过游戏正常动作队列结束回合，等待执行结果并返回新观察 |
+
+手牌详情、出牌、药水和其他场景动作尚未实现。后续手牌查看调用将一次返回所有当前手牌的详情。基础观察继续遵循 [可见信息边界](../observation.md)，字段见 [战斗观察 JSON](observation.md)。
+
+## 安装与游戏前提
+
+需要 Python 3.10 或以上版本、已构建并加载的 Mod 0.3.0，以及支持 stdio MCP 的客户端。本次实际使用 Python 3.14.8、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。原有标准库客户端不需要安装 MCP 依赖。
+
+在仓库根目录创建虚拟环境并安装依赖：
+
+```sh
+python3 -m venv .tmp/mcp-venv
+```
+
+```sh
+.tmp/mcp-venv/bin/python -m pip install -r requirements-mcp.txt
+```
+
+本机也可使用已安装的 uv：
+
+```sh
+uv pip install --python .tmp/mcp-venv/bin/python -r requirements-mcp.txt
+```
+
+正常 Steam 游戏的 Mod 安装和启动变量见 [正常游戏加载与读取](live-game.md)。游戏的 `STS2_AGENT_IPC_DIR` 必须与 MCP 的 `--ipc-dir` 指向同一目录，例如 `.tmp/live/ipc`。MCP server 不负责启动游戏或创建战斗。
+
+## 接入 Codex
+
+在仓库根目录执行以下命令，注册本地工具。命令使用绝对路径，后续不要求从仓库目录启动 Codex：
+
+```sh
+codex mcp add sts2 -- "$PWD/.tmp/mcp-venv/bin/python" "$PWD/scripts/mcp_server.py" --ipc-dir "$PWD/.tmp/live/ipc"
+```
+
+```sh
+codex mcp list
+```
+
+重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation` 和 `end_turn`。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，本次核对本机 CLI 0.165.0 的命令帮助。
+
+对应的 TOML 配置示例为：
+
+```toml
+[mcp_servers.sts2]
+command = "/absolute/path/sts2_agent/.tmp/mcp-venv/bin/python"
+args = ["/absolute/path/sts2_agent/scripts/mcp_server.py", "--ipc-dir", "/absolute/path/sts2_agent/.tmp/live/ipc"]
+tool_timeout_sec = 60
+```
+
+`end_turn` 标为会改变游戏的动作，Codex 可能要求授权。交互会话可按客户端提示批准；非交互 `codex exec` 默认不能弹出批准请求，未经授权时会报 `MCP tool call requires approval, but approval policy is never`。已明确授权自动结束回合时，可仅为这个工具增加以下配置，或通过 `-c 'mcp_servers.sts2.tools.end_turn.approval_mode="approve"'` 对单次会话生效：
+
+```toml
+[mcp_servers.sts2.tools.end_turn]
+approval_mode = "approve"
+```
+
+该设置只预先批准这个工具，不改变其他工具或沙箱策略。配置字段见 [官方配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)。本次真实 Codex 验证使用临时覆盖，不在用户配置中持久保存动作授权。
+
+其他 agent 使用相同的可执行文件、参数和 stdio 传输配置，配置文件格式由各客户端决定。服务默认等待游戏响应最多 40 秒，可通过 `--timeout` 调整；客户端工具超时应留出余量。
+
+可用以下指令验证接入：
+
+> 使用 sts2 工具读取当前战斗，结束一次回合，再读取状态，说明回合和生命值的变化。只结束一次回合。
+
+## 调用和错误语义
+
+调用顺序为 `get_observation → end_turn → get_observation`。每次动作前都必须显式观察；动作返回的新观察用于读取结果，不会自动授权下一次动作。这能阻止未重新观察的重复调用连续结束两个回合。动作失败或通信异常同样消耗令牌，服务不会自动重新观察、重试动作或换一个请求 ID 重发。读取过程中被取消的观察不会保存动作令牌；取消工具调用不能撤回已经提交给游戏的动作，仍须重新观察结果。
+
+成功时，MCP `structuredContent` 直接包含玩法 JSON，`content` 同时提供同样的 JSON 文本。模型不会收到 `snapshot_id`、原始响应包装或开发测试入口；`available_actions` 只保留已公开的 `end_turn`。协议层仍保留 MCP 自身必需的消息字段。
+
+业务失败返回 `isError: true`，并提供英语结构化错误，例如：
+
+```json
+{
+  "error": {
+    "code": "observation_required",
+    "message": "Call get_observation before each action. Actions consume the previous observation.",
+    "recovery": "get_observation"
+  }
+}
+```
+
+| 错误 | 处理方式 |
+| --- | --- |
+| `observation_required` | 尚未观察或上次令牌已消耗，调用 `get_observation` |
+| `stale_state` | 玩家操作、场景变化等使旧观察失效，重新观察后决策 |
+| `illegal_action` | 游戏当前不允许结束回合，重新观察并选择合法动作 |
+| `invalid_request` | 工具名或参数有误；当前两个工具都不接受参数 |
+| `expired_request` | 请求在执行前已过期，重新观察 |
+| `timeout`、`game_error` | 执行结果未知，重新观察；不得自动重复动作 |
+| `transport_error` | 检查游戏进程、Mod、IPC 目录和读写权限，恢复连接后重新观察 |
+
+内部异常只写入服务标准错误，不传给模型；标准输出专用于 MCP 消息。游戏侧检查和文件请求的原始语义见 [原型接口](roundtrip.md#原型接口)。
+
+## 控制进程与生命周期
+
+每个 IPC 目录只允许一个 MCP 控制进程。连接期间持有 `.mcp-controller.lock` 的系统文件锁，第二个进程会直接退出并在标准错误说明原因。客户端断开、服务退出后锁自动释放，无须删除锁文件；同一客户端内部的请求会串行执行。
+
+文件锁只约束本项目 MCP server，不能阻止玩家或手动文件客户端操作。因此执行动作前仍须由 Mod 校验原观察令牌及当前合法性。当前不支持多个 agent 同时控制同一对局；切换 agent 时应先断开旧连接。
+
+## 独立验证
+
+Python 自动检查包括真实 stdio 握手和临时文件 IPC，不需要运行游戏：
+
+```sh
+.tmp/mcp-venv/bin/python -m unittest discover -s scripts -p 'test_*.py'
+```
+
+游戏验证使用 [最小流程验证指南](roundtrip.md) 的独立运行目录。从新启动实例的主菜单执行：
+
+```sh
+.tmp/mcp-venv/bin/python scripts/verify_mcp.py --report .tmp/roundtrip/mcp-evidence.json
+```
+
+该脚本只接受仓库的 `.tmp/roundtrip/ipc`，通过原有测试入口创建临时战斗，再由真实 MCP server 执行观察、结束回合和读回；还会推进一个回合以验证过期观察被拒绝。开发入口不会注册为 MCP 工具。验证会改变独立测试对局，不可用于正式存档。
+
+Codex 沙箱若禁止本地 socketpair 写入，Python `asyncio` 的线程唤醒和 stdio 测试可能挂起；须按 [Codex 环境约定](../ai/codex.md) 单独申请在沙箱外运行相应命令。此限制与 MCP 是否使用网络端口无关。
+
+本轮已通过 16 项 Python 自动检查、独立游戏的 MCP 回合往返，以及真实 Codex 模型的观察、结束一次回合和读回。游戏验证从回合 1 到 2；Codex 接续从回合 3 到 4、生命值从 61 到 54，动作结果与读回完全一致。详细证据位置与范围见 [MCP 实施记录](../research/2026-10-29-mcp-plan.md)。仅提供 stdio，未实现 HTTP 服务或完整自动游玩；其他 agent 客户端尚未实测。
