@@ -208,19 +208,63 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertTrue(duplicate.isError)
                     self.assertEqual(game.turn, 2)
 
-    async def test_second_controller_is_rejected_and_lock_is_released(self):
+    async def test_handshake_succeeds_when_another_controller_owns_game(self):
+        from mcp import ClientSession, StdioServerParameters
+        from mcp.client.stdio import stdio_client
         from mcp_server import ControllerLease
-        with tempfile.TemporaryDirectory() as directory:
-            with ControllerLease(Path(directory)):
-                process = await asyncio.create_subprocess_exec(
-                    sys.executable, str(SERVER), "--ipc-dir", directory,
-                    stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
-                stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=10)
-                self.assertNotEqual(process.returncode, 0)
-                self.assertEqual(stdout, b"")
-                self.assertIn(b"controller", stderr.lower())
-            with ControllerLease(Path(directory)):
+        with FakeGame() as game:
+            parameters = StdioServerParameters(command=sys.executable, args=[str(SERVER), "--ipc-dir", str(game.directory)])
+            async with stdio_client(parameters) as (read, write):
+                async with ClientSession(read, write) as session:
+                    with ControllerLease(game.directory):
+                        await session.initialize()
+                        listed = await session.list_tools()
+                        self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "end_turn"})
+                        busy = await session.call_tool("get_observation", {})
+                        self.assertTrue(busy.isError)
+                        self.assertEqual(busy.structuredContent["error"]["code"], "controller_busy")
+                        self.assertEqual(game.operations, [])
+                    recovered = await session.call_tool("get_observation", {})
+                    self.assertFalse(recovered.isError)
+                    self.assertEqual(recovered.structuredContent["turn"], 1)
+            with ControllerLease(game.directory):
                 pass
+
+    async def test_idle_connection_does_not_own_controller_lock(self):
+        from mcp import ClientSession, StdioServerParameters
+        from mcp.client.stdio import stdio_client
+        from mcp_server import ControllerLease
+        with FakeGame() as game:
+            parameters = StdioServerParameters(command=sys.executable, args=[str(SERVER), "--ipc-dir", str(game.directory)])
+            async with stdio_client(parameters) as (read, write):
+                async with ClientSession(read, write) as session:
+                    await session.initialize()
+                    await session.list_tools()
+                    with ControllerLease(game.directory):
+                        pass
+                    self.assertEqual(game.operations, [])
+
+    async def test_two_connections_keep_control_until_owner_disconnects(self):
+        from mcp import ClientSession, StdioServerParameters
+        from mcp.client.stdio import stdio_client
+        with FakeGame() as game:
+            parameters = StdioServerParameters(command=sys.executable, args=[str(SERVER), "--ipc-dir", str(game.directory)])
+            async with stdio_client(parameters) as (second_read, second_write):
+                async with ClientSession(second_read, second_write) as second:
+                    await second.initialize()
+                    async with stdio_client(parameters) as (first_read, first_write):
+                        async with ClientSession(first_read, first_write) as first:
+                            await first.initialize()
+                            self.assertFalse((await first.call_tool("get_observation", {})).isError)
+                            busy = await second.call_tool("get_observation", {})
+                            self.assertEqual(busy.structuredContent["error"]["code"], "controller_busy")
+                            blocked = await second.call_tool("end_turn", {})
+                            self.assertEqual(blocked.structuredContent["error"]["code"], "observation_required")
+                            self.assertEqual(len(game.operations), 1)
+                    recovered = await second.call_tool("get_observation", {})
+                    self.assertFalse(recovered.isError)
+                    self.assertEqual(recovered.structuredContent["turn"], 1)
+                    self.assertEqual([item["operation"] for item in game.operations], ["get_state", "get_state"])
 
 
 if __name__ == "__main__":

@@ -19,31 +19,52 @@ class ControllerLease:
         self.directory = Path(directory).expanduser().resolve()
         self.file = None
 
-    def __enter__(self):
+    def acquire(self):
+        if self.file is not None:
+            return
         self.directory.mkdir(parents=True, exist_ok=True)
         self.file = (self.directory / ".mcp-controller.lock").open("a")
         try:
             fcntl.flock(self.file, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError:
-            self.file.close()
-            self.file = None
-            raise RuntimeError("Another MCP controller already owns this IPC directory.") from None
+            self.close()
+            raise
+
+    def __enter__(self):
+        self.acquire()
         return self
 
+    def close(self):
+        if self.file is not None:
+            self.file.close()
+            self.file = None
+
     def __exit__(self, *args):
-        self.file.close()
-        self.file = None
+        self.close()
 
 
 class GameTools:
-    def __init__(self, client):
+    def __init__(self, client, controller=None):
         self.client = client
+        self.controller = controller
         self.lock = asyncio.Lock()
         self.snapshot_id = None
 
     async def get_observation(self):
         async with self.lock:
             self.snapshot_id = None
+            if self.controller is not None:
+                try:
+                    self.controller.acquire()
+                except BlockingIOError:
+                    return {"error": {
+                        "code": "controller_busy",
+                        "message": "Another MCP connection controls this game. Disconnect it before observing or acting here.",
+                        "recovery": "disconnect_other_client",
+                    }}
+                except OSError as error:
+                    logging.getLogger(__name__).warning("Controller lock failed: %s", error)
+                    return player_result({"ok": False, "error": {"code": "transport_error"}})
             payload, snapshot_id = await self._request("get_state")
             await anyio.lowlevel.checkpoint_if_cancelled()
             self.snapshot_id = snapshot_id
@@ -98,7 +119,7 @@ def tool_result(payload):
 
 
 def create_server(tools):
-    server = Server("sts2-agent", version="0.1.0", instructions=(
+    server = Server("sts2-agent", version="0.1.1", instructions=(
         "Control a local Slay the Spire 2 game. Call get_observation before each action. "
         "Only end_turn is currently implemented; card play and hand inspection are unavailable. "
         "Actions return the resulting observation but consume the action token. "
@@ -142,12 +163,14 @@ def main():
     args = parser.parse_args()
     if not math.isfinite(args.timeout) or args.timeout <= 0:
         parser.error("--timeout 必须是有限正数。")
+    lease = ControllerLease(args.ipc_dir)
     try:
-        with ControllerLease(args.ipc_dir) as lease:
-            tools = GameTools(Client(lease.directory, timeout=args.timeout))
-            anyio.run(run_stdio, tools)
+        tools = GameTools(Client(lease.directory, timeout=args.timeout), controller=lease)
+        anyio.run(run_stdio, tools)
     except (OSError, RuntimeError) as error:
         parser.exit(1, f"MCP controller startup failed: {error}\n")
+    finally:
+        lease.close()
 
 
 if __name__ == "__main__":
