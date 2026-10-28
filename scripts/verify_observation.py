@@ -3,16 +3,16 @@ import json
 import time
 from pathlib import Path
 
-from roundtrip_client import Client
+from roundtrip_client import Client, player_result
 
 
 def verify(state):
-    assert state["schema_version"] == 2, state
+    assert state["schema_version"] == 3, state
     assert state["language"] == "en", state
     assert "phase" not in state and "side" not in state, state
     assert state["screen"]["status"] == "visible", state
     player = state["player"]
-    assert player["name"] == "The Ironclad", player
+    assert player["character"] == "IRONCLAD", player
     assert player["hp"] == player["max_hp"] == 80, player
     assert player["energy"] == player["max_energy"] == 3, player
     assert len(player["hand"]) == 5 and player["draw_count"] == 5, player
@@ -25,12 +25,20 @@ def verify(state):
     assert state["top_bar"]["deck_count"] == 10, state
     assert len(state["top_bar"]["potion_slots"]) == 3, state
     assert state["top_bar"]["relics"][0]["name"] == "Burning Blood", state
-    assert state["overlay"]["release"].startswith("[v0.107.1]"), state
-    assert state["overlay"]["modded"] == "MODDED (1)", state
+    assert "overlay" not in state, state
+    assert len({card["id"] for card in player["hand"]}) == 5, player
+    assert all(card["type"] in ("Attack", "Skill") for card in player["hand"]), player
+    assert all(card["rarity"] == "basic" and card["visual_card_pool"] == "ironclad" for card in player["hand"]), player
+    assert all("energy_cost_color" not in card and "star_cost_color" not in card for card in player["hand"]), player
+    assert all(card["unplayable_markers"] == [] for card in player["hand"]), player
+    assert all(slot is None for slot in state["top_bar"]["potion_slots"]), state
+    assert isinstance(state["top_bar"]["bosses"], list), state
+    assert player["hp_display"] == "numeric", state
     assert state["buttons"]["end_turn"]["text"] == "End Turn 1", state
     assert all(card["outline"] == "cyan" for card in player["hand"]), state
     forbidden = {"description", "effects", "dynamic_vars", "next_move", "rng_state", "draw_order",
-                 "target_rules", "phase", "side", "pile_contents"}
+                 "target_rules", "phase", "side", "pile_contents", "model", "position", "hp_text", "hp_infinite",
+                 "energy_unplayable_marker", "star_unplayable_marker"}
 
     def check(value):
         if isinstance(value, dict):
@@ -64,7 +72,7 @@ def main():
     time.sleep(3)
     response = client.call("get_state")
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(response, indent=2, ensure_ascii=False) + "\n")
+    args.output.write_text(json.dumps(player_result(response), indent=2, ensure_ascii=False) + "\n")
     assert response["ok"], response
     verify(response["state"])
     print(f"PASS: visible English combat observation saved to {args.output}", flush=True)

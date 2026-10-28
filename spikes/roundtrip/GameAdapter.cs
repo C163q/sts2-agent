@@ -54,6 +54,7 @@ internal sealed class GameAdapter(bool testMode)
             combatGeneration++;
         }
         Player? player = LocalPlayer;
+        observation.Synchronize(combat, player);
         string scene = CombatManager.Instance.IsInProgress ? "combat"
             : NGame.Instance?.MainMenu != null ? "main_menu" : "loading_or_noncombat";
         List<string> actions = [];
@@ -66,14 +67,13 @@ internal sealed class GameAdapter(bool testMode)
             actions.Clear();
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 2, language = "en", session, combat_generation = combatGeneration, scene,
+            schema_version = 3, language = "en", session, combat_generation = combatGeneration, scene,
             screen = new { status = visibility },
             turn = scene == "combat" ? observation.Turn() : null,
             player = scene == "combat" ? observation.Player(player) : null,
             enemies = scene == "combat" ? observation.Enemies() : null,
             top_bar = scene == "combat" ? observation.TopBar() : null,
             buttons = scene == "combat" ? observation.Buttons() : null,
-            overlay = scene == "combat" ? observation.Overlay() : null,
             available_actions = actions
         });
         string snapshotId = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(body)));

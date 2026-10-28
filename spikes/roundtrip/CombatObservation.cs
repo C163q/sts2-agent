@@ -1,6 +1,10 @@
 using System.Text.RegularExpressions;
 using Godot;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Combat.History.Entries;
+using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.UI;
@@ -18,6 +22,23 @@ namespace Sts2Agent;
 internal sealed class CombatObservation
 {
     private readonly EnglishText english = new();
+    private readonly CardIdentityMap<CardModel> cardIds = new();
+    private CombatState? identityCombat;
+
+    public void Synchronize(CombatState? combat, Player? player)
+    {
+        if (!ReferenceEquals(identityCombat, combat))
+        {
+            identityCombat = combat;
+            cardIds.Clear();
+        }
+        if (combat == null || player == null)
+            return;
+        // Only past local-player draws assign opaque IDs; no pile contents are read.
+        foreach (var entry in CombatManager.Instance.History.Entries.OfType<CardDrawnEntry>())
+            if (ReferenceEquals(entry.Card.Owner, player))
+                cardIds.Get(entry.Card);
+    }
 
     public static string Status()
     {
@@ -52,8 +73,8 @@ internal sealed class CombatObservation
         var energy = Pair(energyText);
         return new
         {
-            character = player.Character.Id.Entry, name = english.Name(player.Character.Title),
-            hp = hp.current, max_hp = hp.maximum, hp_text = hp.text, hp_infinite = hp.infinite, block = Block(node!),
+            character = player.Character.Id.Entry,
+            hp = hp.current, max_hp = hp.maximum, hp_display = hp.display, block = Block(node!),
             energy = energy.current, max_energy = energy.maximum,
             stars = VisibleUi.Descendants<NStarCounter>(room.Ui).Where(VisibleUi.OnScreen)
                 .Select(counter => VisibleUi.Number(counter, "%CountLabel")).FirstOrDefault(),
@@ -62,7 +83,7 @@ internal sealed class CombatObservation
                 .Where(holder => VisibleUi.Shown(holder) && VisibleUi.Shown(holder.CardNode)
                     && new[] { "%TitleLabel", "%Portrait", "%AncientPortrait", "%Frame" }
                         .Any(path => VisibleUi.OnScreen(holder.CardNode!.GetNodeOrNull<Control>(path))))
-                .Select((holder, index) => Card(holder.CardNode!, index)).ToArray() : null,
+                .Select(holder => Card(holder.CardNode!)).ToArray() : null,
             draw_count = VisibleUi.Number(room.Ui.DrawPile, "CountContainer/Count"),
             discard_count = VisibleUi.Number(room.Ui.DiscardPile, "CountContainer/Count"),
             exhaust_count = VisibleUi.Number(room.Ui.ExhaustPile, "CountContainer/Count")
@@ -83,9 +104,9 @@ internal sealed class CombatObservation
         var hp = Health(node);
         return new
         {
-            id = node.Entity.CombatId, model = node.Entity.ModelId.Entry,
+            id = node.Entity.CombatId,
             name = english.Name(node.Entity.Monster!.Title),
-            hp = hp.current, max_hp = hp.maximum, hp_text = hp.text, hp_infinite = hp.infinite, block = Block(node),
+            hp = hp.current, max_hp = hp.maximum, hp_display = hp.display, block = Block(node),
             powers = Powers(node),
             intents = !VisibleUi.Shown(node.IntentContainer) ? null : node.IntentContainer.GetChildren()
                 .OfType<NIntent>().Where(intent => VisibleUi.OnScreen(intent.GetNodeOrNull<Control>("%IntentHolder")))
@@ -110,7 +131,7 @@ internal sealed class CombatObservation
         return new { category, value = VisibleUi.Text(intent, "%Value") };
     }
 
-    private object Card(NCard card, int index)
+    private object Card(NCard card)
     {
         bool identified = card.Visibility == ModelVisibility.Visible;
         string? title = VisibleUi.Text(card, "%TitleLabel");
@@ -126,26 +147,33 @@ internal sealed class CombatObservation
         var highlight = card.CardHighlight;
         bool glow = VisibleUi.OnScreen(highlight) && highlight.Material is ShaderMaterial shader
             && shader.GetShaderParameter("width").AsSingle() > 0;
-        return new
+        bool energyShown = VisibleUi.OnScreen(card.GetNodeOrNull<Control>("%EnergyIcon"));
+        bool starShown = VisibleUi.OnScreen(card.GetNodeOrNull<Control>("%StarIcon"));
+        List<string> markers = [];
+        if (VisibleUi.OnScreen(card.GetNodeOrNull<CanvasItem>("%UnplayableEnergyIcon")))
+            markers.Add("energy");
+        if (VisibleUi.OnScreen(card.GetNodeOrNull<CanvasItem>("%UnplayableStarIcon")))
+            markers.Add("star");
+        var result = new Dictionary<string, object?>
         {
-            position = index, model = identified ? card.Model!.Id.Entry : null, name,
-            type = VisibleUi.Text(card, "%TypeLabel") is string typeText && identified
-                && typeText == card.Model!.Type.ToLocString().GetFormattedText()
-                ? english.Name(card.Model.Type.ToLocString()) : null,
-            energy_cost = VisibleUi.OnScreen(card.GetNodeOrNull<Control>("%EnergyIcon"))
-                ? VisibleUi.Text(card, "%EnergyLabel") : null,
-            energy_cost_color = VisibleUi.OnScreen(card.GetNodeOrNull<Control>("%EnergyIcon"))
-                ? VisibleUi.TextColor(card, "%EnergyLabel") : null,
-            star_cost = VisibleUi.OnScreen(card.GetNodeOrNull<Control>("%StarIcon"))
-                ? VisibleUi.Text(card, "%StarLabel") : null,
-            star_cost_color = VisibleUi.OnScreen(card.GetNodeOrNull<Control>("%StarIcon"))
-                ? VisibleUi.TextColor(card, "%StarLabel") : null,
-            energy_unplayable_marker = VisibleUi.OnScreen(card.GetNodeOrNull<CanvasItem>("%UnplayableEnergyIcon")),
-            star_unplayable_marker = VisibleUi.OnScreen(card.GetNodeOrNull<CanvasItem>("%UnplayableStarIcon")),
-            outline = !glow ? null : highlight.Modulate.IsEqualApprox(NCardHighlight.playableColor) ? "cyan"
+            ["id"] = cardIds.Get(card.Model!), ["name"] = name,
+            ["type"] = identified ? english.Name(card.Model!.Type.ToLocString()) : null,
+            ["rarity"] = identified ? card.Model!.Rarity.ToString().ToLowerInvariant() : null,
+            ["visual_card_pool"] = identified ? card.Model!.VisualCardPool.Title : null,
+            ["energy_cost"] = energyShown ? VisibleUi.Text(card, "%EnergyLabel") : null,
+            ["star_cost"] = starShown ? VisibleUi.Text(card, "%StarLabel") : null,
+            ["unplayable_markers"] = markers,
+            ["outline"] = !glow ? "none" : highlight.Modulate.IsEqualApprox(NCardHighlight.playableColor) ? "cyan"
                 : highlight.Modulate.IsEqualApprox(NCardHighlight.gold) ? "gold"
                 : highlight.Modulate.IsEqualApprox(NCardHighlight.red) ? "red" : "other"
         };
+        string? energyColor = energyShown ? VisibleUi.SpecialCostColor(card, "%EnergyLabel") : null;
+        string? starColor = starShown ? VisibleUi.SpecialCostColor(card, "%StarLabel") : null;
+        if (energyColor != null)
+            result["energy_cost_color"] = energyColor;
+        if (starColor != null)
+            result["star_cost_color"] = starColor;
+        return result;
     }
 
     private object[]? Powers(NCreature node)
@@ -160,16 +188,16 @@ internal sealed class CombatObservation
                 amount = VisibleUi.Number(power, "%AmountLabel") }).ToArray();
     }
 
-    private (int? current, int? maximum, string? text, bool? infinite) Health(NCreature node)
+    private static (int? current, int? maximum, string display) Health(NCreature node)
     {
         var bar = node.GetNodeOrNull<NCreatureStateDisplay>("%HealthBar")?.GetNodeOrNull<NHealthBar>("%HealthBar");
         string? text = VisibleUi.Text(bar, "%HpLabel");
         var pair = Pair(text);
-        if (text != null && !pair.current.HasValue)
-            text = text == new LocString("gameplay_ui", "HEALTH_BAR.DEAD").GetFormattedText()
-                ? english.Entry("gameplay_ui", "HEALTH_BAR.DEAD") : null;
-        return (pair.current, pair.maximum, text, !VisibleUi.Shown(bar) ? null
-            : VisibleUi.OnScreen(bar?.GetNodeOrNull<TextureRect>("%InfinityTex")));
+        string display = pair.current.HasValue ? "numeric"
+            : text == new LocString("gameplay_ui", "HEALTH_BAR.DEAD").GetFormattedText() ? "dead"
+            : VisibleUi.OnScreen(bar?.GetNodeOrNull<TextureRect>("%InfinityTex")) ? "infinite"
+            : text != null ? "unknown" : "hidden";
+        return (pair.current, pair.maximum, display);
     }
 
     private static int? Block(NCreature node)
@@ -218,17 +246,14 @@ internal sealed class CombatObservation
             ascension = VisibleUi.Number(bar, "%AscensionLabel"),
             deck_count = VisibleUi.Number(bar.Deck, "DeckCardCount"),
             room_icon = Icon(bar.RoomIcon.GetNodeOrNull<TextureRect>("Icon")),
-            boss_icons = VisibleUi.Descendants<TextureRect>(bar.BossIcon)
+            bosses = VisibleUi.Descendants<TextureRect>(bar.BossIcon)
                 .Where(icon => icon.Name != "Outline" && VisibleUi.OnScreen(icon) && icon.Texture != null)
-                .Select(icon => new { icon = Icon(icon), name = BossName(icon.Texture!.ResourcePath, run) }).ToArray(),
-            potion_slots = bar.PotionContainer.GetNodeOrNull<Control>("MarginContainer/PotionHolders")?
-                .GetChildren().OfType<NPotionHolder>().Where(VisibleUi.OnScreen)
-                .Select((holder, index) => new { position = index, empty = !holder.HasPotion,
-                    name = holder.HasPotion ? english.Name(holder.Potion!.Model.Title) : null }).ToArray(),
+                .Select(icon => BossName(icon.Texture!.ResourcePath, run)).ToArray(),
+            potion_slots = PotionSlots(bar.PotionContainer),
             relics = VisibleUi.Shown(global.RelicInventory) ? global.RelicInventory.RelicNodes
-                .Where(VisibleUi.OnScreen).Select((holder, index) => new
+                .Where(VisibleUi.OnScreen).Select(holder => new
                 {
-                    position = index, name = english.Name(holder.Relic.Model.Title),
+                    name = english.Name(holder.Relic.Model.Title),
                     counter = VisibleUi.Number(holder, "%AmountLabel")
                 }).ToArray() : null,
             map_visible = VisibleUi.OnScreen(bar.Map), deck_visible = VisibleUi.OnScreen(bar.Deck),
@@ -246,19 +271,19 @@ internal sealed class CombatObservation
         return null;
     }
 
+    private object? PotionSlots(NPotionContainer container)
+    {
+        var layout = container.GetNodeOrNull<Control>("MarginContainer/PotionHolders");
+        if (!VisibleUi.Shown(container) || !VisibleUi.Shown(layout))
+            return null;
+        var holders = layout!.GetChildren().OfType<NPotionHolder>().ToArray();
+        if (holders.Any(holder => !VisibleUi.OnScreen(holder)))
+            return null;
+        return holders.Select(holder => !holder.HasPotion ? null
+            : new { name = english.Name(holder.Potion!.Model.Title) }).ToArray();
+    }
+
     private static string? Icon(TextureRect? icon) => VisibleUi.OnScreen(icon)
         ? Path.GetFileNameWithoutExtension(icon?.Texture?.ResourcePath) : null;
 
-    public object? Overlay()
-    {
-        if (Status() != "visible")
-            return null;
-        // Only explicitly identified, currently displayed labels are included.
-        return new
-        {
-            release = VisibleUi.Text(NRun.Instance!.GlobalUi, "DebugInfo/ReleaseInfo"),
-            seed = VisibleUi.Text(NRun.Instance, "%DebugSeed"),
-            modded = VisibleUi.Text(NRun.Instance.GlobalUi, "DebugInfo/ModdedWarning")
-        };
-    }
 }

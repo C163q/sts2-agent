@@ -4,7 +4,7 @@ import time
 import uuid
 from pathlib import Path
 
-from roundtrip_client import Client
+from roundtrip_client import Client, player_result
 
 
 def main():
@@ -48,8 +48,11 @@ def main():
         state = response["state"]
         verify(state)
         args.observation_output.parent.mkdir(parents=True, exist_ok=True)
-        args.observation_output.write_text(json.dumps(response, indent=2, ensure_ascii=False) + "\n")
+        args.observation_output.write_text(json.dumps(player_result(response), indent=2, ensure_ascii=False) + "\n")
     before = state
+    before_ids = {card["id"] for card in state["player"]["hand"]}
+    assert len(before_ids) == len(state["player"]["hand"])
+    assert player_result(illegal)["error"]["recovery"] == "get_state"
 
     invalid = call("end_turn", "invalid-snapshot")
     assert not invalid["ok"] and invalid["error"]["code"] == "stale_state", invalid
@@ -75,6 +78,7 @@ def main():
         time.sleep(0.025)
     assert not duplicate_path.exists(), "Duplicate request was not consumed."
     final = call("get_state")["state"]
+    assert [card["id"] for card in final["player"]["hand"]] == [card["id"] for card in after["player"]["hand"]]
     assert final["turn"] == after["turn"] and final["snapshot_id"] == after["snapshot_id"], final
     print(f'PASS: turn {before["turn"]} -> {after["turn"]}; '
           f'HP {before["player"]["hp"]} -> {after["player"]["hp"]}; '

@@ -1,4 +1,5 @@
 using Godot;
+using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.addons.mega_text;
 
 namespace Sts2Agent;
@@ -66,10 +67,16 @@ internal static class VisibleUi
     public static int? Number(Node? owner, string path) =>
         int.TryParse(Text(owner, path), out int value) ? value : null;
 
-    public static string? TextColor(Node? owner, string path)
+    public static string? SpecialCostColor(Node? owner, string path)
     {
         var label = owner?.GetNodeOrNull<Label>(path);
-        return OnScreen(label) ? "#" + label!.GetThemeColor(ThemeConstants.Label.FontColor).ToHtml(false) : null;
+        if (!OnScreen(label))
+            return null;
+        Color color = label!.GetThemeColor(ThemeConstants.Label.FontColor);
+        return color.IsEqualApprox(StsColors.cream) ? null
+            : color.IsEqualApprox(StsColors.red) ? "red"
+            : color.IsEqualApprox(StsColors.green) ? "green"
+            : color.IsEqualApprox(StsColors.energyBlue) ? "blue" : "other";
     }
 
     public static IEnumerable<T> Descendants<T>(Node root) where T : Node

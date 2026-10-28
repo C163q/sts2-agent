@@ -51,7 +51,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/roundtrip/ipc get_state
 python3 scripts/test_prepare_roundtrip.py
 ```
 
-原型中 `start_test_combat` 和 `end_turn` 都需要 `--expected-state`，其值为最近一次观察返回的 `snapshot_id`；调用形式可参考客户端的 `--help`。动作返回的是执行结束后的状态，而不是仅提交队列时的状态。
+原型中 `start_test_combat` 和 `end_turn` 都需要 `--expected-state`，其值为最近一次 `--raw` 观察返回的 `state.snapshot_id`；调用形式可参考客户端的 `--help`。动作返回的是执行结束后的状态，而不是仅提交队列时的状态。
 
 ## 原型接口
 

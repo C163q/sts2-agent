@@ -46,7 +46,7 @@ env STS2_AGENT_IPC_DIR=/home/c163q/Program/workspace/project/sts2_agent/.tmp/liv
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state
 ```
 
-成功响应中，`state.scene` 为 `combat`，`state.enemies` 列出敌人；每项包含可见身份、生命、格挡、状态图标与当前意图；名称使用英语。战斗被详情页、教学等覆盖时 `screen.status` 为 `covered`，暂不返回战斗数据。主菜单没有战斗敌人，返回 `enemies: null` 属于正常情况。
+默认成功结果中，`scene` 为 `combat`，`enemies` 列出敌人；每项包含可见身份、生命、格挡、状态图标与当前意图；名称使用英语。战斗被详情页、教学等覆盖时 `screen.status` 为 `covered`，暂不返回战斗数据。主菜单没有战斗敌人，返回 `enemies: null` 属于正常情况。需要原始响应与状态令牌时，在命令后增加 `--raw`。
 
 每运行一次命令读取一次当前状态。只调用 `get_state` 不会提交游戏动作。
 
