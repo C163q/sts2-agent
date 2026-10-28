@@ -55,5 +55,6 @@
 - [正常游戏加载与读取](docs/development/live-game.md)：Steam 安装位置、启动配置和读取敌人的操作步骤。
 - [可见信息边界](docs/observation.md)：基础观察的信息范围与当前实现差距。
 - [战斗画面与 JSON 对照](docs/research/2026-10-29-battle-observation-audit.md)：正常游戏读取样本与对应截图的逐项核对。
+- [观察字段获取方式](docs/research/2026-10-29-observation-data-sources.md)：模型成员、UI 节点、显示规则及尚需运行验证的范围。
 - [最小流程验证记录](docs/research/2026-10-28-roundtrip-validation.md)：当前版本 API 依据和真实游戏验证结果。
 - [Mod 接入基线调研](docs/research/2026-10-28-modding-baseline.md)：本地版本证据、上游资料及待验证事项。
