@@ -11,6 +11,7 @@ def main():
     parser = argparse.ArgumentParser(description="在独立游戏实例中验证状态与动作往返。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
     parser.add_argument("--report", required=True, type=Path)
+    parser.add_argument("--observation-output", type=Path, help="在首回合另存并校验英语可见观察")
     args = parser.parse_args()
     client = Client(args.ipc_dir)
     evidence = []
@@ -26,6 +27,12 @@ def main():
     observed = call("get_state")
     assert observed["ok"], observed
     state = observed["state"]
+    deadline = time.monotonic() + 30
+    while state["scene"] == "loading_or_noncombat" and time.monotonic() < deadline:
+        time.sleep(0.25)
+        observed = call("get_state")
+        assert observed["ok"], observed
+        state = observed["state"]
     assert state["scene"] == "main_menu", "完整验证须从新启动实例的主菜单执行。"
     illegal = call("end_turn", state["snapshot_id"])
     assert not illegal["ok"] and illegal["error"]["code"] == "illegal_action", illegal
@@ -33,6 +40,15 @@ def main():
     assert setup["ok"], setup
     state = setup["state"]
     assert state["scene"] == "combat" and "end_turn" in state["available_actions"], state
+    if args.observation_output:
+        from verify_observation import verify
+        time.sleep(3)
+        response = call("get_state")
+        assert response["ok"], response
+        state = response["state"]
+        verify(state)
+        args.observation_output.parent.mkdir(parents=True, exist_ok=True)
+        args.observation_output.write_text(json.dumps(response, indent=2, ensure_ascii=False) + "\n")
     before = state
 
     invalid = call("end_turn", "invalid-snapshot")

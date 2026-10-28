@@ -33,7 +33,10 @@ public static class BridgeMod
     private static void Attach()
     {
         SceneTree tree = NGame.Instance!.GetTree();
-        tree.ProcessFrame += Pump;
+        if (DisplayServer.GetName() == "headless")
+            tree.ProcessFrame += Pump;
+        else
+            RenderingServer.FramePostDraw += Pump;
         tree.Root.TreeExiting += () => Lifetime.Cancel();
         GD.Print("[Sts2Agent] Main-thread pump attached.");
     }
@@ -44,6 +47,7 @@ public static class BridgeMod
         {
             GD.PushError("[Sts2Agent] Mailbox stopped: " + transport.Exception);
             NGame.Instance!.GetTree().ProcessFrame -= Pump;
+            RenderingServer.FramePostDraw -= Pump;
             return;
         }
         if (active != null)

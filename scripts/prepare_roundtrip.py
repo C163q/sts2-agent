@@ -7,6 +7,7 @@ from pathlib import Path
 def main():
     parser = argparse.ArgumentParser(description="准备独立的 Linux 游戏验证目录。")
     parser.add_argument("--game-dir", required=True, type=Path)
+    parser.add_argument("--language", choices=("eng", "zhs"), default="eng")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     game = args.game_dir.expanduser().resolve()
@@ -40,7 +41,7 @@ def main():
     settings = runtime.parent / "userdata" / "sts2_agent-roundtrip" / "default" / "1" / "settings.save"
     settings.parent.mkdir(parents=True, exist_ok=True)
     settings.write_text(json.dumps({
-        "schema_version": 5, "language": "eng", "fullscreen": False,
+        "schema_version": 5, "language": args.language, "fullscreen": False,
         "skip_intro_logo": True, "seen_ea_disclaimer": True,
         "mod_settings": {"mods_enabled": True, "mod_list": []},
     }, indent=2) + "\n")

@@ -1,8 +1,16 @@
+import argparse
 import os
 from pathlib import Path
 
 
 def main():
+    parser = argparse.ArgumentParser(description="启动使用独立数据目录的游戏测试实例。")
+    parser.add_argument("--windowed", action="store_true", help="使用图形窗口，验证实际显示与帧后采样")
+    parser.add_argument("--capture", action="store_true", help="每次读取时保存测试窗口截图至 .tmp/roundtrip/observation.png")
+    parser.add_argument("--check-observation", action="store_true", help="对独立测试战斗执行可见性过滤检查")
+    args = parser.parse_args()
+    if args.capture and not args.windowed:
+        parser.error("--capture 需要 --windowed。")
     root = Path(__file__).resolve().parents[1]
     work = root / ".tmp" / "roundtrip"
     runtime = work / "runtime"
@@ -15,9 +23,14 @@ def main():
         "STS2_AGENT_IPC_DIR": str(work / "ipc"),
         "STS2_AGENT_TEST_MODE": "1",
     })
-    print(f"启动独立无头测试实例，日志位于 {work / 'stdout.log'}，按 Ctrl+C 停止。", flush=True)
-    arguments = [str(executable), "--headless", "--path", str(runtime),
+    if args.capture:
+        environment["STS2_AGENT_TEST_CAPTURE"] = str(work / "observation.png")
+    if args.check_observation:
+        environment["STS2_AGENT_TEST_CHECKS"] = str(work / "observation-checks.json")
+    print(f"启动独立测试实例，日志位于 {work / 'stdout.log'}，按 Ctrl+C 停止。", flush=True)
+    arguments = [str(executable), "--path", str(runtime),
                  "--force-steam", "off", "--log-file", str(work / "game.log"), "--max-fps", "30"]
+    arguments += ["--windowed", "--resolution", "1280x720"] if args.windowed else ["--headless"]
     with (work / "stdout.log").open("w") as output:
         os.dup2(output.fileno(), 1)
         os.dup2(output.fileno(), 2)

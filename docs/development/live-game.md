@@ -1,8 +1,8 @@
 # 在正常游戏中加载 Mod 并读取状态
 
-当前原型可以响应 `get_state` 请求，输出战斗中的敌人标识、生命、格挡，以及玩家手牌和回合信息。它按请求返回 JSON，不会持续自动输出。敌人暂以 `LEAF_SLIME_M` 这样的模型标识表示。
+当前原型可以响应 `get_state` 请求，以英语 JSON 输出可见战斗数值、敌人名称与意图、手牌名称及费用、状态图标和顶栏。它按请求返回 JSON，不会持续自动输出；字段及限制见 [战斗观察 JSON](observation.md)。
 
-以下步骤面向本机 Linux Steam 游戏 `v0.107.1`，依据已核对的 Mod 加载器和现有接口整理。独立无头实例已完成验证；正常游戏中的读取已有 [响应与截图样本](../research/2026-10-29-battle-observation-audit.md)，当前字段尚不满足 [静态画面信息边界](../observation.md)。
+以下步骤面向本机 Linux Steam 游戏 `v0.107.1`，依据已核对的 Mod 加载器和现有接口整理。独立无头实例已完成验证；正常游戏中的读取已有 [响应与截图样本](../research/2026-10-29-battle-observation-audit.md)，该样本使用旧版结构；新版按 [静态画面信息边界](../observation.md) 过滤，已增加独立图形实例的验证。
 
 ## 安装文件
 
@@ -46,7 +46,7 @@ env STS2_AGENT_IPC_DIR=/home/c163q/Program/workspace/project/sts2_agent/.tmp/liv
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state
 ```
 
-成功响应中，`state.scene` 为 `combat`，`state.enemies` 列出敌人；每项包含 `id`、`model`、`hp` 和 `block`。主菜单没有战斗敌人，返回 `enemies: null` 属于正常情况。
+成功响应中，`state.scene` 为 `combat`，`state.enemies` 列出敌人；每项包含可见身份、生命、格挡、状态图标与当前意图；名称使用英语。战斗被详情页、教学等覆盖时 `screen.status` 为 `covered`，暂不返回战斗数据。主菜单没有战斗敌人，返回 `enemies: null` 属于正常情况。
 
 每运行一次命令读取一次当前状态。只调用 `get_state` 不会提交游戏动作。
 
