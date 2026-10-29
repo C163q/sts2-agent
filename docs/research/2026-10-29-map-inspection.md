@@ -1,6 +1,6 @@
 # 地图查看设计与实施记录
 
-当前状态：已完成。共 3 项，已完成 3 项；文件接口、92 项 Python 回归、30 项独立原生检查与独立审阅均通过，Mod 0.12.0 已安装并保留编号备份。正式游戏需要重启后另行采样验证，MCP 留待格式确认后接入。
+当前状态：已完成。共 3 项，已完成 3 项；文件接口、92 项 Python 回归、30 项独立原生检查与独立审阅均通过，Mod 0.12.0 已安装并保留编号备份。正式 Steam 单人战斗已重启采样通过，MCP 留待格式确认后接入。
 
 ## 已确认范围
 
@@ -67,7 +67,7 @@
 
 ## 验证结果与样本
 
-最终构建零警告、零错误；Python 完整回归 92 项通过（18.315s），其中新增地图投影用例已观察到旧实现丢字段的失败，再修正通过。中文图形独立实例运行 `verify_map.py --exercise-cases`，30 项原生检查全通过；最终 `.tmp/roundtrip/stdout.log` 没有 `ERROR` 或异常条目。普通打开/重复/关闭前后玩法观察一致；扩展夹具会自行结束隔离战斗、取得遗物并切换幕，不应将夹具进度描述为完全不变。正式 Steam 对局未操作。
+最终构建零警告、零错误；Python 完整回归 92 项通过（18.315s），其中新增地图投影用例已观察到旧实现丢字段的失败，再修正通过。中文图形独立实例运行 `verify_map.py --exercise-cases`，30 项原生检查全通过；最终 `.tmp/roundtrip/stdout.log` 没有 `ERROR` 或异常条目。普通打开/重复/关闭前后玩法观察一致；扩展夹具会自行结束隔离战斗、取得遗物并切换幕，不应将夹具进度描述为完全不变。正式对局采样只打开和关闭地图，不执行玩法动作。
 
 证据保留于不纳入 Git 的 `.tmp/roundtrip/map-checks.json`、`.tmp/roundtrip/map/map-evidence.json`。地图 JSON 位于 `.tmp/roundtrip/map/`：
 
@@ -78,6 +78,17 @@
 - `map-double-boss.json`：普通先古之民起点及两个串联 Boss。
 - `map-act-2.json`：切换第二幕后仅返回第二幕节点和 ID。
 
-截图为 `.tmp/roundtrip/map-{combat,winged-boots,double-boss}.png`。本轮未接入地图 MCP、未实现选路动作、未验证正式游戏重启；其他版本、社区 Mod 自定义节点和全部先古之民组合不在本次验证范围。
+截图为 `.tmp/roundtrip/map-{combat,winged-boots,double-boss}.png`。本轮未接入地图 MCP、未实现选路动作；其他版本、社区 Mod 自定义节点和全部先古之民组合不在本次验证范围。
 
-已安装文件与本次最终构建一致，SHA-256：DLL 为 `582501f6618613a2b7579c011169a1a33197fba25fa85faf592dbc4aad1d6477`，清单为 `b2a7f79cf3e8b10f7a0c673978195fd50769360c7e9b52c5ac863b03d994e1a2`。独立测试窗口已停止，正式对局尚未重启。
+已安装文件与本次最终构建一致，SHA-256：DLL 为 `582501f6618613a2b7579c011169a1a33197fba25fa85faf592dbc4aad1d6477`，清单为 `b2a7f79cf3e8b10f7a0c673978195fd50769360c7e9b52c5ac863b03d994e1a2`。独立测试窗口已停止。
+
+## 正式单人战斗采样
+
+用户重启正式 Steam 游戏后，运行 `python3 scripts/verify_map.py --ipc-dir .tmp/live/ipc --output-dir .tmp/live/map`，未启用扩展测试场景。调用依次为 `get_state`、`inspect_map`、重复 `inspect_map`、`close_map`、`get_state`，全部成功。
+
+- 第一幕共 64 个节点、76 条绘制连线，Boss 为 Ceremonial Beast。
+- 当前节点 `map:1:2:2` 为普通敌人；已走路线为 `map:1:0:3 → map:1:1:2 → map:1:2:2`。
+- 当前节点有连线指向 `map:1:3:1` 和 `map:1:3:3`，但仍在战斗，`can_travel: false`、`selectable_nodes: []`。
+- 两次地图结果完全相同；显式关闭后 `screen.status: visible`，玩法观察与打开前完全一致，控制令牌已改变。未出牌、结束回合或选择节点。
+
+面向 LLM 的正式 JSON 为 `.tmp/live/map/map-inspection.json`，完整请求与原始响应为 `.tmp/live/map/map-evidence.json`。本次正式对局没有飞鞋或双 Boss，不将独立夹具验证表述为正式对局中的对应实测。
