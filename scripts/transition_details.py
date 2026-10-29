@@ -1,7 +1,7 @@
 from game_output import TRANSITION, observation_details, project
 
 
-REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "timeout", "interrupted"}
+REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "timeout", "interrupted", "selection_resolved"}
 FIELDS = {
     "damage": {"target", "hp_loss", "blocked"},
     "hp_changed": {"target", "before", "after"},
@@ -45,5 +45,8 @@ def end_turn_details(state):
             raise ValueError("Invalid power change.")
     result["transition"] = transition
     if transition["stop_reason"] != "player_ready" or not transition["complete"]:
-        result["available_actions"] = []
+        result["available_actions"] = [action for action in result["available_actions"]
+            if transition["complete"] and transition["stop_reason"] == "choice_required"
+            and (result.get("selection") or {}).get("status") == "visible"
+            and action in {"select_card", "selection_option"}]
     return result

@@ -53,7 +53,19 @@ def player_result(response):
             result["deck"], result["hover_tips"] = share_hand_tips(result["deck"])
         if result.get("scene") == "card_pile" and result.get("detail_level") == "full" and result.get("cards") is not None:
             result["cards"], result["hover_tips"] = share_hand_tips(result["cards"])
+        if result.get("scene") == "card_selection":
+            result["selection"]["cards"], result["hover_tips"] = share_hand_tips(result["selection"]["cards"])
         notes = {}
+        selection = result.get("selection") or {}
+        selection_view = result.pop("selection_view", None) or selection.get("status")
+        if selection_view == "visible" and selection.get("can_view_battlefield"):
+            notes["selection"] = 'Use set_selection_view(view="battlefield") (eye icon) to view combat.'
+        elif selection_view == "battlefield":
+            notes["selection"] = 'Selection pending; return with set_selection_view(view="selection") before choosing.'
+        elif selection_view == "covered":
+            notes["selection"] = 'Selection pending; close this view to return.'
+        elif selection_view == "unsupported":
+            notes["selection"] = 'This selection requires manual input; automatic selection is unavailable.'
         if result.get("hand"):
             notes["card_values"] = CARD_VALUE_NOTE
         if result.get("scene") == "combat" and any(

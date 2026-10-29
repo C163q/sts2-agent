@@ -62,3 +62,7 @@ C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project spi
 独立测试实例的准备、启动与结束回合验证见 [往返指南](roundtrip.md)。各详情和页面的 `verify_*.py` 命令见对应开发指南；页面检查会真实打开或关闭页面，往返检查会推进回合。不要把独立测试场景入口用于正式对局。
 
 游戏 API 或生命周期变更须重新验证加载与相关行为。只修改外部输出层时，先用错误输入回归、真实 stdio 和已有合法游戏样本回放检查；报告仍须明确是否重新运行真实游戏。
+
+## 选牌接口
+
+`CardSelection.cs` 识别原生选择实例、数量规则和可用控件；`SelectionInspection.cs` 读取选择画面，`SelectionActions.cs` 定位并点击原生候选；`GameAdapter.Selection.cs` 处理参数、令牌、视图和结算等待。Python 的 `selection_details.py` 校验参数与详情，基础选择由 `game_output.py` 过滤。工具语义见 [选牌与查看战场](card-selection.md)。

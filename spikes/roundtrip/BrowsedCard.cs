@@ -17,7 +17,8 @@ internal static class BrowsedCard
         return false;
     }
 
-    public static Dictionary<string, object?> Read(CardModel original, string id, PileType pile, bool upgrades, bool full)
+    public static Dictionary<string, object?> Read(CardModel original, string id, PileType pile, bool upgrades, bool full,
+        bool preservePile = false)
     {
         // Native grid previews also upgrade a clone; never recalculate or upgrade the owned card.
         var model = (CardModel)original.MutableClone();
@@ -26,9 +27,9 @@ internal static class BrowsedCard
         try
         {
             // Combat formatting and costs consult CardModel.Pile; the detached clone must retain that context.
-            contextualClone = pile.IsCombatPile() ? model : null;
+            contextualClone = pile.IsCombatPile() || preservePile ? model : null;
             contextualPile = contextualClone == null ? null : original.Pile;
-            return ReadClone(model, id, pile, upgrades, full, pile.IsCombatPile() ? original.CurrentTarget : null);
+            return ReadClone(model, id, pile, upgrades, full, contextualClone != null ? original.CurrentTarget : null);
         }
         finally { contextualClone = previousClone; contextualPile = previousPile; }
     }

@@ -1,0 +1,104 @@
+using System.Text.Json;
+using Godot;
+using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Nodes;
+using MegaCrit.Sts2.Core.Nodes.Combat;
+using MegaCrit.Sts2.Core.Nodes.Screens;
+using MegaCrit.Sts2.Core.Runs;
+
+namespace Sts2Agent;
+
+internal sealed partial class GameAdapter
+{
+    private static NCombatCardPile? SelectionPileButton(PileOptions options)
+    {
+        var selection = CardSelection.Current;
+        if (selection is not { Peeking: true, Owner: not NPlayerHand }) return null;
+        string path = options.Pile switch { "draw" => "%DrawPile", "discard" => "%DiscardPile", _ => "%ExhaustPile" };
+        return selection.Owner.GetNodeOrNull<NCombatPilesContainer>("%CombatPiles")?.GetNodeOrNull<NCombatCardPile>(path);
+    }
+
+    private async Task<string> SelectionRequest(Request request, JsonElement before)
+    {
+        string? value = null;
+        int cardId = -1;
+        if (request.Operation != "inspect_selection")
+        {
+            string field = request.Operation == "select_card" ? "card_id"
+                : request.Operation == "selection_option" ? "option_id" : "view";
+            var arguments = request.Arguments;
+            if (arguments == null || arguments.Value.EnumerateObject().Count() != 1
+                || !arguments.Value.TryGetProperty(field, out var supplied)
+                || (field == "card_id" ? supplied.ValueKind != JsonValueKind.Number || !supplied.TryGetInt32(out cardId) || cardId < 0
+                    : supplied.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(value = supplied.GetString()) || value.Length > 128)
+                || (field == "view" && value is not ("battlefield" or "selection")))
+                return FileMailbox.Error(request.Id, "invalid_request", "Invalid selection arguments.");
+        }
+        var selection = CardSelection.Current;
+        if (selection == null || !selection.Supported || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
+            return FileMailbox.Error(request.Id, "illegal_action", "No supported local card selection is available.");
+        if (request.Operation == "inspect_selection")
+        {
+            if (selection.Status != "visible")
+                return FileMailbox.Error(request.Id, "illegal_action", "Return to the selection before reading its candidates.");
+            return Success(request.Id, JsonSerializer.Serialize(new { snapshot_id = before.GetProperty("snapshot_id").GetString(),
+                scene = "card_selection", selection = new SelectionInspection(observation).Read(selection, full: true) }));
+        }
+        if (request.Operation == "set_selection_view")
+        {
+            if (!selection.CanPeek)
+                return FileMailbox.Error(request.Id, "illegal_action", "The native eye button is unavailable.");
+            bool peeking = value == "battlefield";
+            if (selection.Peeking != peeking)
+            {
+                uiGeneration++;
+                selection.Eye!.ForceClick();
+            }
+            string state = await SettledObservation();
+            if (!SelectionActions.Same(selection) || !selection.Exposed || selection.Peeking != peeking)
+                return FileMailbox.Error(request.Id, "illegal_action", "The selection changed while switching views.");
+            return Success(request.Id, state);
+        }
+        if (request.ExpectedState != before.GetProperty("snapshot_id").GetString())
+            return FileMailbox.Error(request.Id, "stale_state", "Read the current selection before acting.");
+        if (selection.Status != "visible")
+            return FileMailbox.Error(request.Id, "illegal_action", "The selection is covered or hidden.");
+
+        var model = request.Operation == "select_card" ? selection.Cards.FirstOrDefault(card => observation.CardId(card) == cardId) : null;
+        var button = request.Operation == "selection_option" ? selection.Options().FirstOrDefault(option => option.id == value).button : null;
+        if (request.Operation == "select_card" ? model == null || !selection.CanSelect
+            : button == null || !button.IsEnabled)
+            return FileMailbox.Error(request.Id, "illegal_action", "The requested candidate or button is unavailable.");
+        var player = LocalPlayer;
+        var combat = CombatManager.Instance.DebugOnlyGetState();
+        using var journal = player != null && combat != null && CombatManager.Instance.IsInProgress
+            ? new TurnJournal(combat, player, observation.CardId) : null;
+        uiGeneration++;
+        if (model != null)
+        {
+            try { await SelectionActions.Click(selection, model, ObservationFrame); }
+            catch (InvalidOperationException error) { return FileMailbox.Error(request.Id, "illegal_action", error.Message); }
+        }
+        else button!.ForceClick();
+
+        string? reason = null;
+        DateTime deadline = DateTime.UtcNow.AddSeconds(25);
+        do
+        {
+            await ObservationFrame();
+            bool ready = CanEndTurn() && RunManager.Instance.ActionQueueSet.IsEmpty;
+            reason = journal?.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()), ready, requireTurnStarted: false);
+            if (journal == null)
+            {
+                var current = CardSelection.Current;
+                if (CardSelection.AwaitingInput) reason = "choice_required";
+                else if (current == null) reason = "selection_resolved";
+            }
+        } while (reason == null && DateTime.UtcNow < deadline);
+        reason ??= "timeout";
+        string after = await SettledObservation();
+        object transition = journal?.Result(reason) ?? new { stop_reason = reason,
+            complete = reason != "timeout", events = Array.Empty<object>() };
+        return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(transition) + "}");
+    }
+}

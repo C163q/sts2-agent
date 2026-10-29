@@ -53,3 +53,5 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state
 每运行一次命令读取一次当前状态。只调用 `get_state` 不会提交游戏动作。
 
 如果请求超时，先检查 Mod 是否已启用并重启、Steam 启动选项是否生效，以及客户端与 Mod 是否使用同一个通信目录。日志出现 `[Sts2Agent] Main-thread pump attached.` 表示通信处理入口已连接；若出现 `STS2_AGENT_IPC_DIR is unset, bridge disabled.`，则表示环境变量没有传入游戏。
+
+Mod `0.14.0` 接通 [选牌与显式查看战场](card-selection.md)，需同时更新外部 MCP 脚本；RitsuLib 也可由 Steam 创意工坊管理，无须另复制一套。

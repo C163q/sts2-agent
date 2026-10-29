@@ -16,6 +16,10 @@ def main():
     parser.add_argument("--check-deck", action="store_true", help="检查原生牌组页的完整列表、升级预览和模型不变性")
     parser.add_argument("--check-piles", action="store_true", help="允许独立测试三类牌堆、空堆反馈、替换及生命周期")
     parser.add_argument("--check-map", action="store_true", help="允许独立测试整图、选路候选、飞鞋及双 Boss")
+    parser.add_argument("--selection-scenario", choices=("potion", "potion_skip", "forced_two", "grid_two", "grid_one",
+                        "reward", "reward_skip", "deck", "tyranny", "retain_zero", "retain_one", "paradox", "chain", "grid_scroll",
+                        "knowledge", "retain_death", "retain_victory", "combat_pile", "unsupported_next", "scroll_race"),
+                        help="构造独立测试中的原生选牌流程，不作用于正式游戏")
     parser.add_argument("--turn-scenario", choices=("normal", "wither", "wither_death", "enemy_death", "tyranny",
                                                    "retain_choice", "boulder", "doom", "stampede", "revive", "blocked",
                                                    "hellraiser", "exhaust_block", "hidden_hp"),
@@ -57,6 +61,8 @@ def main():
         environment["STS2_AGENT_TEST_MAP_CHECKS"] = str(work / "map-checks.json")
     if args.turn_scenario:
         environment["STS2_AGENT_TEST_TURN_SCENARIO"] = args.turn_scenario
+    if args.selection_scenario:
+        environment["STS2_AGENT_TEST_SELECTION_SCENARIO"] = args.selection_scenario
     print(f"启动独立测试实例，日志位于 {work / 'stdout.log'}，按 Ctrl+C 停止。", flush=True)
     arguments = [str(executable), "--path", str(runtime),
                  "--force-steam", "off", "--log-file", str(work / "game.log"), "--max-fps", "30"]

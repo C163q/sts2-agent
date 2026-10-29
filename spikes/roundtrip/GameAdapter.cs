@@ -27,7 +27,7 @@ using MegaCrit.Sts2.Core.Saves;
 
 namespace Sts2Agent;
 
-internal sealed class GameAdapter(bool testMode)
+internal sealed partial class GameAdapter(bool testMode)
 {
     private readonly string session = Guid.NewGuid().ToString("N");
     private int combatGeneration;
@@ -36,6 +36,8 @@ internal sealed class GameAdapter(bool testMode)
     private readonly CombatObservation observation = new();
     private readonly DeckInspection deckInspection = new();
     private readonly PileInspection pileInspection = new();
+    private object? lastSelection;
+    private int selectionGeneration;
 
     private static Player? LocalPlayer => LocalContext.GetMe(CombatManager.Instance.DebugOnlyGetState());
 
@@ -52,8 +54,11 @@ internal sealed class GameAdapter(bool testMode)
             && player.Creature.IsAlive && !combat.IsPlayerReadyToEndTurn(player)
             && (combat.PlayersTakingExtraTurn.Count == 0 || combat.PlayersTakingExtraTurn.Contains(player))
             && room?.Ui?.Hand != null && !room.Ui.Hand.InCardPlay
-            && room.Ui.Hand.CurrentMode == NPlayerHand.Mode.Play;
+            && room.Ui.Hand.CurrentMode == NPlayerHand.Mode.Play && CardSelection.Current == null;
     }
+
+    private static bool CanInspectViews(bool allowPause = false) => CanEndTurn(allowPause)
+        || CardSelection.Current is { Peeking: true, Supported: true } && LocalPlayer?.Creature.IsAlive == true;
 
     public string Observe()
     {
@@ -67,6 +72,12 @@ internal sealed class GameAdapter(bool testMode)
         }
         Player? player = LocalPlayer;
         observation.Synchronize(combat, player);
+        var selection = CardSelection.Current;
+        if (!ReferenceEquals(selection?.Key, lastSelection))
+        {
+            lastSelection = selection?.Key;
+            selectionGeneration++;
+        }
         string scene = CombatManager.Instance.IsInProgress ? "combat"
             : NGame.Instance?.MainMenu != null ? "main_menu" : "loading_or_noncombat";
         List<string> actions = [];
@@ -77,15 +88,22 @@ internal sealed class GameAdapter(bool testMode)
         string visibility = scene == "combat" ? CombatObservation.Status() : "not_applicable";
         if (scene == "combat" && visibility != "visible")
             actions.Clear();
+        if (selection is { Status: "visible" } && RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
+        {
+            if (selection.CanSelect) actions.Add("select_card");
+            if (selection.Options().Any(option => option.button.IsEnabled)) actions.Add("selection_option");
+        }
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 3, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, scene,
+            schema_version = 4, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration,
+            selection_generation = selectionGeneration, scene,
             screen = CardView.Screen(visibility),
             turn = scene == "combat" ? observation.Turn() : null,
             player = scene == "combat" ? observation.Player(player) : null,
             enemies = scene == "combat" ? observation.Enemies() : null,
-            top_bar = scene == "combat" ? observation.TopBar() : null,
+            top_bar = scene == "combat" || selection is { Status: "visible" } ? observation.TopBar() : null,
             buttons = scene == "combat" ? observation.Buttons() : null,
+            selection = new SelectionInspection(observation).Read(selection),
             available_actions = actions
         });
         string snapshotId = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(body)));
@@ -95,7 +113,8 @@ internal sealed class GameAdapter(bool testMode)
     public async Task<string> Execute(Request request)
     {
         string before = Observe();
-        if (request.Operation is not ("inspect_deck" or "inspect_pile") && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
+        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view")
+            && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
         {
@@ -108,6 +127,11 @@ internal sealed class GameAdapter(bool testMode)
             return Success(request.Id, before);
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (request.Operation == "check_test_selection_race" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SELECTION_SCENARIO") == "scroll_race")
+            return Success(request.Id, JsonSerializer.Serialize(await SelectionFixture.CheckScrollRace(ObservationFrame)));
+        if (request.Operation is "inspect_selection" or "set_selection_view" or "select_card" or "selection_option")
+            return await SelectionRequest(request, document.RootElement);
         if (request.Operation == "check_test_deck_lifecycle" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS") is { } deckChecks)
             return Success(request.Id, JsonSerializer.Serialize(await DeckInspectionChecks.Lifecycle(this, deckChecks)));
@@ -281,10 +305,36 @@ internal sealed class GameAdapter(bool testMode)
                 ModelDb.ActsByIndex.Select(acts => acts[0]).ToArray(),
                 Array.Empty<ModifierModel>(), "STS2AGENTROUNDTRIP", GameMode.Standard);
             string? turnScenario = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_TURN_SCENARIO");
-            await RunManager.Instance.EnterRoomDebug(RoomType.Monster,
-                model: turnScenario == "revive" ? ModelDb.Encounter<DecimillipedeElite>().ToMutable()
+            string? selectionScenario = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SELECTION_SCENARIO");
+            if (selectionScenario == "paradox")
+                await RelicCmd.Obtain<ChoicesParadox>(LocalContext.GetMe(RunManager.Instance.DebugOnlyGetState())!);
+            Task roomEntry = RunManager.Instance.EnterRoomDebug(RoomType.Monster,
+                model: selectionScenario == "knowledge" ? ModelDb.Encounter<KnowledgeDemonBoss>().ToMutable()
+                    : turnScenario == "revive" ? ModelDb.Encounter<DecimillipedeElite>().ToMutable()
                     : ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
-            await WaitUntil(() => CanEndTurn());
+            if (selectionScenario == "paradox")
+            {
+                SelectionFixture.Pending = roomEntry;
+                await WaitUntil(() => roomEntry.IsFaulted || CardSelection.Current is { Status: "visible" });
+                if (roomEntry.IsFaulted) await roomEntry;
+            }
+            else
+            {
+                await roomEntry;
+                await WaitUntil(() => CanEndTurn());
+            }
+            if (selectionScenario != null)
+            {
+                // Debug entry bypasses map travel's normal disable step.
+                RunManager.Instance.DebugOnlyGetState()!.ActFloor = 1;
+                NRun.Instance!.GlobalUi.MapScreen.SetTravelEnabled(false);
+                await SelectionFixture.Configure(selectionScenario, LocalPlayer!);
+                if (selectionScenario is not ("tyranny" or "retain_zero" or "retain_one" or "retain_death" or "retain_victory"))
+                {
+                    await WaitUntil(() => SelectionFixture.Pending?.IsFaulted == true || CardSelection.Current is { Status: "visible" });
+                    if (SelectionFixture.Pending?.IsFaulted == true) await SelectionFixture.Pending;
+                }
+            }
             if (turnScenario != null) await TurnFixture.Configure(turnScenario, LocalPlayer!);
             // Debug room entry bypasses the normal map-travel disabling step.
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_MAP_CHECKS") != null)
@@ -372,7 +422,7 @@ internal sealed class GameAdapter(bool testMode)
             var button = NRun.Instance!.GlobalUi.TopBar.Map;
             if (!button.IsEnabled || !VisibleUi.OnScreen(button)
                 || (!map.IsOpen && VisibleUi.Shown(map))
-                || (CombatManager.Instance.IsInProgress && !CanEndTurn(allowMapPause: map.IsOpen || cardOpen)))
+                || (CombatManager.Instance.IsInProgress && !CanInspectViews(allowPause: map.IsOpen || cardOpen)))
                 return FileMailbox.Error(request.Id, "illegal_action", "The map button is unavailable.");
             uiGeneration++;
             button.ForceClick();
@@ -410,7 +460,7 @@ internal sealed class GameAdapter(bool testMode)
             bool mapOpen = NRun.Instance.GlobalUi.MapScreen.IsOpen;
             bool cardOpen = CardView.Current != null;
             if (CombatObservation.Status(allowCardView: cardOpen, allowMap: true) != "visible"
-                || !CanEndTurn(allowMapPause: mapOpen || cardOpen)
+                || !CanInspectViews(allowPause: mapOpen || cardOpen)
                 || !VisibleUi.OnScreen(button) || !button.IsEnabled)
                 return FileMailbox.Error(request.Id, "illegal_action", "The deck button is unavailable.");
             uiGeneration++;
@@ -450,13 +500,14 @@ internal sealed class GameAdapter(bool testMode)
         bool cardOpen = CardView.Current != null;
         if (player == null || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer
             || CombatObservation.Status(allowCardView: cardOpen) != "visible"
-            || !CanEndTurn(allowMapPause: cardOpen))
+            || !CanInspectViews(allowPause: cardOpen))
             return FileMailbox.Error(request.Id, "illegal_action", "Pile viewing is unavailable in the current screen.");
         var screen = PileInspection.Current(options);
         if (screen == null)
         {
             var ui = NCombatRoom.Instance!.Ui;
-            NCombatCardPile button = options.Pile switch { "draw" => ui.DrawPile, "discard" => ui.DiscardPile, _ => ui.ExhaustPile };
+            NCombatCardPile button = SelectionPileButton(options) ?? (options.Pile switch
+                { "draw" => ui.DrawPile, "discard" => ui.DiscardPile, _ => ui.ExhaustPile });
             if (VisibleUi.OnScreen(button) && CardView.Current is { } previous)
             {
                 if (!CardView.CanClose(previous))
@@ -465,7 +516,7 @@ internal sealed class GameAdapter(bool testMode)
                 uiGeneration++;
                 CardView.Close(previous);
                 await ObservationFrame();
-                if (CombatObservation.Status() != "visible" || !CanEndTurn() || !ReferenceEquals(player, LocalPlayer)
+                if (CombatObservation.Status() != "visible" || !CanInspectViews() || !ReferenceEquals(player, LocalPlayer)
                     || !ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()))
                     return FileMailbox.Error(request.Id, "illegal_action", "The screen changed while switching piles.");
             }
@@ -500,7 +551,7 @@ internal sealed class GameAdapter(bool testMode)
         await WaitUntil(() => !ReferenceEquals(PileInspection.Current(options), screen) || CardView.Ready(screen));
         if (!ReferenceEquals(PileInspection.Current(options), screen) || !ReferenceEquals(player, LocalPlayer)
             || !ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState())
-            || CombatObservation.Status(allowCardView: true) != "visible" || !CanEndTurn(allowMapPause: true))
+            || CombatObservation.Status(allowCardView: true) != "visible" || !CanInspectViews(allowPause: true))
             return FileMailbox.Error(request.Id, "illegal_action", "The pile screen changed while reading.");
         using var observed = JsonDocument.Parse(Observe());
         var inspection = pileInspection.Read(screen, options, observed.RootElement.GetProperty("snapshot_id").GetString()!);
@@ -554,6 +605,10 @@ internal sealed class GameAdapter(bool testMode)
         }
     }
 
-    private static string Success(string id, string state) =>
-        "{\"id\":\"" + id + "\",\"ok\":true,\"state\":" + state + "}";
+    private static string Success(string id, string state)
+    {
+        if (CardSelection.Current is { } selection)
+            state = state[..^1] + ",\"selection_view\":\"" + selection.Status + "\"}";
+        return "{\"id\":\"" + id + "\",\"ok\":true,\"state\":" + state + "}";
+    }
 }

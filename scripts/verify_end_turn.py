@@ -79,7 +79,8 @@ def main():
     if args.scenario == "blocked":
         assert any(e["type"] == "damage" and e["blocked"] > 0 and e["hp_loss"] == 0 for e in events), transition
     if args.scenario in ("tyranny", "retain_choice"):
-        assert not result["available_actions"], result
+        assert "end_turn" not in result["available_actions"] and result["selection"]["status"] == "visible", result
+        assert "select_card" in result["available_actions"], result
     if args.scenario == "hellraiser":
         plays = [e for e in events if e["type"] == "card_played" and e["autoplay"]]
         assert plays, transition

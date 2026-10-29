@@ -5,6 +5,7 @@ from map_details import closed_map, map_details
 from pile_details import pile_details
 from relic_details import relic_details
 from transition_details import end_turn_details
+from selection_details import inspect_selection_details
 
 
 def potion_details(state):
@@ -60,12 +61,25 @@ READERS = {
     "close_card_view": closed_card_view,
     "inspect_map": map_details,
     "close_map": closed_map,
+    "inspect_selection": inspect_selection_details,
+    "set_selection_view": observation_details,
+    "select_card": end_turn_details,
+    "selection_option": end_turn_details,
 }
 
 
-def inspection_details(operation, state, arguments=None):
+def _read_details(operation, state, arguments=None):
     if operation == "inspect_deck":
         return deck_details(state, (arguments or {}).get("detail_level", "summary"))
     if operation == "inspect_pile":
         return pile_details(state, arguments["pile"], arguments.get("detail_level", "summary"))
     return READERS[operation](state)
+
+
+def inspection_details(operation, state, arguments=None):
+    result = _read_details(operation, state, arguments)
+    if "selection_view" in state:
+        if state["selection_view"] not in {"visible", "battlefield", "covered", "unsupported"}:
+            raise ValueError("Invalid pending selection view.")
+        result["selection_view"] = state["selection_view"]
+    return result

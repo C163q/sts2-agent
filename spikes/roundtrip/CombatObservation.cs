@@ -51,7 +51,8 @@ internal sealed class CombatObservation
         if ((global.CapstoneContainer.InUse && !(allowCardView
                 && global.CapstoneContainer.CurrentCapstoneScreen is NDeckViewScreen or NCardPileScreen))
             || (VisibleUi.Shown(global.MapScreen) && !(allowMap && global.MapScreen.IsOpen && !global.MapScreen.IsTraveling))
-            || global.Overlays.ScreenCount > 0
+            || (global.Overlays.ScreenCount > 0 && !CardSelection.BattlefieldOverlay)
+            || CardSelection.Current is { Owner: NPlayerHand, Peeking: false }
             || NModalContainer.Instance?.OpenModal != null
             || VisibleUi.Shown(NGame.Instance?.InspectCardScreen)
             || VisibleUi.Shown(NGame.Instance?.InspectRelicScreen)
@@ -250,7 +251,7 @@ internal sealed class CombatObservation
 
     public object? TopBar()
     {
-        if (Status() != "visible")
+        if (Status() != "visible" && CardSelection.Current is not { Status: "visible" })
             return null;
         var global = NRun.Instance!.GlobalUi;
         var bar = global.TopBar;

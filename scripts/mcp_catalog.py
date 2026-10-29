@@ -2,13 +2,14 @@ from mcp.types import Tool, ToolAnnotations
 
 from deck_details import DECK_SCHEMA
 from pile_details import PILE_SCHEMA
+from selection_details import CARD_SCHEMA, OPTION_SCHEMA, VIEW_SCHEMA
 
 
 SERVER_INSTRUCTIONS = (
-    "Control a local Slay the Spire 2 game; output is English. Only end_turn advances gameplay. "
+    "Control a local Slay the Spire 2 game; output is English. "
     "Call get_observation before each gameplay action; its permission is consumed even on failure. "
     "Read-only inspections do not prepare actions. View tools change UI and clear action permission; "
-    "close the views and observe again before acting. Actions return a resulting observation. "
+    "return to the action's screen and observe again before acting. Actions return a resulting observation. "
     "After failure or timeout, observe before deciding; never automatically retry an action with unknown outcome."
 )
 NO_ARGUMENTS = {"type": "object", "properties": {}, "additionalProperties": False}
@@ -53,8 +54,22 @@ def tool_definitions():
         Tool(name="close_map", inputSchema=NO_ARGUMENTS, annotations=view, description=(
             "Close the exposed map using its enabled native back button; return a basic observation. "
             "Cannot close through card pages or force a mandatory map closed.")),
+        Tool(name="inspect_selection", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
+            "Read the current selection's entire browsable candidate list and card details. "
+            "Unavailable while the selection is hidden; does not switch views.")),
+        Tool(name="select_card", inputSchema=CARD_SCHEMA, annotations=action, description=(
+            "Click one candidate by its observed card_id. Multi-select clicks toggle that card; "
+            "single-choice screens may immediately submit. Use enabled selection.options to confirm when required. "
+            "Requires a fresh get_observation.")),
+        Tool(name="selection_option", inputSchema=OPTION_SCHEMA, annotations=action, description=(
+            "Click an enabled selection.options button by option_id: confirm, cancel preview, skip or a reward alternative. "
+            "Only offered buttons are legal; requires a fresh get_observation.")),
+        Tool(name="set_selection_view", inputSchema=VIEW_SCHEMA, annotations=view, description=(
+            "Click the native eye to show battlefield or return to selection. "
+            "Battlefield view permits available inspections, never normal combat actions. "
+            "Close covering card/map views first. Clears action permission.")),
         Tool(name="end_turn", inputSchema=NO_ARGUMENTS, annotations=action, description=(
             "End the player's turn once; return observed events, a stop reason, and the resulting observation. "
-            "Stops for player choices without choosing; choice actions are not yet supported. "
+            "Stops for player choices; inspect selection and choose separately. "
             "Requires a fresh get_observation. Never retry an incomplete transition automatically.")),
     ]

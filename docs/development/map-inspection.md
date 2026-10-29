@@ -1,6 +1,6 @@
 # 当前幕地图查看
 
-Mod 0.12.0 的文件接口提供无参数 `inspect_map` 和 `close_map`；MCP server 0.9.0 提供对应的 `inspect_map()`、`close_map()`，固定工具总数为 12。接入方式见 [MCP 指南](mcp.md)。
+文件接口提供无参数 `inspect_map` 和 `close_map`，MCP 提供对应的 `inspect_map()`、`close_map()`。当前工具目录见 [MCP 指南](mcp.md)。
 
 `inspect_map` 真实打开或复用原生地图，返回当前幕中可通过滚动浏览的整个地图，不自动滚动，也不读取其他幕。正常一局的三幕通过从 1 开始的 `act` 区分；地图行号不是顶栏的全局楼层。页面保留到显式关闭或人手动返回。
 

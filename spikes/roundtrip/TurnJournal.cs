@@ -6,14 +6,10 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.UI;
 using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.Entities.Cards;
-using MegaCrit.Sts2.Core.GameActions;
-using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Cards;
-using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Rooms;
-using MegaCrit.Sts2.Core.Runs;
 using STS2RitsuLib;
 
 namespace Sts2Agent;
@@ -32,11 +28,9 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     private readonly HashSet<PowerModel> watchedPowers = [];
     private readonly Dictionary<CardModel, object?> autoSources = [];
     private readonly List<(DamageResult result, Dictionary<string, object?> entry)> damageResults = [];
-    private readonly HashSet<GameAction> actions = [];
     private readonly HashSet<CardModel> generated = [];
     private readonly HashSet<CardModel> handCards = [];
     private readonly Dictionary<CardModel, string?> knownCards = [];
-    private readonly ActionQueueSet queue;
     private readonly IDisposable? lifecycle;
     private bool ended, won, disposed;
     private int historyCursor;
@@ -48,7 +42,6 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         this.combat = combat;
         this.player = player;
         this.cardId = cardId;
-        queue = RunManager.Instance.ActionQueueSet;
         if (TurnCapture.Journal != null) throw new InvalidOperationException("A turn is already being recorded.");
         try
         {
@@ -57,7 +50,6 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
             CombatManager.Instance.CombatEnded += Ended;
             CombatManager.Instance.TurnStarted += Started;
             combat.CreaturesChanged += CreaturesChanged;
-            queue.ActionEnqueued += Enqueued;
             lifecycle = RitsuLibFramework.SubscribeLifecycle(this, replayCurrentState: false);
             historyCursor = CombatManager.Instance.History.Entries.Count();
             CombatManager.Instance.History.Changed += HistoryChanged;
@@ -73,19 +65,12 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         }
     }
 
-    public string? StopReason(bool sameCombat, bool playerReady)
+    public string? StopReason(bool sameCombat, bool playerReady, bool requireTurnStarted = true)
     {
         foreach (var creature in combat.Creatures) RememberVisible(creature);
         CapturePublicCards();
-        bool pending = actions.Any(action => action.OwnerId == player.NetId
-            && action.State == MegaCrit.Sts2.Core.Entities.Actions.GameActionState.GatheringPlayerChoice);
-        var hand = NCombatRoom.Instance?.Ui.Hand;
-        var overlay = MegaCrit.Sts2.Core.Nodes.NRun.Instance?.GlobalUi.Overlays.Peek();
-        bool choiceReady = pending && ((hand?.IsInCardSelection == true && VisibleUi.Shown(hand)
-                && CombatObservation.Status() == "visible")
-            || (overlay is NCardGridSelectionScreen or NChooseACardSelectionScreen
-                && VisibleUi.Shown(overlay as CanvasItem)));
-        return TurnBoundary.Decide(sameCombat, ended, choiceReady, playerReady && SawTurnStart, won);
+        bool choiceReady = CardSelection.AwaitingInput;
+        return TurnBoundary.Decide(sameCombat, ended, choiceReady, playerReady && (!requireTurnStarted || SawTurnStart), won);
     }
 
     public object Result(string reason)
@@ -101,7 +86,6 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     {
         if (ReferenceEquals(state, combat) && state.CurrentSide == CombatSide.Player) SawTurnStart = true;
     }
-    private void Enqueued(GameAction action) => actions.Add(action);
     private void CreaturesChanged(ICombatState state) => SubscribeCreatures();
 
     private void RememberVisible(Creature creature)
@@ -324,7 +308,6 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         CombatManager.Instance.TurnStarted -= Started;
         CombatManager.Instance.History.Changed -= HistoryChanged;
         combat.CreaturesChanged -= CreaturesChanged;
-        queue.ActionEnqueued -= Enqueued;
         foreach (var unsubscribe in cleanup) unsubscribe();
     }
 }

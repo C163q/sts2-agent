@@ -9,6 +9,7 @@ from inspection_details import inspection_details
 from map_details import map_arguments
 from pile_details import pile_arguments
 from player_output import player_result
+from selection_details import selection_arguments
 
 
 class GameTools:
@@ -30,6 +31,21 @@ class GameTools:
 
     async def inspect_hand(self):
         return await self._inspect("inspect_hand")
+
+    async def inspect_selection(self):
+        return await self._inspect("inspect_selection")
+
+    async def set_selection_view(self, arguments=None):
+        return await self._change_view("set_selection_view", arguments, validate_selection=True)
+
+    async def select_card(self, arguments=None):
+        return await self._selection_action("select_card", arguments)
+
+    async def selection_option(self, arguments=None):
+        return await self._selection_action("selection_option", arguments)
+
+    async def _selection_action(self, operation, arguments):
+        return await self._action(operation, arguments, validate_selection=True)
 
     async def inspect_ui(self):
         return await self._inspect("inspect_ui")
@@ -73,9 +89,14 @@ class GameTools:
             return player_result({"ok": False, "error": {"code": "invalid_request"}})
         return await self._change_view("inspect_pile", arguments)
 
-    async def _change_view(self, operation, arguments=None):
+    async def _change_view(self, operation, arguments=None, validate_selection=False):
         async with self.lock:
             self.snapshot_id = None
+            if validate_selection:
+                try:
+                    arguments = selection_arguments(operation, arguments)
+                except ValueError:
+                    return player_result({"ok": False, "error": {"code": "invalid_request"}})
             if error := self._acquire_controller():
                 return error
             payload, _ = await self._request(operation, arguments=arguments)
@@ -110,7 +131,16 @@ class GameTools:
         return None
 
     async def end_turn(self):
+        return await self._action("end_turn")
+
+    async def _action(self, operation, arguments=None, validate_selection=False):
         async with self.lock:
+            if validate_selection:
+                try:
+                    arguments = selection_arguments(operation, arguments)
+                except ValueError:
+                    self.snapshot_id = None
+                    return player_result({"ok": False, "error": {"code": "invalid_request"}})
             if self.snapshot_id is None:
                 return {"error": {
                     "code": "observation_required",
@@ -118,7 +148,7 @@ class GameTools:
                     "recovery": "get_observation",
                 }}
             snapshot_id, self.snapshot_id = self.snapshot_id, None
-            payload, _ = await self._request("end_turn", snapshot_id)
+            payload, _ = await self._request(operation, snapshot_id, arguments)
             return payload
 
     async def _request(self, operation, expected_state=None, arguments=None):
@@ -139,7 +169,8 @@ class GameTools:
             payload = player_result(response)
             if response["ok"] and "available_actions" in payload:
                 payload["available_actions"] = [
-                    action for action in payload.get("available_actions", []) if action == "end_turn"]
+                    action for action in payload.get("available_actions", [])
+                    if action in {"end_turn", "select_card", "selection_option"}]
         except (OSError, ValueError, KeyError, TypeError, RuntimeError) as error:
             code = "timeout" if isinstance(error, TimeoutError) else "transport_error"
             logging.getLogger(__name__).warning("Game request failed: %s", error)

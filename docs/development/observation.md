@@ -1,6 +1,6 @@
 # 战斗观察 JSON
 
-适用于 Linux 游戏 `v0.107.1` 与 Mod `0.4.0`。底层观察结构版本为 `3`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+适用于 Linux 游戏 `v0.107.1` 与 Mod `0.14.0`。底层观察结构版本为 `4`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -18,7 +18,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state > .tmp/liv
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 ```
 
-`--raw` 保留原始文件协议：成功为 `id/ok/state`，`state` 内保留 `snapshot_id/schema_version/language/session/combat_generation/ui_generation`；失败为 `id/ok/error`。Python 的 `Client.call()` 同样返回原始响应，`player_result(response)` 产生面向 LLM 的结果，不改写原响应。外部客户端必须自行保存最近的原始令牌，动作仍带 `expected_state` 校验；省略 LLM 可见令牌不等于绕过校验。[本地 MCP](mcp.md) 复用同一玩法输出转换。
+`--raw` 保留原始文件协议：成功为 `id/ok/state`，`state` 内保留 `snapshot_id/schema_version/language/session/combat_generation/ui_generation/selection_generation`；失败为 `id/ok/error`。Python 的 `Client.call()` 同样返回原始响应，`player_result(response)` 产生面向 LLM 的结果，不改写原响应。外部客户端必须自行保存最近的原始令牌，动作仍带 `expected_state` 校验；省略 LLM 可见令牌不等于绕过校验。[本地 MCP](mcp.md) 复用同一玩法输出转换。
 
 玩法输出按声明的结构递归投影，未知嵌套字段不会转发；基础观察的 `player.hand` 不包含正文或悬停解释。已提供字段须符合对应类型，布尔值不能代替数字。MCP 对基础观察和动作结果另检查全部顶层观察字段，格式错误返回 `transport_error`，不保留动作令牌。这个检查不证明游戏采样本身符合可见信息边界；Mod 的显示过滤仍是读取依据。
 
@@ -48,7 +48,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 ## 数值预览说明
 
-客户端仅在成功的战斗结果包含至少一项敌人意图时加入以下 `notes`；`enemies` 缺失、为 `null` 或空数组，以及所有敌人的 `intents` 缺失、为 `null` 或空数组时，整个 `notes` 字段省略。普通命令行输出和 MCP 共用此规则，原始协议与非战斗输出不加入，无须更新 Mod。
+客户端仅在成功的战斗结果包含至少一项敌人意图时加入以下 `notes.enemy_attack_intents`；没有可读意图时省略这一条。普通命令行输出和 MCP 共用此规则，原始协议不附这条客户端说明。手牌数值及选牌提示按各自场景加入，不受敌人意图是否存在影响。
 
 ```json
 {
@@ -124,3 +124,7 @@ python3 scripts/verify_roundtrip.py --ipc-dir .tmp/roundtrip/ipc --report .tmp/r
 ```
 
 独立测试入口创建铁甲战士临时战斗并关闭该测试存档的教学。截图和布局、临时 UI 扰动检查仅由测试标志启用；正常游戏不启用测试环境变量。当前调整及验证记录见 [实施说明](../research/2026-10-29-player-observation-plan.md)，上一版图形验证见 [历史记录](../research/2026-10-29-visible-combat-validation.md)。
+
+## 选择状态
+
+新增可空 `selection` 字段，供基础观察识别选牌、查看战场和覆盖状态。格式、工具与简短提示见 [选牌与查看战场](card-selection.md)。选择遮挡战场时不补出隐藏战斗数据；显式眼睛切换后复用正常可见性规则。底层新增不含玩法信息的 `selection_generation`，参与动作令牌。
