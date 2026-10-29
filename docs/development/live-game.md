@@ -6,6 +6,8 @@
 
 ## 安装文件
 
+Mod 0.12.0 新增 [地图查看与独立关闭](map-inspection.md) 的文件接口；地图 MCP 留待格式确认后接入。
+
 退出游戏后，把构建产物中的 `Sts2Agent.dll` 与 `Sts2Agent.json` 放入：
 
 ```text

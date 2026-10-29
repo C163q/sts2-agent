@@ -117,6 +117,9 @@ internal sealed class GameAdapter(bool testMode)
         if (request.Operation == "check_test_piles" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_PILE_CHECKS") is { } pileChecks)
             return Success(request.Id, JsonSerializer.Serialize(await PileInspectionChecks.Run(this, pileChecks)));
+        if (request.Operation == "check_test_map" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_MAP_CHECKS") is { } mapChecks)
+            return Success(request.Id, JsonSerializer.Serialize(await MapInspectionChecks.Run(this, mapChecks)));
         if (request.Operation == "inspect_deck")
         {
             DeckOptions options;
@@ -136,6 +139,42 @@ internal sealed class GameAdapter(bool testMode)
                 return FileMailbox.Error(request.Id, "invalid_request", "Invalid pile options.");
             }
             return await InspectPile(request, options);
+        }
+        if (request.Operation == "inspect_map")
+            return await InspectMap(request);
+        if (request.Operation == "close_map")
+        {
+            var map = NRun.Instance?.GlobalUi.MapScreen;
+            if (map == null || !MapView.CanClose(map))
+                return FileMailbox.Error(request.Id, "illegal_action", "The current map cannot be closed.");
+            var run = RunManager.Instance.DebugOnlyGetState();
+            var graph = run?.Map;
+            int? act = run?.CurrentActIndex;
+            var underlyingOverlay = NRun.Instance!.GlobalUi.Overlays.Peek();
+            bool reopened = false;
+            void Opened() => reopened = true;
+            uiGeneration++;
+            bool SameMap() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
+                && ReferenceEquals(graph, run?.Map) && act == run?.CurrentActIndex && GodotObject.IsInstanceValid(map)
+                && ReferenceEquals(underlyingOverlay, NRun.Instance?.GlobalUi.Overlays.Peek())
+                && ReferenceEquals(NRun.Instance?.GlobalUi.MapScreen, map);
+            map.Opened += Opened;
+            try
+            {
+                MapView.Back(map)!.ForceClick();
+                await ObservationFrame();
+                await WaitUntil(() => !SameMap() || reopened || map.IsOpen || !MapView.Clear() || !VisibleUi.Shown(map));
+                if (!SameMap() || reopened || map.IsOpen || !MapView.Clear())
+                    return FileMailbox.Error(request.Id, "illegal_action", "The map changed while closing.");
+                string after = await SettledObservation();
+                if (!SameMap() || reopened || map.IsOpen || !MapView.Clear())
+                    return FileMailbox.Error(request.Id, "illegal_action", "The map changed while closing.");
+                return Success(request.Id, after);
+            }
+            finally
+            {
+                if (GodotObject.IsInstanceValid(map)) map.Opened -= Opened;
+            }
         }
         if (request.Operation == "close_card_view")
         {
@@ -244,6 +283,15 @@ internal sealed class GameAdapter(bool testMode)
             await RunManager.Instance.EnterRoomDebug(RoomType.Monster,
                 model: ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
             await WaitUntil(() => CanEndTurn());
+            // Debug room entry bypasses the normal map-travel disabling step.
+            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_MAP_CHECKS") != null)
+            {
+                var run = RunManager.Instance.DebugOnlyGetState()!;
+                run.AddVisitedMapCoord(run.Map.StartingMapPoint.coord);
+                run.ActFloor = 1;
+                NRun.Instance!.GlobalUi.MapScreen.InitMarker(run.Map.StartingMapPoint.coord);
+                NRun.Instance!.GlobalUi.MapScreen.SetTravelEnabled(false);
+            }
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS") != null)
             {
                 var player = LocalPlayer!;
@@ -293,6 +341,46 @@ internal sealed class GameAdapter(bool testMode)
                 || (player.PlayerCombatState!.TurnNumber > turn && CanEndTurn()));
         }
         return Success(request.Id, await SettledObservation());
+    }
+
+    private async Task<string> InspectMap(Request request)
+    {
+        var run = RunManager.Instance.DebugOnlyGetState();
+        var map = NRun.Instance?.GlobalUi.MapScreen;
+        if (run == null || map == null || !MapView.Clear(allowCardView: true) || map.IsTraveling)
+            return FileMailbox.Error(request.Id, "illegal_action", "Map viewing is unavailable in the current screen.");
+        var graph = run.Map;
+        int act = run.CurrentActIndex;
+        bool cardOpen = MapView.CardPage != null;
+        if (!map.IsOpen || cardOpen)
+        {
+            var button = NRun.Instance!.GlobalUi.TopBar.Map;
+            if (!button.IsEnabled || !VisibleUi.OnScreen(button)
+                || (!map.IsOpen && VisibleUi.Shown(map))
+                || (CombatManager.Instance.IsInProgress && !CanEndTurn(allowMapPause: map.IsOpen || cardOpen)))
+                return FileMailbox.Error(request.Id, "illegal_action", "The map button is unavailable.");
+            uiGeneration++;
+            button.ForceClick();
+        }
+        bool closed = false;
+        void Closed() => closed = true;
+        bool SamePage() => !closed && ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
+            && ReferenceEquals(graph, run.Map) && act == run.CurrentActIndex && MapView.Current(map);
+        map.Closed += Closed;
+        try
+        {
+            await ObservationFrame();
+            await WaitUntil(() => !SamePage() || MapView.Ready(map));
+            if (!SamePage() || !MapView.Ready(map))
+                return FileMailbox.Error(request.Id, "illegal_action", "The map changed while reading.");
+            using var snapshot = JsonDocument.Parse(Observe());
+            return Success(request.Id, JsonSerializer.Serialize(MapInspection.Read(map, run,
+                snapshot.RootElement.GetProperty("snapshot_id").GetString()!)));
+        }
+        finally
+        {
+            if (GodotObject.IsInstanceValid(map)) map.Closed -= Closed;
+        }
     }
 
     private async Task<string> InspectDeck(Request request, DeckOptions options)

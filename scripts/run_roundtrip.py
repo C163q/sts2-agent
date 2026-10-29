@@ -15,6 +15,7 @@ def main():
     parser.add_argument("--check-relics", action="store_true", help="为独立战斗准备遗物并检查只读正文、计数和可见性")
     parser.add_argument("--check-deck", action="store_true", help="检查原生牌组页的完整列表、升级预览和模型不变性")
     parser.add_argument("--check-piles", action="store_true", help="允许独立测试三类牌堆、空堆反馈、替换及生命周期")
+    parser.add_argument("--check-map", action="store_true", help="允许独立测试整图、选路候选、飞鞋及双 Boss")
     args = parser.parse_args()
     if args.capture and not args.windowed:
         parser.error("--capture 需要 --windowed。")
@@ -48,6 +49,8 @@ def main():
         environment["STS2_AGENT_TEST_DECK_CHECKS"] = str(work / "deck-checks.json")
     if args.check_piles:
         environment["STS2_AGENT_TEST_PILE_CHECKS"] = str(work / "pile-checks.json")
+    if args.check_map:
+        environment["STS2_AGENT_TEST_MAP_CHECKS"] = str(work / "map-checks.json")
     print(f"启动独立测试实例，日志位于 {work / 'stdout.log'}，按 Ctrl+C 停止。", flush=True)
     arguments = [str(executable), "--path", str(runtime),
                  "--force-steam", "off", "--log-file", str(work / "game.log"), "--max-fps", "30"]

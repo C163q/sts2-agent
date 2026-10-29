@@ -47,7 +47,7 @@ def share_potion_tips(slots):
 
 def player_result(response):
     if response["ok"]:
-        gameplay_fields = {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions", "hand", "hover_tips", "slot_tip", "potion_slots", "relics", "deck", "detail_level", "view_upgrades", "sort", "pile", "status", "reason", "message", "cards"}
+        gameplay_fields = {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions", "hand", "hover_tips", "slot_tip", "potion_slots", "relics", "deck", "detail_level", "view_upgrades", "sort", "pile", "status", "reason", "message", "cards", "act", "current_node", "visited_path", "can_travel", "selectable_nodes", "nodes"}
         result = {key: value for key, value in response["state"].items() if key in gameplay_fields}
         if "hand" in result and result["hand"] is not None:
             result["hand"], result["hover_tips"] = share_hand_tips(result["hand"])
@@ -124,7 +124,7 @@ class Client:
 def main():
     parser = argparse.ArgumentParser(description="调用最小验证原型的文件工具接口。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
-    parser.add_argument("operation", choices=("get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "close_deck", "start_test_combat", "end_turn"))
+    parser.add_argument("operation", choices=("get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "inspect_map", "close_map", "close_card_view", "close_deck", "start_test_combat", "end_turn"))
     parser.add_argument("--pile", choices=("draw", "discard", "exhaust"))
     parser.add_argument("--detail-level", choices=("summary", "full"))
     parser.add_argument("--view-upgrades", action=argparse.BooleanOptionalAction, default=None)
