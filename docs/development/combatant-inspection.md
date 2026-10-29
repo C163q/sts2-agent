@@ -51,4 +51,4 @@ python3 scripts/verify_combatants.py --ipc-dir .tmp/live/ipc --output .tmp/live/
 
 独立中文实例可用 `scripts/run_roundtrip.py --windowed --capture --check-combatants`。此标志仅在原有测试入口创建战斗时，通过 `PowerCmd.Apply` 给测试玩家准备 Strength、Vulnerable、怪物施加的永久 Shrink，给测试敌人准备 Vulnerable，并检查动态说明、共享提示及可见性。不要为正式游戏设置测试标志。实施依据、验证结果和未验证范围见 [实施记录](../research/2026-10-29-combatant-inspection-plan.md)。
 
-已完成独立中文游戏的 31 项检查和前后状态一致的只读导出，取得 3 个敌人及 6 条共享提示；样本为 `.tmp/roundtrip/combatant-inspection.json`。原有观察、手牌、界面及药水均回归通过，Python 全套 51 项通过。正式截图附近场景尚待重启后采样，独立样本不代表正式截图内容。
+已完成独立中文游戏的 31 项检查和前后状态一致的只读导出，取得 3 个敌人及 6 条共享提示；样本为 `.tmp/roundtrip/combatant-inspection.json`。原有观察、手牌、界面及药水均回归通过，Python 全套 51 项通过。正式重启后另完成 2 个敌人、3 条共享提示的只读采样：玩家没有 powers，Twig Slime (M) 有 2 回合 Vulnerable；攻击预览分别为 3 和 11。重复详情及前后观察均一致，样本为 `.tmp/live/combatant-inspection.json`。正式与独立数据分别保存，未在正式游戏中执行动作。
