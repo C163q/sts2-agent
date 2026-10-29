@@ -43,4 +43,6 @@ python3 scripts/verify_relics.py --ipc-dir .tmp/live/ipc --output .tmp/live/reli
 
 脚本检查重复读取一致、前后基础观察令牌不变、名称和计数与基础观察按顺序对应、共享解释去重及下标有效。令牌只覆盖已导出的基础观察，不是全部游戏内部状态的版本。
 
-独立中文实例使用 `scripts/run_roundtrip.py --windowed --capture --check-relics`；在原有测试入口通过 `RelicCmd.Obtain` 准备 Anchor、Lantern 和 Pen Nib，加上初始 Burning Blood。不要为正式游戏设置测试标志。已完成独立游戏的 24 项检查及只读 JSON 导出，得到 4 个遗物、2 条共享解释；原有观察、手牌、界面、药水和战斗对象检查均通过，Python 全套 62 项通过。样本位于 `.tmp/roundtrip/relic-inspection.json`，证据及未验证范围见 [实施记录](../research/2026-10-29-relic-inspection-plan.md)。正式游戏待用户重启后采样；多人、非战斗界面、其他 Mod 改写悬停、全部遗物和全部特殊状态尚未穷举验证。
+独立中文实例使用 `scripts/run_roundtrip.py --windowed --capture --check-relics`；在原有测试入口通过 `RelicCmd.Obtain` 准备 Anchor、Lantern 和 Pen Nib，加上初始 Burning Blood。不要为正式游戏设置测试标志。已完成独立游戏的 24 项检查及只读 JSON 导出，得到 4 个遗物、2 条共享解释；原有观察、手牌、界面、药水和战斗对象检查均通过，Python 全套 62 项通过。样本位于 `.tmp/roundtrip/relic-inspection.json`，证据及未验证范围见 [实施记录](../research/2026-10-29-relic-inspection-plan.md)。多人、非战斗界面、其他 Mod 改写悬停、全部遗物和全部特殊状态尚未穷举验证。
+
+正式游戏重启后已完成只读采样：返回 Burning Blood 和可见计数为 2 的 Silver Crucible，均有英语正文，没有原生附带解释，因此 `hover_tips: []`。重复详情及前后基础观察令牌一致，未执行游戏动作。JSON 位于 `.tmp/live/relic-inspection.json`，证据位于 `.tmp/live/relic-inspection-check.json`；正式与独立样本分别保存。
