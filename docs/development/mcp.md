@@ -103,6 +103,8 @@ approval_mode = "approve"
 
 成功时，MCP `structuredContent` 直接包含玩法 JSON，`content` 同时提供同样的 JSON 文本。模型不会收到 `snapshot_id`、原始响应包装或开发测试入口；`available_actions` 只保留已公开的 `end_turn`。协议层仍保留 MCP 自身必需的消息字段。
 
+玩法字段递归过滤未知成员，并检查已提供值的类型。基础观察和动作结果缺少任一顶层观察字段时返回 `transport_error`，不保存动作令牌。JSON 文本使用紧凑格式，保留正文内的换行和空格；终端与证据文件使用两空格缩进。`structuredContent` 是对象，不具有排版格式。协议、文本与显示的区别及官方依据见 [项目审阅](../research/2026-10-29-project-review.md#mcp-json-与官方实践)。
+
 业务失败返回 `isError: true`，并提供英语结构化错误，例如：
 
 ```json

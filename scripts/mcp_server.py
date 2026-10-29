@@ -12,11 +12,10 @@ from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import CallToolResult, TextContent, Tool, ToolAnnotations
 
-from combatant_details import combatant_details
-from deck_details import DECK_SCHEMA, closed_card_view, deck_arguments, deck_details
-from map_details import closed_map, map_arguments, map_details
-from pile_details import PILE_SCHEMA, pile_arguments, pile_details
-from relic_details import relic_details
+from inspection_details import inspection_details, potion_details
+from deck_details import DECK_SCHEMA, deck_arguments
+from map_details import map_arguments
+from pile_details import PILE_SCHEMA, pile_arguments
 from roundtrip_client import Client, player_result
 
 
@@ -47,33 +46,6 @@ class ControllerLease:
 
     def __exit__(self, *args):
         self.close()
-
-
-def potion_details(state):
-    def tip_text(tip):
-        if (not isinstance(tip, dict)
-                or (tip["title"] is not None and not isinstance(tip["title"], str))
-                or not isinstance(tip["description"], str)):
-            raise ValueError("Invalid potion hover tip.")
-        return {"title": tip["title"], "description": tip["description"]}
-
-    common = tip_text(state["slot_tip"])
-    slots = state["potion_slots"]
-    if not isinstance(slots, list):
-        raise ValueError("Invalid potion slots.")
-    potions = []
-    for potion in slots:
-        if potion is None:
-            potions.append(None)
-            continue
-        if (not isinstance(potion, dict)
-                or (potion["name"] is not None and not isinstance(potion["name"], str))
-                or not isinstance(potion["description"], str)
-                or not isinstance(potion["hover_tips"], list)):
-            raise ValueError("Invalid potion details.")
-        potions.append({"name": potion["name"], "description": potion["description"],
-                        "hover_tips": [tip_text(tip) for tip in potion["hover_tips"]]})
-    return {"slot_tip": common, "potion_slots": potions}
 
 
 class GameTools:
@@ -197,45 +169,7 @@ class GameTools:
                 snapshot_id = state["snapshot_id"]
                 if not isinstance(snapshot_id, str) or not snapshot_id:
                     raise ValueError("Missing observation token.")
-                if operation == "inspect_hand":
-                    hand = state.get("hand")
-                    if not isinstance(hand, list) or any(not isinstance(card, dict) for card in hand):
-                        raise ValueError("Invalid hand details.")
-                    for card in hand:
-                        tips = card.get("hover_tips")
-                        if tips is not None and (not isinstance(tips, list)
-                                or any(not isinstance(tip, dict) for tip in tips)):
-                            raise ValueError("Invalid card hover tips.")
-                    response = {"ok": True, "state": {"hand": hand}}
-                elif operation == "inspect_ui":
-                    tips = state.get("hover_tips")
-                    if state.get("scene") != "combat" or not isinstance(tips, list):
-                        raise ValueError("Invalid UI details.")
-                    for tip in tips:
-                        if (not isinstance(tip, dict)
-                                or (tip.get("title") is not None and not isinstance(tip["title"], str))
-                                or not isinstance(tip.get("description"), str)
-                                or not isinstance(tip.get("sources"), list) or not tip["sources"]
-                                or any(not isinstance(source, str) or not source for source in tip["sources"])):
-                            raise ValueError("Invalid UI hover tip.")
-                    response = {"ok": True, "state": {"scene": state["scene"], "hover_tips": [
-                        {key: tip[key] for key in ("title", "description", "sources")} for tip in tips]}}
-                elif operation == "inspect_potions":
-                    response = {"ok": True, "state": potion_details(state)}
-                elif operation == "inspect_combatants":
-                    response = {"ok": True, "state": combatant_details(state)}
-                elif operation == "inspect_relics":
-                    response = {"ok": True, "state": relic_details(state)}
-                elif operation == "inspect_deck":
-                    response = {"ok": True, "state": deck_details(state, (arguments or {}).get("detail_level", "summary"))}
-                elif operation == "close_card_view":
-                    response = {"ok": True, "state": closed_card_view(state)}
-                elif operation == "inspect_pile":
-                    response = {"ok": True, "state": pile_details(state, arguments["pile"], arguments.get("detail_level", "summary"))}
-                elif operation == "inspect_map":
-                    response = {"ok": True, "state": map_details(state)}
-                elif operation == "close_map":
-                    response = {"ok": True, "state": closed_map(state)}
+                response = {"ok": True, "state": inspection_details(operation, state, arguments)}
             else:
                 if not isinstance(response["error"]["code"], str):
                     raise ValueError("Invalid game error.")
@@ -255,7 +189,7 @@ class GameTools:
 
 def tool_result(payload):
     return CallToolResult(
-        content=[TextContent(type="text", text=json.dumps(payload, ensure_ascii=False))],
+        content=[TextContent(type="text", text=json.dumps(payload, ensure_ascii=False, separators=(",", ":")))],
         structuredContent=payload,
         isError="error" in payload,
     )
