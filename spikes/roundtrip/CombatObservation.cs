@@ -80,15 +80,17 @@ internal sealed class CombatObservation
                 .Select(counter => VisibleUi.Number(counter, "%CountLabel")).FirstOrDefault(),
             powers = Powers(node!),
             hand = VisibleUi.Shown(room.Ui.Hand) ? room.Ui.Hand.ActiveHolders
-                .Where(holder => VisibleUi.Shown(holder) && VisibleUi.Shown(holder.CardNode)
-                    && new[] { "%TitleLabel", "%Portrait", "%AncientPortrait", "%Frame" }
-                        .Any(path => VisibleUi.OnScreen(holder.CardNode!.GetNodeOrNull<Control>(path))))
+                .Where(holder => VisibleUi.Shown(holder) && CardVisible(holder.CardNode))
                 .Select(holder => Card(holder.CardNode!)).ToArray() : null,
             draw_count = VisibleUi.Number(room.Ui.DrawPile, "CountContainer/Count"),
             discard_count = VisibleUi.Number(room.Ui.DiscardPile, "CountContainer/Count"),
             exhaust_count = VisibleUi.Number(room.Ui.ExhaustPile, "CountContainer/Count")
         };
     }
+
+    internal static bool CardVisible(NCard? card) => VisibleUi.Shown(card)
+        && new[] { "%TitleLabel", "%Portrait", "%AncientPortrait", "%Frame" }
+            .Any(path => VisibleUi.OnScreen(card!.GetNodeOrNull<Control>(path)));
 
     public object[]? Enemies()
     {
@@ -131,7 +133,7 @@ internal sealed class CombatObservation
         return new { category, value = VisibleUi.Text(intent, "%Value") };
     }
 
-    private object Card(NCard card)
+    internal Dictionary<string, object?> Card(NCard card)
     {
         bool identified = card.Visibility == ModelVisibility.Visible;
         string? title = VisibleUi.Text(card, "%TitleLabel");

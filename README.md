@@ -31,7 +31,7 @@
 3. 外部程序提交结束回合，Mod 校验状态与合法性，通过游戏动作队列执行。
 4. 回合从 1 推进到 2，读回状态与动作响应一致；非法、旧状态及重复请求的处理通过检查。
 
-基础观察现已扩展为 [英语战斗 JSON](docs/development/observation.md)，覆盖当前意图、手牌名称与费用、状态图标和顶栏，使用稳定卡牌 ID 并精简给 LLM 的控制与显示字段，并按 [可见信息边界](docs/observation.md) 过滤。MCP 目前提供 `get_observation()` 和 `end_turn()`；后续手牌查看将一次提供全部当前手牌详情，再增加出牌等动作并扩展其他场景。完整游玩仍是长期目标。
+基础观察现已扩展为 [英语战斗 JSON](docs/development/observation.md)，覆盖当前意图、手牌名称与费用、状态图标和顶栏，使用稳定卡牌 ID 并精简给 LLM 的控制与显示字段，并按 [可见信息边界](docs/observation.md) 过滤。文件接口另提供 [全部当前可见手牌详情](docs/development/hand-inspection.md)，包含英语正文及悬停解释。MCP 目前仍只提供 `get_observation()` 和 `end_turn()`；出牌等动作及其他场景后续扩展。完整游玩仍是长期目标。
 
 ## 本地游戏与开发前提
 
@@ -55,6 +55,7 @@
 - [正常游戏加载与读取](docs/development/live-game.md)：Steam 安装位置、启动配置和读取敌人的操作步骤。
 - [本地 MCP 接入](docs/development/mcp.md)：两个战斗工具、依赖安装、Codex 配置和错误恢复。
 - [战斗观察 JSON](docs/development/observation.md)：英语字段、显示条件、保存与独立验证。
+- [手牌详情 JSON](docs/development/hand-inspection.md)：一次读取当前手牌的正文、悬停解释及数值说明。
 - [可见信息边界](docs/observation.md)：基础观察的信息范围与当前实现差距。
 - [战斗画面与 JSON 对照](docs/research/2026-10-29-battle-observation-audit.md)：正常游戏读取样本与对应截图的逐项核对。
 - [观察字段获取方式](docs/research/2026-10-29-observation-data-sources.md)：模型成员、UI 节点、显示规则及尚需运行验证的范围。

@@ -1,6 +1,6 @@
 # 战斗观察 JSON
 
-适用于 Linux 游戏 `v0.107.1` 与 Mod `0.3.0`。底层观察结构版本为 `3`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+适用于 Linux 游戏 `v0.107.1` 与 Mod `0.4.0`。底层观察结构版本为 `3`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -57,7 +57,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 敌人攻击意图已经按当前本地玩家计算，包含适用的易伤、污染等效果，不能再对意图数字重复应用同一效果。意图仍是当前预览，不保证等于最终生命损失。
 
-`card_values` 仅属于后续查看手牌详情的结果，基础战斗观察不输出。卡牌详情调用尚未实现；实现时需说明手牌数值可能已经包含缩小等修正，但未包含某个敌人的易伤，对准目标后会重新预览。仅查看手牌、不包含敌人意图的结果不附带 `enemy_attack_intents`。
+`card_values` 仅属于 [查看手牌详情](hand-inspection.md) 的结果，基础战斗观察不输出。手牌数值可能已经包含缩小等修正，但未包含某个敌人的易伤，对准目标后会重新预览。仅查看手牌、不包含敌人意图的结果不附带 `enemy_attack_intents`。
 
 来源与验证范围见 [手牌查看来源调研](../research/2026-10-29-hand-inspection-sources.md#数值预览的上下文)。固定说明不根据当前状态枚举效果、计算目标伤害或调用刷新预览的方法。
 
@@ -85,7 +85,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 - `energy_cost/star_cost` 是显示字符串，保留 `X`、`?` 等形式。`energy_cost_color/star_cost_color` 仅在文字出现特殊颜色时输出 `red/green/blue/other`，默认颜色省略字段；不输出 RGB 或费用图标配色。
 - `unplayable_markers` 合并标记位置：`[]`、`["energy"]`、`["star"]` 或二者都有。没有标记不等于可以打出。
 - `outline` 为 `none/cyan/gold/red/other`，只表达当前描边，不据此声明动作合法。
-- 后续手牌详情调用一次返回全部当前手牌及其效果，沿用这些 ID。本次没有实现该调用，基础观察仍不输出完整效果、关键词或目标规则。
+- [手牌详情调用](hand-inspection.md) 一次返回全部当前可见手牌及其效果，沿用这些 ID；基础观察仍不输出完整效果、关键词或目标规则。
 
 ## 失败结果
 

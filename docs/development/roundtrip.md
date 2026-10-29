@@ -7,7 +7,7 @@
 - 自行安装 Linux 版《杀戮尖塔 2》。游戏路径通过 `Sts2Dir` 和 `--game-dir` 传入。
 - 安装 .NET 9 SDK；本次使用 `9.0.122`，仓库的 `global.json` 允许同系列更高功能带。需要 .NET 9 引用包，单独安装运行时不足以编译。
 - 安装 Python 3；本文原有文件客户端和验证脚本只使用标准库，MCP 服务的额外依赖见接入指南。
-- 本原型没有 NuGet 包依赖，配置仅使用本地游戏的 `sts2.dll` 与 `GodotSharp.dll`；关闭未使用的传递框架引用下载，原型目录的 NuGet 配置不启用远程源。
+- 本原型没有 NuGet 包依赖，引用本地游戏随附的 `sts2.dll`、`GodotSharp.dll`、`0Harmony.dll` 与 `SmartFormat.dll`；关闭未使用的传递框架引用下载，原型目录的 NuGet 配置不启用远程源。
 
 在仓库根目录执行：
 
@@ -60,6 +60,7 @@ python3 scripts/test_prepare_roundtrip.py
 | 操作 | 适用条件与结果 |
 | --- | --- |
 | `get_state` | 读取主菜单或战斗的有限状态和 `available_actions`；其他场景暂归为 `loading_or_noncombat` |
+| `inspect_hand` | 只读、无须动作令牌；一次读取全部当前可见手牌的英语正文和悬停解释，格式见 [手牌详情](hand-inspection.md) |
 | `start_test_combat` | 仅测试模式且无进行中的对局时，在主菜单创建临时对局并用游戏开发入口进入指定战斗；该操作不是正常游玩的动作 |
 | `end_turn` | 单人战斗、玩家可行动阶段且非暂停状态下，提交 `EndPlayerTurnAction`，等待下一可行动回合或战斗结束 |
 
@@ -75,6 +76,6 @@ python3 scripts/test_prepare_roundtrip.py
 
 底层动作流程已在独立实例中实测；无头启动存在 FMOD 音频初始化、音频资源及虚拟渲染器警告，不覆盖声音。图形观察的验证范围另见战斗观察说明，不能将无头验证描述为没有运行警告。
 
-原型已扩展可见战斗观察，字段与验证方式见 [战斗观察 JSON](observation.md)，范围按 [可见信息边界](../observation.md) 维护；未展开的手牌效果以后由专门查看调用提供。动作仅支持结束回合；已增加并验证 stdio MCP 工具桥接，出牌、地图推进、多玩家、断线恢复和异常退出恢复尚未覆盖。通信目录假设仅由可信的本地程序访问，不作为远程服务。
+原型已扩展可见战斗观察，字段与验证方式见 [战斗观察 JSON](observation.md)，范围按 [可见信息边界](../observation.md) 维护；未展开的手牌效果由专门文件调用提供。动作仅支持结束回合；stdio MCP 公开观察与结束回合，暂未公开手牌详情。出牌、地图推进、多玩家、断线恢复和异常退出恢复尚未覆盖。通信目录假设仅由可信的本地程序访问，不作为远程服务。
 
 API 核对依据与实测结果见 [验证记录](../research/2026-10-28-roundtrip-validation.md)。

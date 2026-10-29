@@ -94,6 +94,22 @@ internal sealed class GameAdapter(bool testMode)
             return Success(request.Id, before);
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (request.Operation == "inspect_hand")
+        {
+            var hand = NCombatRoom.Instance?.Ui.Hand;
+            if (CombatObservation.Status() != "visible" || hand == null || !VisibleUi.Shown(hand) || hand.InCardPlay)
+                return FileMailbox.Error(request.Id, "illegal_action", "Hand details are unavailable in the current screen.");
+            string? handChecks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_HAND_CHECKS");
+            if (testMode && handChecks != null)
+                HandInspectionChecks.Run(handChecks);
+            var reader = new HandInspection(observation);
+            return Success(request.Id, JsonSerializer.Serialize(new
+            {
+                snapshot_id = document.RootElement.GetProperty("snapshot_id").GetString(),
+                hand = hand.ActiveHolders.Where(holder => VisibleUi.Shown(holder)
+                    && CombatObservation.CardVisible(holder.CardNode)).Select(holder => reader.Card(holder.CardNode!)).ToArray()
+            }));
+        }
         if (request.ExpectedState != document.RootElement.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read current state before submitting an action.");
         if (!document.RootElement.GetProperty("available_actions").EnumerateArray()

@@ -7,16 +7,22 @@ from pathlib import Path
 
 
 ENEMY_ATTACK_INTENT_NOTE = "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
+CARD_VALUE_NOTE = "Card values are contextual previews. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again."
 
 
 def player_result(response):
     if response["ok"]:
-        gameplay_fields = {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions"}
+        gameplay_fields = {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions", "hand"}
         result = {key: value for key, value in response["state"].items() if key in gameplay_fields}
+        notes = {}
+        if result.get("hand"):
+            notes["card_values"] = CARD_VALUE_NOTE
         if result.get("scene") == "combat" and any(
             enemy.get("intents") for enemy in result.get("enemies") or []
         ):
-            result["notes"] = {"enemy_attack_intents": ENEMY_ATTACK_INTENT_NOTE}
+            notes["enemy_attack_intents"] = ENEMY_ATTACK_INTENT_NOTE
+        if notes:
+            result["notes"] = notes
         return result
     code = response["error"]["code"]
     messages = {
@@ -71,7 +77,7 @@ class Client:
 def main():
     parser = argparse.ArgumentParser(description="调用最小验证原型的文件工具接口。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
-    parser.add_argument("operation", choices=("get_state", "start_test_combat", "end_turn"))
+    parser.add_argument("operation", choices=("get_state", "inspect_hand", "start_test_combat", "end_turn"))
     parser.add_argument("--expected-state")
     parser.add_argument("--raw", action="store_true", help="输出保留状态令牌等控制信息的原始响应")
     args = parser.parse_args()

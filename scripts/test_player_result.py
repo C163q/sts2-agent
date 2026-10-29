@@ -4,6 +4,17 @@ import roundtrip_client
 
 
 class PlayerResultTests(unittest.TestCase):
+    def test_hand_inspection_preserves_details_with_only_card_notes(self):
+        hand = [{"id": 7, "name": "Strike", "description": "Deal 6 damage.", "hover_tips": []}]
+        result = roundtrip_client.player_result({"ok": True, "state": {
+            "snapshot_id": "token", "hand": hand,
+        }})
+        self.assertIn("hand", result)
+        self.assertEqual(result["hand"], hand)
+        self.assertEqual(set(result["notes"]), {"card_values"})
+        self.assertNotIn("snapshot_id", result)
+        self.assertNotIn("enemies", result)
+
     def test_success_preserves_gameplay_without_control_metadata(self):
         state = {
             "snapshot_id": "token", "schema_version": 3, "language": "en",
