@@ -26,7 +26,7 @@ async def verify(args):
             listed = await session.list_tools()
             names = {tool.name for tool in listed.tools}
             assert names == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants",
-                             "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "end_turn"}, names
+                             "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"}, names
             tool = next(tool for tool in listed.tools if tool.name == "inspect_pile")
             assert tool.annotations.readOnlyHint is False and tool.annotations.destructiveHint is False
             assert set(tool.inputSchema["properties"]) == {"pile", "detail_level"} and tool.inputSchema["required"] == ["pile"]

@@ -27,7 +27,7 @@ async def verify(args):
             evidence["tools"] = [tool.model_dump(exclude_none=True) for tool in listed.tools]
             names = {tool.name for tool in listed.tools}
             assert names == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants",
-                             "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "end_turn"}, names
+                             "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"}, names
             for name in ("inspect_deck", "close_card_view"):
                 tool = next(tool for tool in listed.tools if tool.name == name)
                 assert tool.annotations.readOnlyHint is False and tool.annotations.destructiveHint is False

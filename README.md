@@ -31,9 +31,9 @@
 3. 外部程序提交结束回合，Mod 校验状态与合法性，通过游戏动作队列执行。
 4. 回合从 1 推进到 2，读回状态与动作响应一致；非法、旧状态及重复请求的处理通过检查。
 
-基础观察现已扩展为 [英语战斗 JSON](docs/development/observation.md)，覆盖当前意图、手牌名称与费用、状态图标和顶栏，使用稳定卡牌 ID 并精简给 LLM 的控制与显示字段，并按 [可见信息边界](docs/observation.md) 过滤。文件接口和 MCP 均提供 [全部当前可见手牌详情](docs/development/hand-inspection.md)、[当前界面悬停说明](docs/development/ui-inspection.md) 和 [药水详情](docs/development/potion-inspection.md)；药水详情保留空槽位置并共享重复解释。文件接口和 MCP 也提供 [双方 powers 与敌人意图详情](docs/development/combatant-inspection.md)，支持共享悬停解释。文件接口和 MCP 也提供 [遗物详情](docs/development/relic-inspection.md)。文件接口和 MCP 另提供 [全牌组查看和通用卡牌页关闭](docs/development/deck-inspection.md)，支持摘要、完整正文、升级预览及原生排序。文件接口和 MCP 也提供 [抽牌堆、弃牌堆及消耗牌堆查看](docs/development/pile-inspection.md)，支持摘要及完整模式，保留空堆点击反馈。MCP 目前提供 `get_observation()`、`inspect_hand()`、`inspect_ui()`、`inspect_potions()`、`inspect_combatants()`、`inspect_relics()`、`inspect_deck(...)`、`inspect_pile(...)`、`close_card_view()` 和 `end_turn()`；出牌等动作及其他场景后续扩展。完整游玩仍是长期目标。
+基础观察现已扩展为 [英语战斗 JSON](docs/development/observation.md)，覆盖当前意图、手牌名称与费用、状态图标和顶栏，使用稳定卡牌 ID 并精简给 LLM 的控制与显示字段，并按 [可见信息边界](docs/observation.md) 过滤。文件接口和 MCP 均提供 [全部当前可见手牌详情](docs/development/hand-inspection.md)、[当前界面悬停说明](docs/development/ui-inspection.md) 和 [药水详情](docs/development/potion-inspection.md)；药水详情保留空槽位置并共享重复解释。文件接口和 MCP 也提供 [双方 powers 与敌人意图详情](docs/development/combatant-inspection.md)，支持共享悬停解释。文件接口和 MCP 也提供 [遗物详情](docs/development/relic-inspection.md)。文件接口和 MCP 另提供 [全牌组查看和通用卡牌页关闭](docs/development/deck-inspection.md)，支持摘要、完整正文、升级预览及原生排序。文件接口和 MCP 也提供 [抽牌堆、弃牌堆及消耗牌堆查看](docs/development/pile-inspection.md)，支持摘要及完整模式，保留空堆点击反馈。MCP 目前提供 `get_observation()`、`inspect_hand()`、`inspect_ui()`、`inspect_potions()`、`inspect_combatants()`、`inspect_relics()`、`inspect_deck(...)`、`inspect_pile(...)`、`close_card_view()`、`inspect_map()`、`close_map()` 和 `end_turn()`；出牌等动作及其他场景后续扩展。完整游玩仍是长期目标。
 
-Mod 0.12.0 另提供 [当前幕地图文件接口](docs/development/map-inspection.md)：真实打开整张地图，返回节点连线、当前位置、已走路线及遵循飞鞋规则的当前可选节点，并支持独立关闭。地图工具尚未接入 MCP，选择节点的动作尚未实现。
+Mod 0.12.0 另提供 [当前幕地图查看](docs/development/map-inspection.md)：真实打开整张地图，返回节点连线、当前位置、已走路线及遵循飞鞋规则的当前可选节点，并支持独立关闭。文件接口与 MCP 均已接入；MCP 工具总数为 12。选择节点的动作尚未实现。
 
 ## 本地游戏与开发前提
 
@@ -60,7 +60,7 @@ Mod 0.12.0 另提供 [当前幕地图文件接口](docs/development/map-inspecti
 - [手牌详情 JSON](docs/development/hand-inspection.md)：一次读取当前手牌的正文、悬停解释及数值说明。
 - [牌组查看与关闭](docs/development/deck-inspection.md)：真实打开页面、全牌组输出、信息档位、升级预览及排序参数。
 - [战斗牌堆查看](docs/development/pile-inspection.md)：三类牌堆的摘要/完整模式、原生空堆反馈及隐藏入口语义。
-- [地图查看](docs/development/map-inspection.md)：文件接口打开整个当前幕地图、节点连线、飞鞋候选及独立关闭；MCP 尚未接入。
+- [地图查看](docs/development/map-inspection.md)：文件接口及 MCP 打开整个当前幕地图、节点连线、飞鞋候选及独立关闭。
 - [可见信息边界](docs/observation.md)：基础观察的信息范围与当前实现差距。
 - [战斗画面与 JSON 对照](docs/research/2026-10-29-battle-observation-audit.md)：正常游戏读取样本与对应截图的逐项核对。
 - [观察字段获取方式](docs/research/2026-10-29-observation-data-sources.md)：模型成员、UI 节点、显示规则及尚需运行验证的范围。

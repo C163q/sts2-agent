@@ -1,6 +1,6 @@
 # 当前幕地图查看
 
-Mod 0.12.0 的文件接口提供无参数 `inspect_map` 和 `close_map`。本轮尚未接入 MCP，MCP 仍保留已有的 10 个工具。
+Mod 0.12.0 的文件接口提供无参数 `inspect_map` 和 `close_map`；MCP server 0.9.0 提供对应的 `inspect_map()`、`close_map()`，固定工具总数为 12。接入方式见 [MCP 指南](mcp.md)。
 
 `inspect_map` 真实打开或复用原生地图，返回当前幕中可通过滚动浏览的整个地图，不自动滚动，也不读取其他幕。正常一局的三幕通过从 1 开始的 `act` 区分；地图行号不是顶栏的全局楼层。页面保留到显式关闭或人手动返回。
 
@@ -59,6 +59,8 @@ Mod 0.12.0 的文件接口提供无参数 `inspect_map` 和 `close_map`。本轮
 
 Godot 主线程发起操作，使用异步帧等待，遵循原生暂停/恢复与动画。关闭等待地图退场后才返回基础观察。工具 UI 操作使旧动作令牌失效；执行战斗动作前须重新观察。
 
+MCP 在 IPC 前拒绝全部额外参数，保留此前有效权限。合法查看与关闭请求均在发送前清除动作权限，成功、失败、超时或取消后不恢复；关闭返回的观察也不授予动作权限。地图投影校验当前幕节点 ID、坐标、唯一引用、已走路径与候选布尔状态，逐层过滤附加字段；不会要求可选节点必须在 `next` 中。格式错误返回 `transport_error`。关闭结果若仍指向浏览页，同样拒绝。
+
 ## 调用与验证
 
 游戏已加载新版 Mod 并配置文件通信目录后，在仓库根目录分别执行：
@@ -74,3 +76,5 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_map
 端到端脚本为 `scripts/verify_map.py`；`--exercise-cases` 仅允许 `.tmp/roundtrip/ipc`，需启动时启用 `--check-map`。它会在一次性隔离夹具中完成敌人死亡、原生奖励页继续、飞鞋获取与耗尽、双 Boss 和跨幕等场景，不可对正式游戏启用测试标志。
 
 Mod 0.12.0 已在正式 Steam 单人战斗中重启验证：第一幕 64 个节点、76 条连线，Boss 为 Ceremonial Beast；战斗中候选为空，重复读取一致，显式关闭后战斗观察不变。正式样本为 `.tmp/live/map/map-inspection.json`，请求证据为同目录 `map-evidence.json`。飞鞋、双 Boss、跨幕和战后候选仍以独立夹具的验证为准。实施证据见 [地图设计与实施记录](../research/2026-10-29-map-inspection.md)。
+
+真实 stdio MCP 也已在该正式对局验证，输出与文件 JSON 完全一致，参数拒绝、重复查看、显式关闭和前后玩法不变均通过；样本为 `.tmp/live/mcp-map/map-inspection.json`，证据为同目录 `mcp-map-evidence.json`。使用 `.tmp/mcp-venv/bin/python scripts/verify_mcp_map.py --ipc-dir .tmp/live/ipc --output-dir .tmp/live/mcp-map` 可执行同一套 UI 验证，不选路、出牌或结束回合。范围与检查见 [地图 MCP 实施记录](../research/2026-10-29-mcp-map-inspection.md)。

@@ -14,6 +14,19 @@ from roundtrip_client import Client
 SERVER = Path(__file__).with_name("mcp_server.py")
 
 
+def map_payload():
+    return {"scene": "map", "screen": {"status": "visible", "view": "map"}, "act": 1,
+            "current_node": "map:1:1:2", "visited_path": ["map:1:0:3", "map:1:1:2"],
+            "can_travel": False, "selectable_nodes": [], "nodes": [
+                {"id": "map:1:0:3", "row": 0, "column": 3, "type": "ancient", "name": "Neow", "next": ["map:1:1:2"]},
+                {"id": "map:1:1:2", "row": 1, "column": 2, "type": "monster", "next": ["map:1:2:1"]},
+                {"id": "map:1:2:1", "row": 2, "column": 1, "type": "unknown", "next": ["map:1:3:3"]},
+                {"id": "map:1:2:5", "row": 2, "column": 5, "type": "rest_site", "next": ["map:1:3:3"]},
+                {"id": "map:1:3:3", "row": 3, "column": 3, "type": "boss", "name": "Ceremonial Beast", "next": ["map:1:4:3"]},
+                {"id": "map:1:4:3", "row": 4, "column": 3, "type": "boss", "name": "The Kin", "next": []},
+            ]}
+
+
 class FakeGame:
     def __init__(self):
         self.temporary = tempfile.TemporaryDirectory()
@@ -85,6 +98,12 @@ class FakeGame:
         self.pile_error = False
         self.drop_pile_response = False
         self.pile_open = None
+        self.map_payload = map_payload()
+        self.map_open = False
+        self.map_error = False
+        self.close_map_error = False
+        self.drop_map_response = False
+        self.drop_close_map_response = False
         self.ui_generation = 0
         self.relic_error = False
         self.drop_relic_response = False
@@ -115,14 +134,14 @@ class FakeGame:
                 request = json.loads(path.read_text())
                 self.operations.append(request)
                 operation = request["operation"]
-                if operation in {"get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view"}:
+                if operation in {"get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map"}:
                     self.observation_started.set()
                     self.release_observation.wait(timeout=5)
                 response = {"id": request["id"], "ok": True}
                 if operation == "end_turn":
                     if request.get("expected_state") != self.token():
                         response.update(ok=False, error={"code": "stale_state", "message": "/private/game/path"})
-                    elif self.deck_open or self.pile_open:
+                    elif self.deck_open or self.pile_open or self.map_open:
                         response.update(ok=False, error={"code": "illegal_action", "message": "/private/game/path"})
                     else:
                         self.turn += 1
@@ -139,6 +158,26 @@ class FakeGame:
                     response["state"].update(screen={"status": "covered", "view": "deck"}, available_actions=[])
                 if operation == "get_state" and self.pile_open:
                     response["state"].update(screen={"status": "covered", "view": self.pile_open + "_pile"}, available_actions=[])
+                if operation == "get_state" and self.map_open and not (self.deck_open or self.pile_open):
+                    response["state"].update(screen={"status": "covered", "view": "map"}, available_actions=[])
+                if operation == "inspect_map":
+                    if not self.map_open or self.deck_open or self.pile_open:
+                        self.ui_generation += 1
+                    self.map_open = True
+                    self.deck_open = False
+                    self.pile_open = None
+                    response["state"] = {"snapshot_id": self.token(), **self.map_payload}
+                    if self.map_error:
+                        response = {"id": request["id"], "ok": False,
+                                    "error": {"code": "illegal_action", "message": "/private/game/path"}}
+                if operation == "close_map":
+                    if self.close_map_error or not self.map_open or self.deck_open or self.pile_open:
+                        response = {"id": request["id"], "ok": False,
+                                    "error": {"code": "illegal_action", "message": "/private/game/path"}}
+                    else:
+                        self.map_open = False
+                        self.ui_generation += 1
+                        response["state"].update({"snapshot_id": self.token(), **self.close_payload})
                 if operation == "inspect_deck":
                     arguments = request.get("arguments", {})
                     if not self.deck_open:
@@ -183,6 +222,8 @@ class FakeGame:
                         self.pile_open = None
                         self.ui_generation += 1
                         response["state"].update({"snapshot_id": self.token(), **self.close_payload})
+                        if self.map_open:
+                            response["state"].update(screen={"status": "covered", "view": "map"}, available_actions=[])
                 if operation == "get_state" and self.malformed_observation:
                     response.pop("state")
                 if operation == "inspect_hand":
@@ -225,6 +266,8 @@ class FakeGame:
                         or (operation == "inspect_relics" and self.drop_relic_response)
                         or (operation == "inspect_deck" and self.drop_deck_response)
                         or (operation == "inspect_pile" and self.drop_pile_response)
+                        or (operation == "inspect_map" and self.drop_map_response)
+                        or (operation == "close_map" and self.drop_close_map_response)
                         or (operation == "close_card_view" and self.drop_close_response)):
                     target = self.responses / path.name
                     temporary = target.with_suffix(".tmp")
@@ -938,7 +981,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
                     listed = await session.list_tools()
-                    self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "end_turn"})
+                    self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"})
                     inspection_tool = next(tool for tool in listed.tools if tool.name == "inspect_hand")
                     self.assertTrue(inspection_tool.annotations.readOnlyHint)
                     ui_tool = next(tool for tool in listed.tools if tool.name == "inspect_ui")
@@ -1069,7 +1112,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     with ControllerLease(game.directory):
                         await session.initialize()
                         listed = await session.list_tools()
-                        self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "end_turn"})
+                        self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"})
                         busy = await session.call_tool("get_observation", {})
                         self.assertTrue(busy.isError)
                         self.assertEqual(busy.structuredContent["error"]["code"], "controller_busy")

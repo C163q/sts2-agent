@@ -14,6 +14,7 @@ from mcp.types import CallToolResult, TextContent, Tool, ToolAnnotations
 
 from combatant_details import combatant_details
 from deck_details import DECK_SCHEMA, closed_card_view, deck_arguments, deck_details
+from map_details import closed_map, map_arguments, map_details
 from pile_details import PILE_SCHEMA, pile_arguments, pile_details
 from relic_details import relic_details
 from roundtrip_client import Client, player_result
@@ -117,6 +118,19 @@ class GameTools:
     async def close_card_view(self):
         return await self._change_view("close_card_view")
 
+    async def inspect_map(self, arguments=None):
+        return await self._map_view("inspect_map", arguments)
+
+    async def close_map(self, arguments=None):
+        return await self._map_view("close_map", arguments)
+
+    async def _map_view(self, operation, arguments):
+        try:
+            map_arguments(arguments)
+        except ValueError:
+            return player_result({"ok": False, "error": {"code": "invalid_request"}})
+        return await self._change_view(operation)
+
     async def inspect_pile(self, arguments=None):
         try:
             arguments = pile_arguments(arguments)
@@ -218,6 +232,10 @@ class GameTools:
                     response = {"ok": True, "state": closed_card_view(state)}
                 elif operation == "inspect_pile":
                     response = {"ok": True, "state": pile_details(state, arguments["pile"], arguments.get("detail_level", "summary"))}
+                elif operation == "inspect_map":
+                    response = {"ok": True, "state": map_details(state)}
+                elif operation == "close_map":
+                    response = {"ok": True, "state": closed_map(state)}
             else:
                 if not isinstance(response["error"]["code"], str):
                     raise ValueError("Invalid game error.")
@@ -244,7 +262,7 @@ def tool_result(payload):
 
 
 def create_server(tools):
-    server = Server("sts2-agent", version="0.8.0", instructions=(
+    server = Server("sts2-agent", version="0.9.0", instructions=(
         "Control a local Slay the Spire 2 game. Call get_observation before each action. "
         "Use inspect_hand to read all current hand descriptions and shared hover tips. "
         "Use inspect_ui to read hover explanations for visible interface elements and resources. "
@@ -255,7 +273,10 @@ def create_server(tools):
         "Use inspect_pile for draw, discard or exhaust piles, with summary or full details. It clicks the native entry unless reusing the same page. "
         "Empty visible piles produce native feedback; hidden entries return unavailable with cards null. Draw pile order is display order, never draw order. "
         "Use close_card_view to close only the top card browsing page, preserving an underlying map. "
-        "Card view operations clear the action token; call get_observation again after closing before acting. "
+        "Use inspect_map to open or reuse the entire current-act map, including nodes, directed connections and actual selectable_nodes. "
+        "Map connections do not imply current travel permission; Winged Boots can allow unconnected next-row choices. "
+        "Use close_map to close only the visible map with an enabled native back button; it cannot close through a card page. "
+        "Card and map view operations clear the action token; call get_observation again after closing before acting. "
         "Inspections do not prepare an action; only end_turn is implemented as an action. "
         "Actions return the resulting observation but consume the action token. "
         "After any failed or timed-out action, read the state before deciding what to do. "
@@ -312,6 +333,18 @@ def create_server(tools):
                     "Close only the currently visible read-only card browsing page: deck, draw, discard or exhaust pile. "
                     "Preserves an underlying map and does not close map, card selection or other screens. "
                     "Returns a basic observation; screen.view identifies a remaining map. Clears action permission; observe again before acting.")),
+            Tool(name="inspect_map", inputSchema=parameters, annotations=ToolAnnotations(
+                readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False), description=(
+                    "Open or reuse the native map and read the entire scrollable current-act map, including offscreen nodes. "
+                    "Returns stable coordinate IDs, directed next connections, current_node, visited_path and actual selectable_nodes. "
+                    "During combat there are no selectable nodes. Winged Boots may allow next-row nodes without connections. "
+                    "Keeps unknown encounters hidden and does not read future acts, travel, or consume relic charges. "
+                    "Uses the native map button to replace a covering card page; leaves the map open and clears action permission.")),
+            Tool(name="close_map", inputSchema=parameters, annotations=ToolAnnotations(
+                readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False), description=(
+                    "Close only the currently exposed native map when its back button is enabled. "
+                    "Does not close through card pages or force a mandatory starting map closed. "
+                    "Returns a basic observation and clears action permission; observe again before acting.")),
             Tool(name="end_turn", inputSchema=parameters, annotations=ToolAnnotations(
                 readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False),
                 description="End the player's turn once and return the resulting state. Requires a fresh get_observation call."),
@@ -329,6 +362,8 @@ def create_server(tools):
             return tool_result(await tools.inspect_deck(arguments))
         if name == "inspect_pile":
             return tool_result(await tools.inspect_pile(arguments))
+        if name in {"inspect_map", "close_map"}:
+            return tool_result(await getattr(tools, name)(arguments))
         if name not in handlers or arguments:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))
         return tool_result(await handlers[name]())
