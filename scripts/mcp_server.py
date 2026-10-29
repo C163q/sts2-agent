@@ -11,6 +11,7 @@ from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import CallToolResult, TextContent, Tool, ToolAnnotations
 
+from combatant_details import combatant_details
 from roundtrip_client import Client, player_result
 
 
@@ -96,6 +97,9 @@ class GameTools:
     async def inspect_potions(self):
         return await self._inspect("inspect_potions")
 
+    async def inspect_combatants(self):
+        return await self._inspect("inspect_combatants")
+
     async def _inspect(self, operation):
         async with self.lock:
             previous, self.snapshot_id = self.snapshot_id, None
@@ -171,6 +175,8 @@ class GameTools:
                         {key: tip[key] for key in ("title", "description", "sources")} for tip in tips]}}
                 elif operation == "inspect_potions":
                     response = {"ok": True, "state": potion_details(state)}
+                elif operation == "inspect_combatants":
+                    response = {"ok": True, "state": combatant_details(state)}
             else:
                 if not isinstance(response["error"]["code"], str):
                     raise ValueError("Invalid game error.")
@@ -197,11 +203,12 @@ def tool_result(payload):
 
 
 def create_server(tools):
-    server = Server("sts2-agent", version="0.4.0", instructions=(
+    server = Server("sts2-agent", version="0.5.0", instructions=(
         "Control a local Slay the Spire 2 game. Call get_observation before each action. "
         "Use inspect_hand to read all current hand descriptions and shared hover tips. "
         "Use inspect_ui to read hover explanations for visible interface elements and resources. "
         "Use inspect_potions to read all visible potion slots, descriptions and shared hover tips. "
+        "Use inspect_combatants to read both sides' visible powers and enemies' currently displayed intents with shared explanations. "
         "Inspections do not prepare an action; only end_turn is implemented as an action. "
         "Actions return the resulting observation but consume the action token. "
         "After any failed or timed-out action, read the state before deciding what to do. "
@@ -229,6 +236,11 @@ def create_server(tools):
                     "Read all currently visible potion slots and English descriptions at once. "
                     "Returns one slot_tip, positional potion_slots with null for empty slots, and shared hover_tips linked by zero-based slot_indices. "
                     "Does not use or discard potions, generate random choices, or prepare an action.")),
+            Tool(name="inspect_combatants", inputSchema=parameters, annotations=ToolAnnotations(
+                readOnlyHint=True, openWorldHint=False), description=(
+                    "Read English hover explanations for the player's and visible enemies' powers and currently displayed enemy intents. "
+                    "Shared hover_tips use sources paths into this result. Intent damage already includes current preview modifiers. "
+                    "Does not reveal future moves, play cards, or prepare an action. Unavailable while aiming or playing a card.")),
             Tool(name="end_turn", inputSchema=parameters, annotations=ToolAnnotations(
                 readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False),
                 description="End the player's turn once and return the resulting state. Requires a fresh get_observation call."),
@@ -238,6 +250,7 @@ def create_server(tools):
     async def call_tool(name, arguments):
         handlers = {"get_observation": tools.get_observation, "inspect_hand": tools.inspect_hand,
                     "inspect_ui": tools.inspect_ui, "inspect_potions": tools.inspect_potions,
+                    "inspect_combatants": tools.inspect_combatants,
                     "end_turn": tools.end_turn}
         if name not in handlers or arguments:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))
@@ -253,7 +266,7 @@ async def run_stdio(tools):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="通过 stdio MCP 提供 STS2 战斗观察、手牌详情、界面及药水说明与结束回合。")
+    parser = argparse.ArgumentParser(description="通过 stdio MCP 提供 STS2 战斗观察、各类只读详情与结束回合。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
     parser.add_argument("--timeout", type=float, default=40, help="文件通信超时秒数，默认 40")
     args = parser.parse_args()
