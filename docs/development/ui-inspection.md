@@ -1,6 +1,6 @@
 # 当前界面悬停说明 JSON
 
-文件操作 `inspect_ui` 适用于 Linux 游戏 `v0.107.1`、Mod `0.5.0`，只读返回当前无遮挡战斗画面上可见入口与资源图标的英语悬停说明。不触发鼠标悬停、不打开窗口、不切换游戏语言。当前尚未接入 MCP；工具分工见 [范围核查](../research/2026-10-29-ui-hover-tip-audit.md)。
+文件操作 `inspect_ui` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.5.0`，只读返回当前无遮挡战斗画面上可见入口与资源图标的英语悬停说明。不触发鼠标悬停、不打开窗口、不切换游戏语言。工具分工见 [范围核查](../research/2026-10-29-ui-hover-tip-audit.md)。
 
 ## 读取与格式
 
@@ -29,6 +29,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_ui > .tmp/li
 - `sources` 是关联的基础观察字段路径，不重复输出字段值。同标题同正文合并，来源去重并保留首次出现顺序；同标题不同正文不合并。
 - 不附带手牌数值或敌人意图的 `notes`。没有可用提示时数组为 `[]`；不可读界面返回结构化错误，不以空集合表示读取失败。
 - 加 `--raw` 时保留 `id/ok/state` 和 `state.snapshot_id`。无须提供动作令牌，读取也不进入 `available_actions`。
+- MCP 返回相同玩法格式，`structuredContent` 与 JSON 文本一致；直接查看不授予动作权限，已有观察的令牌处理见 [MCP 调用语义](mcp.md#调用和错误语义)。
 
 ## 覆盖与条件
 

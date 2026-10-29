@@ -29,6 +29,11 @@ class FakeGame:
         self.malformed_hand = False
         self.malformed_hand_item = False
         self.hand_extra_state = False
+        self.ui_payload = {"scene": "combat", "hover_tips": [{
+            "title": "Energy", "description": "Your current <Energy> count.",
+            "sources": ["player.energy", "player.max_energy"],
+        }]}
+        self.ui_error = False
         self.observation_started = threading.Event()
         self.release_observation = threading.Event()
         self.release_observation.set()
@@ -51,7 +56,7 @@ class FakeGame:
                 request = json.loads(path.read_text())
                 self.operations.append(request)
                 operation = request["operation"]
-                if operation in {"get_state", "inspect_hand"}:
+                if operation in {"get_state", "inspect_hand", "inspect_ui"}:
                     self.observation_started.set()
                     self.release_observation.wait(timeout=5)
                 response = {"id": request["id"], "ok": True}
@@ -85,6 +90,11 @@ class FakeGame:
                     if self.hand_extra_state:
                         response["state"].update(scene="combat", enemies=[{"intents": [{"category": "attack", "value": "7"}]}],
                                                  available_actions=["end_turn"])
+                if operation == "inspect_ui":
+                    response["state"] = {"snapshot_id": f"state-{self.turn}", **self.ui_payload}
+                    if self.ui_error:
+                        response = {"id": request["id"], "ok": False,
+                                    "error": {"code": "illegal_action", "message": "/private/game/path"}}
                 if operation != "end_turn" or not self.drop_action_response:
                     target = self.responses / path.name
                     temporary = target.with_suffix(".tmp")
@@ -98,6 +108,98 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(SERVER.exists(), "MCP server has not been implemented.")
         from mcp_server import GameTools
         self.tools_type = GameTools
+
+    async def test_ui_inspection_does_not_authorize_an_action(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            self.assertEqual(await tools.inspect_ui(), game.ui_payload)
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["inspect_ui"])
+
+    async def test_ui_inspection_preserves_an_unchanged_observation_token(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            await tools.inspect_ui()
+            self.assertEqual((await tools.end_turn())["turn"], 2)
+            self.assertEqual(game.operations[-1]["expected_state"], "state-1")
+
+    async def test_ui_inspection_invalidates_a_changed_observation_token(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            game.turn = 2
+            self.assertNotIn("error", await tools.inspect_ui())
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_ui"])
+
+    async def test_ui_inspection_rejects_malformed_details_and_clears_token(self):
+        cases = [
+            {"scene": "main_menu"}, {"hover_tips": None}, {"hover_tips": [None]},
+            {"hover_tips": [{"title": 3, "description": "Text", "sources": ["player.energy"]}]},
+            {"hover_tips": [{"title": "Energy", "description": None, "sources": ["player.energy"]}]},
+            {"hover_tips": [{"title": "Energy", "description": "Text", "sources": "player.energy"}]},
+            {"hover_tips": [{"title": "Energy", "description": "Text", "sources": []}]},
+            {"hover_tips": [{"title": "Energy", "description": "Text", "sources": [None]}]},
+        ]
+        for malformed in cases:
+            with self.subTest(malformed=malformed), FakeGame() as game:
+                tools = self.tools_type(Client(game.directory))
+                await tools.get_observation()
+                game.ui_payload.update(malformed)
+                self.assertEqual((await tools.inspect_ui())["error"]["code"], "transport_error")
+                self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+
+    async def test_failed_ui_inspection_clears_token_and_sanitizes_game_error(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            game.ui_error = True
+            result = await tools.inspect_ui()
+            self.assertEqual(result["error"]["code"], "illegal_action")
+            self.assertEqual(result["error"]["recovery"], "get_observation")
+            self.assertNotIn("/private", result["error"]["message"])
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+
+    async def test_ui_inspection_only_forwards_ui_fields(self):
+        with FakeGame() as game:
+            expected = json.loads(json.dumps(game.ui_payload))
+            game.ui_payload.update(enemies=[{"intents": [{"value": "7"}]}],
+                                   available_actions=["end_turn"], hand=[{"id": 9}], overlay={"seed": "private"})
+            game.ui_payload["hover_tips"][0]["debug"] = "private"
+            result = await self.tools_type(Client(game.directory)).inspect_ui()
+            self.assertEqual(result, expected)
+            self.assertEqual(game.ui_payload["hover_tips"][0]["debug"], "private")
+
+    async def test_ui_inspection_accepts_empty_tips_and_nullable_titles(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            game.ui_payload["hover_tips"][0]["title"] = None
+            self.assertIsNone((await tools.inspect_ui())["hover_tips"][0]["title"])
+            game.ui_payload["hover_tips"] = []
+            self.assertEqual(await tools.inspect_ui(), {"scene": "combat", "hover_tips": []})
+
+    async def test_cancelled_ui_inspection_does_not_restore_token(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            game.observation_started.clear()
+            game.release_observation.clear()
+            scopes = []
+
+            async def inspect():
+                with anyio.CancelScope() as scope:
+                    scopes.append(scope)
+                    await tools.inspect_ui()
+
+            async with anyio.create_task_group() as group:
+                group.start_soon(inspect)
+                started = await anyio.to_thread.run_sync(game.observation_started.wait, 2)
+                self.assertTrue(started, "UI inspection did not reach the game transport.")
+                scopes[0].cancel()
+                game.release_observation.set()
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_ui"])
 
     async def test_inspection_does_not_authorize_an_action(self):
         with FakeGame() as game:
@@ -278,9 +380,11 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
                     listed = await session.list_tools()
-                    self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "end_turn"})
+                    self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "end_turn"})
                     inspection_tool = next(tool for tool in listed.tools if tool.name == "inspect_hand")
                     self.assertTrue(inspection_tool.annotations.readOnlyHint)
+                    ui_tool = next(tool for tool in listed.tools if tool.name == "inspect_ui")
+                    self.assertTrue(ui_tool.annotations.readOnlyHint)
                     for tool in listed.tools:
                         self.assertEqual(tool.inputSchema.get("properties", {}), {})
                     missing = await session.call_tool("end_turn", {})
@@ -295,6 +399,13 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertFalse(inspected.isError)
                     self.assertEqual(set(inspected.structuredContent), {"hand", "hover_tips", "notes"})
                     self.assertEqual(json.loads(inspected.content[0].text), inspected.structuredContent)
+                    ui = await session.call_tool("inspect_ui", {})
+                    self.assertFalse(ui.isError)
+                    self.assertEqual(ui.structuredContent, game.ui_payload)
+                    self.assertEqual(json.loads(ui.content[0].text), ui.structuredContent)
+                    invalid_ui = await session.call_tool("inspect_ui", {"target": "energy"})
+                    self.assertTrue(invalid_ui.isError)
+                    self.assertEqual(invalid_ui.structuredContent["error"]["code"], "invalid_request")
                     invalid_inspection = await session.call_tool("inspect_hand", {"card_id": 9})
                     self.assertTrue(invalid_inspection.isError)
                     self.assertEqual(invalid_inspection.structuredContent["error"]["code"], "invalid_request")
@@ -319,15 +430,18 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     with ControllerLease(game.directory):
                         await session.initialize()
                         listed = await session.list_tools()
-                        self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "end_turn"})
+                        self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "end_turn"})
                         busy = await session.call_tool("get_observation", {})
                         self.assertTrue(busy.isError)
                         self.assertEqual(busy.structuredContent["error"]["code"], "controller_busy")
                         busy_hand = await session.call_tool("inspect_hand", {})
                         self.assertTrue(busy_hand.isError)
                         self.assertEqual(busy_hand.structuredContent["error"]["code"], "controller_busy")
+                        busy_ui = await session.call_tool("inspect_ui", {})
+                        self.assertTrue(busy_ui.isError)
+                        self.assertEqual(busy_ui.structuredContent["error"]["code"], "controller_busy")
                         self.assertEqual(game.operations, [])
-                    inspected = await session.call_tool("inspect_hand", {})
+                    inspected = await session.call_tool("inspect_ui", {})
                     self.assertFalse(inspected.isError)
                     recovered = await session.call_tool("get_observation", {})
                     self.assertFalse(recovered.isError)
@@ -360,7 +474,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     async with stdio_client(parameters) as (first_read, first_write):
                         async with ClientSession(first_read, first_write) as first:
                             await first.initialize()
-                            self.assertFalse((await first.call_tool("get_observation", {})).isError)
+                            self.assertFalse((await first.call_tool("inspect_ui", {})).isError)
                             busy = await second.call_tool("get_observation", {})
                             self.assertEqual(busy.structuredContent["error"]["code"], "controller_busy")
                             blocked = await second.call_tool("end_turn", {})
@@ -369,7 +483,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     recovered = await second.call_tool("get_observation", {})
                     self.assertFalse(recovered.isError)
                     self.assertEqual(recovered.structuredContent["turn"], 1)
-                    self.assertEqual([item["operation"] for item in game.operations], ["get_state", "get_state"])
+                    self.assertEqual([item["operation"] for item in game.operations], ["inspect_ui", "get_state"])
 
 
 if __name__ == "__main__":

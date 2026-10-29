@@ -61,11 +61,17 @@ class GameTools:
             return payload
 
     async def inspect_hand(self):
+        return await self._inspect("inspect_hand")
+
+    async def inspect_ui(self):
+        return await self._inspect("inspect_ui")
+
+    async def _inspect(self, operation):
         async with self.lock:
             previous, self.snapshot_id = self.snapshot_id, None
             if error := self._acquire_controller():
                 return error
-            payload, snapshot_id = await self._request("inspect_hand")
+            payload, snapshot_id = await self._request(operation)
             await anyio.lowlevel.checkpoint_if_cancelled()
             if previous == snapshot_id:
                 self.snapshot_id = previous
@@ -120,6 +126,19 @@ class GameTools:
                                 or any(not isinstance(tip, dict) for tip in tips)):
                             raise ValueError("Invalid card hover tips.")
                     response = {"ok": True, "state": {"hand": hand}}
+                elif operation == "inspect_ui":
+                    tips = state.get("hover_tips")
+                    if state.get("scene") != "combat" or not isinstance(tips, list):
+                        raise ValueError("Invalid UI details.")
+                    for tip in tips:
+                        if (not isinstance(tip, dict)
+                                or (tip.get("title") is not None and not isinstance(tip["title"], str))
+                                or not isinstance(tip.get("description"), str)
+                                or not isinstance(tip.get("sources"), list) or not tip["sources"]
+                                or any(not isinstance(source, str) or not source for source in tip["sources"])):
+                            raise ValueError("Invalid UI hover tip.")
+                    response = {"ok": True, "state": {"scene": state["scene"], "hover_tips": [
+                        {key: tip[key] for key in ("title", "description", "sources")} for tip in tips]}}
             else:
                 if not isinstance(response["error"]["code"], str):
                     raise ValueError("Invalid game error.")
@@ -146,10 +165,11 @@ def tool_result(payload):
 
 
 def create_server(tools):
-    server = Server("sts2-agent", version="0.2.0", instructions=(
+    server = Server("sts2-agent", version="0.3.0", instructions=(
         "Control a local Slay the Spire 2 game. Call get_observation before each action. "
         "Use inspect_hand to read all current hand descriptions and shared hover tips. "
-        "Hand inspection does not prepare an action; only end_turn is implemented as an action. "
+        "Use inspect_ui to read hover explanations for visible interface elements and resources. "
+        "Inspections do not prepare an action; only end_turn is implemented as an action. "
         "Actions return the resulting observation but consume the action token. "
         "After any failed or timed-out action, read the state before deciding what to do. "
         "Never automatically repeat an action whose execution outcome is unknown."
@@ -167,6 +187,10 @@ def create_server(tools):
                 readOnlyHint=True, openWorldHint=False), description=(
                     "Read all currently visible hand cards at once, including descriptions and shared hover_tips linked by card_ids. "
                     "Does not play cards or prepare an action. Does not return enemy intents.")),
+            Tool(name="inspect_ui", inputSchema=parameters, annotations=ToolAnnotations(
+                readOnlyHint=True, openWorldHint=False), description=(
+                    "Read English hover explanations for currently visible combat interface elements and resources, linked by sources. "
+                    "Excludes hand, potion, relic, power and enemy intent details. Does not open screens or prepare an action.")),
             Tool(name="end_turn", inputSchema=parameters, annotations=ToolAnnotations(
                 readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False),
                 description="End the player's turn once and return the resulting state. Requires a fresh get_observation call."),
@@ -174,7 +198,8 @@ def create_server(tools):
 
     @server.call_tool(validate_input=False)
     async def call_tool(name, arguments):
-        handlers = {"get_observation": tools.get_observation, "inspect_hand": tools.inspect_hand, "end_turn": tools.end_turn}
+        handlers = {"get_observation": tools.get_observation, "inspect_hand": tools.inspect_hand,
+                    "inspect_ui": tools.inspect_ui, "end_turn": tools.end_turn}
         if name not in handlers or arguments:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))
         return tool_result(await handlers[name]())
@@ -189,7 +214,7 @@ async def run_stdio(tools):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="通过 stdio MCP 提供 STS2 战斗观察、手牌详情与结束回合。")
+    parser = argparse.ArgumentParser(description="通过 stdio MCP 提供 STS2 战斗观察、手牌详情、界面说明与结束回合。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
     parser.add_argument("--timeout", type=float, default=40, help="文件通信超时秒数，默认 40")
     args = parser.parse_args()

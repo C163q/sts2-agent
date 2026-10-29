@@ -2,19 +2,20 @@
 
 本项目提供 Linux 本地 stdio MCP server，供支持 MCP 的 agent 读取《杀戮尖塔 2》并结束回合。服务在游戏外运行，通过现有文件 IPC 与 Mod 通信；不调用模型 API，也不需要在游戏里配置模型密钥。
 
-当前公开三个无参数工具：
+当前公开四个无参数工具：
 
 | 工具 | 行为 |
 | --- | --- |
 | `get_observation()` | 读取当前静态画面的英语玩法 JSON，并在服务内保存本次观察对应的动作令牌 |
 | `inspect_hand()` | 只读查看全部当前可见手牌的完整正文和共享悬停解释，不授予动作权限 |
+| `inspect_ui()` | 只读查看当前可见战斗界面入口和资源图标的悬停说明，不授予动作权限 |
 | `end_turn()` | 消耗最近一次显式观察的令牌，通过游戏正常动作队列结束回合，等待执行结果并返回新观察 |
 
-[手牌详情](hand-inspection.md) 返回平级的 `hand`、共享 `hover_tips` 及适用的 `notes.card_values`，以 `card_ids` 关联解释和手牌，不附送敌人意图或 `available_actions`。出牌、药水和其他场景动作尚未实现。基础观察继续遵循 [可见信息边界](../observation.md)，字段见 [战斗观察 JSON](observation.md)。
+[手牌详情](hand-inspection.md) 返回平级的 `hand`、共享 `hover_tips` 及适用的 `notes.card_values`，以 `card_ids` 关联解释和手牌。[界面说明](ui-inspection.md) 返回 `scene` 和共享 `hover_tips`，以 `sources` 关联基础观察字段，不附带数值解读 notes。这两种查看均不附送敌人意图或 `available_actions`；界面说明还排除药水、遗物、powers 和手牌效果。出牌、药水和其他场景动作尚未实现。基础观察继续遵循 [可见信息边界](../observation.md)，字段见 [战斗观察 JSON](observation.md)。
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、已构建并加载的 Mod，以及支持 stdio MCP 的客户端；手牌详情要求 Mod 0.4.0，原有观察和结束回合仍兼容 0.3.0。MCP server 当前为 0.2.0，本次实际使用 Python 3.14.8、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。原有标准库客户端不需要安装 MCP 依赖。
+需要 Python 3.10 或以上版本、已构建并加载的 Mod，以及支持 stdio MCP 的客户端；界面说明要求 Mod 0.5.0，手牌详情要求 0.4.0，原有观察和结束回合仍兼容 0.3.0。MCP server 当前为 0.3.0，本次实际使用 Python 3.14.8、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。原有标准库客户端不需要安装 MCP 依赖。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -46,7 +47,7 @@ codex mcp add sts2 -- "$PWD/.tmp/mcp-venv/bin/python" "$PWD/scripts/mcp_server.p
 codex mcp list
 ```
 
-重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation`、`inspect_hand` 和 `end_turn`；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
+重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation`、`inspect_hand`、`inspect_ui` 和 `end_turn`；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
 
 对应的 TOML 配置示例为：
 
@@ -76,7 +77,7 @@ approval_mode = "approve"
 
 调用顺序为 `get_observation → end_turn → get_observation`。每次动作前都必须显式观察；动作返回的新观察用于读取结果，不会自动授权下一次动作。这能阻止未重新观察的重复调用连续结束两个回合。动作失败或通信异常同样消耗令牌，服务不会自动重新观察、重试动作或换一个请求 ID 重发。读取过程中被取消的观察不会保存动作令牌；取消工具调用不能撤回已经提交给游戏的动作，仍须重新观察结果。
 
-`inspect_hand` 可以直接调用，但不能代替战斗观察授权动作。也可以使用 `get_observation → inspect_hand → end_turn`：手牌读取返回的状态令牌与已有观察一致时保留原动作权限；状态变化、读取失败或取消时清除原令牌。手牌响应不会自动保存新的动作令牌，必须重新调用 `get_observation` 后才能行动。没有动作权限时 `end_turn` 仍返回 `observation_required`，不会发送游戏动作。
+`inspect_hand` 和 `inspect_ui` 可以直接调用，但不能代替战斗观察授权动作。也可以使用 `get_observation → inspect_hand/inspect_ui → end_turn`：详情读取返回的状态令牌与已有观察一致时保留原动作权限；状态变化、读取失败或取消时清除原令牌。详情响应不会自动保存新的动作令牌，必须重新调用 `get_observation` 后才能行动。没有动作权限时 `end_turn` 仍返回 `observation_required`，不会发送游戏动作。
 
 成功时，MCP `structuredContent` 直接包含玩法 JSON，`content` 同时提供同样的 JSON 文本。模型不会收到 `snapshot_id`、原始响应包装或开发测试入口；`available_actions` 只保留已公开的 `end_turn`。协议层仍保留 MCP 自身必需的消息字段。
 
@@ -97,8 +98,8 @@ approval_mode = "approve"
 | `observation_required` | 尚未观察或上次令牌已消耗，调用 `get_observation` |
 | `controller_busy` | 另一个 MCP 连接已取得控制权，断开该连接后重新观察；当前连接可继续握手和发现工具 |
 | `stale_state` | 玩家操作、场景变化等使旧观察失效，重新观察后决策 |
-| `illegal_action` | 当前不允许结束回合，或手牌详情不可读；重新观察，待无遮挡战斗界面再查看 |
-| `invalid_request` | 工具名或参数有误；三个工具均不接受参数 |
+| `illegal_action` | 当前不允许结束回合，或手牌详情、界面说明不可读；重新观察，待无遮挡战斗界面再查看 |
+| `invalid_request` | 工具名或参数有误；四个工具均不接受参数 |
 | `expired_request` | 请求在执行前已过期，重新观察 |
 | `timeout`、`game_error` | 执行结果未知，重新观察；不得自动重复动作 |
 | `transport_error` | 检查游戏进程、Mod、IPC 目录和读写权限，恢复连接后重新观察 |
@@ -107,7 +108,7 @@ approval_mode = "approve"
 
 ## 控制进程与生命周期
 
-每个 IPC 目录只允许一个实际控制游戏的 MCP 连接。初始化握手、发现工具和 Codex 后台预热不会获取控制锁；首次调用 `get_observation` 或 `inspect_hand` 时尝试取得 `.mcp-controller.lock` 的系统文件锁，随后持有到该服务进程退出。其他连接仍可初始化和发现工具，读取游戏时返回结构化 `controller_busy`，不会发送游戏请求，也不会关闭连接；原控制者断开后可在同一连接重新读取。
+每个 IPC 目录只允许一个实际控制游戏的 MCP 连接。初始化握手、发现工具和 Codex 后台预热不会获取控制锁；首次调用 `get_observation`、`inspect_hand` 或 `inspect_ui` 时尝试取得 `.mcp-controller.lock` 的系统文件锁，随后持有到该服务进程退出。其他连接仍可初始化和发现工具，读取游戏时返回结构化 `controller_busy`，不会发送游戏请求，也不会关闭连接；原控制者断开后可在同一连接重新读取。
 
 客户端断开、服务退出后锁自动释放，无须删除锁文件；同一客户端内部的请求会串行执行。MCP server 0.1.1 修复了先前在启动时加锁、使后台预热阻断新会话握手的问题。若仍有旧版进程占锁，须先断开旧连接，再重新加载 MCP；不要删除锁文件来抢占控制权。
 
@@ -131,12 +132,16 @@ Python 自动检查包括真实 stdio 握手和临时文件 IPC，不需要运�
 
 Codex 沙箱若禁止本地 socketpair 写入，Python `asyncio` 的线程唤醒和 stdio 测试可能挂起；须按 [Codex 环境约定](../ai/codex.md) 单独申请在沙箱外运行相应命令。此限制与 MCP 是否使用网络端口无关。
 
-当前已通过 28 项 Python 自动检查，含多个真实 stdio 连接的握手、控制权竞争、手牌详情、令牌保留或失效、取消处理及手牌输出边界。正式游戏还完成真实 stdio MCP 的只读手牌采样，读取前后状态一致，未执行动作；脚本如下：
+当前已通过 38 项 Python 自动检查，含多个真实 stdio 连接的握手、控制权竞争、手牌详情、界面说明、令牌保留或失效、取消处理及输出边界。正式游戏还完成真实 stdio MCP 的只读手牌和界面说明采样，读取前后状态一致，未执行动作；脚本如下：
 
 ```sh
 .tmp/mcp-venv/bin/python scripts/verify_mcp_hand.py --ipc-dir .tmp/live/ipc --output .tmp/live/mcp-hand-inspection.json --report .tmp/live/mcp-hand-evidence.json
 ```
 
-此前首次接入完成独立游戏的 MCP 回合往返，以及真实 Codex 模型的观察、结束一次回合和读回：游戏验证从回合 1 到 2，Codex 接续从回合 3 到 4、生命值从 61 到 54，动作结果与读回完全一致。本次手牌扩展未修改用户禁用的 Codex MCP 配置，未重新进行模型自动游玩验证。
+```sh
+.tmp/mcp-venv/bin/python scripts/verify_mcp_ui.py --ipc-dir .tmp/live/ipc --output .tmp/live/mcp-ui-inspection.json --report .tmp/live/mcp-ui-evidence.json
+```
 
-证据与范围见 [手牌 MCP 实施记录](../research/2026-10-29-mcp-hand-inspection.md)、[首次 MCP 实施记录](../research/2026-10-29-mcp-plan.md) 和 [启动锁修复记录](../research/2026-10-29-mcp-startup-lock.md)。本次没有修改 Mod。仅提供 stdio，未实现 HTTP 服务或完整自动游玩；其他 agent 客户端尚未实测。
+此前首次接入完成独立游戏的 MCP 回合往返，以及真实 Codex 模型的观察、结束一次回合和读回：游戏验证从回合 1 到 2，Codex 接续从回合 3 到 4、生命值从 61 到 54，动作结果与读回完全一致。本次界面说明扩展未修改用户禁用的 Codex MCP 配置，未重新进行模型自动游玩验证。
+
+证据与范围见 [界面说明 MCP 实施记录](../research/2026-10-29-mcp-ui-inspection.md)、[手牌 MCP 实施记录](../research/2026-10-29-mcp-hand-inspection.md)、[首次 MCP 实施记录](../research/2026-10-29-mcp-plan.md) 和 [启动锁修复记录](../research/2026-10-29-mcp-startup-lock.md)。本次没有修改 Mod。仅提供 stdio，未实现 HTTP 服务或完整自动游玩；其他 agent 客户端尚未实测。
