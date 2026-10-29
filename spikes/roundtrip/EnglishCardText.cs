@@ -33,6 +33,8 @@ internal static class EnglishCardText
             prefix: new HarmonyMethod(typeof(EnglishCardText), nameof(KeywordTip)));
         harmony.Patch(AccessTools.Method(typeof(HoverTipFactory), nameof(HoverTipFactory.FromPotion), [typeof(PotionModel)]),
             prefix: new HarmonyMethod(typeof(EnglishCardText), nameof(PotionTip)));
+        harmony.Patch(AccessTools.PropertyGetter(typeof(CardModel), nameof(CardModel.Pile)),
+            prefix: new HarmonyMethod(typeof(BrowsedCard), nameof(BrowsedCard.PreviewPile)));
     }
 
     private const int LoadNow = 2;

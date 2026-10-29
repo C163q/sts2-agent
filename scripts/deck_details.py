@@ -41,11 +41,19 @@ def deck_details(state, level):
             or sort["by"] not in SORT_KEYS or type(sort["descending"]) is not bool
             or not isinstance(state["deck"], list)):
         raise ValueError("Invalid deck details.")
+    return {"scene": "deck", "detail_level": level, "view_upgrades": state["view_upgrades"],
+            "sort": {"by": sort["by"], "descending": sort["descending"]},
+            "deck": browsed_cards(state["deck"], level, "deck")}
+
+
+def browsed_cards(items, level, prefix):
+    if not isinstance(items, list):
+        raise ValueError("Invalid browsed cards.")
     cards = []
     ids = set()
-    for card in state["deck"]:
+    for card in items:
         if (not isinstance(card, dict) or not isinstance(card["id"], str)
-                or not re.fullmatch(r"deck:(0|[1-9][0-9]*)", card["id"]) or card["id"] in ids):
+                or not re.fullmatch(prefix + r":(0|[1-9][0-9]*)", card["id"]) or card["id"] in ids):
             raise ValueError("Invalid deck card identity.")
         ids.add(card["id"])
         text = {key: card[key] for key in ("id", "name", "type", "rarity", "visual_card_pool", "energy_cost", "star_cost")}
@@ -64,8 +72,7 @@ def deck_details(state, level):
                 tips.append({"title": tip["title"], "description": tip["description"]})
             text.update(description=card["description"], hover_tips=tips)
         cards.append(text)
-    return {"scene": "deck", "detail_level": level, "view_upgrades": state["view_upgrades"],
-            "sort": {"by": sort["by"], "descending": sort["descending"]}, "deck": cards}
+    return cards
 
 
 def closed_card_view(state):

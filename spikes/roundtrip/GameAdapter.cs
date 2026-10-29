@@ -35,6 +35,7 @@ internal sealed class GameAdapter(bool testMode)
     private CombatState? lastCombat;
     private readonly CombatObservation observation = new();
     private readonly DeckInspection deckInspection = new();
+    private readonly PileInspection pileInspection = new();
 
     private static Player? LocalPlayer => LocalContext.GetMe(CombatManager.Instance.DebugOnlyGetState());
 
@@ -94,7 +95,7 @@ internal sealed class GameAdapter(bool testMode)
     public async Task<string> Execute(Request request)
     {
         string before = Observe();
-        if (request.Operation != "inspect_deck" && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
+        if (request.Operation is not ("inspect_deck" or "inspect_pile") && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
         {
@@ -113,6 +114,9 @@ internal sealed class GameAdapter(bool testMode)
         if (request.Operation == "check_test_card_views" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS") is { } cardChecks)
             return Success(request.Id, JsonSerializer.Serialize(await DeckInspectionChecks.CardViews(this, cardChecks)));
+        if (request.Operation == "check_test_piles" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_PILE_CHECKS") is { } pileChecks)
+            return Success(request.Id, JsonSerializer.Serialize(await PileInspectionChecks.Run(this, pileChecks)));
         if (request.Operation == "inspect_deck")
         {
             DeckOptions options;
@@ -122,6 +126,16 @@ internal sealed class GameAdapter(bool testMode)
                 return FileMailbox.Error(request.Id, "invalid_request", "Invalid deck options.");
             }
             return await InspectDeck(request, options);
+        }
+        if (request.Operation == "inspect_pile")
+        {
+            PileOptions options;
+            try { options = PileOptions.Parse(request.Arguments); }
+            catch (Exception error) when (error is JsonException or InvalidOperationException)
+            {
+                return FileMailbox.Error(request.Id, "invalid_request", "Invalid pile options.");
+            }
+            return await InspectPile(request, options);
         }
         if (request.Operation == "close_card_view")
         {
@@ -291,7 +305,9 @@ internal sealed class GameAdapter(bool testMode)
         {
             var button = NRun.Instance!.GlobalUi.TopBar.Deck;
             bool mapOpen = NRun.Instance.GlobalUi.MapScreen.IsOpen;
-            if (CombatObservation.Status(allowMap: true) != "visible" || !CanEndTurn(allowMapPause: mapOpen)
+            bool cardOpen = CardView.Current != null;
+            if (CombatObservation.Status(allowCardView: cardOpen, allowMap: true) != "visible"
+                || !CanEndTurn(allowMapPause: mapOpen || cardOpen)
                 || !VisibleUi.OnScreen(button) || !button.IsEnabled)
                 return FileMailbox.Error(request.Id, "illegal_action", "The deck button is unavailable.");
             uiGeneration++;
@@ -321,6 +337,70 @@ internal sealed class GameAdapter(bool testMode)
         string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS");
         if (testMode && checks != null)
             DeckInspectionChecks.Run(checks, screen, player, deckInspection, inspection, options.DetailLevel);
+        return Success(request.Id, JsonSerializer.Serialize(inspection));
+    }
+
+    private async Task<string> InspectPile(Request request, PileOptions options)
+    {
+        var player = LocalPlayer;
+        var combat = CombatManager.Instance.DebugOnlyGetState();
+        bool cardOpen = CardView.Current != null;
+        if (player == null || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer
+            || CombatObservation.Status(allowCardView: cardOpen) != "visible"
+            || !CanEndTurn(allowMapPause: cardOpen))
+            return FileMailbox.Error(request.Id, "illegal_action", "Pile viewing is unavailable in the current screen.");
+        var screen = PileInspection.Current(options);
+        if (screen == null)
+        {
+            var ui = NCombatRoom.Instance!.Ui;
+            NCombatCardPile button = options.Pile switch { "draw" => ui.DrawPile, "discard" => ui.DiscardPile, _ => ui.ExhaustPile };
+            if (VisibleUi.OnScreen(button) && CardView.Current is { } previous)
+            {
+                if (!CardView.CanClose(previous))
+                    return FileMailbox.Error(request.Id, "illegal_action", "The current card page cannot be replaced.");
+                // Native screen context disables combat pile buttons while any card page is open.
+                uiGeneration++;
+                CardView.Close(previous);
+                await ObservationFrame();
+                if (CombatObservation.Status() != "visible" || !CanEndTurn() || !ReferenceEquals(player, LocalPlayer)
+                    || !ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()))
+                    return FileMailbox.Error(request.Id, "illegal_action", "The screen changed while switching piles.");
+            }
+            if (!VisibleUi.OnScreen(button) || !button.IsEnabled)
+            {
+                using var snapshot = JsonDocument.Parse(Observe());
+                bool visible = VisibleUi.OnScreen(button);
+                return Success(request.Id, JsonSerializer.Serialize(PileInspection.Result(options, "unavailable",
+                    snapshot.RootElement.GetProperty("snapshot_id").GetString()!, visible
+                        ? "The pile button is disabled." : "The pile button is not visible.", null,
+                    visible ? "entry_disabled" : "entry_not_visible")));
+            }
+            var emptyTip = PileInspection.EmptyTip(button);
+            if (VisibleUi.Number(button, "CountContainer/Count") == 0 && emptyTip == null)
+                return FileMailbox.Error(request.Id, "illegal_action", "The empty pile has no native inspection feedback.");
+            uiGeneration++;
+            button.ForceClick();
+            screen = PileInspection.Current(options);
+            if (screen == null)
+            {
+                await ObservationFrame();
+                if (!ReferenceEquals(player, LocalPlayer) || !ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState())
+                    || CombatObservation.Status() != "visible" || VisibleUi.Number(button, "CountContainer/Count") != 0 || emptyTip == null)
+                    return FileMailbox.Error(request.Id, "illegal_action", "The pile screen did not open or the screen changed.");
+                using var snapshot = JsonDocument.Parse(Observe());
+                return Success(request.Id, JsonSerializer.Serialize(PileInspection.Result(options, "empty",
+                    snapshot.RootElement.GetProperty("snapshot_id").GetString()!,
+                    EnglishCardText.Read(() => EnglishCardText.Plain(emptyTip.GetFormattedText())), Array.Empty<object>())));
+            }
+        }
+        await ObservationFrame();
+        await WaitUntil(() => !ReferenceEquals(PileInspection.Current(options), screen) || CardView.Ready(screen));
+        if (!ReferenceEquals(PileInspection.Current(options), screen) || !ReferenceEquals(player, LocalPlayer)
+            || !ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState())
+            || CombatObservation.Status(allowCardView: true) != "visible" || !CanEndTurn(allowMapPause: true))
+            return FileMailbox.Error(request.Id, "illegal_action", "The pile screen changed while reading.");
+        using var observed = JsonDocument.Parse(Observe());
+        var inspection = pileInspection.Read(screen, options, observed.RootElement.GetProperty("snapshot_id").GetString()!);
         return Success(request.Id, JsonSerializer.Serialize(inspection));
     }
 

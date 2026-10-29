@@ -47,7 +47,7 @@ def share_potion_tips(slots):
 
 def player_result(response):
     if response["ok"]:
-        gameplay_fields = {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions", "hand", "hover_tips", "slot_tip", "potion_slots", "relics", "deck", "detail_level", "view_upgrades", "sort"}
+        gameplay_fields = {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions", "hand", "hover_tips", "slot_tip", "potion_slots", "relics", "deck", "detail_level", "view_upgrades", "sort", "pile", "status", "reason", "message", "cards"}
         result = {key: value for key, value in response["state"].items() if key in gameplay_fields}
         if "hand" in result and result["hand"] is not None:
             result["hand"], result["hover_tips"] = share_hand_tips(result["hand"])
@@ -57,6 +57,8 @@ def player_result(response):
             result["relics"], result["hover_tips"] = share_indexed_tips(result["relics"], "relic_indices")
         if "deck" in result and result.get("detail_level") == "full":
             result["deck"], result["hover_tips"] = share_hand_tips(result["deck"])
+        if result.get("scene") == "card_pile" and result.get("detail_level") == "full" and result.get("cards") is not None:
+            result["cards"], result["hover_tips"] = share_hand_tips(result["cards"])
         notes = {}
         if result.get("hand"):
             notes["card_values"] = CARD_VALUE_NOTE
@@ -122,7 +124,8 @@ class Client:
 def main():
     parser = argparse.ArgumentParser(description="调用最小验证原型的文件工具接口。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
-    parser.add_argument("operation", choices=("get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "close_card_view", "close_deck", "start_test_combat", "end_turn"))
+    parser.add_argument("operation", choices=("get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "close_deck", "start_test_combat", "end_turn"))
+    parser.add_argument("--pile", choices=("draw", "discard", "exhaust"))
     parser.add_argument("--detail-level", choices=("summary", "full"))
     parser.add_argument("--view-upgrades", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--sort-by", choices=("obtained", "type", "cost", "name"))
@@ -133,7 +136,7 @@ def main():
     parser.add_argument("--raw", action="store_true", help="输出保留状态令牌等控制信息的原始响应")
     args = parser.parse_args()
     try:
-        arguments = {key: getattr(args, key) for key in ("detail_level", "view_upgrades", "sort_by", "descending")
+        arguments = {key: getattr(args, key) for key in ("pile", "detail_level", "view_upgrades", "sort_by", "descending")
                      if getattr(args, key) is not None}
         result = Client(args.ipc_dir).call(args.operation, args.expected_state, arguments=arguments or None)
     except TimeoutError as error:

@@ -13,7 +13,6 @@ namespace Sts2Agent;
 internal static class DeckView
 {
     private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
-    private static readonly FieldInfo SortedCards = typeof(NCardGrid).GetField("_cards", PrivateInstance)!;
     private static readonly FieldInfo SortingPriority = typeof(NDeckViewScreen).GetField("_sortingPriority", PrivateInstance)!;
     internal sealed record Sort(string by, bool descending);
 
@@ -21,9 +20,8 @@ internal static class DeckView
         && ReferenceEquals(CardView.Current, screen)
         ? screen : null;
 
-    public static NCardGrid Grid(NDeckViewScreen screen) => screen.GetNode<NCardGrid>("CardGrid");
-    public static CardModel[] Cards(NDeckViewScreen screen) =>
-        ((List<CardModel>)SortedCards.GetValue(Grid(screen))!).ToArray();
+    public static NCardGrid Grid(NDeckViewScreen screen) => CardView.Grid(screen);
+    public static CardModel[] Cards(NDeckViewScreen screen) => CardView.Cards(screen);
 
     public static Sort Sorting(NDeckViewScreen screen) =>
         ((List<SortingOrders>)SortingPriority.GetValue(screen)!)[0] switch

@@ -14,6 +14,7 @@ from mcp.types import CallToolResult, TextContent, Tool, ToolAnnotations
 
 from combatant_details import combatant_details
 from deck_details import DECK_SCHEMA, closed_card_view, deck_arguments, deck_details
+from pile_details import PILE_SCHEMA, pile_arguments, pile_details
 from relic_details import relic_details
 from roundtrip_client import Client, player_result
 
@@ -116,6 +117,13 @@ class GameTools:
     async def close_card_view(self):
         return await self._change_view("close_card_view")
 
+    async def inspect_pile(self, arguments=None):
+        try:
+            arguments = pile_arguments(arguments)
+        except ValueError:
+            return player_result({"ok": False, "error": {"code": "invalid_request"}})
+        return await self._change_view("inspect_pile", arguments)
+
     async def _change_view(self, operation, arguments=None):
         async with self.lock:
             self.snapshot_id = None
@@ -208,6 +216,8 @@ class GameTools:
                     response = {"ok": True, "state": deck_details(state, (arguments or {}).get("detail_level", "summary"))}
                 elif operation == "close_card_view":
                     response = {"ok": True, "state": closed_card_view(state)}
+                elif operation == "inspect_pile":
+                    response = {"ok": True, "state": pile_details(state, arguments["pile"], arguments.get("detail_level", "summary"))}
             else:
                 if not isinstance(response["error"]["code"], str):
                     raise ValueError("Invalid game error.")
@@ -234,7 +244,7 @@ def tool_result(payload):
 
 
 def create_server(tools):
-    server = Server("sts2-agent", version="0.7.0", instructions=(
+    server = Server("sts2-agent", version="0.8.0", instructions=(
         "Control a local Slay the Spire 2 game. Call get_observation before each action. "
         "Use inspect_hand to read all current hand descriptions and shared hover tips. "
         "Use inspect_ui to read hover explanations for visible interface elements and resources. "
@@ -242,6 +252,8 @@ def create_server(tools):
         "Use inspect_combatants to read both sides' visible powers and enemies' currently displayed intents with shared explanations. "
         "Use inspect_relics to read all currently visible relic descriptions, displayed counters and shared hover tips. "
         "Use inspect_deck to open or reuse the deck page; it stays open and supports optional detail level, upgrade preview and sorting. "
+        "Use inspect_pile for draw, discard or exhaust piles, with summary or full details. It clicks the native entry unless reusing the same page. "
+        "Empty visible piles produce native feedback; hidden entries return unavailable with cards null. Draw pile order is display order, never draw order. "
         "Use close_card_view to close only the top card browsing page, preserving an underlying map. "
         "Card view operations clear the action token; call get_observation again after closing before acting. "
         "Inspections do not prepare an action; only end_turn is implemented as an action. "
@@ -288,6 +300,13 @@ def create_server(tools):
                     "Omitted page options preserve current settings; a new page uses game defaults. "
                     "Actually changes UI and pauses single-player combat. Upgrade preview does not upgrade owned cards. "
                     "Leaves the page open until close_card_view or manual return; clears action permission.")),
+            Tool(name="inspect_pile", inputSchema=PILE_SCHEMA, annotations=ToolAnnotations(
+                readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False), description=(
+                    "Open or reuse a native draw, discard or exhaust pile page and return the entire browsable pile in display order. "
+                    "Summary is the default; full includes descriptions and shared hover_tips linked by card_ids. No upgrade or sorting controls. "
+                    "Returns status opened, empty or unavailable and the actual screen. Empty draw/discard piles are actually clicked for native feedback; "
+                    "a hidden exhaust entry is not clicked and returns cards null. Does not reveal draw order. "
+                    "Replaces another card browsing page, leaves the opened page until close_card_view, and clears action permission.")),
             Tool(name="close_card_view", inputSchema=parameters, annotations=ToolAnnotations(
                 readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False), description=(
                     "Close only the currently visible read-only card browsing page: deck, draw, discard or exhaust pile. "
@@ -308,6 +327,8 @@ def create_server(tools):
                     "end_turn": tools.end_turn}
         if name == "inspect_deck":
             return tool_result(await tools.inspect_deck(arguments))
+        if name == "inspect_pile":
+            return tool_result(await tools.inspect_pile(arguments))
         if name not in handlers or arguments:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))
         return tool_result(await handlers[name]())

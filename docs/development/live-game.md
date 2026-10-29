@@ -1,6 +1,6 @@
 # 在正常游戏中加载 Mod 并读取状态
 
-当前原型可以响应 `get_state` 请求，以英语 JSON 输出可见战斗数值、敌人名称与意图、手牌名称及费用、状态图标和顶栏；Mod 0.4.0 起提供 [手牌详情调用](hand-inspection.md)，0.5.0 起提供 [界面悬停说明](ui-inspection.md)，0.6.0 起提供 [药水详情](potion-inspection.md)，0.7.0 起提供 [双方 powers 与敌人意图详情](combatant-inspection.md)，0.8.0 起提供 [遗物详情](relic-inspection.md)，0.9.0 起提供真实打开页面的 [全牌组查看及显式关闭](deck-inspection.md)。它按请求返回 JSON，不会持续自动输出；基础字段及限制见 [战斗观察 JSON](observation.md)。
+当前原型可以响应 `get_state` 请求，以英语 JSON 输出可见战斗数值、敌人名称与意图、手牌名称及费用、状态图标和顶栏；Mod 0.4.0 起提供 [手牌详情调用](hand-inspection.md)，0.5.0 起提供 [界面悬停说明](ui-inspection.md)，0.6.0 起提供 [药水详情](potion-inspection.md)，0.7.0 起提供 [双方 powers 与敌人意图详情](combatant-inspection.md)，0.8.0 起提供 [遗物详情](relic-inspection.md)，0.9.0 起提供真实打开页面的 [全牌组查看及显式关闭](deck-inspection.md)。0.11.0 起提供三类 [战斗牌堆查看](pile-inspection.md)，含真实空堆反馈。它按请求返回 JSON，不会持续自动输出；基础字段及限制见 [战斗观察 JSON](observation.md)。
 
 以下步骤面向本机 Linux Steam 游戏 `v0.107.1`，依据已核对的 Mod 加载器和现有接口整理。独立无头实例已完成验证；正常游戏中的读取已有 [响应与截图样本](../research/2026-10-29-battle-observation-audit.md)，该样本使用旧版结构；新版按 [静态画面信息边界](../observation.md) 过滤，已增加独立图形实例的验证。
 

@@ -66,12 +66,13 @@ python3 scripts/test_prepare_roundtrip.py
 | `inspect_combatants` | 只读、无须动作令牌；合并查看当前双方 powers 与敌人意图的英语悬停解释，格式见 [战斗对象详情](combatant-inspection.md) |
 | `inspect_relics` | 只读、无须动作令牌；读取当前可见遗物的正文、屏幕计数与共享附带解释，格式见 [遗物详情](relic-inspection.md) |
 | `inspect_deck` | 无须动作令牌；真实打开牌组页并保留，返回全牌组，支持信息档位、升级预览和排序，格式见 [牌组查看](deck-inspection.md) |
+| `inspect_pile` | 无须动作令牌；实际点击并查看抽牌、弃牌或消耗堆，支持摘要/完整；区分空堆与隐藏入口，见 [战斗牌堆查看](pile-inspection.md) |
 | `close_card_view` | 无须动作令牌；显式关闭当前原生卡牌查看页，返回基础观察；保留下层地图，不关闭其他页面或自动授权战斗动作 |
 | `close_deck` | 仅为旧文件客户端兼容保留，只关闭牌组；MCP 使用通用 `close_card_view` |
 | `start_test_combat` | 仅测试模式且无进行中的对局时，在主菜单创建临时对局并用游戏开发入口进入指定战斗；该操作不是正常游玩的动作 |
 | `end_turn` | 单人战斗、玩家可行动阶段且非暂停状态下，提交 `EndPlayerTurnAction`，等待下一可行动回合或战斗结束 |
 
-请求写入 `requests/<id>.json`，其中 `id` 是不带连字符的 UUID；先写临时文件再原子重命名为 `.json`。请求体包含 `id`、`operation`；动作另带 `expected_state`，牌组查看的选项放在可选 `arguments` 对象中。响应写入 `responses/<id>.json`，成功包含 `ok: true` 和 `state`，失败包含 `ok: false` 和 `error.code`、`error.message`。
+请求写入 `requests/<id>.json`，其中 `id` 是不带连字符的 UUID；先写临时文件再原子重命名为 `.json`。请求体包含 `id`、`operation`；动作另带 `expected_state`，牌组及战斗牌堆查看的选项放在 `arguments` 对象中。响应写入 `responses/<id>.json`，成功包含 `ok: true` 和 `state`，失败包含 `ok: false` 和 `error.code`、`error.message`。
 
 - 文件读写和等待在后台进行，状态读取与动作提交在 Godot 主线程进行；当前串行处理请求。
 - `snapshot_id` 根据当前导出的观察内容、进程会话、战斗代次及工具界面操作代次生成。动作在同一主线程片段中核对令牌和合法性后提交；通过工具查看并关闭牌组后旧令牌不会恢复，须重新观察。这不是对所有游戏内部状态或两次请求之间全部人工 UI 操作历史的完整版本标识。

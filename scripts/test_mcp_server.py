@@ -81,6 +81,10 @@ class FakeGame:
         self.close_payload = {}
         self.drop_deck_response = False
         self.drop_close_response = False
+        self.pile_payload = None
+        self.pile_error = False
+        self.drop_pile_response = False
+        self.pile_open = None
         self.ui_generation = 0
         self.relic_error = False
         self.drop_relic_response = False
@@ -111,14 +115,14 @@ class FakeGame:
                 request = json.loads(path.read_text())
                 self.operations.append(request)
                 operation = request["operation"]
-                if operation in {"get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "close_card_view"}:
+                if operation in {"get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view"}:
                     self.observation_started.set()
                     self.release_observation.wait(timeout=5)
                 response = {"id": request["id"], "ok": True}
                 if operation == "end_turn":
                     if request.get("expected_state") != self.token():
                         response.update(ok=False, error={"code": "stale_state", "message": "/private/game/path"})
-                    elif self.deck_open:
+                    elif self.deck_open or self.pile_open:
                         response.update(ok=False, error={"code": "illegal_action", "message": "/private/game/path"})
                     else:
                         self.turn += 1
@@ -133,6 +137,8 @@ class FakeGame:
                     }
                 if operation == "get_state" and self.deck_open:
                     response["state"].update(screen={"status": "covered", "view": "deck"}, available_actions=[])
+                if operation == "get_state" and self.pile_open:
+                    response["state"].update(screen={"status": "covered", "view": self.pile_open + "_pile"}, available_actions=[])
                 if operation == "inspect_deck":
                     arguments = request.get("arguments", {})
                     if not self.deck_open:
@@ -140,6 +146,7 @@ class FakeGame:
                         self.deck_upgrades = False
                         self.deck_sort = {"by": "obtained", "descending": False}
                     self.deck_open = True
+                    self.pile_open = None
                     if "view_upgrades" in arguments or "sort_by" in arguments:
                         self.ui_generation += 1
                     self.deck_upgrades = arguments.get("view_upgrades", self.deck_upgrades)
@@ -151,12 +158,29 @@ class FakeGame:
                     if self.deck_error:
                         response = {"id": request["id"], "ok": False,
                                     "error": {"code": "illegal_action", "message": "/private/game/path"}}
+                if operation == "inspect_pile":
+                    arguments = request.get("arguments", {})
+                    pile = arguments["pile"]
+                    if self.pile_open != pile: self.ui_generation += 1
+                    self.deck_open = False
+                    self.pile_open = pile
+                    response["state"] = {"snapshot_id": self.token(), "scene": "card_pile", "pile": pile,
+                        "detail_level": arguments.get("detail_level", "summary"), "status": "opened",
+                        "screen": {"status": "covered", "view": pile + "_pile"}, "message": "Native pile information.",
+                        "cards": [{"id": "pile:0", "name": "Defend", "type": "Skill", "rarity": "basic",
+                            "visual_card_pool": "ironclad", "energy_cost": "1", "star_cost": None,
+                            "description": "Gain 5 Block.", "hover_tips": [{"title": "Block", "description": "Prevents damage."}]}],
+                        **(self.pile_payload or {})}
+                    if self.pile_error:
+                        response = {"id": request["id"], "ok": False,
+                                    "error": {"code": "illegal_action", "message": "/private/game/path"}}
                 if operation == "close_card_view":
-                    if self.close_error or not self.deck_open:
+                    if self.close_error or not (self.deck_open or self.pile_open):
                         response = {"id": request["id"], "ok": False,
                                     "error": {"code": "illegal_action", "message": "/private/game/path"}}
                     else:
                         self.deck_open = False
+                        self.pile_open = None
                         self.ui_generation += 1
                         response["state"].update({"snapshot_id": self.token(), **self.close_payload})
                 if operation == "get_state" and self.malformed_observation:
@@ -200,6 +224,7 @@ class FakeGame:
                         or (operation == "inspect_combatants" and self.drop_combatant_response)
                         or (operation == "inspect_relics" and self.drop_relic_response)
                         or (operation == "inspect_deck" and self.drop_deck_response)
+                        or (operation == "inspect_pile" and self.drop_pile_response)
                         or (operation == "close_card_view" and self.drop_close_response)):
                     target = self.responses / path.name
                     temporary = target.with_suffix(".tmp")
@@ -913,7 +938,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
                     listed = await session.list_tools()
-                    self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "close_card_view", "end_turn"})
+                    self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "end_turn"})
                     inspection_tool = next(tool for tool in listed.tools if tool.name == "inspect_hand")
                     self.assertTrue(inspection_tool.annotations.readOnlyHint)
                     ui_tool = next(tool for tool in listed.tools if tool.name == "inspect_ui")
@@ -932,11 +957,17 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertFalse(deck_tool.annotations.destructiveHint)
                     self.assertFalse(deck_tool.annotations.idempotentHint)
                     self.assertEqual(set(deck_tool.inputSchema["properties"]), {"detail_level", "view_upgrades", "sort_by", "descending"})
+                    pile_tool = next(tool for tool in listed.tools if tool.name == "inspect_pile")
+                    self.assertFalse(pile_tool.annotations.readOnlyHint)
+                    self.assertFalse(pile_tool.annotations.destructiveHint)
+                    self.assertFalse(pile_tool.annotations.idempotentHint)
+                    self.assertEqual(pile_tool.inputSchema["required"], ["pile"])
+                    self.assertEqual(set(pile_tool.inputSchema["properties"]), {"pile", "detail_level"})
                     close_tool = next(tool for tool in listed.tools if tool.name == "close_card_view")
                     self.assertFalse(close_tool.annotations.readOnlyHint)
                     self.assertEqual(close_tool.inputSchema, {"type": "object", "properties": {}, "additionalProperties": False})
                     for tool in listed.tools:
-                        if tool.name != "inspect_deck":
+                        if tool.name not in {"inspect_deck", "inspect_pile"}:
                             self.assertEqual(tool.inputSchema.get("properties", {}), {})
                     missing = await session.call_tool("end_turn", {})
                     self.assertTrue(missing.isError)
@@ -1015,6 +1046,18 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(json.loads(closed.content[0].text), closed.structuredContent)
                     self.assertEqual((await session.call_tool("end_turn", {})).structuredContent["error"]["code"], "observation_required")
 
+                    invalid_pile = await session.call_tool("inspect_pile", {})
+                    self.assertTrue(invalid_pile.isError)
+                    self.assertEqual(invalid_pile.structuredContent["error"]["code"], "invalid_request")
+                    for pile in ("draw", "discard", "exhaust"):
+                        inspected = await session.call_tool("inspect_pile", {"pile": pile, "detail_level": "full"})
+                        self.assertFalse(inspected.isError)
+                        self.assertEqual(json.loads(inspected.content[0].text), inspected.structuredContent)
+                        self.assertEqual(inspected.structuredContent["pile"], pile)
+                        self.assertEqual(inspected.structuredContent["hover_tips"][0]["card_ids"], ["pile:0"])
+                        self.assertEqual((await session.call_tool("end_turn", {})).structuredContent["error"]["code"], "observation_required")
+                    self.assertFalse((await session.call_tool("close_card_view", {})).isError)
+
     async def test_handshake_succeeds_when_another_controller_owns_game(self):
         from mcp import ClientSession, StdioServerParameters
         from mcp.client.stdio import stdio_client
@@ -1026,7 +1069,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     with ControllerLease(game.directory):
                         await session.initialize()
                         listed = await session.list_tools()
-                        self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "close_card_view", "end_turn"})
+                        self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "end_turn"})
                         busy = await session.call_tool("get_observation", {})
                         self.assertTrue(busy.isError)
                         self.assertEqual(busy.structuredContent["error"]["code"], "controller_busy")
@@ -1047,6 +1090,8 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                         self.assertEqual(busy_relics.structuredContent["error"]["code"], "controller_busy")
                         busy_deck = await session.call_tool("inspect_deck", {})
                         self.assertEqual(busy_deck.structuredContent["error"]["code"], "controller_busy")
+                        busy_pile = await session.call_tool("inspect_pile", {"pile": "draw"})
+                        self.assertEqual(busy_pile.structuredContent["error"]["code"], "controller_busy")
                         busy_close = await session.call_tool("close_card_view", {})
                         self.assertEqual(busy_close.structuredContent["error"]["code"], "controller_busy")
                         self.assertEqual(game.operations, [])

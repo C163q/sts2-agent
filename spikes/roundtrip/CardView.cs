@@ -1,6 +1,9 @@
 using Godot;
+using System.Reflection;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes;
+using MegaCrit.Sts2.Core.Nodes.Cards;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Nodes.Screens.Capstones;
@@ -9,6 +12,12 @@ namespace Sts2Agent;
 
 internal static class CardView
 {
+    private static readonly FieldInfo SortedCards = typeof(NCardGrid).GetField("_cards", BindingFlags.Instance | BindingFlags.NonPublic)!;
+    public static NCardGrid Grid(Control screen) => screen.GetNode<NCardGrid>("CardGrid");
+    public static CardModel[] Cards(Control screen) => ((List<CardModel>)SortedCards.GetValue(Grid(screen))!).ToArray();
+    public static bool Ready(Control screen) => ReferenceEquals(Current, screen) && !Grid(screen).IsAnimatingOut
+        && (Cards(screen).Length == 0 || Grid(screen).CurrentlyDisplayedCardHolders.Any()) && CanClose(screen);
+
     public static Control? Current
     {
         get

@@ -25,7 +25,7 @@ async def verify(args):
             evidence["server"] = initialized.serverInfo.model_dump()
             listed = await session.list_tools()
             evidence["tools"] = [tool.model_dump(exclude_none=True) for tool in listed.tools]
-            assert {tool.name for tool in listed.tools} == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "close_card_view", "end_turn"}
+            assert {tool.name for tool in listed.tools} == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "end_turn"}
 
             async def call(name):
                 result = await session.call_tool(name, {})
