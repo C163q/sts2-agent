@@ -109,10 +109,10 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 显示检查覆盖有效性、显示开关、父级透明度、视口、祖先裁剪和描边 Shader 宽度。打开地图、菜单、教学、详情或过渡期间保守返回 `covered`。当前仍用矩形近似，不承诺逐像素判断卡牌之间或任意 Mod 图层的遮挡。
 
-按 [往返指南](roundtrip.md) 构建后，在独立实例验证：
+按 [README](../../README.md#开发与运行入口) 加载路径配置，再按 [往返指南](roundtrip.md) 构建，在独立实例验证：
 
 ```sh
-python3 scripts/prepare_roundtrip.py --game-dir "$HOME/.local/share/Steam/steamapps/common/Slay the Spire 2" --language zhs
+python3 scripts/prepare_roundtrip.py --game-dir "${Sts2Dir:?请先配置并加载 .env}" --language zhs
 ```
 
 ```sh

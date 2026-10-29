@@ -4,7 +4,7 @@
 
 ## 前提与构建
 
-- 自行安装 Linux 版《杀戮尖塔 2》。游戏路径通过 `Sts2Dir` 和 `--game-dir` 传入。
+- 自行安装 Linux 版《杀戮尖塔 2》，按 [README 配置路径](../../README.md#开发与运行入口)，在当前终端加载 `.env`。游戏路径通过 `Sts2Dir` 和 `--game-dir` 传入。
 - 安装 .NET 9 SDK；本次使用 `9.0.122`，仓库的 `global.json` 允许同系列更高功能带。需要 .NET 9 引用包，单独安装运行时不足以编译。
 - 安装 Python 3；本文原有文件客户端和验证脚本只使用标准库，MCP 服务的额外依赖见接入指南。
 - 本原型没有 NuGet 包依赖，引用本地游戏随附的 `sts2.dll`、`GodotSharp.dll`、`0Harmony.dll` 与 `SmartFormat.dll`；关闭未使用的传递框架引用下载，原型目录的 NuGet 配置不启用远程源。
@@ -12,11 +12,11 @@
 在仓库根目录执行：
 
 ```sh
-env DOTNET_CLI_HOME=/tmp/sts2-agent-dotnet NUGET_PACKAGES=/tmp/sts2-agent-nuget DOTNET_CLI_TELEMETRY_OPTOUT=1 dotnet build spikes/roundtrip/Sts2Agent.csproj -p:Sts2Dir="$HOME/.local/share/Steam/steamapps/common/Slay the Spire 2"
+env DOTNET_CLI_HOME=/tmp/sts2-agent-dotnet NUGET_PACKAGES=/tmp/sts2-agent-nuget DOTNET_CLI_TELEMETRY_OPTOUT=1 dotnet build spikes/roundtrip/Sts2Agent.csproj -p:Sts2Dir="${Sts2Dir:?请先配置并加载 .env}"
 ```
 
 ```sh
-python3 scripts/prepare_roundtrip.py --game-dir "$HOME/.local/share/Steam/steamapps/common/Slay the Spire 2"
+python3 scripts/prepare_roundtrip.py --game-dir "${Sts2Dir:?请先配置并加载 .env}"
 ```
 
 准备脚本把可执行文件和本项目 Mod 复制到 `.tmp/roundtrip/runtime/`，用符号链接读取原游戏资源，写入独立测试设置。它不在原游戏目录安装 Mod。重新准备前先停止测试实例。运行目录通过 `installation.json` 绑定首次使用的安装位置；更换位置或发现缺少安装记录的非空运行目录时会拒绝操作，应先保留验证证据再重建 `.tmp/roundtrip`。

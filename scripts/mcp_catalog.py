@@ -48,8 +48,8 @@ def tool_definitions():
             "Preserves an underlying map; cannot close card selections or other screens.")),
         Tool(name="inspect_map", inputSchema=NO_ARGUMENTS, annotations=view, description=(
             "Open/reuse the entire current-act map, replacing a covering card page. Leaves it open. "
-            "Returns nodes, next connections, visited_path and actual selectable_nodes; connections alone do not grant travel. "
-            "Winged Boots can allow unconnected next-row choices. Does not travel or reveal unknown encounters.")),
+            "Returns nodes, next connections and visited_path; selectable_nodes lists all currently legal travel choices. "
+            "Does not travel or reveal unknown encounters.")),
         Tool(name="close_map", inputSchema=NO_ARGUMENTS, annotations=view, description=(
             "Close the exposed map using its enabled native back button; return a basic observation. "
             "Cannot close through card pages or force a mandatory map closed.")),

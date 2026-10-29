@@ -2,36 +2,36 @@
 
 当前原型可以响应 `get_state` 请求，以英语 JSON 输出可见战斗数值、敌人名称与意图、手牌名称及费用、状态图标和顶栏；Mod 0.4.0 起提供 [手牌详情调用](hand-inspection.md)，0.5.0 起提供 [界面悬停说明](ui-inspection.md)，0.6.0 起提供 [药水详情](potion-inspection.md)，0.7.0 起提供 [双方 powers 与敌人意图详情](combatant-inspection.md)，0.8.0 起提供 [遗物详情](relic-inspection.md)，0.9.0 起提供真实打开页面的 [全牌组查看及显式关闭](deck-inspection.md)。0.11.0 起提供三类 [战斗牌堆查看](pile-inspection.md)，含真实空堆反馈。它按请求返回 JSON，不会持续自动输出；基础字段及限制见 [战斗观察 JSON](observation.md)。
 
-以下步骤面向本机 Linux Steam 游戏 `v0.107.1`，依据已核对的 Mod 加载器和现有接口整理。独立无头实例已完成验证；正常游戏中的读取已有 [响应与截图样本](../research/2026-10-29-battle-observation-audit.md)，该样本使用旧版结构；新版按 [静态画面信息边界](../observation.md) 过滤，已增加独立图形实例的验证。
+以下步骤适用于 Linux Steam 游戏 `v0.107.1`，依据已核对的 Mod 加载器和现有接口整理。独立无头实例已完成验证；正常游戏中的读取已有 [响应与截图样本](../research/2026-10-29-battle-observation-audit.md)，该样本使用旧版结构；新版按 [静态画面信息边界](../observation.md) 过滤，已增加独立图形实例的验证。
 
 ## 安装文件
 
 Mod 0.12.0 新增 [地图查看与独立关闭](map-inspection.md)，文件接口与 MCP 均可用。
 
-退出游戏后，把构建产物中的 `Sts2Agent.dll` 与 `Sts2Agent.json` 放入：
+按 [README](../../README.md#开发与运行入口) 配置游戏目录并在当前终端加载 `.env`。退出游戏后，把构建产物中的 `Sts2Agent.dll` 与 `Sts2Agent.json` 放入：
 
 ```text
-~/.local/share/Steam/steamapps/common/Slay the Spire 2/mods/Sts2Agent/
+<游戏安装目录>/mods/Sts2Agent/
 ```
 
 需要重新构建时，先按 [验证指南](roundtrip.md) 的构建步骤生成产物，再在项目根目录分别执行以下两条命令：
 
 ```sh
-mkdir -p "$HOME/.local/share/Steam/steamapps/common/Slay the Spire 2/mods/Sts2Agent"
+mkdir -p "${Sts2Dir:?请先配置并加载 .env}/mods/Sts2Agent"
 ```
 
 ```sh
-cp spikes/roundtrip/bin/Debug/net9.0/Sts2Agent.dll spikes/roundtrip/bin/Debug/net9.0/Sts2Agent.json "$HOME/.local/share/Steam/steamapps/common/Slay the Spire 2/mods/Sts2Agent/"
+cp spikes/roundtrip/bin/Debug/net9.0/Sts2Agent.dll spikes/roundtrip/bin/Debug/net9.0/Sts2Agent.json "${Sts2Dir:?请先配置并加载 .env}/mods/Sts2Agent/"
 ```
 
 该 Mod 清单声明仅加载 DLL，没有 PCK 或社区库依赖。
 
 ## Steam 启动配置
 
-在 Steam 游戏库中打开游戏的“属性 → 通用 → 启动选项”，加入下列配置。下面的绝对路径对应本机项目位置，移动项目后应同步修改：
+在 Steam 游戏库中打开游戏的“属性 → 通用 → 启动选项”，加入下列配置，将 `/absolute/path/to/sts2_agent` 替换为项目目录的实际绝对路径。移动项目后应同步修改：
 
 ```text
-env STS2_AGENT_IPC_DIR=/home/c163q/Program/workspace/project/sts2_agent/.tmp/live/ipc %command%
+env STS2_AGENT_IPC_DIR="/absolute/path/to/sts2_agent/.tmp/live/ipc" %command%
 ```
 
 `%command%` 保留 Steam 原有启动命令，在它前面通过 `env` 设置通信目录；Steam 启动选项的包装方式参见 [Steam 官方支持说明](https://help.steampowered.com/en/faqs/view/145A-FE54-F37B-278A)。已有启动选项时应合并保留原设置。

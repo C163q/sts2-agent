@@ -22,7 +22,19 @@ MCP 固定提供 12 个工具，完整目录及调用语义见 [MCP 接入](docs
 - [本地 MCP 接入](docs/development/mcp.md)：依赖安装、Codex 配置、工具与错误恢复。
 - [代码结构与验证](docs/development/architecture.md)：模块职责、修改入口和无需游戏的检查。
 
-需要自行安装 Linux 游戏、.NET 9 SDK 和 Python 3；MCP 另需 [requirements-mcp.txt](requirements-mcp.txt)。游戏路径可通过构建参数 `Sts2Dir` 和准备脚本 `--game-dir` 配置。本机 Steam 安装位置仅供参考：`~/.local/share/Steam/steamapps/common/Slay the Spire 2`。
+需要自行安装 Linux 游戏、.NET 9 SDK 和 Python 3；MCP 另需 [requirements-mcp.txt](requirements-mcp.txt)。先复制 [配置示例](.env.example)：
+
+```sh
+cp .env.example .env
+```
+
+根据机器环境编辑 `.env`，将 `Sts2Dir` 填为游戏安装目录的绝对路径。`.env` 不纳入 Git，也不会自动读取；在执行构建、准备或安装命令的终端中先运行：
+
+```sh
+. ./.env
+```
+
+开发指南使用同一变量传入构建参数 `Sts2Dir` 和准备脚本 `--game-dir`。
 
 仓库不包含游戏程序集、资源、存档或密钥。当前不依赖社区库或 Godot 编辑器；[BaseLib](https://github.com/Alchyr/BaseLib-StS2) 和 [RitsuLib](https://github.com/BAKAOLC/STS2-RitsuLib) 仅为待评估依赖。升级游戏或依赖前须重新核对 API 和兼容性。声音、其他游戏版本及完整游玩尚未验证。
 
