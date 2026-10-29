@@ -79,4 +79,3 @@ def player_result(response):
     if code not in {"stale_state", "illegal_action", "invalid_request", "expired_request"}:
         error["outcome"] = "unknown"
     return {"error": error}
-

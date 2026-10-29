@@ -1,0 +1,150 @@
+import asyncio
+import logging
+from functools import partial
+
+import anyio
+
+from deck_details import deck_arguments
+from inspection_details import inspection_details
+from map_details import map_arguments
+from pile_details import pile_arguments
+from player_output import player_result
+
+
+class GameTools:
+    def __init__(self, client, controller=None):
+        self.client = client
+        self.controller = controller
+        self.lock = asyncio.Lock()
+        self.snapshot_id = None
+
+    async def get_observation(self):
+        async with self.lock:
+            self.snapshot_id = None
+            if error := self._acquire_controller():
+                return error
+            payload, snapshot_id = await self._request("get_state")
+            await anyio.lowlevel.checkpoint_if_cancelled()
+            self.snapshot_id = snapshot_id
+            return payload
+
+    async def inspect_hand(self):
+        return await self._inspect("inspect_hand")
+
+    async def inspect_ui(self):
+        return await self._inspect("inspect_ui")
+
+    async def inspect_potions(self):
+        return await self._inspect("inspect_potions")
+
+    async def inspect_combatants(self):
+        return await self._inspect("inspect_combatants")
+
+    async def inspect_relics(self):
+        return await self._inspect("inspect_relics")
+
+    async def inspect_deck(self, arguments=None):
+        try:
+            arguments = deck_arguments(arguments)
+        except ValueError:
+            return player_result({"ok": False, "error": {"code": "invalid_request"}})
+        return await self._change_view("inspect_deck", arguments)
+
+    async def close_card_view(self):
+        return await self._change_view("close_card_view")
+
+    async def inspect_map(self, arguments=None):
+        return await self._map_view("inspect_map", arguments)
+
+    async def close_map(self, arguments=None):
+        return await self._map_view("close_map", arguments)
+
+    async def _map_view(self, operation, arguments):
+        try:
+            map_arguments(arguments)
+        except ValueError:
+            return player_result({"ok": False, "error": {"code": "invalid_request"}})
+        return await self._change_view(operation)
+
+    async def inspect_pile(self, arguments=None):
+        try:
+            arguments = pile_arguments(arguments)
+        except ValueError:
+            return player_result({"ok": False, "error": {"code": "invalid_request"}})
+        return await self._change_view("inspect_pile", arguments)
+
+    async def _change_view(self, operation, arguments=None):
+        async with self.lock:
+            self.snapshot_id = None
+            if error := self._acquire_controller():
+                return error
+            payload, _ = await self._request(operation, arguments=arguments)
+            await anyio.lowlevel.checkpoint_if_cancelled()
+            return payload
+
+    async def _inspect(self, operation):
+        async with self.lock:
+            previous, self.snapshot_id = self.snapshot_id, None
+            if error := self._acquire_controller():
+                return error
+            payload, snapshot_id = await self._request(operation)
+            await anyio.lowlevel.checkpoint_if_cancelled()
+            if previous == snapshot_id:
+                self.snapshot_id = previous
+            return payload
+
+    def _acquire_controller(self):
+        if self.controller is None:
+            return None
+        try:
+            self.controller.acquire()
+        except BlockingIOError:
+            return {"error": {
+                "code": "controller_busy",
+                "message": "Another MCP connection controls this game. Disconnect it before reading or acting here.",
+                "recovery": "disconnect_other_client",
+            }}
+        except OSError as error:
+            logging.getLogger(__name__).warning("Controller lock failed: %s", error)
+            return player_result({"ok": False, "error": {"code": "transport_error"}})
+        return None
+
+    async def end_turn(self):
+        async with self.lock:
+            if self.snapshot_id is None:
+                return {"error": {
+                    "code": "observation_required",
+                    "message": "Call get_observation before each action. Actions consume the previous observation.",
+                    "recovery": "get_observation",
+                }}
+            snapshot_id, self.snapshot_id = self.snapshot_id, None
+            payload, _ = await self._request("end_turn", snapshot_id)
+            return payload
+
+    async def _request(self, operation, expected_state=None, arguments=None):
+        try:
+            response = await anyio.to_thread.run_sync(partial(self.client.call, operation, expected_state, arguments=arguments))
+            if not isinstance(response, dict) or type(response.get("ok")) is not bool:
+                raise ValueError("Invalid game response.")
+            snapshot_id = None
+            if response["ok"]:
+                state = response["state"]
+                snapshot_id = state["snapshot_id"]
+                if not isinstance(snapshot_id, str) or not snapshot_id:
+                    raise ValueError("Missing observation token.")
+                response = {"ok": True, "state": inspection_details(operation, state, arguments)}
+            else:
+                if not isinstance(response["error"]["code"], str):
+                    raise ValueError("Invalid game error.")
+            payload = player_result(response)
+            if response["ok"] and "available_actions" in payload:
+                payload["available_actions"] = [
+                    action for action in payload.get("available_actions", []) if action == "end_turn"]
+        except (OSError, ValueError, KeyError, TypeError, RuntimeError) as error:
+            code = "timeout" if isinstance(error, TimeoutError) else "transport_error"
+            logging.getLogger(__name__).warning("Game request failed: %s", error)
+            payload = player_result({"ok": False, "error": {"code": code}})
+            snapshot_id = None
+        if "error" in payload and payload["error"]["recovery"] == "get_state":
+            payload["error"]["recovery"] = "get_observation"
+        return payload, snapshot_id

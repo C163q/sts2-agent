@@ -64,11 +64,14 @@ def main():
         arguments = {key: getattr(args, key) for key in ("pile", "detail_level", "view_upgrades", "sort_by", "descending")
                      if getattr(args, key) is not None}
         result = Client(args.ipc_dir).call(args.operation, args.expected_state, arguments=arguments or None)
-    except TimeoutError as error:
-        result = {"ok": False, "error": {"code": "timeout", "message": str(error)}}
-    except (OSError, RuntimeError, json.JSONDecodeError) as error:
-        result = {"ok": False, "error": {"code": "transport_error", "message": str(error)}}
-    print(json.dumps(result if args.raw else player_result(result), indent=2, ensure_ascii=False))
+        if not isinstance(result, dict) or type(result.get("ok")) is not bool:
+            raise ValueError("Invalid game response.")
+        payload = result if args.raw else player_result(result)
+    except (OSError, RuntimeError, ValueError, KeyError, TypeError) as error:
+        code = "timeout" if isinstance(error, TimeoutError) else "transport_error"
+        result = {"ok": False, "error": {"code": code, "message": str(error)}}
+        payload = result if args.raw else player_result(result)
+    print(json.dumps(payload, indent=2, ensure_ascii=False))
     if not result["ok"]:
         raise SystemExit(1)
 

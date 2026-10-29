@@ -1,0 +1,59 @@
+# 代码结构与验证
+
+当前仍是针对 Linux 游戏 `v0.107.1` 的原型。游戏内 Mod、外部文件客户端与 MCP server 保持分离，不在游戏线程调用模型或等待文件请求。
+
+## 代码职责
+
+| 位置 | 职责 |
+| --- | --- |
+| `spikes/roundtrip/BridgeMod.cs` | Mod 初始化、后台文件服务和 Godot 主线程任务泵 |
+| `spikes/roundtrip/FileMailbox.cs` | 原子文件协议、请求队列、响应缓存和等待超时 |
+| `spikes/roundtrip/GameAdapter.cs` | 主线程观察、令牌与合法性检查、动作分派和页面生命周期；测试场景准备以测试模式隔离 |
+| `spikes/roundtrip/*Observation.cs`、`*Inspection.cs`、`*View.cs` | 可见数据采样、按需详情、原生页面操作 |
+| `spikes/roundtrip/English*.cs`、`HoverTipText.cs` | 英语资源读取与受控格式化，不切换全局语言 |
+| `scripts/roundtrip_client.py` | 标准库文件客户端和 CLI；默认玩法输出，`--raw` 保留诊断协议 |
+| `scripts/game_output.py` | 已知玩法字段的递归投影与类型检查、基础观察与手牌结构校验 |
+| `scripts/player_output.py` | 去除控制包装、共享悬停解释、条件数值说明和错误恢复文案 |
+| `scripts/inspection_details.py`、`*_details.py` | 按操作校验并投影响应；牌组、牌堆与地图等具体结构各自维护 |
+| `scripts/game_tools.py` | 串行游戏会话、动作令牌、检查控制权及在线程中执行文件请求 |
+| `scripts/controller_lease.py` | 每个 IPC 目录的 MCP 进程控制锁 |
+| `scripts/mcp_catalog.py` | 工具名称、参数 schema、行为注解及面向模型的说明 |
+| `scripts/mcp_server.py` | stdio 启动、MCP 分派和结果封装；保留既有脚本入口 |
+| `scripts/test_*.py` | 无需游戏的单元与真实 stdio/临时文件 IPC 测试 |
+| `scripts/verify_*.py`、`spikes/roundtrip/*Checks.cs` | 显式运行的真实游戏验证及原型内检查，依赖各自指定的场景 |
+
+`roundtrip_client.player_result` 仍可导入；`mcp_server.GameTools` 和 `mcp_server.ControllerLease` 继续保留原有导入方式。标准库客户端不导入 MCP SDK。
+
+不为统一目录而批量迁移现有脚本或 C# 文件；后续正式打包、分离测试程序集或拆分游戏适配器时，须同时更新构建路径、启动配置及独立游戏验证。
+
+## 变更入口
+
+增加工具时，先核对目标版本游戏 API 与可见信息边界，再实现游戏内采样或正常动作。外部层分别补齐操作响应校验、玩法字段投影、会话中的令牌规则和工具定义。状态、正文和字段语义只在对应的开发指南完整定义；MCP 公共规则放在服务说明，工具描述只保留用途和独特约束，参数放在 schema 中。
+
+纯详情不准备动作；改变页面的工具须清除旧令牌。后台文件请求通过 `anyio.to_thread.run_sync` 等待，取消后不恢复观察权限；取消不能撤回已提交的游戏操作。完整的令牌、重试和控制锁约定见 [MCP 指南](mcp.md#调用和错误语义)，文件协议见 [往返指南](roundtrip.md#原型接口)。
+
+输出投影只保留声明字段，不会证明游戏侧读取是可见的；游戏采样仍需检查 UI 与生命周期。错误类型不以 0、空数组或空对象替代。MCP 基础观察要求全部顶层字段存在，嵌套对象按实际提供的字段投影和检查类型，不把它表述为完整的 JSON Schema 校验。
+
+## 无需游戏的验证
+
+安装依赖后，在仓库根目录运行全部 Python 检查：
+
+```sh
+.tmp/mcp-venv/bin/python -m unittest discover -s scripts -p 'test_*.py'
+```
+
+覆盖文件投影、参数与错误输入、动作令牌、取消和超时、控制权竞争，以及通过真正子进程建立的 stdio 协议。测试中的游戏响应来自临时文件服务或固定载荷，不需要运行游戏，不操作正式存档。
+
+只检查输出边界：
+
+```sh
+.tmp/mcp-venv/bin/python -m unittest discover -s scripts -p 'test_output_boundaries.py'
+```
+
+C# 构建需要自行安装游戏程序集，命令见 [构建前提](roundtrip.md#前提与构建)。构建只验证编译与引用，不能替代游戏内 Mod 加载、线程与页面行为验证。
+
+## 游戏内验证
+
+独立测试实例的准备、启动与结束回合验证见 [往返指南](roundtrip.md)。各详情和页面的 `verify_*.py` 命令见对应开发指南；页面检查会真实打开或关闭页面，往返检查会推进回合。不要把独立测试场景入口用于正式对局。
+
+游戏 API 或生命周期变更须重新验证加载与相关行为。只修改外部输出层时，先用错误输入回归、真实 stdio 和已有合法游戏样本回放检查；报告仍须明确是否重新运行真实游戏。

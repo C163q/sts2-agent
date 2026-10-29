@@ -1,7 +1,11 @@
 import copy
+import contextlib
+import io
 import json
 import unittest
+from unittest.mock import patch
 
+import roundtrip_client
 from mcp_server import GameTools, tool_result
 from roundtrip_client import player_result
 
@@ -27,6 +31,17 @@ class ReplyClient:
 
 
 class OutputBoundaryTests(unittest.TestCase):
+    def test_cli_malformed_payload_returns_json_error_and_nonzero_exit(self):
+        response = {"ok": True, "state": {"scene": "combat", "enemies": [None]}}
+        output = io.StringIO()
+        with patch("sys.argv", ["roundtrip_client.py", "--ipc-dir", "/tmp/unused", "get_state"]), \
+                patch.object(roundtrip_client.Client, "call", return_value=response), \
+                contextlib.redirect_stdout(output):
+            with self.assertRaises(SystemExit) as raised:
+                roundtrip_client.main()
+        self.assertEqual(raised.exception.code, 1)
+        self.assertEqual(json.loads(output.getvalue())["error"]["code"], "transport_error")
+
     def test_observation_strips_nested_extras_and_unexpanded_card_effects(self):
         state = observation()
         expected = player_result({"ok": True, "state": copy.deepcopy(state)})
