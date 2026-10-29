@@ -18,6 +18,15 @@ class PrepareRoundtripTests(unittest.TestCase):
             build.mkdir(parents=True)
             for name in ("Sts2Agent.dll", "Sts2Agent.json"):
                 (build / name).write_text("fixture")
+            library = root / "library"
+            for name in ("RitsuLib.References.props", "assets.zip", "STS2-RitsuLib.dll",
+                         "compat/0.107.1/STS2-RitsuLib.dll", "compat/0.107.1/STS2-RitsuLib.Runtime.dll",
+                         "shared/STS2-RitsuLib.Shared.dll", "shared/STS2-RitsuLib.Ui.dll",
+                         "shared/STS2-RitsuLib.Settings.dll", "ritsulib-variants.manifest"):
+                path = library / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("fixture")
+            (library / "mod_manifest.json").write_text(json.dumps({"id": "STS2-RitsuLib", "version": "0.6.10"}))
             games = []
             for label in ("A", "B"):
                 game = root / label
@@ -26,12 +35,19 @@ class PrepareRoundtripTests(unittest.TestCase):
                 (game / "resource.dat").write_text(label)
                 (game / "release_info.json").write_text(json.dumps({"version": label}))
                 games.append(game)
-            first = subprocess.run([sys.executable, str(script), "--game-dir", str(games[0])],
+            missing = subprocess.run([sys.executable, str(script), "--game-dir", str(games[0]),
+                                      "--ritsu-lib-dir", str(root / "missing")], capture_output=True, text=True)
+            self.assertNotEqual(missing.returncode, 0)
+            self.assertFalse((root / ".tmp" / "roundtrip" / "runtime").exists())
+            first = subprocess.run([sys.executable, str(script), "--game-dir", str(games[0]),
+                                    "--ritsu-lib-dir", str(library)],
                                    capture_output=True, text=True)
             self.assertEqual(first.returncode, 0, first.stderr)
             work = root / ".tmp" / "roundtrip"
             record = (work / "installation.json").read_text()
-            second = subprocess.run([sys.executable, str(script), "--game-dir", str(games[1])],
+            self.assertTrue((work / "runtime/mods/STS2-RitsuLib/compat/0.107.1/STS2-RitsuLib.Runtime.dll").is_file())
+            second = subprocess.run([sys.executable, str(script), "--game-dir", str(games[1]),
+                                     "--ritsu-lib-dir", str(library)],
                                     capture_output=True, text=True)
             self.assertNotEqual(second.returncode, 0, second.stdout)
             self.assertEqual((work / "runtime" / "SlayTheSpire2").read_text(), "A")

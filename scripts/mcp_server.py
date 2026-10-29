@@ -25,7 +25,7 @@ def tool_result(payload):
 
 
 def create_server(tools):
-    server = Server("sts2-agent", version="0.9.0", instructions=SERVER_INSTRUCTIONS)
+    server = Server("sts2-agent", version="0.10.0", instructions=SERVER_INSTRUCTIONS)
     definitions = tool_definitions()
     handlers = {tool.name: getattr(tools, tool.name) for tool in definitions}
 

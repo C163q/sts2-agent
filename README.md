@@ -4,16 +4,16 @@
 
 ## 当前能力
 
-当前为 Linux 游戏 `v0.107.1` 的验证原型：Mod `0.12.0` 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。已有真实游戏及 Codex 模型的观察、结束回合和读回验证；尚未支持出牌、使用药水、地图选路或完整自动游玩。
+当前为 Linux 游戏 `v0.107.1` 的验证原型：Mod `0.13.0` 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。已有真实游戏及 Codex 模型的观察、结束回合和读回验证；尚未支持出牌、使用药水、地图选路或完整自动游玩。
 
 | 能力 | 接口与说明 |
 | --- | --- |
 | 基础观察 | 当前静态画面的英语 JSON，包含角色、手牌名称与费用、敌人当前意图、状态图标及顶栏；见 [观察格式](docs/development/observation.md) |
 | 按需详情 | 查看 [手牌](docs/development/hand-inspection.md)、[界面帮助](docs/development/ui-inspection.md)、[药水](docs/development/potion-inspection.md)、[双方 powers 与意图](docs/development/combatant-inspection.md)、[遗物](docs/development/relic-inspection.md) |
 | 原生页面 | 查看 [全牌组](docs/development/deck-inspection.md)、[战斗牌堆](docs/development/pile-inspection.md) 和 [当前幕地图](docs/development/map-inspection.md)，保留页面直到显式关闭 |
-| 游戏动作 | 结束一次回合；执行前校验观察令牌与合法性，通过游戏现有动作队列执行 |
+| 游戏动作 | [结束回合](docs/development/end-turn.md)，返回期间事件、停止原因及最终观察；遇到已识别的选择时返回，尚不代选 |
 
-MCP 固定提供 12 个工具，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察不自动展开详情；隐藏对象、抽取顺序和未来随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
+MCP 固定提供 12 个工具，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
 
 ## 开发与运行入口
 
@@ -28,19 +28,20 @@ MCP 固定提供 12 个工具，完整目录及调用语义见 [MCP 接入](docs
 cp .env.example .env
 ```
 
-根据机器环境编辑 `.env`，将 `Sts2Dir` 填为游戏安装目录的绝对路径。`.env` 不纳入 Git，也不会自动读取；在执行构建、准备或安装命令的终端中先运行：
+根据机器环境编辑 `.env`，将 `Sts2Dir` 填为游戏安装目录的绝对路径，`RitsuLibDir` 填为完整 RitsuLib `0.6.10`、游戏 `0.107.1` 兼容运行时的解压目录；获取方式见 [构建指南](docs/development/roundtrip.md#前提与构建)。`.env` 不纳入 Git，也不会自动读取；在执行构建、准备或安装命令的终端中先运行：
 
 ```sh
 . ./.env
 ```
 
-开发指南使用同一变量传入构建参数 `Sts2Dir` 和准备脚本 `--game-dir`。
+开发指南将配置变量传入构建参数和准备脚本。
 
-仓库不包含游戏程序集、资源、存档或密钥。当前不依赖社区库或 Godot 编辑器；[BaseLib](https://github.com/Alchyr/BaseLib-StS2) 和 [RitsuLib](https://github.com/BAKAOLC/STS2-RitsuLib) 仅为待评估依赖。升级游戏或依赖前须重新核对 API 和兼容性。声音、其他游戏版本及完整游玩尚未验证。
+仓库不包含游戏程序集、资源、第三方库二进制、存档或密钥。当前依赖 [RitsuLib](https://github.com/BAKAOLC/STS2-RitsuLib) `0.6.10` 的 `0.107.1` 兼容运行时，不依赖 BaseLib 或 Godot 编辑器。升级游戏或依赖前须重新核对 API 和兼容性。声音、其他游戏版本及完整游玩尚未验证。
 
 ## 协作与证据
 
 - [协作约定](AGENTS.md)、[文档规范](docs/documentation.md)、[Codex 环境约定](docs/ai/codex.md)、[Cursor 模型选择](docs/ai/cursor-model-selection.md)。
 - [项目审阅与重构](docs/research/2026-10-29-project-review.md)：输出边界、提示词、JSON 格式、官方实践及验证范围。
-- [结束回合事件与交互边界调研](docs/research/2026-10-29-end-turn-events.md)：战斗历史、自动结算及选择暂停的候选设计，尚未实现。
+- [结束回合事件与交互边界调研](docs/research/2026-10-29-end-turn-events.md)：战斗历史、RitsuLib 与选择暂停的设计依据；实际行为见 [接口说明](docs/development/end-turn.md)。
+- [结束回合接入验证](docs/research/2026-10-29-end-turn-validation.md)：复杂机制、图形界面、真实 MCP 往返和未覆盖范围。
 - [最小往返验证](docs/research/2026-10-28-roundtrip-validation.md)、[基础画面核对](docs/research/2026-10-29-battle-observation-audit.md)、[地图 MCP 验证](docs/research/2026-10-29-mcp-map-inspection.md)：阶段性证据，当前接口以开发指南为准。

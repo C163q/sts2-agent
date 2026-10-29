@@ -51,6 +51,15 @@ TOP_BAR = {
     "relics": nullable([RELIC]), "map_visible": bool, "deck_visible": bool, "settings_visible": bool,
 }
 SCREEN = {"status": str, "view": str}
+EVENT_ENTITY = {"id": int, "kind": str, "name": TEXT}
+EVENT_SOURCE = {"kind": str, "name": TEXT}
+EVENT = {
+    "sequence": int, "type": str, "actor": EVENT_ENTITY, "target": EVENT_ENTITY,
+    "source": nullable(EVENT_SOURCE), "card": {"id": int, "name": TEXT},
+    "hp_loss": NUMBER, "blocked": int, "before": NUMBER, "after": NUMBER,
+    "name": TEXT, "autoplay": bool, "change": str,
+}
+TRANSITION = {"stop_reason": str, "complete": bool, "events": [EVENT]}
 OBSERVATION = {
     "scene": str, "screen": SCREEN, "turn": NUMBER, "player": nullable(PLAYER),
     "enemies": nullable([ENEMY]), "top_bar": nullable(TOP_BAR),
@@ -58,7 +67,7 @@ OBSERVATION = {
     "available_actions": [str],
 }
 GAMEPLAY = {
-    **OBSERVATION, "hand": nullable([HAND_CARD]),
+    **OBSERVATION, "transition": TRANSITION, "hand": nullable([HAND_CARD]),
     "hover_tips": [{**TIP, "sources": [str]}], "slot_tip": TIP,
     "potion_slots": nullable([nullable({"name": TEXT, "description": str, "hover_tips": [TIP]})]),
     "relics": nullable([{**RELIC, "description": str, "hover_tips": [TIP]}]),

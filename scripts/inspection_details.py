@@ -4,6 +4,7 @@ from game_output import hand_details, observation_details
 from map_details import closed_map, map_details
 from pile_details import pile_details
 from relic_details import relic_details
+from transition_details import end_turn_details
 
 
 def potion_details(state):
@@ -50,7 +51,7 @@ def ui_details(state):
 
 READERS = {
     "get_state": observation_details,
-    "end_turn": observation_details,
+    "end_turn": end_turn_details,
     "inspect_hand": hand_details,
     "inspect_ui": ui_details,
     "inspect_potions": potion_details,

@@ -7,19 +7,20 @@
 - 自行安装 Linux 版《杀戮尖塔 2》，按 [README 配置路径](../../README.md#开发与运行入口)，在当前终端加载 `.env`。游戏路径通过 `Sts2Dir` 和 `--game-dir` 传入。
 - 安装 .NET 9 SDK；本次使用 `9.0.122`，仓库的 `global.json` 允许同系列更高功能带。需要 .NET 9 引用包，单独安装运行时不足以编译。
 - 安装 Python 3；本文原有文件客户端和验证脚本只使用标准库，MCP 服务的额外依赖见接入指南。
-- 本原型没有 NuGet 包依赖，引用本地游戏随附的 `sts2.dll`、`GodotSharp.dll`、`0Harmony.dll` 与 `SmartFormat.dll`；关闭未使用的传递框架引用下载，原型目录的 NuGet 配置不启用远程源。
+- 从 [RitsuLib 0.6.10 官方发布](https://github.com/BAKAOLC/STS2-RitsuLib/releases/tag/v0.6.10) 下载 `STS2.RitsuLib.Compat.0.107.1.0.6.10.github.zip`，解压到自行选择的目录并配置 `RitsuLibDir`。目录须直接包含 `RitsuLib.References.props`、`mod_manifest.json`、根 DLL、`assets.zip`、`shared/` 和 `compat/0.107.1/`，不能只复制根 DLL。发布包 SHA-256：`3c7dafb8a8d36d66891abd6c601aec6f43de9890693d1b583e67e2c6d71ebfb5`。
+- 构建引用上述本地库与游戏自带程序集，不下载 NuGet 包，原型目录的 NuGet 配置不启用远程源。
 
 在仓库根目录执行：
 
 ```sh
-env DOTNET_CLI_HOME=/tmp/sts2-agent-dotnet NUGET_PACKAGES=/tmp/sts2-agent-nuget DOTNET_CLI_TELEMETRY_OPTOUT=1 dotnet build spikes/roundtrip/Sts2Agent.csproj -p:Sts2Dir="${Sts2Dir:?请先配置并加载 .env}"
+env DOTNET_CLI_HOME=/tmp/sts2-agent-dotnet NUGET_PACKAGES=/tmp/sts2-agent-nuget DOTNET_CLI_TELEMETRY_OPTOUT=1 dotnet build spikes/roundtrip/Sts2Agent.csproj -p:Sts2Dir="${Sts2Dir:?请先配置并加载 .env}" -p:RitsuLibDir="${RitsuLibDir:?请先配置并加载 .env}"
 ```
 
 ```sh
-python3 scripts/prepare_roundtrip.py --game-dir "${Sts2Dir:?请先配置并加载 .env}"
+python3 scripts/prepare_roundtrip.py --game-dir "${Sts2Dir:?请先配置并加载 .env}" --ritsu-lib-dir "${RitsuLibDir:?请先配置并加载 .env}"
 ```
 
-准备脚本把可执行文件和本项目 Mod 复制到 `.tmp/roundtrip/runtime/`，用符号链接读取原游戏资源，写入独立测试设置。它不在原游戏目录安装 Mod。重新准备前先停止测试实例。运行目录通过 `installation.json` 绑定首次使用的安装位置；更换位置或发现缺少安装记录的非空运行目录时会拒绝操作，应先保留验证证据再重建 `.tmp/roundtrip`。
+准备脚本把可执行文件、本项目 Mod 和完整 RitsuLib 运行时复制到 `.tmp/roundtrip/runtime/`，用符号链接读取原游戏资源，写入独立测试设置。它不在原游戏目录安装 Mod。重新准备前先停止测试实例。运行目录通过 `installation.json` 绑定首次使用的安装位置；更换位置或发现缺少安装记录的非空运行目录时会拒绝操作，应先保留验证证据再重建 `.tmp/roundtrip`。
 
 ## 启动与验证
 
@@ -72,7 +73,7 @@ python3 scripts/test_prepare_roundtrip.py
 | `close_card_view` | 无须动作令牌；显式关闭当前原生卡牌查看页，返回基础观察；保留下层地图，不关闭其他页面或自动授权战斗动作 |
 | `close_deck` | 仅为旧文件客户端兼容保留，只关闭牌组；MCP 使用通用 `close_card_view` |
 | `start_test_combat` | 仅测试模式且无进行中的对局时，在主菜单创建临时对局并用游戏开发入口进入指定战斗；该操作不是正常游玩的动作 |
-| `end_turn` | 单人战斗、玩家可行动阶段且非暂停状态下，提交 `EndPlayerTurnAction`，等待下一可行动回合或战斗结束 |
+| `end_turn` | 单人战斗、玩家可行动阶段且非暂停状态下，提交 `EndPlayerTurnAction`，返回期间事件，到下一可行动回合、已识别的选择或战斗结束时停止；见 [结束回合](end-turn.md) |
 
 请求写入 `requests/<id>.json`，其中 `id` 是不带连字符的 UUID；先写临时文件再原子重命名为 `.json`。请求体包含 `id`、`operation`；动作另带 `expected_state`，牌组及战斗牌堆查看的选项放在 `arguments` 对象中。响应写入 `responses/<id>.json`，成功包含 `ok: true` 和 `state`，失败包含 `ok: false` 和 `error.code`、`error.message`。
 

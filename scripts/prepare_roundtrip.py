@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import shutil
 from pathlib import Path
 
@@ -7,6 +8,7 @@ from pathlib import Path
 def main():
     parser = argparse.ArgumentParser(description="准备独立的 Linux 游戏验证目录。")
     parser.add_argument("--game-dir", required=True, type=Path)
+    parser.add_argument("--ritsu-lib-dir", type=Path, default=os.environ.get("RitsuLibDir"))
     parser.add_argument("--language", choices=("eng", "zhs"), default="eng")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
@@ -17,6 +19,18 @@ def main():
         parser.error("游戏目录中缺少 SlayTheSpire2。")
     if not (build / "Sts2Agent.dll").is_file():
         parser.error("请先构建 spikes/roundtrip/Sts2Agent.csproj。")
+    if not args.ritsu_lib_dir:
+        parser.error("请配置 RitsuLibDir 或 --ritsu-lib-dir，指向完整的 RitsuLib 0.6.10 运行时。")
+    library = args.ritsu_lib_dir.expanduser().resolve()
+    required = ("mod_manifest.json", "RitsuLib.References.props", "assets.zip", "STS2-RitsuLib.dll",
+                "ritsulib-variants.manifest", "compat/0.107.1/STS2-RitsuLib.dll",
+                "compat/0.107.1/STS2-RitsuLib.Runtime.dll", "shared/STS2-RitsuLib.Shared.dll",
+                "shared/STS2-RitsuLib.Ui.dll", "shared/STS2-RitsuLib.Settings.dll")
+    if any(not (library / name).is_file() for name in required):
+        parser.error("RitsuLib 目录不完整或缺少 0.107.1 兼容目标。")
+    manifest = json.loads((library / "mod_manifest.json").read_text())
+    if manifest.get("id") != "STS2-RitsuLib" or manifest.get("version") != "0.6.10":
+        parser.error("本原型要求 RitsuLib 0.6.10。")
     installation = runtime.parent / "installation.json"
     if installation.exists():
         previous = json.loads(installation.read_text())
@@ -34,6 +48,7 @@ def main():
     destination.mkdir(parents=True, exist_ok=True)
     for name in ("Sts2Agent.dll", "Sts2Agent.json"):
         shutil.copy2(build / name, destination / name)
+    shutil.copytree(library, runtime / "mods" / "STS2-RitsuLib", dirs_exist_ok=True)
     (runtime / "override.cfg").write_text(
         '[application]\nconfig/use_custom_user_dir=true\n'
         'config/custom_user_dir_name="sts2_agent-roundtrip"\n'
@@ -48,6 +63,7 @@ def main():
     installation.write_text(json.dumps({
         "game_dir": str(game), "runtime": str(runtime),
         "release": json.loads((game / "release_info.json").read_text()),
+        "ritsulib": {"version": "0.6.10", "api": "0.107.1", "source": str(library)},
     }, indent=2) + "\n")
     print(runtime)
 

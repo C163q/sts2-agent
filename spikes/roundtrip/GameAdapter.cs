@@ -280,9 +280,12 @@ internal sealed class GameAdapter(bool testMode)
             await game.StartNewSingleplayerRun(ModelDb.Character<Ironclad>(), false,
                 ModelDb.ActsByIndex.Select(acts => acts[0]).ToArray(),
                 Array.Empty<ModifierModel>(), "STS2AGENTROUNDTRIP", GameMode.Standard);
+            string? turnScenario = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_TURN_SCENARIO");
             await RunManager.Instance.EnterRoomDebug(RoomType.Monster,
-                model: ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
+                model: turnScenario == "revive" ? ModelDb.Encounter<DecimillipedeElite>().ToMutable()
+                    : ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
             await WaitUntil(() => CanEndTurn());
+            if (turnScenario != null) await TurnFixture.Configure(turnScenario, LocalPlayer!);
             // Debug room entry bypasses the normal map-travel disabling step.
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_MAP_CHECKS") != null)
             {
@@ -335,10 +338,22 @@ internal sealed class GameAdapter(bool testMode)
             Player player = LocalPlayer!;
             int turn = player.PlayerCombatState!.TurnNumber;
             CombatState combat = CombatManager.Instance.DebugOnlyGetState()!;
+            if (!STS2RitsuLib.RitsuLibFramework.IsActive)
+                return FileMailbox.Error(request.Id, "illegal_action", "RitsuLib is unavailable; no action was submitted.");
+            using var journal = new TurnJournal(combat, player, observation.CardId);
             RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(new EndPlayerTurnAction(player, turn));
-            await WaitUntil(() => !CombatManager.Instance.IsInProgress
-                || !ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState())
-                || (player.PlayerCombatState!.TurnNumber > turn && CanEndTurn()));
+            string? reason = null;
+            DateTime deadline = DateTime.UtcNow.AddSeconds(25);
+            while (reason == null && DateTime.UtcNow < deadline)
+            {
+                await NGame.Instance!.ToSignal(NGame.Instance.GetTree(), SceneTree.SignalName.ProcessFrame);
+                reason = journal.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()),
+                    player.PlayerCombatState?.TurnNumber > turn && CanEndTurn()
+                    && RunManager.Instance.ActionQueueSet.IsEmpty);
+            }
+            reason ??= "timeout";
+            string state = await SettledObservation();
+            return Success(request.Id, state[..^1] + ",\"transition\":" + JsonSerializer.Serialize(journal.Result(reason)) + "}");
         }
         return Success(request.Id, await SettledObservation());
     }

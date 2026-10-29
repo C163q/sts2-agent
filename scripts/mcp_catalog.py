@@ -54,5 +54,7 @@ def tool_definitions():
             "Close the exposed map using its enabled native back button; return a basic observation. "
             "Cannot close through card pages or force a mandatory map closed.")),
         Tool(name="end_turn", inputSchema=NO_ARGUMENTS, annotations=action, description=(
-            "End the player's turn once and return the resulting observation. Requires a fresh get_observation.")),
+            "End the player's turn once; return observed events, a stop reason, and the resulting observation. "
+            "Stops for player choices without choosing; choice actions are not yet supported. "
+            "Requires a fresh get_observation. Never retry an incomplete transition automatically.")),
     ]

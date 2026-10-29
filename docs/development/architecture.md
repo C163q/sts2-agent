@@ -14,6 +14,9 @@
 | `scripts/roundtrip_client.py` | 标准库文件客户端和 CLI；默认玩法输出，`--raw` 保留诊断协议 |
 | `scripts/game_output.py` | 已知玩法字段的递归投影与类型检查、基础观察与手牌结构校验 |
 | `scripts/player_output.py` | 去除控制包装、共享悬停解释、条件数值说明和错误恢复文案 |
+| `spikes/roundtrip/TurnJournal.cs`、`TurnCapture.cs` | RitsuLib 与原生事件记录、伤害补录及来源追踪 |
+| `spikes/roundtrip/TurnBoundary.cs`、`TurnEventBuffer.cs` | 无游戏依赖的结束条件与有界事件缓冲 |
+| `scripts/transition_details.py` | 结束回合事件的结构校验与递归过滤 |
 | `scripts/inspection_details.py`、`*_details.py` | 按操作校验并投影响应；牌组、牌堆与地图等具体结构各自维护 |
 | `scripts/game_tools.py` | 串行游戏会话、动作令牌、检查控制权及在线程中执行文件请求 |
 | `scripts/controller_lease.py` | 每个 IPC 目录的 MCP 进程控制锁 |
@@ -51,6 +54,8 @@
 ```
 
 C# 构建需要自行安装游戏程序集，命令见 [构建前提](roundtrip.md#前提与构建)。构建只验证编译与引用，不能替代游戏内 Mod 加载、线程与页面行为验证。
+
+C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project spikes/roundtrip-checks/Sts2Agent.Checks.csproj`；它不替代游戏内生命周期验证。
 
 ## 游戏内验证
 

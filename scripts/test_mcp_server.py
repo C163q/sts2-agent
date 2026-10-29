@@ -154,6 +154,8 @@ class FakeGame:
                         "top_bar": {}, "buttons": {}, "available_actions": ["end_turn", "start_test_combat"],
                         "overlay": {"seed": "private"},
                     }
+                if operation == "end_turn" and response["ok"]:
+                    response["state"]["transition"] = {"stop_reason": "player_ready", "complete": True, "events": []}
                 if operation == "get_state" and self.deck_open:
                     response["state"].update(screen={"status": "covered", "view": "deck"}, available_actions=[])
                 if operation == "get_state" and self.pile_open:

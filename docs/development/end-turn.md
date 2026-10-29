@@ -1,0 +1,82 @@
+# 结束回合与期间事件
+
+适用于 Mod `0.13.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10` 的 `0.107.1` 兼容运行时。MCP 调用仍为无参数的 `end_turn()`；文件协议为 `end_turn`，需要最新观察令牌。
+
+## 执行与停止边界
+
+工具提交原生 `EndPlayerTurnAction`，从提交前开始记录，到以下边界之一返回。游戏负责结算；工具不模拟规则、不替玩家选择，也不连续结束多个可行动回合。
+
+| `transition.stop_reason` | 含义 |
+| --- | --- |
+| `player_ready` | 已进入后续玩家可行动回合，回合开始通知已发出、动作队列为空且正常结束回合条件成立 |
+| `choice_required` | 原生动作正在等待本地玩家选择，且手牌选择或已支持的原生选牌页面已显示 |
+| `combat_won` | 原生事件确认本场战斗胜利；不是整局通关 |
+| `combat_lost` | 原生事件确认本场战斗失败；不以暂时零血代替结果 |
+| `timeout` | 提交后 25 秒内未到达上述边界，游戏仍可能继续结算 |
+| `interrupted` | 原战斗对象被替换，未取得已确认的胜负 |
+
+选择可能发生在回合结束、敌方行动或回合开始。暴政出现时只返回此前事件，不包含未来选牌结果。当前没有选择动作工具，调用方应停止自动推进并交由人工处理，不能再次调用 `end_turn` 代替选择。尚未识别的选择界面仍可能最终返回 `timeout`，不能据此重发动作。
+
+## 返回结构
+
+保留原有基础观察，增加 `transition`；以下仅为该字段的示意：
+
+```json
+{
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": [
+      {
+        "sequence": 1,
+        "type": "damage",
+        "source": {"kind": "card", "name": "Wither"},
+        "target": {"id": 0, "kind": "player", "name": "The Ironclad"},
+        "hp_loss": 3,
+        "blocked": 0
+      }
+    ]
+  }
+}
+```
+
+`complete` 表示已到达正常停止边界且事件缓冲未截断，不表示已经证明覆盖全部游戏机制。`timeout`、`interrupted` 或超过 512 条记录时为 `false`。非 `player_ready` 或不完整的结果不向模型宣告可以再次结束回合。底层成功响应只表示本次调用已返回，仍须检查停止原因；传输先超时或游戏异常时适用原有未知结果错误语义。
+
+`get_state` / `get_observation` 只返回当前观察，不回放战报；事件不参与基础观察的 `snapshot_id`。相同请求 ID 的已有响应缓存保留原战报。进程重启、缓存删除或客户端未收到响应后的事件恢复尚未实现。动作仍消耗观察权限，不自动授权下一次动作。
+
+## 事件语义
+
+`sequence` 从 1 递增，表示本记录器捕获顺序，不承诺任意嵌套效果的完整因果树。
+
+| `type` | 内容 |
+| --- | --- |
+| `card_played` | 已进入出牌流程的牌、`autoplay`，以及可选目标和已核实的触发来源；不代表全部效果已完成 |
+| `card_drawn`、`card_discarded`、`card_exhausted` | 本地玩家牌的公开移动；抽牌在原生历史写入时记录，手牌弃置和消耗在原生入堆事件时记录，先于其后续触发效果 |
+| `card_added` | 生成后实际在手牌或预览中公开展示的牌；不输出隐藏入堆位置或未来抽取顺序 |
+| `damage` | 实际 `hp_loss`、`blocked`，可选伤害角色与来源；普通直接伤害包含全部格挡和致命一击，生命数字未公开时 `hp_loss` 为 `null` |
+| `hp_changed` | 未作为伤害记录的公开 HP 变化，含 `before`、`after`，例如治疗或直接处决；生命数字隐藏时不返回内部绝对值 |
+| `block_changed` | 格挡变化，含 `before`、`after`；普通伤害消耗的格挡由 `damage.blocked` 表达 |
+| `power_changed` | 名称、`change`（`applied` / `modified` / `removed`）及显示计数前后值；无数字图标或不存在的一侧用 `null` |
+| `died`、`revived`、`creature_added` | 可见实例的死亡、复活或加入，分别保留 |
+
+角色沿用战斗 `CombatId`，同一实例复活不换标识。牌沿用基础观察的稳定 ID；已经见过或期间实际展示的名称可以保留，未识别牌名为 `null`。来源仅提供已核实的卡牌、power 或遗物名称，不附送完整效果；未知来源为 `null` 或缺省。不输出敌人内部 move ID、未来动作、未发生的随机结果或未展示牌堆内容。
+
+## 实现与限制
+
+RitsuLib 提供统一通知，用于出牌、生成牌、角色加入及生命周期核对。抽牌事实使用原生历史写入点，弃置与消耗使用原生牌堆事件，避免 RitsuLib 后置通知在嵌套触发后才到达而倒序或漏记。原生角色事件补齐 HP、格挡、powers、死亡与复活；原生战斗事件决定胜负，原生动作状态识别选择。伤害通过已核对的 `CreatureCmd.Damage` 和 `Creature.LoseHpInternal` 入口补录，保留事件发生位置并避免丢失最后一击。原生 `DamageResult` 的格挡字段在同一流程稍后赋值，返回前补齐。
+
+来源通过异步执行上下文传递；惊逃自动出牌与灾厄处决另外保留明确来源。订阅在返回或异常时释放。游戏访问留在主线程，文件与模型等待在外部。
+
+当前不是完整游戏回放系统。未接入资源、牌面数值变化、复杂召唤和任意第三方 Mod 效果仍可能缺项；Osty 代受伤分支可能缺少原目标的格挡记录，不能用于这类战斗的完整伤害核算。未知选择界面、超时后的持续事件、完成选择后的续跑日志及断线恢复不在本版覆盖范围。升级游戏或 RitsuLib 后须重新验证。设计依据见 [调研](../research/2026-10-29-end-turn-events.md)。
+
+## 验证
+
+先按 [运行指南](roundtrip.md) 准备隔离实例。一个终端用 `python3 scripts/run_roundtrip.py --turn-scenario tyranny` 启动新实例；另一个终端运行：
+
+```sh
+python3 scripts/verify_end_turn.py --ipc-dir .tmp/roundtrip/ipc --scenario tyranny --report .tmp/turn-tyranny.json
+```
+
+验证只用于带相同场景参数的新测试实例主菜单。场景入口改变测试初始条件，仅由 `STS2_AGENT_TEST_MODE=1` 下的 `start_test_combat` 使用，不是公开玩法工具。每个场景须重启实例，不能在正式对局执行；`--windowed` 可验证图形显示。
+
+其他场景名称：`normal`、`wither`、`wither_death`、`enemy_death`、`retain_choice`、`boulder`、`doom`、`stampede`、`revive`、`blocked`、`hellraiser`、`exhaust_block`、`hidden_hp`。其中 `revive` 连续验证多个回合，以同时取得千足虫死亡及后续复活证据；`hellraiser` 和 `exhaust_block` 检查触发顺序，`hidden_hp` 检查未公开生命数字不进入日志。

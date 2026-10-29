@@ -82,10 +82,13 @@ async def verify(args):
             assert not executed.isError
             after = executed.structuredContent
             assert after["turn"] == before["turn"] + 1
+            assert after["transition"]["stop_reason"] == "player_ready" and after["transition"]["complete"], after
+            assert any(event["type"] == "damage" for event in after["transition"]["events"]), after
             duplicate = await call("end_turn")
             assert duplicate.isError and duplicate.structuredContent["error"]["code"] == "observation_required"
             readback = await call("get_observation")
-            assert not readback.isError and readback.structuredContent == after
+            assert not readback.isError and readback.structuredContent == {
+                key: value for key, value in after.items() if key != "transition"}
 
             current = await raw("get_state")
             advanced = await raw("end_turn", current["snapshot_id"])

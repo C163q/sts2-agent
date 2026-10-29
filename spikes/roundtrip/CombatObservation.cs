@@ -25,6 +25,7 @@ internal sealed class CombatObservation
     private readonly EnglishText english = new();
     private readonly CardIdentityMap<CardModel> cardIds = new();
     private CombatState? identityCombat;
+    internal int CardId(CardModel card) => cardIds.Get(card);
 
     public void Synchronize(CombatState? combat, Player? player)
     {
@@ -207,6 +208,12 @@ internal sealed class CombatObservation
             : VisibleUi.OnScreen(bar?.GetNodeOrNull<TextureRect>("%InfinityTex")) ? "infinite"
             : text != null ? "unknown" : "hidden";
         return (pair.current, pair.maximum, display);
+    }
+
+    internal static bool HealthNumbersVisible(Creature creature)
+    {
+        var node = NCombatRoom.Instance?.GetCreatureNode(creature);
+        return VisibleUi.Shown(node) && Health(node!).display is "numeric" or "dead";
     }
 
     private static int? Block(NCreature node)
