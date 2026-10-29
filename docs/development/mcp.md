@@ -177,7 +177,7 @@ Codex 沙箱若禁止本地 socketpair 写入，Python `asyncio` 的线程唤醒
 
 此前首次接入完成独立游戏的 MCP 回合往返，以及真实 Codex 模型的观察、结束一次回合和读回：游戏验证从回合 1 到 2，Codex 接续从回合 3 到 4、生命值从 61 到 54，动作结果与读回完全一致。本次遗物详情扩展未修改用户禁用的 Codex MCP 配置，未重新进行模型自动游玩验证。
 
-牌组工具已在 Mod 0.10.0 独立中文实例完成真实 stdio 浏览：28 张牌，摘要、完整、升级预览及重复查看与文件 JSON 一致；显式通用关闭后玩法观察不变、旧令牌不同，工具列表始终九项。样本为 `.tmp/roundtrip/mcp-deck/`；本次未对仍加载旧 Mod 的正式游戏调用新关闭工具，正式采样等待重启。
+牌组工具已在 Mod 0.10.0 独立中文实例完成真实 stdio 浏览：28 张牌，摘要、完整、升级预览及重复查看与文件 JSON 一致；显式通用关闭后玩法观察不变、旧令牌不同，工具列表始终九项。样本为 `.tmp/roundtrip/mcp-deck/`；用户重启后，正式 Mod 0.10.0 也完成相同的 MCP 浏览及显式通用关闭，取得 12 张牌，完整与升级模式各 6 条共享解释；与文件输出一致，前后玩法观察相同、原始令牌不同。正式样本为 `.tmp/live/mcp-deck/`。
 
 ```sh
 .tmp/mcp-venv/bin/python scripts/verify_mcp_deck.py --ipc-dir .tmp/live/ipc --output-dir .tmp/live/mcp-deck
@@ -185,4 +185,4 @@ Codex 沙箱若禁止本地 socketpair 写入，Python `asyncio` 的线程唤醒
 
 该脚本会真实打开、切换预览并关闭卡牌页面，只执行 UI 操作，不出牌或结束回合。地图叠层及其他牌堆通用关闭由独立原生检查覆盖。非战斗界面尚不支持。
 
-证据与范围见 [牌组 MCP 实施记录](../research/2026-10-29-mcp-deck-inspection.md)、[遗物 MCP 实施记录](../research/2026-10-29-mcp-relic-inspection.md)、[战斗对象 MCP 实施记录](../research/2026-10-29-mcp-combatant-inspection.md)、[药水 MCP 实施记录](../research/2026-10-29-mcp-potion-inspection.md)、[界面说明 MCP 实施记录](../research/2026-10-29-mcp-ui-inspection.md)、[手牌 MCP 实施记录](../research/2026-10-29-mcp-hand-inspection.md)、[首次 MCP 实施记录](../research/2026-10-29-mcp-plan.md) 和 [启动锁修复记录](../research/2026-10-29-mcp-startup-lock.md)。本次没有修改 Mod。仅提供 stdio，未实现 HTTP 服务或完整自动游玩；其他 agent 客户端尚未实测。
+证据与范围见 [牌组 MCP 实施记录](../research/2026-10-29-mcp-deck-inspection.md)、[遗物 MCP 实施记录](../research/2026-10-29-mcp-relic-inspection.md)、[战斗对象 MCP 实施记录](../research/2026-10-29-mcp-combatant-inspection.md)、[药水 MCP 实施记录](../research/2026-10-29-mcp-potion-inspection.md)、[界面说明 MCP 实施记录](../research/2026-10-29-mcp-ui-inspection.md)、[手牌 MCP 实施记录](../research/2026-10-29-mcp-hand-inspection.md)、[首次 MCP 实施记录](../research/2026-10-29-mcp-plan.md) 和 [启动锁修复记录](../research/2026-10-29-mcp-startup-lock.md)。本次将 Mod 更新至 0.10.0，以支持通用卡牌页关闭和地图遮挡判定。仅提供 stdio，未实现 HTTP 服务或完整自动游玩；其他 agent 客户端尚未实测。
