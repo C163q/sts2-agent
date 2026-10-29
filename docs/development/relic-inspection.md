@@ -1,6 +1,6 @@
 # 遗物详情 JSON
 
-文件操作 `inspect_relics` 适用于 Linux 游戏 `v0.107.1`、Mod `0.8.0`。一次只读查看当前遗物栏中可见、可悬停的遗物，以英语返回原生正文和附带解释。当前仅支持无遮挡战斗，尚未接入 MCP。
+文件操作 `inspect_relics` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.8.0`。一次只读查看当前遗物栏中可见、可悬停的遗物，以英语返回原生正文和附带解释。当前仅支持无遮挡战斗。MCP 与文件客户端返回相同的玩法 JSON。
 
 ## 读取
 
@@ -10,7 +10,7 @@
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_relics > .tmp/live/relic-inspection.json
 ```
 
-此调用不需要动作令牌，不进入 `available_actions`，不执行游戏动作。默认客户端移除控制信息；加 `--raw` 保留原始响应和状态令牌。
+MCP 调用 `inspect_relics()` 无须参数，不能授权动作；已有观察的令牌保留或失效规则见 [MCP 调用语义](mcp.md#调用和错误语义)。文件调用不需要动作令牌，不进入 `available_actions`，不执行游戏动作。默认客户端移除控制信息；加 `--raw` 保留原始响应和状态令牌。
 
 ## 格式
 
@@ -46,3 +46,5 @@ python3 scripts/verify_relics.py --ipc-dir .tmp/live/ipc --output .tmp/live/reli
 独立中文实例使用 `scripts/run_roundtrip.py --windowed --capture --check-relics`；在原有测试入口通过 `RelicCmd.Obtain` 准备 Anchor、Lantern 和 Pen Nib，加上初始 Burning Blood。不要为正式游戏设置测试标志。已完成独立游戏的 24 项检查及只读 JSON 导出，得到 4 个遗物、2 条共享解释；原有观察、手牌、界面、药水和战斗对象检查均通过，Python 全套 62 项通过。样本位于 `.tmp/roundtrip/relic-inspection.json`，证据及未验证范围见 [实施记录](../research/2026-10-29-relic-inspection-plan.md)。多人、非战斗界面、其他 Mod 改写悬停、全部遗物和全部特殊状态尚未穷举验证。
 
 正式游戏重启后已完成只读采样：返回 Burning Blood 和可见计数为 2 的 Silver Crucible，均有英语正文，没有原生附带解释，因此 `hover_tips: []`。重复详情及前后基础观察令牌一致，未执行游戏动作。JSON 位于 `.tmp/live/relic-inspection.json`，证据位于 `.tmp/live/relic-inspection-check.json`；正式与独立样本分别保存。
+
+正式游戏另完成 MCP server 0.6.0 的真实 stdio 只读采样，取得相同的两个遗物和可见计数；与文件 JSON 一致，重复读取及前后状态不变。JSON 为 `.tmp/live/mcp-relic-inspection.json`，协议证据为 `.tmp/live/mcp-relic-evidence.json`，验证范围见 [MCP 实施记录](../research/2026-10-29-mcp-relic-inspection.md)。

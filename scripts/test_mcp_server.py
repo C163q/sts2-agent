@@ -58,6 +58,15 @@ class FakeGame:
                  "sources": ["enemies.0.intents.0"]},
             ],
         }
+        self.relic_payload = {"relics": [
+            {"name": "Anchor", "counter": None, "description": "Start with 10 Block.", "hover_tips": [
+                {"title": "Block", "description": "Prevents damage."}]},
+            {"name": "Pen Nib", "counter": 0, "description": "Every 10th Attack.", "hover_tips": []},
+            {"name": "Anchor", "counter": None, "description": "Start with 10 Block.", "hover_tips": [
+                {"title": "Block", "description": "Prevents damage."}]},
+        ]}
+        self.relic_error = False
+        self.drop_relic_response = False
         self.combatant_error = False
         self.drop_combatant_response = False
         self.observation_started = threading.Event()
@@ -82,7 +91,7 @@ class FakeGame:
                 request = json.loads(path.read_text())
                 self.operations.append(request)
                 operation = request["operation"]
-                if operation in {"get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants"}:
+                if operation in {"get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics"}:
                     self.observation_started.set()
                     self.release_observation.wait(timeout=5)
                 response = {"id": request["id"], "ok": True}
@@ -126,6 +135,11 @@ class FakeGame:
                     if self.potion_error:
                         response = {"id": request["id"], "ok": False,
                                     "error": {"code": "illegal_action", "message": "/private/game/path"}}
+                if operation == "inspect_relics":
+                    response["state"] = {"snapshot_id": f"state-{self.turn}", **self.relic_payload}
+                    if self.relic_error:
+                        response = {"id": request["id"], "ok": False,
+                                    "error": {"code": "illegal_action", "message": "/private/game/path"}}
                 if operation == "inspect_combatants":
                     response["state"] = {"snapshot_id": f"state-{self.turn}", **self.combatant_payload}
                     if self.combatant_error:
@@ -133,7 +147,8 @@ class FakeGame:
                                     "error": {"code": "illegal_action", "message": "/private/game/path"}}
                 if not ((operation == "end_turn" and self.drop_action_response)
                         or (operation == "inspect_potions" and self.drop_potion_response)
-                        or (operation == "inspect_combatants" and self.drop_combatant_response)):
+                        or (operation == "inspect_combatants" and self.drop_combatant_response)
+                        or (operation == "inspect_relics" and self.drop_relic_response)):
                     target = self.responses / path.name
                     temporary = target.with_suffix(".tmp")
                     temporary.write_text(json.dumps(response))
@@ -146,6 +161,138 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(SERVER.exists(), "MCP server has not been implemented.")
         from mcp_server import GameTools
         self.tools_type = GameTools
+
+    async def test_relic_inspection_shares_tips_and_does_not_authorize_action(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            self.assertEqual(await tools.inspect_relics(), {
+                "relics": [
+                    {"name": "Anchor", "counter": None, "description": "Start with 10 Block."},
+                    {"name": "Pen Nib", "counter": 0, "description": "Every 10th Attack."},
+                    {"name": "Anchor", "counter": None, "description": "Start with 10 Block."},
+                ], "hover_tips": [{"title": "Block", "description": "Prevents damage.", "relic_indices": [0, 2]}],
+            })
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["inspect_relics"])
+
+    async def test_relic_inspection_rejects_malformed_details_and_clears_token(self):
+        missing = object()
+        cases = [
+            (("relics",), missing), (("relics",), None), (("relics",), {}), (("relics",), [None]),
+            (("relics", 0, "name"), missing), (("relics", 0, "name"), 1),
+            (("relics", 0, "counter"), missing), (("relics", 0, "counter"), True),
+            (("relics", 0, "counter"), "2"), (("relics", 0, "counter"), 1.5),
+            (("relics", 0, "counter"), -2147483649), (("relics", 0, "counter"), 2147483648),
+            (("relics", 0, "description"), missing), (("relics", 0, "description"), None),
+            (("relics", 0, "hover_tips"), missing), (("relics", 0, "hover_tips"), None),
+            (("relics", 0, "hover_tips"), {}), (("relics", 0, "hover_tips"), [None]),
+            (("relics", 0, "hover_tips", 0, "title"), missing),
+            (("relics", 0, "hover_tips", 0, "title"), []),
+            (("relics", 0, "hover_tips", 0, "description"), missing),
+            (("relics", 0, "hover_tips", 0, "description"), False),
+            (("snapshot_id",), None), (("snapshot_id",), ""),
+        ]
+        for path, value in cases:
+            with self.subTest(path=path, value=value), FakeGame() as game:
+                tools = self.tools_type(Client(game.directory))
+                await tools.get_observation()
+                target = game.relic_payload
+                for key in path[:-1]:
+                    target = target[key]
+                if value is missing:
+                    del target[path[-1]]
+                else:
+                    target[path[-1]] = value
+                result = await tools.inspect_relics()
+                self.assertEqual(result["error"]["code"], "transport_error")
+                self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+
+    async def test_relic_inspection_only_forwards_contract_fields(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            expected = await tools.inspect_relics()
+            payload = game.relic_payload
+            payload.update(scene="combat", hand=[{"id": 1}], enemies=[{"intents": [{"value": "7"}]}],
+                           available_actions=["end_turn"], hover_tips=[{"seed": "private"}], notes={"secret": True})
+            payload["relics"][0].update(model_id="private", relic_indices=[99], hidden_counter=100)
+            payload["relics"][0]["hover_tips"][0].update(debug="private", relic_indices=[99])
+            original = json.dumps(payload)
+            self.assertEqual(await tools.inspect_relics(), expected)
+            self.assertEqual(json.dumps(payload), original)
+
+    async def test_relic_inspection_accepts_empty_nullable_and_counter_boundaries(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            game.relic_payload = {"relics": []}
+            self.assertEqual(await tools.inspect_relics(), {"relics": [], "hover_tips": []})
+            for counter in [None, 0, -2147483648, 2147483647]:
+                game.relic_payload["relics"] = [{"name": None, "counter": counter, "description": "Text", "hover_tips": [
+                    {"title": None, "description": "One"}, {"title": None, "description": "One"},
+                    {"title": None, "description": "Two"}]}]
+                self.assertEqual(await tools.inspect_relics(), {
+                    "relics": [{"name": None, "counter": counter, "description": "Text"}],
+                    "hover_tips": [{"title": None, "description": "One", "relic_indices": [0]},
+                                   {"title": None, "description": "Two", "relic_indices": [0]}],
+                })
+
+    async def test_relic_inspection_preserves_an_unchanged_observation_token(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            await tools.inspect_relics()
+            self.assertEqual((await tools.end_turn())["turn"], 2)
+            self.assertEqual(game.operations[-1]["expected_state"], "state-1")
+
+    async def test_relic_inspection_invalidates_a_changed_observation_token(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            game.turn = 2
+            self.assertNotIn("error", await tools.inspect_relics())
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_relics"])
+
+    async def test_failed_relic_inspection_clears_token_and_sanitizes_game_error(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            game.relic_error = True
+            result = await tools.inspect_relics()
+            self.assertEqual(result["error"]["code"], "illegal_action")
+            self.assertEqual(result["error"]["recovery"], "get_observation")
+            self.assertNotIn("/private", json.dumps(result))
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+
+    async def test_timed_out_relic_inspection_clears_token_without_retry(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory, timeout=0.1))
+            await tools.get_observation()
+            game.drop_relic_response = True
+            self.assertEqual((await tools.inspect_relics())["error"]["code"], "timeout")
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_relics"])
+
+    async def test_cancelled_relic_inspection_does_not_restore_token(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            game.observation_started.clear()
+            game.release_observation.clear()
+            scopes = []
+
+            async def inspect():
+                with anyio.CancelScope() as scope:
+                    scopes.append(scope)
+                    await tools.inspect_relics()
+
+            async with anyio.create_task_group() as group:
+                group.start_soon(inspect)
+                started = await anyio.to_thread.run_sync(game.observation_started.wait, 2)
+                self.assertTrue(started, "Relic inspection did not reach the game transport.")
+                scopes[0].cancel()
+                game.release_observation.set()
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_relics"])
 
     async def test_combatant_inspection_is_read_only_and_preserves_shared_sources(self):
         from roundtrip_client import ENEMY_ATTACK_INTENT_NOTE
@@ -714,7 +861,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
                     listed = await session.list_tools()
-                    self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "end_turn"})
+                    self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "end_turn"})
                     inspection_tool = next(tool for tool in listed.tools if tool.name == "inspect_hand")
                     self.assertTrue(inspection_tool.annotations.readOnlyHint)
                     ui_tool = next(tool for tool in listed.tools if tool.name == "inspect_ui")
@@ -725,6 +872,9 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     combatant_tool = next(tool for tool in listed.tools if tool.name == "inspect_combatants")
                     self.assertTrue(combatant_tool.annotations.readOnlyHint)
                     self.assertEqual(combatant_tool.inputSchema, {"type": "object", "properties": {}, "additionalProperties": False})
+                    relic_tool = next(tool for tool in listed.tools if tool.name == "inspect_relics")
+                    self.assertTrue(relic_tool.annotations.readOnlyHint)
+                    self.assertEqual(relic_tool.inputSchema, {"type": "object", "properties": {}, "additionalProperties": False})
                     for tool in listed.tools:
                         self.assertEqual(tool.inputSchema.get("properties", {}), {})
                     missing = await session.call_tool("end_turn", {})
@@ -757,6 +907,15 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(set(combatants.structuredContent), {"scene", "player", "enemies", "hover_tips", "notes"})
                     self.assertEqual(combatants.structuredContent["enemies"][0]["intents"][0]["value"], "11")
                     self.assertEqual(json.loads(combatants.content[0].text), combatants.structuredContent)
+                    relics = await session.call_tool("inspect_relics", {})
+                    self.assertFalse(relics.isError)
+                    self.assertEqual(set(relics.structuredContent), {"relics", "hover_tips"})
+                    self.assertEqual(relics.structuredContent["relics"][1]["counter"], 0)
+                    self.assertEqual(relics.structuredContent["hover_tips"][0]["relic_indices"], [0, 2])
+                    self.assertEqual(json.loads(relics.content[0].text), relics.structuredContent)
+                    invalid_relics = await session.call_tool("inspect_relics", {"relic_index": 0})
+                    self.assertTrue(invalid_relics.isError)
+                    self.assertEqual(invalid_relics.structuredContent["error"]["code"], "invalid_request")
                     invalid_combatants = await session.call_tool("inspect_combatants", {"enemy_id": 7})
                     self.assertTrue(invalid_combatants.isError)
                     self.assertEqual(invalid_combatants.structuredContent["error"]["code"], "invalid_request")
@@ -787,7 +946,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     with ControllerLease(game.directory):
                         await session.initialize()
                         listed = await session.list_tools()
-                        self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "end_turn"})
+                        self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "end_turn"})
                         busy = await session.call_tool("get_observation", {})
                         self.assertTrue(busy.isError)
                         self.assertEqual(busy.structuredContent["error"]["code"], "controller_busy")
@@ -803,6 +962,9 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                         busy_combatants = await session.call_tool("inspect_combatants", {})
                         self.assertTrue(busy_combatants.isError)
                         self.assertEqual(busy_combatants.structuredContent["error"]["code"], "controller_busy")
+                        busy_relics = await session.call_tool("inspect_relics", {})
+                        self.assertTrue(busy_relics.isError)
+                        self.assertEqual(busy_relics.structuredContent["error"]["code"], "controller_busy")
                         self.assertEqual(game.operations, [])
                     inspected = await session.call_tool("inspect_ui", {})
                     self.assertFalse(inspected.isError)
@@ -837,7 +999,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     async with stdio_client(parameters) as (first_read, first_write):
                         async with ClientSession(first_read, first_write) as first:
                             await first.initialize()
-                            self.assertFalse((await first.call_tool("inspect_combatants", {})).isError)
+                            self.assertFalse((await first.call_tool("inspect_relics", {})).isError)
                             busy = await second.call_tool("get_observation", {})
                             self.assertEqual(busy.structuredContent["error"]["code"], "controller_busy")
                             blocked = await second.call_tool("end_turn", {})
@@ -846,7 +1008,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     recovered = await second.call_tool("get_observation", {})
                     self.assertFalse(recovered.isError)
                     self.assertEqual(recovered.structuredContent["turn"], 1)
-                    self.assertEqual([item["operation"] for item in game.operations], ["inspect_combatants", "get_state"])
+                    self.assertEqual([item["operation"] for item in game.operations], ["inspect_relics", "get_state"])
 
 
 if __name__ == "__main__":

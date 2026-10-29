@@ -12,6 +12,7 @@ from mcp.server.stdio import stdio_server
 from mcp.types import CallToolResult, TextContent, Tool, ToolAnnotations
 
 from combatant_details import combatant_details
+from relic_details import relic_details
 from roundtrip_client import Client, player_result
 
 
@@ -100,6 +101,9 @@ class GameTools:
     async def inspect_combatants(self):
         return await self._inspect("inspect_combatants")
 
+    async def inspect_relics(self):
+        return await self._inspect("inspect_relics")
+
     async def _inspect(self, operation):
         async with self.lock:
             previous, self.snapshot_id = self.snapshot_id, None
@@ -177,6 +181,8 @@ class GameTools:
                     response = {"ok": True, "state": potion_details(state)}
                 elif operation == "inspect_combatants":
                     response = {"ok": True, "state": combatant_details(state)}
+                elif operation == "inspect_relics":
+                    response = {"ok": True, "state": relic_details(state)}
             else:
                 if not isinstance(response["error"]["code"], str):
                     raise ValueError("Invalid game error.")
@@ -203,12 +209,13 @@ def tool_result(payload):
 
 
 def create_server(tools):
-    server = Server("sts2-agent", version="0.5.0", instructions=(
+    server = Server("sts2-agent", version="0.6.0", instructions=(
         "Control a local Slay the Spire 2 game. Call get_observation before each action. "
         "Use inspect_hand to read all current hand descriptions and shared hover tips. "
         "Use inspect_ui to read hover explanations for visible interface elements and resources. "
         "Use inspect_potions to read all visible potion slots, descriptions and shared hover tips. "
         "Use inspect_combatants to read both sides' visible powers and enemies' currently displayed intents with shared explanations. "
+        "Use inspect_relics to read all currently visible relic descriptions, displayed counters and shared hover tips. "
         "Inspections do not prepare an action; only end_turn is implemented as an action. "
         "Actions return the resulting observation but consume the action token. "
         "After any failed or timed-out action, read the state before deciding what to do. "
@@ -241,6 +248,11 @@ def create_server(tools):
                     "Read English hover explanations for the player's and visible enemies' powers and currently displayed enemy intents. "
                     "Shared hover_tips use sources paths into this result. Intent damage already includes current preview modifiers. "
                     "Does not reveal future moves, play cards, or prepare an action. Unavailable while aiming or playing a card.")),
+            Tool(name="inspect_relics", inputSchema=parameters, annotations=ToolAnnotations(
+                readOnlyHint=True, openWorldHint=False), description=(
+                    "Read all currently visible, hoverable relics' English descriptions and displayed counters during combat. "
+                    "Returns relics and shared hover_tips linked by zero-based relic_indices into this result. "
+                    "Does not reveal hidden relics or counters, open screens, or prepare an action.")),
             Tool(name="end_turn", inputSchema=parameters, annotations=ToolAnnotations(
                 readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False),
                 description="End the player's turn once and return the resulting state. Requires a fresh get_observation call."),
@@ -251,6 +263,7 @@ def create_server(tools):
         handlers = {"get_observation": tools.get_observation, "inspect_hand": tools.inspect_hand,
                     "inspect_ui": tools.inspect_ui, "inspect_potions": tools.inspect_potions,
                     "inspect_combatants": tools.inspect_combatants,
+                    "inspect_relics": tools.inspect_relics,
                     "end_turn": tools.end_turn}
         if name not in handlers or arguments:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))

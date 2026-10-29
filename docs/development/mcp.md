@@ -2,7 +2,7 @@
 
 本项目提供 Linux 本地 stdio MCP server，供支持 MCP 的 agent 读取《杀戮尖塔 2》并结束回合。服务在游戏外运行，通过现有文件 IPC 与 Mod 通信；不调用模型 API，也不需要在游戏里配置模型密钥。
 
-当前公开六个无参数工具：
+当前公开七个无参数工具：
 
 | 工具 | 行为 |
 | --- | --- |
@@ -11,13 +11,14 @@
 | `inspect_ui()` | 只读查看当前可见战斗界面入口和资源图标的悬停说明，不授予动作权限 |
 | `inspect_potions()` | 只读查看当前可见药水栏位、完整说明和共享解释，不使用药水或授予动作权限 |
 | `inspect_combatants()` | 只读合并查看双方 powers 与敌人当前意图的悬停说明，不授予动作权限 |
+| `inspect_relics()` | 只读批量查看当前可见遗物的英语正文、屏幕计数和共享附带解释，不授予动作权限 |
 | `end_turn()` | 消耗最近一次显式观察的令牌，通过游戏正常动作队列结束回合，等待执行结果并返回新观察 |
 
-[手牌详情](hand-inspection.md) 返回平级的 `hand`、共享 `hover_tips` 及适用的 `notes.card_values`，以 `card_ids` 关联解释和手牌。[界面说明](ui-inspection.md) 返回 `scene` 和共享 `hover_tips`，以 `sources` 关联基础观察字段，不附带数值解读 notes。[药水详情](potion-inspection.md) 返回单份 `slot_tip`、保留空槽位置的 `potion_slots` 和以 `slot_indices` 关联的共享 `hover_tips`，不附带数值 notes。[战斗对象详情](combatant-inspection.md) 返回玩家与敌人的 powers、当前敌人意图，以及通过 `sources` 关联的共享说明；包含意图时附带 `notes.enemy_attack_intents`。前三种查看不附送敌人意图，所有详情均不附送 `available_actions`；界面说明还排除药水、遗物、powers 和手牌效果。出牌、使用或丢弃药水及其他场景动作尚未实现。基础观察继续遵循 [可见信息边界](../observation.md)，字段见 [战斗观察 JSON](observation.md)。
+[手牌详情](hand-inspection.md) 返回平级的 `hand`、共享 `hover_tips` 及适用的 `notes.card_values`，以 `card_ids` 关联解释和手牌。[界面说明](ui-inspection.md) 返回 `scene` 和共享 `hover_tips`，以 `sources` 关联基础观察字段，不附带数值解读 notes。[药水详情](potion-inspection.md) 返回单份 `slot_tip`、保留空槽位置的 `potion_slots` 和以 `slot_indices` 关联的共享 `hover_tips`，不附带数值 notes。[战斗对象详情](combatant-inspection.md) 返回玩家与敌人的 powers、当前敌人意图，以及通过 `sources` 关联的共享说明；包含意图时附带 `notes.enemy_attack_intents`。[遗物详情](relic-inspection.md) 返回 `relics` 和以 `relic_indices` 关联的共享 `hover_tips`，不附带数值 notes。除战斗对象详情外，其他查看不附送敌人意图，所有详情均不附送 `available_actions`；界面说明还排除药水、遗物、powers 和手牌效果。出牌、使用或丢弃药水及其他场景动作尚未实现。基础观察继续遵循 [可见信息边界](../observation.md)，字段见 [战斗观察 JSON](observation.md)。
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、已构建并加载的 Mod，以及支持 stdio MCP 的客户端；战斗对象详情要求 Mod 0.7.0，药水详情要求 0.6.0，界面说明要求 0.5.0，手牌详情要求 0.4.0，原有观察和结束回合仍兼容 0.3.0。MCP server 当前为 0.5.0，本次实际使用 Python 3.14.8、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。原有标准库客户端不需要安装 MCP 依赖。
+需要 Python 3.10 或以上版本、已构建并加载的 Mod，以及支持 stdio MCP 的客户端；遗物详情要求 Mod 0.8.0，战斗对象详情要求 Mod 0.7.0，药水详情要求 0.6.0，界面说明要求 0.5.0，手牌详情要求 0.4.0，原有观察和结束回合仍兼容 0.3.0。MCP server 当前为 0.6.0，本次实际使用 Python 3.14.8、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。原有标准库客户端不需要安装 MCP 依赖。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -49,7 +50,7 @@ codex mcp add sts2 -- "$PWD/.tmp/mcp-venv/bin/python" "$PWD/scripts/mcp_server.p
 codex mcp list
 ```
 
-重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation`、`inspect_hand`、`inspect_ui`、`inspect_potions`、`inspect_combatants` 和 `end_turn`；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
+重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation`、`inspect_hand`、`inspect_ui`、`inspect_potions`、`inspect_combatants`、`inspect_relics` 和 `end_turn`；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
 
 对应的 TOML 配置示例为：
 
@@ -79,7 +80,7 @@ approval_mode = "approve"
 
 调用顺序为 `get_observation → end_turn → get_observation`。每次动作前都必须显式观察；动作返回的新观察用于读取结果，不会自动授权下一次动作。这能阻止未重新观察的重复调用连续结束两个回合。动作失败或通信异常同样消耗令牌，服务不会自动重新观察、重试动作或换一个请求 ID 重发。读取过程中被取消的观察不会保存动作令牌；取消工具调用不能撤回已经提交给游戏的动作，仍须重新观察结果。
 
-`inspect_hand`、`inspect_ui`、`inspect_potions` 和 `inspect_combatants` 可以直接调用，但不能代替战斗观察授权动作。也可以使用 `get_observation → inspect_hand/inspect_ui/inspect_potions/inspect_combatants → end_turn`：详情读取返回的状态令牌与已有观察一致时保留原动作权限；状态变化、读取失败或取消时清除原令牌。详情响应不会自动保存新的动作令牌，必须重新调用 `get_observation` 后才能行动。没有动作权限时 `end_turn` 仍返回 `observation_required`，不会发送游戏动作。
+`inspect_hand`、`inspect_ui`、`inspect_potions`、`inspect_combatants` 和 `inspect_relics` 可以直接调用，但不能代替战斗观察授权动作。也可以使用 `get_observation → inspect_hand/inspect_ui/inspect_potions/inspect_combatants/inspect_relics → end_turn`：详情读取返回的状态令牌与已有观察一致时保留原动作权限；状态变化、读取失败或取消时清除原令牌。详情响应不会自动保存新的动作令牌，必须重新调用 `get_observation` 后才能行动。没有动作权限时 `end_turn` 仍返回 `observation_required`，不会发送游戏动作。
 
 成功时，MCP `structuredContent` 直接包含玩法 JSON，`content` 同时提供同样的 JSON 文本。模型不会收到 `snapshot_id`、原始响应包装或开发测试入口；`available_actions` 只保留已公开的 `end_turn`。协议层仍保留 MCP 自身必需的消息字段。
 
@@ -101,7 +102,7 @@ approval_mode = "approve"
 | `controller_busy` | 另一个 MCP 连接已取得控制权，断开该连接后重新观察；当前连接可继续握手和发现工具 |
 | `stale_state` | 玩家操作、场景变化等使旧观察失效，重新观察后决策 |
 | `illegal_action` | 当前不允许结束回合，或某类详情不可读（包括瞄准或打出卡牌期间的战斗对象详情）；重新观察，待无遮挡战斗界面再查看 |
-| `invalid_request` | 工具名或参数有误；六个工具均不接受参数 |
+| `invalid_request` | 工具名或参数有误；所有工具均不接受参数 |
 | `expired_request` | 请求在执行前已过期，重新观察 |
 | `timeout`、`game_error` | 执行结果未知，重新观察；不得自动重复动作 |
 | `transport_error` | 检查游戏进程、Mod、IPC 目录和读写权限，恢复连接后重新观察 |
@@ -134,7 +135,7 @@ Python 自动检查包括真实 stdio 握手和临时文件 IPC，不需要运�
 
 Codex 沙箱若禁止本地 socketpair 写入，Python `asyncio` 的线程唤醒和 stdio 测试可能挂起；须按 [Codex 环境约定](../ai/codex.md) 单独申请在沙箱外运行相应命令。此限制与 MCP 是否使用网络端口无关。
 
-当前已通过 62 项 Python 自动检查，覆盖真实 stdio 握手与六工具发现、控制权竞争、四类详情的令牌保留或失效、取消处理、格式错误、来源路径及输出字段边界，并包含文件客户端的共享提示投影。遗物详情目前仅有文件接口，不在 MCP 工具列表中。正式游戏已完成真实 stdio MCP 的只读手牌、界面说明、药水和战斗对象采样，读取前后状态一致，未执行动作；脚本如下：
+当前已通过 71 项 Python 自动检查，覆盖真实 stdio 握手与七工具发现、控制权竞争、五类详情的令牌保留或失效、取消处理、格式错误、来源路径及输出字段边界，并包含文件客户端的共享提示投影。正式游戏已完成真实 stdio MCP 的只读手牌、界面说明、药水、战斗对象和遗物采样，读取前后状态一致，未执行动作；脚本如下：
 
 ```sh
 .tmp/mcp-venv/bin/python scripts/verify_mcp_hand.py --ipc-dir .tmp/live/ipc --output .tmp/live/mcp-hand-inspection.json --report .tmp/live/mcp-hand-evidence.json
@@ -156,6 +157,12 @@ Codex 沙箱若禁止本地 socketpair 写入，Python `asyncio` 的线程唤醒
 
 战斗对象脚本核对文件和 MCP 输出一致、双方 powers 及敌人意图与基础观察对应、所有共享提示来源可解析，且前后状态未变。正式采样取得两个敌人、三条共享说明。MCP 严格投影约定字段，不转发额外嵌套信息；sources 只能指向本次实际存在的 power/intent，格式错误或来源无效时返回 transport_error 并清除旧动作权限。
 
-此前首次接入完成独立游戏的 MCP 回合往返，以及真实 Codex 模型的观察、结束一次回合和读回：游戏验证从回合 1 到 2，Codex 接续从回合 3 到 4、生命值从 61 到 54，动作结果与读回完全一致。本次战斗对象详情扩展未修改用户禁用的 Codex MCP 配置，未重新进行模型自动游玩验证。
+```sh
+.tmp/mcp-venv/bin/python scripts/verify_mcp_relics.py --ipc-dir .tmp/live/ipc --output .tmp/live/mcp-relic-inspection.json --report .tmp/live/mcp-relic-evidence.json
+```
 
-证据与范围见 [战斗对象 MCP 实施记录](../research/2026-10-29-mcp-combatant-inspection.md)、[药水 MCP 实施记录](../research/2026-10-29-mcp-potion-inspection.md)、[界面说明 MCP 实施记录](../research/2026-10-29-mcp-ui-inspection.md)、[手牌 MCP 实施记录](../research/2026-10-29-mcp-hand-inspection.md)、[首次 MCP 实施记录](../research/2026-10-29-mcp-plan.md) 和 [启动锁修复记录](../research/2026-10-29-mcp-startup-lock.md)。本次没有修改 Mod。仅提供 stdio，未实现 HTTP 服务或完整自动游玩；其他 agent 客户端尚未实测。
+遗物脚本核对文件与 MCP JSON 一致、名称及计数与基础观察对应、共享解释关联完整且前后状态不变。正式采样为 Burning Blood 和计数 2 的 Silver Crucible，无额外解释；重复解释及同名异文由自动检查覆盖。MCP 对原始条目和附带提示逐层投影，不转发内部字段；格式错误返回 `transport_error` 并清除旧动作权限。
+
+此前首次接入完成独立游戏的 MCP 回合往返，以及真实 Codex 模型的观察、结束一次回合和读回：游戏验证从回合 1 到 2，Codex 接续从回合 3 到 4、生命值从 61 到 54，动作结果与读回完全一致。本次遗物详情扩展未修改用户禁用的 Codex MCP 配置，未重新进行模型自动游玩验证。
+
+证据与范围见 [遗物 MCP 实施记录](../research/2026-10-29-mcp-relic-inspection.md)、[战斗对象 MCP 实施记录](../research/2026-10-29-mcp-combatant-inspection.md)、[药水 MCP 实施记录](../research/2026-10-29-mcp-potion-inspection.md)、[界面说明 MCP 实施记录](../research/2026-10-29-mcp-ui-inspection.md)、[手牌 MCP 实施记录](../research/2026-10-29-mcp-hand-inspection.md)、[首次 MCP 实施记录](../research/2026-10-29-mcp-plan.md) 和 [启动锁修复记录](../research/2026-10-29-mcp-startup-lock.md)。本次没有修改 Mod。仅提供 stdio，未实现 HTTP 服务或完整自动游玩；其他 agent 客户端尚未实测。
