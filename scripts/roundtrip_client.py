@@ -6,18 +6,17 @@ import uuid
 from pathlib import Path
 
 
-COMBAT_VALUE_NOTES = {
-    "card_values": "Card values are contextual previews, not base values. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again.",
-    "enemy_attack_intents": "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss.",
-}
+ENEMY_ATTACK_INTENT_NOTE = "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
 
 
 def player_result(response):
     if response["ok"]:
         gameplay_fields = {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions"}
         result = {key: value for key, value in response["state"].items() if key in gameplay_fields}
-        if result.get("scene") == "combat":
-            result["notes"] = COMBAT_VALUE_NOTES.copy()
+        if result.get("scene") == "combat" and any(
+            enemy.get("intents") for enemy in result.get("enemies") or []
+        ):
+            result["notes"] = {"enemy_attack_intents": ENEMY_ATTACK_INTENT_NOTE}
         return result
     code = response["error"]["code"]
     messages = {

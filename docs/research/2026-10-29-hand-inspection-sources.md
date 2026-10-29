@@ -71,6 +71,6 @@ MegaCrit.Sts2.Core.Nodes.Cards.Holders.NCardHolder.CreateHoverTips()
 - `MegaCrit.Sts2.Core.MonsterMoves.Intents.AttackIntent.GetSingleDamage` 取得当前本地玩家，以其角色作为受击目标、意图所有者作为攻击者调用 `Hook.ModifyDamage`。`SingleAttackIntent.GetIntentLabel` 使用此结果；`NIntent` 将格式化结果写入 `%Value`。观察实现读取此标签，没有重新叠加状态。
 - `MegaCrit.Sts2.Core.Models.Powers.TaintedPower.ModifyDamageAdditive` 对状态所有者承受的适用攻击增加伤害。中文 `powers.json` 的 `TAINTED_POWER.title` 已核实为“污染”；它和易伤均可参与意图预览。
 
-本次在 `roundtrip_client.player_result` 加入固定数值解读说明，供普通玩法输出及 MCP 共用，具体字段见 [数值预览说明](../development/observation.md#数值预览说明)。未新增预览工具、刷新 UI、修改 Mod 或自动计算所有目标的伤害。上述行为依据目标程序集核实，未在运行游戏中重新构造“缩小 + 易伤”或“污染”场景。
+本次在 `roundtrip_client.player_result` 加入敌人意图数值解读说明，仅随包含敌人意图的战斗结果输出，供普通玩法输出及 MCP 共用；卡牌数值说明留给尚未实现的手牌详情调用。具体字段见 [数值预览说明](../development/observation.md#数值预览说明)。未新增预览工具、刷新 UI、修改 Mod 或自动计算所有目标的伤害。上述行为依据目标程序集核实，未在运行游戏中重新构造“缩小 + 易伤”或“污染”场景。
 
 输出转换修改后，18 项 Python 回归检查通过，包含真实 stdio MCP 与临时文件 IPC。另检查说明仅出现在成功的战斗结果、不改写原始响应，且各次结果的说明字典互不影响；这些检查未连接正式游戏。同步修正观察文档中“尚未接入正式 LLM 工具框架”的过时描述，实际 MCP 已复用同一转换入口。
