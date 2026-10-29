@@ -1,6 +1,6 @@
 # 当前药水详情 JSON
 
-文件操作 `inspect_potions` 适用于 Linux 游戏 `v0.107.1`、Mod `0.6.0`。一次读取当前可见药水栏位、完整英语说明和额外悬停解释，不使用或丢弃药水，不生成技能药水等效果中的随机选项。目前只提供文件接口，尚未接入 MCP。
+文件操作 `inspect_potions` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.6.0`。一次读取当前可见药水栏位、完整英语说明和额外悬停解释，不使用或丢弃药水，不生成技能药水等效果中的随机选项。MCP 与文件客户端提供相同的玩法 JSON。
 
 ## 读取
 
@@ -10,7 +10,7 @@
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_potions > .tmp/live/potion-inspection.json
 ```
 
-读取无须动作令牌，不进入 `available_actions`。加 `--raw` 保留文件协议的 `id/ok/state`、`state.snapshot_id` 和逐药水额外提示；默认输出移除控制信息，并合并共享提示。不附带手牌或敌人意图的数值解读 notes。
+MCP 调用 `inspect_potions()` 无须参数，不能授权动作；已有观察的令牌保留与失效规则见 [MCP 调用语义](mcp.md#调用和错误语义)。文件读取无须动作令牌，不进入 `available_actions`。加 `--raw` 保留文件协议的 `id/ok/state`、`state.snapshot_id` 和逐药水额外提示；默认输出移除控制信息，并合并共享提示。不附带手牌或敌人意图的数值解读 notes。
 
 ## 格式
 
@@ -43,6 +43,6 @@ python3 scripts/verify_potions.py --ipc-dir .tmp/live/ipc --output .tmp/live/pot
 
 脚本核对读取前、中、后的观察令牌一致、槽位位置及名称与基础观察对应、通用说明只出现一次，以及共享提示和所有槽位关联一致。
 
-已在中文独立实例验证满栏与重复 Block 提示，在正式战斗验证 Skill Potion 加空槽的排列；两次采样前后观察令牌均一致。其他药水类型和非战斗场景尚未完整验证。
+已在中文独立实例验证满栏与重复 Block 提示，在正式战斗验证 Skill Potion 加空槽的排列；两次采样前后观察令牌均一致。正式场景还完成了真实 stdio MCP 读取，与文件输出一致且前后观察未变，见 [MCP 实施记录](../research/2026-10-29-mcp-potion-inspection.md)。其他药水类型和非战斗场景尚未完整验证。
 
 独立实例可用 `scripts/run_roundtrip.py --windowed --capture --check-potions`。该标志仅用于测试：通过原有 `start_test_combat` 测试入口创建战斗时，使用游戏正常获取流程加入 Skill Potion 和两个 Block Potion；检查满栏、英语正文、可见性、缓存及能量前缀恢复。不要为正式 Steam 游戏设置该标志。证据见 [实施记录](../research/2026-10-29-potion-inspection-plan.md)。

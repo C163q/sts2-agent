@@ -43,6 +43,33 @@ class ControllerLease:
         self.close()
 
 
+def potion_details(state):
+    def tip_text(tip):
+        if (not isinstance(tip, dict)
+                or (tip["title"] is not None and not isinstance(tip["title"], str))
+                or not isinstance(tip["description"], str)):
+            raise ValueError("Invalid potion hover tip.")
+        return {"title": tip["title"], "description": tip["description"]}
+
+    common = tip_text(state["slot_tip"])
+    slots = state["potion_slots"]
+    if not isinstance(slots, list):
+        raise ValueError("Invalid potion slots.")
+    potions = []
+    for potion in slots:
+        if potion is None:
+            potions.append(None)
+            continue
+        if (not isinstance(potion, dict)
+                or (potion["name"] is not None and not isinstance(potion["name"], str))
+                or not isinstance(potion["description"], str)
+                or not isinstance(potion["hover_tips"], list)):
+            raise ValueError("Invalid potion details.")
+        potions.append({"name": potion["name"], "description": potion["description"],
+                        "hover_tips": [tip_text(tip) for tip in potion["hover_tips"]]})
+    return {"slot_tip": common, "potion_slots": potions}
+
+
 class GameTools:
     def __init__(self, client, controller=None):
         self.client = client
@@ -65,6 +92,9 @@ class GameTools:
 
     async def inspect_ui(self):
         return await self._inspect("inspect_ui")
+
+    async def inspect_potions(self):
+        return await self._inspect("inspect_potions")
 
     async def _inspect(self, operation):
         async with self.lock:
@@ -139,6 +169,8 @@ class GameTools:
                             raise ValueError("Invalid UI hover tip.")
                     response = {"ok": True, "state": {"scene": state["scene"], "hover_tips": [
                         {key: tip[key] for key in ("title", "description", "sources")} for tip in tips]}}
+                elif operation == "inspect_potions":
+                    response = {"ok": True, "state": potion_details(state)}
             else:
                 if not isinstance(response["error"]["code"], str):
                     raise ValueError("Invalid game error.")
@@ -165,10 +197,11 @@ def tool_result(payload):
 
 
 def create_server(tools):
-    server = Server("sts2-agent", version="0.3.0", instructions=(
+    server = Server("sts2-agent", version="0.4.0", instructions=(
         "Control a local Slay the Spire 2 game. Call get_observation before each action. "
         "Use inspect_hand to read all current hand descriptions and shared hover tips. "
         "Use inspect_ui to read hover explanations for visible interface elements and resources. "
+        "Use inspect_potions to read all visible potion slots, descriptions and shared hover tips. "
         "Inspections do not prepare an action; only end_turn is implemented as an action. "
         "Actions return the resulting observation but consume the action token. "
         "After any failed or timed-out action, read the state before deciding what to do. "
@@ -191,6 +224,11 @@ def create_server(tools):
                 readOnlyHint=True, openWorldHint=False), description=(
                     "Read English hover explanations for currently visible combat interface elements and resources, linked by sources. "
                     "Excludes hand, potion, relic, power and enemy intent details. Does not open screens or prepare an action.")),
+            Tool(name="inspect_potions", inputSchema=parameters, annotations=ToolAnnotations(
+                readOnlyHint=True, openWorldHint=False), description=(
+                    "Read all currently visible potion slots and English descriptions at once. "
+                    "Returns one slot_tip, positional potion_slots with null for empty slots, and shared hover_tips linked by zero-based slot_indices. "
+                    "Does not use or discard potions, generate random choices, or prepare an action.")),
             Tool(name="end_turn", inputSchema=parameters, annotations=ToolAnnotations(
                 readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False),
                 description="End the player's turn once and return the resulting state. Requires a fresh get_observation call."),
@@ -199,7 +237,8 @@ def create_server(tools):
     @server.call_tool(validate_input=False)
     async def call_tool(name, arguments):
         handlers = {"get_observation": tools.get_observation, "inspect_hand": tools.inspect_hand,
-                    "inspect_ui": tools.inspect_ui, "end_turn": tools.end_turn}
+                    "inspect_ui": tools.inspect_ui, "inspect_potions": tools.inspect_potions,
+                    "end_turn": tools.end_turn}
         if name not in handlers or arguments:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))
         return tool_result(await handlers[name]())
@@ -214,7 +253,7 @@ async def run_stdio(tools):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="通过 stdio MCP 提供 STS2 战斗观察、手牌详情、界面说明与结束回合。")
+    parser = argparse.ArgumentParser(description="通过 stdio MCP 提供 STS2 战斗观察、手牌详情、界面及药水说明与结束回合。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
     parser.add_argument("--timeout", type=float, default=40, help="文件通信超时秒数，默认 40")
     args = parser.parse_args()

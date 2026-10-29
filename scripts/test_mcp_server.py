@@ -34,6 +34,18 @@ class FakeGame:
             "sources": ["player.energy", "player.max_energy"],
         }]}
         self.ui_error = False
+        self.potion_payload = {
+            "slot_tip": {"title": "Potion Slot", "description": "Use potions during combat."},
+            "potion_slots": [
+                {"name": "Block Potion", "description": "Gain 12 Block.", "hover_tips": [
+                    {"title": "Block", "description": "Prevents damage."}]},
+                None,
+                {"name": "Block Potion", "description": "Gain 12 Block.", "hover_tips": [
+                    {"title": "Block", "description": "Prevents damage."}]},
+            ],
+        }
+        self.potion_error = False
+        self.drop_potion_response = False
         self.observation_started = threading.Event()
         self.release_observation = threading.Event()
         self.release_observation.set()
@@ -56,7 +68,7 @@ class FakeGame:
                 request = json.loads(path.read_text())
                 self.operations.append(request)
                 operation = request["operation"]
-                if operation in {"get_state", "inspect_hand", "inspect_ui"}:
+                if operation in {"get_state", "inspect_hand", "inspect_ui", "inspect_potions"}:
                     self.observation_started.set()
                     self.release_observation.wait(timeout=5)
                 response = {"id": request["id"], "ok": True}
@@ -95,7 +107,13 @@ class FakeGame:
                     if self.ui_error:
                         response = {"id": request["id"], "ok": False,
                                     "error": {"code": "illegal_action", "message": "/private/game/path"}}
-                if operation != "end_turn" or not self.drop_action_response:
+                if operation == "inspect_potions":
+                    response["state"] = {"snapshot_id": f"state-{self.turn}", **self.potion_payload}
+                    if self.potion_error:
+                        response = {"id": request["id"], "ok": False,
+                                    "error": {"code": "illegal_action", "message": "/private/game/path"}}
+                if not ((operation == "end_turn" and self.drop_action_response)
+                        or (operation == "inspect_potions" and self.drop_potion_response)):
                     target = self.responses / path.name
                     temporary = target.with_suffix(".tmp")
                     temporary.write_text(json.dumps(response))
@@ -108,6 +126,140 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(SERVER.exists(), "MCP server has not been implemented.")
         from mcp_server import GameTools
         self.tools_type = GameTools
+
+    async def test_potion_inspection_shares_tips_preserves_slots_and_does_not_authorize_action(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            self.assertEqual(await tools.inspect_potions(), {
+                "slot_tip": {"title": "Potion Slot", "description": "Use potions during combat."},
+                "potion_slots": [{"name": "Block Potion", "description": "Gain 12 Block."}, None,
+                                 {"name": "Block Potion", "description": "Gain 12 Block."}],
+                "hover_tips": [{"title": "Block", "description": "Prevents damage.", "slot_indices": [0, 2]}],
+            })
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["inspect_potions"])
+
+    async def test_potion_inspection_preserves_an_unchanged_observation_token(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            await tools.inspect_potions()
+            self.assertEqual((await tools.end_turn())["turn"], 2)
+            self.assertEqual(game.operations[-1]["expected_state"], "state-1")
+
+    async def test_potion_inspection_invalidates_a_changed_observation_token(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            game.turn = 2
+            self.assertNotIn("error", await tools.inspect_potions())
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_potions"])
+
+    async def test_potion_inspection_rejects_malformed_details_and_clears_token(self):
+        cases = [
+            {}, {"slot_tip": None}, {"slot_tip": {"description": "Text"}},
+            {"slot_tip": {"title": 3, "description": "Text"}},
+            {"slot_tip": {"title": "Potion Slot", "description": None}},
+            {"potion_slots": None}, {"potion_slots": {}}, {"potion_slots": [False]},
+            {"potion_slots": [{}]},
+            {"potion_slots": [{"name": 3, "description": "Text", "hover_tips": []}]},
+            {"potion_slots": [{"description": "Text", "hover_tips": []}]},
+            {"potion_slots": [{"name": "Potion", "description": None, "hover_tips": []}]},
+            {"potion_slots": [{"name": "Potion", "description": "Text"}]},
+            {"potion_slots": [{"name": "Potion", "description": "Text", "hover_tips": None}]},
+        ]
+        for tip in [None, {}, {"description": "Text"}, {"title": [], "description": "Text"},
+                    {"title": "Block", "description": 3}]:
+            cases.append({"potion_slots": [{"name": "Potion", "description": "Text", "hover_tips": [tip]}]})
+        for malformed in cases:
+            with self.subTest(malformed=malformed), FakeGame() as game:
+                tools = self.tools_type(Client(game.directory))
+                await tools.get_observation()
+                if malformed:
+                    game.potion_payload.update(malformed)
+                else:
+                    game.potion_payload.clear()
+                result = await tools.inspect_potions()
+                self.assertEqual(result["error"]["code"], "transport_error")
+                self.assertNotIn("/private", json.dumps(result))
+                self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+
+    async def test_potion_inspection_only_forwards_potion_fields(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            expected = await tools.inspect_potions()
+            game.potion_payload.update(scene="combat", enemies=[{"intents": [{"value": "7"}]}],
+                                      hand=[{"id": 9}], available_actions=["end_turn"], hover_tips=[{"seed": "private"}])
+            game.potion_payload["slot_tip"]["debug"] = "private"
+            game.potion_payload["potion_slots"][0].update(model_id="private", slot_indices=[99])
+            game.potion_payload["potion_slots"][0]["hover_tips"][0]["debug"] = "private"
+            self.assertEqual(await tools.inspect_potions(), expected)
+            self.assertEqual(game.potion_payload["slot_tip"]["debug"], "private")
+
+    async def test_potion_inspection_accepts_empty_slots_nullable_text_and_distinct_tip_bodies(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            game.potion_payload["potion_slots"][0]["name"] = None
+            game.potion_payload["potion_slots"][0]["hover_tips"][0]["title"] = None
+            game.potion_payload["slot_tip"]["title"] = None
+            game.potion_payload["potion_slots"][2]["hover_tips"].append({"title": "Block", "description": "Different."})
+            result = await tools.inspect_potions()
+            self.assertIsNone(result["slot_tip"]["title"])
+            self.assertIsNone(result["potion_slots"][0]["name"])
+            self.assertEqual(result["hover_tips"], [
+                {"title": None, "description": "Prevents damage.", "slot_indices": [0]},
+                {"title": "Block", "description": "Prevents damage.", "slot_indices": [2]},
+                {"title": "Block", "description": "Different.", "slot_indices": [2]},
+            ])
+            for slots in ([None, None], []):
+                game.potion_payload["potion_slots"] = slots
+                self.assertEqual(await tools.inspect_potions(), {
+                    "slot_tip": {"title": None, "description": "Use potions during combat."},
+                    "potion_slots": slots, "hover_tips": [],
+                })
+
+    async def test_failed_potion_inspection_clears_token_and_sanitizes_game_error(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            game.potion_error = True
+            result = await tools.inspect_potions()
+            self.assertEqual(result["error"]["code"], "illegal_action")
+            self.assertEqual(result["error"]["recovery"], "get_observation")
+            self.assertNotIn("/private", json.dumps(result))
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+
+    async def test_timed_out_potion_inspection_clears_token_without_retry(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory, timeout=0.1))
+            await tools.get_observation()
+            game.drop_potion_response = True
+            self.assertEqual((await tools.inspect_potions())["error"]["code"], "timeout")
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_potions"])
+
+    async def test_cancelled_potion_inspection_does_not_restore_token(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            game.observation_started.clear()
+            game.release_observation.clear()
+            scopes = []
+
+            async def inspect():
+                with anyio.CancelScope() as scope:
+                    scopes.append(scope)
+                    await tools.inspect_potions()
+
+            async with anyio.create_task_group() as group:
+                group.start_soon(inspect)
+                started = await anyio.to_thread.run_sync(game.observation_started.wait, 2)
+                self.assertTrue(started, "Potion inspection did not reach the game transport.")
+                scopes[0].cancel()
+                game.release_observation.set()
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_potions"])
 
     async def test_ui_inspection_does_not_authorize_an_action(self):
         with FakeGame() as game:
@@ -380,11 +532,14 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
                     listed = await session.list_tools()
-                    self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "end_turn"})
+                    self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "end_turn"})
                     inspection_tool = next(tool for tool in listed.tools if tool.name == "inspect_hand")
                     self.assertTrue(inspection_tool.annotations.readOnlyHint)
                     ui_tool = next(tool for tool in listed.tools if tool.name == "inspect_ui")
                     self.assertTrue(ui_tool.annotations.readOnlyHint)
+                    potion_tool = next(tool for tool in listed.tools if tool.name == "inspect_potions")
+                    self.assertTrue(potion_tool.annotations.readOnlyHint)
+                    self.assertEqual(potion_tool.inputSchema, {"type": "object", "properties": {}, "additionalProperties": False})
                     for tool in listed.tools:
                         self.assertEqual(tool.inputSchema.get("properties", {}), {})
                     missing = await session.call_tool("end_turn", {})
@@ -403,6 +558,15 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertFalse(ui.isError)
                     self.assertEqual(ui.structuredContent, game.ui_payload)
                     self.assertEqual(json.loads(ui.content[0].text), ui.structuredContent)
+                    potions = await session.call_tool("inspect_potions", {})
+                    self.assertFalse(potions.isError)
+                    self.assertEqual(set(potions.structuredContent), {"slot_tip", "potion_slots", "hover_tips"})
+                    self.assertIsNone(potions.structuredContent["potion_slots"][1])
+                    self.assertEqual(potions.structuredContent["hover_tips"][0]["slot_indices"], [0, 2])
+                    self.assertEqual(json.loads(potions.content[0].text), potions.structuredContent)
+                    invalid_potions = await session.call_tool("inspect_potions", {"slot_index": 0})
+                    self.assertTrue(invalid_potions.isError)
+                    self.assertEqual(invalid_potions.structuredContent["error"]["code"], "invalid_request")
                     invalid_ui = await session.call_tool("inspect_ui", {"target": "energy"})
                     self.assertTrue(invalid_ui.isError)
                     self.assertEqual(invalid_ui.structuredContent["error"]["code"], "invalid_request")
@@ -430,7 +594,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     with ControllerLease(game.directory):
                         await session.initialize()
                         listed = await session.list_tools()
-                        self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "end_turn"})
+                        self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "end_turn"})
                         busy = await session.call_tool("get_observation", {})
                         self.assertTrue(busy.isError)
                         self.assertEqual(busy.structuredContent["error"]["code"], "controller_busy")
@@ -440,6 +604,9 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                         busy_ui = await session.call_tool("inspect_ui", {})
                         self.assertTrue(busy_ui.isError)
                         self.assertEqual(busy_ui.structuredContent["error"]["code"], "controller_busy")
+                        busy_potions = await session.call_tool("inspect_potions", {})
+                        self.assertTrue(busy_potions.isError)
+                        self.assertEqual(busy_potions.structuredContent["error"]["code"], "controller_busy")
                         self.assertEqual(game.operations, [])
                     inspected = await session.call_tool("inspect_ui", {})
                     self.assertFalse(inspected.isError)
@@ -474,7 +641,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     async with stdio_client(parameters) as (first_read, first_write):
                         async with ClientSession(first_read, first_write) as first:
                             await first.initialize()
-                            self.assertFalse((await first.call_tool("inspect_ui", {})).isError)
+                            self.assertFalse((await first.call_tool("inspect_potions", {})).isError)
                             busy = await second.call_tool("get_observation", {})
                             self.assertEqual(busy.structuredContent["error"]["code"], "controller_busy")
                             blocked = await second.call_tool("end_turn", {})
@@ -483,7 +650,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     recovered = await second.call_tool("get_observation", {})
                     self.assertFalse(recovered.isError)
                     self.assertEqual(recovered.structuredContent["turn"], 1)
-                    self.assertEqual([item["operation"] for item in game.operations], ["inspect_ui", "get_state"])
+                    self.assertEqual([item["operation"] for item in game.operations], ["inspect_potions", "get_state"])
 
 
 if __name__ == "__main__":
