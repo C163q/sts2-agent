@@ -62,6 +62,7 @@ python3 scripts/test_prepare_roundtrip.py
 | `get_state` | 读取主菜单或战斗的有限状态和 `available_actions`；其他场景暂归为 `loading_or_noncombat` |
 | `inspect_hand` | 只读、无须动作令牌；一次读取全部当前可见手牌的英语正文和悬停解释，格式见 [手牌详情](hand-inspection.md) |
 | `inspect_ui` | 只读、无须动作令牌；读取当前可见战斗入口与资源图标的英语提示，排除药水、遗物、powers 和敌人意图解释，格式见 [界面说明](ui-inspection.md) |
+| `inspect_potions` | 只读、无须动作令牌；读取药水正文和共享解释，保留空槽位置，通用槽位说明只出现一次，格式见 [药水详情](potion-inspection.md) |
 | `start_test_combat` | 仅测试模式且无进行中的对局时，在主菜单创建临时对局并用游戏开发入口进入指定战斗；该操作不是正常游玩的动作 |
 | `end_turn` | 单人战斗、玩家可行动阶段且非暂停状态下，提交 `EndPlayerTurnAction`，等待下一可行动回合或战斗结束 |
 

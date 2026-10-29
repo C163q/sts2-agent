@@ -3,12 +3,14 @@ using System.Text;
 using System.Text.Json;
 using Godot;
 using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Characters;
 using MegaCrit.Sts2.Core.Models.Encounters;
+using MegaCrit.Sts2.Core.Models.Potions;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
@@ -94,6 +96,21 @@ internal sealed class GameAdapter(bool testMode)
             return Success(request.Id, before);
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (request.Operation == "inspect_potions")
+        {
+            var holders = PotionInspection.VisibleHolders();
+            if (holders == null)
+                return FileMailbox.Error(request.Id, "illegal_action", "Potion details are unavailable in the current screen.");
+            string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_POTION_CHECKS");
+            if (testMode && checks != null)
+                PotionInspectionChecks.Run(checks);
+            var inspection = PotionInspection.Read(holders);
+            return Success(request.Id, JsonSerializer.Serialize(new
+            {
+                snapshot_id = document.RootElement.GetProperty("snapshot_id").GetString(),
+                inspection.slot_tip, inspection.potion_slots
+            }));
+        }
         if (request.Operation == "inspect_ui")
         {
             if (CombatObservation.Status() != "visible")
@@ -140,6 +157,12 @@ internal sealed class GameAdapter(bool testMode)
             await RunManager.Instance.EnterRoomDebug(RoomType.Monster,
                 model: ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
             await WaitUntil(CanEndTurn);
+            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_POTION_CHECKS") != null)
+            {
+                await PotionCmd.TryToProcure<SkillPotion>(LocalPlayer!);
+                await PotionCmd.TryToProcure<BlockPotion>(LocalPlayer!);
+                await PotionCmd.TryToProcure<BlockPotion>(LocalPlayer!);
+            }
         }
         else if (request.Operation == "end_turn")
         {

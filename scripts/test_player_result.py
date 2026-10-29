@@ -1,9 +1,48 @@
+import json
 import unittest
 
 import roundtrip_client
 
 
 class PlayerResultTests(unittest.TestCase):
+    def test_potion_inspection_preserves_common_tip_and_empty_slot(self):
+        tip = {"title": "Potion Slot", "description": "Potions can be used during combat."}
+        slots = [{"name": "Skill Potion", "description": "Choose 1 of 3 Skills.", "hover_tips": []}, None]
+        result = roundtrip_client.player_result({"ok": True, "state": {
+            "snapshot_id": "token", "slot_tip": tip, "potion_slots": slots,
+        }})
+        self.assertEqual(result, {"slot_tip": tip, "potion_slots": [
+            {"name": "Skill Potion", "description": "Choose 1 of 3 Skills."}, None], "hover_tips": []})
+        self.assertIn("hover_tips", slots[0])
+
+    def test_potion_shared_tips_preserve_slot_indices_without_modifying_raw(self):
+        tip = {"title": "Block", "description": "Prevents damage."}
+        slots = [{"name": "Block Potion", "description": "Gain 12 Block.", "hover_tips": [tip, tip]},
+                 None, {"name": "Block Potion", "description": "Gain 12 Block.", "hover_tips": [tip]}]
+        result = roundtrip_client.player_result({"ok": True, "state": {"potion_slots": slots}})
+        self.assertEqual(result["hover_tips"], [{**tip, "slot_indices": [0, 2]}])
+        self.assertIsNone(result["potion_slots"][1])
+        self.assertTrue(all("hover_tips" not in slot for slot in result["potion_slots"] if slot))
+        self.assertEqual(slots[0]["hover_tips"], [tip, tip])
+        self.assertNotIn("slot_indices", tip)
+
+    def test_potion_common_tip_appears_once_for_empty_and_full_belts(self):
+        tip = {"title": "Potion Slot", "description": "Potions can be used during combat."}
+        for slots in [[], [None, None], [{"name": "Skill Potion", "description": "Choose.", "hover_tips": []}]]:
+            with self.subTest(slots=slots):
+                result = roundtrip_client.player_result({"ok": True, "state": {"slot_tip": tip, "potion_slots": slots}})
+                self.assertEqual(result["slot_tip"], tip)
+                self.assertEqual(result["hover_tips"], [])
+                self.assertEqual(json.dumps(result).count(tip["description"]), 1)
+
+    def test_potion_tip_same_title_with_different_text_stays_separate(self):
+        slots = [{"name": "A", "description": "A", "hover_tips": [{"title": "Effect", "description": "One."}]},
+                 {"name": "B", "description": "B", "hover_tips": [{"title": "Effect", "description": "Two."}]}]
+        result = roundtrip_client.player_result({"ok": True, "state": {"potion_slots": slots}})
+        self.assertEqual(result["hover_tips"], [
+            {"title": "Effect", "description": "One.", "slot_indices": [0]},
+            {"title": "Effect", "description": "Two.", "slot_indices": [1]}])
+
     def test_ui_inspection_preserves_shared_tips_without_gameplay_notes(self):
         tips = [{"title": "Energy", "description": "Your current <Energy>.",
                  "sources": ["player.energy", "player.max_energy"]}]

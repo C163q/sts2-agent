@@ -89,7 +89,7 @@ internal static class EnglishCardText
     {
         if (!active)
             return true;
-        __result = model.HoverTip;
+        __result = HoverTipText.WithPotionValues(model, () => model.HoverTip);
         return false;
     }
 
