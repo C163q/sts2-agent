@@ -1,0 +1,49 @@
+# 当前界面悬停说明 JSON
+
+文件操作 `inspect_ui` 适用于 Linux 游戏 `v0.107.1`、Mod `0.5.0`，只读返回当前无遮挡战斗画面上可见入口与资源图标的英语悬停说明。不触发鼠标悬停、不打开窗口、不切换游戏语言。当前尚未接入 MCP；工具分工见 [范围核查](../research/2026-10-29-ui-hover-tip-audit.md)。
+
+## 读取与格式
+
+按 [正常游戏加载](live-game.md) 构建、安装并重启游戏，进入无遮挡的战斗后执行：
+
+```sh
+python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_ui > .tmp/live/ui-inspection.json
+```
+
+结果包含 `scene` 和共享提示数组 `hover_tips`。以下是独立中文游戏实例中实际读取的一条提示；它不是用户当前战斗的完整采样：
+
+```json
+{
+  "scene": "combat",
+  "hover_tips": [
+    {
+      "title": "Energy",
+      "description": "Your current Energy ( <Energy>) count. Cards require <Energy> to play, indicated in the top left corner.",
+      "sources": ["player.energy", "player.max_energy"]
+    }
+  ]
+}
+```
+
+- `title` 和 `description` 来自游戏的悬停提示文本，移除颜色和字体标记，保留换行、实际快捷键和资源图标占位符，例如 `<Energy>`、`<Star>`。无标题时 `title` 为 `null`。
+- `sources` 是关联的基础观察字段路径，不重复输出字段值。同标题同正文合并，来源去重并保留首次出现顺序；同标题不同正文不合并。
+- 不附带手牌数值或敌人意图的 `notes`。没有可用提示时数组为 `[]`；不可读界面返回结构化错误，不以空集合表示读取失败。
+- 加 `--raw` 时保留 `id/ok/state` 和 `state.snapshot_id`。无须提供动作令牌，读取也不进入 `available_actions`。
+
+## 覆盖与条件
+
+当前包含头像及进阶、顶栏生命、金币、房间类型、楼层、首领、地图入口、主牌组入口、设置入口、能量、星星、抽牌/弃牌/消耗牌堆入口和结束回合。按当前节点可见性、视口和裁剪筛选，隐藏入口不补齐。禁用入口遵循游戏的 `AllowFocusWhileDisabled` 规则；禁用且不允许聚焦时不提供提示。头像须满足游戏 `ShowTip` 条件；牌堆须已绑定；结束回合的提示遵循玩家当前是否准备结束回合的条件。
+
+药水、遗物、powers 和敌人当前意图解释均不包含；其中 powers 与当前意图后续由同一查看工具提供，药水与遗物分别查看。手牌效果使用 `inspect_hand`。地图、牌组、牌堆这里只返回入口说明，不返回具体内容或抽牌顺序；不添加游戏中不存在的格挡悬停说明。
+
+地图等非战斗场景、菜单覆盖和过渡期间返回 `illegal_action`。基础观察未来扩展场景时，再扩展对应提示。其他版本和其他 Mod 新增的图标或自定义提示没有自动兼容保证。
+
+## 验证
+
+下面的脚本只读取当前游戏，不执行动作；运行期间应避免手动改变场景：
+
+```sh
+python3 scripts/verify_ui.py --ipc-dir .tmp/live/ipc --output .tmp/live/ui-inspection.json --report .tmp/live/ui-inspection-check.json
+```
+
+脚本检查 `get_state → inspect_ui → get_state` 的令牌一致、提示结构和去重、来源字段存在及查看边界。独立测试实例可用 `scripts/run_roundtrip.py --windowed --capture --check-ui` 启用额外的游戏内可见性、英语文本和缓存检查；该标志不用于正式游戏。已完成中文独立实例及正式进阶 6 缩小甲虫战斗的只读验证，分别取得 11、13 条提示。双首领、可见星星、可见消耗牌堆等场景尚未验证，详细证据见 [实施记录](../research/2026-10-29-ui-inspection-plan.md)。

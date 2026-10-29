@@ -26,7 +26,7 @@ def share_hand_tips(hand):
 
 def player_result(response):
     if response["ok"]:
-        gameplay_fields = {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions", "hand"}
+        gameplay_fields = {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions", "hand", "hover_tips"}
         result = {key: value for key, value in response["state"].items() if key in gameplay_fields}
         if "hand" in result and result["hand"] is not None:
             result["hand"], result["hover_tips"] = share_hand_tips(result["hand"])
@@ -93,7 +93,7 @@ class Client:
 def main():
     parser = argparse.ArgumentParser(description="调用最小验证原型的文件工具接口。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
-    parser.add_argument("operation", choices=("get_state", "inspect_hand", "start_test_combat", "end_turn"))
+    parser.add_argument("operation", choices=("get_state", "inspect_hand", "inspect_ui", "start_test_combat", "end_turn"))
     parser.add_argument("--expected-state")
     parser.add_argument("--raw", action="store_true", help="输出保留状态令牌等控制信息的原始响应")
     args = parser.parse_args()

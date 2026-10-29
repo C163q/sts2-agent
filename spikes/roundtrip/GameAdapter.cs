@@ -94,6 +94,19 @@ internal sealed class GameAdapter(bool testMode)
             return Success(request.Id, before);
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (request.Operation == "inspect_ui")
+        {
+            if (CombatObservation.Status() != "visible")
+                return FileMailbox.Error(request.Id, "illegal_action", "UI details are unavailable in the current screen.");
+            string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_UI_CHECKS");
+            if (testMode && checks != null)
+                UiInspectionChecks.Run(checks);
+            return Success(request.Id, JsonSerializer.Serialize(new
+            {
+                snapshot_id = document.RootElement.GetProperty("snapshot_id").GetString(),
+                scene = "combat", hover_tips = UiInspection.Read()
+            }));
+        }
         if (request.Operation == "inspect_hand")
         {
             var hand = NCombatRoom.Instance?.Ui.Hand;

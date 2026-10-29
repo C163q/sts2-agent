@@ -4,6 +4,20 @@ import roundtrip_client
 
 
 class PlayerResultTests(unittest.TestCase):
+    def test_ui_inspection_preserves_shared_tips_without_gameplay_notes(self):
+        tips = [{"title": "Energy", "description": "Your current <Energy>.",
+                 "sources": ["player.energy", "player.max_energy"]}]
+        state = {"snapshot_id": "token", "scene": "combat", "hover_tips": tips}
+        self.assertEqual(roundtrip_client.player_result({"ok": True, "state": state}), {
+            "scene": "combat", "hover_tips": tips,
+        })
+        self.assertEqual(state["snapshot_id"], "token")
+
+    def test_empty_ui_inspection_stays_empty_without_hand_or_intent_notes(self):
+        self.assertEqual(roundtrip_client.player_result({"ok": True, "state": {
+            "snapshot_id": "token", "scene": "combat", "hover_tips": [],
+        }}), {"scene": "combat", "hover_tips": []})
+
     def test_hand_inspection_preserves_details_with_only_card_notes(self):
         hand = [{"id": 7, "name": "Strike", "description": "Deal 6 damage.", "hover_tips": []}]
         result = roundtrip_client.player_result({"ok": True, "state": {
