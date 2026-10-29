@@ -47,7 +47,7 @@ async def verify(args):
             evidence["server"] = initialized.serverInfo.model_dump()
             listed = await session.list_tools()
             evidence["tools"] = [tool.model_dump(exclude_none=True) for tool in listed.tools]
-            assert {tool.name for tool in listed.tools} == {"get_observation", "end_turn"}
+            assert {tool.name for tool in listed.tools} == {"get_observation", "inspect_hand", "end_turn"}
 
             async def call(name, arguments=None):
                 result = await session.call_tool(name, arguments or {})
@@ -72,6 +72,10 @@ async def verify(args):
             assert before["scene"] == "combat" and before["screen"]["status"] == "visible"
             assert before["available_actions"] == ["end_turn"]
             assert not {"snapshot_id", "session", "schema_version", "overlay", "language"} & before.keys()
+            inspected = await call("inspect_hand")
+            assert not inspected.isError
+            assert set(inspected.structuredContent) == {"hand", "hover_tips", "notes"}
+            assert [card["id"] for card in inspected.structuredContent["hand"]] == [card["id"] for card in before["player"]["hand"]]
             invalid = await call("end_turn", {"unexpected": True})
             assert invalid.isError and invalid.structuredContent["error"]["code"] == "invalid_request"
             executed = await call("end_turn")

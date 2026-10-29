@@ -53,22 +53,39 @@ class GameTools:
     async def get_observation(self):
         async with self.lock:
             self.snapshot_id = None
-            if self.controller is not None:
-                try:
-                    self.controller.acquire()
-                except BlockingIOError:
-                    return {"error": {
-                        "code": "controller_busy",
-                        "message": "Another MCP connection controls this game. Disconnect it before observing or acting here.",
-                        "recovery": "disconnect_other_client",
-                    }}
-                except OSError as error:
-                    logging.getLogger(__name__).warning("Controller lock failed: %s", error)
-                    return player_result({"ok": False, "error": {"code": "transport_error"}})
+            if error := self._acquire_controller():
+                return error
             payload, snapshot_id = await self._request("get_state")
             await anyio.lowlevel.checkpoint_if_cancelled()
             self.snapshot_id = snapshot_id
             return payload
+
+    async def inspect_hand(self):
+        async with self.lock:
+            previous, self.snapshot_id = self.snapshot_id, None
+            if error := self._acquire_controller():
+                return error
+            payload, snapshot_id = await self._request("inspect_hand")
+            await anyio.lowlevel.checkpoint_if_cancelled()
+            if previous == snapshot_id:
+                self.snapshot_id = previous
+            return payload
+
+    def _acquire_controller(self):
+        if self.controller is None:
+            return None
+        try:
+            self.controller.acquire()
+        except BlockingIOError:
+            return {"error": {
+                "code": "controller_busy",
+                "message": "Another MCP connection controls this game. Disconnect it before reading or acting here.",
+                "recovery": "disconnect_other_client",
+            }}
+        except OSError as error:
+            logging.getLogger(__name__).warning("Controller lock failed: %s", error)
+            return player_result({"ok": False, "error": {"code": "transport_error"}})
+        return None
 
     async def end_turn(self):
         async with self.lock:
@@ -93,11 +110,21 @@ class GameTools:
                 snapshot_id = state["snapshot_id"]
                 if not isinstance(snapshot_id, str) or not snapshot_id:
                     raise ValueError("Missing observation token.")
+                if operation == "inspect_hand":
+                    hand = state.get("hand")
+                    if not isinstance(hand, list) or any(not isinstance(card, dict) for card in hand):
+                        raise ValueError("Invalid hand details.")
+                    for card in hand:
+                        tips = card.get("hover_tips")
+                        if tips is not None and (not isinstance(tips, list)
+                                or any(not isinstance(tip, dict) for tip in tips)):
+                            raise ValueError("Invalid card hover tips.")
+                    response = {"ok": True, "state": {"hand": hand}}
             else:
                 if not isinstance(response["error"]["code"], str):
                     raise ValueError("Invalid game error.")
             payload = player_result(response)
-            if response["ok"]:
+            if response["ok"] and "available_actions" in payload:
                 payload["available_actions"] = [
                     action for action in payload.get("available_actions", []) if action == "end_turn"]
         except (OSError, ValueError, KeyError, TypeError, RuntimeError) as error:
@@ -119,9 +146,10 @@ def tool_result(payload):
 
 
 def create_server(tools):
-    server = Server("sts2-agent", version="0.1.1", instructions=(
+    server = Server("sts2-agent", version="0.2.0", instructions=(
         "Control a local Slay the Spire 2 game. Call get_observation before each action. "
-        "Only end_turn is currently implemented; card play and hand inspection are unavailable. "
+        "Use inspect_hand to read all current hand descriptions and shared hover tips. "
+        "Hand inspection does not prepare an action; only end_turn is implemented as an action. "
         "Actions return the resulting observation but consume the action token. "
         "After any failed or timed-out action, read the state before deciding what to do. "
         "Never automatically repeat an action whose execution outcome is unknown."
@@ -134,7 +162,11 @@ def create_server(tools):
             Tool(name="get_observation", inputSchema=parameters, annotations=ToolAnnotations(
                 readOnlyHint=True, openWorldHint=False), description=(
                     "Read the current visible game state and prepare one action. "
-                    "Does not inspect hidden card effects.")),
+                    "Does not expand card descriptions or hover tips.")),
+            Tool(name="inspect_hand", inputSchema=parameters, annotations=ToolAnnotations(
+                readOnlyHint=True, openWorldHint=False), description=(
+                    "Read all currently visible hand cards at once, including descriptions and shared hover_tips linked by card_ids. "
+                    "Does not play cards or prepare an action. Does not return enemy intents.")),
             Tool(name="end_turn", inputSchema=parameters, annotations=ToolAnnotations(
                 readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False),
                 description="End the player's turn once and return the resulting state. Requires a fresh get_observation call."),
@@ -142,7 +174,7 @@ def create_server(tools):
 
     @server.call_tool(validate_input=False)
     async def call_tool(name, arguments):
-        handlers = {"get_observation": tools.get_observation, "end_turn": tools.end_turn}
+        handlers = {"get_observation": tools.get_observation, "inspect_hand": tools.inspect_hand, "end_turn": tools.end_turn}
         if name not in handlers or arguments:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))
         return tool_result(await handlers[name]())
@@ -157,7 +189,7 @@ async def run_stdio(tools):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="通过 stdio MCP 提供 STS2 战斗观察与结束回合。")
+    parser = argparse.ArgumentParser(description="通过 stdio MCP 提供 STS2 战斗观察、手牌详情与结束回合。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
     parser.add_argument("--timeout", type=float, default=40, help="文件通信超时秒数，默认 40")
     args = parser.parse_args()

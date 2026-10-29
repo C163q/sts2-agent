@@ -26,6 +26,9 @@ class FakeGame:
         self.turn = 1
         self.drop_action_response = False
         self.malformed_observation = False
+        self.malformed_hand = False
+        self.malformed_hand_item = False
+        self.hand_extra_state = False
         self.observation_started = threading.Event()
         self.release_observation = threading.Event()
         self.release_observation.set()
@@ -48,7 +51,7 @@ class FakeGame:
                 request = json.loads(path.read_text())
                 self.operations.append(request)
                 operation = request["operation"]
-                if operation == "get_state":
+                if operation in {"get_state", "inspect_hand"}:
                     self.observation_started.set()
                     self.release_observation.wait(timeout=5)
                 response = {"id": request["id"], "ok": True}
@@ -68,6 +71,20 @@ class FakeGame:
                     }
                 if operation == "get_state" and self.malformed_observation:
                     response.pop("state")
+                if operation == "inspect_hand":
+                    response["state"] = {
+                        "snapshot_id": f"state-{self.turn}",
+                        "hand": None if self.malformed_hand else [
+                            {"id": card_id, "name": "Defend", "type": "Skill", "description": "Gain 5 Block.",
+                             "hover_tips": [{"title": "Block", "description": "Until next turn, prevents damage."}]}
+                            for card_id in (9, 2)],
+                        "overlay": {"seed": "private"},
+                    }
+                    if self.malformed_hand_item:
+                        response["state"]["hand"] = [None]
+                    if self.hand_extra_state:
+                        response["state"].update(scene="combat", enemies=[{"intents": [{"category": "attack", "value": "7"}]}],
+                                                 available_actions=["end_turn"])
                 if operation != "end_turn" or not self.drop_action_response:
                     target = self.responses / path.name
                     temporary = target.with_suffix(".tmp")
@@ -81,6 +98,80 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(SERVER.exists(), "MCP server has not been implemented.")
         from mcp_server import GameTools
         self.tools_type = GameTools
+
+    async def test_inspection_does_not_authorize_an_action(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            result = await tools.inspect_hand()
+            self.assertEqual(set(result), {"hand", "hover_tips", "notes"})
+            self.assertEqual([card["id"] for card in result["hand"]], [9, 2])
+            self.assertEqual(result["hover_tips"], [{"title": "Block",
+                "description": "Until next turn, prevents damage.", "card_ids": [9, 2]}])
+            self.assertEqual(set(result["notes"]), {"card_values"})
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["inspect_hand"])
+
+    async def test_inspection_preserves_an_unchanged_observation_token(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            await tools.inspect_hand()
+            result = await tools.end_turn()
+            self.assertEqual(result["turn"], 2)
+            self.assertEqual(game.operations[-1]["expected_state"], "state-1")
+
+    async def test_inspection_does_not_forward_combat_fields_from_game_response(self):
+        with FakeGame() as game:
+            game.hand_extra_state = True
+            result = await self.tools_type(Client(game.directory)).inspect_hand()
+            self.assertEqual(set(result), {"hand", "hover_tips", "notes"})
+            self.assertEqual(set(result["notes"]), {"card_values"})
+
+    async def test_malformed_hand_card_is_reported_as_a_transport_error(self):
+        with FakeGame() as game:
+            game.malformed_hand_item = True
+            result = await self.tools_type(Client(game.directory)).inspect_hand()
+            self.assertEqual(result["error"]["code"], "transport_error")
+
+    async def test_inspection_invalidates_a_changed_observation_token(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            game.turn = 2
+            self.assertNotIn("error", await tools.inspect_hand())
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_hand"])
+
+    async def test_failed_inspection_invalidates_the_observation_token(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            game.malformed_hand = True
+            result = await tools.inspect_hand()
+            self.assertEqual(result["error"]["code"], "transport_error")
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+
+    async def test_cancelled_inspection_does_not_restore_the_observation_token(self):
+        with FakeGame() as game:
+            tools = self.tools_type(Client(game.directory))
+            await tools.get_observation()
+            game.observation_started.clear()
+            game.release_observation.clear()
+            scopes = []
+
+            async def inspect():
+                with anyio.CancelScope() as scope:
+                    scopes.append(scope)
+                    await tools.inspect_hand()
+
+            async with anyio.create_task_group() as group:
+                group.start_soon(inspect)
+                started = await anyio.to_thread.run_sync(game.observation_started.wait, 2)
+                self.assertTrue(started, "Hand inspection did not reach the game transport.")
+                scopes[0].cancel()
+                game.release_observation.set()
+            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_hand"])
 
     async def test_action_requires_explicit_observation_without_sending_request(self):
         with FakeGame() as game:
@@ -187,7 +278,9 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
                     listed = await session.list_tools()
-                    self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "end_turn"})
+                    self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "end_turn"})
+                    inspection_tool = next(tool for tool in listed.tools if tool.name == "inspect_hand")
+                    self.assertTrue(inspection_tool.annotations.readOnlyHint)
                     for tool in listed.tools:
                         self.assertEqual(tool.inputSchema.get("properties", {}), {})
                     missing = await session.call_tool("end_turn", {})
@@ -198,6 +291,13 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(before.structuredContent["turn"], 1)
                     self.assertEqual(json.loads(before.content[0].text), before.structuredContent)
                     self.assertNotIn("snapshot_id", before.structuredContent)
+                    inspected = await session.call_tool("inspect_hand", {})
+                    self.assertFalse(inspected.isError)
+                    self.assertEqual(set(inspected.structuredContent), {"hand", "hover_tips", "notes"})
+                    self.assertEqual(json.loads(inspected.content[0].text), inspected.structuredContent)
+                    invalid_inspection = await session.call_tool("inspect_hand", {"card_id": 9})
+                    self.assertTrue(invalid_inspection.isError)
+                    self.assertEqual(invalid_inspection.structuredContent["error"]["code"], "invalid_request")
                     invalid = await session.call_tool("end_turn", {"unexpected": True})
                     self.assertTrue(invalid.isError)
                     self.assertEqual(game.turn, 1)
@@ -219,11 +319,16 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     with ControllerLease(game.directory):
                         await session.initialize()
                         listed = await session.list_tools()
-                        self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "end_turn"})
+                        self.assertEqual({tool.name for tool in listed.tools}, {"get_observation", "inspect_hand", "end_turn"})
                         busy = await session.call_tool("get_observation", {})
                         self.assertTrue(busy.isError)
                         self.assertEqual(busy.structuredContent["error"]["code"], "controller_busy")
+                        busy_hand = await session.call_tool("inspect_hand", {})
+                        self.assertTrue(busy_hand.isError)
+                        self.assertEqual(busy_hand.structuredContent["error"]["code"], "controller_busy")
                         self.assertEqual(game.operations, [])
+                    inspected = await session.call_tool("inspect_hand", {})
+                    self.assertFalse(inspected.isError)
                     recovered = await session.call_tool("get_observation", {})
                     self.assertFalse(recovered.isError)
                     self.assertEqual(recovered.structuredContent["turn"], 1)
