@@ -80,4 +80,6 @@ python3 scripts/verify_deck.py --ipc-dir .tmp/live/ipc --output-dir .tmp/live/de
 
 独立测试实例使用 `scripts/run_roundtrip.py --windowed --capture --check-deck`，完整参数检查另加 `verify_deck.py --exercise-options`，该参数仅接受仓库的独立 IPC 目录。测试入口准备 28 张牌，包括重复卡、已升级卡和不能升级的诅咒，并补齐原生加牌完成通知。不要为正式游戏设置测试标志。来源、结果与未验证范围见 [设计](../research/2026-10-29-deck-view-design.md) 和 [实施记录](../research/2026-10-29-deck-view-plan.md)。
 
-已通过 73 项 Python 回归；独立中文实例的 12 项牌组不变式和 5 项生命周期检查均通过，原有观察与五类详情全部回归通过。摘要、完整和升级样本位于 `.tmp/roundtrip/deck/`；读取了全部 28 张牌，正文及费用的升级预览正确，显式关闭后玩法数值不变且旧令牌被拒绝。正式游戏待重启后采样。
+已通过 73 项 Python 回归；独立中文实例的 12 项牌组不变式和 5 项生命周期检查均通过，原有观察与五类详情全部回归通过。摘要、完整和升级样本位于 `.tmp/roundtrip/deck/`；读取了全部 28 张牌，正文及费用的升级预览正确，显式关闭后玩法数值不变且旧令牌被拒绝。
+
+正式游戏重启后也已完成 12 张牌的摘要、完整和升级预览采样。完整模式有 6 条共享解释；Strike、Defend 和 Bash 正确显示升级预览，不能升级的 Ascender's Bane 及已升级的 True Grit+ 保持原样。页面显式关闭后恢复战斗，前后玩法观察相同、控制令牌不同，未推进回合。JSON 和完整响应证据位于 `.tmp/live/deck/`，与独立样本分开保存。
