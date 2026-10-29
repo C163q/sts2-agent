@@ -65,13 +65,15 @@ python3 scripts/test_prepare_roundtrip.py
 | `inspect_potions` | 只读、无须动作令牌；读取药水正文和共享解释，保留空槽位置，通用槽位说明只出现一次，格式见 [药水详情](potion-inspection.md) |
 | `inspect_combatants` | 只读、无须动作令牌；合并查看当前双方 powers 与敌人意图的英语悬停解释，格式见 [战斗对象详情](combatant-inspection.md) |
 | `inspect_relics` | 只读、无须动作令牌；读取当前可见遗物的正文、屏幕计数与共享附带解释，格式见 [遗物详情](relic-inspection.md) |
+| `inspect_deck` | 无须动作令牌；真实打开牌组页并保留，返回全牌组，支持信息档位、升级预览和排序，格式见 [牌组查看](deck-inspection.md) |
+| `close_deck` | 无须动作令牌；显式关闭当前牌组页，返回基础观察；不关闭其他页面或自动授权战斗动作 |
 | `start_test_combat` | 仅测试模式且无进行中的对局时，在主菜单创建临时对局并用游戏开发入口进入指定战斗；该操作不是正常游玩的动作 |
 | `end_turn` | 单人战斗、玩家可行动阶段且非暂停状态下，提交 `EndPlayerTurnAction`，等待下一可行动回合或战斗结束 |
 
-请求写入 `requests/<id>.json`，其中 `id` 是不带连字符的 UUID；先写临时文件再原子重命名为 `.json`。请求体包含 `id`、`operation`；动作另带 `expected_state`。响应写入 `responses/<id>.json`，成功包含 `ok: true` 和 `state`，失败包含 `ok: false` 和 `error.code`、`error.message`。
+请求写入 `requests/<id>.json`，其中 `id` 是不带连字符的 UUID；先写临时文件再原子重命名为 `.json`。请求体包含 `id`、`operation`；动作另带 `expected_state`，牌组查看的选项放在可选 `arguments` 对象中。响应写入 `responses/<id>.json`，成功包含 `ok: true` 和 `state`，失败包含 `ok: false` 和 `error.code`、`error.message`。
 
 - 文件读写和等待在后台进行，状态读取与动作提交在 Godot 主线程进行；当前串行处理请求。
-- `snapshot_id` 根据当前导出的观察内容、进程会话和战斗代次生成。动作在同一主线程片段中核对令牌和合法性后提交，避免使用旧观察执行动作；这不是对所有游戏内部状态的完整版本标识。
+- `snapshot_id` 根据当前导出的观察内容、进程会话、战斗代次及工具界面操作代次生成。动作在同一主线程片段中核对令牌和合法性后提交；通过工具查看并关闭牌组后旧令牌不会恢复，须重新观察。这不是对所有游戏内部状态或两次请求之间全部人工 UI 操作历史的完整版本标识。
 - 相同请求 ID 且缓存响应仍在时返回原结果。重复请求不分配新 ID；删除响应缓存后不再保证同一 ID 不会再次执行。
 - `stale_state` 表示缺少或不匹配的状态令牌，`illegal_action` 表示当前不可执行，`invalid_request` 表示请求格式有误，`expired_request` 表示执行前已过期，`game_error` 表示游戏调用异常。
 - `timeout` 或客户端超时后，动作是否已执行可能不确定。应先重新观察，不能自动换一个 ID 重试动作。创建测试场景过程中发生错误也可能已经部分推进游戏。

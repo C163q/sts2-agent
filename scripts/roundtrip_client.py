@@ -47,7 +47,7 @@ def share_potion_tips(slots):
 
 def player_result(response):
     if response["ok"]:
-        gameplay_fields = {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions", "hand", "hover_tips", "slot_tip", "potion_slots", "relics"}
+        gameplay_fields = {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions", "hand", "hover_tips", "slot_tip", "potion_slots", "relics", "deck", "detail_level", "view_upgrades", "sort"}
         result = {key: value for key, value in response["state"].items() if key in gameplay_fields}
         if "hand" in result and result["hand"] is not None:
             result["hand"], result["hover_tips"] = share_hand_tips(result["hand"])
@@ -55,6 +55,8 @@ def player_result(response):
             result["potion_slots"], result["hover_tips"] = share_potion_tips(result["potion_slots"])
         if "relics" in result and result["relics"] is not None:
             result["relics"], result["hover_tips"] = share_indexed_tips(result["relics"], "relic_indices")
+        if "deck" in result and result.get("detail_level") == "full":
+            result["deck"], result["hover_tips"] = share_hand_tips(result["deck"])
         notes = {}
         if result.get("hand"):
             notes["card_values"] = CARD_VALUE_NOTE
@@ -88,13 +90,15 @@ class Client:
         self.directory = Path(directory)
         self.timeout = timeout
 
-    def call(self, operation, expected_state=None, request_id=None):
+    def call(self, operation, expected_state=None, request_id=None, arguments=None):
         request_id = request_id or uuid.uuid4().hex
         if len(request_id) != 32 or uuid.UUID(hex=request_id).hex != request_id:
             raise ValueError("Request id must be a lowercase UUID hex string.")
         request = {"id": request_id, "operation": operation}
         if expected_state is not None:
             request["expected_state"] = expected_state
+        if arguments is not None:
+            request["arguments"] = arguments
         requests = self.directory / "requests"
         responses = self.directory / "responses"
         requests.mkdir(parents=True, exist_ok=True)
@@ -118,12 +122,20 @@ class Client:
 def main():
     parser = argparse.ArgumentParser(description="调用最小验证原型的文件工具接口。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
-    parser.add_argument("operation", choices=("get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "start_test_combat", "end_turn"))
+    parser.add_argument("operation", choices=("get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "close_deck", "start_test_combat", "end_turn"))
+    parser.add_argument("--detail-level", choices=("summary", "full"))
+    parser.add_argument("--view-upgrades", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--sort-by", choices=("obtained", "type", "cost", "name"))
+    direction = parser.add_mutually_exclusive_group()
+    direction.add_argument("--descending", dest="descending", action="store_const", const=True, default=None)
+    direction.add_argument("--ascending", dest="descending", action="store_const", const=False)
     parser.add_argument("--expected-state")
     parser.add_argument("--raw", action="store_true", help="输出保留状态令牌等控制信息的原始响应")
     args = parser.parse_args()
     try:
-        result = Client(args.ipc_dir).call(args.operation, args.expected_state)
+        arguments = {key: getattr(args, key) for key in ("detail_level", "view_upgrades", "sort_by", "descending")
+                     if getattr(args, key) is not None}
+        result = Client(args.ipc_dir).call(args.operation, args.expected_state, arguments=arguments or None)
     except TimeoutError as error:
         result = {"ok": False, "error": {"code": "timeout", "message": str(error)}}
     except (OSError, RuntimeError, json.JSONDecodeError) as error:

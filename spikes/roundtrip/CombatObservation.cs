@@ -15,6 +15,7 @@ using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.Potions;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
+using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace Sts2Agent;
@@ -40,13 +41,14 @@ internal sealed class CombatObservation
                 cardIds.Get(entry.Card);
     }
 
-    public static string Status()
+    public static string Status(bool allowDeck = false)
     {
         var room = NCombatRoom.Instance;
         var global = NRun.Instance?.GlobalUi;
         if (room == null || global == null || !room.IsNodeReady() || !global.IsNodeReady())
             return "not_ready";
-        if (global.CapstoneContainer.InUse || global.Overlays.ScreenCount > 0
+        if ((global.CapstoneContainer.InUse && !(allowDeck && global.CapstoneContainer.CurrentCapstoneScreen is NDeckViewScreen))
+            || global.Overlays.ScreenCount > 0
             || NModalContainer.Instance?.OpenModal != null
             || VisibleUi.Shown(NGame.Instance?.InspectCardScreen)
             || VisibleUi.Shown(NGame.Instance?.InspectRelicScreen)

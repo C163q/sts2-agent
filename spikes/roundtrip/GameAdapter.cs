@@ -6,10 +6,12 @@ using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Characters;
+using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Encounters;
 using MegaCrit.Sts2.Core.Models.Potions;
 using MegaCrit.Sts2.Core.Models.Powers;
@@ -17,6 +19,8 @@ using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
+using MegaCrit.Sts2.Core.Nodes.Screens;
+using MegaCrit.Sts2.Core.Nodes.Screens.Capstones;
 using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
@@ -27,8 +31,10 @@ internal sealed class GameAdapter(bool testMode)
 {
     private readonly string session = Guid.NewGuid().ToString("N");
     private int combatGeneration;
+    private int uiGeneration;
     private CombatState? lastCombat;
     private readonly CombatObservation observation = new();
+    private readonly DeckInspection deckInspection = new();
 
     private static Player? LocalPlayer => LocalContext.GetMe(CombatManager.Instance.DebugOnlyGetState());
 
@@ -72,7 +78,7 @@ internal sealed class GameAdapter(bool testMode)
             actions.Clear();
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 3, language = "en", session, combat_generation = combatGeneration, scene,
+            schema_version = 3, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, scene,
             screen = new { status = visibility },
             turn = scene == "combat" ? observation.Turn() : null,
             player = scene == "combat" ? observation.Player(player) : null,
@@ -88,6 +94,8 @@ internal sealed class GameAdapter(bool testMode)
     public async Task<string> Execute(Request request)
     {
         string before = Observe();
+        if (request.Operation != "inspect_deck" && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
+            return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
         {
             string? capture = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_CAPTURE");
@@ -99,6 +107,28 @@ internal sealed class GameAdapter(bool testMode)
             return Success(request.Id, before);
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (request.Operation == "check_test_deck_lifecycle" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS") is { } deckChecks)
+            return Success(request.Id, JsonSerializer.Serialize(await DeckInspectionChecks.Lifecycle(this, deckChecks)));
+        if (request.Operation == "inspect_deck")
+        {
+            DeckOptions options;
+            try { options = DeckOptions.Parse(request.Arguments); }
+            catch (Exception error) when (error is JsonException or InvalidOperationException)
+            {
+                return FileMailbox.Error(request.Id, "invalid_request", "Invalid deck options.");
+            }
+            return await InspectDeck(request, options);
+        }
+        if (request.Operation == "close_deck")
+        {
+            var screen = DeckView.Current;
+            if (screen == null || !DeckView.CanClose(screen))
+                return FileMailbox.Error(request.Id, "illegal_action", "The current deck screen cannot be closed.");
+            uiGeneration++;
+            DeckView.Close(screen);
+            return Success(request.Id, await SettledObservation());
+        }
         if (request.Operation == "inspect_relics")
         {
             var holders = RelicInspection.VisibleHolders();
@@ -188,6 +218,21 @@ internal sealed class GameAdapter(bool testMode)
             await RunManager.Instance.EnterRoomDebug(RoomType.Monster,
                 model: ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
             await WaitUntil(CanEndTurn);
+            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS") != null)
+            {
+                var player = LocalPlayer!;
+                for (int index = 0; index < 16; index++)
+                    await CardPileCmd.Add(player.RunState.CreateCard<BodySlam>(player), PileType.Deck, skipVisuals: true);
+                await CardPileCmd.Add(player.RunState.CreateCard<AscendersBane>(player), PileType.Deck, skipVisuals: true);
+                var upgraded = player.RunState.CreateCard<BodySlam>(player);
+                upgraded.UpgradeInternal();
+                upgraded.FinalizeUpgradeInternal();
+                await CardPileCmd.Add(upgraded, PileType.Deck, skipVisuals: true);
+                // Fixture additions have no acquisition animation to emit the completion event.
+                PileType.Deck.GetPile(player).InvokeCardAddFinished();
+                await WaitUntil(() => VisibleUi.Number(NRun.Instance!.GlobalUi.TopBar.Deck, "DeckCardCount")
+                    == PileType.Deck.GetPile(player).Cards.Count);
+            }
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_RELIC_CHECKS") != null)
             {
                 await RelicCmd.Obtain<Anchor>(LocalPlayer!);
@@ -222,6 +267,47 @@ internal sealed class GameAdapter(bool testMode)
                 || (player.PlayerCombatState!.TurnNumber > turn && CanEndTurn()));
         }
         return Success(request.Id, await SettledObservation());
+    }
+
+    private async Task<string> InspectDeck(Request request, DeckOptions options)
+    {
+        var player = LocalPlayer;
+        if (player == null || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer || !CombatManager.Instance.IsInProgress)
+            return FileMailbox.Error(request.Id, "illegal_action", "Deck viewing requires a single-player combat.");
+        var screen = DeckView.Current;
+        if (screen == null)
+        {
+            var button = NRun.Instance!.GlobalUi.TopBar.Deck;
+            if (CombatObservation.Status() != "visible" || !CanEndTurn() || !VisibleUi.OnScreen(button) || !button.IsEnabled)
+                return FileMailbox.Error(request.Id, "illegal_action", "The deck button is unavailable.");
+            uiGeneration++;
+            button.ForceClick();
+            screen = NCapstoneContainer.Instance?.CurrentCapstoneScreen as NDeckViewScreen;
+            if (screen == null)
+                return FileMailbox.Error(request.Id, "illegal_action", "The deck screen did not open.");
+        }
+        await ObservationFrame();
+        await WaitUntil(() => !ReferenceEquals(DeckView.Current, screen) || DeckView.Ready(screen));
+        if (!ReferenceEquals(DeckView.Current, screen))
+            return FileMailbox.Error(request.Id, "illegal_action", "The deck screen changed while opening.");
+        if (options.ViewUpgrades.HasValue || options.SortBy != null)
+            uiGeneration++;
+        try { DeckView.Apply(screen, options); }
+        catch (InvalidOperationException)
+        {
+            return FileMailbox.Error(request.Id, "illegal_action", "The deck controls are unavailable.");
+        }
+        await ObservationFrame();
+        await WaitUntil(() => !ReferenceEquals(DeckView.Current, screen) || DeckView.Ready(screen));
+        if (!ReferenceEquals(DeckView.Current, screen) || !ReferenceEquals(LocalPlayer, player))
+            return FileMailbox.Error(request.Id, "illegal_action", "The deck screen changed while reading.");
+        using var snapshot = JsonDocument.Parse(Observe());
+        var inspection = deckInspection.Read(screen, player, options.DetailLevel,
+            snapshot.RootElement.GetProperty("snapshot_id").GetString()!);
+        string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS");
+        if (testMode && checks != null)
+            DeckInspectionChecks.Run(checks, screen, player, deckInspection, inspection, options.DetailLevel);
+        return Success(request.Id, JsonSerializer.Serialize(inspection));
     }
 
     private async Task<string> SettledObservation()

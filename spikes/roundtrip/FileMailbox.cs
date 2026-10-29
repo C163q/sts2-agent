@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Sts2Agent;
 
-internal sealed record Request(string Id, string Operation, string? ExpectedState);
+internal sealed record Request(string Id, string Operation, string? ExpectedState, JsonElement? Arguments = null);
 
 internal sealed class WorkItem(Request request)
 {
@@ -50,7 +50,14 @@ internal sealed class FileMailbox(string directory)
                         throw new JsonException("Request id must match filename.");
                     string? expected = root.TryGetProperty("expected_state", out JsonElement token)
                         ? token.GetString() : null;
-                    WorkItem work = new(new Request(id, operation, expected));
+                    JsonElement? arguments = null;
+                    if (root.TryGetProperty("arguments", out var supplied))
+                    {
+                        if (supplied.ValueKind != JsonValueKind.Object)
+                            throw new JsonException("Arguments must be an object.");
+                        arguments = supplied.Clone();
+                    }
+                    WorkItem work = new(new Request(id, operation, expected, arguments));
                     Queue.Enqueue(work);
                     try
                     {

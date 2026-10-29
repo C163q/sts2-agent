@@ -31,7 +31,7 @@
 3. 外部程序提交结束回合，Mod 校验状态与合法性，通过游戏动作队列执行。
 4. 回合从 1 推进到 2，读回状态与动作响应一致；非法、旧状态及重复请求的处理通过检查。
 
-基础观察现已扩展为 [英语战斗 JSON](docs/development/observation.md)，覆盖当前意图、手牌名称与费用、状态图标和顶栏，使用稳定卡牌 ID 并精简给 LLM 的控制与显示字段，并按 [可见信息边界](docs/observation.md) 过滤。文件接口和 MCP 均提供 [全部当前可见手牌详情](docs/development/hand-inspection.md)、[当前界面悬停说明](docs/development/ui-inspection.md) 和 [药水详情](docs/development/potion-inspection.md)；药水详情保留空槽位置并共享重复解释。文件接口和 MCP 也提供 [双方 powers 与敌人意图详情](docs/development/combatant-inspection.md)，支持共享悬停解释。文件接口和 MCP 也提供 [遗物详情](docs/development/relic-inspection.md)。MCP 目前提供 `get_observation()`、`inspect_hand()`、`inspect_ui()`、`inspect_potions()`、`inspect_combatants()`、`inspect_relics()` 和 `end_turn()`；出牌等动作及其他场景后续扩展。完整游玩仍是长期目标。
+基础观察现已扩展为 [英语战斗 JSON](docs/development/observation.md)，覆盖当前意图、手牌名称与费用、状态图标和顶栏，使用稳定卡牌 ID 并精简给 LLM 的控制与显示字段，并按 [可见信息边界](docs/observation.md) 过滤。文件接口和 MCP 均提供 [全部当前可见手牌详情](docs/development/hand-inspection.md)、[当前界面悬停说明](docs/development/ui-inspection.md) 和 [药水详情](docs/development/potion-inspection.md)；药水详情保留空槽位置并共享重复解释。文件接口和 MCP 也提供 [双方 powers 与敌人意图详情](docs/development/combatant-inspection.md)，支持共享悬停解释。文件接口和 MCP 也提供 [遗物详情](docs/development/relic-inspection.md)。文件接口另提供 [全牌组查看和显式关闭](docs/development/deck-inspection.md)，支持摘要、完整正文、升级预览及原生排序。MCP 目前提供 `get_observation()`、`inspect_hand()`、`inspect_ui()`、`inspect_potions()`、`inspect_combatants()`、`inspect_relics()` 和 `end_turn()`；牌组的 MCP 接入、出牌等动作及其他场景后续扩展。完整游玩仍是长期目标。
 
 ## 本地游戏与开发前提
 
@@ -56,9 +56,10 @@
 - [本地 MCP 接入](docs/development/mcp.md)：战斗观察、手牌详情、结束回合、Codex 配置和错误恢复。
 - [战斗观察 JSON](docs/development/observation.md)：英语字段、显示条件、保存与独立验证。
 - [手牌详情 JSON](docs/development/hand-inspection.md)：一次读取当前手牌的正文、悬停解释及数值说明。
+- [牌组查看与关闭](docs/development/deck-inspection.md)：真实打开页面、全牌组输出、信息档位、升级预览及排序参数。
 - [可见信息边界](docs/observation.md)：基础观察的信息范围与当前实现差距。
 - [战斗画面与 JSON 对照](docs/research/2026-10-29-battle-observation-audit.md)：正常游戏读取样本与对应截图的逐项核对。
 - [观察字段获取方式](docs/research/2026-10-29-observation-data-sources.md)：模型成员、UI 节点、显示规则及尚需运行验证的范围。
-- [牌组查看设计调研](docs/research/2026-10-29-deck-view-design.md)：整个牌组、原生页面、升级预览、排序及信息档位的来源与候选，尚未实现。
+- [牌组查看设计调研](docs/research/2026-10-29-deck-view-design.md)：整个牌组、原生页面、升级预览、排序及信息档位的设计与 API 依据。
 - [最小流程验证记录](docs/research/2026-10-28-roundtrip-validation.md)：当前版本 API 依据和真实游戏验证结果。
 - [Mod 接入基线调研](docs/research/2026-10-28-modding-baseline.md)：本地版本证据、上游资料及待验证事项。

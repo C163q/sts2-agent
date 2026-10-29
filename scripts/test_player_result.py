@@ -5,6 +5,28 @@ import roundtrip_client
 
 
 class PlayerResultTests(unittest.TestCase):
+    def test_deck_summary_preserves_options_without_descriptions_or_notes(self):
+        state = {"snapshot_id": "token", "scene": "deck", "detail_level": "summary", "view_upgrades": False,
+                 "sort": {"by": "obtained", "descending": False},
+                 "deck": [{"id": "deck:0", "name": "Strike", "energy_cost": "1", "type": "Attack"}]}
+        expected = {key: value for key, value in state.items() if key != "snapshot_id"}
+        self.assertEqual(roundtrip_client.player_result({"ok": True, "state": state}), expected)
+
+    def test_deck_full_shares_tips_with_deck_ids_and_no_hand_notes(self):
+        tip = {"title": "Block", "description": "Prevents damage."}
+        state = {"snapshot_id": "token", "scene": "deck", "detail_level": "full", "view_upgrades": True,
+                 "sort": {"by": "cost", "descending": True}, "deck": [
+                     {"id": "deck:2", "description": "Gain 8 Block.", "hover_tips": [tip]},
+                     {"id": "deck:0", "description": "Gain 8 Block.", "hover_tips": [tip]}]}
+        self.assertEqual(roundtrip_client.player_result({"ok": True, "state": state}), {
+            "scene": "deck", "detail_level": "full", "view_upgrades": True,
+            "sort": {"by": "cost", "descending": True}, "deck": [
+                {"id": "deck:2", "description": "Gain 8 Block."},
+                {"id": "deck:0", "description": "Gain 8 Block."}],
+            "hover_tips": [{**tip, "card_ids": ["deck:2", "deck:0"]}],
+        })
+        self.assertIn("hover_tips", state["deck"][0])
+
     def test_relic_details_share_tips_without_changing_raw_data(self):
         block = {"title": "Block", "description": "Prevents damage."}
         changed = {"title": "Block", "description": "Another explanation."}
@@ -123,7 +145,7 @@ class PlayerResultTests(unittest.TestCase):
     def test_success_preserves_gameplay_without_control_metadata(self):
         state = {
             "snapshot_id": "token", "schema_version": 3, "language": "en",
-            "session": "session", "combat_generation": 4, "scene": "combat",
+            "session": "session", "combat_generation": 4, "ui_generation": 7, "scene": "combat",
             "screen": {"status": "visible"}, "player": {"hand": [{"id": 0}]},
             "enemies": [{"intents": [{"category": "attack", "value": "7"}]}],
             "available_actions": ["end_turn"],
