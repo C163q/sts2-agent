@@ -1,6 +1,6 @@
 # 当前手牌详情读取实施记录
 
-当前状态：已完成。共 3 项，已完成 3 项；文件读取、英语渲染、独立游戏验证和 Mod 0.4.0 安装均完成。已产出独立战斗 JSON 供审阅；正式游戏仍须重启加载新版，当前正式场景详情尚未采样。MCP 配置保持禁用，未新增 MCP 工具。
+当前状态：已完成。共 3 项，已完成 3 项；文件读取、英语渲染、独立游戏验证和 Mod 0.4.0 安装均完成。用户重启后，正式缩小甲虫战斗也已采样，JSON 已产出供审阅，读取前后状态一致。MCP 配置保持禁用，未新增 MCP 工具。
 
 ## 已确认范围
 
@@ -42,5 +42,6 @@
 - 27 项既有显示过滤检查全部通过，证据为 `.tmp/roundtrip/observation-checks.json`；最终独立实例已关闭，没有对正式游戏执行动作。
 - 独立只读审阅已完成；屏外卡牌问题已修复，未发现其余阻断。额外核对正文沿用 `NCard` 的现有 `_previewTarget ?? Model.CurrentTarget` 上下文，不重新选择目标。
 - 新版 DLL 与清单已安装到配置示例的 Steam Mod 目录，并逐文件校验与验证构建的 SHA-256 相同；安装使用编号备份，保留旧文件，不截断旧进程已加载的 DLL。用户须重启 Steam 游戏使其生效。
+- 用户重启并返回战斗后，正式场景只读验证通过：缩小甲虫、回合 1、生命 64，手牌为 Defend、3 张 Strike 和 Ascender's Bane。玩法 JSON 为 `.tmp/live/hand-inspection.json`，原始前后响应为 `.tmp/live/hand-inspection-check.json`；读取前后观察令牌一致。进阶之灾正文及 Eternal、Unplayable、Ethereal、Exhaust 四个解释完整输出，没有执行游戏动作。
 
 持续维护的调用及格式说明见 [当前手牌详情 JSON](../development/hand-inspection.md)。
