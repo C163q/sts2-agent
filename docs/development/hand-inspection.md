@@ -14,16 +14,19 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 
 ## 格式
 
-结果包含顶层 `hand` 数组，顺序与基础观察的手牌一致，ID 也保持一致。每张牌复用 [基础手牌字段](observation.md#手牌与身份)，新增：
+结果包含平级的 `hand` 和 `hover_tips` 数组。手牌顺序与基础观察一致，ID 也保持一致；每张牌复用 [基础手牌字段](observation.md#手牌与身份)，新增 `description`，不再内嵌提示集合：
 
 | 字段 | 含义 |
 | --- | --- |
 | `description` | 当前完整牌面正文，保留换行和动态预览数值，移除颜色、字体等格式标记 |
-| `hover_tips[]` | 游戏为这张牌生成的悬停解释框，按 UI 去重后的顺序返回 |
+| 顶层 `hover_tips[]` | 全部手牌共享的悬停解释集合；按标题和正文同时相同去重，按首次出现的顺序排列 |
 | `hover_tips[].title` | 解释标题；原提示无标题时为 `null` |
 | `hover_tips[].description` | 解释正文；卡牌预览提示使用该预览卡的名称及正文 |
+| `hover_tips[].card_ids` | 关联这条解释的手牌 ID，按手牌顺序排列，同一 ID 不重复 |
 
-资源图标转为 `<Energy>`、`<Star>`；尚无明确语义映射的资源保留为 `<Icon:资源文件名>`，不静默丢弃。未知或锁定牌的 `description`、`hover_tips` 为 `null`，不补真实内容。正常可读的空手牌返回 `hand: []`。
+例如多张防御只保留一条 Block 解释；同名提示的正文或动态数值不同时仍为不同条目。客户端完成整合，不修改原始响应；`--raw` 仍保留逐牌 `hover_tips`，无须更新 Mod 或重启游戏。
+
+资源图标转为 `<Energy>`、`<Star>`；尚无明确语义映射的资源保留为 `<Icon:资源文件名>`，不静默丢弃。未知或锁定牌的 `description` 为 `null`，不生成该牌的提示条目，不补真实内容；顶层空集合不代表未知牌没有提示。正常可读的空手牌返回 `hand: []` 和 `hover_tips: []`。
 
 有手牌时只附带 `notes.card_values`：
 
@@ -53,4 +56,4 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 python3 scripts/verify_hand.py --ipc-dir .tmp/live/ipc --output .tmp/live/hand-inspection.json --report .tmp/live/hand-inspection-check.json
 ```
 
-它核对详情和基础观察的 ID、完整正文及提示结构、说明适用范围，以及读取前后观察令牌一致。需要测试英语作用域、缓存、关键词和动态数值时，在独立实例使用 `scripts/run_roundtrip.py --windowed --capture --check-hand`；该标志仅供仓库创建的铁甲战士测试战斗使用，不用于正式游戏。实施与验证记录见 [手牌详情实施记录](../research/2026-10-29-hand-inspection-plan.md)。
+它核对详情和基础观察的 ID、完整正文、共享提示去重及所有卡牌关联、说明适用范围，以及读取前后观察令牌一致。需要测试英语作用域、缓存、关键词和动态数值时，在独立实例使用 `scripts/run_roundtrip.py --windowed --capture --check-hand`；该标志仅供仓库创建的铁甲战士测试战斗使用，不用于正式游戏。游戏读取的实施与验证见 [手牌详情实施记录](../research/2026-10-29-hand-inspection-plan.md)，输出整合见 [共享提示记录](../research/2026-10-29-shared-hand-tips.md)。

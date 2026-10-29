@@ -24,17 +24,26 @@ def main():
     basic = before["state"]["player"]["hand"]
     assert [card["id"] for card in hand] == [card["id"] for card in basic], (hand, basic)
     for card in hand:
+        assert "hover_tips" not in card, card
         if card["type"] is None:
-            assert card["description"] is None and card["hover_tips"] is None, card
+            assert card["description"] is None, card
             continue
         assert isinstance(card["description"], str), card
-        assert isinstance(card["hover_tips"], list), card
         assert "[gold]" not in card["description"] and "[img]" not in card["description"], card
+    tips = result["hover_tips"]
+    assert len(tips) == len({(tip["title"], tip["description"]) for tip in tips}), tips
+    for tip in tips:
+        assert tip["card_ids"] and len(tip["card_ids"]) == len(set(tip["card_ids"])), tip
+    raw_links = {(card["id"], tip["title"], tip["description"])
+                 for card in inspection["state"]["hand"] for tip in card["hover_tips"] or []}
+    shared_links = {(card_id, tip["title"], tip["description"])
+                    for tip in tips for card_id in tip["card_ids"]}
+    assert shared_links == raw_links, (shared_links, raw_links)
     if hand:
-        assert set(result) == {"hand", "notes"}, result
+        assert set(result) == {"hand", "hover_tips", "notes"}, result
         assert set(result["notes"]) == {"card_values"}, result
     else:
-        assert result == {"hand": []}, result
+        assert result == {"hand": [], "hover_tips": []}, result
     assert all("description" not in card for card in basic), basic
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")

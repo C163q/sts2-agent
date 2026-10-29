@@ -10,10 +10,37 @@ class PlayerResultTests(unittest.TestCase):
             "snapshot_id": "token", "hand": hand,
         }})
         self.assertIn("hand", result)
-        self.assertEqual(result["hand"], hand)
+        self.assertEqual(result["hand"], [{"id": 7, "name": "Strike", "description": "Deal 6 damage."}])
+        self.assertEqual(result["hover_tips"], [])
+        self.assertIn("hover_tips", hand[0])
         self.assertEqual(set(result["notes"]), {"card_values"})
         self.assertNotIn("snapshot_id", result)
         self.assertNotIn("enemies", result)
+
+    def test_hand_tips_are_shared_without_modifying_the_raw_response(self):
+        tip = {"title": "Block", "description": "Until next turn, prevents damage."}
+        hand = [{"id": card_id, "name": "Defend", "description": "Gain 5 Block.",
+                 "hover_tips": [tip, tip]} for card_id in (9, 2, 8, 5, 4)]
+        result = roundtrip_client.player_result({"ok": True, "state": {"hand": hand}})
+        self.assertEqual(result["hover_tips"], [{
+            "title": "Block", "description": "Until next turn, prevents damage.",
+            "card_ids": [9, 2, 8, 5, 4],
+        }])
+        self.assertTrue(all("hover_tips" not in card for card in result["hand"]))
+        self.assertTrue(all(card["hover_tips"] == [tip, tip] for card in hand))
+        self.assertNotIn("card_ids", tip)
+
+    def test_same_tip_title_with_different_descriptions_is_not_merged(self):
+        hand = [
+            {"id": 0, "hover_tips": [{"title": "Replay", "description": "Play twice."}]},
+            {"id": 1, "hover_tips": [{"title": "Replay", "description": "Play three times."}]},
+            {"id": 2, "hover_tips": [{"title": "Replay", "description": "Play twice."}]},
+        ]
+        result = roundtrip_client.player_result({"ok": True, "state": {"hand": hand}})
+        self.assertEqual(result["hover_tips"], [
+            {"title": "Replay", "description": "Play twice.", "card_ids": [0, 2]},
+            {"title": "Replay", "description": "Play three times.", "card_ids": [1]},
+        ])
 
     def test_success_preserves_gameplay_without_control_metadata(self):
         state = {
