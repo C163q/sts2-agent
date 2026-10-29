@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.Models.Characters;
 using MegaCrit.Sts2.Core.Models.Encounters;
 using MegaCrit.Sts2.Core.Models.Potions;
 using MegaCrit.Sts2.Core.Models.Powers;
+using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
@@ -98,6 +99,20 @@ internal sealed class GameAdapter(bool testMode)
             return Success(request.Id, before);
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (request.Operation == "inspect_relics")
+        {
+            var holders = RelicInspection.VisibleHolders();
+            if (holders == null)
+                return FileMailbox.Error(request.Id, "illegal_action", "Relic details are unavailable in the current screen.");
+            string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_RELIC_CHECKS");
+            if (testMode && checks != null)
+                RelicInspectionChecks.Run(checks);
+            return Success(request.Id, JsonSerializer.Serialize(new
+            {
+                snapshot_id = document.RootElement.GetProperty("snapshot_id").GetString(),
+                relics = RelicInspection.Read(holders)
+            }));
+        }
         if (request.Operation == "inspect_combatants")
         {
             if (CombatObservation.Status() != "visible" || LocalPlayer == null || NCombatRoom.Instance!.Ui.Hand.InCardPlay)
@@ -173,6 +188,12 @@ internal sealed class GameAdapter(bool testMode)
             await RunManager.Instance.EnterRoomDebug(RoomType.Monster,
                 model: ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
             await WaitUntil(CanEndTurn);
+            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_RELIC_CHECKS") != null)
+            {
+                await RelicCmd.Obtain<Anchor>(LocalPlayer!);
+                await RelicCmd.Obtain<Lantern>(LocalPlayer!);
+                await RelicCmd.Obtain<PenNib>(LocalPlayer!);
+            }
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_POTION_CHECKS") != null)
             {
                 await PotionCmd.TryToProcure<SkillPotion>(LocalPlayer!);

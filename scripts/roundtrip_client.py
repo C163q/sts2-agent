@@ -24,31 +24,37 @@ def share_hand_tips(hand):
     return cards, list(shared.values())
 
 
-def share_potion_tips(slots):
-    potions = []
+def share_indexed_tips(items, index_field):
+    details = []
     shared = {}
-    for index, potion in enumerate(slots):
-        if potion is None:
-            potions.append(None)
+    for index, item in enumerate(items):
+        if item is None:
+            details.append(None)
             continue
-        potions.append({key: value for key, value in potion.items() if key != "hover_tips"})
-        for tip in potion.get("hover_tips") or []:
+        details.append({key: value for key, value in item.items() if key != "hover_tips"})
+        for tip in item.get("hover_tips") or []:
             key = (tip.get("title"), tip["description"])
             if key not in shared:
-                shared[key] = {"title": key[0], "description": key[1], "slot_indices": []}
-            if index not in shared[key]["slot_indices"]:
-                shared[key]["slot_indices"].append(index)
-    return potions, list(shared.values())
+                shared[key] = {"title": key[0], "description": key[1], index_field: []}
+            if index not in shared[key][index_field]:
+                shared[key][index_field].append(index)
+    return details, list(shared.values())
+
+
+def share_potion_tips(slots):
+    return share_indexed_tips(slots, "slot_indices")
 
 
 def player_result(response):
     if response["ok"]:
-        gameplay_fields = {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions", "hand", "hover_tips", "slot_tip", "potion_slots"}
+        gameplay_fields = {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions", "hand", "hover_tips", "slot_tip", "potion_slots", "relics"}
         result = {key: value for key, value in response["state"].items() if key in gameplay_fields}
         if "hand" in result and result["hand"] is not None:
             result["hand"], result["hover_tips"] = share_hand_tips(result["hand"])
         if "potion_slots" in result and result["potion_slots"] is not None:
             result["potion_slots"], result["hover_tips"] = share_potion_tips(result["potion_slots"])
+        if "relics" in result and result["relics"] is not None:
+            result["relics"], result["hover_tips"] = share_indexed_tips(result["relics"], "relic_indices")
         notes = {}
         if result.get("hand"):
             notes["card_values"] = CARD_VALUE_NOTE
@@ -112,7 +118,7 @@ class Client:
 def main():
     parser = argparse.ArgumentParser(description="调用最小验证原型的文件工具接口。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
-    parser.add_argument("operation", choices=("get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "start_test_combat", "end_turn"))
+    parser.add_argument("operation", choices=("get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "start_test_combat", "end_turn"))
     parser.add_argument("--expected-state")
     parser.add_argument("--raw", action="store_true", help="输出保留状态令牌等控制信息的原始响应")
     args = parser.parse_args()

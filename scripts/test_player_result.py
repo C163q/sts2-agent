@@ -5,6 +5,31 @@ import roundtrip_client
 
 
 class PlayerResultTests(unittest.TestCase):
+    def test_relic_details_share_tips_without_changing_raw_data(self):
+        block = {"title": "Block", "description": "Prevents damage."}
+        changed = {"title": "Block", "description": "Another explanation."}
+        relics = [
+            {"name": "Anchor", "counter": None, "description": "Gain 10 Block.", "hover_tips": [block, block]},
+            {"name": "Pen Nib", "counter": 0, "description": "Every 10th Attack.", "hover_tips": []},
+            {"name": "Other", "counter": 2, "description": "Text.", "hover_tips": [block, changed]},
+        ]
+        original = json.dumps(relics)
+        self.assertEqual(roundtrip_client.player_result({"ok": True, "state": {
+            "snapshot_id": "token", "relics": relics,
+        }}), {"relics": [
+            {"name": "Anchor", "counter": None, "description": "Gain 10 Block."},
+            {"name": "Pen Nib", "counter": 0, "description": "Every 10th Attack."},
+            {"name": "Other", "counter": 2, "description": "Text."},
+        ], "hover_tips": [
+            {**block, "relic_indices": [0, 2]}, {**changed, "relic_indices": [2]},
+        ]})
+        self.assertEqual(json.dumps(relics), original)
+
+    def test_empty_relic_inventory_does_not_add_notes(self):
+        self.assertEqual(roundtrip_client.player_result({"ok": True, "state": {
+            "snapshot_id": "token", "relics": [],
+        }}), {"relics": [], "hover_tips": []})
+
     def test_potion_inspection_preserves_common_tip_and_empty_slot(self):
         tip = {"title": "Potion Slot", "description": "Potions can be used during combat."}
         slots = [{"name": "Skill Potion", "description": "Choose 1 of 3 Skills.", "hover_tips": []}, None]

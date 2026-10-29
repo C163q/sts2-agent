@@ -12,6 +12,7 @@ def main():
     parser.add_argument("--check-ui", action="store_true", help="在读取界面说明时检查英语文本、可见性和读取前后一致性")
     parser.add_argument("--check-potions", action="store_true", help="为独立测试战斗准备药水并检查只读详情")
     parser.add_argument("--check-combatants", action="store_true", help="为独立战斗准备双方 powers 并检查意图与能力详情")
+    parser.add_argument("--check-relics", action="store_true", help="为独立战斗准备遗物并检查只读正文、计数和可见性")
     args = parser.parse_args()
     if args.capture and not args.windowed:
         parser.error("--capture 需要 --windowed。")
@@ -39,6 +40,8 @@ def main():
         environment["STS2_AGENT_TEST_POTION_CHECKS"] = str(work / "potion-checks.json")
     if args.check_combatants:
         environment["STS2_AGENT_TEST_COMBATANT_CHECKS"] = str(work / "combatant-checks.json")
+    if args.check_relics:
+        environment["STS2_AGENT_TEST_RELIC_CHECKS"] = str(work / "relic-checks.json")
     print(f"启动独立测试实例，日志位于 {work / 'stdout.log'}，按 Ctrl+C 停止。", flush=True)
     arguments = [str(executable), "--path", str(runtime),
                  "--force-steam", "off", "--log-file", str(work / "game.log"), "--max-fps", "30"]

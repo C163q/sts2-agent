@@ -134,7 +134,7 @@ Python 自动检查包括真实 stdio 握手和临时文件 IPC，不需要运�
 
 Codex 沙箱若禁止本地 socketpair 写入，Python `asyncio` 的线程唤醒和 stdio 测试可能挂起；须按 [Codex 环境约定](../ai/codex.md) 单独申请在沙箱外运行相应命令。此限制与 MCP 是否使用网络端口无关。
 
-当前已通过 60 项 Python 自动检查，覆盖真实 stdio 握手与六工具发现、控制权竞争、四类详情的令牌保留或失效、取消处理、格式错误、来源路径及输出字段边界，并包含文件客户端的共享提示投影。正式游戏已完成真实 stdio MCP 的只读手牌、界面说明、药水和战斗对象采样，读取前后状态一致，未执行动作；脚本如下：
+当前已通过 62 项 Python 自动检查，覆盖真实 stdio 握手与六工具发现、控制权竞争、四类详情的令牌保留或失效、取消处理、格式错误、来源路径及输出字段边界，并包含文件客户端的共享提示投影。遗物详情目前仅有文件接口，不在 MCP 工具列表中。正式游戏已完成真实 stdio MCP 的只读手牌、界面说明、药水和战斗对象采样，读取前后状态一致，未执行动作；脚本如下：
 
 ```sh
 .tmp/mcp-venv/bin/python scripts/verify_mcp_hand.py --ipc-dir .tmp/live/ipc --output .tmp/live/mcp-hand-inspection.json --report .tmp/live/mcp-hand-evidence.json
