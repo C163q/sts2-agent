@@ -116,6 +116,37 @@
 
 `CardSelectCmd.FromHand` 在没有候选，或无需人工确认且候选数不超过最低选择数等情形会自动完成。因此应检测实际需要交互的暂停与界面，不能见到选择函数调用便一律提前返回。
 
+## RitsuLib 源码补充核对
+
+核对日期同为 2026-10-29。已浅克隆上游到忽略目录 `.tmp/ritsulib-end-turn-review/`，基线为 [`772f280964f2efc7c7e2f29fc59844e68616dd57`](https://github.com/BAKAOLC/STS2-RitsuLib/commit/772f280964f2efc7c7e2f29fc59844e68616dd57)，项目版本 `0.6.10`。以下结论来自该提交源码，不代表已经安装、编译或在游戏内验证该库。
+
+RitsuLib 的统一事件封装值得复用，上一轮只查阅库介绍不足以评估这些能力。其 `RitsuLibFramework.SubscribeLifecycle<TEvent>` 提供可释放的强类型订阅；[战斗事件契约](https://github.com/BAKAOLC/STS2-RitsuLib/blob/772f280964f2efc7c7e2f29fc59844e68616dd57/src/Lifecycle/CombatLifecycleContracts.cs) 与[补充事件契约](https://github.com/BAKAOLC/STS2-RitsuLib/blob/772f280964f2efc7c7e2f29fc59844e68616dd57/src/Lifecycle/AdditionalHookLifecycleContracts.cs) 已覆盖：
+
+| 需求 | 可复用的事件或能力 | 仍需处理 |
+| --- | --- | --- |
+| 惊逃等自动出牌 | `CardAutoPlayingEvent`、`CardPlayingEvent`、`CardPlayedEvent` | `CardAutoPlayingEvent` 表示即将自动打出；不代表已完成，也不包含通用的触发 power 来源链 |
+| 攻击与多段命中 | `AttackStartingEvent`、`AttackEndedEvent`；另有 `IAttackHitHookListener` 和 `AttackHitContext.Results` | 单次命中接口通过模型/能力监听器分发；不是覆盖全部伤害的普通生命周期订阅。凋萎、滚石直接调用 `CreatureCmd.Damage`，灾厄调用 `Kill`，不能仅用攻击命中接口覆盖 |
+| HP 变化及死亡 | `CurrentHpChangedEvent`、`CreatureDyingEvent`、`CreatureDiedEvent` | HP 事件只有变化量，没有完整伤害来源及格挡结果；死亡事件需检查 `WasRemovalPrevented` 等语义，复活另补原生事件 |
+| 牌的生成与移动 | `CardGeneratedForCombatEvent`、`CardMovedBetweenPilesEvent`、抽牌/弃牌/消耗事件 | `CardMovedBetweenPilesEvent.Source` 可辅助来源追踪，但不存在所有事件通用的因果链；牌名及位置仍按公开信息过滤 |
+| 回合与战斗流程 | `SideTurnStartingEvent`、`SideTurnStartedEvent`、`PlayerTurnStartedEvent`、`CombatEndedEvent`、`CombatVictoryEvent` | 需核对实际发布点，不能直接把事件名当作可行动、失败或最终结算完成的判据 |
+| 异步补丁 | `HarmonyAsyncTaskBridge.After`、补丁注册和诊断辅助 | 能减少补丁基础设施，但不会自动建立战报、选择识别或完成判定 |
+
+### 三个不能省略的边界
+
+1. **选择暂停仍需自行接入。** 在该提交的生命周期契约及实现中未找到 `choice_required` 对应事件，也未找到对 `GameAction.BeforePausedForPlayerChoice` 或 `GatheringPlayerChoice` 的封装。`PlayerTurnStartedEvent` 在 `Hook.AfterPlayerTurnStart` 的任务完成后发布，暴政选择会阻塞它；`SideTurnStartedEvent` 在 `Hook.AfterSideTurnStart` 完成后发布，而目标游戏的 `StartTurn` 允许玩家设置任务暂停后继续走到这里。前者可能一直等选择，后者可能在选择尚未完成时发出，都不能独自作为 `end_turn` 的完成条件。
+2. **同名战斗结束事件不是相同发布点。** RitsuLib 的 `CombatEndedEvent` 来自 `Hook.AfterCombatEnd` 的任务完成，`CombatVictoryEvent` 来自 `Hook.AfterCombatVictory`，见[战斗生命周期补丁](https://github.com/BAKAOLC/STS2-RitsuLib/blob/772f280964f2efc7c7e2f29fc59844e68616dd57/src/Lifecycle/Patches/CombatHookLifecyclePatches.cs)。目标游戏 `CombatManager.ProcessPendingLoss` 直接触发原生 `CombatEnded`，这条失败路径未调用 `Hook.AfterCombatEnd`。因此不能用 RitsuLib 的同名事件替代原生失败通知，也不能把它当作整个胜利流程完成。这里是源码路径比较，实际安装该库后的通知覆盖仍待游戏内验证。
+3. **后置事件不是原始变化的无损时间线。** 多数补丁通过 `LifecyclePatchTaskBridge.After` 等待整个原始钩子任务，再同步发布事件。钩子中若嵌套触发其他效果，较早发生的外层变化可能晚于内层事件被发布。记录器仍需区分状态变化、钩子完成及因果关系，避免重复和顺序误述。事件持有可变游戏对象，也仍需在捕获时复制玩法标量。
+
+此外，已核对的生命周期契约没有通用的每次受伤、复活、power 增减/移除事件，没有完整事件缓冲、动作区间游标或“自动结算完成/等待玩家选择”的返回接口。`SubscribeLifecycle` 的 `replayCurrentState` 是可重放生命周期状态的补发，不是完整战斗历史或断线恢复战报；动作期间订阅应显式只接收未来事件。多项相关补丁标为 `IsCritical = false`，接入时还需验证实际可用事件，不能把补丁缺失默认为没有发生游戏效果。
+
+### 对项目的建议
+
+将 RitsuLib 作为统一事件来源的优先评估对象，复用已提供的出牌、牌堆和流程事件，把项目自己的实现集中在事件记录、缺项补录、信息过滤和决策边界。原生 `CombatHistory` 作为补充与校验来源，不必重新封装库中所有已有钩子。最终是否增加运行时依赖，应由最小接入验证决定，而不是仅凭文档决定。
+
+[兼容目标配置](https://github.com/BAKAOLC/STS2-RitsuLib/blob/772f280964f2efc7c7e2f29fc59844e68616dd57/build/RitsuLib.Compatibility.props) 明确保留 `0.107.1`；[项目包配置](https://github.com/BAKAOLC/STS2-RitsuLib/blob/772f280964f2efc7c7e2f29fc59844e68616dd57/STS2-RitsuLib.csproj) 为非最高 API 生成 `STS2.RitsuLib.Compat.<api-version>`，因此本项目应评估对应 `0.107.1` 的编译包与匹配运行时，不能直接使用默认的最高 API 包。源码声明兼容不等于本项目已经验证兼容。
+
+最小接入验证重点为：库在目标版本的加载及实际事件覆盖；惊逃自动出牌；凋萎伤害；暴政出现选择时立即返回；千足虫复活；最后一击；原生失败路径；嵌套效果事件顺序。现阶段不将库安装进用户游戏，也不改变项目依赖。
+
 ## 后续实施的验证范围
 
 至少覆盖：普通敌方回合；惊逃击杀最后一个敌人；凋萎致死；敌方致命攻击；灾厄击杀；千足虫死亡再复活；滚石在玩家回合开始时击杀；暴政停在选择前；回合结束选择；自动出牌引发嵌套选择；无需人工选择的自动完成分支；多段攻击及反伤去重；胜利清空历史后记录仍存在；新敌人加入；超时/断线恢复；隐藏牌名与抽取顺序不泄露。
