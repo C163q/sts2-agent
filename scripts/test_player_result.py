@@ -15,6 +15,7 @@ class PlayerResultTests(unittest.TestCase):
         self.assertEqual(result, {
             "scene": "combat", "screen": {"status": "visible"},
             "player": {"hand": [{"id": 0}]}, "available_actions": ["end_turn"],
+            "notes": roundtrip_client.COMBAT_VALUE_NOTES,
         })
         self.assertEqual(state["snapshot_id"], "token")
 
@@ -27,7 +28,7 @@ class PlayerResultTests(unittest.TestCase):
     def test_unrecognized_wire_fields_are_not_forwarded_to_player(self):
         result = roundtrip_client.player_result({"ok": True, "state": {
             "scene": "combat", "overlay": {"seed": "diagnostic"}, "debug_state": {"future": "hidden"}}})
-        self.assertEqual(result, {"scene": "combat"})
+        self.assertEqual(result, {"scene": "combat", "notes": roundtrip_client.COMBAT_VALUE_NOTES})
 
     def test_timeout_explicitly_forbids_automatic_retry(self):
         result = roundtrip_client.player_result({"ok": False, "error": {

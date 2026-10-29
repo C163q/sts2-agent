@@ -61,3 +61,16 @@ MegaCrit.Sts2.Core.Nodes.Cards.Holders.NCardHolder.CreateHoverTips()
 - 本次只核实内置卡牌的来源链路，未验证其他 Mod 对本地化、描述和悬停提示的改写兼容性。
 
 后续专门查看调用仍按 [观察约定](../observation.md) 一次返回全部当前手牌详情，并沿用稳定卡牌 ID；基础观察不自动附送这些效果和解释。该调用目前尚未实现。
+
+## 数值预览的上下文
+
+同日追加核查下列类型，基线与前文相同：
+
+- `NCard.UpdateVisuals` 取 `_previewTarget ?? Model.CurrentTarget` 作为目标，再更新动态预览。`MegaCrit.Sts2.Core.Localization.DynamicVars.DamageVar.UpdateCardPreview` 将该目标、攻击者和卡牌传入 `Hook.ModifyDamage`；未对准目标与对准目标的数值可能不同。
+- `MegaCrit.Sts2.Core.Models.Powers.ShrinkPower.ModifyDamageMultiplicative` 检查攻击者是否为状态所有者；`VulnerablePower.ModifyDamageMultiplicative` 检查目标是否为状态所有者。前者可影响未选目标时的牌面，后者需要对应受击目标。显示数字已经是预览结果，不应把已包含的效果再计算一次。
+- `MegaCrit.Sts2.Core.MonsterMoves.Intents.AttackIntent.GetSingleDamage` 取得当前本地玩家，以其角色作为受击目标、意图所有者作为攻击者调用 `Hook.ModifyDamage`。`SingleAttackIntent.GetIntentLabel` 使用此结果；`NIntent` 将格式化结果写入 `%Value`。观察实现读取此标签，没有重新叠加状态。
+- `MegaCrit.Sts2.Core.Models.Powers.TaintedPower.ModifyDamageAdditive` 对状态所有者承受的适用攻击增加伤害。中文 `powers.json` 的 `TAINTED_POWER.title` 已核实为“污染”；它和易伤均可参与意图预览。
+
+本次在 `roundtrip_client.player_result` 加入固定数值解读说明，供普通玩法输出及 MCP 共用，具体字段见 [数值预览说明](../development/observation.md#数值预览说明)。未新增预览工具、刷新 UI、修改 Mod 或自动计算所有目标的伤害。上述行为依据目标程序集核实，未在运行游戏中重新构造“缩小 + 易伤”或“污染”场景。
+
+输出转换修改后，18 项 Python 回归检查通过，包含真实 stdio MCP 与临时文件 IPC。另检查说明仅出现在成功的战斗结果、不改写原始响应，且各次结果的说明字典互不影响；这些检查未连接正式游戏。同步修正观察文档中“尚未接入正式 LLM 工具框架”的过时描述，实际 MCP 已复用同一转换入口。

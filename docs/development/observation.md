@@ -18,7 +18,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state > .tmp/liv
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 ```
 
-`--raw` 保留原始文件协议：成功为 `id/ok/state`，`state` 内保留 `snapshot_id/schema_version/language/session/combat_generation`；失败为 `id/ok/error`。Python 的 `Client.call()` 同样返回原始响应，`player_result(response)` 产生面向 LLM 的结果，不改写原响应。外部客户端必须自行保存最近的原始令牌，动作仍带 `expected_state` 校验；省略 LLM 可见令牌不等于绕过校验。当前尚未接入正式 LLM 工具框架。
+`--raw` 保留原始文件协议：成功为 `id/ok/state`，`state` 内保留 `snapshot_id/schema_version/language/session/combat_generation`；失败为 `id/ok/error`。Python 的 `Client.call()` 同样返回原始响应，`player_result(response)` 产生面向 LLM 的结果，不改写原响应。外部客户端必须自行保存最近的原始令牌，动作仍带 `expected_state` 校验；省略 LLM 可见令牌不等于绕过校验。[本地 MCP](mcp.md) 复用同一玩法输出转换。
 
 ## 玩法字段
 
@@ -39,8 +39,26 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 | `top_bar.potion_slots` | 按位置排列；槽内 `null` 是已确认空槽，非空为含 `name` 的对象，整个字段为 `null` 是未能观察槽位 |
 | `buttons.end_turn` | 当前按钮的英语文字与启用状态 |
 | `available_actions` | 当前已实现动作的可用性；不是完整工具目录 |
+| `notes` | 战斗输出附带的固定英语数值解读说明；属于接口说明，不是额外采样到的游戏状态 |
 
 数字来自可见标签，金币动画期间也按标签返回。`null` 不等于 0，表示未显示、尚未准备或不能可靠识别；可见空容器使用 `[]`。正常生命条没有格挡图标时才归一化为 `block: 0`。死亡文字与无限图标分别映射为 `dead`、`infinite`，不从隐藏生命模型补数字。
+
+## 数值预览说明
+
+客户端在成功的战斗结果中加入以下固定 `notes`；普通命令行输出和 MCP 均包含，原始协议与非战斗输出不加入，无须更新 Mod。
+
+```json
+{
+  "notes": {
+    "card_values": "Card values are contextual previews, not base values. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again.",
+    "enemy_attack_intents": "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
+  }
+}
+```
+
+卡牌详情尚未实现；这里预先说明后续卡牌数值的语义，不向基础观察补入卡牌效果或目标预览。手牌未对准目标时，数值可能已经包含缩小等修正，但未包含某个敌人的易伤；对准目标后，牌面才会按该目标重新预览。敌人攻击意图则已经按当前本地玩家计算，包含适用的易伤、污染等效果，不能再对意图数字重复应用同一效果。意图仍是当前预览，不保证等于最终生命损失。
+
+来源与验证范围见 [手牌查看来源调研](../research/2026-10-29-hand-inspection-sources.md#数值预览的上下文)。固定说明不根据当前状态枚举效果、计算目标伤害或调用刷新预览的方法。
 
 ## 手牌与身份
 
