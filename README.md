@@ -59,5 +59,6 @@
 - [可见信息边界](docs/observation.md)：基础观察的信息范围与当前实现差距。
 - [战斗画面与 JSON 对照](docs/research/2026-10-29-battle-observation-audit.md)：正常游戏读取样本与对应截图的逐项核对。
 - [观察字段获取方式](docs/research/2026-10-29-observation-data-sources.md)：模型成员、UI 节点、显示规则及尚需运行验证的范围。
+- [牌组查看设计调研](docs/research/2026-10-29-deck-view-design.md)：整个牌组、原生页面、升级预览、排序及信息档位的来源与候选，尚未实现。
 - [最小流程验证记录](docs/research/2026-10-28-roundtrip-validation.md)：当前版本 API 依据和真实游戏验证结果。
 - [Mod 接入基线调研](docs/research/2026-10-28-modding-baseline.md)：本地版本证据、上游资料及待验证事项。
