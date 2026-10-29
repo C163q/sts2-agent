@@ -7,10 +7,12 @@ using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions;
+using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Characters;
 using MegaCrit.Sts2.Core.Models.Encounters;
 using MegaCrit.Sts2.Core.Models.Potions;
+using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
@@ -96,6 +98,20 @@ internal sealed class GameAdapter(bool testMode)
             return Success(request.Id, before);
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (request.Operation == "inspect_combatants")
+        {
+            if (CombatObservation.Status() != "visible" || LocalPlayer == null || NCombatRoom.Instance!.Ui.Hand.InCardPlay)
+                return FileMailbox.Error(request.Id, "illegal_action", "Combatant details are unavailable in the current screen.");
+            string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_COMBATANT_CHECKS");
+            if (testMode && checks != null)
+                CombatantInspectionChecks.Run(checks, LocalPlayer);
+            var inspection = CombatantInspection.Read(LocalPlayer);
+            return Success(request.Id, JsonSerializer.Serialize(new
+            {
+                snapshot_id = document.RootElement.GetProperty("snapshot_id").GetString(),
+                inspection.scene, inspection.player, inspection.enemies, inspection.hover_tips
+            }));
+        }
         if (request.Operation == "inspect_potions")
         {
             var holders = PotionInspection.VisibleHolders();
@@ -162,6 +178,16 @@ internal sealed class GameAdapter(bool testMode)
                 await PotionCmd.TryToProcure<SkillPotion>(LocalPlayer!);
                 await PotionCmd.TryToProcure<BlockPotion>(LocalPlayer!);
                 await PotionCmd.TryToProcure<BlockPotion>(LocalPlayer!);
+            }
+            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_COMBATANT_CHECKS") != null)
+            {
+                var player = LocalPlayer!.Creature;
+                var enemies = CombatManager.Instance.DebugOnlyGetState()!.Enemies.ToArray();
+                var choices = new ThrowingPlayerChoiceContext();
+                await PowerCmd.Apply<StrengthPower>(choices, player, 2, player, null);
+                await PowerCmd.Apply<VulnerablePower>(choices, player, 2, player, null);
+                await PowerCmd.Apply<VulnerablePower>(choices, enemies, 2, player, null);
+                await PowerCmd.Apply<ShrinkPower>(choices, player, -1, enemies[0], null);
             }
         }
         else if (request.Operation == "end_turn")

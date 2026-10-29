@@ -96,10 +96,13 @@ internal sealed class CombatObservation
     {
         if (Status() != "visible")
             return null;
-        return NCombatRoom.Instance!.CreatureNodes.Concat(NCombatRoom.Instance.RemovingCreatureNodes).Distinct()
-            .Where(node => node.Entity.IsMonster && VisibleUi.Shown(node) && VisibleUi.OnScreen(node.Body))
-            .OrderBy(node => node.GlobalPosition.X).Select(Enemy).ToArray();
+        return EnemyNodes().Select(Enemy).ToArray();
     }
+
+    internal static IEnumerable<NCreature> EnemyNodes() =>
+        NCombatRoom.Instance!.CreatureNodes.Concat(NCombatRoom.Instance.RemovingCreatureNodes).Distinct()
+            .Where(node => node.Entity.IsMonster && VisibleUi.Shown(node) && VisibleUi.OnScreen(node.Body))
+            .OrderBy(node => node.GlobalPosition.X);
 
     private object Enemy(NCreature node)
     {
@@ -116,7 +119,7 @@ internal sealed class CombatObservation
         };
     }
 
-    private static object Intent(NIntent intent)
+    internal static object Intent(NIntent intent)
     {
         // Identify the rendered texture, never the monster's mutable next-move model.
         var sprite = intent.GetNodeOrNull<Sprite2D>("%Intent");

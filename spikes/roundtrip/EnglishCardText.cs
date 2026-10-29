@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
+using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes;
 using SmartFormat;
@@ -16,6 +17,7 @@ internal static class EnglishCardText
 {
     private static readonly EnglishText English = new();
     [ThreadStatic] private static bool active;
+    [ThreadStatic] private static PowerModel? activePower;
 
     static EnglishCardText()
     {
@@ -54,6 +56,13 @@ internal static class EnglishCardText
         finally { active = previous; }
     }
 
+    public static T ReadPower<T>(PowerModel power, Func<T> read) => Read(() =>
+    {
+        var previous = activePower;
+        try { activePower = power; return read(); }
+        finally { activePower = previous; }
+    });
+
     private static string Template(LocString text) => English.Entry(text.LocTable, text.LocEntryKey)
         ?? throw new InvalidOperationException("English localization is unavailable for this card detail.");
 
@@ -61,7 +70,18 @@ internal static class EnglishCardText
     {
         if (!active)
             return true;
-        __result = Smart.Default.Format(CultureInfo.GetCultureInfo("en"), Template(__instance), __instance.Variables);
+        var variables = __instance.Variables;
+        if (activePower?.Applier?.Monster is { } applier && __instance.LocTable == "powers"
+            && __instance.LocEntryKey.StartsWith(activePower.Id.Entry + ".", StringComparison.Ordinal)
+            && variables.GetValueOrDefault("ApplierName") is StringVar)
+        {
+            // Some powers cache the applier's localized name when applied; format a detached value.
+            variables = new Dictionary<string, object>(variables)
+            {
+                ["ApplierName"] = new StringVar("ApplierName", applier.Title.GetFormattedText())
+            };
+        }
+        __result = Smart.Default.Format(CultureInfo.GetCultureInfo("en"), Template(__instance), variables);
         return false;
     }
 
