@@ -41,13 +41,15 @@ internal sealed class CombatObservation
                 cardIds.Get(entry.Card);
     }
 
-    public static string Status(bool allowDeck = false)
+    public static string Status(bool allowCardView = false, bool allowMap = false)
     {
         var room = NCombatRoom.Instance;
         var global = NRun.Instance?.GlobalUi;
         if (room == null || global == null || !room.IsNodeReady() || !global.IsNodeReady())
             return "not_ready";
-        if ((global.CapstoneContainer.InUse && !(allowDeck && global.CapstoneContainer.CurrentCapstoneScreen is NDeckViewScreen))
+        if ((global.CapstoneContainer.InUse && !(allowCardView
+                && global.CapstoneContainer.CurrentCapstoneScreen is NDeckViewScreen or NCardPileScreen))
+            || (VisibleUi.Shown(global.MapScreen) && !(allowMap && global.MapScreen.IsOpen && !global.MapScreen.IsTraveling))
             || global.Overlays.ScreenCount > 0
             || NModalContainer.Instance?.OpenModal != null
             || VisibleUi.Shown(NGame.Instance?.InspectCardScreen)

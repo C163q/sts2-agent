@@ -66,7 +66,8 @@ python3 scripts/test_prepare_roundtrip.py
 | `inspect_combatants` | 只读、无须动作令牌；合并查看当前双方 powers 与敌人意图的英语悬停解释，格式见 [战斗对象详情](combatant-inspection.md) |
 | `inspect_relics` | 只读、无须动作令牌；读取当前可见遗物的正文、屏幕计数与共享附带解释，格式见 [遗物详情](relic-inspection.md) |
 | `inspect_deck` | 无须动作令牌；真实打开牌组页并保留，返回全牌组，支持信息档位、升级预览和排序，格式见 [牌组查看](deck-inspection.md) |
-| `close_deck` | 无须动作令牌；显式关闭当前牌组页，返回基础观察；不关闭其他页面或自动授权战斗动作 |
+| `close_card_view` | 无须动作令牌；显式关闭当前原生卡牌查看页，返回基础观察；保留下层地图，不关闭其他页面或自动授权战斗动作 |
+| `close_deck` | 仅为旧文件客户端兼容保留，只关闭牌组；MCP 使用通用 `close_card_view` |
 | `start_test_combat` | 仅测试模式且无进行中的对局时，在主菜单创建临时对局并用游戏开发入口进入指定战斗；该操作不是正常游玩的动作 |
 | `end_turn` | 单人战斗、玩家可行动阶段且非暂停状态下，提交 `EndPlayerTurnAction`，等待下一可行动回合或战斗结束 |
 

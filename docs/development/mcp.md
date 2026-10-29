@@ -2,7 +2,7 @@
 
 本项目提供 Linux 本地 stdio MCP server，供支持 MCP 的 agent 读取《杀戮尖塔 2》并结束回合。服务在游戏外运行，通过现有文件 IPC 与 Mod 通信；不调用模型 API，也不需要在游戏里配置模型密钥。
 
-当前公开七个无参数工具；[全牌组查看和显式关闭](deck-inspection.md) 目前仅提供文件接口，尚未接入 MCP：
+当前固定公开九个工具，其中 `inspect_deck` 支持可选参数，其余工具无参数：
 
 当前工具列表固定，不按场景增删，调用时核对合法性。动态发现的版本约束及 agent 侧场景过滤建议见 [工具列表与场景可用性核查](../research/2026-10-29-mcp-tool-availability.md)，这些候选尚未实现。
 
@@ -14,13 +14,15 @@
 | `inspect_potions()` | 只读查看当前可见药水栏位、完整说明和共享解释，不使用药水或授予动作权限 |
 | `inspect_combatants()` | 只读合并查看双方 powers 与敌人当前意图的悬停说明，不授予动作权限 |
 | `inspect_relics()` | 只读批量查看当前可见遗物的英语正文、屏幕计数和共享附带解释，不授予动作权限 |
+| `inspect_deck(...)` | 真实打开或复用牌组页，返回全牌组；可选摘要/完整正文、升级预览与排序，保留页面并清除战斗动作令牌 |
+| `close_card_view()` | 仅关闭顶层牌组、抽牌堆、弃牌堆或消耗牌堆查看页；保留下层地图，返回基础观察并清除战斗动作令牌 |
 | `end_turn()` | 消耗最近一次显式观察的令牌，通过游戏正常动作队列结束回合，等待执行结果并返回新观察 |
 
 [手牌详情](hand-inspection.md) 返回平级的 `hand`、共享 `hover_tips` 及适用的 `notes.card_values`，以 `card_ids` 关联解释和手牌。[界面说明](ui-inspection.md) 返回 `scene` 和共享 `hover_tips`，以 `sources` 关联基础观察字段，不附带数值解读 notes。[药水详情](potion-inspection.md) 返回单份 `slot_tip`、保留空槽位置的 `potion_slots` 和以 `slot_indices` 关联的共享 `hover_tips`，不附带数值 notes。[战斗对象详情](combatant-inspection.md) 返回玩家与敌人的 powers、当前敌人意图，以及通过 `sources` 关联的共享说明；包含意图时附带 `notes.enemy_attack_intents`。[遗物详情](relic-inspection.md) 返回 `relics` 和以 `relic_indices` 关联的共享 `hover_tips`，不附带数值 notes。除战斗对象详情外，其他查看不附送敌人意图，所有详情均不附送 `available_actions`；界面说明还排除药水、遗物、powers 和手牌效果。出牌、使用或丢弃药水及其他场景动作尚未实现。基础观察继续遵循 [可见信息边界](../observation.md)，字段见 [战斗观察 JSON](observation.md)。
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、已构建并加载的 Mod，以及支持 stdio MCP 的客户端；遗物详情要求 Mod 0.8.0，战斗对象详情要求 Mod 0.7.0，药水详情要求 0.6.0，界面说明要求 0.5.0，手牌详情要求 0.4.0，原有观察和结束回合仍兼容 0.3.0。MCP server 当前为 0.6.0，本次实际使用 Python 3.14.8、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。原有标准库客户端不需要安装 MCP 依赖。
+需要 Python 3.10 或以上版本、已构建并加载的 Mod，以及支持 stdio MCP 的客户端；牌组查看及通用关闭要求 Mod 0.10.0，遗物详情要求 Mod 0.8.0，战斗对象详情要求 Mod 0.7.0，药水详情要求 0.6.0，界面说明要求 0.5.0，手牌详情要求 0.4.0，原有观察和结束回合仍兼容 0.3.0。MCP server 当前为 0.7.0，本次实际使用 Python 3.14.8、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。原有标准库客户端不需要安装 MCP 依赖。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -52,7 +54,7 @@ codex mcp add sts2 -- "$PWD/.tmp/mcp-venv/bin/python" "$PWD/scripts/mcp_server.p
 codex mcp list
 ```
 
-重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation`、`inspect_hand`、`inspect_ui`、`inspect_potions`、`inspect_combatants`、`inspect_relics` 和 `end_turn`；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
+重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation`、`inspect_hand`、`inspect_ui`、`inspect_potions`、`inspect_combatants`、`inspect_relics`、`inspect_deck`、`close_card_view` 和 `end_turn`；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
 
 对应的 TOML 配置示例为：
 
@@ -84,6 +86,14 @@ approval_mode = "approve"
 
 `inspect_hand`、`inspect_ui`、`inspect_potions`、`inspect_combatants` 和 `inspect_relics` 可以直接调用，但不能代替战斗观察授权动作。也可以使用 `get_observation → inspect_hand/inspect_ui/inspect_potions/inspect_combatants/inspect_relics → end_turn`：详情读取返回的状态令牌与已有观察一致时保留原动作权限；状态变化、读取失败或取消时清除原令牌。详情响应不会自动保存新的动作令牌，必须重新调用 `get_observation` 后才能行动。没有动作权限时 `end_turn` 仍返回 `observation_required`，不会发送游戏动作。
 
+`inspect_deck` 与 `close_card_view` 会改变界面，不按只读详情的令牌保留规则处理：每次发送 UI 请求前清除旧权限，成功、失败、超时或取消后均不恢复。关闭返回的基础观察也不自动授权行动。非法参数在 IPC 前拒绝，不改变界面或此前有效权限。详细参数及省略规则见 [牌组查看](deck-inspection.md)。
+
+```json
+{"detail_level": "full", "view_upgrades": true, "sort_by": "cost", "descending": false}
+```
+
+连续调用 `inspect_deck` 会复用当前页面；省略升级和排序选项沿用当前值，省略 `detail_level` 则使用摘要。看完调用 `close_card_view()`；仅关闭顶层卡牌查看页，地图保持打开时 `screen.view` 为 `map`，不会另发地图关闭请求。两工具声明 UI 副作用，客户端可能按其策略要求授权；本项目不持久化这类授权。新工具不会改变 MCP 工具列表。
+
 成功时，MCP `structuredContent` 直接包含玩法 JSON，`content` 同时提供同样的 JSON 文本。模型不会收到 `snapshot_id`、原始响应包装或开发测试入口；`available_actions` 只保留已公开的 `end_turn`。协议层仍保留 MCP 自身必需的消息字段。
 
 业务失败返回 `isError: true`，并提供英语结构化错误，例如：
@@ -104,7 +114,7 @@ approval_mode = "approve"
 | `controller_busy` | 另一个 MCP 连接已取得控制权，断开该连接后重新观察；当前连接可继续握手和发现工具 |
 | `stale_state` | 玩家操作、场景变化等使旧观察失效，重新观察后决策 |
 | `illegal_action` | 当前不允许结束回合，或某类详情不可读（包括瞄准或打出卡牌期间的战斗对象详情）；重新观察，待无遮挡战斗界面再查看 |
-| `invalid_request` | 工具名或参数有误；所有工具均不接受参数 |
+| `invalid_request` | 工具名或参数有误；`inspect_deck` 仅接受四个已定义参数，其余工具无参数 |
 | `expired_request` | 请求在执行前已过期，重新观察 |
 | `timeout`、`game_error` | 执行结果未知，重新观察；不得自动重复动作 |
 | `transport_error` | 检查游戏进程、Mod、IPC 目录和读写权限，恢复连接后重新观察 |
@@ -137,7 +147,7 @@ Python 自动检查包括真实 stdio 握手和临时文件 IPC，不需要运�
 
 Codex 沙箱若禁止本地 socketpair 写入，Python `asyncio` 的线程唤醒和 stdio 测试可能挂起；须按 [Codex 环境约定](../ai/codex.md) 单独申请在沙箱外运行相应命令。此限制与 MCP 是否使用网络端口无关。
 
-当前已通过 73 项 Python 自动检查，覆盖真实 stdio 握手与七工具发现、控制权竞争、五类详情的令牌保留或失效、取消处理、格式错误、来源路径及输出字段边界，并包含文件客户端的共享提示投影。正式游戏已完成真实 stdio MCP 的只读手牌、界面说明、药水、战斗对象和遗物采样，读取前后状态一致，未执行动作；脚本如下：
+当前已通过 84 项 Python 自动检查，覆盖真实 stdio 握手与九工具发现、牌组参数传输和 UI 操作的令牌清除、控制权竞争、五类详情的令牌保留或失效、取消处理、格式错误、来源路径及输出字段边界，并包含文件客户端的共享提示投影。正式游戏已完成真实 stdio MCP 的只读手牌、界面说明、药水、战斗对象和遗物采样，读取前后状态一致，未执行动作；脚本如下：
 
 ```sh
 .tmp/mcp-venv/bin/python scripts/verify_mcp_hand.py --ipc-dir .tmp/live/ipc --output .tmp/live/mcp-hand-inspection.json --report .tmp/live/mcp-hand-evidence.json
@@ -167,4 +177,12 @@ Codex 沙箱若禁止本地 socketpair 写入，Python `asyncio` 的线程唤醒
 
 此前首次接入完成独立游戏的 MCP 回合往返，以及真实 Codex 模型的观察、结束一次回合和读回：游戏验证从回合 1 到 2，Codex 接续从回合 3 到 4、生命值从 61 到 54，动作结果与读回完全一致。本次遗物详情扩展未修改用户禁用的 Codex MCP 配置，未重新进行模型自动游玩验证。
 
-证据与范围见 [遗物 MCP 实施记录](../research/2026-10-29-mcp-relic-inspection.md)、[战斗对象 MCP 实施记录](../research/2026-10-29-mcp-combatant-inspection.md)、[药水 MCP 实施记录](../research/2026-10-29-mcp-potion-inspection.md)、[界面说明 MCP 实施记录](../research/2026-10-29-mcp-ui-inspection.md)、[手牌 MCP 实施记录](../research/2026-10-29-mcp-hand-inspection.md)、[首次 MCP 实施记录](../research/2026-10-29-mcp-plan.md) 和 [启动锁修复记录](../research/2026-10-29-mcp-startup-lock.md)。本次没有修改 Mod。仅提供 stdio，未实现 HTTP 服务或完整自动游玩；其他 agent 客户端尚未实测。
+牌组工具已在 Mod 0.10.0 独立中文实例完成真实 stdio 浏览：28 张牌，摘要、完整、升级预览及重复查看与文件 JSON 一致；显式通用关闭后玩法观察不变、旧令牌不同，工具列表始终九项。样本为 `.tmp/roundtrip/mcp-deck/`；本次未对仍加载旧 Mod 的正式游戏调用新关闭工具，正式采样等待重启。
+
+```sh
+.tmp/mcp-venv/bin/python scripts/verify_mcp_deck.py --ipc-dir .tmp/live/ipc --output-dir .tmp/live/mcp-deck
+```
+
+该脚本会真实打开、切换预览并关闭卡牌页面，只执行 UI 操作，不出牌或结束回合。地图叠层及其他牌堆通用关闭由独立原生检查覆盖。非战斗界面尚不支持。
+
+证据与范围见 [牌组 MCP 实施记录](../research/2026-10-29-mcp-deck-inspection.md)、[遗物 MCP 实施记录](../research/2026-10-29-mcp-relic-inspection.md)、[战斗对象 MCP 实施记录](../research/2026-10-29-mcp-combatant-inspection.md)、[药水 MCP 实施记录](../research/2026-10-29-mcp-potion-inspection.md)、[界面说明 MCP 实施记录](../research/2026-10-29-mcp-ui-inspection.md)、[手牌 MCP 实施记录](../research/2026-10-29-mcp-hand-inspection.md)、[首次 MCP 实施记录](../research/2026-10-29-mcp-plan.md) 和 [启动锁修复记录](../research/2026-10-29-mcp-startup-lock.md)。本次没有修改 Mod。仅提供 stdio，未实现 HTTP 服务或完整自动游玩；其他 agent 客户端尚未实测。

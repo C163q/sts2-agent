@@ -18,7 +18,7 @@ internal static class DeckView
     internal sealed record Sort(string by, bool descending);
 
     public static NDeckViewScreen? Current => NCapstoneContainer.Instance?.CurrentCapstoneScreen is NDeckViewScreen screen
-        && VisibleUi.Shown(screen) && screen.IsNodeReady() && CombatObservation.Status(allowDeck: true) == "visible"
+        && ReferenceEquals(CardView.Current, screen)
         ? screen : null;
 
     public static NCardGrid Grid(NDeckViewScreen screen) => screen.GetNode<NCardGrid>("CardGrid");

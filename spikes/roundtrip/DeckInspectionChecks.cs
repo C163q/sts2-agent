@@ -15,6 +15,65 @@ internal static class DeckInspectionChecks
 {
     private static readonly List<object> Runs = [];
 
+    public static async Task<object> CardViews(GameAdapter adapter, string path)
+    {
+        List<object> results = [];
+        var game = NGame.Instance!;
+        var player = MegaCrit.Sts2.Core.Context.LocalContext.GetMe(CombatManager.Instance.DebugOnlyGetState())!;
+        async Task<JsonElement> Call(string operation)
+        {
+            using var response = JsonDocument.Parse(await adapter.Execute(new Request(Guid.NewGuid().ToString("N"), operation, null)));
+            return response.RootElement.Clone();
+        }
+        foreach (var pile in new[] { PileType.Draw, PileType.Discard, PileType.Exhaust })
+        {
+            NCardPileScreen.ShowScreen(pile.GetPile(player), []);
+            var deadline = DateTime.UtcNow.AddSeconds(3);
+            while (CardView.Current is not { } current || !CardView.CanClose(current))
+            {
+                if (DateTime.UtcNow >= deadline) throw new TimeoutException("Test card view controls did not become ready.");
+                await game.ToSignal(game.GetTree(), SceneTree.SignalName.ProcessFrame);
+            }
+            var observation = await Call("get_state");
+            bool identified = observation.GetProperty("state").GetProperty("screen").GetProperty("view").GetString()
+                == pile.ToString().ToLowerInvariant() + "_pile";
+            var closed = await Call("close_card_view");
+            results.Add(new { name = "close_" + pile.ToString().ToLowerInvariant(), passed = identified
+                && closed.GetProperty("ok").GetBoolean() && NCapstoneContainer.Instance?.CurrentCapstoneScreen == null });
+        }
+        var map = NRun.Instance!.GlobalUi.MapScreen;
+        try
+        {
+            map.Open(isOpenedFromTopBar: true);
+            await game.ToSignal(game.GetTree(), SceneTree.SignalName.ProcessFrame);
+            var before = await Call("get_state");
+            results.Add(new { name = "map_is_covered_and_identified", passed =
+                before.GetProperty("state").GetProperty("screen").GetProperty("status").GetString() == "covered"
+                && before.GetProperty("state").GetProperty("screen").GetProperty("view").GetString() == "map"
+                && before.GetProperty("state").GetProperty("player").ValueKind == JsonValueKind.Null });
+            var refused = await Call("close_card_view");
+            results.Add(new { name = "map_alone_is_not_closed", passed = !refused.GetProperty("ok").GetBoolean() && map.IsOpen });
+            var deck = await Call("inspect_deck");
+            results.Add(new { name = "deck_opens_above_map", passed = deck.GetProperty("ok").GetBoolean()
+                && NCapstoneContainer.Instance?.CurrentCapstoneScreen is NDeckViewScreen && map.IsOpen });
+            var closed = await Call("close_card_view");
+            results.Add(new { name = "card_close_preserves_map", passed = closed.GetProperty("ok").GetBoolean()
+                && NCapstoneContainer.Instance?.CurrentCapstoneScreen == null && map.IsOpen && VisibleUi.Shown(map)
+                && closed.GetProperty("state").GetProperty("screen").GetProperty("view").GetString() == "map" });
+        }
+        finally
+        {
+            NCapstoneContainer.Instance?.Close();
+            map.Close(animateOut: false);
+        }
+        var report = new { results };
+        File.WriteAllText(Path.Combine(Path.GetDirectoryName(path)!, "card-view-checks.json"),
+            JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true }));
+        if (results.Any(result => !JsonSerializer.SerializeToElement(result).GetProperty("passed").GetBoolean()))
+            throw new InvalidOperationException("Card view checks failed; see the local report.");
+        return report;
+    }
+
     public static async Task<object> Lifecycle(GameAdapter adapter, string path)
     {
         List<object> results = [];

@@ -122,7 +122,7 @@ class Client:
 def main():
     parser = argparse.ArgumentParser(description="调用最小验证原型的文件工具接口。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
-    parser.add_argument("operation", choices=("get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "close_deck", "start_test_combat", "end_turn"))
+    parser.add_argument("operation", choices=("get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "close_card_view", "close_deck", "start_test_combat", "end_turn"))
     parser.add_argument("--detail-level", choices=("summary", "full"))
     parser.add_argument("--view-upgrades", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--sort-by", choices=("obtained", "type", "cost", "name"))

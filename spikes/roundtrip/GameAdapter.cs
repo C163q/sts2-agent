@@ -38,14 +38,14 @@ internal sealed class GameAdapter(bool testMode)
 
     private static Player? LocalPlayer => LocalContext.GetMe(CombatManager.Instance.DebugOnlyGetState());
 
-    private static bool CanEndTurn()
+    private static bool CanEndTurn(bool allowMapPause = false)
     {
         CombatManager combat = CombatManager.Instance;
         Player? player = LocalPlayer;
         NCombatRoom? room = NCombatRoom.Instance;
         return RunManager.Instance.IsInProgress
             && RunManager.Instance.IsSingleplayerOrFakeMultiplayer
-            && combat.IsInProgress && !combat.IsPaused && !combat.IsOverOrEnding
+            && combat.IsInProgress && (!combat.IsPaused || allowMapPause) && !combat.IsOverOrEnding
             && !combat.PlayerActionsDisabled
             && player?.PlayerCombatState?.Phase == PlayerTurnPhase.Play
             && player.Creature.IsAlive && !combat.IsPlayerReadyToEndTurn(player)
@@ -79,7 +79,7 @@ internal sealed class GameAdapter(bool testMode)
         string body = JsonSerializer.Serialize(new
         {
             schema_version = 3, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, scene,
-            screen = new { status = visibility },
+            screen = CardView.Screen(visibility),
             turn = scene == "combat" ? observation.Turn() : null,
             player = scene == "combat" ? observation.Player(player) : null,
             enemies = scene == "combat" ? observation.Enemies() : null,
@@ -110,6 +110,9 @@ internal sealed class GameAdapter(bool testMode)
         if (request.Operation == "check_test_deck_lifecycle" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS") is { } deckChecks)
             return Success(request.Id, JsonSerializer.Serialize(await DeckInspectionChecks.Lifecycle(this, deckChecks)));
+        if (request.Operation == "check_test_card_views" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS") is { } cardChecks)
+            return Success(request.Id, JsonSerializer.Serialize(await DeckInspectionChecks.CardViews(this, cardChecks)));
         if (request.Operation == "inspect_deck")
         {
             DeckOptions options;
@@ -119,6 +122,15 @@ internal sealed class GameAdapter(bool testMode)
                 return FileMailbox.Error(request.Id, "invalid_request", "Invalid deck options.");
             }
             return await InspectDeck(request, options);
+        }
+        if (request.Operation == "close_card_view")
+        {
+            var screen = CardView.Current;
+            if (screen == null || !CardView.CanClose(screen))
+                return FileMailbox.Error(request.Id, "illegal_action", "The current card view cannot be closed.");
+            uiGeneration++;
+            CardView.Close(screen);
+            return Success(request.Id, await SettledObservation());
         }
         if (request.Operation == "close_deck")
         {
@@ -217,7 +229,7 @@ internal sealed class GameAdapter(bool testMode)
                 Array.Empty<ModifierModel>(), "STS2AGENTROUNDTRIP", GameMode.Standard);
             await RunManager.Instance.EnterRoomDebug(RoomType.Monster,
                 model: ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
-            await WaitUntil(CanEndTurn);
+            await WaitUntil(() => CanEndTurn());
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS") != null)
             {
                 var player = LocalPlayer!;
@@ -278,7 +290,9 @@ internal sealed class GameAdapter(bool testMode)
         if (screen == null)
         {
             var button = NRun.Instance!.GlobalUi.TopBar.Deck;
-            if (CombatObservation.Status() != "visible" || !CanEndTurn() || !VisibleUi.OnScreen(button) || !button.IsEnabled)
+            bool mapOpen = NRun.Instance.GlobalUi.MapScreen.IsOpen;
+            if (CombatObservation.Status(allowMap: true) != "visible" || !CanEndTurn(allowMapPause: mapOpen)
+                || !VisibleUi.OnScreen(button) || !button.IsEnabled)
                 return FileMailbox.Error(request.Id, "illegal_action", "The deck button is unavailable.");
             uiGeneration++;
             button.ForceClick();
