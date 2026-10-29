@@ -10,14 +10,14 @@
 
 ## 覆盖清单
 
-下表是候选工具的覆盖建议，不表示已实现。只有当前界面可见且能产生对应提示的对象才纳入；字段存在或模型存在不等于提示可用。
+下表覆盖已核实的提示来源，具体工具划分见下文，不表示已实现。只有当前界面可见且能产生对应提示的对象才纳入；字段存在或模型存在不等于提示可用。
 
 | 对象 | 当前基础观察的对应字段 | 已核实的提示来源及边界 |
 | --- | --- | --- |
 | 左上角角色头像及进阶 | `player.character`、`top_bar.ascension` | `MegaCrit.sts2.Core.Nodes.TopBar.NTopBarPortraitTip.Initialize/OnFocus` 调用 `AscensionHelper.GetHoverTip`，包含角色名称、当前累计进阶规则，并可能包含成就禁用提示。进阶大于 0 或成就禁用时才有提示；不应单独再复制一份进阶说明 |
 | 顶栏生命 | `player.hp/max_hp` | `MegaCrit.sts2.Core.Nodes.TopBar.NTopBarHp.OnFocus`，`static_hover_tips` 的 `HIT_POINTS` |
 | 金币 | `top_bar.gold` | `MegaCrit.sts2.Core.Nodes.TopBar.NTopBarGold.OnFocus`，`MONEY_POUCH` |
-| 药水栏位 | `top_bar.potion_slots` | `NPotionHolder.OnFocus`：空槽为 `POTION_SLOT`，有药水时为当前药水的 `Model.HoverTips`，包括药水本身及关联解释；建议保留槽位关联并去重相同提示 |
+| 药水栏位 | `top_bar.potion_slots` | `NPotionHolder.OnFocus`：空槽为 `POTION_SLOT`，有药水时为当前药水的 `Model.HoverTips`，包括药水本身及关联解释；由独立药水查看工具提供，保留槽位关联 |
 | 顶栏房间类型，例如“敌人” | `top_bar.room_icon` | `MegaCrit.sts2.Core.Nodes.TopBar.NTopBarRoomIcon.OnFocus/GetHoverTipPrefixForRoomType`。依当前房间选择 `ROOM_ENEMY`、`ROOM_ELITE`、`ROOM_REST` 等；不是战斗中的敌人说明 |
 | 楼层 | `top_bar.floor` | `MegaCrit.sts2.Core.Nodes.TopBar.NTopBarFloorIcon.OnFocus`，`FLOOR` |
 | 首领，例如仪式兽 | `top_bar.bosses` | `MegaCrit.sts2.Core.Nodes.TopBar.NTopBarBossIcon.OnFocus`，按实际单首领、双首领和只显示第二首领的条件生成 `BOSS/DOUBLE_BOSS`，不提供未显示的首领 |
@@ -28,17 +28,26 @@
 | 星星资源 | `player.stars` | `NStarCounter._Ready/OnHovered`，`STAR_COUNT`，仅图标当前显示时纳入；是原清单应补充的独立类型 |
 | 抽牌、弃牌、消耗牌堆入口 | `player.draw_count/discard_count/exhaust_count` | `NCombatCardPile.OnFocus`，分别为 `DRAW_PILE/DISCARD_PILE/EXHAUST_PILE`；要求牌堆已绑定且入口可见，不返回内容或抽牌顺序 |
 | 结束回合 | `buttons.end_turn` | `NEndTurnButton.OnFocus`，`END_TURN`；提示有玩家当前是否准备结束回合的条件，不能因按钮存在而无条件补齐 |
-| 当前敌人意图 | `enemies[].intents` | `NIntent.OnHovered` 根据 `HasIntentTip` 调用当前意图的 `GetHoverTip(_targets, _owner)`。建议纳入当前可见意图的说明，并关联敌人 ID；不读取额外未来动作 |
+| 当前敌人意图 | `enemies[].intents` | `NIntent.OnHovered` 根据 `HasIntentTip` 调用当前意图的 `GetHoverTip(_targets, _owner)`。与 powers 共用查看工具，关联敌人 ID；不读取额外未来动作 |
 
-没有确认到战斗生命条或格挡区域独立提供通用 `Block` 说明的逻辑。`NCreatureStateDisplay.OnHovered` 会显示名称并调用生物的组合提示，不能据此虚构一条格挡悬停说明。
+没有确认到战斗生命条或格挡区域独立提供通用 `Block` 说明的逻辑。用户在正式战斗中获得格挡后悬停，确认没有格挡说明；本次不补充。`NCreatureStateDisplay.OnHovered` 会显示名称并调用生物的组合提示，不能据此虚构一条格挡悬停说明。
 
-## 生物提示与专门工具的边界
+## 已确认的工具划分
 
-`MegaCrit.Sts2.Core.Entities.Creatures.Creature.HoverTips` 会合并怪物当前意图以及 powers 的提示；`NCreature.ShowCreatureHoverTips` 和生命条悬停会使用这个组合。因此不能直接把该集合当作本次通用界面说明，绕过 powers 的独立查看边界。候选范围只取基础观察已显示的意图对应说明；遗物与玩家、敌人的 powers 效果均留给后续专门工具。手牌继续使用现有 `inspect_hand`。
+按信息变化和调用频率划分，以下范围已确认，新增工具均尚未实现：
+
+- 通用界面说明：头像及进阶、顶栏生命、金币、房间类型、楼层、首领、地图、主牌组、设置、能量、星星、三种牌堆入口和结束回合。只取当前可见且实际支持悬停的入口说明。
+- 能力与意图查看：合并玩家和敌人的可见 powers 解释，以及敌人当前可见意图的解释，供战斗中较频繁查看；不并入通用界面说明。
+- 药水查看：独立读取当前药水槽位的提示和药水效果，适应药水内容动态变化及较高调用频率；不并入通用界面说明。
+- 遗物查看：仍由后续专门工具处理。
+
+手牌继续使用现有 `inspect_hand`。格挡不增加专门悬停说明。
+
+`MegaCrit.Sts2.Core.Entities.Creatures.Creature.HoverTips` 会合并怪物当前意图以及 powers 的提示；`NCreature.ShowCreatureHoverTips` 和生命条悬停会使用这个组合，符合将二者放在同一查看调用中的信息组织方式。但实现仍须按基础观察实际显示的图标和意图过滤，不能直接枚举组合集合而暴露隐藏 powers 或意图。
 
 ## 候选读取方式
 
-建议用一个无参数、只读的 `inspect_ui` 一次返回当前场景可见对象的提示，提供标题、正文和对应基础观察字段或对象 ID；相同标题和正文去重，保留所有来源。字段路径如何表达、药水关联格式及错误结构仍属于实现设计，尚未确定接口契约。
+通用界面说明建议用无参数、只读的 `inspect_ui` 一次返回，提供标题、正文和对应基础观察字段或对象 ID；相同标题和正文去重，保留所有来源。它不包含药水、遗物、powers 或敌人意图的解释。字段路径如何表达、专门工具的名称与关联格式及错误结构仍属于实现设计，尚未确定接口契约。
 
 读取应复用游戏的提示生成规则和已有英语格式化能力，但不能直接触发各节点的 `OnFocus/OnHovered`：这些方法还会显示窗口、闪烁手牌、播放声音、创建动画，药水悬停甚至会使用随机音效。只读取文本来源，避免改变鼠标、界面和随机状态。已缓存的提示可能使用中文，不能直接把其字符串当成英语结果；需核对重建与缓存边界。
 
