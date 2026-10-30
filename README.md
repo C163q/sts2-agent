@@ -55,7 +55,7 @@ cp .env.example .env
 
    将示例路径替换为实际路径，已有启动选项须保留；设置后完整重启游戏，详见[启动配置](docs/development/live-game.md#steam-启动配置)。
 4. **接入 LLM 客户端**：按[MCP 接入](docs/development/mcp.md#安装与游戏前提)安装 Python 依赖，将 `scripts/mcp_server.py --ipc-dir <相同通信目录>` 配置为客户端的 stdio MCP 服务。脚本应使用已安装依赖的 Python 解释器启动；Codex 等客户端的完整参数示例见该指南。截图工具按[启动配置](docs/development/screenshots.md#启动配置)单独启用。
-5. **验证并游玩**：启动游戏后先调用 `get_observation`，成功返回当前画面才说明游戏内接口能够响应。正常使用自行进入对局与战斗；LLM 每次游戏动作前先观察，按需查询详情、目标或选牌，再调用对应动作。更新 DLL 后须完整重启游戏，更新 MCP 脚本或配置后须重连 MCP。
+5. **验证并游玩**：启动游戏后先调用 `get_observation`，成功返回当前画面才说明游戏内接口能够响应。正常使用自行进入对局与战斗；LLM 根据当前观察按需查看详情、目标或选牌，完整成功的动作结果可直接用于下一动作；失败或切换查看页面后重新观察，详见[MCP 调用规则](docs/development/mcp.md#调用和错误语义)。更新 DLL 后须完整重启游戏，更新 MCP 脚本或配置后须重连 MCP。
 
 MCP 不扫描游戏进程，也不负责启动游戏。客户端与 Mod 通过配置好的同一目录交换请求和响应；列出工具只说明 MCP 服务已启动，不能证明游戏已运行或 Mod 已连通。交互过程及超时含义见[通信方式](docs/development/mcp.md#通信方式与连接状态)。
 

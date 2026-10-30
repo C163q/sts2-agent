@@ -30,7 +30,7 @@ flowchart LR
 
 | 工具 | 用途 |
 | --- | --- |
-| `get_observation()` | 读取当前可见基础状态，保存一次动作令牌 |
+| `get_observation()` | 读取当前可见基础状态，刷新当前动作令牌 |
 | `inspect_hand()` | [全部可见手牌正文及共享解释](hand-inspection.md) |
 | `inspect_targets(card_id 或 potion_slot)` | 查询[手牌](card-play.md)或[药水](potion-actions.md)可用性、是否须指定目标及范围，不进入瞄准或抽随机数 |
 | `play_card(card_id, target_id?)` | [提交一次原生手动出牌](card-play.md)，后续选牌单独操作 |
@@ -56,7 +56,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.20.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.15.0`，支持[手牌升级选择](card-selection.md#手牌升级)；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。升级时须同时更新 Mod 和外部脚本，旧 Mod 的动作响应可能被拒绝。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.20.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.16.0`，支持[手牌升级选择](card-selection.md#手牌升级)及复用成功动作返回的观察；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。首次使用须匹配 Mod 与外部脚本；本次 MCP `0.15.0 → 0.16.0` 仅更新外部层，无须替换 Mod，重连 MCP 即可。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -116,7 +116,14 @@ approval_mode = "approve"
 
 > 使用 sts2 工具读取当前战斗，结束一次回合，再读取状态，说明回合和生命值的变化。只结束一次回合。
 
-调用顺序为 `get_observation → end_turn → get_observation`。每次动作消耗旧令牌，返回的新观察不会自动授权下一次动作；失败、超时和取消也不能恢复动作权限。服务不会自动重新观察或重试动作；执行结果未知时先观察，禁止换请求 ID 自动重发。取消不能撤回已提交给游戏的操作。
+首次行动先 `get_observation`。每次动作消耗当前令牌，成功返回的完整观察在满足以下条件时提供新的动作令牌，可直接据此选择下一动作：
+
+- `transition.complete == true`，并且过滤后的 `available_actions` 非空。
+- 停止原因为 `player_ready` 或 `action_completed` 时，普通动作画面可见且没有待处理选择；`choice_required` 则要求受支持的选择界面可见。
+
+例如 `get_observation → play_card → play_card → end_turn`，或 `use_potion → inspect_selection → select_card`，中间无需为了取得许可再次读取相同观察。每一步都根据上一返回结果重新决策，按需查询卡牌或目标；不得把同一观察复用成预先排队的一组动作。服务拒绝用请求排队后才产生的新观察授权该请求；同一连接的操作仍串行执行。
+
+Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其他客户端使状态改变时返回 `stale_state`，不自动刷新或重试。失败、非法参数、坏响应、超时、取消、不完整结果、无可执行动作、未支持选择及胜负停止均不续接动作许可，须先重新观察再决定。取消不能撤回已提交给游戏的操作。状态令牌留在 MCP 内部，不增加模型参数，也不回放未收到的动作结果。
 
 纯详情不会准备动作。已有令牌仅在成功读取且采样令牌未变时保留；失败、格式错误或取消会清除它。牌组、牌堆、地图及关闭操作会清除令牌；看完显式关闭相应页面，再 `get_observation` 后行动。`close_card_view` 可保留下层地图，须继续 `close_map` 才能回到战斗。这些页面操作有 UI 副作用，客户端按自己的策略处理授权。
 
@@ -149,10 +156,12 @@ approval_mode = "approve"
 .tmp/mcp-venv/bin/python scripts/verify_mcp.py --report .tmp/roundtrip/mcp-evidence.json
 ```
 
-该脚本只允许仓库的独立 IPC 目录，会创建临时战斗并推进回合以检查正常动作、过期观察和重复请求，不能用于正式存档。
+该脚本只允许仓库的独立 IPC 目录，会创建临时战斗并推进回合以检查正常动作、连续执行及过期观察，不能用于正式存档。
+
+完整动作链验证先启动新的图形测试实例 `python3 scripts/run_roundtrip.py --windowed --play-scenario armaments_free --potion-scenario skill`，再运行 `.tmp/mcp-venv/bin/python scripts/verify_action_observations.py --report .tmp/action-chain/run.json`。它会连续出牌、使用/丢弃药水、完成选择并切换查看页面，报告目录须全新；结果与范围见[动作观察复用记录](../research/2026-10-30-action-observations.md)。
 
 详情及页面的真实 stdio 验证分别使用 `verify_mcp_hand.py`、`verify_mcp_ui.py`、`verify_mcp_potions.py`、`verify_mcp_combatants.py`、`verify_mcp_relics.py`、`verify_mcp_deck.py`、`verify_mcp_piles.py`、`verify_mcp_map.py`；参数见各脚本 `--help` 和上表对应指南。页面检查会真实打开、切换及关闭页面。
 
 已有独立游戏与正式游戏的只读采样，及真实 Codex 模型结束一次回合的验证。历史环境、样本和未覆盖项见 [首次 MCP 往返](../research/2026-10-29-mcp-plan.md)、[牌组](../research/2026-10-29-mcp-deck-inspection.md)、[牌堆](../research/2026-10-29-pile-inspection.md) 和 [地图](../research/2026-10-29-mcp-map-inspection.md) 等阶段性记录。
 
-本次外部层兼容重构的检查、历史样本回放与未重新执行的游戏内验证范围统一记录在 [项目审阅](../research/2026-10-29-project-review.md)。当前只提供 stdio，其他客户端、HTTP 服务及完整自动游玩尚未实测或实现。
+历史外部层兼容重构的检查、样本回放与当时未重新执行的游戏内验证范围见[项目审阅](../research/2026-10-29-project-review.md)。当前只提供 stdio，其他客户端、HTTP 服务及完整自动游玩尚未实测或实现。

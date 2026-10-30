@@ -81,17 +81,18 @@ async def verify(args):
             assert [card["id"] for card in inspected.structuredContent["hand"]] == [card["id"] for card in before["player"]["hand"]]
             invalid = await call("end_turn", {"unexpected": True})
             assert invalid.isError and invalid.structuredContent["error"]["code"] == "invalid_request"
+            await call("get_observation")
             executed = await call("end_turn")
             assert not executed.isError
             after = executed.structuredContent
             assert after["turn"] == before["turn"] + 1
             assert after["transition"]["stop_reason"] == "player_ready" and after["transition"]["complete"], after
             assert any(event["type"] == "damage" for event in after["transition"]["events"]), after
-            duplicate = await call("end_turn")
-            assert duplicate.isError and duplicate.structuredContent["error"]["code"] == "observation_required"
+            following = await call("end_turn")
+            assert not following.isError and following.structuredContent["turn"] == after["turn"] + 1
             readback = await call("get_observation")
             assert not readback.isError and readback.structuredContent == {
-                key: value for key, value in after.items() if key != "transition"}
+                key: value for key, value in following.structuredContent.items() if key != "transition"}
 
             current = await raw("get_state")
             advanced = await raw("end_turn", current["snapshot_id"])
@@ -103,7 +104,7 @@ async def verify(args):
             evidence.update(completed=True, before_turn=before["turn"], after_turn=after["turn"])
             record({"verification": "passed"})
             print(f'PASS: MCP turn {before["turn"]} -> {after["turn"]}; '
-                  'structured results, invalid/missing/duplicate/stale actions and readback verified')
+                  'structured results, chained turns, invalid/missing/stale actions and readback verified')
 
 
 def main():

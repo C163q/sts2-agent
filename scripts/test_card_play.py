@@ -131,8 +131,8 @@ class CardPlayPermissionTests(unittest.IsolatedAsyncioTestCase):
         played = await tools.play_card({'card_id': 7, 'target_id': 3})
         self.assertNotIn('error', played)
         self.assertEqual(client.calls[-1], ('play_card', 'fixture-1', {'card_id': 7, 'target_id': 3}))
-        self.assertIsNone(tools.snapshot_id)
-        self.assertEqual((await tools.play_card({'card_id': 7, 'target_id': 3}))['error']['code'], 'observation_required')
+        self.assertEqual(tools.snapshot_id, 'fixture-1')
+        self.assertNotIn('error', await tools.play_card({'card_id': 7, 'target_id': 3}))
 
     async def test_invalid_play_parameters_consume_permission_without_input(self):
         client = Client()

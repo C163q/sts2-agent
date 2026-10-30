@@ -890,7 +890,7 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(result["error"]["recovery"], "get_observation")
             self.assertEqual(game.operations, [])
 
-    async def test_observation_filters_metadata_and_action_consumes_token(self):
+    async def test_observation_filters_metadata_and_actions_advance_tokens(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             before = await tools.get_observation()
@@ -900,12 +900,13 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             after = await tools.end_turn()
             self.assertEqual(after["turn"], 2)
             self.assertEqual(game.operations[-1]["expected_state"], "state-1")
-            duplicate = await tools.end_turn()
-            self.assertEqual(duplicate["error"]["code"], "observation_required")
-            self.assertEqual(len(game.operations), 2)
-            self.assertEqual((await tools.get_observation())["turn"], 2)
-            self.assertEqual((await tools.end_turn())["turn"], 3)
+            following = await tools.end_turn()
+            self.assertEqual(following["turn"], 3)
+            self.assertEqual(len(game.operations), 3)
             self.assertEqual(game.operations[-1]["expected_state"], "state-2")
+            self.assertEqual((await tools.get_observation())["turn"], 3)
+            self.assertEqual((await tools.end_turn())["turn"], 4)
+            self.assertEqual(game.operations[-1]["expected_state"], "state-3")
 
     async def test_stale_state_is_reported_without_refresh_or_retry(self):
         with FakeGame() as game:
@@ -1070,12 +1071,19 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     invalid = await session.call_tool("end_turn", {"unexpected": True})
                     self.assertTrue(invalid.isError)
                     self.assertEqual(game.turn, 1)
+                    blocked = await session.call_tool("end_turn", {})
+                    self.assertTrue(blocked.isError)
+                    self.assertEqual(blocked.structuredContent["error"]["code"], "observation_required")
+                    await session.call_tool("get_observation", {})
                     executed = await session.call_tool("end_turn", {})
                     self.assertFalse(executed.isError)
                     self.assertEqual(executed.structuredContent["turn"], 2)
-                    duplicate = await session.call_tool("end_turn", {})
-                    self.assertTrue(duplicate.isError)
-                    self.assertEqual(game.turn, 2)
+                    following = await session.call_tool("end_turn", {})
+                    self.assertFalse(following.isError)
+                    self.assertEqual(following.structuredContent["turn"], 3)
+                    self.assertEqual(game.turn, 3)
+                    self.assertEqual([item["expected_state"] for item in game.operations if item["operation"] == "end_turn"],
+                                     ["state-1", "state-2"])
 
                     deck = await session.call_tool("inspect_deck", {"detail_level": "full", "view_upgrades": True})
                     self.assertFalse(deck.isError)

@@ -1,6 +1,6 @@
 # 选牌与查看战场
 
-适用于 Mod `0.19.0`、MCP server `0.15.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
+适用于 Mod `0.20.0`、MCP server `0.16.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
 
 ## 观察与信息范围
 
@@ -27,7 +27,7 @@
 
 `selection_option({"option_id": "confirm"})` 点击观察中列出的启用按钮。可能出现 `skip`、`confirm`、`cancel_preview`、`cancel` 或奖励 `alternative:N`；含义以当前 `text` 为准。预览取消与放弃整个选择分别处理。奖励替代选项还可能是治疗、献祭或重新生成，不能一律视为跳过。允许选零张的手牌选择通过原生确认按钮提交空选择。
 
-两类动作都必须先调用 `get_observation`，只消耗一次观察许可，失败后也须重新观察。`inspect_selection` 不产生新的动作许可；若读取前后的状态没有改变，保留原许可。原生滚动候选由工具先定位再点击，定位期间若选择已经改变则拒绝输入。选择实例代际参与底层令牌，防止外观相同的连续选择复用旧许可。
+两类动作使用当前观察许可，可以来自 `get_observation` 或上一步完整成功的动作结果，具体条件见[MCP 动作许可](mcp.md#调用和错误语义)；失败后须重新观察。`inspect_selection` 不产生新的动作许可；若读取前后的状态没有改变，保留原许可。原生滚动候选由工具先定位再点击，定位期间若选择已经改变则拒绝输入。选择实例代际参与底层令牌，防止外观相同的连续选择复用旧许可。
 
 ## 手牌升级
 

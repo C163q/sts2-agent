@@ -10,9 +10,10 @@ from screenshot_tool import SCREENSHOT_SCHEMA
 
 SERVER_INSTRUCTIONS = (
     "Control a local Slay the Spire 2 game; output is English. "
-    "Call get_observation before each gameplay action; its permission is consumed even on failure. "
+    "Start with get_observation. Continue sequentially from a successful action result only if transition.complete is true, "
+    "available_actions is nonempty, and the action screen or a supported selection is visible. "
     "Read-only inspections do not prepare actions. View tools change UI and clear action permission; "
-    "return to the action's screen and observe again before acting. Actions return a resulting observation. "
+    "return to the action's screen and observe again before acting. "
     "transition.complete confirms the stated boundary, not that choice-paused effects or cosmetic animations have finished. "
     "After failure or timeout, observe before deciding; never automatically retry an action with unknown outcome."
 )
@@ -25,7 +26,7 @@ def tool_definitions(*, screenshots_enabled=False):
     action = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False)
     definitions = [
         Tool(name="get_observation", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
-            "Read the current visible game state and prepare one action. Card effects and hover help require inspections.")),
+            "Read the current visible game state and refresh the action observation. Card effects and hover help require inspections.")),
         Tool(name="inspect_hand", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read all visible hand cards' descriptions; shared hover_tips link to card_ids.")),
         Tool(name="inspect_targets", inputSchema=TARGET_SCHEMA, annotations=read_only, description=(
@@ -77,10 +78,10 @@ def tool_definitions(*, screenshots_enabled=False):
             "Click one candidate by its observed card_id. Multi-select clicks toggle that card; "
             "single-choice screens may immediately submit. Use enabled selection.options to confirm when required. "
             "Hand upgrades preview before confirmation; click the selected card to deselect. "
-            "Requires a fresh get_observation.")),
+            "Use the latest observation or complete action result.")),
         Tool(name="selection_option", inputSchema=OPTION_SCHEMA, annotations=action, description=(
             "Click an enabled selection.options button by option_id: confirm, cancel preview, skip or a reward alternative. "
-            "Only offered buttons are legal; requires a fresh get_observation.")),
+            "Only offered buttons in the latest observation or complete action result are legal.")),
         Tool(name="set_selection_view", inputSchema=VIEW_SCHEMA, annotations=view, description=(
             "Click the native eye to show battlefield or return to selection. "
             "Battlefield view permits available inspections, never normal combat actions. "
@@ -88,7 +89,7 @@ def tool_definitions(*, screenshots_enabled=False):
         Tool(name="end_turn", inputSchema=NO_ARGUMENTS, annotations=action, description=(
             "End the player's turn once; return observed events, a stop reason, and the resulting observation. "
             "Stops for player choices; inspect selection and choose separately. "
-            "Requires a fresh get_observation. Never retry an incomplete transition automatically.")),
+            "Use the latest observation or complete action result. Never retry an incomplete transition automatically.")),
     ]
     if screenshots_enabled:
         definitions.append(Tool(name="capture_screenshot", inputSchema=SCREENSHOT_SCHEMA, annotations=view, description=(

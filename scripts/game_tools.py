@@ -161,11 +161,17 @@ class GameTools:
             return player_result({"ok": False, "error": {"code": "transport_error"}})
         return None
 
-    async def end_turn(self):
-        return await self._action("end_turn")
+    async def end_turn(self, arguments=None):
+        return await self._action("end_turn", arguments)
 
     async def _action(self, operation, arguments=None, validate_selection=False):
+        observed = self.snapshot_id
         async with self.lock:
+            if operation == "end_turn":
+                if arguments is not None and (not isinstance(arguments, dict) or arguments):
+                    self.snapshot_id = None
+                    return player_result({"ok": False, "error": {"code": "invalid_request"}})
+                arguments = None
             if operation in {"use_potion", "discard_potion"}:
                 try:
                     arguments = potion_arguments(operation, arguments)
@@ -184,14 +190,26 @@ class GameTools:
                 except ValueError:
                     self.snapshot_id = None
                     return player_result({"ok": False, "error": {"code": "invalid_request"}})
-            if self.snapshot_id is None:
+            if self.snapshot_id is None or self.snapshot_id != observed:
+                self.snapshot_id = None
                 return {"error": {
                     "code": "observation_required",
-                    "message": "Call get_observation before each action. Actions consume the previous observation.",
+                    "message": "Call get_observation to obtain a current action observation.",
                     "recovery": "get_observation",
                 }}
             snapshot_id, self.snapshot_id = self.snapshot_id, None
-            payload, _ = await self._request(operation, snapshot_id, arguments)
+            payload, following = await self._request(operation, snapshot_id, arguments)
+            await anyio.lowlevel.checkpoint_if_cancelled()
+            transition = payload.get("transition", {})
+            reason = transition.get("stop_reason")
+            selection = payload.get("selection")
+            ready = reason in {"player_ready", "action_completed"} and not selection \
+                and payload.get("screen", {}).get("status") == "visible"
+            choosing = reason == "choice_required" and selection is not None \
+                and selection.get("status") == "visible" and selection.get("type") != "unsupported"
+            if following is not None and transition.get("complete") is True \
+                    and payload.get("available_actions") and (ready or choosing):
+                self.snapshot_id = following
             return payload
 
     async def _request(self, operation, expected_state=None, arguments=None):
