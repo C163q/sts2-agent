@@ -26,17 +26,34 @@ internal sealed class SelectionInspection(CombatObservation observation)
                 }).ToArray());
             else
                 cards = selection.Holders.Where(holder => CombatObservation.CardVisible(holder.CardNode))
-                    .Select(holder => Card(holder.CardNode!, full, selection.Kind != "hand")).ToArray();
+                    .Select(holder => Card(holder.CardNode!, full, selection.Kind is not ("hand" or "hand_upgrade"))).ToArray();
         }
-        return new
+        var result = new Dictionary<string, object?>
         {
-            type = selection.Kind, status, prompt = visible ? selection.Prompt : null,
-            min_select = limits?.minimum, max_select = limits?.maximum,
-            selected_ids = visible ? selection.Selected.Select(observation.CardId).ToArray() : null,
-            cards, options = selection.Options().Select(option => new
+            ["type"] = selection.Kind, ["status"] = status, ["prompt"] = visible ? selection.Prompt : null,
+            ["min_select"] = limits?.minimum, ["max_select"] = limits?.maximum,
+            ["selected_ids"] = visible ? selection.Selected.Select(observation.CardId).ToArray() : null,
+            ["cards"] = cards, ["options"] = selection.Options().Select(option => new
                 { option.id, option.text, enabled = option.button.IsEnabled }).ToArray(),
-            can_view_battlefield = selection.CanPeek
+            ["can_view_battlefield"] = selection.CanPeek
         };
+        if (selection.Kind == "hand_upgrade")
+        {
+            object? preview = null;
+            if (visible && selection.UpgradePreview?.Card is { } original
+                && selection.UpgradeCard("%Before") is { } before && selection.UpgradeCard("%After") is { } after)
+            {
+                var beforeCard = Card(before, full, expanded: true);
+                var afterCard = Card(after, full, expanded: true);
+                // Both visible sides describe the selected hand card, not an actionable clone.
+                beforeCard["id"] = afterCard["id"] = observation.CardId(original);
+                if (after.Visibility == ModelVisibility.Visible && VisibleUi.Text(after, "%DescriptionLabel") != null)
+                    afterCard["description"] = EnglishCardText.Read(() => EnglishCardText.Plain(after.Model!.GetDescriptionForUpgradePreview()));
+                preview = new { before = beforeCard, after = afterCard };
+            }
+            result["upgrade_preview"] = preview;
+        }
+        return result;
     }
 
     private Dictionary<string, object?> Card(NCard node, bool full, bool expanded)

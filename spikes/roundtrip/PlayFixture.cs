@@ -29,7 +29,7 @@ internal static class PlayFixture
         else if (scenario is "random" or "random_empty") Add<SwordBoomerang>();
         else if (scenario is "aoe" or "victory") Add<Thunderclap>();
         else if (scenario == "death") Add<Offering>();
-        else if (scenario == "unsupported") Add<Armaments>();
+        else if (scenario.StartsWith("armaments", StringComparison.Ordinal)) Add<Armaments>();
         else if (scenario == "x_cost") Add<Whirlwind>();
         else if (scenario == "card_logic") Add<GrandFinale>();
         else if (scenario == "unplayable") Add<Dazed>();
@@ -38,6 +38,16 @@ internal static class PlayFixture
         else Add<StrikeIronclad>();
         Add<DefendIronclad>();
         Add<StrikeIronclad>();
+        if (scenario == "armaments_free") cards[0].SetToFreeThisTurn();
+        if (scenario == "armaments_filtered")
+        {
+            Add<DefendIronclad>();
+            cards[^1].UpgradeInternal(); cards[^1].FinalizeUpgradeInternal();
+        }
+        if (scenario == "armaments_upgraded") { cards[0].UpgradeInternal(); cards[0].FinalizeUpgradeInternal(); }
+        if (scenario is "armaments_one" or "armaments_none")
+            foreach (var card in cards.Skip(scenario == "armaments_one" ? 2 : 1))
+            { card.UpgradeInternal(); card.FinalizeUpgradeInternal(); }
         if (scenario is "test_subject" or "unhittable") { Add<SwordBoomerang>(); Add<Thunderclap>(); }
         if (scenario == "hook")
         {

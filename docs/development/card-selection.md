@@ -1,6 +1,6 @@
 # 选牌与查看战场
 
-适用于 Mod `0.16.0`、MCP server `0.13.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。源码核对与范围见 [设计依据](../research/2026-10-30-card-selection-design.md)。
+适用于 Mod `0.19.0`、MCP server `0.15.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
 
 ## 观察与信息范围
 
@@ -8,13 +8,14 @@
 
 | 字段 | 含义 |
 | --- | --- |
-| `type` | `choose_one`、`reward`、`grid`、`combat_pile`、`deck`、`hand` 或 `unsupported` |
+| `type` | `choose_one`、`reward`、`grid`、`combat_pile`、`deck`、`hand`、`hand_upgrade` 或 `unsupported` |
 | `status` | `visible` 为选牌页面；`battlefield` 为点击眼睛后查看战场；`covered` 为被其他页面覆盖；`unsupported` 为尚未接通的选择类型 |
 | `prompt`、`min_select`、`max_select` | 当前选择提示与数量范围；隐藏时为 `null` |
 | `cards` | 当前画面可见候选，包含稳定整数 `id`；已经展开显示的牌面可附正文，手牌摘要不自动展开正文 |
 | `selected_ids` | 当前已选项目；隐藏时为 `null` |
 | `options` | 当前显示的按钮及 `id`、英语 `text`、`enabled`；未启用不能点击 |
 | `can_view_battlefield` | 原生眼睛当前可用，可显式切换视图 |
+| `upgrade_preview` | 仅 `hand_upgrade` 提供；已显示的升级前后牌面 `before`、`after`，未选择或隐藏时为 `null` |
 
 `cards` 在查看战场、被覆盖或未支持时为 `null`，与没有候选的空列表不同。网格可能滚动，基础观察不补齐屏幕外候选；`inspect_selection()` 显式读取整个可浏览候选列表、正文及共享 `hover_tips`，不会展开尚未生成的结果，也不会切换视图。共享解释通过整数 `card_ids` 引用候选。手牌选择沿用战斗手牌 ID。
 
@@ -28,6 +29,14 @@
 
 两类动作都必须先调用 `get_observation`，只消耗一次观察许可，失败后也须重新观察。`inspect_selection` 不产生新的动作许可；若读取前后的状态没有改变，保留原许可。原生滚动候选由工具先定位再点击，定位期间若选择已经改变则拒绝输入。选择实例代际参与底层令牌，防止外观相同的连续选择复用旧许可。
 
+## 手牌升级
+
+武装等触发的 `hand_upgrade` 复用以上工具。`cards` 只列原生筛选后可见的手牌和已经选中的原牌，不混入升级结果克隆；选择前不生成升级结果。`select_card` 选中后停在 `choice_required`，返回 `selected_ids` 和已经显示的 `upgrade_preview`。`before`、`after` 两侧包含牌名、费用与展开的正文，`id` 都是原手牌 ID。它们是同一张牌的比较，不能当成额外的可选牌。
+
+再次点击已选 ID 等价于点击预览左侧原牌，取消选择；点击其他候选等价于改选，预览随之替换。只有点击启用的 `selection_option({"option_id":"confirm"})` 才提交选择并继续实际升级。未选择时原生确认按钮可能完全隐藏，以 `options` 为准，不自动确认。眼睛和覆盖页隐藏候选与预览，返回后保留待确认选择。
+
+可升级手牌不足两张时，本版本 `CardSelectCmd.FromHandForUpgrade` 可能直接选择唯一候选或不做选择，工具应直接等待后续结算，不人为创建界面。已经升级的武装也沿用游戏自身的全手牌升级流程。
+
 ## 眼睛与现有查看工具
 
 调用 `set_selection_view({"view":"battlefield"})` 点击原生眼睛。此后基础观察及 `inspect_hand`、`inspect_combatants`、`inspect_ui`、药水、遗物详情按当前可见性工作；牌组、地图和牌堆还要求各自原生入口可用。小型候选和简单网格使用其自己的牌堆入口，不能强行点击被禁用的战斗按钮。
@@ -40,6 +49,8 @@
 
 选择状态直接来自界面，不要求已经完成过一次回合。选择悖论在第一回合开始时也可识别并操作。暴政消耗和本版本计划妥当保留手牌使用同一手牌接口。
 
-当前接通小型候选、卡牌奖励、简单网格、战斗牌堆选择、普通牌组选择以及普通手牌选择。专门的升级、变化、附魔、手牌升级和卡牌包选择返回 `unsupported`，不提供动作，但会作为已识别的交互边界立即返回 `choice_required`；任意第三方页面仍需额外适配。静态遮挡按已核实的原生页面判断，不能保证覆盖任意像素级遮挡。声音、其他游戏版本与完整自动游玩不属于已验证范围。
+当前接通小型候选、卡牌奖励、简单网格、战斗牌堆选择、普通牌组选择、普通手牌选择以及手牌升级选择。专门的牌组升级、变化、附魔和卡牌包选择仍返回 `unsupported`，不提供动作，但会作为已识别的交互边界立即返回 `choice_required`；任意第三方页面仍需额外适配。静态遮挡按已核实的原生页面判断，不能保证覆盖任意像素级遮挡。声音、其他游戏版本与完整自动游玩不属于已验证范围。
+
+手牌升级的真实图形 MCP 回归须使用新建的隔离实例：先按[构建与运行](roundtrip.md)准备目录，运行 `python3 scripts/run_roundtrip.py --windowed --play-scenario armaments`，再在另一终端运行 `.tmp/mcp-venv/bin/python scripts/verify_hand_upgrade.py --report .tmp/upgrade-check/run.json`。报告目录不能复用已有截图文件。检查会出牌、选牌、取消、切换视图并确认，不能指向正式对局。
 
 标准库文件客户端支持相同操作：`select_card --card-id 7 --expected-state <令牌>`、`selection_option --option-id confirm --expected-state <令牌>`，以及 `set_selection_view --view battlefield`；这些参数与既有 `--ipc-dir` 一起使用。原始令牌通过 `get_state --raw` 获取，MCP 客户端由会话内部管理。

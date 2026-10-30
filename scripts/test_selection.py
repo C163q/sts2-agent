@@ -29,6 +29,50 @@ def state():
 
 
 class SelectionBoundaryTests(unittest.TestCase):
+    def test_upgrade_preview_keeps_original_identity_and_filters_private_fields(self):
+        data = state()
+        data['selection']['type'] = 'hand_upgrade'
+        data['selection']['selected_ids'] = [5]
+        before = copy.deepcopy(data['selection']['cards'][0])
+        after = {**before, 'name': 'Defend+', 'description': 'Gain 8 Block.', 'seed': 'private'}
+        data['selection']['upgrade_preview'] = {'before': before, 'after': after, 'clone': 'private'}
+        result = observation_details(data)['selection']
+        self.assertEqual(result['upgrade_preview']['after']['description'], 'Gain 8 Block.')
+        self.assertNotIn('clone', result['upgrade_preview'])
+        self.assertNotIn('seed', result['upgrade_preview']['after'])
+        self.assertEqual(result['upgrade_preview']['before']['id'], result['upgrade_preview']['after']['id'])
+        public = player_result({'ok': True, 'state': observation_details(data)})
+        self.assertIn('upgrade_preview', public['selection'])
+
+    def test_upgrade_preview_rejects_wrong_identity_and_missing_halves(self):
+        for malformed in ({'before': {'id': 5, 'name': 'Defend', 'description': 'Gain 5 Block.'}},
+                          {'before': {'id': 5, 'name': 'Defend', 'description': 'Gain 5 Block.'},
+                           'after': {'id': 8, 'name': 'Defend+', 'description': 'Gain 8 Block.'}}):
+            data = state()
+            data['selection'].update(type='hand_upgrade', selected_ids=[5], upgrade_preview=malformed)
+            with self.subTest(malformed=malformed), self.assertRaises(ValueError):
+                observation_details(data)
+
+    def test_upgrade_selection_requires_preview_field_but_allows_no_selected_card(self):
+        data = state()
+        data['selection']['type'] = 'hand_upgrade'
+        with self.assertRaises(ValueError):
+            observation_details(data)
+        data['selection']['upgrade_preview'] = None
+        self.assertIsNone(observation_details(data)['selection']['upgrade_preview'])
+
+    def test_hidden_upgrade_preview_is_rejected(self):
+        for status in ('battlefield', 'covered'):
+            data = state()
+            data['selection'] = selection(status)
+            data['selection'].update(type='hand_upgrade', upgrade_preview=None)
+            self.assertIsNone(observation_details(data)['selection']['upgrade_preview'])
+            data['selection']['upgrade_preview'] = {
+                'before': {'id': 5, 'name': 'Defend', 'description': 'Gain 5 Block.'},
+                'after': {'id': 5, 'name': 'Defend+', 'description': 'Gain 8 Block.'}}
+            with self.assertRaises(ValueError):
+                observation_details(data)
+
     def test_notes_explain_eye_and_pending_selection(self):
         result = player_result({"ok": True, "state": state()})
         self.assertIn("eye", result.get("notes", {}).get("selection", ""))

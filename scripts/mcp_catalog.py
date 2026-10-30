@@ -76,6 +76,7 @@ def tool_definitions(*, screenshots_enabled=False):
         Tool(name="select_card", inputSchema=CARD_SCHEMA, annotations=action, description=(
             "Click one candidate by its observed card_id. Multi-select clicks toggle that card; "
             "single-choice screens may immediately submit. Use enabled selection.options to confirm when required. "
+            "Hand upgrades preview before confirmation; click the selected card to deselect. "
             "Requires a fresh get_observation.")),
         Tool(name="selection_option", inputSchema=OPTION_SCHEMA, annotations=action, description=(
             "Click an enabled selection.options button by option_id: confirm, cancel preview, skip or a reward alternative. "

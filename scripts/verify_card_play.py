@@ -150,31 +150,30 @@ def main():
             assert not after['targeting'] and not after['in_card_play'], after
         result = play(card)
         reason = result['transition']['stop_reason']
-        if scenario in {'discovery', 'charge3', 'glimmer', 'unsupported'}:
+        if scenario in {'discovery', 'charge3', 'glimmer', 'armaments', 'armaments_free', 'armaments_filtered'}:
             assert reason == 'choice_required', result
             assert 'play_card' not in result['available_actions'], result
             if scenario == 'glimmer':
                 assert len([e for e in result['transition']['events'] if e['type'] == 'card_drawn']) == 3, result
-            if scenario == 'unsupported':
-                assert result['selection']['status'] == 'unsupported' and not result['available_actions'], result
-            else:
-                detail = call('inspect_selection')
-                cards = detail['selection']['cards']
-                if scenario == 'discovery': assert len(cards) == 3, detail
-                if scenario == 'charge3': assert len(cards) == 3, detail
-                if detail['selection']['can_view_battlefield']:
-                    call('set_selection_view', {'view': 'battlefield'})
-                    call('play_card', {'card_id': card['id']}, error='illegal_action')
-                    call('inspect_targets', {'card_id': card['id']}, error='illegal_action')
-                    call('set_selection_view', {'view': 'selection'})
-                for selected in cards[:detail['selection']['min_select']]:
-                    deadline = time.monotonic() + 3
-                    while 'select_card' not in call('get_state')['available_actions'] and time.monotonic() < deadline:
-                        time.sleep(.05)
-                    result = call('select_card', {'card_id': selected['id']})
-                if (result.get('selection') or {}).get('status') == 'visible':
-                    result = call('selection_option', {'option_id': 'confirm'})
-                assert result['transition']['complete'] and result['transition']['stop_reason'] == 'player_ready', result
+            detail = call('inspect_selection')
+            cards = detail['selection']['cards']
+            if scenario == 'discovery': assert len(cards) == 3, detail
+            if scenario == 'charge3': assert len(cards) == 3, detail
+            if scenario.startswith('armaments'):
+                assert len(cards) == 2 and all(not c['name'].endswith('+') for c in cards), detail
+            if detail['selection']['can_view_battlefield']:
+                call('set_selection_view', {'view': 'battlefield'})
+                call('play_card', {'card_id': card['id']}, error='illegal_action')
+                call('inspect_targets', {'card_id': card['id']}, error='illegal_action')
+                call('set_selection_view', {'view': 'selection'})
+            for selected in cards[:detail['selection']['min_select']]:
+                deadline = time.monotonic() + 3
+                while 'select_card' not in call('get_state')['available_actions'] and time.monotonic() < deadline:
+                    time.sleep(.05)
+                result = call('select_card', {'card_id': selected['id']})
+            if (result.get('selection') or {}).get('status') == 'visible':
+                result = call('selection_option', {'option_id': 'confirm'})
+            assert result['transition']['complete'] and result['transition']['stop_reason'] == 'player_ready', result
         elif scenario == 'victory': assert reason == 'combat_won', result
         elif scenario in {'death', 'thorns_death'}: assert reason == 'combat_lost', result
         elif scenario == 'cancel':
@@ -186,6 +185,9 @@ def main():
                 assert result['player']['draw_count'] == int(scenario[-1]), result
             if scenario in {'random', 'aoe', 'multi_hit'}:
                 assert len([e for e in result['transition']['events'] if e['type'] == 'damage']) >= 2, result
+            if scenario in {'armaments_one', 'armaments_none', 'armaments_upgraded'}:
+                assert reason == 'player_ready', result
+                assert len(result['player']['hand']) == 2 and all(c['name'].endswith('+') for c in result['player']['hand']), result
     print('PASS', scenario)
 
 

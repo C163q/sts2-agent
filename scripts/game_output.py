@@ -58,11 +58,13 @@ TOP_BAR = {
 SCREEN = {"status": str, "view": str}
 SELECTION_CARD = {**CARD, "description": TEXT}
 SELECTION_OPTION = {"id": str, "text": TEXT, "enabled": bool}
+UPGRADE_PREVIEW = {"before": SELECTION_CARD, "after": SELECTION_CARD}
 SELECTION = {
     "type": str, "status": str, "prompt": TEXT, "min_select": NUMBER, "max_select": NUMBER,
     "selected_ids": nullable([int]), "cards": nullable([SELECTION_CARD]),
     "options": [SELECTION_OPTION], "can_view_battlefield": bool,
 }
+SELECTION_OUTPUT = {**SELECTION, "upgrade_preview": nullable(UPGRADE_PREVIEW)}
 EVENT_ENTITY = {"id": int, "kind": str, "name": TEXT}
 TARGET_ENTITY = {**EVENT_ENTITY, "id": frozenset({int, str})}
 POTION_REF = {"slot_index": int, "name": TEXT}
@@ -80,7 +82,7 @@ OBSERVATION = {
     "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
     "available_actions": [str],
 }
-OPTIONAL_OBSERVATION = {"selection": nullable(SELECTION)}
+OPTIONAL_OBSERVATION = {"selection": nullable(SELECTION_OUTPUT)}
 GAMEPLAY = {
     **OBSERVATION, **OPTIONAL_OBSERVATION, "transition": TRANSITION, "hand": nullable([HAND_CARD]),
     "selection_view": str,
@@ -103,7 +105,7 @@ GAMEPLAY = {
 def gameplay_fields(state):
     shape = GAMEPLAY
     if state.get("scene") == "card_selection":
-        shape = {**GAMEPLAY, "selection": {**SELECTION, "cards": [HAND_CARD]}}
+        shape = {**GAMEPLAY, "selection": {**SELECTION_OUTPUT, "cards": [HAND_CARD]}}
     return project(state, shape)
 
 
@@ -119,14 +121,26 @@ def observation_details(state):
 
 
 def selection_details(value):
-    result = project(value, SELECTION)
-    if (set(result) != set(SELECTION) or result["type"] not in
-            {"choose_one", "reward", "grid", "combat_pile", "deck", "hand", "unsupported"}
+    result = project(value, SELECTION_OUTPUT)
+    if (not set(SELECTION) <= result.keys() or result["type"] not in
+            {"choose_one", "reward", "grid", "combat_pile", "deck", "hand", "hand_upgrade", "unsupported"}
             or result["status"] not in {"visible", "battlefield", "covered", "unsupported"}):
         raise ValueError("Invalid card selection.")
+    preview = result.get("upgrade_preview")
+    if result["type"] == "hand_upgrade":
+        if "upgrade_preview" not in result:
+            raise ValueError("Missing upgrade preview state.")
+        if preview is not None and (set(preview) != set(UPGRADE_PREVIEW)
+                or any(not {"id", "name", "description"} <= card.keys() or card['id'] < 0
+                       for card in preview.values())
+                or result["selected_ids"] != [preview['before']['id']]
+                or preview['before']['id'] != preview['after']['id']):
+            raise ValueError("Invalid upgrade preview.")
+    elif preview is not None:
+        raise ValueError("Unexpected upgrade preview.")
     if result["status"] != "visible":
         if (any(result[key] is not None for key in
-                ("prompt", "min_select", "max_select", "selected_ids", "cards")) or result["options"]):
+                ("prompt", "min_select", "max_select", "selected_ids", "cards")) or result["options"] or preview is not None):
             raise ValueError("Hidden selection contents.")
         return result
     minimum, maximum = result["min_select"], result["max_select"]

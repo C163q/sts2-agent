@@ -52,7 +52,8 @@ internal sealed class CardSelection(Control owner, string kind, object key)
             if (hand?.IsInCardSelection != true || !hand.IsNodeReady()) return null;
             var completion = Field(hand, "_selectionCompletionSource");
             if (completion?.GetType().GetProperty("Task")?.GetValue(completion) is not Task { IsCompleted: false }) return null;
-            return new(hand, hand.CurrentMode == NPlayerHand.Mode.SimpleSelect ? "hand" : "unsupported", completion);
+            return new(hand, hand.CurrentMode switch
+                { NPlayerHand.Mode.SimpleSelect => "hand", NPlayerHand.Mode.UpgradeSelect => "hand_upgrade", _ => "unsupported" }, completion);
         }
     }
 
@@ -84,8 +85,20 @@ internal sealed class CardSelection(Control owner, string kind, object key)
 
     public bool InPreview => Kind == "deck" && VisibleUi.Shown(Owner.GetNodeOrNull<Control>("%PreviewContainer"));
 
+    public NUpgradePreview? UpgradePreview => Kind == "hand_upgrade" && Field(Owner, "_upgradePreview") is NUpgradePreview preview
+        && VisibleUi.Shown(preview) ? preview : null;
+
+    public NCard? UpgradeCard(string side) => UpgradePreview is { Card: not null } preview
+        ? VisibleUi.Descendants<NCard>(preview.GetNode<Control>(side))
+            .FirstOrDefault(card => CombatObservation.CardVisible(card)) : null;
+
     public NCardHolder[] Holders => InPreview
         ? VisibleUi.Descendants<NCardHolder>(Owner.GetNode<Control>("%PreviewContainer")).ToArray()
+        : Kind == "hand_upgrade"
+        ? VisibleUi.Descendants<NHandCardHolder>(((NPlayerHand)Owner).CardHolderContainer).Cast<NCardHolder>()
+            .Concat(UpgradePreview is { Card: not null } preview
+                ? VisibleUi.Descendants<NCardHolder>(preview.GetNode<Control>("%Before")) : [])
+            .Where(holder => VisibleUi.Shown(holder) && holder.CardNode != null).ToArray()
         : Kind == "hand"
         ? VisibleUi.Descendants<NCardHolder>(Owner).Where(holder => VisibleUi.Shown(holder) && holder.CardNode != null).ToArray()
         : Grid != null ? Grid.CurrentlyDisplayedCardHolders.Cast<NCardHolder>().ToArray()
@@ -120,7 +133,7 @@ internal sealed class CardSelection(Control owner, string kind, object key)
         var paths = Kind switch
         {
             "choose_one" => new[] { ("skip", "SkipButton") },
-            "hand" => new[] { ("confirm", "%SelectModeConfirmButton") },
+            "hand" or "hand_upgrade" => new[] { ("confirm", "%SelectModeConfirmButton") },
             "deck" when InPreview => new[] { ("cancel_preview", "%PreviewCancel"), ("confirm", "%PreviewConfirm") },
             "deck" => new[] { ("cancel", "%Close"), ("confirm", "%Confirm") },
             _ => new[] { ("confirm", "%Confirm") }
