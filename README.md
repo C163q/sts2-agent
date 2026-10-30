@@ -4,7 +4,7 @@
 
 ## 当前能力
 
-当前为 Linux 游戏 `v0.107.1` 的验证原型：Mod `0.16.0` 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。已有真实游戏及 Codex 模型的观察、结束回合和读回验证；尚未支持地图选路或完整自动游玩。
+当前为 Linux 游戏 `v0.107.1` 的验证原型：Mod `0.17.0` 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。已有真实游戏及 Codex 模型的观察、结束回合和读回验证；尚未支持地图选路或完整自动游玩。
 
 | 能力 | 接口与说明 |
 | --- | --- |
@@ -14,7 +14,7 @@
 | 游戏动作 | [出牌与目标查询](docs/development/card-play.md)，一次提交卡牌及必要目标；[结束回合](docs/development/end-turn.md)，返回期间事件、停止原因及最终观察；遇到选择时返回；通过 [选牌工具](docs/development/card-selection.md) 操作候选、确认及跳过，支持显式查看战场 |
 | 药水动作 | [使用、丢弃与目标查询](docs/development/potion-actions.md)，支持单人战斗和符合原生条件的战斗外使用，后续选牌单独处理 |
 
-MCP 固定提供 20 个工具，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
+MCP 默认提供 20 个工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
 
 ## 开发与运行入口
 

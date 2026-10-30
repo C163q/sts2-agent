@@ -21,6 +21,8 @@
 | `scripts/game_tools.py` | 串行游戏会话、动作令牌、检查控制权及在线程中执行文件请求 |
 | `scripts/controller_lease.py` | 每个 IPC 目录的 MCP 进程控制锁 |
 | `scripts/mcp_catalog.py` | 工具名称、参数 schema、行为注解及面向模型的说明 |
+| `scripts/mcp_config.py`、`screenshot_tool.py` | 启动配置校验、PNG 校验和独占保存；配置决定截图工具是否注册 |
+| `spikes/roundtrip/ViewportCapture.cs` | 帧后游戏视口读取，不接收用户文件路径或写用户文件 |
 | `scripts/mcp_server.py` | stdio 启动、MCP 分派和结果封装；保留既有脚本入口 |
 | `scripts/test_*.py` | 无需游戏的单元与真实 stdio/临时文件 IPC 测试 |
 | `scripts/verify_*.py`、`spikes/roundtrip/*Checks.cs` | 显式运行的真实游戏验证及原型内检查，依赖各自指定的场景 |

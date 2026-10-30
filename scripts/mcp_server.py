@@ -13,6 +13,7 @@ from game_tools import GameTools
 from mcp_catalog import SERVER_INSTRUCTIONS, tool_definitions
 from player_output import player_result
 from roundtrip_client import Client
+from mcp_config import load_config
 
 
 def tool_result(payload):
@@ -24,9 +25,9 @@ def tool_result(payload):
 
 
 
-def create_server(tools):
-    server = Server("sts2-agent", version="0.13.0", instructions=SERVER_INSTRUCTIONS)
-    definitions = tool_definitions()
+def create_server(tools, *, screenshots_enabled=False):
+    server = Server("sts2-agent", version="0.14.0", instructions=SERVER_INSTRUCTIONS)
+    definitions = tool_definitions(screenshots_enabled=screenshots_enabled)
     handlers = {tool.name: getattr(tools, tool.name) for tool in definitions}
 
     @server.list_tools()
@@ -37,7 +38,7 @@ def create_server(tools):
     async def call_tool(name, arguments):
         if name not in handlers:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))
-        if name in {"inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion"}:
+        if name in {"inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "capture_screenshot"}:
             return tool_result(await handlers[name](arguments))
         if arguments:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))
@@ -46,8 +47,8 @@ def create_server(tools):
     return server
 
 
-async def run_stdio(tools):
-    server = create_server(tools)
+async def run_stdio(tools, screenshots_enabled=False):
+    server = create_server(tools, screenshots_enabled=screenshots_enabled)
     async with stdio_server() as (read, write):
         await server.run(read, write, server.create_initialization_options())
 
@@ -55,14 +56,20 @@ async def run_stdio(tools):
 def main():
     parser = argparse.ArgumentParser(description="通过 stdio MCP 提供 STS2 战斗观察、各类只读详情与结束回合。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
+    parser.add_argument("--config", type=Path, help="MCP JSON 配置；默认读取仓库根 mcp-config.json，不存在时截图关闭")
     parser.add_argument("--timeout", type=float, default=40, help="文件通信超时秒数，默认 40")
     args = parser.parse_args()
     if not math.isfinite(args.timeout) or args.timeout <= 0:
         parser.error("--timeout 必须是有限正数。")
+    try:
+        settings = load_config(args.config)
+    except (ValueError, OSError) as error:
+        parser.error(str(error))
     lease = ControllerLease(args.ipc_dir)
     try:
-        tools = GameTools(Client(lease.directory, timeout=args.timeout), controller=lease)
-        anyio.run(run_stdio, tools)
+        tools = GameTools(Client(lease.directory, timeout=args.timeout), controller=lease,
+                          screenshot_directory=settings.screenshot_directory)
+        anyio.run(run_stdio, tools, settings.screenshot_directory is not None)
     except (OSError, RuntimeError) as error:
         parser.exit(1, f"MCP controller startup failed: {error}\n")
     finally:

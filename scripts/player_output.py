@@ -84,10 +84,13 @@ def player_result(response):
         "timeout": ("The request timed out; execution outcome is unknown. Read the current state and do not retry the action automatically.", "get_state"),
         "game_error": ("The game could not complete the request; execution outcome is unknown. Read the current state and do not retry the action automatically.", "get_state"),
         "transport_error": ("The local game connection failed. Check the connection before reading the current state.", "check_connection"),
+        "screenshot_unavailable": ("The game viewport cannot be captured. Use a running graphical game instance.", "check_game_window"),
+        "file_exists": ("That screenshot filename already exists. Choose another filename; existing files are never overwritten.", "change_filename"),
+        "screenshot_save_failed": ("The screenshot could not be saved. Check the configured directory, permissions and free space.", "check_screenshot_directory"),
     }
     message, recovery = messages.get(code, (
         "The request failed; execution outcome is unknown. Read the current state and do not retry the action automatically.", "get_state"))
     error = {"code": code, "message": message, "recovery": recovery}
-    if code not in {"stale_state", "illegal_action", "invalid_request", "expired_request"}:
+    if code not in {"stale_state", "illegal_action", "invalid_request", "expired_request", "screenshot_unavailable", "file_exists", "screenshot_save_failed"}:
         error["outcome"] = "unknown"
     return {"error": error}

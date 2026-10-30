@@ -143,6 +143,17 @@ internal sealed partial class GameAdapter(bool testMode)
                 ObservationChecks.Run(checks);
             return Success(request.Id, before);
         }
+        if (request.Operation == "capture_screenshot")
+        {
+            if (ViewportCapture.Read() is not { } capture)
+                return FileMailbox.Error(request.Id, "screenshot_unavailable", "A rendered game viewport is required.");
+            using JsonDocument captured = JsonDocument.Parse(before);
+            return Success(request.Id, JsonSerializer.Serialize(new
+            {
+                snapshot_id = captured.RootElement.GetProperty("snapshot_id").GetString(),
+                capture.width, capture.height, png_base64 = Convert.ToBase64String(capture.png)
+            }));
+        }
         using JsonDocument document = JsonDocument.Parse(before);
         if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_POTION_SCENARIO") != null && LocalPlayer != null)
         {

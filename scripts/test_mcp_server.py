@@ -37,6 +37,7 @@ class FakeGame:
         self.responses.mkdir()
         self.operations = []
         self.turn = 1
+        self.screenshot_payload = None
         self.drop_action_response = False
         self.malformed_observation = False
         self.malformed_hand = False
@@ -156,6 +157,8 @@ class FakeGame:
                     }
                 if operation == "end_turn" and response["ok"]:
                     response["state"]["transition"] = {"stop_reason": "player_ready", "complete": True, "events": []}
+                if operation == "capture_screenshot" and self.screenshot_payload is not None:
+                    response["state"] = {**self.screenshot_payload, "snapshot_id": self.token()}
                 if operation == "get_state" and self.deck_open:
                     response["state"].update(screen={"status": "covered", "view": "deck"}, available_actions=[])
                 if operation == "get_state" and self.pile_open:

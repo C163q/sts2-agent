@@ -59,3 +59,5 @@ Mod `0.14.0` 接通 [选牌与显式查看战场](card-selection.md)，需同时
 Mod `0.15.0` 增加 [出牌与目标查询](card-play.md)，需更新外部脚本并重新连接 MCP；替换游戏目录中的 Mod 后，完整重启游戏才能加载新程序集。
 
 Mod `0.16.0` 增加 [使用与丢弃药水](potion-actions.md)，目标查询复用 `inspect_targets`，含战斗外顶栏读取。需同时更新 MCP server 至 `0.13.0`；创意工坊已管理 RitsuLib 时保留现有安装，无须另复制一套。
+
+Mod `0.17.0` 与 MCP server `0.14.0` 增加[可配置截图存档](screenshots.md)，默认关闭；更新 Mod 后完整重启游戏，再按配置重启 MCP 连接。保留创意工坊管理的 RitsuLib。

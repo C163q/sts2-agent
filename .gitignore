@@ -1,5 +1,6 @@
 .tmp/
 /.env
+/mcp-config.json
 **/bin/
 **/obj/
 __pycache__/

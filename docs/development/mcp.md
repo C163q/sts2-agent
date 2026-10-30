@@ -4,7 +4,7 @@ Linux 本地 stdio MCP server 在游戏外运行，通过文件 IPC 与 Mod 通�
 
 ## 工具范围
 
-固定公开 20 个工具，不按场景增删；调用时检查合法性。`available_actions` 表示当前可执行的游戏动作，不是 MCP 工具目录。
+默认公开 20 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 21 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 表示当前可执行的游戏动作，不是 MCP 工具目录。
 
 | 工具 | 用途 |
 | --- | --- |
@@ -27,13 +27,14 @@ Linux 本地 stdio MCP server 在游戏外运行，通过文件 IPC 与 Mod 通�
 | `select_card(card_id)` | 点击一张候选，保留原生多选和确认流程 |
 | `selection_option(option_id)` | 点击选择页面列出的启用按钮 |
 | `set_selection_view(view)` | 点击原生眼睛，切换选牌与战场查看 |
+| `capture_screenshot(filename?)` | 可选：[保存当前游戏视口 PNG](screenshots.md)，返回文件路径与尺寸，默认不注册 |
 | `end_turn()` | 结束一次玩家回合，返回期间事件、停止原因及最终观察，见 [结束回合](end-turn.md) |
 
-有参数工具的格式见各自接口说明，其余工具无参数。基础观察、纯详情和原生页面的边界见 [可见信息约定](../observation.md)；选路尚未实现。动态工具发现的候选与版本约束见 [专项核查](../research/2026-10-29-mcp-tool-availability.md)，尚未实现。
+有参数工具的格式见各自接口说明，其余工具无参数。截图只记录当前画面，不授予动作权限；成功且状态不变时保留旧权限。基础观察、纯详情和原生页面的边界见 [可见信息约定](../observation.md)；选路尚未实现。动态工具发现的候选与版本约束见 [专项核查](../research/2026-10-29-mcp-tool-availability.md)，尚未实现。
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.16.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.13.0`；结束回合要求新的 `transition` 结构，升级时须同时更新 Mod 和外部脚本，旧 Mod 的动作响应会被拒绝。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.17.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.14.0`；结束回合要求新的 `transition` 结构，升级时须同时更新 Mod 和外部脚本，旧 Mod 的动作响应会被拒绝。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 

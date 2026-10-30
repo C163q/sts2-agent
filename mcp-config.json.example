@@ -1,0 +1,6 @@
+{
+  "screenshots": {
+    "enabled": false,
+    "directory": ".tmp/screenshots"
+  }
+}

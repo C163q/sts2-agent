@@ -12,14 +12,16 @@ from player_output import player_result
 from selection_details import selection_arguments
 from card_play_details import card_play_arguments
 from potion_action_details import potion_arguments
+from screenshot_tool import ScreenshotError, ScreenshotStore, screenshot_arguments
 
 
 class GameTools:
-    def __init__(self, client, controller=None):
+    def __init__(self, client, controller=None, screenshot_directory=None):
         self.client = client
         self.controller = controller
         self.lock = asyncio.Lock()
         self.snapshot_id = None
+        self.screenshots = ScreenshotStore(screenshot_directory) if screenshot_directory is not None else None
 
     async def get_observation(self):
         async with self.lock:
@@ -33,6 +35,9 @@ class GameTools:
 
     async def inspect_hand(self):
         return await self._inspect("inspect_hand")
+
+    async def capture_screenshot(self, arguments=None):
+        return await self._inspect("capture_screenshot", arguments)
 
     async def inspect_selection(self):
         return await self._inspect("inspect_selection")
@@ -120,6 +125,13 @@ class GameTools:
     async def _inspect(self, operation, arguments=None):
         async with self.lock:
             previous, self.snapshot_id = self.snapshot_id, None
+            if operation == "capture_screenshot":
+                try:
+                    if self.screenshots is None:
+                        raise ValueError("Screenshots are disabled.")
+                    arguments = screenshot_arguments(arguments)
+                except ValueError:
+                    return player_result({"ok": False, "error": {"code": "invalid_request"}})
             if operation == "inspect_targets":
                 try:
                     arguments = card_play_arguments(operation, arguments)
@@ -184,7 +196,8 @@ class GameTools:
 
     async def _request(self, operation, expected_state=None, arguments=None):
         try:
-            response = await anyio.to_thread.run_sync(partial(self.client.call, operation, expected_state, arguments=arguments))
+            request_arguments = None if operation == "capture_screenshot" else arguments
+            response = await anyio.to_thread.run_sync(partial(self.client.call, operation, expected_state, arguments=request_arguments))
             if not isinstance(response, dict) or type(response.get("ok")) is not bool:
                 raise ValueError("Invalid game response.")
             snapshot_id = None
@@ -193,6 +206,9 @@ class GameTools:
                 snapshot_id = state["snapshot_id"]
                 if not isinstance(snapshot_id, str) or not snapshot_id:
                     raise ValueError("Missing observation token.")
+                if operation == "capture_screenshot":
+                    payload = await anyio.to_thread.run_sync(self.screenshots.save, state, arguments)
+                    return payload, snapshot_id
                 response = {"ok": True, "state": inspection_details(operation, state, arguments)}
             else:
                 if not isinstance(response["error"]["code"], str):
@@ -202,6 +218,9 @@ class GameTools:
                 payload["available_actions"] = [
                     action for action in payload.get("available_actions", [])
                     if action in {"end_turn", "play_card", "use_potion", "discard_potion", "select_card", "selection_option"}]
+        except ScreenshotError as error:
+            payload = player_result({"ok": False, "error": {"code": error.code}})
+            snapshot_id = None
         except (OSError, ValueError, KeyError, TypeError, RuntimeError) as error:
             code = "timeout" if isinstance(error, TimeoutError) else "transport_error"
             logging.getLogger(__name__).warning("Game request failed: %s", error)

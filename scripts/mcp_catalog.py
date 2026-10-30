@@ -5,6 +5,7 @@ from pile_details import PILE_SCHEMA
 from selection_details import CARD_SCHEMA, OPTION_SCHEMA, VIEW_SCHEMA
 from card_play_details import PLAY_SCHEMA, TARGET_SCHEMA
 from potion_action_details import POTION_SCHEMA, USE_SCHEMA
+from screenshot_tool import SCREENSHOT_SCHEMA
 
 
 SERVER_INSTRUCTIONS = (
@@ -17,11 +18,11 @@ SERVER_INSTRUCTIONS = (
 NO_ARGUMENTS = {"type": "object", "properties": {}, "additionalProperties": False}
 
 
-def tool_definitions():
+def tool_definitions(*, screenshots_enabled=False):
     read_only = ToolAnnotations(readOnlyHint=True, openWorldHint=False)
     view = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False)
     action = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False)
-    return [
+    definitions = [
         Tool(name="get_observation", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read the current visible game state and prepare one action. Card effects and hover help require inspections.")),
         Tool(name="inspect_hand", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
@@ -87,3 +88,8 @@ def tool_definitions():
             "Stops for player choices; inspect selection and choose separately. "
             "Requires a fresh get_observation. Never retry an incomplete transition automatically.")),
     ]
+    if screenshots_enabled:
+        definitions.append(Tool(name="capture_screenshot", inputSchema=SCREENSHOT_SCHEMA, annotations=view, description=(
+            "Save the current game viewport as PNG in the configured directory; return its path and dimensions. "
+            "Does not change the UI or prepare an action.")))
+    return definitions
