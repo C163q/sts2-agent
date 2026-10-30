@@ -14,7 +14,7 @@ from test_mcp_server import FakeGame, SERVER, map_payload
 class MapStdioTests(unittest.IsolatedAsyncioTestCase):
     async def test_tools_keep_contract_and_reject_arguments_before_ipc(self):
         with FakeGame() as game:
-            params = StdioServerParameters(command=sys.executable, args=[str(SERVER), "--ipc-dir", str(game.directory)])
+            params = StdioServerParameters(command=sys.executable, args=[str(SERVER), "--ipc-dir", str(game.directory), "--config", str(game.config)])
             async with stdio_client(params) as (read, write):
                 async with ClientSession(read, write) as session:
                     await session.initialize()

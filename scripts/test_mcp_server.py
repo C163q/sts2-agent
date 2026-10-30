@@ -31,6 +31,8 @@ class FakeGame:
     def __init__(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.directory = Path(self.temporary.name)
+        self.config = self.directory / "mcp-config.json"
+        self.config.write_text(json.dumps({"screenshots": {"enabled": False}}))
         self.requests = self.directory / "requests"
         self.responses = self.directory / "responses"
         self.requests.mkdir()
@@ -981,7 +983,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
         from mcp import ClientSession, StdioServerParameters
         from mcp.client.stdio import stdio_client
         with FakeGame() as game:
-            parameters = StdioServerParameters(command=sys.executable, args=[str(SERVER), "--ipc-dir", str(game.directory)])
+            parameters = StdioServerParameters(command=sys.executable, args=[str(SERVER), "--ipc-dir", str(game.directory), "--config", str(game.config)])
             async with stdio_client(parameters) as (read, write):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
@@ -1111,7 +1113,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
         from mcp.client.stdio import stdio_client
         from mcp_server import ControllerLease
         with FakeGame() as game:
-            parameters = StdioServerParameters(command=sys.executable, args=[str(SERVER), "--ipc-dir", str(game.directory)])
+            parameters = StdioServerParameters(command=sys.executable, args=[str(SERVER), "--ipc-dir", str(game.directory), "--config", str(game.config)])
             async with stdio_client(parameters) as (read, write):
                 async with ClientSession(read, write) as session:
                     with ControllerLease(game.directory):
@@ -1156,7 +1158,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
         from mcp.client.stdio import stdio_client
         from mcp_server import ControllerLease
         with FakeGame() as game:
-            parameters = StdioServerParameters(command=sys.executable, args=[str(SERVER), "--ipc-dir", str(game.directory)])
+            parameters = StdioServerParameters(command=sys.executable, args=[str(SERVER), "--ipc-dir", str(game.directory), "--config", str(game.config)])
             async with stdio_client(parameters) as (read, write):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
@@ -1169,7 +1171,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
         from mcp import ClientSession, StdioServerParameters
         from mcp.client.stdio import stdio_client
         with FakeGame() as game:
-            parameters = StdioServerParameters(command=sys.executable, args=[str(SERVER), "--ipc-dir", str(game.directory)])
+            parameters = StdioServerParameters(command=sys.executable, args=[str(SERVER), "--ipc-dir", str(game.directory), "--config", str(game.config)])
             async with stdio_client(parameters) as (second_read, second_write):
                 async with ClientSession(second_read, second_write) as second:
                     await second.initialize()

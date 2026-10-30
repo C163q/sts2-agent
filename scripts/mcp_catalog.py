@@ -13,6 +13,7 @@ SERVER_INSTRUCTIONS = (
     "Call get_observation before each gameplay action; its permission is consumed even on failure. "
     "Read-only inspections do not prepare actions. View tools change UI and clear action permission; "
     "return to the action's screen and observe again before acting. Actions return a resulting observation. "
+    "transition.complete confirms the stated boundary, not that choice-paused effects or cosmetic animations have finished. "
     "After failure or timeout, observe before deciding; never automatically retry an action with unknown outcome."
 )
 NO_ARGUMENTS = {"type": "object", "properties": {}, "additionalProperties": False}

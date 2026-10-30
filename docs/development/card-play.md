@@ -1,6 +1,6 @@
 # 出牌与目标查询
 
-适用于 Mod `0.16.0`、MCP server `0.13.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。提供原生单人战斗中的一次手动出牌及只读目标查询；目标判定依据见 [源码调研](../research/2026-10-30-card-play-targeting.md)。
+适用于 Mod `0.18.0`、MCP server `0.14.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。提供原生单人战斗中的一次手动出牌及只读目标查询；目标判定依据见 [源码调研](../research/2026-10-30-card-play-targeting.md)。
 
 ## 查询目标
 
@@ -50,6 +50,8 @@
 
 返回基础观察和 `transition`，事件结构复用 [期间事件](end-turn.md)。普通出牌可在同一回合返回 `player_ready`；出牌导致抽牌、自动出牌、伤害、死亡或胜负时记录已发生的可感知事件。
 
+`player_ready` 返回前还会等待已识别的原生牌堆飞行结束及观察稳定，避免卡牌已结算但可见弃牌数尚未更新；完整保证与 `complete` 的含义见[动作完成与画面稳定](end-turn.md#动作完成与画面稳定)。
+
 实际出现选择时返回 `choice_required`，随后使用 [选牌工具](card-selection.md)。发现的候选在打出后生成，微光先抽牌再选手牌；冲锋！！在少量候选被原生自动处理时直接继续结算。不能在 `play_card` 参数中提前附送后续选牌，也不能为了等待整张牌结束而阻塞在玩家选择上。
 
 `action_canceled` 表示已观察到原生动作取消并恢复可行动，仍返回期间事件；不能把提交成功当成实际打出。`timeout`、`interrupted` 或事件缓冲截断时 `complete` 为 `false`。返回后先观察再决定，不自动补发未知结果的动作。
@@ -67,5 +69,13 @@
 ```
 
 场景入口只在测试模式配置初始条件，不能用于正式对局。其他场景及实际通过范围见 [验证记录](../research/2026-10-30-card-play-validation.md)。构建通过不替代原生游戏、图形显示和 stdio MCP 行为验证。
+
+验证动作返回后的可见计数时，另启动新图形实例 `python3 scripts/run_roundtrip.py --windowed --play-scenario basic`，再运行：
+
+```sh
+.tmp/mcp-venv/bin/python scripts/verify_action_settling.py --report .tmp/settling-check/run.json
+```
+
+该检查通过真实 MCP 打出打击和防御、结束一个回合，并分别比较返回状态与无输入两秒后的状态，保存六张截图；重复执行须使用新的报告目录。结果及边界见[修复记录](../research/2026-10-30-action-settling.md)。
 
 标准库文件客户端提供 `inspect_targets --card-id 7` 和 `play_card --card-id 7 --target-id 3 --expected-state <令牌>`；这些操作仍需 `--ipc-dir`。MCP 会话内部管理令牌，LLM 不接收原始令牌。

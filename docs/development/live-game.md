@@ -61,3 +61,5 @@ Mod `0.15.0` 增加 [出牌与目标查询](card-play.md)，需更新外部脚�
 Mod `0.16.0` 增加 [使用与丢弃药水](potion-actions.md)，目标查询复用 `inspect_targets`，含战斗外顶栏读取。需同时更新 MCP server 至 `0.13.0`；创意工坊已管理 RitsuLib 时保留现有安装，无须另复制一套。
 
 Mod `0.17.0` 与 MCP server `0.14.0` 增加[可配置截图存档](screenshots.md)，默认关闭；更新 Mod 后完整重启游戏，再按配置重启 MCP 连接。保留创意工坊管理的 RitsuLib。
+
+Mod `0.18.0` 修复[动作返回早于牌堆可见计数更新](end-turn.md#动作完成与画面稳定)，保留原有工具与参数。替换 DLL 后须完整重启游戏，重连 MCP 以读取更新的公共提示。

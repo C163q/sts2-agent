@@ -1,6 +1,7 @@
 .tmp/
 /.env
 /mcp-config.json
+/.sts2-agent/
 **/bin/
 **/obj/
 __pycache__/

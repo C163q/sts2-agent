@@ -38,8 +38,11 @@ async def verify(args):
         state = await raw("get_state")
     assert state["scene"] == "main_menu", "完整验证须从新启动的独立实例主菜单执行。"
 
+    args.report.parent.mkdir(parents=True, exist_ok=True)
+    config = args.report.with_suffix(".config.json").resolve()
+    config.write_text(json.dumps({"screenshots": {"enabled": False}}))
     parameters = StdioServerParameters(command=sys.executable, args=[
-        str(root / "scripts" / "mcp_server.py"), "--ipc-dir", str(directory)])
+        str(root / "scripts" / "mcp_server.py"), "--ipc-dir", str(directory), "--config", str(config)])
     async with stdio_client(parameters) as (read, write):
         async with ClientSession(read, write, read_timeout_seconds=timedelta(seconds=60)) as session:
             initialized = await session.initialize()

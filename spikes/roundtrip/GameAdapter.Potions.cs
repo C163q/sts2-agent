@@ -73,21 +73,16 @@ internal sealed partial class GameAdapter
             holder!.DisableUntilPotionRemoved();
             if (use) potion.EnqueueManualUse(potion.TargetType == TargetType.Self ? player.Creature : target);
             else RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(new DiscardPotionGameAction(player, (uint)slot, inCombat));
-            DateTime deadline = DateTime.UtcNow.AddSeconds(25);
-            string? reason;
-            do
+            var (after, reason) = await ActionObservation(() =>
             {
-                await ObservationFrame();
                 bool finished = submitted?.State is GameActionState.Finished or GameActionState.Canceled;
                 bool ready = finished && CanHandlePotions();
-                reason = journal?.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()), ready, requireTurnStarted: false);
+                string? boundary = journal?.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()), ready, requireTurnStarted: false);
                 if (journal == null)
-                    reason = !ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState()) ? "interrupted"
+                    boundary = !ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState()) ? "interrupted"
                         : CardSelection.AwaitingInput ? "choice_required" : ready ? "action_completed" : null;
-                if (reason is "player_ready" or "action_completed" && canceled) reason = "action_canceled";
-            } while (reason == null && DateTime.UtcNow < deadline);
-            reason ??= "timeout";
-            string after = await SettledObservation();
+                return boundary is "player_ready" or "action_completed" && canceled ? "action_canceled" : boundary;
+            });
             object transition = journal?.Result(reason) ?? potionEvents!.Result(reason);
             return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(transition) + "}");
         }

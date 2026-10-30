@@ -81,22 +81,18 @@ internal sealed partial class GameAdapter
         }
         else button!.ForceClick();
 
-        string? reason = null;
-        DateTime deadline = DateTime.UtcNow.AddSeconds(25);
-        do
+        var (after, reason) = await ActionObservation(() =>
         {
-            await ObservationFrame();
             bool ready = CanEndTurn() && RunManager.Instance.ActionQueueSet.IsEmpty;
-            reason = journal?.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()), ready, requireTurnStarted: false);
+            string? boundary = journal?.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()), ready, requireTurnStarted: false);
             if (journal == null)
             {
                 var current = CardSelection.Current;
-                if (CardSelection.AwaitingInput) reason = "choice_required";
-                else if (current == null) reason = "selection_resolved";
+                if (CardSelection.AwaitingInput) boundary = "choice_required";
+                else if (current == null) boundary = "selection_resolved";
             }
-        } while (reason == null && DateTime.UtcNow < deadline);
-        reason ??= "timeout";
-        string after = await SettledObservation();
+            return boundary;
+        });
         object transition = journal?.Result(reason) ?? new { stop_reason = reason,
             complete = reason != "timeout", events = Array.Empty<object>() };
         return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(transition) + "}");

@@ -34,7 +34,7 @@ Linux 本地 stdio MCP server 在游戏外运行，通过文件 IPC 与 Mod 通�
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.17.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.14.0`；结束回合要求新的 `transition` 结构，升级时须同时更新 Mod 和外部脚本，旧 Mod 的动作响应会被拒绝。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.18.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.14.0`；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。升级时须同时更新 Mod 和外部脚本，旧 Mod 的动作响应可能被拒绝。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 

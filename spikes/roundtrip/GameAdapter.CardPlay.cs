@@ -68,17 +68,12 @@ internal sealed partial class GameAdapter
                 return FileMailbox.Error(request.Id, "illegal_action", "The native card play was rejected before submission.");
             if (target != null) NCombatRoom.Instance!.LastTargetedCreature = target;
             else if (card.TargetType is TargetType.AllEnemies or TargetType.AllAllies) NCombatRoom.Instance!.LastTargetedCreature = null;
-            DateTime deadline = DateTime.UtcNow.AddSeconds(25);
-            string? reason;
-            do
+            var (after, reason) = await ActionObservation(() =>
             {
-                await ObservationFrame();
                 bool ready = submitted?.State is GameActionState.Finished or GameActionState.Canceled && CanPlayCards();
-                reason = journal.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()), ready, requireTurnStarted: false);
-                if (reason == "player_ready" && canceled) reason = "action_canceled";
-            } while (reason == null && DateTime.UtcNow < deadline);
-            reason ??= "timeout";
-            string after = await SettledObservation();
+                string? boundary = journal.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()), ready, requireTurnStarted: false);
+                return boundary == "player_ready" && canceled ? "action_canceled" : boundary;
+            });
             return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(journal.Result(reason)) + "}");
         }
         finally

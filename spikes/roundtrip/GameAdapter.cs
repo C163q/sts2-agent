@@ -443,17 +443,12 @@ internal sealed partial class GameAdapter(bool testMode)
                 return FileMailbox.Error(request.Id, "illegal_action", "RitsuLib is unavailable; no action was submitted.");
             using var journal = new TurnJournal(combat, player, observation.CardId);
             RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(new EndPlayerTurnAction(player, turn));
-            string? reason = null;
-            DateTime deadline = DateTime.UtcNow.AddSeconds(25);
-            while (reason == null && DateTime.UtcNow < deadline)
+            var (state, reason) = await ActionObservation(() =>
             {
-                await NGame.Instance!.ToSignal(NGame.Instance.GetTree(), SceneTree.SignalName.ProcessFrame);
-                reason = journal.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()),
+                return journal.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()),
                     player.PlayerCombatState?.TurnNumber > turn && CanEndTurn()
                     && RunManager.Instance.ActionQueueSet.IsEmpty);
-            }
-            reason ??= "timeout";
-            string state = await SettledObservation();
+            });
             return Success(request.Id, state[..^1] + ",\"transition\":" + JsonSerializer.Serialize(journal.Result(reason)) + "}");
         }
         return Success(request.Id, await SettledObservation());
