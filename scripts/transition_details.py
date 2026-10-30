@@ -1,7 +1,7 @@
 from game_output import TRANSITION, observation_details, project
 
 
-REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "timeout", "interrupted", "selection_resolved", "action_canceled"}
+REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "timeout", "interrupted", "selection_resolved", "action_canceled", "action_completed"}
 FIELDS = {
     "damage": {"target", "hp_loss", "blocked"},
     "hp_changed": {"target", "before", "after"},
@@ -11,6 +11,7 @@ FIELDS = {
     "card_played": {"card", "autoplay"}, "card_drawn": {"card"},
     "card_discarded": {"card"}, "card_exhausted": {"card"},
     "card_added": {"card"},
+    "potion_used": {"potion"}, "potion_discarded": {"potion"},
 }
 
 
@@ -33,10 +34,13 @@ def end_turn_details(state):
                 raise ValueError("Invalid event entity.")
         if event.get("source") is not None and (
                 set(event["source"]) != {"kind", "name"}
-                or event["source"]["kind"] not in {"card", "power", "relic"}):
+                or event["source"]["kind"] not in {"card", "power", "relic", "potion"}):
             raise ValueError("Invalid event source.")
         if "card" in event and (set(event["card"]) != {"id", "name"} or event["card"]["id"] < 0):
             raise ValueError("Invalid event card.")
+        if "potion" in event and (set(event["potion"]) != {"slot_index", "name"}
+                                  or not 0 <= event["potion"]["slot_index"] <= 2147483647):
+            raise ValueError("Invalid event potion.")
         if any(event.get(key) is not None and event[key] < 0 for key in ("hp_loss", "blocked")):
             raise ValueError("Invalid event damage.")
         if kind in {"hp_changed", "block_changed"} and any(type(event[key]) is not int for key in ("before", "after")):
@@ -44,7 +48,7 @@ def end_turn_details(state):
         if kind == "power_changed" and event["change"] not in {"applied", "modified", "removed"}:
             raise ValueError("Invalid power change.")
     result["transition"] = transition
-    if transition["stop_reason"] != "player_ready" or not transition["complete"]:
+    if transition["stop_reason"] not in {"player_ready", "action_completed"} or not transition["complete"]:
         result["available_actions"] = [action for action in result["available_actions"]
             if transition["complete"] and transition["stop_reason"] == "choice_required"
             and (result.get("selection") or {}).get("status") == "visible"

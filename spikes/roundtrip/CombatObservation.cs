@@ -16,6 +16,7 @@ using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.Potions;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Screens;
+using MegaCrit.sts2.Core.Nodes.TopBar;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace Sts2Agent;
@@ -251,13 +252,15 @@ internal sealed class CombatObservation
 
     public object? TopBar()
     {
-        if (Status() != "visible" && CardSelection.Current is not { Status: "visible" })
+        if (!RunUi.TopBarReadable())
             return null;
         var global = NRun.Instance!.GlobalUi;
         var bar = global.TopBar;
         var run = RunManager.Instance.DebugOnlyGetState();
+        var hp = Pair(VisibleUi.Descendants<NTopBarHp>(bar).Select(node => VisibleUi.Text(node, "%HpLabel")).FirstOrDefault(text => text != null));
         return new
         {
+            hp = hp.current, max_hp = hp.maximum,
             gold = VisibleUi.Number(bar.Gold, "%GoldLabel"),
             floor = VisibleUi.Number(bar.FloorIcon, "FloorNumLabel"),
             ascension = VisibleUi.Number(bar, "%AscensionLabel"),

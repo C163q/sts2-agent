@@ -67,6 +67,8 @@ READERS = {
     "select_card": end_turn_details,
     "selection_option": end_turn_details,
     "play_card": end_turn_details,
+    "use_potion": end_turn_details,
+    "discard_potion": end_turn_details,
 }
 
 

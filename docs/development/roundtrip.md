@@ -62,8 +62,9 @@ python3 scripts/test_prepare_roundtrip.py
 | --- | --- |
 | `get_state` | 读取主菜单或战斗的有限状态和 `available_actions`；其他场景暂归为 `loading_or_noncombat` |
 | `inspect_hand` | 只读、无须动作令牌；一次读取全部当前可见手牌的英语正文和悬停解释，格式见 [手牌详情](hand-inspection.md) |
-| `inspect_targets` | 参数 `card_id`，只读查询可见手牌当前可打出性与目标范围，见 [出牌接口](card-play.md) |
+| `inspect_targets` | 参数 `card_id` 或 `potion_slot` 二选一，只读查询可见手牌或药水的可用性与目标范围，见 [出牌](card-play.md) 和 [药水](potion-actions.md) |
 | `play_card` | 需最新令牌，参数 `card_id` 与必要的 `target_id`；提交一次原生手动出牌，后续选择单独操作 |
+| `use_potion`、`discard_potion` | 需最新令牌，槽位参数 `potion_slot`；使用时仅按查询要求提供 `target_id`，返回事件并停在交互边界 |
 | `inspect_ui` | 只读、无须动作令牌；读取当前可见战斗入口与资源图标的英语提示，排除药水、遗物、powers 和敌人意图解释，格式见 [界面说明](ui-inspection.md) |
 | `inspect_potions` | 只读、无须动作令牌；读取药水正文和共享解释，保留空槽位置，通用槽位说明只出现一次，格式见 [药水详情](potion-inspection.md) |
 | `inspect_combatants` | 只读、无须动作令牌；合并查看当前双方 powers 与敌人意图的英语悬停解释，格式见 [战斗对象详情](combatant-inspection.md) |
@@ -83,7 +84,7 @@ python3 scripts/test_prepare_roundtrip.py
 请求写入 `requests/<id>.json`，其中 `id` 是不带连字符的 UUID；先写临时文件再原子重命名为 `.json`。请求体包含 `id`、`operation`；动作另带 `expected_state`，有参数操作的选项放在 `arguments` 对象中。响应写入 `responses/<id>.json`，成功包含 `ok: true` 和 `state`，失败包含 `ok: false` 和 `error.code`、`error.message`。
 
 - 文件读写和等待在后台进行，状态读取与动作提交在 Godot 主线程进行；当前串行处理请求。
-- `snapshot_id` 根据当前导出的观察内容、进程会话、战斗代次、工具界面操作代次及选择实例代次生成。动作在主线程核对令牌和合法性后提交，选牌若跨帧滚动还会在点击前核对候选、已选和数量规则；通过工具查看并关闭牌组后旧令牌不会恢复，须重新观察。这不是对所有游戏内部状态或两次请求之间全部人工 UI 操作历史的完整版本标识。
+- `snapshot_id` 根据当前导出的观察内容、进程会话、战斗代次、工具界面操作代次、选择实例代次及药水实例代次生成。动作在主线程核对令牌和合法性后提交，选牌若跨帧滚动还会在点击前核对候选、已选和数量规则；通过工具查看并关闭牌组后旧令牌不会恢复，须重新观察。这不是对所有游戏内部状态或两次请求之间全部人工 UI 操作历史的完整版本标识。
 - 相同请求 ID 且缓存响应仍在时返回原结果。重复请求不分配新 ID；删除响应缓存后不再保证同一 ID 不会再次执行。
 - `stale_state` 表示缺少或不匹配的状态令牌，`illegal_action` 表示当前不可执行，`invalid_request` 表示请求格式有误，`expired_request` 表示执行前已过期，`game_error` 表示游戏调用异常。
 - `timeout` 或客户端超时后，动作是否已执行可能不确定。应先重新观察，不能自动换一个 ID 重试动作。创建测试场景过程中发生错误也可能已经部分推进游戏。
@@ -92,6 +93,6 @@ python3 scripts/test_prepare_roundtrip.py
 
 底层动作流程已在独立实例中实测；无头启动存在 FMOD 音频初始化、音频资源及虚拟渲染器警告，不覆盖声音。图形观察的验证范围另见战斗观察说明，不能将无头验证描述为没有运行警告。
 
-原型已扩展可见战斗观察，字段与验证方式见 [战斗观察 JSON](observation.md)，范围按 [可见信息边界](../observation.md) 维护；未展开的手牌效果由专门查看调用提供。动作支持结束回合、出牌和已接通的选牌；stdio MCP 的当前工具范围见 [接入指南](mcp.md)。地图推进、多玩家、断线恢复和异常退出恢复尚未覆盖。通信目录假设仅由可信的本地程序访问，不作为远程服务。
+原型已扩展可见战斗观察，字段与验证方式见 [战斗观察 JSON](observation.md)，范围按 [可见信息边界](../observation.md) 维护；未展开的手牌效果由专门查看调用提供。动作支持结束回合、出牌、使用/丢弃药水和已接通的选牌；stdio MCP 的当前工具范围见 [接入指南](mcp.md)。地图推进、多玩家、断线恢复和异常退出恢复尚未覆盖。通信目录假设仅由可信的本地程序访问，不作为远程服务。
 
 API 核对依据与实测结果见 [验证记录](../research/2026-10-28-roundtrip-validation.md)。

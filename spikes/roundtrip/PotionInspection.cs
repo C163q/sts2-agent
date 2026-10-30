@@ -14,7 +14,7 @@ internal static class PotionInspection
 
     public static NPotionHolder[]? VisibleHolders()
     {
-        if (CombatObservation.Status() != "visible")
+        if (!RunUi.TopBarReadable())
             return null;
         var container = NRun.Instance!.GlobalUi.TopBar.PotionContainer;
         var layout = container.GetNodeOrNull<Control>("MarginContainer/PotionHolders");

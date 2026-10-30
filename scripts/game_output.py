@@ -4,6 +4,10 @@ def nullable(shape):
 
 def project(value, shape):
     """Copy declared fields; a tuple allows null and a list describes array items."""
+    if isinstance(shape, frozenset):
+        if type(value) not in shape:
+            raise ValueError("Invalid gameplay scalar type.")
+        return value
     if isinstance(shape, tuple):
         if value is None:
             return None
@@ -46,6 +50,7 @@ ENEMY = {
 }
 RELIC = {"name": TEXT, "counter": NUMBER}
 TOP_BAR = {
+    "hp": NUMBER, "max_hp": NUMBER,
     "gold": NUMBER, "floor": NUMBER, "ascension": NUMBER, "deck_count": NUMBER,
     "room_icon": TEXT, "bosses": [TEXT], "potion_slots": nullable([nullable({"name": TEXT})]),
     "relics": nullable([RELIC]), "map_visible": bool, "deck_visible": bool, "settings_visible": bool,
@@ -59,12 +64,14 @@ SELECTION = {
     "options": [SELECTION_OPTION], "can_view_battlefield": bool,
 }
 EVENT_ENTITY = {"id": int, "kind": str, "name": TEXT}
+TARGET_ENTITY = {**EVENT_ENTITY, "id": frozenset({int, str})}
+POTION_REF = {"slot_index": int, "name": TEXT}
 EVENT_SOURCE = {"kind": str, "name": TEXT}
 EVENT = {
     "sequence": int, "type": str, "actor": EVENT_ENTITY, "target": EVENT_ENTITY,
     "source": nullable(EVENT_SOURCE), "card": {"id": int, "name": TEXT},
     "hp_loss": NUMBER, "blocked": int, "before": NUMBER, "after": NUMBER,
-    "name": TEXT, "autoplay": bool, "change": str,
+    "name": TEXT, "autoplay": bool, "change": str, "potion": POTION_REF,
 }
 TRANSITION = {"stop_reason": str, "complete": bool, "events": [EVENT]}
 OBSERVATION = {
@@ -84,7 +91,7 @@ GAMEPLAY = {
     "detail_level": str, "view_upgrades": bool, "sort": {"by": str, "descending": bool},
     "pile": str, "status": str, "reason": TEXT, "message": str,
     "card": {"id": int, "name": TEXT}, "playable": bool, "target_type": str,
-    "requires_target": bool, "targets": [EVENT_ENTITY],
+    "requires_target": bool, "targets": [TARGET_ENTITY], "potion": POTION_REF, "usable": bool, "discardable": bool,
     "act": int, "current_node": TEXT, "visited_path": [str], "can_travel": bool,
     "selectable_nodes": [str], "nodes": [{
         "id": str, "row": int, "column": int, "type": str, "next": [str],

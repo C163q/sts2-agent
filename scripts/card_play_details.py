@@ -1,10 +1,13 @@
 from game_output import EVENT_ENTITY, TEXT, project
+from potion_action_details import POTION_SCHEMA, potion_arguments, potion_target_details
 
 
 CARD_ID = {"type": "integer", "minimum": 0, "maximum": 2147483647}
-TARGET_SCHEMA = {"type": "object", "properties": {"card_id": CARD_ID},
+CARD_TARGET_SCHEMA = {"type": "object", "properties": {"card_id": CARD_ID},
                  "required": ["card_id"], "additionalProperties": False}
-PLAY_SCHEMA = {**TARGET_SCHEMA, "properties": {
+TARGET_SCHEMA = {"type": "object", "properties": {"card_id": CARD_ID, "potion_slot": POTION_SCHEMA["properties"]["potion_slot"]},
+                 "additionalProperties": False, "oneOf": [CARD_TARGET_SCHEMA, POTION_SCHEMA]}
+PLAY_SCHEMA = {**CARD_TARGET_SCHEMA, "properties": {
     "card_id": CARD_ID, "target_id": {"type": "integer", "minimum": 0, "maximum": 4294967295}}}
 TARGET_DETAILS = {"card": {"id": int, "name": TEXT}, "playable": bool, "target_type": str,
                   "requires_target": bool, "targets": [EVENT_ENTITY], "reason": TEXT}
@@ -13,6 +16,8 @@ TARGET_TYPES = {"none", "self", "any_enemy", "all_enemies", "random_enemy", "any
 
 
 def card_play_arguments(operation, arguments):
+    if operation == "inspect_targets" and isinstance(arguments, dict) and "potion_slot" in arguments:
+        return potion_arguments(operation, arguments)
     allowed = {"card_id", "target_id"} if operation == "play_card" else {"card_id"}
     if (not isinstance(arguments, dict) or "card_id" not in arguments or not set(arguments) <= allowed
             or type(arguments["card_id"]) is not int or not 0 <= arguments["card_id"] <= 2147483647
@@ -23,6 +28,8 @@ def card_play_arguments(operation, arguments):
 
 
 def target_details(state, arguments):
+    if "potion_slot" in arguments:
+        return potion_target_details(state, arguments)
     result = project(state, TARGET_DETAILS)
     if (set(result) != set(TARGET_DETAILS) or set(result["card"]) != {"id", "name"}
             or result["card"]["id"] != arguments["card_id"] or result["target_type"] not in TARGET_TYPES

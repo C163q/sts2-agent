@@ -57,6 +57,8 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
             foreach (var holder in NCombatRoom.Instance!.Ui.Hand.ActiveHolders)
                 if (holder.CardNode?.Model is { } card) CardName(card);
             SubscribePiles();
+            var potions = new PotionJournal(player, (type, potion) => buffer.Add(type, new() { ["potion"] = potion }));
+            cleanup.Add(potions.Dispose);
         }
         catch
         {
@@ -110,6 +112,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         CardModel card => new { kind = "card", name = CardName(card) },
         PowerModel power when power.IsVisible => new { kind = "power", name = english.Name(power.Title) },
         RelicModel relic => new { kind = "relic", name = english.Name(relic.Title) },
+        PotionModel potion => new { kind = "potion", name = english.Name(potion.Title) },
         _ => null
     };
 

@@ -25,7 +25,7 @@ def tool_result(payload):
 
 
 def create_server(tools):
-    server = Server("sts2-agent", version="0.12.0", instructions=SERVER_INSTRUCTIONS)
+    server = Server("sts2-agent", version="0.13.0", instructions=SERVER_INSTRUCTIONS)
     definitions = tool_definitions()
     handlers = {tool.name: getattr(tools, tool.name) for tool in definitions}
 
@@ -37,7 +37,7 @@ def create_server(tools):
     async def call_tool(name, arguments):
         if name not in handlers:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))
-        if name in {"inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card"}:
+        if name in {"inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion"}:
             return tool_result(await handlers[name](arguments))
         if arguments:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))

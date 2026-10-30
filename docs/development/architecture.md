@@ -70,3 +70,7 @@ C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project spi
 ## 出牌接口
 
 `TargetInspection.cs` 负责可见手牌及纯目标规则查询，`GameAdapter.CardPlay.cs` 校验参数、跟踪原生入队动作并等待交互边界；`PlayFixture.cs` 只配置隔离测试初始条件。Python `card_play_details.py` 维护参数和目标响应结构，动作沿用既有会话许可及事件过滤。完整契约见 [出牌与目标查询](card-play.md)。
+
+## 药水接口
+
+`RunUi.cs` 判定战斗外顶栏可读范围，`PotionActions.cs` 负责可见槽位、菜单规则与目标查询，`GameAdapter.Potions.cs` 提交原生同步动作并跟踪交互边界。`PotionJournal.cs` 可独立记录战斗外药水事件，也由战斗事件记录器复用；`PotionFixture.cs` 仅配置隔离测试状态。外部参数与响应校验在 `potion_action_details.py`，工具语义见 [药水接口](potion-actions.md)。

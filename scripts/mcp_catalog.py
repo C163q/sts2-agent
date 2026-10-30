@@ -4,6 +4,7 @@ from deck_details import DECK_SCHEMA
 from pile_details import PILE_SCHEMA
 from selection_details import CARD_SCHEMA, OPTION_SCHEMA, VIEW_SCHEMA
 from card_play_details import PLAY_SCHEMA, TARGET_SCHEMA
+from potion_action_details import POTION_SCHEMA, USE_SCHEMA
 
 
 SERVER_INSTRUCTIONS = (
@@ -26,7 +27,7 @@ def tool_definitions():
         Tool(name="inspect_hand", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read all visible hand cards' descriptions; shared hover_tips link to card_ids.")),
         Tool(name="inspect_targets", inputSchema=TARGET_SCHEMA, annotations=read_only, description=(
-            "Read a visible hand card's playability, target type, requires_target and targeting range. "
+            "Query one visible hand card (card_id) or potion (zero-based potion_slot): usability, requires_target and targeting range. "
             "No aiming or random resolution; the range does not predict every effect.")),
         Tool(name="play_card", inputSchema=PLAY_SCHEMA, annotations=action, description=(
             "Play one observed hand card. Supply a combatant target_id only when requires_target is true, even for one candidate. "
@@ -37,6 +38,12 @@ def tool_definitions():
         Tool(name="inspect_potions", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read visible potion descriptions: one slot_tip, positional potion_slots (null for empty slots), "
             "and shared hover_tips linked by zero-based slot_indices.")),
+        Tool(name="use_potion", inputSchema=USE_SCHEMA, annotations=action, description=(
+            "Use one observed zero-based potion_slot, in or out of combat when usable. "
+            "Supply target_id only when inspect_targets requires it; stop at choices and continue with selection tools.")),
+        Tool(name="discard_potion", inputSchema=POTION_SCHEMA, annotations=action, description=(
+            "Discard one observed zero-based potion_slot through the native action. "
+            "Allowed only when potions can be removed; automatic potions may be discarded.")),
         Tool(name="inspect_combatants", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read both sides' visible powers and current enemy intent hover help; shared hover_tips use sources paths. "
             "Unavailable while aiming or playing a card.")),

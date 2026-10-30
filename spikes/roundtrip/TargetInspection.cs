@@ -17,12 +17,14 @@ internal sealed class TargetInspection(CombatObservation observation)
         .Where(holder => CardSelection.Clickable(holder) && holder.CardNode!.Visibility == ModelVisibility.Visible)
         .Select(holder => holder.CardModel).FirstOrDefault(card => card != null && observation.CardId(card) == id);
 
-    public static string? Type(CardModel card) => card.TargetType switch
+    public static string? Type(CardModel card) => card.TargetType == TargetType.TargetedNoCreature ? null : Type(card.TargetType);
+    public static string? Type(TargetType type) => type switch
     {
         TargetType.None => "none", TargetType.Self => "self", TargetType.AnyEnemy => "any_enemy",
         TargetType.AllEnemies => "all_enemies", TargetType.RandomEnemy => "random_enemy",
         TargetType.AnyPlayer => "any_player", TargetType.AnyAlly => "any_ally",
-        TargetType.AllAllies => "all_allies", TargetType.Osty => "osty", _ => null
+        TargetType.AllAllies => "all_allies", TargetType.Osty => "osty",
+        TargetType.TargetedNoCreature => "targeted_no_creature", _ => null
     };
 
     // Self is a single-target potion type, but never an explicit card target.

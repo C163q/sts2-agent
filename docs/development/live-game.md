@@ -57,3 +57,5 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state
 Mod `0.14.0` 接通 [选牌与显式查看战场](card-selection.md)，需同时更新外部 MCP 脚本；RitsuLib 也可由 Steam 创意工坊管理，无须另复制一套。
 
 Mod `0.15.0` 增加 [出牌与目标查询](card-play.md)，需更新外部脚本并重新连接 MCP；替换游戏目录中的 Mod 后，完整重启游戏才能加载新程序集。
+
+Mod `0.16.0` 增加 [使用与丢弃药水](potion-actions.md)，目标查询复用 `inspect_targets`，含战斗外顶栏读取。需同时更新 MCP server 至 `0.13.0`；创意工坊已管理 RitsuLib 时保留现有安装，无须另复制一套。

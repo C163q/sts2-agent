@@ -11,6 +11,7 @@ from pile_details import pile_arguments
 from player_output import player_result
 from selection_details import selection_arguments
 from card_play_details import card_play_arguments
+from potion_action_details import potion_arguments
 
 
 class GameTools:
@@ -41,6 +42,12 @@ class GameTools:
 
     async def play_card(self, arguments=None):
         return await self._action("play_card", arguments)
+
+    async def use_potion(self, arguments=None):
+        return await self._action("use_potion", arguments)
+
+    async def discard_potion(self, arguments=None):
+        return await self._action("discard_potion", arguments)
 
     async def set_selection_view(self, arguments=None):
         return await self._change_view("set_selection_view", arguments, validate_selection=True)
@@ -147,6 +154,12 @@ class GameTools:
 
     async def _action(self, operation, arguments=None, validate_selection=False):
         async with self.lock:
+            if operation in {"use_potion", "discard_potion"}:
+                try:
+                    arguments = potion_arguments(operation, arguments)
+                except ValueError:
+                    self.snapshot_id = None
+                    return player_result({"ok": False, "error": {"code": "invalid_request"}})
             if operation == "play_card":
                 try:
                     arguments = card_play_arguments(operation, arguments)
@@ -188,7 +201,7 @@ class GameTools:
             if response["ok"] and "available_actions" in payload:
                 payload["available_actions"] = [
                     action for action in payload.get("available_actions", [])
-                    if action in {"end_turn", "play_card", "select_card", "selection_option"}]
+                    if action in {"end_turn", "play_card", "use_potion", "discard_potion", "select_card", "selection_option"}]
         except (OSError, ValueError, KeyError, TypeError, RuntimeError) as error:
             code = "timeout" if isinstance(error, TimeoutError) else "transport_error"
             logging.getLogger(__name__).warning("Game request failed: %s", error)
