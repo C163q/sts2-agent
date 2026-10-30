@@ -66,3 +66,7 @@ C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project spi
 ## 选牌接口
 
 `CardSelection.cs` 识别原生选择实例、数量规则和可用控件；`SelectionInspection.cs` 读取选择画面，`SelectionActions.cs` 定位并点击原生候选；`GameAdapter.Selection.cs` 处理参数、令牌、视图和结算等待。Python 的 `selection_details.py` 校验参数与详情，基础选择由 `game_output.py` 过滤。工具语义见 [选牌与查看战场](card-selection.md)。
+
+## 出牌接口
+
+`TargetInspection.cs` 负责可见手牌及纯目标规则查询，`GameAdapter.CardPlay.cs` 校验参数、跟踪原生入队动作并等待交互边界；`PlayFixture.cs` 只配置隔离测试初始条件。Python `card_play_details.py` 维护参数和目标响应结构，动作沿用既有会话许可及事件过滤。完整契约见 [出牌与目标查询](card-play.md)。

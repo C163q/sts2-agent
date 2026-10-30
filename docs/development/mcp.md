@@ -4,12 +4,14 @@ Linux 本地 stdio MCP server 在游戏外运行，通过文件 IPC 与 Mod 通�
 
 ## 工具范围
 
-固定公开 16 个工具，不按场景增删；调用时检查合法性。`available_actions` 表示当前可执行的游戏动作，不是 MCP 工具目录。
+固定公开 18 个工具，不按场景增删；调用时检查合法性。`available_actions` 表示当前可执行的游戏动作，不是 MCP 工具目录。
 
 | 工具 | 用途 |
 | --- | --- |
 | `get_observation()` | 读取当前可见基础状态，保存一次动作令牌 |
 | `inspect_hand()` | [全部可见手牌正文及共享解释](hand-inspection.md) |
+| `inspect_targets(card_id)` | [查询手牌可打出性与目标范围](card-play.md)，不进入瞄准或抽随机数 |
+| `play_card(card_id, target_id?)` | [提交一次原生手动出牌](card-play.md)，后续选牌单独操作 |
 | `inspect_ui()` | [当前战斗界面与资源帮助](ui-inspection.md) |
 | `inspect_potions()` | [药水正文、空槽位置和共享解释](potion-inspection.md) |
 | `inspect_combatants()` | [双方 powers 与当前敌人意图解释](combatant-inspection.md) |
@@ -25,11 +27,11 @@ Linux 本地 stdio MCP server 在游戏外运行，通过文件 IPC 与 Mod 通�
 | `set_selection_view(view)` | 点击原生眼睛，切换选牌与战场查看 |
 | `end_turn()` | 结束一次玩家回合，返回期间事件、停止原因及最终观察，见 [结束回合](end-turn.md) |
 
-牌组、牌堆与选牌工具的参数见各自接口说明，其余工具无参数。基础观察、纯详情和原生页面的边界见 [可见信息约定](../observation.md)；出牌、使用药水和选路尚未实现。动态工具发现的候选与版本约束见 [专项核查](../research/2026-10-29-mcp-tool-availability.md)，尚未实现。
+牌组、牌堆、选牌与出牌工具的参数见各自接口说明，其余工具无参数。基础观察、纯详情和原生页面的边界见 [可见信息约定](../observation.md)；使用药水和选路尚未实现。动态工具发现的候选与版本约束见 [专项核查](../research/2026-10-29-mcp-tool-availability.md)，尚未实现。
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.14.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.11.0`；结束回合要求新的 `transition` 结构，升级时须同时更新 Mod 和外部脚本，旧 Mod 的动作响应会被拒绝。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.15.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.12.0`；结束回合要求新的 `transition` 结构，升级时须同时更新 Mod 和外部脚本，旧 Mod 的动作响应会被拒绝。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -61,7 +63,7 @@ codex mcp add sts2 -- "$PWD/.tmp/mcp-venv/bin/python" "$PWD/scripts/mcp_server.p
 codex mcp list
 ```
 
-重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation`、`inspect_hand`、`inspect_ui`、`inspect_potions`、`inspect_combatants`、`inspect_relics`、`inspect_deck`、`inspect_pile`、`close_card_view`、`inspect_map`、`close_map`、`inspect_selection`、`select_card`、`selection_option`、`set_selection_view` 和 `end_turn`；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
+重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation`、`inspect_hand`、`inspect_ui`、`inspect_potions`、`inspect_combatants`、`inspect_relics`、`inspect_deck`、`inspect_pile`、`close_card_view`、`inspect_map`、`close_map`、`inspect_selection`、`select_card`、`selection_option`、`set_selection_view`、`inspect_targets`、`play_card` 和 `end_turn`；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
 
 对应的 TOML 配置示例为：
 
@@ -95,7 +97,7 @@ approval_mode = "approve"
 
 成功时 `structuredContent` 是玩法对象，`content` 同时提供相同对象的紧凑 JSON 文本。正文中的换行和空格保留；终端与证据文件使用两空格缩进。对象本身没有排版属性，客户端决定如何转换为模型输入。协议、文本、显示的区别及官方依据见 [项目审阅](../research/2026-10-29-project-review.md#mcp-json-与官方实践)。
 
-输出递归过滤未知字段，不转发原始响应包装、状态令牌或测试入口；`available_actions` 只保留已公开的 `end_turn`。MCP 对基础观察和动作结果检查全部顶层观察字段，对已提供的嵌套字段检查类型；错误结果不保存动作令牌。原始文件协议见 [原型接口](roundtrip.md#原型接口)。
+输出递归过滤未知字段，不转发原始响应包装、状态令牌或测试入口；`available_actions` 只保留已公开的 `end_turn`、`play_card`、`select_card` 和 `selection_option`。MCP 对基础观察和动作结果检查全部顶层观察字段，对已提供的嵌套字段检查类型；错误结果不保存动作令牌。原始文件协议见 [原型接口](roundtrip.md#原型接口)。
 
 业务错误为 `isError: true`，包含 `error.code/message/recovery`；执行结果未知时另带 `outcome: unknown`。内部异常写入标准错误，不交给模型；标准输出专用于 MCP 消息。
 

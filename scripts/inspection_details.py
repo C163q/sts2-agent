@@ -6,6 +6,7 @@ from pile_details import pile_details
 from relic_details import relic_details
 from transition_details import end_turn_details
 from selection_details import inspect_selection_details
+from card_play_details import target_details
 
 
 def potion_details(state):
@@ -65,10 +66,13 @@ READERS = {
     "set_selection_view": observation_details,
     "select_card": end_turn_details,
     "selection_option": end_turn_details,
+    "play_card": end_turn_details,
 }
 
 
 def _read_details(operation, state, arguments=None):
+    if operation == "inspect_targets":
+        return target_details(state, arguments)
     if operation == "inspect_deck":
         return deck_details(state, (arguments or {}).get("detail_level", "summary"))
     if operation == "inspect_pile":

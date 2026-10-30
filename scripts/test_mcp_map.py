@@ -21,7 +21,7 @@ class MapStdioTests(unittest.IsolatedAsyncioTestCase):
                     listed = await session.list_tools()
                     names = {tool.name for tool in listed.tools}
                     self.assertTrue({"inspect_map", "close_map"} <= names, "Map MCP tools are missing.")
-                    self.assertEqual(len(names), 16)
+                    self.assertEqual(len(names), 18)
                     for tool in listed.tools:
                         if tool.name in {"inspect_map", "close_map"}:
                             self.assertEqual(tool.inputSchema, {"type": "object", "properties": {}, "additionalProperties": False})

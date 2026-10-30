@@ -47,7 +47,7 @@ async def verify(args):
             evidence["server"] = initialized.serverInfo.model_dump()
             listed = await session.list_tools()
             evidence["tools"] = [tool.model_dump(exclude_none=True) for tool in listed.tools]
-            assert {tool.name for tool in listed.tools} == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "inspect_selection", "select_card", "selection_option", "set_selection_view", "end_turn"}
+            assert {tool.name for tool in listed.tools} == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "inspect_selection", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "end_turn"}
 
             async def call(name, arguments=None):
                 result = await session.call_tool(name, arguments or {})
@@ -70,7 +70,7 @@ async def verify(args):
             assert not observed.isError
             before = observed.structuredContent
             assert before["scene"] == "combat" and before["screen"]["status"] == "visible"
-            assert before["available_actions"] == ["end_turn"]
+            assert set(before["available_actions"]) == {"end_turn", "play_card"}
             assert not {"snapshot_id", "session", "schema_version", "overlay", "language"} & before.keys()
             inspected = await call("inspect_hand")
             assert not inspected.isError

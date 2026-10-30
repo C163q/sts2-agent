@@ -83,6 +83,7 @@ internal sealed partial class GameAdapter(bool testMode)
         List<string> actions = [];
         if (CanEndTurn())
             actions.Add("end_turn");
+        if (CanPlayCards()) actions.Add("play_card");
         if (testMode && scene == "main_menu" && !RunManager.Instance.IsInProgress)
             actions.Add("start_test_combat");
         string visibility = scene == "combat" ? CombatObservation.Status() : "not_applicable";
@@ -113,7 +114,7 @@ internal sealed partial class GameAdapter(bool testMode)
     public async Task<string> Execute(Request request)
     {
         string before = Observe();
-        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view")
+        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
@@ -127,6 +128,11 @@ internal sealed partial class GameAdapter(bool testMode)
             return Success(request.Id, before);
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (request.Operation == "check_test_play_state" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_PLAY_SCENARIO") != null && LocalPlayer != null)
+            return Success(request.Id, JsonSerializer.Serialize(PlayFixture.Read(LocalPlayer)));
+        if (request.Operation is "inspect_targets" or "play_card")
+            return await CardPlayRequest(request, document.RootElement);
         if (request.Operation == "check_test_selection_race" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SELECTION_SCENARIO") == "scroll_race")
             return Success(request.Id, JsonSerializer.Serialize(await SelectionFixture.CheckScrollRace(ObservationFrame)));
@@ -306,10 +312,12 @@ internal sealed partial class GameAdapter(bool testMode)
                 Array.Empty<ModifierModel>(), "STS2AGENTROUNDTRIP", GameMode.Standard);
             string? turnScenario = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_TURN_SCENARIO");
             string? selectionScenario = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SELECTION_SCENARIO");
+            string? playScenario = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_PLAY_SCENARIO");
             if (selectionScenario == "paradox")
                 await RelicCmd.Obtain<ChoicesParadox>(LocalContext.GetMe(RunManager.Instance.DebugOnlyGetState())!);
             Task roomEntry = RunManager.Instance.EnterRoomDebug(RoomType.Monster,
                 model: selectionScenario == "knowledge" ? ModelDb.Encounter<KnowledgeDemonBoss>().ToMutable()
+                    : playScenario is "test_subject" or "no_target" or "random_empty" ? ModelDb.Encounter<TestSubjectBoss>().ToMutable()
                     : turnScenario == "revive" ? ModelDb.Encounter<DecimillipedeElite>().ToMutable()
                     : ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
             if (selectionScenario == "paradox")
@@ -336,6 +344,7 @@ internal sealed partial class GameAdapter(bool testMode)
                 }
             }
             if (turnScenario != null) await TurnFixture.Configure(turnScenario, LocalPlayer!);
+            if (playScenario != null) await PlayFixture.Configure(playScenario, LocalPlayer!);
             // Debug room entry bypasses the normal map-travel disabling step.
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_MAP_CHECKS") != null)
             {

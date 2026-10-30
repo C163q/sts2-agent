@@ -1,6 +1,6 @@
 # 结束回合与期间事件
 
-适用于 Mod `0.14.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10` 的 `0.107.1` 兼容运行时。MCP 调用仍为无参数的 `end_turn()`；文件协议为 `end_turn`，需要最新观察令牌。
+适用于 Mod `0.15.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10` 的 `0.107.1` 兼容运行时。MCP 调用仍为无参数的 `end_turn()`；文件协议为 `end_turn`，需要最新观察令牌。
 
 ## 执行与停止边界
 
@@ -8,8 +8,8 @@
 
 | `transition.stop_reason` | 含义 |
 | --- | --- |
-| `player_ready` | 已进入后续玩家可行动回合，回合开始通知已发出、动作队列为空且正常结束回合条件成立 |
-| `choice_required` | 原生动作正在等待本地玩家选择，且手牌选择或已支持的原生选牌页面已显示 |
+| `player_ready` | 已恢复玩家可行动且队列为空；`end_turn` 还要求后续玩家回合开始通知已发出，出牌和选牌可在同一回合继续 |
+| `choice_required` | 原生动作等待本地玩家选择，且已识别其界面；尚未接通操作的类型也会停止，范围见选牌接口 |
 | `combat_won` | 原生事件确认本场战斗胜利；不是整局通关 |
 | `combat_lost` | 原生事件确认本场战斗失败；不以暂时零血代替结果 |
 | `timeout` | 提交后 25 秒内未到达上述边界，游戏仍可能继续结算 |
@@ -82,3 +82,5 @@ python3 scripts/verify_end_turn.py --ipc-dir .tmp/roundtrip/ipc --scenario tyran
 其他场景名称：`normal`、`wither`、`wither_death`、`enemy_death`、`retain_choice`、`boulder`、`doom`、`stampede`、`revive`、`blocked`、`hellraiser`、`exhaust_block`、`hidden_hp`。其中 `revive` 连续验证多个回合，以同时取得千足虫死亡及后续复活证据；`hellraiser` 和 `exhaust_block` 检查触发顺序，`hidden_hp` 检查未公开生命数字不进入日志。
 
 选牌动作复用本页事件格式，并增加非战斗完成原因 `selection_resolved`。`choice_required` 的完整响应可以提供已支持的选牌动作，仍不会提供 `end_turn`。
+
+[出牌工具](card-play.md) 同样复用期间事件，并增加 `action_canceled`：原生动作已取消且恢复可行动。入队成功不代表实际打出，失败或取消后仍须重新观察。

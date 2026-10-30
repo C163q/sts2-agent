@@ -82,7 +82,9 @@ GAMEPLAY = {
     "relics": nullable([{**RELIC, "description": str, "hover_tips": [TIP]}]),
     "deck": [BROWSED_CARD], "cards": nullable([BROWSED_CARD]),
     "detail_level": str, "view_upgrades": bool, "sort": {"by": str, "descending": bool},
-    "pile": str, "status": str, "reason": str, "message": str,
+    "pile": str, "status": str, "reason": TEXT, "message": str,
+    "card": {"id": int, "name": TEXT}, "playable": bool, "target_type": str,
+    "requires_target": bool, "targets": [EVENT_ENTITY],
     "act": int, "current_node": TEXT, "visited_path": [str], "can_travel": bool,
     "selectable_nodes": [str], "nodes": [{
         "id": str, "row": int, "column": int, "type": str, "next": [str],

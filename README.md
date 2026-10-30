@@ -4,16 +4,16 @@
 
 ## 当前能力
 
-当前为 Linux 游戏 `v0.107.1` 的验证原型：Mod `0.14.0` 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。已有真实游戏及 Codex 模型的观察、结束回合和读回验证；尚未支持出牌、使用药水、地图选路或完整自动游玩。
+当前为 Linux 游戏 `v0.107.1` 的验证原型：Mod `0.15.0` 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。已有真实游戏及 Codex 模型的观察、结束回合和读回验证；尚未支持使用药水、地图选路或完整自动游玩。
 
 | 能力 | 接口与说明 |
 | --- | --- |
 | 基础观察 | 当前静态画面的英语 JSON，包含角色、手牌名称与费用、敌人当前意图、状态图标及顶栏；见 [观察格式](docs/development/observation.md) |
 | 按需详情 | 查看 [手牌](docs/development/hand-inspection.md)、[界面帮助](docs/development/ui-inspection.md)、[药水](docs/development/potion-inspection.md)、[双方 powers 与意图](docs/development/combatant-inspection.md)、[遗物](docs/development/relic-inspection.md) |
 | 原生页面 | 查看 [全牌组](docs/development/deck-inspection.md)、[战斗牌堆](docs/development/pile-inspection.md) 和 [当前幕地图](docs/development/map-inspection.md)，保留页面直到显式关闭 |
-| 游戏动作 | [结束回合](docs/development/end-turn.md)，返回期间事件、停止原因及最终观察；遇到选择时返回；通过 [选牌工具](docs/development/card-selection.md) 操作候选、确认及跳过，支持显式查看战场 |
+| 游戏动作 | [出牌与目标查询](docs/development/card-play.md)，一次提交卡牌及必要目标；[结束回合](docs/development/end-turn.md)，返回期间事件、停止原因及最终观察；遇到选择时返回；通过 [选牌工具](docs/development/card-selection.md) 操作候选、确认及跳过，支持显式查看战场 |
 
-MCP 固定提供 16 个工具，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
+MCP 固定提供 18 个工具，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
 
 ## 开发与运行入口
 
@@ -44,6 +44,7 @@ cp .env.example .env
 - [项目审阅与重构](docs/research/2026-10-29-project-review.md)：输出边界、提示词、JSON 格式、官方实践及验证范围。
 - [结束回合事件与交互边界调研](docs/research/2026-10-29-end-turn-events.md)：战斗历史、RitsuLib 与选择暂停的设计依据；实际行为见 [接口说明](docs/development/end-turn.md)。
 - [选牌与查看战场验证](docs/research/2026-10-30-card-selection-validation.md)：候选、确认、跳过、第一回合遗物、信息边界及审阅修复。
-- [出牌与目标选择调研](docs/research/2026-10-30-card-play-targeting.md)：原生提交、目标合法性、后续选牌及候选工具方案，尚未实施。
+- [出牌接入验证](docs/research/2026-10-30-card-play-validation.md)：原生提交、目标范围、随机数不变性、后续选择及胜负边界。
+- [出牌与目标选择调研](docs/research/2026-10-30-card-play-targeting.md)：原生提交、目标合法性、后续选牌与接口设计依据。
 - [结束回合接入验证](docs/research/2026-10-29-end-turn-validation.md)：复杂机制、图形界面、真实 MCP 往返和未覆盖范围。
 - [最小往返验证](docs/research/2026-10-28-roundtrip-validation.md)、[基础画面核对](docs/research/2026-10-29-battle-observation-audit.md)、[地图 MCP 验证](docs/research/2026-10-29-mcp-map-inspection.md)：阶段性证据，当前接口以开发指南为准。

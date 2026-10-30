@@ -62,6 +62,8 @@ python3 scripts/test_prepare_roundtrip.py
 | --- | --- |
 | `get_state` | 读取主菜单或战斗的有限状态和 `available_actions`；其他场景暂归为 `loading_or_noncombat` |
 | `inspect_hand` | 只读、无须动作令牌；一次读取全部当前可见手牌的英语正文和悬停解释，格式见 [手牌详情](hand-inspection.md) |
+| `inspect_targets` | 参数 `card_id`，只读查询可见手牌当前可打出性与目标范围，见 [出牌接口](card-play.md) |
+| `play_card` | 需最新令牌，参数 `card_id` 与必要的 `target_id`；提交一次原生手动出牌，后续选择单独操作 |
 | `inspect_ui` | 只读、无须动作令牌；读取当前可见战斗入口与资源图标的英语提示，排除药水、遗物、powers 和敌人意图解释，格式见 [界面说明](ui-inspection.md) |
 | `inspect_potions` | 只读、无须动作令牌；读取药水正文和共享解释，保留空槽位置，通用槽位说明只出现一次，格式见 [药水详情](potion-inspection.md) |
 | `inspect_combatants` | 只读、无须动作令牌；合并查看当前双方 powers 与敌人意图的英语悬停解释，格式见 [战斗对象详情](combatant-inspection.md) |
@@ -90,6 +92,6 @@ python3 scripts/test_prepare_roundtrip.py
 
 底层动作流程已在独立实例中实测；无头启动存在 FMOD 音频初始化、音频资源及虚拟渲染器警告，不覆盖声音。图形观察的验证范围另见战斗观察说明，不能将无头验证描述为没有运行警告。
 
-原型已扩展可见战斗观察，字段与验证方式见 [战斗观察 JSON](observation.md)，范围按 [可见信息边界](../observation.md) 维护；未展开的手牌效果由专门查看调用提供。动作仅支持结束回合；stdio MCP 的当前工具范围见 [接入指南](mcp.md)。出牌、地图推进、多玩家、断线恢复和异常退出恢复尚未覆盖。通信目录假设仅由可信的本地程序访问，不作为远程服务。
+原型已扩展可见战斗观察，字段与验证方式见 [战斗观察 JSON](observation.md)，范围按 [可见信息边界](../observation.md) 维护；未展开的手牌效果由专门查看调用提供。动作支持结束回合、出牌和已接通的选牌；stdio MCP 的当前工具范围见 [接入指南](mcp.md)。地图推进、多玩家、断线恢复和异常退出恢复尚未覆盖。通信目录假设仅由可信的本地程序访问，不作为远程服务。
 
 API 核对依据与实测结果见 [验证记录](../research/2026-10-28-roundtrip-validation.md)。

@@ -7,6 +7,11 @@ def main():
     parser = argparse.ArgumentParser(description="启动使用独立数据目录的游戏测试实例。")
     parser.add_argument("--windowed", action="store_true", help="使用图形窗口，验证实际显示与帧后采样")
     parser.add_argument("--capture", action="store_true", help="每次读取时保存测试窗口截图至 .tmp/roundtrip/observation.png")
+    parser.add_argument("--play-scenario", choices=("basic", "discovery", "charge0", "charge1", "charge2", "charge3",
+                        "glimmer", "random", "random_empty", "aoe", "victory", "death", "unsupported", "x_cost",
+                        "card_logic", "unplayable", "ally", "multi_hit", "hook", "stars", "energy",
+                        "test_subject", "thorns_death", "no_target", "cancel", "unhittable"),
+                        help="构造独立实例的出牌验证初始状态")
     parser.add_argument("--check-observation", action="store_true", help="对独立测试战斗执行可见性过滤检查")
     parser.add_argument("--check-hand", action="store_true", help="在读取手牌时检查英语正文、提示缓存与动态数值")
     parser.add_argument("--check-ui", action="store_true", help="在读取界面说明时检查英语文本、可见性和读取前后一致性")
@@ -41,6 +46,8 @@ def main():
     })
     if args.capture:
         environment["STS2_AGENT_TEST_CAPTURE"] = str(work / "observation.png")
+    if args.play_scenario:
+        environment["STS2_AGENT_TEST_PLAY_SCENARIO"] = args.play_scenario
     if args.check_observation:
         environment["STS2_AGENT_TEST_CHECKS"] = str(work / "observation-checks.json")
     if args.check_hand:

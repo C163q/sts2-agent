@@ -10,6 +10,7 @@ from map_details import map_arguments
 from pile_details import pile_arguments
 from player_output import player_result
 from selection_details import selection_arguments
+from card_play_details import card_play_arguments
 
 
 class GameTools:
@@ -34,6 +35,12 @@ class GameTools:
 
     async def inspect_selection(self):
         return await self._inspect("inspect_selection")
+
+    async def inspect_targets(self, arguments=None):
+        return await self._inspect("inspect_targets", arguments)
+
+    async def play_card(self, arguments=None):
+        return await self._action("play_card", arguments)
 
     async def set_selection_view(self, arguments=None):
         return await self._change_view("set_selection_view", arguments, validate_selection=True)
@@ -103,12 +110,17 @@ class GameTools:
             await anyio.lowlevel.checkpoint_if_cancelled()
             return payload
 
-    async def _inspect(self, operation):
+    async def _inspect(self, operation, arguments=None):
         async with self.lock:
             previous, self.snapshot_id = self.snapshot_id, None
+            if operation == "inspect_targets":
+                try:
+                    arguments = card_play_arguments(operation, arguments)
+                except ValueError:
+                    return player_result({"ok": False, "error": {"code": "invalid_request"}})
             if error := self._acquire_controller():
                 return error
-            payload, snapshot_id = await self._request(operation)
+            payload, snapshot_id = await self._request(operation, arguments=arguments)
             await anyio.lowlevel.checkpoint_if_cancelled()
             if previous == snapshot_id:
                 self.snapshot_id = previous
@@ -135,6 +147,12 @@ class GameTools:
 
     async def _action(self, operation, arguments=None, validate_selection=False):
         async with self.lock:
+            if operation == "play_card":
+                try:
+                    arguments = card_play_arguments(operation, arguments)
+                except ValueError:
+                    self.snapshot_id = None
+                    return player_result({"ok": False, "error": {"code": "invalid_request"}})
             if validate_selection:
                 try:
                     arguments = selection_arguments(operation, arguments)
@@ -170,7 +188,7 @@ class GameTools:
             if response["ok"] and "available_actions" in payload:
                 payload["available_actions"] = [
                     action for action in payload.get("available_actions", [])
-                    if action in {"end_turn", "select_card", "selection_option"}]
+                    if action in {"end_turn", "play_card", "select_card", "selection_option"}]
         except (OSError, ValueError, KeyError, TypeError, RuntimeError) as error:
             code = "timeout" if isinstance(error, TimeoutError) else "transport_error"
             logging.getLogger(__name__).warning("Game request failed: %s", error)

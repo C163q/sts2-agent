@@ -3,6 +3,7 @@ from mcp.types import Tool, ToolAnnotations
 from deck_details import DECK_SCHEMA
 from pile_details import PILE_SCHEMA
 from selection_details import CARD_SCHEMA, OPTION_SCHEMA, VIEW_SCHEMA
+from card_play_details import PLAY_SCHEMA, TARGET_SCHEMA
 
 
 SERVER_INSTRUCTIONS = (
@@ -24,6 +25,12 @@ def tool_definitions():
             "Read the current visible game state and prepare one action. Card effects and hover help require inspections.")),
         Tool(name="inspect_hand", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read all visible hand cards' descriptions; shared hover_tips link to card_ids.")),
+        Tool(name="inspect_targets", inputSchema=TARGET_SCHEMA, annotations=read_only, description=(
+            "Read a visible hand card's playability, target type, requires_target and targeting range. "
+            "No aiming or random resolution; the range does not predict every effect.")),
+        Tool(name="play_card", inputSchema=PLAY_SCHEMA, annotations=action, description=(
+            "Play one observed hand card. Supply a combatant target_id only when requires_target is true, even for one candidate. "
+            "Return events and stop at choices; use selection tools to continue.")),
         Tool(name="inspect_ui", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read visible combat UI and resource hover help, linked by sources. "
             "Cards, potions, relics and combatants have dedicated inspections.")),
