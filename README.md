@@ -44,5 +44,6 @@ cp .env.example .env
 - [项目审阅与重构](docs/research/2026-10-29-project-review.md)：输出边界、提示词、JSON 格式、官方实践及验证范围。
 - [结束回合事件与交互边界调研](docs/research/2026-10-29-end-turn-events.md)：战斗历史、RitsuLib 与选择暂停的设计依据；实际行为见 [接口说明](docs/development/end-turn.md)。
 - [选牌与查看战场验证](docs/research/2026-10-30-card-selection-validation.md)：候选、确认、跳过、第一回合遗物、信息边界及审阅修复。
+- [出牌与目标选择调研](docs/research/2026-10-30-card-play-targeting.md)：原生提交、目标合法性、后续选牌及候选工具方案，尚未实施。
 - [结束回合接入验证](docs/research/2026-10-29-end-turn-validation.md)：复杂机制、图形界面、真实 MCP 往返和未覆盖范围。
 - [最小往返验证](docs/research/2026-10-28-roundtrip-validation.md)、[基础画面核对](docs/research/2026-10-29-battle-observation-audit.md)、[地图 MCP 验证](docs/research/2026-10-29-mcp-map-inspection.md)：阶段性证据，当前接口以开发指南为准。
