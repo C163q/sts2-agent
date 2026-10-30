@@ -85,3 +85,5 @@ C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project spi
 ## 休息处接口
 
 `RestSiteInspection.cs` 判定房间可见性、按钮特有灰置状态与结算后就绪；`GameAdapter.RestSite.cs` 校验并点击原生选项或前进。`DeckUpgradeSelection.cs` 读取已显示的升级比较，与原有选择工具共用确认和取消流程。`rest_site_details.py` 维护外部字段与参数边界；`RestSiteFixture.cs` 和 `verify_rest_site.py` 仅用于隔离验证。完整契约见[休息处](rest-site.md)。
+
+宝箱房由 `TreasureInspection.cs` 读取当前原生开箱、遗物和按钮状态，`GameAdapter.Treasure.cs` 顺序点击开箱与领取；`RelicObtainTracker.cs` 仅观察原生 `RelicCmd.Obtain` 返回任务的完成状态，补上宝箱 UI 未等待遗物效果的边界，不替换游戏流程。`treasure_details.py` 校验外部字段，`TreasureFixture.cs` 与 `verify_treasure.py` 用于隔离验证。契约见[宝箱房](treasure.md)。

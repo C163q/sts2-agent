@@ -9,6 +9,7 @@ from selection_details import inspect_selection_details
 from card_play_details import target_details
 from reward_details import claim_reward_details, inspect_rewards_details
 from rest_site_details import inspect_rest_site_details
+from treasure_details import inspect_treasure_details
 
 
 def potion_details(state):
@@ -76,6 +77,8 @@ READERS = {
     'inspect_rewards': inspect_rewards_details,
     'inspect_rest_site': inspect_rest_site_details,
     'choose_rest_option': end_turn_details,
+    'loot_treasure': end_turn_details,
+    'inspect_treasure': inspect_treasure_details,
 }
 
 

@@ -14,6 +14,7 @@ from card_play_details import card_play_arguments
 from potion_action_details import potion_arguments
 from reward_details import reward_arguments
 from rest_site_details import rest_option_arguments
+from treasure_details import loot_arguments
 from screenshot_tool import ScreenshotError, ScreenshotStore, screenshot_arguments
 
 
@@ -40,6 +41,12 @@ class GameTools:
 
     async def inspect_rewards(self):
         return await self._inspect('inspect_rewards')
+
+    async def inspect_treasure(self):
+        return await self._inspect('inspect_treasure')
+
+    async def loot_treasure(self, arguments=None):
+        return await self._action('loot_treasure', arguments)
 
     async def inspect_rest_site(self):
         return await self._inspect('inspect_rest_site')
@@ -184,6 +191,12 @@ class GameTools:
     async def _action(self, operation, arguments=None, validate_selection=False):
         observed = self.snapshot_id
         async with self.lock:
+            if operation == 'loot_treasure':
+                try:
+                    arguments = loot_arguments(arguments)
+                except ValueError:
+                    self.snapshot_id = None
+                    return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
             if operation == 'choose_rest_option':
                 try:
                     arguments = rest_option_arguments(arguments)
@@ -264,7 +277,7 @@ class GameTools:
             if response["ok"] and "available_actions" in payload:
                 payload["available_actions"] = [
                     action for action in payload.get("available_actions", [])
-                    if action in {"end_turn", "play_card", "use_potion", "discard_potion", "select_card", "selection_option", 'claim_reward', 'proceed', 'choose_rest_option'}]
+                    if action in {"end_turn", "play_card", "use_potion", "discard_potion", "select_card", "selection_option", 'claim_reward', 'proceed', 'choose_rest_option', 'loot_treasure'}]
         except ScreenshotError as error:
             payload = player_result({"ok": False, "error": {"code": error.code}})
             snapshot_id = None

@@ -82,13 +82,16 @@ REWARDS = {'status': str, 'title': TEXT, 'items': nullable([REWARD_ITEM]),
 REST_OPTION = {'id': str, 'text': str, 'enabled': bool}
 REST_SITE = {'status': str, 'prompt': TEXT, 'description': TEXT, 'options': nullable([REST_OPTION]),
              'proceed': nullable({'text': str, 'enabled': bool})}
+TREASURE_RELIC = {'name': str, 'enabled': bool}
+TREASURE = {'status': str, 'chest': TEXT, 'relic': nullable(TREASURE_RELIC),
+            'proceed': nullable({'text': str, 'enabled': bool, 'skips_remaining': bool})}
 OBSERVATION = {
     "scene": str, "screen": SCREEN, "turn": NUMBER, "player": nullable(PLAYER),
     "enemies": nullable([ENEMY]), "top_bar": nullable(TOP_BAR),
     "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
     "available_actions": [str],
 }
-OPTIONAL_OBSERVATION = {"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE)}
+OPTIONAL_OBSERVATION = {"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE)}
 GAMEPLAY = {
     'reward_result': {'reward_id': int, 'status': str},
     **OBSERVATION, **OPTIONAL_OBSERVATION, "transition": TRANSITION, "hand": nullable([HAND_CARD]),
@@ -117,13 +120,15 @@ def gameplay_fields(state):
         shape = {**shape, 'rewards': {**REWARDS, 'items': [{**REWARD_ITEM, 'hover_tips': [TIP]}]}}
     if (state.get('rest_site') or {}).get('options') and 'description' in state['rest_site']['options'][0]:
         shape = {**shape, 'rest_site': {**REST_SITE, 'options': [{**REST_OPTION, 'description': str}]}}
+    if (state.get('treasure') or {}).get('relic') and 'description' in state['treasure']['relic']:
+        shape = {**shape, 'treasure': {**TREASURE, 'relic': nullable({**TREASURE_RELIC, 'description': str, 'hover_tips': [TIP]})}}
     return project(state, shape)
 
 
 def observation_details(state):
     result = project(state, {**OBSERVATION, **OPTIONAL_OBSERVATION})
     if (not set(OBSERVATION) <= result.keys() or "status" not in result["screen"]
-            or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards", 'rest_site')
+            or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards", 'rest_site', 'treasure')
             or result["screen"]["status"] not in ("visible", "covered", "hidden", "not_ready", "not_applicable")):
         raise ValueError("Invalid observation structure.")
     if result.get("selection") is not None:
@@ -138,6 +143,11 @@ def observation_details(state):
         result['rest_site'] = rest_site_details(result['rest_site'])
     elif result['scene'] == 'rest_site':
         raise ValueError('Missing rest site state.')
+    if result.get('treasure') is not None:
+        from treasure_details import treasure_details
+        result['treasure'] = treasure_details(result['treasure'])
+    elif result['scene'] == 'treasure':
+        raise ValueError('Missing treasure state.')
     return result
 
 
