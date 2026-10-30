@@ -42,7 +42,8 @@ internal sealed class CardSelection(Control owner, string kind, object key)
             {
                 NChooseACardSelectionScreen => "choose_one", NCardRewardSelectionScreen => "reward",
                 NSimpleCardSelectScreen => "grid", NCombatPileCardSelectScreen => "combat_pile",
-                NDeckCardSelectScreen => "deck", NCardGridSelectionScreen or NChooseABundleSelectionScreen => "unsupported",
+                NDeckCardSelectScreen => "deck", NDeckUpgradeSelectScreen => "deck_upgrade",
+                NCardGridSelectionScreen or NChooseABundleSelectionScreen => "unsupported",
                 _ => null
             };
             if (kind != null && overlay != null && GodotObject.IsInstanceValid(overlay) && overlay.IsNodeReady())
@@ -86,7 +87,8 @@ internal sealed class CardSelection(Control owner, string kind, object key)
     public string Status => !Exposed ? "covered" : !Supported ? "unsupported" : Peeking ? "battlefield" : "visible";
     public bool CanPeek => Supported && Exposed && Eye is { IsEnabled: true } && VisibleUi.OnScreen(Eye);
 
-    public bool InPreview => Kind == "deck" && VisibleUi.Shown(Owner.GetNodeOrNull<Control>("%PreviewContainer"));
+    public bool InPreview => Kind == "deck" && VisibleUi.Shown(Owner.GetNodeOrNull<Control>("%PreviewContainer"))
+        || DeckUpgradeSelection.Preview(this) != null;
 
     public NUpgradePreview? UpgradePreview => Kind == "hand_upgrade" && Field(Owner, "_upgradePreview") is NUpgradePreview preview
         && VisibleUi.Shown(preview) ? preview : null;
@@ -95,7 +97,7 @@ internal sealed class CardSelection(Control owner, string kind, object key)
         ? VisibleUi.Descendants<NCard>(preview.GetNode<Control>(side))
             .FirstOrDefault(card => CombatObservation.CardVisible(card)) : null;
 
-    public NCardHolder[] Holders => InPreview
+    public NCardHolder[] Holders => Kind == "deck_upgrade" && InPreview ? [] : InPreview
         ? VisibleUi.Descendants<NCardHolder>(Owner.GetNode<Control>("%PreviewContainer")).ToArray()
         : Kind == "hand_upgrade"
         ? VisibleUi.Descendants<NHandCardHolder>(((NPlayerHand)Owner).CardHolderContainer).Cast<NCardHolder>()
@@ -139,6 +141,9 @@ internal sealed class CardSelection(Control owner, string kind, object key)
             "hand" or "hand_upgrade" => new[] { ("confirm", "%SelectModeConfirmButton") },
             "deck" when InPreview => new[] { ("cancel_preview", "%PreviewCancel"), ("confirm", "%PreviewConfirm") },
             "deck" => new[] { ("cancel", "%Close"), ("confirm", "%Confirm") },
+            "deck_upgrade" when InPreview => new[] { ("cancel_preview", DeckUpgradeSelection.Preview(this)!.GetPath() + "/Cancel"),
+                ("confirm", DeckUpgradeSelection.Preview(this)!.GetPath() + "/Confirm") },
+            "deck_upgrade" => new[] { ("cancel", "%Close") },
             _ => new[] { ("confirm", "%Confirm") }
         };
         foreach (var (id, path) in paths)

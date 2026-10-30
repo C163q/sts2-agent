@@ -31,8 +31,8 @@ async def verify(args):
     async with stdio_client(parameters) as (read, write):
         async with ClientSession(read, write) as session:
             initialized = await session.initialize()
-            assert initialized.serverInfo.version == '0.17.0'
-            assert len((await session.list_tools()).tools) == 24
+            assert initialized.serverInfo.version == '0.18.0'
+            assert len((await session.list_tools()).tools) == 26
 
             async def call(name, arguments=None):
                 result = await session.call_tool(name, arguments or {})
@@ -116,7 +116,7 @@ async def verify(args):
             assert invalid['error']['code'] == 'invalid_request'
             generated = await call('capture_screenshot')
             assert Path(generated['path']).is_file()
-    print('PASS: 24 tools; main menu, combat, selection, battlefield, map, deck; native actions and capture permissions.')
+    print('PASS: 26 tools; main menu, combat, selection, battlefield, map, deck; native actions and capture permissions.')
 
 
 def main():

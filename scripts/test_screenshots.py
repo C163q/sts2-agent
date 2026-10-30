@@ -211,7 +211,7 @@ class ScreenshotStdioTests(unittest.IsolatedAsyncioTestCase):
                         await session.initialize()
                         listed = {tool.name for tool in (await session.list_tools()).tools}
                         self.assertEqual('capture_screenshot' in listed, enabled)
-                        self.assertEqual(len(listed), 24 if enabled else 23)
+                        self.assertEqual(len(listed), 26 if enabled else 25)
                         config.write_text(json.dumps({'screenshots': {'enabled': not enabled, 'directory': 'elsewhere'}}))
                         self.assertEqual(listed, {tool.name for tool in (await session.list_tools()).tools})
                         if not enabled:

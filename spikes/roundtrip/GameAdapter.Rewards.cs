@@ -17,15 +17,17 @@ internal sealed partial class GameAdapter
     {
         var selection = CardSelection.Current;
         var rewards = RewardInspection.Current;
+        var rest = RestSiteInspection.Current;
         var global = NRun.Instance?.GlobalUi;
         bool mapReady = global != null && MapView.Ready(global.MapScreen);
         bool manual = NModalContainer.Instance?.OpenModal != null || global?.CapstoneContainer.InUse == true
             || selection is { Supported: false, Exposed: true }
             || global?.Overlays.ScreenCount > 0 && !RunUi.OnlyRewardOverlays()
                 && (selection == null || !ReferenceEquals(global.Overlays.Peek(), selection.Owner))
-            || rewards == null && selection == null && !mapReady && RunUi.NonCombatVisible()
+            || rewards == null && rest == null && selection == null && !mapReady && RunUi.NonCombatVisible()
             || NGame.Instance?.MainMenu != null;
         bool ready = rewards != null && RewardInspection.Ready(rewards)
+            || rest != null && RestSiteInspection.Ready(rest)
             || mapReady;
         return RewardBoundary.Decide(RunUi.Transitioning(), manual, CardSelection.AwaitingInput, ready);
     }

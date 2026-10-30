@@ -81,3 +81,7 @@ C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project spi
 ## 奖励接口
 
 `RewardInspection.cs` 识别奖励 UI、覆盖状态和稳定 ID，`GameAdapter.Rewards.cs` 执行原生领取及跳过/前进，`RewardCompatibility.cs` 适配目标版本已核实的互斥奖励信号参数。`RewardBoundary.cs` 独立判定已支持交互与手动处理边界。`RewardFixture.cs` 只在隔离测试模式构造场景。外部 `reward_details.py` 维护参数、观察和领取结果校验；契约见[战后搜刮](rewards.md)。
+
+## 休息处接口
+
+`RestSiteInspection.cs` 判定房间可见性、按钮特有灰置状态与结算后就绪；`GameAdapter.RestSite.cs` 校验并点击原生选项或前进。`DeckUpgradeSelection.cs` 读取已显示的升级比较，与原有选择工具共用确认和取消流程。`rest_site_details.py` 维护外部字段与参数边界；`RestSiteFixture.cs` 和 `verify_rest_site.py` 仅用于隔离验证。完整契约见[休息处](rest-site.md)。

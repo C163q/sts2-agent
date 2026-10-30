@@ -7,6 +7,7 @@ from card_play_details import PLAY_SCHEMA, TARGET_SCHEMA
 from potion_action_details import POTION_SCHEMA, USE_SCHEMA
 from screenshot_tool import SCREENSHOT_SCHEMA
 from reward_details import CLAIM_SCHEMA
+from rest_site_details import REST_OPTION_SCHEMA
 
 
 SERVER_INSTRUCTIONS = (
@@ -34,8 +35,13 @@ def tool_definitions(*, screenshots_enabled=False):
             'Click one observed reward row by reward_id; choose the order yourself. Card rewards open selection tools. '
             'A full potion belt leaves the reward unclaimed; discard or use a potion separately if desired.')),
         Tool(name='proceed', inputSchema=NO_ARGUMENTS, annotations=action, description=(
-            'Click the visible rewards Skip/Proceed button; its text and skips_remaining describe the current action. '
+            'Click the visible rewards Skip/Proceed or rest-site Proceed button. '
             'Uses the native flow, which may open the map, resume an event, change act or finish the run.')),
+        Tool(name='inspect_rest_site', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
+            'Read visible rest-site options and their current hover descriptions, including disabled options.')),
+        Tool(name='choose_rest_option', inputSchema=REST_OPTION_SCHEMA, annotations=action, description=(
+            'Click one enabled rest-site option by its observed option_id. Some options take effect immediately; '
+            'card choices use selection tools. Smith previews require confirmation; use offered cancel buttons to go back.')),
         Tool(name="inspect_hand", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read all visible hand cards' descriptions; shared hover_tips link to card_ids.")),
         Tool(name="inspect_targets", inputSchema=TARGET_SCHEMA, annotations=read_only, description=(

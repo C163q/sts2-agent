@@ -1,6 +1,6 @@
 # 可选截图工具
 
-`capture_screenshot` 用于记录 LLM 调用工具时实际显示的游戏画面，方便与 JSON 观察、出牌结果和选牌页面比对。适用于 Mod `0.17.0`、MCP server `0.14.0`、Linux 游戏 `v0.107.1`。截图保持当前游戏语言及视口原始分辨率，输出为 PNG。
+`capture_screenshot` 用于记录 LLM 调用工具时实际显示的游戏画面，方便与 JSON 观察、出牌结果和选牌页面比对。适用于 Mod `0.22.0`、MCP server `0.18.0`、Linux 游戏 `v0.107.1`。截图保持当前游戏语言及视口原始分辨率，输出为 PNG。
 
 ## 启动配置
 
@@ -21,7 +21,7 @@ cp mcp-config.json.example mcp-config.json
 }
 ```
 
-MCP 启动时默认读取仓库根目录的 `mcp-config.json`，与启动进程的工作目录无关。默认文件不存在、没有 `screenshots` 或 `enabled=false` 时关闭；工具列表保持原有 23 个工具，调用截图工具会被拒绝。`enabled=true` 时增加截图工具，共 24 个。运行中不重新读取配置，修改后须重启 MCP 连接。
+MCP 启动时默认读取仓库根目录的 `mcp-config.json`，与启动进程的工作目录无关。默认文件不存在、没有 `screenshots` 或 `enabled=false` 时关闭；工具列表保持原有 25 个工具，调用截图工具会被拒绝。`enabled=true` 时增加截图工具，共 26 个。运行中不重新读取配置，修改后须重启 MCP 连接。
 
 `directory` 在启用时必填。绝对路径直接使用；相对路径以配置文件所在目录为基准，支持开头的 `~`，不展开 `$HOME` 等环境变量。首次保存时创建缺少的目录，PNG 使用当前 MCP 进程的文件权限保存。目录不可写或磁盘空间不足时返回保存错误。
 

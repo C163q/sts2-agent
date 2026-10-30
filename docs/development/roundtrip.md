@@ -62,7 +62,9 @@ python3 scripts/test_prepare_roundtrip.py
 | --- | --- |
 | `inspect_rewards` | 只读当前可浏览奖励及悬停说明 |
 | `claim_reward` | 带 `reward_id` 和 `expected_state`，点击一项奖励 |
-| `proceed` | 带 `expected_state`，点击当前奖励页跳过/前进 |
+| `proceed` | 带 `expected_state`，点击奖励页跳过/前进或休息处前进 |
+| `inspect_rest_site` | 只读当前休息处选项及动态说明 |
+| `choose_rest_option` | 带 `option_id` 和 `expected_state`，点击一个启用的休息处选项 |
 | `get_state` | 读取主菜单、战斗或[奖励](rewards.md)状态和 `available_actions`；其余场景归为 `loading_or_noncombat` |
 | `inspect_hand` | 只读、无须动作令牌；一次读取全部当前可见手牌的英语正文和悬停解释，格式见 [手牌详情](hand-inspection.md) |
 | `inspect_targets` | 参数 `card_id` 或 `potion_slot` 二选一，只读查询可见手牌或药水的可用性与目标范围，见 [出牌](card-play.md) 和 [药水](potion-actions.md) |

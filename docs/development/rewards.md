@@ -1,6 +1,6 @@
 # 战后搜刮与前进
 
-适用于 Mod `0.21.0`、MCP server `0.17.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。本接口逐项操作原生奖励界面，不选择地图节点。地图查看继续使用 `inspect_map` / `close_map`，卡牌奖励继续使用[选牌工具](card-selection.md)。
+适用于 Mod `0.22.0`、MCP server `0.18.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。本接口逐项操作原生奖励界面，不选择地图节点。地图查看继续使用 `inspect_map` / `close_map`，卡牌奖励继续使用[选牌工具](card-selection.md)。
 
 ## 观察与详情
 

@@ -53,6 +53,17 @@ internal sealed class SelectionInspection(CombatObservation observation)
             }
             result["upgrade_preview"] = preview;
         }
+        if (selection.Kind == "deck_upgrade")
+            result["upgrade_previews"] = !visible ? Array.Empty<object>() : DeckUpgradeSelection.Previews(selection).Select(pair =>
+            {
+                var before = pair.before == null ? new Dictionary<string, object?> { ["name"] = null, ["description"] = null }
+                    : Card(pair.before, full, expanded: true);
+                var after = Card(pair.after, full, expanded: true);
+                before["id"] = after["id"] = observation.CardId(pair.original);
+                if (VisibleUi.Text(pair.after, "%DescriptionLabel") != null)
+                    after["description"] = EnglishCardText.Read(() => EnglishCardText.Plain(pair.after.Model!.GetDescriptionForUpgradePreview()));
+                return (object)new { before, after };
+            }).ToArray();
         return result;
     }
 

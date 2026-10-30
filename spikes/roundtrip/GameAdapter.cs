@@ -40,6 +40,8 @@ internal sealed partial class GameAdapter(bool testMode)
     private int selectionGeneration;
     private PotionModel?[] lastPotions = [];
     private int potionGeneration;
+    private object? lastRestSite;
+    private int restSiteGeneration;
 
     private static Player? LocalPlayer => LocalContext.GetMe(CombatManager.Instance.DebugOnlyGetState())
         ?? LocalContext.GetMe(RunManager.Instance.DebugOnlyGetState());
@@ -82,6 +84,11 @@ internal sealed partial class GameAdapter(bool testMode)
         }
         observation.Synchronize(combat, player);
         rewardInspection.Synchronize();
+        if (!ReferenceEquals(RestSiteInspection.Current, lastRestSite))
+        {
+            lastRestSite = RestSiteInspection.Current;
+            restSiteGeneration++;
+        }
         var selection = CardSelection.Current;
         if (!ReferenceEquals(selection?.Key, lastSelection))
         {
@@ -90,6 +97,7 @@ internal sealed partial class GameAdapter(bool testMode)
         }
         string scene = CombatManager.Instance.IsInProgress ? "combat"
             : RewardInspection.Current != null ? "rewards"
+            : RestSiteInspection.Current != null ? "rest_site"
             : NGame.Instance?.MainMenu != null ? "main_menu" : "loading_or_noncombat";
         List<string> actions = [];
         if (CanEndTurn())
@@ -113,6 +121,13 @@ internal sealed partial class GameAdapter(bool testMode)
         }
         if (scene == "loading_or_noncombat" && RunUi.NonCombatVisible()) visibility = "visible";
         if (scene == "rewards") visibility = RewardInspection.Exposed(RewardInspection.Current!) ? "visible" : "covered";
+        if (scene == "rest_site") visibility = RestSiteInspection.Exposed(RestSiteInspection.Current!) ? "visible" : "covered";
+        if (RestSiteInspection.Current is { } rest && RestSiteInspection.Ready(rest)
+            && RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
+        {
+            if (RestSiteInspection.Buttons(rest).Any(RestSiteInspection.Clickable)) actions.Add("choose_rest_option");
+            if (RestSiteInspection.Proceed(rest)?.IsEnabled == true) actions.Add("proceed");
+        }
         if (RewardInspection.Current is { } rewards && RewardInspection.Ready(rewards)
             && RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
         {
@@ -121,7 +136,8 @@ internal sealed partial class GameAdapter(bool testMode)
         }
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 6, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 7, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            rest_site_generation = restSiteGeneration,
             reward_generation = rewardInspection.Generation,
             selection_generation = selectionGeneration, scene,
             screen = CardView.Screen(visibility),
@@ -132,6 +148,7 @@ internal sealed partial class GameAdapter(bool testMode)
             buttons = scene == "combat" ? observation.Buttons() : null,
             selection = new SelectionInspection(observation).Read(selection),
             rewards = rewardInspection.Read(),
+            rest_site = RestSiteInspection.Read(),
             available_actions = actions
         });
         string snapshotId = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(body)));
@@ -141,7 +158,7 @@ internal sealed partial class GameAdapter(bool testMode)
     public async Task<string> Execute(Request request)
     {
         string before = Observe();
-        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward")
+        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
@@ -166,6 +183,9 @@ internal sealed partial class GameAdapter(bool testMode)
             }));
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_REST_SCENARIO") != null
+            && request.Operation == "check_test_rest_site" && LocalPlayer != null)
+            return Success(request.Id, JsonSerializer.Serialize(RestSiteFixture.Read(LocalPlayer)));
         if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_REWARD_SCENARIO") != null
             && request.Operation == "check_test_rewards" && LocalPlayer != null)
             return Success(request.Id, JsonSerializer.Serialize(RewardFixture.Read(LocalPlayer)));
@@ -182,6 +202,9 @@ internal sealed partial class GameAdapter(bool testMode)
         if (request.Operation is "use_potion" or "discard_potion" || request.Operation == "inspect_targets"
             && request.Arguments is { } targetArguments && targetArguments.TryGetProperty("potion_slot", out _))
             return await PotionRequest(request, document.RootElement);
+        if (request.Operation is "inspect_rest_site" or "choose_rest_option"
+            || request.Operation == "proceed" && RewardInspection.Current == null && RestSiteInspection.Current != null)
+            return await RestSiteRequest(request, document.RootElement);
         if (request.Operation is "inspect_rewards" or "claim_reward" or "proceed")
             return await RewardRequest(request, document.RootElement);
         if (request.Operation == "check_test_play_state" && testMode
@@ -405,6 +428,8 @@ internal sealed partial class GameAdapter(bool testMode)
                 await PotionFixture.Configure(potionScenario, LocalPlayer!);
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_REWARD_SCENARIO") is { } rewardScenario)
                 await RewardFixture.Configure(rewardScenario, LocalPlayer!, ObservationFrame);
+            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_REST_SCENARIO") is { } restScenario)
+                await RestSiteFixture.Configure(restScenario, LocalPlayer!, ObservationFrame);
             // Debug room entry bypasses the normal map-travel disabling step.
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_MAP_CHECKS") != null)
             {

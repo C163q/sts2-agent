@@ -64,7 +64,7 @@ SELECTION = {
     "selected_ids": nullable([int]), "cards": nullable([SELECTION_CARD]),
     "options": [SELECTION_OPTION], "can_view_battlefield": bool,
 }
-SELECTION_OUTPUT = {**SELECTION, "upgrade_preview": nullable(UPGRADE_PREVIEW)}
+SELECTION_OUTPUT = {**SELECTION, "upgrade_preview": nullable(UPGRADE_PREVIEW), "upgrade_previews": [UPGRADE_PREVIEW]}
 EVENT_ENTITY = {"id": int, "kind": str, "name": TEXT}
 TARGET_ENTITY = {**EVENT_ENTITY, "id": frozenset({int, str})}
 POTION_REF = {"slot_index": int, "name": TEXT}
@@ -79,13 +79,16 @@ TRANSITION = {"stop_reason": str, "complete": bool, "events": [EVENT]}
 REWARD_ITEM = {'id': int, 'type': str, 'text': str, 'enabled': bool, 'linked_group': NUMBER}
 REWARDS = {'status': str, 'title': TEXT, 'items': nullable([REWARD_ITEM]),
            'proceed': nullable({'text': str, 'enabled': bool, 'skips_remaining': bool})}
+REST_OPTION = {'id': str, 'text': str, 'enabled': bool}
+REST_SITE = {'status': str, 'prompt': TEXT, 'description': TEXT, 'options': nullable([REST_OPTION]),
+             'proceed': nullable({'text': str, 'enabled': bool})}
 OBSERVATION = {
     "scene": str, "screen": SCREEN, "turn": NUMBER, "player": nullable(PLAYER),
     "enemies": nullable([ENEMY]), "top_bar": nullable(TOP_BAR),
     "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
     "available_actions": [str],
 }
-OPTIONAL_OBSERVATION = {"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS)}
+OPTIONAL_OBSERVATION = {"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE)}
 GAMEPLAY = {
     'reward_result': {'reward_id': int, 'status': str},
     **OBSERVATION, **OPTIONAL_OBSERVATION, "transition": TRANSITION, "hand": nullable([HAND_CARD]),
@@ -112,13 +115,15 @@ def gameplay_fields(state):
         shape = {**GAMEPLAY, "selection": {**SELECTION_OUTPUT, "cards": [HAND_CARD]}}
     if (state.get('rewards') or {}).get('items') and 'hover_tips' in state['rewards']['items'][0]:
         shape = {**shape, 'rewards': {**REWARDS, 'items': [{**REWARD_ITEM, 'hover_tips': [TIP]}]}}
+    if (state.get('rest_site') or {}).get('options') and 'description' in state['rest_site']['options'][0]:
+        shape = {**shape, 'rest_site': {**REST_SITE, 'options': [{**REST_OPTION, 'description': str}]}}
     return project(state, shape)
 
 
 def observation_details(state):
     result = project(state, {**OBSERVATION, **OPTIONAL_OBSERVATION})
     if (not set(OBSERVATION) <= result.keys() or "status" not in result["screen"]
-            or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards")
+            or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards", 'rest_site')
             or result["screen"]["status"] not in ("visible", "covered", "hidden", "not_ready", "not_applicable")):
         raise ValueError("Invalid observation structure.")
     if result.get("selection") is not None:
@@ -128,13 +133,18 @@ def observation_details(state):
         result['rewards'] = rewards_details(result['rewards'])
     elif result['scene'] == 'rewards':
         raise ValueError('Missing rewards state.')
+    if result.get('rest_site') is not None:
+        from rest_site_details import rest_site_details
+        result['rest_site'] = rest_site_details(result['rest_site'])
+    elif result['scene'] == 'rest_site':
+        raise ValueError('Missing rest site state.')
     return result
 
 
 def selection_details(value):
     result = project(value, SELECTION_OUTPUT)
     if (not set(SELECTION) <= result.keys() or result["type"] not in
-            {"choose_one", "reward", "grid", "combat_pile", "deck", "hand", "hand_upgrade", "unsupported"}
+            {"choose_one", "reward", "grid", "combat_pile", "deck", "deck_upgrade", "hand", "hand_upgrade", "unsupported"}
             or result["status"] not in {"visible", "battlefield", "covered", "unsupported"}):
         raise ValueError("Invalid card selection.")
     preview = result.get("upgrade_preview")
@@ -149,9 +159,24 @@ def selection_details(value):
             raise ValueError("Invalid upgrade preview.")
     elif preview is not None:
         raise ValueError("Unexpected upgrade preview.")
+    previews = result.get('upgrade_previews', [])
+    if result['type'] == 'deck_upgrade':
+        if 'upgrade_previews' not in result:
+            raise ValueError('Missing deck upgrade previews.')
+        preview_ids = []
+        for pair in previews:
+            if (set(pair) != set(UPGRADE_PREVIEW) or any(not {'id', 'name', 'description'} <= c.keys() or c['id'] < 0
+                                                       for c in pair.values())
+                    or pair['before']['id'] != pair['after']['id']):
+                raise ValueError('Invalid deck upgrade preview identity.')
+            preview_ids.append(pair['before']['id'])
+        if len(set(preview_ids)) != len(preview_ids) or previews and set(preview_ids) != set(result['selected_ids'] or []):
+            raise ValueError('Invalid deck upgrade preview selection.')
+    elif previews:
+        raise ValueError('Unexpected deck upgrade previews.')
     if result["status"] != "visible":
         if (any(result[key] is not None for key in
-                ("prompt", "min_select", "max_select", "selected_ids", "cards")) or result["options"] or preview is not None):
+                ("prompt", "min_select", "max_select", "selected_ids", "cards")) or result["options"] or preview is not None or previews):
             raise ValueError("Hidden selection contents.")
         return result
     minimum, maximum = result["min_select"], result["max_select"]

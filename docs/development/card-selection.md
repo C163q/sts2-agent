@@ -1,6 +1,6 @@
 # 选牌与查看战场
 
-适用于 Mod `0.21.0`、MCP server `0.17.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
+适用于 Mod `0.22.0`、MCP server `0.18.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
 
 ## 观察与信息范围
 
@@ -8,13 +8,14 @@
 
 | 字段 | 含义 |
 | --- | --- |
-| `type` | `choose_one`、`reward`、`grid`、`combat_pile`、`deck`、`hand`、`hand_upgrade` 或 `unsupported` |
+| `type` | `choose_one`、`reward`、`grid`、`combat_pile`、`deck`、`hand`、`hand_upgrade`、`deck_upgrade` 或 `unsupported` |
 | `status` | `visible` 为选牌页面；`battlefield` 为点击眼睛后查看战场；`covered` 为被其他页面覆盖；`unsupported` 为尚未接通的选择类型 |
 | `prompt`、`min_select`、`max_select` | 当前选择提示与数量范围；隐藏时为 `null` |
 | `cards` | 当前画面可见候选，包含稳定整数 `id`；已经展开显示的牌面可附正文，手牌摘要不自动展开正文 |
 | `selected_ids` | 当前已选项目；隐藏时为 `null` |
 | `options` | 当前显示的按钮及 `id`、英语 `text`、`enabled`；未启用不能点击 |
 | `can_view_battlefield` | 原生眼睛当前可用，可显式切换视图 |
+| `upgrade_previews` | 仅 `deck_upgrade` 提供；已经显示的单牌或多牌升级比较，未进入预览或隐藏时为空列表 |
 | `upgrade_preview` | 仅 `hand_upgrade` 提供；已显示的升级前后牌面 `before`、`after`，未选择或隐藏时为 `null` |
 
 `cards` 在查看战场、被覆盖或未支持时为 `null`，与没有候选的空列表不同。网格可能滚动，基础观察不补齐屏幕外候选；`inspect_selection()` 显式读取整个可浏览候选列表、正文及共享 `hover_tips`，不会展开尚未生成的结果，也不会切换视图。共享解释通过整数 `card_ids` 引用候选。手牌选择沿用战斗手牌 ID。
@@ -45,11 +46,11 @@
 
 ## 动作后的结算
 
-选牌动作与 `end_turn` 使用同一可感知事件记录，返回基本观察和 `transition`。点击多选但尚未确认时停在 `choice_required`；真正提交后等待后续选择、玩家可行动、胜负或超时。非战斗选择回到搜刮时使用 `action_completed`，其余非战斗选择完成使用 `selection_resolved`。事件字段、`complete` 和超时恢复规则见 [结束回合](end-turn.md)。连续选择每次单独操作，不自动代选，也不会因等待期间出现下一次选择而一直挂起。
+选牌动作与 `end_turn` 使用同一可感知事件记录，返回基本观察和 `transition`。点击多选但尚未确认时停在 `choice_required`；真正提交后等待后续选择、玩家可行动、胜负或超时。非战斗选择回到搜刮时使用 `action_completed`，返回[休息处](rest-site.md)时也使用 `action_completed`；其余非战斗选择完成使用 `selection_resolved`。事件字段、`complete` 和超时恢复规则见 [结束回合](end-turn.md)。连续选择每次单独操作，不自动代选，也不会因等待期间出现下一次选择而一直挂起。
 
 选择状态直接来自界面，不要求已经完成过一次回合。选择悖论在第一回合开始时也可识别并操作。暴政消耗和本版本计划妥当保留手牌使用同一手牌接口。
 
-当前接通小型候选、卡牌奖励、简单网格、战斗牌堆选择、普通牌组选择、普通手牌选择以及手牌升级选择。专门的牌组升级、变化、附魔和卡牌包选择仍返回 `unsupported`，不提供动作；战斗与通用选择把它作为已识别边界返回 `choice_required`，[搜刮动作](rewards.md) 则返回 `manual_input_required`；任意第三方页面仍需额外适配。静态遮挡按已核实的原生页面判断，不能保证覆盖任意像素级遮挡。声音、其他游戏版本与完整自动游玩不属于已验证范围。
+当前接通小型候选、卡牌奖励、简单网格、战斗牌堆选择、普通牌组选择、普通手牌选择以及手牌升级选择。[休息处锻造](rest-site.md#锻造与烹饪选牌)的牌组升级使用 `deck_upgrade`，`upgrade_previews` 提供已经显示的单牌或多牌比较。专门的变化、附魔和卡牌包选择仍返回 `unsupported`，不提供动作；战斗与通用选择把它作为已识别边界返回 `choice_required`，[搜刮动作](rewards.md) 则返回 `manual_input_required`；任意第三方页面仍需额外适配。静态遮挡按已核实的原生页面判断，不能保证覆盖任意像素级遮挡。声音、其他游戏版本与完整自动游玩不属于已验证范围。
 
 手牌升级的真实图形 MCP 回归须使用新建的隔离实例：先按[构建与运行](roundtrip.md)准备目录，运行 `python3 scripts/run_roundtrip.py --windowed --play-scenario armaments`，再在另一终端运行 `.tmp/mcp-venv/bin/python scripts/verify_hand_upgrade.py --report .tmp/upgrade-check/run.json`。报告目录不能复用已有截图文件。检查会出牌、选牌、取消、切换视图并确认，不能指向正式对局。
 
