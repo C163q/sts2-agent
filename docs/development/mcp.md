@@ -26,10 +26,13 @@ flowchart LR
 
 ## 工具范围
 
-默认公开 20 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 21 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 表示当前可执行的游戏动作，不是 MCP 工具目录。
+默认公开 23 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 24 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 表示当前可执行的游戏动作，不是 MCP 工具目录。
 
 | 工具 | 用途 |
 | --- | --- |
+| `inspect_rewards()` | [当前可浏览奖励及悬停说明](rewards.md) |
+| `claim_reward(reward_id)` | 逐项点击奖励，后续选牌复用现有选择工具 |
+| `proceed()` | 点击奖励页当前原生跳过/前进按钮 |
 | `get_observation()` | 读取当前可见基础状态，刷新当前动作令牌 |
 | `inspect_hand()` | [全部可见手牌正文及共享解释](hand-inspection.md) |
 | `inspect_targets(card_id 或 potion_slot)` | 查询[手牌](card-play.md)或[药水](potion-actions.md)可用性、是否须指定目标及范围，不进入瞄准或抽随机数 |
@@ -56,7 +59,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.20.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.16.0`，支持[手牌升级选择](card-selection.md#手牌升级)及复用成功动作返回的观察；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。首次使用须匹配 Mod 与外部脚本；本次 MCP `0.15.0 → 0.16.0` 仅更新外部层，无须替换 Mod，重连 MCP 即可。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.21.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.17.0`，支持[手牌升级选择](card-selection.md#手牌升级)及复用成功动作返回的观察；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。首次使用须匹配 Mod 与外部脚本；本次奖励功能须同时更新 Mod 和 MCP，并完整重启游戏、重连 MCP。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -88,7 +91,7 @@ codex mcp add sts2 -- "$PWD/.tmp/mcp-venv/bin/python" "$PWD/scripts/mcp_server.p
 codex mcp list
 ```
 
-重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation`、`inspect_hand`、`inspect_ui`、`inspect_potions`、`inspect_combatants`、`inspect_relics`、`inspect_deck`、`inspect_pile`、`close_card_view`、`inspect_map`、`close_map`、`inspect_selection`、`select_card`、`selection_option`、`set_selection_view`、`inspect_targets`、`play_card`、`use_potion`、`discard_potion` 和 `end_turn`；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
+重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation`、`inspect_hand`、`inspect_ui`、`inspect_potions`、`inspect_combatants`、`inspect_relics`、`inspect_deck`、`inspect_pile`、`close_card_view`、`inspect_map`、`close_map`、`inspect_selection`、`select_card`、`selection_option`、`set_selection_view`、`inspect_targets`、`play_card`、`use_potion`、`discard_potion`、`end_turn`、`inspect_rewards`、`claim_reward` 和 `proceed`；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
 
 对应的 TOML 配置示例为：
 
@@ -129,7 +132,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 成功时 `structuredContent` 是玩法对象，`content` 同时提供相同对象的紧凑 JSON 文本。正文中的换行和空格保留；终端与证据文件使用两空格缩进。对象本身没有排版属性，客户端决定如何转换为模型输入。协议、文本、显示的区别及官方依据见 [项目审阅](../research/2026-10-29-project-review.md#mcp-json-与官方实践)。
 
-输出递归过滤未知字段，不转发原始响应包装、状态令牌或测试入口；`available_actions` 只保留已公开的 `end_turn`、`play_card`、`use_potion`、`discard_potion`、`select_card` 和 `selection_option`。MCP 对基础观察和动作结果检查全部顶层观察字段，对已提供的嵌套字段检查类型；错误结果不保存动作令牌。原始文件协议见 [原型接口](roundtrip.md#原型接口)。
+输出递归过滤未知字段，不转发原始响应包装、状态令牌或测试入口；`available_actions` 只保留已公开的 `end_turn`、`play_card`、`use_potion`、`discard_potion`、`select_card`、`selection_option`、`claim_reward` 和 `proceed`。MCP 对基础观察和动作结果检查全部顶层观察字段，对已提供的嵌套字段检查类型；错误结果不保存动作令牌。原始文件协议见 [原型接口](roundtrip.md#原型接口)。
 
 业务错误为 `isError: true`，包含 `error.code/message/recovery`；执行结果未知时另带 `outcome: unknown`。内部异常写入标准错误，不交给模型；标准输出专用于 MCP 消息。
 

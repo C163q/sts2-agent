@@ -2,6 +2,7 @@ using Godot;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
+using MegaCrit.Sts2.Core.Nodes.Cards;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Runs;
 
@@ -9,6 +10,18 @@ namespace Sts2Agent;
 
 internal static class RunUi
 {
+    public static bool CardPreviewsPending() => NRun.Instance is { } run
+        && new Node[] { run.GlobalUi.CardPreviewContainer, run.GlobalUi.MessyCardPreviewContainer,
+            run.GlobalUi.EventCardPreviewContainer, run.GlobalUi.GridCardPreviewContainer }
+            .Any(container => VisibleUi.Descendants<NCard>(container).Any(VisibleUi.Shown));
+
+    public static bool OnlyRewardOverlays()
+    {
+        var overlays = NRun.Instance?.GlobalUi.Overlays;
+        return overlays?.ScreenCount > 0 && overlays.Peek() is NRewardsScreen
+            && VisibleUi.Descendants<NRewardsScreen>(overlays).Count(s => !s.IsQueuedForDeletion()) == overlays.ScreenCount;
+    }
+
     public static bool Transitioning()
     {
         var game = NGame.Instance;
@@ -26,7 +39,7 @@ internal static class RunUi
         return !CombatManager.Instance.IsInProgress && RunManager.Instance.IsInProgress
             && game != null && game.MainMenu == null && VisibleUi.Shown(run) && global?.IsNodeReady() == true
             && !global.CapstoneContainer.InUse && (global.Overlays.ScreenCount == 0
-                || global.Overlays.ScreenCount == 1 && global.Overlays.Peek() is NRewardsScreen rewards && VisibleUi.Shown(rewards))
+                || OnlyRewardOverlays() && global.Overlays.Peek() is NRewardsScreen rewards && VisibleUi.Shown(rewards))
             && !global.MapScreen.IsTraveling && NModalContainer.Instance?.OpenModal == null
             && !VisibleUi.Shown(game.InspectCardScreen) && !VisibleUi.Shown(game.InspectRelicScreen)
             && !Transitioning();

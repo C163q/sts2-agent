@@ -7,6 +7,7 @@ from relic_details import relic_details
 from transition_details import end_turn_details
 from selection_details import inspect_selection_details
 from card_play_details import target_details
+from reward_details import claim_reward_details, inspect_rewards_details
 
 
 def potion_details(state):
@@ -69,6 +70,9 @@ READERS = {
     "play_card": end_turn_details,
     "use_potion": end_turn_details,
     "discard_potion": end_turn_details,
+    'claim_reward': claim_reward_details,
+    'proceed': end_turn_details,
+    'inspect_rewards': inspect_rewards_details,
 }
 
 

@@ -95,6 +95,7 @@ class ActionObservationTests(unittest.IsolatedAsyncioTestCase):
                  ('player_ready', False, lambda state: None), ('action_canceled', True, lambda state: None),
                  ('combat_won', True, lambda state: None), ('combat_lost', True, lambda state: None),
                  ('selection_resolved', True, lambda state: None),
+                 ('manual_input_required', True, lambda state: None),
                  ('player_ready', True, lambda state: state.update(available_actions=[])),
                  ('player_ready', True, lambda state: state.update(screen={'status': 'covered'})),
                  ('player_ready', True, lambda state: state.update(selection=selection('covered'))),

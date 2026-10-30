@@ -36,3 +36,11 @@ Check(!Sample("combat_won", "won", true, 2400) && Sample("combat_won", "won", tr
     "combat outcome does not wait for gameplay card motion");
 Check(!Sample("action_completed", "reward", true, 2700) && !Sample("action_completed", "reward", true, 3700),
     "noncombat potion completion waits for pending card motion");
+
+Check(RewardBoundary.Decide(false, true, true, false) == "manual_input_required", "unsupported selection is manual input");
+Check(RewardBoundary.Decide(false, true, false, false) == "manual_input_required", "unknown reward overlay does not time out");
+Check(RewardBoundary.Decide(false, true, false, true) == "manual_input_required", "unsupported parent room does not authorize actions");
+Check(RewardBoundary.Decide(true, true, false, false) == null, "transition is not a manual input screen");
+Check(RewardBoundary.Decide(false, false, true, false) == "choice_required", "supported reward selection remains interactive");
+Check(RewardBoundary.Decide(false, false, false, true) == "action_completed", "supported reward or map is a completion boundary");
+Check(RewardBoundary.Decide(false, false, false, false) == null, "unready reward UI keeps settling");

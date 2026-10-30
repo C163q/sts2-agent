@@ -30,7 +30,7 @@ internal static class MapView
             return false;
         if (global.CapstoneContainer.InUse && !(allowCardView && CardPage != null))
             return false;
-        bool rewardsOnly = global.Overlays.ScreenCount == 1 && global.Overlays.Peek() is NRewardsScreen;
+        bool rewardsOnly = RunUi.OnlyRewardOverlays();
         return (global.Overlays.ScreenCount == 0 || rewardsOnly || CardSelection.BattlefieldOverlay) && NModalContainer.Instance?.OpenModal == null
             && !VisibleUi.Shown(game.InspectCardScreen) && !VisibleUi.Shown(game.InspectRelicScreen)
             && !game.Transition.InTransition

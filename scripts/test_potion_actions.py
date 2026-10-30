@@ -21,7 +21,7 @@ class PotionBoundaryTests(unittest.TestCase):
         tools = {tool.name: tool for tool in tool_definitions()}
         self.assertIn('use_potion', tools)
         self.assertIn('discard_potion', tools)
-        self.assertEqual(len(tools), 20)
+        self.assertEqual(len(tools), 23)
         self.assertTrue(tools['inspect_targets'].annotations.readOnlyHint)
         for name in ('use_potion', 'discard_potion'):
             self.assertFalse(tools[name].annotations.idempotentHint)

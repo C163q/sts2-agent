@@ -76,14 +76,18 @@ EVENT = {
     "name": TEXT, "autoplay": bool, "change": str, "potion": POTION_REF,
 }
 TRANSITION = {"stop_reason": str, "complete": bool, "events": [EVENT]}
+REWARD_ITEM = {'id': int, 'type': str, 'text': str, 'enabled': bool, 'linked_group': NUMBER}
+REWARDS = {'status': str, 'title': TEXT, 'items': nullable([REWARD_ITEM]),
+           'proceed': nullable({'text': str, 'enabled': bool, 'skips_remaining': bool})}
 OBSERVATION = {
     "scene": str, "screen": SCREEN, "turn": NUMBER, "player": nullable(PLAYER),
     "enemies": nullable([ENEMY]), "top_bar": nullable(TOP_BAR),
     "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
     "available_actions": [str],
 }
-OPTIONAL_OBSERVATION = {"selection": nullable(SELECTION_OUTPUT)}
+OPTIONAL_OBSERVATION = {"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS)}
 GAMEPLAY = {
+    'reward_result': {'reward_id': int, 'status': str},
     **OBSERVATION, **OPTIONAL_OBSERVATION, "transition": TRANSITION, "hand": nullable([HAND_CARD]),
     "selection_view": str,
     "hover_tips": [{**TIP, "sources": [str]}], "slot_tip": TIP,
@@ -106,17 +110,24 @@ def gameplay_fields(state):
     shape = GAMEPLAY
     if state.get("scene") == "card_selection":
         shape = {**GAMEPLAY, "selection": {**SELECTION_OUTPUT, "cards": [HAND_CARD]}}
+    if (state.get('rewards') or {}).get('items') and 'hover_tips' in state['rewards']['items'][0]:
+        shape = {**shape, 'rewards': {**REWARDS, 'items': [{**REWARD_ITEM, 'hover_tips': [TIP]}]}}
     return project(state, shape)
 
 
 def observation_details(state):
     result = project(state, {**OBSERVATION, **OPTIONAL_OBSERVATION})
     if (not set(OBSERVATION) <= result.keys() or "status" not in result["screen"]
-            or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat")
+            or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards")
             or result["screen"]["status"] not in ("visible", "covered", "hidden", "not_ready", "not_applicable")):
         raise ValueError("Invalid observation structure.")
     if result.get("selection") is not None:
         result["selection"] = selection_details(result["selection"])
+    if result.get('rewards') is not None:
+        from reward_details import rewards_details
+        result['rewards'] = rewards_details(result['rewards'])
+    elif result['scene'] == 'rewards':
+        raise ValueError('Missing rewards state.')
     return result
 
 

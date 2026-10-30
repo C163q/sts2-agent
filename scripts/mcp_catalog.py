@@ -6,6 +6,7 @@ from selection_details import CARD_SCHEMA, OPTION_SCHEMA, VIEW_SCHEMA
 from card_play_details import PLAY_SCHEMA, TARGET_SCHEMA
 from potion_action_details import POTION_SCHEMA, USE_SCHEMA
 from screenshot_tool import SCREENSHOT_SCHEMA
+from reward_details import CLAIM_SCHEMA
 
 
 SERVER_INSTRUCTIONS = (
@@ -27,6 +28,14 @@ def tool_definitions(*, screenshots_enabled=False):
     definitions = [
         Tool(name="get_observation", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read the current visible game state and refresh the action observation. Card effects and hover help require inspections.")),
+        Tool(name='inspect_rewards', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
+            'Read the current browsable reward rows and their hover help. Does not reveal unopened card reward candidates.')),
+        Tool(name='claim_reward', inputSchema=CLAIM_SCHEMA, annotations=action, description=(
+            'Click one observed reward row by reward_id; choose the order yourself. Card rewards open selection tools. '
+            'A full potion belt leaves the reward unclaimed; discard or use a potion separately if desired.')),
+        Tool(name='proceed', inputSchema=NO_ARGUMENTS, annotations=action, description=(
+            'Click the visible rewards Skip/Proceed button; its text and skips_remaining describe the current action. '
+            'Uses the native flow, which may open the map, resume an event, change act or finish the run.')),
         Tool(name="inspect_hand", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read all visible hand cards' descriptions; shared hover_tips link to card_ids.")),
         Tool(name="inspect_targets", inputSchema=TARGET_SCHEMA, annotations=read_only, description=(

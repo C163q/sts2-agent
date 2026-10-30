@@ -46,7 +46,7 @@ internal static class CardView
             _ => null
         };
         if (view == null && NRun.Instance?.GlobalUi.MapScreen.IsOpen == true
-            && CombatObservation.Status(allowMap: true) == "visible")
+            && MapView.Clear())
             view = "map";
         if (view != null) result["view"] = view;
         return result;

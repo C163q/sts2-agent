@@ -1,6 +1,6 @@
 # 战斗观察 JSON
 
-适用于 Linux 游戏 `v0.107.1` 与 Mod `0.20.0`。底层观察结构版本为 `5`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+适用于 Linux 游戏 `v0.107.1` 与 Mod `0.21.0`。底层观察结构版本为 `6`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -18,7 +18,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state > .tmp/liv
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 ```
 
-`--raw` 保留原始文件协议：成功为 `id/ok/state`，`state` 内保留 `snapshot_id/schema_version/language/session/combat_generation/ui_generation/selection_generation/potion_generation`；失败为 `id/ok/error`。Python 的 `Client.call()` 同样返回原始响应，`player_result(response)` 产生面向 LLM 的结果，不改写原响应。外部客户端必须自行保存最近的原始令牌，动作仍带 `expected_state` 校验；省略 LLM 可见令牌不等于绕过校验。[本地 MCP](mcp.md) 复用同一玩法输出转换。
+`--raw` 保留原始文件协议：成功为 `id/ok/state`，`state` 内保留 `snapshot_id/schema_version/language/session/combat_generation/ui_generation/selection_generation/potion_generation/reward_generation`；失败为 `id/ok/error`。Python 的 `Client.call()` 同样返回原始响应，`player_result(response)` 产生面向 LLM 的结果，不改写原响应。外部客户端必须自行保存最近的原始令牌，动作仍带 `expected_state` 校验；省略 LLM 可见令牌不等于绕过校验。[本地 MCP](mcp.md) 复用同一玩法输出转换。
 
 玩法输出按声明的结构递归投影，未知嵌套字段不会转发；基础观察的 `player.hand` 不包含正文或悬停解释。已提供字段须符合对应类型，布尔值不能代替数字。MCP 对基础观察和动作结果另检查全部顶层观察字段，格式错误返回 `transport_error`，不保留动作令牌。这个检查不证明游戏采样本身符合可见信息边界；Mod 的显示过滤仍是读取依据。
 
@@ -44,7 +44,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 | `available_actions` | 当前已实现动作的可用性；不是完整工具目录 |
 | `notes` | 按结果内容附带的英语数值解读说明，无适用内容时省略；属于接口说明，不是额外采样到的游戏状态 |
 
-战斗外在 [药水工具支持的页面](potion-actions.md#场景与停止边界) 也提供可见顶栏；`scene` 仍为 `loading_or_noncombat`，`screen.status` 为 `visible`，`player/enemies/turn/buttons` 为空，不附送事件选项等未接通内容。
+战斗外在 [药水工具支持的页面](potion-actions.md#场景与停止边界) 也提供可见顶栏；搜刮页使用 `scene: "rewards"` 和独立的[奖励结构](rewards.md)，其他已接通的非战斗页面使用 `scene: "loading_or_noncombat"`，`screen.status` 为 `visible`，`player/enemies/turn/buttons` 为空，不附送事件选项等未接通内容。
 
 数字来自可见标签，金币动画期间也按标签返回。`null` 不等于 0，表示未显示、尚未准备或不能可靠识别；可见空容器使用 `[]`。正常生命条没有格挡图标时才归一化为 `block: 0`。死亡文字与无限图标分别映射为 `dead`、`infinite`，不从隐藏生命模型补数字。
 

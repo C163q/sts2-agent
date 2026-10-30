@@ -56,6 +56,8 @@ def player_result(response):
         if result.get("scene") == "card_selection":
             result["selection"]["cards"], result["hover_tips"] = share_hand_tips(result["selection"]["cards"])
         notes = {}
+        if result.get('transition', {}).get('stop_reason') == 'manual_input_required':
+            notes['interaction'] = 'A native dialog or unsupported screen requires manual input.'
         selection = result.get("selection") or {}
         selection_view = result.pop("selection_view", None) or selection.get("status")
         if selection_view == "visible" and selection.get("can_view_battlefield"):

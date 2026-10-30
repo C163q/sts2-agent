@@ -24,7 +24,10 @@ internal sealed class CardSelection(Control owner, string kind, object key)
     public NCardGrid? Grid => Owner is NCardGridSelectionScreen ? Owner.GetNodeOrNull<NCardGrid>("%CardGrid") : null;
     public NPeekButton? Eye => Owner is NPlayerHand hand ? hand.PeekButton : Owner.GetNodeOrNull<NPeekButton>("%PeekButton");
     public bool Peeking => Eye?.IsPeeking == true;
-    public static bool AwaitingInput => Current is { Status: "visible" or "unsupported" };
+    public static bool AwaitingInput => Current is { Status: "visible" or "unsupported" } selection
+        && (selection.Kind != "reward" || (selection.Holders.Length == 0 || selection.CanSelect)
+            && !RewardInspection.Animating(selection.Owner, "_cardTween")
+            && !RewardInspection.Animating(selection.Owner, "_buttonTween"));
     public PileType DisplayingPile => Kind == "combat_pile" && Field(Owner, "_pile") is CardPile pile ? pile.Type : PileType.None;
     public CardSelectorPrefs Prefs => Field(Owner, "_prefs") is CardSelectorPrefs prefs ? prefs : default;
     public CardModel[] Selected => (Field(Owner, "_selectedCards") as IEnumerable<CardModel>)?.ToArray() ?? [];

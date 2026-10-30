@@ -1,7 +1,7 @@
 from game_output import TRANSITION, observation_details, project
 
 
-REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "timeout", "interrupted", "selection_resolved", "action_canceled", "action_completed"}
+REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "timeout", "interrupted", "selection_resolved", "action_canceled", "action_completed", 'manual_input_required'}
 FIELDS = {
     "damage": {"target", "hp_loss", "blocked"},
     "hp_changed": {"target", "before", "after"},

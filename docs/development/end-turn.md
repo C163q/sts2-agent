@@ -1,6 +1,6 @@
 # 结束回合与期间事件
 
-适用于 Mod `0.20.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10` 的 `0.107.1` 兼容运行时。MCP 调用仍为无参数的 `end_turn()`；文件协议为 `end_turn`，需要最新观察令牌。
+适用于 Mod `0.21.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10` 的 `0.107.1` 兼容运行时。MCP 调用仍为无参数的 `end_turn()`；文件协议为 `end_turn`，需要最新观察令牌。
 
 ## 执行与停止边界
 
@@ -97,3 +97,5 @@ python3 scripts/verify_end_turn.py --ipc-dir .tmp/roundtrip/ipc --scenario tyran
 选牌动作复用本页事件格式，并增加非战斗完成原因 `selection_resolved`。`choice_required` 的完整响应可以提供已支持的选牌动作，仍不会提供 `end_turn`。
 
 [出牌工具](card-play.md) 同样复用期间事件，并增加 `action_canceled`：原生动作已取消且恢复可行动。入队成功不代表实际打出，失败或取消后仍须重新观察。
+
+[搜刮动作](rewards.md) 复用 `transition`，但不接战斗事件记录。`action_completed` 表示当前奖励交互已经结算或到达新的奖励页面；`manual_input_required` 表示已识别的原生对话或未支持页面需要手动输入，不续接动作许可。

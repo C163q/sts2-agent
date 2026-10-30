@@ -77,3 +77,7 @@ C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project spi
 ## 药水接口
 
 `RunUi.cs` 判定战斗外顶栏可读范围，`PotionActions.cs` 负责可见槽位、菜单规则与目标查询，`GameAdapter.Potions.cs` 提交原生同步动作并跟踪交互边界。`PotionJournal.cs` 可独立记录战斗外药水事件，也由战斗事件记录器复用；`PotionFixture.cs` 仅配置隔离测试状态。外部参数与响应校验在 `potion_action_details.py`，工具语义见 [药水接口](potion-actions.md)。
+
+## 奖励接口
+
+`RewardInspection.cs` 识别奖励 UI、覆盖状态和稳定 ID，`GameAdapter.Rewards.cs` 执行原生领取及跳过/前进，`RewardCompatibility.cs` 适配目标版本已核实的互斥奖励信号参数。`RewardBoundary.cs` 独立判定已支持交互与手动处理边界。`RewardFixture.cs` 只在隔离测试模式构造场景。外部 `reward_details.py` 维护参数、观察和领取结果校验；契约见[战后搜刮](rewards.md)。

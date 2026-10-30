@@ -34,6 +34,8 @@ def main():
                                                    "retain_choice", "boulder", "doom", "stampede", "revive", "blocked",
                                                    "hellraiser", "exhaust_block", "hidden_hp"),
                         help="为独立测试战斗配置结束回合机制；仅在测试模式创建场景时生效")
+    parser.add_argument('--reward-scenario', choices=('basic', 'full', 'skip', 'empty', 'linked', 'card_first', 'relic_first', 'nested', 'returned', 'escaped', 'unsupported'),
+                        help='构造独立实例的战后原生奖励页面')
     args = parser.parse_args()
     if args.capture and not args.windowed:
         parser.error("--capture 需要 --windowed。")
@@ -49,6 +51,8 @@ def main():
         "STS2_AGENT_IPC_DIR": str(work / "ipc"),
         "STS2_AGENT_TEST_MODE": "1",
     })
+    if args.reward_scenario:
+        environment['STS2_AGENT_TEST_REWARD_SCENARIO'] = args.reward_scenario
     if args.capture:
         environment["STS2_AGENT_TEST_CAPTURE"] = str(work / "observation.png")
     if args.play_scenario:
