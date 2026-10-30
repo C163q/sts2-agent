@@ -24,7 +24,9 @@ mkdir -p "${Sts2Dir:?请先配置并加载 .env}/mods/Sts2Agent"
 cp spikes/roundtrip/bin/Debug/net9.0/Sts2Agent.dll spikes/roundtrip/bin/Debug/net9.0/Sts2Agent.json "${Sts2Dir:?请先配置并加载 .env}/mods/Sts2Agent/"
 ```
 
-该 Mod 清单声明依赖 RitsuLib `0.6.10`。先按 [构建指南](roundtrip.md#前提与构建) 获取完整的 `0.107.1` 兼容运行时，将整个解压目录安装为 `<游戏安装目录>/mods/STS2-RitsuLib/`，保留 `shared/`、`compat/`、`assets.zip` 等全部内容。在游戏内启用 RitsuLib 后重启，再加载本项目；不要只复制根 DLL。Mod `0.13.0` 的结束回合事件及选择停止边界见 [接口说明](end-turn.md)。
+该 Mod 清单声明依赖 RitsuLib `0.6.10` 的 `0.107.1` 兼容运行时。已经通过 Steam 创意工坊安装并启用兼容版本时，保留创意工坊管理的安装，不再手工复制第二套。
+
+只有采用手工安装 RitsuLib 的方式时，才按[构建指南](roundtrip.md#前提与构建)获取完整发布包，将整个解压目录放入 `<游戏安装目录>/mods/STS2-RitsuLib/`，保留 `shared/`、`compat/`、`assets.zip` 等全部内容，不要只复制根 DLL。在游戏内启用依赖后重启，再加载本项目。结束回合事件及选择停止边界见[接口说明](end-turn.md)。
 
 ## Steam 启动配置
 

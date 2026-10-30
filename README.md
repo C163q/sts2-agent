@@ -35,7 +35,29 @@ cp .env.example .env
 . ./.env
 ```
 
-开发指南将配置变量传入构建参数和准备脚本。
+## 正常游戏使用顺序
+
+以下命令从仓库根目录执行；先完成上述路径配置并加载 `.env`。
+
+1. **编译 Mod**：
+
+   ```sh
+   dotnet build spikes/roundtrip/Sts2Agent.csproj -p:Sts2Dir="${Sts2Dir:?请先配置并加载 .env}" -p:RitsuLibDir="${RitsuLibDir:?请先配置并加载 .env}"
+   ```
+
+   产物位于 `spikes/roundtrip/bin/Debug/net9.0/`。依赖获取和构建前提见[构建指南](docs/development/roundtrip.md#前提与构建)；正常使用不需要运行独立实例的准备脚本。
+2. **安装并启用**：退出游戏，将产物中的 `Sts2Agent.dll` 和 `Sts2Agent.json` 复制到 `<游戏安装目录>/mods/Sts2Agent/`，在游戏 Mod 界面启用后按提示重启。已有 Steam 创意工坊管理的兼容 RitsuLib 时保留该安装，不再复制另一套；文件及加载步骤见[安装说明](docs/development/live-game.md#安装文件)。
+3. **配置游戏通信目录**：在 Steam 启动选项中设置 `STS2_AGENT_IPC_DIR`，例如：
+
+   ```text
+   env STS2_AGENT_IPC_DIR="/absolute/path/to/sts2_agent/.tmp/live/ipc" %command%
+   ```
+
+   将示例路径替换为实际路径，已有启动选项须保留；设置后完整重启游戏，详见[启动配置](docs/development/live-game.md#steam-启动配置)。
+4. **接入 LLM 客户端**：按[MCP 接入](docs/development/mcp.md#安装与游戏前提)安装 Python 依赖，将 `scripts/mcp_server.py --ipc-dir <相同通信目录>` 配置为客户端的 stdio MCP 服务。脚本应使用已安装依赖的 Python 解释器启动；Codex 等客户端的完整参数示例见该指南。截图工具按[启动配置](docs/development/screenshots.md#启动配置)单独启用。
+5. **验证并游玩**：启动游戏后先调用 `get_observation`，成功返回当前画面才说明游戏内接口能够响应。正常使用自行进入对局与战斗；LLM 每次游戏动作前先观察，按需查询详情、目标或选牌，再调用对应动作。更新 DLL 后须完整重启游戏，更新 MCP 脚本或配置后须重连 MCP。
+
+MCP 不扫描游戏进程，也不负责启动游戏。客户端与 Mod 通过配置好的同一目录交换请求和响应；列出工具只说明 MCP 服务已启动，不能证明游戏已运行或 Mod 已连通。交互过程及超时含义见[通信方式](docs/development/mcp.md#通信方式与连接状态)。
 
 仓库不包含游戏程序集、资源、第三方库二进制、存档或密钥。当前依赖 [RitsuLib](https://github.com/BAKAOLC/STS2-RitsuLib) `0.6.10` 的 `0.107.1` 兼容运行时，不依赖 BaseLib 或 Godot 编辑器。升级游戏或依赖前须重新核对 API 和兼容性。声音、其他游戏版本及完整游玩尚未验证。
 
