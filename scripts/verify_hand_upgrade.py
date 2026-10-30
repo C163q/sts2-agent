@@ -115,6 +115,9 @@ async def verify(args):
             hand = await call('inspect_hand')
             upgraded = next(card for card in hand['hand'] if card['id'] == first['id'])
             assert upgraded['name'] == first['name'] + '+', hand
+            await call('get_observation')
+            targeted = await call('inspect_targets', {'card_id': upgraded['id']})
+            assert targeted['card'] == {'id': upgraded['id'], 'name': upgraded['name']}, targeted
             assert all(card['name'] == other['name'] for card in hand['hand'] if card['id'] == other['id']), hand
     print('PASS: native hand upgrade candidates, preview, replace, deselect, eye, cover, confirm and stable card IDs.')
 

@@ -38,6 +38,13 @@ internal static class PlayFixture
         else Add<StrikeIronclad>();
         Add<DefendIronclad>();
         Add<StrikeIronclad>();
+        if (scenario == "card_names")
+        {
+            cards.Clear();
+            Add<TrueGrit>(); Add<StrikeIronclad>(); Add<DefendIronclad>();
+            foreach (var card in cards) { card.UpgradeInternal(); card.FinalizeUpgradeInternal(); }
+            Add<StrikeIronclad>(); Add<DefendIronclad>();
+        }
         if (scenario == "armaments_free") cards[0].SetToFreeThisTurn();
         if (scenario == "armaments_filtered")
         {

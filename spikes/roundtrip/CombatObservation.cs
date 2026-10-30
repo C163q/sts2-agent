@@ -146,16 +146,7 @@ internal sealed class CombatObservation
     internal Dictionary<string, object?> Card(NCard card)
     {
         bool identified = card.Visibility == ModelVisibility.Visible;
-        string? title = VisibleUi.Text(card, "%TitleLabel");
-        string? name = title == null ? null : !identified
-            ? english.Entry("card_library", card.Visibility == ModelVisibility.Locked ? "LOCKED.title" : "UNKNOWN.title")
-            : english.Name(card.Model!.TitleLocString);
-        if (identified && name != null && title != null)
-        {
-            // The suffix is visible text; do not expose the hidden upgrade level separately.
-            string suffix = Regex.Match(title, @"\+\d*$").Value;
-            name += suffix;
-        }
+        string? name = english.CardName(card);
         var highlight = card.CardHighlight;
         bool glow = VisibleUi.OnScreen(highlight) && highlight.Material is ShaderMaterial shader
             && shader.GetShaderParameter("width").AsSingle() > 0;

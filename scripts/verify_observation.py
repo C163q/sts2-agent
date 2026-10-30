@@ -7,7 +7,7 @@ from roundtrip_client import Client, player_result
 
 
 def verify(state):
-    assert state["schema_version"] == 3, state
+    assert state["schema_version"] == 5, state
     assert state["language"] == "en", state
     assert "phase" not in state and "side" not in state, state
     assert state["screen"]["status"] == "visible", state

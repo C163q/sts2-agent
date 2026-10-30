@@ -1,13 +1,26 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Godot;
+using MegaCrit.Sts2.Core.Entities.UI;
 using MegaCrit.Sts2.Core.Localization;
+using MegaCrit.Sts2.Core.Nodes.Cards;
 
 namespace Sts2Agent;
 
 internal sealed class EnglishText
 {
     private readonly Dictionary<string, Dictionary<string, string>> tables = [];
+
+    public string? CardName(NCard? card)
+    {
+        if (card == null || !GodotObject.IsInstanceValid(card)) return null;
+        string? displayed = VisibleUi.Text(card, "%TitleLabel");
+        if (displayed == null) return null;
+        if (card.Visibility != ModelVisibility.Visible)
+            return Entry("card_library", card.Visibility == ModelVisibility.Locked ? "LOCKED.title" : "UNKNOWN.title");
+        // Preserve the visible suffix without reading a hidden upgrade level.
+        return Name(card.Model!.TitleLocString) is { } name ? name + Regex.Match(displayed, @"\+\d*$").Value : null;
+    }
 
     public string? Name(LocString title)
     {

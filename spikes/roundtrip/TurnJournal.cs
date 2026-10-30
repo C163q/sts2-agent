@@ -54,8 +54,11 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
             historyCursor = CombatManager.Instance.History.Entries.Count();
             CombatManager.Instance.History.Changed += HistoryChanged;
             SubscribeCreatures();
-            foreach (var holder in NCombatRoom.Instance!.Ui.Hand.ActiveHolders)
-                if (holder.CardNode?.Model is { } card) CardName(card);
+            // Selected cards leave the hand holders but remain visible when confirmation starts a new journal.
+            foreach (var node in VisibleUi.Descendants<NCard>(NCombatRoom.Instance!.Ui))
+                if (node.Model is { } card && node.Visibility == ModelVisibility.Visible
+                    && CombatObservation.CardVisible(node) && english.CardName(node) is { } name)
+                    knownCards[card] = name;
             SubscribePiles();
             var potions = new PotionJournal(player, (type, potion) => buffer.Add(type, new() { ["potion"] = potion }));
             cleanup.Add(potions.Dispose);
@@ -198,8 +201,9 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     private string? CardName(CardModel card)
     {
         var node = NCard.FindOnTable(card);
-        if (CombatObservation.CardVisible(node) && node!.Visibility == ModelVisibility.Visible)
-            knownCards[card] = english.Name(card.TitleLocString);
+        if (CombatObservation.CardVisible(node) && node!.Visibility == ModelVisibility.Visible
+            && english.CardName(node) is { } name)
+            knownCards[card] = name;
         return knownCards.GetValueOrDefault(card);
     }
 
@@ -210,8 +214,9 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         foreach (var node in VisibleUi.Descendants<NCard>(ui))
         {
             if (node.Model is not { } card || !generated.Contains(card)
-                || node.Visibility != ModelVisibility.Visible || !CombatObservation.CardVisible(node)) continue;
-            knownCards[card] = english.Name(card.TitleLocString);
+                || node.Visibility != ModelVisibility.Visible || !CombatObservation.CardVisible(node)
+                || english.CardName(node) is not { } name) continue;
+            knownCards[card] = name;
             Card("card_added", card);
             generated.Remove(card);
         }

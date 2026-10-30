@@ -1,6 +1,6 @@
 # 出牌与目标查询
 
-适用于 Mod `0.19.0`、MCP server `0.15.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。提供原生单人战斗中的一次手动出牌及只读目标查询；目标判定依据见 [源码调研](../research/2026-10-30-card-play-targeting.md)。
+适用于 Mod `0.20.0`、MCP server `0.15.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。提供原生单人战斗中的一次手动出牌及只读目标查询；目标判定依据见 [源码调研](../research/2026-10-30-card-play-targeting.md)。
 
 ## 查询目标
 
@@ -23,7 +23,7 @@
 
 | 字段 | 含义 |
 | --- | --- |
-| `card` | 手牌稳定 ID 与英语名称，不附送效果正文 |
+| `card` | 手牌稳定 ID 与完整英语显示名称，保留可见升级后缀，与观察及手牌详情一致；不附送效果正文 |
 | `playable` | 当前正常出牌阶段、卡牌条件及目标条件允许提交；不是未来执行保证 |
 | `target_type` | `none`、`self`、`any_enemy`、`all_enemies`、`random_enemy`、`any_player`、`any_ally`、`all_allies`、`osty` |
 | `requires_target` | 调用时是否必须指定 `target_id`；原版单人卡牌中 `any_enemy` 和 `any_ally` 为 `true` |

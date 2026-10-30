@@ -14,7 +14,7 @@ def main():
     parser.add_argument("--play-scenario", choices=("basic", "discovery", "charge0", "charge1", "charge2", "charge3",
                         "glimmer", "random", "random_empty", "aoe", "victory", "death",
                         "armaments", "armaments_free", "armaments_filtered", "armaments_one", "armaments_none", "armaments_upgraded", "x_cost",
-                        "card_logic", "unplayable", "ally", "multi_hit", "hook", "stars", "energy",
+                        "card_logic", "card_names", "unplayable", "ally", "multi_hit", "hook", "stars", "energy",
                         "test_subject", "thorns_death", "no_target", "cancel", "unhittable"),
                         help="构造独立实例的出牌验证初始状态")
     parser.add_argument("--check-observation", action="store_true", help="对独立测试战斗执行可见性过滤检查")

@@ -4,6 +4,7 @@ using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.UI;
 using MegaCrit.Sts2.Core.Hooks;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Nodes.Cards;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 
@@ -66,7 +67,7 @@ internal sealed class TargetInspection(CombatObservation observation)
     {
         var targets = Targets(card);
         string? reason = Reason(card, targets);
-        return new { snapshot_id = snapshotId, card = new { id = observation.CardId(card), name = english.Name(card.TitleLocString) },
+        return new { snapshot_id = snapshotId, card = new { id = observation.CardId(card), name = english.CardName(NCard.FindOnTable(card)) },
             playable = reason == null, target_type = Type(card), requires_target = RequiresTarget(card),
             targets = targets.Select(creature => new { id = creature.CombatId!.Value,
                 kind = creature.IsPlayer ? "player" : creature.IsEnemy ? "enemy" : "ally",
