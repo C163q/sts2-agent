@@ -15,6 +15,7 @@ internal static class MapView
 {
     private static readonly FieldInfo Animation = typeof(NMapScreen).GetField("_tween", BindingFlags.Instance | BindingFlags.NonPublic)!;
     private static readonly FieldInfo ActAnimation = typeof(NMapScreen).GetField("_actAnimTween", BindingFlags.Instance | BindingFlags.NonPublic)!;
+    private static readonly FieldInfo InputDisabled = typeof(NMapScreen).GetField("_isInputDisabled", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
     public static Control? CardPage => NCapstoneContainer.Instance?.CurrentCapstoneScreen is Control screen
         && (screen is NDeckViewScreen || screen is NCardPileScreen pile
@@ -44,6 +45,7 @@ internal static class MapView
         && VisibleUi.Shown(screen) && !screen.IsTraveling && Clear();
 
     public static bool Ready(NMapScreen screen) => Current(screen)
+        && InputDisabled.GetValue(screen) is false
         && (Animation.GetValue(screen) is not Tween tween || !GodotObject.IsInstanceValid(tween) || !tween.IsRunning())
         && (ActAnimation.GetValue(screen) is not Tween actTween || !GodotObject.IsInstanceValid(actTween) || !actTween.IsRunning())
         && VisibleUi.Descendants<NMapPoint>(screen).Any(VisibleUi.Shown);

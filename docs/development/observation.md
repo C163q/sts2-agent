@@ -1,6 +1,6 @@
 # 战斗观察 JSON
 
-适用于 Linux 游戏 `v0.107.1` 与 Mod `0.28.0`。底层观察结构版本为 `13`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+适用于 Linux 游戏 `v0.107.1` 与 Mod `0.29.0`。底层观察结构版本为 `14`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -18,7 +18,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state > .tmp/liv
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 ```
 
-`--raw` 保留原始文件协议：成功为 `id/ok/state`，`state` 内保留 `snapshot_id/schema_version/language/session/combat_generation/ui_generation/selection_generation/potion_generation/reward_generation/rest_site_generation/treasure_generation/shop_generation/ancient_generation/event_generation/confirmation_generation`；失败为 `id/ok/error`。Python 的 `Client.call()` 同样返回原始响应，`player_result(response)` 产生面向 LLM 的结果，不改写原响应。外部客户端必须自行保存最近的原始令牌，动作仍带 `expected_state` 校验；省略 LLM 可见令牌不等于绕过校验。[本地 MCP](mcp.md) 复用同一玩法输出转换。
+`--raw` 保留原始文件协议：成功为 `id/ok/state`，`state` 内保留 `snapshot_id/schema_version/language/session/combat_generation/ui_generation/selection_generation/potion_generation/reward_generation/rest_site_generation/treasure_generation/shop_generation/ancient_generation/event_generation/confirmation_generation/map_generation`；失败为 `id/ok/error`。Python 的 `Client.call()` 同样返回原始响应，`player_result(response)` 产生面向 LLM 的结果，不改写原响应。外部客户端必须自行保存最近的原始令牌，动作仍带 `expected_state` 校验；省略 LLM 可见令牌不等于绕过校验。[本地 MCP](mcp.md) 复用同一玩法输出转换。
 
 玩法输出按声明的结构递归投影，未知嵌套字段不会转发；基础观察的 `player.hand` 不包含正文或悬停解释。已提供字段须符合对应类型，布尔值不能代替数字。MCP 对基础观察和动作结果另检查全部顶层观察字段，格式错误返回 `transport_error`，不保留动作令牌。这个检查不证明游戏采样本身符合可见信息边界；Mod 的显示过滤仍是读取依据。
 
@@ -144,3 +144,5 @@ python3 scripts/verify_roundtrip.py --ipc-dir .tmp/roundtrip/ipc --report .tmp/r
 ## 占卜棋盘
 
 [占卜接口](divination.md)通过 `divination` 字段返回可见次数、工具、说明与格子覆盖状态；同时以独立 MCP PNG 图像保留部分揭开的物品图案。底层事件和被覆盖的棋盘内容为 null，不读取雾下物品或未来奖励。
+
+地图展开时返回 `map` 候选摘要及 `travel_to_node` 动作；整幕节点和连线仍由 `inspect_map` 提供，见[地图接口](map-inspection.md#地图选路)。

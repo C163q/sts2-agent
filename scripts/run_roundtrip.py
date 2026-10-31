@@ -49,6 +49,8 @@ def main():
                         'trial_story', 'crystal', 'crystal_full', 'relic_trader', 'future_potions', 'tea', 'conveyor', 'slippery',
                         'reflections', 'doll', 'wood', 'sapphire', 'symbiote'),
                         help='构造独立实例的通用事件与场景衔接验证')
+    parser.add_argument('--navigation-scenario', choices=('basic', 'flight', 'combat', 'choice', 'shop', 'treasure', 'unknown', 'boss1', 'boss2', 'boss3', 'double'),
+                        help='构造隔离地图选路与 Boss 跨幕验证初始状态')
     args = parser.parse_args()
     if args.capture and not args.windowed:
         parser.error("--capture 需要 --windowed。")
@@ -64,6 +66,8 @@ def main():
         "STS2_AGENT_IPC_DIR": str(work / "ipc"),
         "STS2_AGENT_TEST_MODE": "1",
     })
+    if args.navigation_scenario:
+        environment['STS2_AGENT_TEST_NAVIGATION_SCENARIO'] = args.navigation_scenario
     if args.event_scenario:
         environment['STS2_AGENT_TEST_EVENT_SCENARIO'] = args.event_scenario
     if args.ancient_scenario:

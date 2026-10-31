@@ -6,7 +6,7 @@ import anyio
 
 from deck_details import deck_arguments
 from inspection_details import inspection_details
-from map_details import map_arguments
+from map_details import map_arguments, travel_arguments
 from pile_details import pile_arguments
 from player_output import player_result
 from selection_details import selection_arguments
@@ -153,6 +153,9 @@ class GameTools:
     async def close_card_view(self):
         return await self._change_view("close_card_view")
 
+    async def travel_to_node(self, arguments=None):
+        return await self._action('travel_to_node', arguments)
+
     async def inspect_map(self, arguments=None):
         return await self._map_view("inspect_map", arguments)
 
@@ -232,6 +235,12 @@ class GameTools:
     async def _action(self, operation, arguments=None, validate_selection=False):
         observed = self.snapshot_id
         async with self.lock:
+            if operation == 'travel_to_node':
+                try:
+                    arguments = travel_arguments(arguments)
+                except ValueError:
+                    self.snapshot_id = None
+                    return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
             if operation == 'respond_to_confirmation':
                 try:
                     arguments = confirmation_arguments(arguments)
@@ -350,7 +359,7 @@ class GameTools:
             if response["ok"] and "available_actions" in payload:
                 payload["available_actions"] = [
                     action for action in payload.get("available_actions", [])
-                    if action in {"end_turn", "play_card", "use_potion", "discard_potion", "select_card", "selection_option", 'claim_reward', 'proceed', 'choose_rest_option', 'loot_treasure', 'open_shop', 'close_shop', 'buy_item', 'choose_ancient_option', 'advance_dialogue', 'choose_event_option', 'set_divination_tool', 'divine', 'respond_to_confirmation'}]
+                    if action in {"travel_to_node", "end_turn", "play_card", "use_potion", "discard_potion", "select_card", "selection_option", 'claim_reward', 'proceed', 'choose_rest_option', 'loot_treasure', 'open_shop', 'close_shop', 'buy_item', 'choose_ancient_option', 'advance_dialogue', 'choose_event_option', 'set_divination_tool', 'divine', 'respond_to_confirmation'}]
         except ScreenshotError as error:
             payload = player_result({"ok": False, "error": {"code": error.code}})
             snapshot_id = None

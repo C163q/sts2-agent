@@ -1,8 +1,42 @@
+import re
+
 from deck_details import closed_card_view
 
 
 NODE_TYPES = ("ancient", "boss", "monster", "elite", "shop", "treasure", "rest_site", "unknown", "unrecognized")
 REVEALED_TYPES = ("monster", "elite", "shop", "treasure", "rest_site")
+NODE_ID = re.compile(r'map:([1-9][0-9]*):(0|[1-9][0-9]*):(0|[1-9][0-9]*)')
+MAP_SUMMARY = {'status': str, 'act': int, 'current_node': (str,), 'can_travel': bool, 'selectable_nodes': [str]}
+
+
+def valid_node_id(value, act=None):
+    match = NODE_ID.fullmatch(value) if isinstance(value, str) else None
+    return bool(match and all(len(v) <= 10 and int(v) <= 2147483647 for v in match.groups())
+                and (act is None or int(match[1]) == act))
+
+
+def travel_arguments(arguments):
+    if (not isinstance(arguments, dict) or set(arguments) != {'node_id'}
+            or not valid_node_id(arguments['node_id'])):
+        raise ValueError('A canonical map node_id is required.')
+    return {'node_id': arguments['node_id']}
+
+
+TRAVEL_SCHEMA = {'type': 'object', 'properties': {'node_id': {'type': 'string'}},
+                 'required': ['node_id'], 'additionalProperties': False}
+
+
+def map_summary(value):
+    from game_output import project
+    result = project(value, MAP_SUMMARY)
+    if (set(result) != set(MAP_SUMMARY) or result['status'] != 'visible'
+            or not 1 <= result['act'] <= 2147483647
+            or result['current_node'] is not None and not valid_node_id(result['current_node'], result['act'])
+            or any(not valid_node_id(i, result['act']) for i in result['selectable_nodes'])
+            or len(set(result['selectable_nodes'])) != len(result['selectable_nodes'])
+            or result['can_travel'] != bool(result['selectable_nodes'])):
+        raise ValueError('Invalid map summary.')
+    return result
 
 
 def map_arguments(arguments):

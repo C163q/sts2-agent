@@ -21,13 +21,12 @@ internal sealed class EventInspection
     private int nextId;
     public int Generation { get; private set; }
 
-    public static Context? Current => RunManager.Instance.DebugOnlyGetState()?.CurrentRoom is EventRoom room
-        && room.LocalMutableEvent is not (AncientEventModel or TheArchitect)
-        && room.LocalMutableEvent.GetType().Assembly == typeof(EventModel).Assembly
-        && room.LocalMutableEvent.LayoutType is EventLayoutType.Default or EventLayoutType.Combat
-        && NEventRoom.Instance?.Layout is { } layout && ReferenceEquals(room.LocalMutableEvent.Node, layout)
+    public static Context? Current => RunUi.LocalEvent is { } current && current is not (AncientEventModel or TheArchitect)
+        && current.GetType().Assembly == typeof(EventModel).Assembly
+        && current.LayoutType is EventLayoutType.Default or EventLayoutType.Combat
+        && NEventRoom.Instance?.Layout is { } layout && ReferenceEquals(current.Node, layout)
         && GodotObject.IsInstanceValid(layout) && layout.IsNodeReady() && !layout.IsQueuedForDeletion()
-        ? new(room.LocalMutableEvent, layout) : null;
+        ? new(current, layout) : null;
 
     public static string? ManualView => Current == null ? null
         : NModalContainer.Instance?.OpenModal is NAbandonRunConfirmPopup popup && VisibleUi.Shown(popup) ? "confirmation"

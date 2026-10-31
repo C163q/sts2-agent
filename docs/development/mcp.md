@@ -26,7 +26,7 @@ flowchart LR
 
 ## 工具范围
 
-默认公开 39 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 40 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 表示当前可执行的游戏动作，不是 MCP 工具目录。
+默认公开 40 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 41 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 表示当前可执行的游戏动作，不是 MCP 工具目录。
 
 | 工具 | 用途 |
 | --- | --- |
@@ -62,6 +62,7 @@ flowchart LR
 | `inspect_pile(...)` | [打开或复用战斗牌堆](pile-inspection.md)，必填 `pile`，可选 `detail_level` |
 | `close_card_view()` | 关闭顶层牌组/牌堆查看页，保留下层地图 |
 | `inspect_map()` | [打开或复用当前幕地图](map-inspection.md)，返回实际可选节点 |
+| `travel_to_node(node_id)` | [按当前候选选路](map-inspection.md#地图选路)，离开房间并放弃未领取奖励；飞鞋由原生流程处理 |
 | `close_map()` | 通过可用的原生返回入口关闭地图，不穿透卡牌页 |
 | `inspect_selection()` | [整个可浏览候选及详情](card-selection.md) |
 | `select_card(card_id)` | 点击一张候选，保留原生多选和确认流程 |
@@ -70,11 +71,11 @@ flowchart LR
 | `capture_screenshot(filename?)` | 可选：[保存当前游戏视口 PNG](screenshots.md)，返回文件路径与尺寸，默认不注册 |
 | `end_turn()` | 结束一次玩家回合，返回期间事件、停止原因及最终观察，见 [结束回合](end-turn.md) |
 
-有参数工具的格式见各自接口说明，其余工具无参数。截图只记录当前画面，不授予动作权限；成功且状态不变时保留旧权限。基础观察、纯详情和原生页面的边界见 [可见信息约定](../observation.md)；选路尚未实现。动态工具发现的候选与版本约束见 [专项核查](../research/2026-10-29-mcp-tool-availability.md)，尚未实现。
+有参数工具的格式见各自接口说明，其余工具无参数。截图只记录当前画面，不授予动作权限；成功且状态不变时保留旧权限。基础观察、纯详情和原生页面的边界见 [可见信息约定](../observation.md)；地图选路使用 `travel_to_node`。动态工具发现的候选与版本约束见 [专项核查](../research/2026-10-29-mcp-tool-availability.md)，尚未实现。
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.28.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.24.0`，支持[通用事件](events.md)及复用成功动作返回的观察；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。首次使用须匹配 Mod 与外部脚本；通用事件功能须同时更新 Mod 和 MCP，并完整重启游戏、重连 MCP。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.29.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.25.0`，支持[通用事件](events.md)及复用成功动作返回的观察；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。首次使用须匹配 Mod 与外部脚本；通用事件功能须同时更新 Mod 和 MCP，并完整重启游戏、重连 MCP。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 

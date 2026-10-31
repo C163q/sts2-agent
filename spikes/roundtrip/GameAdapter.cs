@@ -105,6 +105,12 @@ internal sealed partial class GameAdapter(bool testMode)
             lastTreasure = TreasureInspection.Current;
             treasureGeneration++;
         }
+        var run = RunManager.Instance.DebugOnlyGetState();
+        if (!ReferenceEquals(run, lastRun) || !ReferenceEquals(run?.Map, lastMap))
+        {
+            lastRun = run; lastMap = run?.Map; mapGeneration++;
+        }
+        var map = MapInspection.Summary(run);
         var selection = CardSelection.Current;
         if (!ReferenceEquals(selection?.Key, lastSelection))
         {
@@ -203,14 +209,20 @@ internal sealed partial class GameAdapter(bool testMode)
             actions.Clear();
             if (EventConfirmation.Ready(dialog)) actions.Add("respond_to_confirmation");
         }
+        if (map != null)
+        {
+            visibility = "visible";
+            actions.Clear();
+            if (MapInspection.Choices(NRun.Instance!.GlobalUi.MapScreen).Length > 0) actions.Add("travel_to_node");
+        }
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 13, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 14, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
             confirmation_generation = confirmationGeneration,
-            selection_generation = selectionGeneration, scene,
+            selection_generation = selectionGeneration, map_generation = mapGeneration, scene, map,
             screen = CardView.Screen(visibility),
             turn = scene == "combat" ? observation.Turn() : null,
             player = scene == "combat" ? observation.Player(player) : null,
@@ -242,7 +254,7 @@ internal sealed partial class GameAdapter(bool testMode)
     public async Task<string> Execute(Request request)
     {
         string before = Observe();
-        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation")
+        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
@@ -305,6 +317,29 @@ internal sealed partial class GameAdapter(bool testMode)
                 return Success(request.Id, await SettledObservation());
             }
         }
+        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_NAVIGATION_SCENARIO") != null && LocalPlayer != null)
+        {
+            if (request.Operation == "check_test_navigation")
+                return Success(request.Id, JsonSerializer.Serialize(NavigationFixture.Read(LocalPlayer)));
+            if (request.Operation == "finish_test_navigation_boss")
+            {
+                await NavigationFixture.FinishBoss(ObservationFrame);
+                return Success(request.Id, await SettledObservation());
+            }
+            if (request.Operation is "set_test_navigation_drawing" or "clear_test_navigation_drawing")
+            {
+                NRun.Instance!.GlobalUi.MapScreen.Drawings.SetDrawingModeLocal(request.Operation.StartsWith("set_")
+                    ? MegaCrit.Sts2.Core.Nodes.Screens.Map.DrawingMode.Drawing : MegaCrit.Sts2.Core.Nodes.Screens.Map.DrawingMode.None);
+                return Success(request.Id, Observe());
+            }
+            if (request.Operation == "scroll_test_navigation")
+            {
+                using var scroll = new InputEventPanGesture { Delta = new Vector2(0, -30) };
+                NRun.Instance!.GlobalUi.MapScreen.Call("ProcessScrollEvent", scroll);
+                for (int i = 0; i < 30; i++) await ObservationFrame();
+                return Success(request.Id, Observe());
+            }
+        }
         if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SHOP_SCENARIO") == "targeting"
             && request.Operation == "cancel_test_shop_targeting")
         {
@@ -333,6 +368,7 @@ internal sealed partial class GameAdapter(bool testMode)
                 return Success(request.Id, Observe());
             }
         }
+        if (request.Operation == "travel_to_node") return await TravelRequest(request, document.RootElement);
         if (request.Operation is "use_potion" or "discard_potion" || request.Operation == "inspect_targets"
             && request.Arguments is { } targetArguments && targetArguments.TryGetProperty("potion_slot", out _))
             return await PotionRequest(request, document.RootElement);
@@ -587,6 +623,8 @@ internal sealed partial class GameAdapter(bool testMode)
                 await AncientFixture.Configure(ancientScenarioName, LocalPlayer!, ObservationFrame);
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_EVENT_SCENARIO") is { } eventScenarioName)
                 await EventFixture.Configure(eventScenarioName, LocalPlayer!, ObservationFrame);
+            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_NAVIGATION_SCENARIO") is { } navigationScenario)
+                await NavigationFixture.Configure(navigationScenario, LocalPlayer!, ObservationFrame);
             // Debug room entry bypasses the normal map-travel disabling step.
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_MAP_CHECKS") != null)
             {

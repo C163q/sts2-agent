@@ -114,7 +114,10 @@ OBSERVATION = {
     "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
     "available_actions": [str],
 }
-OPTIONAL_OBSERVATION = {'confirmation': nullable(CONFIRMATION), 'divination': nullable(DIVINATION), "event": nullable(ROOM_EVENT), "ancient": nullable(ANCIENT),"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
+from map_details import MAP_SUMMARY
+
+
+OPTIONAL_OBSERVATION = {'map': nullable(MAP_SUMMARY), 'confirmation': nullable(CONFIRMATION), 'divination': nullable(DIVINATION), "event": nullable(ROOM_EVENT), "ancient": nullable(ANCIENT),"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
 GAMEPLAY = {
     'reward_result': {'reward_id': int, 'status': str},
     'purchase_result': {'item_id': int, 'status': str},
@@ -164,6 +167,15 @@ def observation_details(state):
             or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards", 'rest_site', 'treasure', 'shop', 'ancient', 'event')
             or result["screen"]["status"] not in ("visible", "covered", "hidden", "not_ready", "not_applicable")):
         raise ValueError("Invalid observation structure.")
+    if result.get('map') is not None:
+        from map_details import map_summary
+        result['map'] = map_summary(result['map'])
+        if (result['screen'] != {'status': 'visible', 'view': 'map'}
+                or any(a != 'travel_to_node' for a in result['available_actions'])
+                or ('travel_to_node' in result['available_actions']) != result['map']['can_travel']):
+            raise ValueError('Map is not the exposed action screen.')
+    elif 'travel_to_node' in result['available_actions'] or result['screen'] == {'status': 'visible', 'view': 'map'}:
+        raise ValueError('Missing map summary.')
     if result.get("selection") is not None:
         result["selection"] = selection_details(result["selection"])
     if result.get('rewards') is not None:

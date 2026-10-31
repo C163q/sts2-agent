@@ -11,6 +11,25 @@ internal static class MapInspection
     private static readonly FieldInfo Paths = typeof(NMapScreen).GetField("_paths", BindingFlags.Instance | BindingFlags.NonPublic)!;
     private static readonly EnglishText English = new();
 
+    public static string Id(RunState run, MapCoord coord) => $"map:{run.CurrentActIndex + 1}:{coord.row}:{coord.col}";
+
+    public static NMapPoint[] Choices(NMapScreen screen) => MapView.Ready(screen)
+        && screen.IsTravelEnabled && !screen.IsDebugTravelEnabled && !NavigationTasks.ChangingAct
+        && screen.Drawings.GetLocalDrawingMode() == DrawingMode.None
+        ? VisibleUi.Descendants<NMapPoint>(screen).Where(node => VisibleUi.Shown(node)
+            && node.State == MapPointState.Travelable && node.IsEnabled)
+            .OrderBy(node => node.Point.coord.row).ThenBy(node => node.Point.coord.col).ToArray() : [];
+
+    public static object? Summary(RunState? run)
+    {
+        var screen = NMapScreen.Instance;
+        if (run == null || screen == null || !MapView.Current(screen)) return null;
+        var choices = Choices(screen);
+        return new { status = "visible", act = run.CurrentActIndex + 1,
+            current_node = run.CurrentMapCoord is { } coord ? Id(run, coord) : null,
+            can_travel = choices.Length > 0, selectable_nodes = choices.Select(n => Id(run, n.Point.coord)).ToArray() };
+    }
+
     public static Dictionary<string, object?> Read(NMapScreen screen, RunState run, string snapshotId)
     {
         var nodes = VisibleUi.Descendants<NMapPoint>(screen).Where(VisibleUi.Shown)
@@ -18,10 +37,7 @@ internal static class MapInspection
         var coordinates = nodes.Select(node => node.Point.coord).ToHashSet();
         var paths = (Dictionary<(MapCoord, MapCoord), IReadOnlyList<TextureRect>>)Paths.GetValue(screen)!;
         string Id(MapCoord coord) => $"map:{run.CurrentActIndex + 1}:{coord.row}:{coord.col}";
-        var choices = screen.IsTravelEnabled && !screen.IsDebugTravelEnabled
-            && screen.Drawings.GetLocalDrawingMode() == DrawingMode.None
-            ? nodes.Where(node => node.State == MapPointState.Travelable && node.IsEnabled).Select(node => Id(node.Point.coord)).ToArray()
-            : [];
+        var choices = Choices(screen).Select(node => Id(node.Point.coord)).ToArray();
         return new()
         {
             ["snapshot_id"] = snapshotId,

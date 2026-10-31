@@ -89,6 +89,7 @@ python3 scripts/test_prepare_roundtrip.py
 | `inspect_deck` | 无须动作令牌；真实打开牌组页并保留，返回全牌组，支持信息档位、升级预览和排序，格式见 [牌组查看](deck-inspection.md) |
 | `inspect_pile` | 无须动作令牌；实际点击并查看抽牌、弃牌或消耗堆，支持摘要/完整；区分空堆与隐藏入口，见 [战斗牌堆查看](pile-inspection.md) |
 | `inspect_map` | 无参数，无须动作令牌；真实打开/复用整个当前幕地图，返回节点连线和当前原生可选节点，见 [地图查看](map-inspection.md) |
+| `travel_to_node` | 参数 `node_id`，需要 `expected_state`；点击当前地图允许的节点，放弃未领取奖励并进入下一房间，见[地图选路](map-inspection.md#地图选路) |
 | `close_map` | 无参数，无须动作令牌；仅在原生返回按钮可用且地图未被覆盖时关闭，不穿透卡牌页 |
 | `close_card_view` | 无须动作令牌；显式关闭当前原生卡牌查看页，返回基础观察；保留下层地图，不关闭其他页面或自动授权战斗动作 |
 | `close_deck` | 仅为旧文件客户端兼容保留，只关闭牌组；MCP 使用通用 `close_card_view` |

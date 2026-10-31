@@ -10,6 +10,7 @@
 | `spikes/roundtrip/FileMailbox.cs` | 原子文件协议、请求队列、响应缓存和等待超时 |
 | `spikes/roundtrip/GameAdapter.cs` | 主线程观察、令牌与合法性检查、动作分派和页面生命周期；测试场景准备以测试模式隔离 |
 | `spikes/roundtrip/*Observation.cs`、`*Inspection.cs`、`*View.cs` | 可见数据采样、按需详情、原生页面操作 |
+| `spikes/roundtrip/GameAdapter.Navigation.cs`、`NavigationTasks.cs` | 原生节点点击、旅行边界和跨幕任务等待；地图摘要与身份并入基础观察 |
 | `spikes/roundtrip/English*.cs`、`HoverTipText.cs` | 英语资源读取与受控格式化，不切换全局语言 |
 | `scripts/roundtrip_client.py` | 标准库文件客户端和 CLI；默认玩法输出，`--raw` 保留诊断协议 |
 | `scripts/game_output.py` | 已知玩法字段的递归投影与类型检查、基础观察与手牌结构校验 |

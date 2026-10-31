@@ -18,6 +18,7 @@ internal sealed partial class GameAdapter
     private static string? NonCombatBoundary()
     {
         if (CombatManager.Instance.IsStarting) return null;
+        if (NavigationTasks.ChangingAct && !CardSelection.AwaitingInput) return null;
         if (EventConfirmation.Current is { } popup && EventConfirmation.Exposed(popup))
             return EventConfirmation.Ready(popup) ? "action_completed" : null;
         var selection = CardSelection.Current;
@@ -29,11 +30,12 @@ internal sealed partial class GameAdapter
         var currentEvent = EventInspection.Current;
         var global = NRun.Instance?.GlobalUi;
         bool mapReady = global != null && MapView.Ready(global.MapScreen);
+        bool mapOpening = global != null && MapView.Current(global.MapScreen);
         bool manual = NModalContainer.Instance?.OpenModal != null || global?.CapstoneContainer.InUse == true && selection?.Kind != "view_cards"
             || selection is { Supported: false, Exposed: true }
             || global?.Overlays.ScreenCount > 0 && !RunUi.OnlyRewardOverlays() && !DivinationInspection.OnlyOverlay
                 && (selection == null || !ReferenceEquals(global.Overlays.Peek(), selection.Owner))
-            || rewards == null && rest == null && treasure == null && shop == null && ancient == null && currentEvent == null && selection == null && !mapReady && RunUi.NonCombatVisible()
+            || rewards == null && rest == null && treasure == null && shop == null && ancient == null && currentEvent == null && selection == null && !mapOpening && RunUi.NonCombatVisible()
             || (treasure != null || shop != null || ancient != null || currentEvent != null) && !TreasureInspection.Singleplayer
             || NGame.Instance?.MainMenu != null;
         bool ready = DivinationInspection.Current is { } divination && DivinationInspection.Ready(divination)

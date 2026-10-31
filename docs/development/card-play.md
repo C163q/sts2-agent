@@ -1,6 +1,6 @@
 # 出牌与目标查询
 
-适用于 Mod `0.28.0`、MCP server `0.24.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。提供原生单人战斗中的一次手动出牌及只读目标查询；目标判定依据见 [源码调研](../research/2026-10-30-card-play-targeting.md)。
+适用于 Mod `0.29.0`、MCP server `0.25.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。提供原生单人战斗中的一次手动出牌及只读目标查询；目标判定依据见 [源码调研](../research/2026-10-30-card-play-targeting.md)。
 
 ## 查询目标
 

@@ -47,9 +47,36 @@
 
 候选读取原生地图当前的选路开关、节点状态和启用状态，遵循原生遗物 Hook。飞鞋（`WingedBoots`）有剩余次数时，`selectable_nodes` 可以包含不在当前节点 `next` 中的下一排节点；`next` 保持原地图连线。次数耗尽后按原生规则回归。起点、Boss 和第二 Boss 的特殊处理也沿用原生界面。
 
-战斗中不提前开放下一节点；绘图模式返回空候选。这里只提供当前游戏界面的候选，不代表项目已实现选路工具；查看不会点击地图节点、消耗飞鞋或进入房间。
+战斗中不提前开放下一节点；绘图模式返回空候选。候选可供 `travel_to_node` 使用；查看本身不会点击地图节点、消耗飞鞋或进入房间。
 
 只读取当前幕原生节点、可见图标及已绘制连线。未走过的问号不揭晓；普通敌人、精英、宝箱和商人节点不附送具体敌人、物品或库存。不读取随机种子、下一幕地图、未来随机结果、悬停历史或内部任务正文。自定义绘图的笔迹不转换为路线；图例和绘图工具的悬停说明留待后续扩展。
+
+## 地图选路
+
+适用于 Mod `0.29.0`、MCP `0.25.0`、schema `14`。`travel_to_node({"node_id":"map:1:2:3"})` 只接受当前已展开地图允许的节点。旅行真实离开当前房间，放弃未领取奖励；工具不会自动领取奖励、挑选路径或决定后续输入。飞鞋的合法路线与次数由原生 Hook 决定，不能只按 `next` 判断合法性。
+
+基础观察与成功动作结果在地图暴露时返回摘要，完整图仍通过 `inspect_map` 按需读取：
+
+```json
+{
+  "screen": {"status":"visible","view":"map"},
+  "map": {
+    "status":"visible","act":1,"current_node":"map:1:1:2",
+    "can_travel":true,"selectable_nodes":["map:1:2:1","map:1:2:3"]
+  },
+  "available_actions":["travel_to_node"]
+}
+```
+
+这是结构示例。底层 `scene` 保留房间类型，房间正文与奖励保持 covered；地图未展开、被覆盖或旅行中时 `map` 为 null。入场动画、绘图模式、战斗未完成等原生不允许选路的状态，候选与动作列表为空。不会在基础观察附送整幕图或下一房间内容。
+
+`inspect_map` 是切换页面的工具，调用后先 `get_observation` 再旅行。普通房间 `proceed` 的成功结果已经带有地图摘要时，可直接续接旅行。`travel_to_node` 返回完整观察和 `transition`：下一房间普通操作通常为 action_completed，战斗为 player_ready，入场选牌为 choice_required，未知界面为 manual_input_required。父入场任务等待玩家选择时不会死等；卡牌选择仍使用原有工具。失败或不完整结果须重新观察，不自动重试。
+
+节点 ID 只能用于当前对局、当前幕的当前地图；动作令牌还校验地图身份、候选和页面状态。错误 ID 格式在 UI 操作前拒绝，旧令牌返回 stale_state，非候选、关闭/被覆盖的地图等返回 illegal_action。目标被滚动到屏幕外时，工具先通过原生滚动露出目标再点击；不直接调用进入房间 API。
+
+### Boss 与跨幕
+
+`proceed` 保留原生奖励页行为：普通战后打开地图；双 Boss 的第一个 Boss 战后打开只有第二个 Boss 可选的地图；每幕最后一个 Boss 战后直接进入下一幕地图。跨幕等待原生任务与地图动画完成，再提供新幕候选，不把尚在入场的地图误判为未知页面。第三幕后进入 TheArchitect 时停在人工输入边界，本接口不操作终章或结局。
 
 ## 页面与失败语义
 
@@ -78,3 +105,5 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_map
 Mod 0.12.0 已在正式 Steam 单人战斗中重启验证：第一幕 64 个节点、76 条连线，Boss 为 Ceremonial Beast；战斗中候选为空，重复读取一致，显式关闭后战斗观察不变。正式样本为 `.tmp/live/map/map-inspection.json`，请求证据为同目录 `map-evidence.json`。飞鞋、双 Boss、跨幕和战后候选仍以独立夹具的验证为准。实施证据见 [地图设计与实施记录](../research/2026-10-29-map-inspection.md)。
 
 真实 stdio MCP 也已在该正式对局验证，输出与文件 JSON 完全一致，参数拒绝、重复查看、显式关闭和前后玩法不变均通过；样本为 `.tmp/live/mcp-map/map-inspection.json`，证据为同目录 `mcp-map-evidence.json`。使用 `.tmp/mcp-venv/bin/python scripts/verify_mcp_map.py --ipc-dir .tmp/live/ipc --output-dir .tmp/live/mcp-map` 可执行同一套 UI 验证，不选路、出牌或结束回合。范围与检查见 [地图 MCP 实施记录](../research/2026-10-29-mcp-map-inspection.md)。
+
+选路与跨幕的目标版本源码证据、图形验证及未验证范围见[选路验证记录](../research/2026-10-31-map-travel-validation.md)。

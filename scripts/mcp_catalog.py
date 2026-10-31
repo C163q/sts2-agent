@@ -1,5 +1,6 @@
 from mcp.types import Tool, ToolAnnotations
 
+from map_details import TRAVEL_SCHEMA
 from deck_details import DECK_SCHEMA
 from pile_details import PILE_SCHEMA
 from selection_details import CARD_SCHEMA, OPTION_SCHEMA, VIEW_SCHEMA
@@ -33,6 +34,9 @@ def tool_definitions(*, screenshots_enabled=False):
     view = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False)
     action = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False)
     definitions = [
+        Tool(name='travel_to_node', inputSchema=TRAVEL_SCHEMA, annotations=action, description=(
+            'Travel to one node_id from the exposed map.selectable_nodes. Leaves the room and forfeits unclaimed rewards. '
+            'Uses native routes and Winged Boots charges; stops at the next input boundary.')),
         Tool(name='respond_to_confirmation', inputSchema=CONFIRMATION_SCHEMA, annotations=action, description=(
             'Click confirm or cancel on the observed Trial event confirmation. Confirm abandons this run; '
             'cancel returns to the event. Never chooses automatically or operates other dialogs.')),

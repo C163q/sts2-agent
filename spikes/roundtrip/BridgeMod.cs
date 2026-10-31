@@ -27,6 +27,7 @@ public static class BridgeMod
         TurnCapture.Initialize();
         RelicObtainTracker.Initialize();
         EventTaskTracker.Initialize();
+        NavigationTasks.Initialize();
         EventConfirmation.Initialize();
         DivinationTasks.Initialize();
         CombatEntryCapture.Initialize();
@@ -63,6 +64,7 @@ public static class BridgeMod
         {
             if (!operation!.IsCompleted)
                 return;
+            if (operation.IsFaulted) GD.PushError("[Sts2Agent] Operation failed: " + operation.Exception);
             string response = operation.IsCompletedSuccessfully ? operation.Result
                 : FileMailbox.Error(active.Request.Id,
                     operation.Exception?.GetBaseException() is TimeoutException ? "timeout" : "game_error",

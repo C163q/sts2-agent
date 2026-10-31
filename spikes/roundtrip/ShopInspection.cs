@@ -28,7 +28,7 @@ internal sealed class ShopInspection
             Context? result = room is MerchantRoom && NMerchantRoom.Instance is { } merchant && ReferenceEquals(merchant.Room, room)
                 ? new(merchant, merchant.Inventory, merchant.MerchantButton, merchant.ProceedButton)
                 : room is EventRoom { CanonicalEvent: MegaCrit.Sts2.Core.Models.Events.FakeMerchant } events
-                    && events.LocalMutableEvent?.Node is NFakeMerchant fake
+                    && RunUi.LocalEvent?.Node is NFakeMerchant fake
                 ? new(fake, fake.Inventory, fake.MerchantButton, fake.GetNode<NProceedButton>("%ProceedButton")) : null;
             return result != null && GodotObject.IsInstanceValid(result.Owner) && result.Owner.IsNodeReady()
                 && !result.Owner.IsQueuedForDeletion() ? result : null;

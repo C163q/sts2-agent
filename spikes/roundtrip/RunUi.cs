@@ -5,11 +5,27 @@ using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.Cards;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Runs;
+using MegaCrit.Sts2.Core.Context;
+using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Rooms;
 
 namespace Sts2Agent;
 
 internal static class RunUi
 {
+    public static EventModel? LocalEvent
+    {
+        get
+        {
+            var run = RunManager.Instance.DebugOnlyGetState();
+            if (run?.CurrentRoom is not EventRoom || LocalContext.GetMe(run) is not { } player) return null;
+            var events = RunManager.Instance.EventSynchronizer.Events;
+            int slot = run.GetPlayerSlotIndex(player);
+            // Room identity changes before asynchronous event setup fills the synchronizer.
+            return slot >= 0 && slot < events.Count ? events[slot] : null;
+        }
+    }
+
     public static bool ResourceMotionPending() => NRun.Instance is { } run
         && (CardSelection.Field(run.GlobalUi.TopBar.Gold, "_alreadyRunning") is true
             || VisibleUi.Descendants<MegaCrit.Sts2.Core.Nodes.Potions.NPotion>(run.GlobalUi.TopBar.PotionContainer)

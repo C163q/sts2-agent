@@ -60,6 +60,7 @@ from ancient_details import inspect_ancient_details
 
 
 READERS = {
+    'travel_to_node': end_turn_details,
     'respond_to_confirmation': end_turn_details,
     'set_divination_tool': end_turn_details,
     'divine': end_turn_details,

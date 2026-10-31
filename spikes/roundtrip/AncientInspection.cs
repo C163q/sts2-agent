@@ -19,8 +19,7 @@ internal sealed class AncientInspection
     private int nextId;
     public int Generation { get; private set; }
 
-    public static Context? Current => RunManager.Instance.DebugOnlyGetState()?.CurrentRoom is EventRoom room
-        && room.LocalMutableEvent is AncientEventModel ancient && NEventRoom.Instance?.Layout is NAncientEventLayout layout
+    public static Context? Current => RunUi.LocalEvent is AncientEventModel ancient && NEventRoom.Instance?.Layout is NAncientEventLayout layout
         && ReferenceEquals(ancient.Node, layout) && GodotObject.IsInstanceValid(layout) && layout.IsNodeReady() && !layout.IsQueuedForDeletion()
         ? new(ancient, layout) : null;
 
