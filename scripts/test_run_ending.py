@@ -70,7 +70,8 @@ class EndingSessionTests(unittest.IsolatedAsyncioTestCase):
         client = Client(); tools = GameTools(client)
         await tools.get_observation()
         result = await tools.run_result_option({'option_id': 'continue'})
-        self.assertEqual(result['run_result']['phase'], 'summary')
+        self.assertNotIn('run_result', result)
+        self.assertEqual((await tools.inspect_run_result())['run_result']['phase'], 'summary')
         self.assertEqual(tools.snapshot_id, 'result-2')
         await tools.inspect_run_result()
         self.assertEqual(tools.snapshot_id, 'result-2')
@@ -122,12 +123,14 @@ class EndingStdioTests(unittest.IsolatedAsyncioTestCase):
 
         class EndingGame(FakeGame):
             def run(self):
+                current = state()
                 while not self.stopped.wait(.002):
                     for path in self.requests.glob('*.json'):
-                        request = json.loads(path.read_text()); raw = state()
+                        request = json.loads(path.read_text()); raw = copy.deepcopy(current)
                         if request['operation'] == 'run_result_option':
                             raw = state('summary')
                             raw.update(snapshot_id='after-continue', transition={'complete': True, 'stop_reason': 'action_completed', 'events': []})
+                            current = raw
                         self.operations.append(request)
                         (self.responses / path.name).write_text(json.dumps({'id': request['id'], 'ok': True, 'state': raw}))
                         path.unlink()
@@ -146,4 +149,6 @@ class EndingStdioTests(unittest.IsolatedAsyncioTestCase):
                     await session.call_tool('get_observation', {})
                     result = await session.call_tool('run_result_option', {'option_id': 'continue'})
                     self.assertEqual(result.structuredContent, json.loads(result.content[0].text))
-                    self.assertEqual(result.structuredContent['run_result']['phase'], 'summary')
+                    self.assertNotIn('run_result', result.structuredContent)
+                    details = await session.call_tool('inspect_run_result', {})
+                    self.assertEqual(details.structuredContent['run_result']['phase'], 'summary')

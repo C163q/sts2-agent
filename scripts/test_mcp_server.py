@@ -367,7 +367,8 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             await tools.inspect_relics()
-            self.assertEqual((await tools.end_turn())["turn"], 2)
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual(game.turn, 2)
             self.assertEqual(game.operations[-1]["expected_state"], "state-1")
 
     async def test_relic_inspection_invalidates_a_changed_observation_token(self):
@@ -446,7 +447,8 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             await tools.inspect_combatants()
-            self.assertEqual((await tools.end_turn())["turn"], 2)
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual(game.turn, 2)
             self.assertEqual(game.operations[-1]["expected_state"], "state-1")
 
     async def test_combatant_inspection_invalidates_a_changed_observation_token(self):
@@ -600,7 +602,8 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             await tools.inspect_potions()
-            self.assertEqual((await tools.end_turn())["turn"], 2)
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual(game.turn, 2)
             self.assertEqual(game.operations[-1]["expected_state"], "state-1")
 
     async def test_potion_inspection_invalidates_a_changed_observation_token(self):
@@ -729,7 +732,8 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             await tools.inspect_ui()
-            self.assertEqual((await tools.end_turn())["turn"], 2)
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual(game.turn, 2)
             self.assertEqual(game.operations[-1]["expected_state"], "state-1")
 
     async def test_ui_inspection_invalidates_a_changed_observation_token(self):
@@ -827,7 +831,8 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             await tools.get_observation()
             await tools.inspect_hand()
             result = await tools.end_turn()
-            self.assertEqual(result["turn"], 2)
+            self.assertTrue(result["transition"]["complete"])
+            self.assertEqual(game.turn, 2)
             self.assertEqual(game.operations[-1]["expected_state"], "state-1")
 
     async def test_inspection_does_not_forward_combat_fields_from_game_response(self):
@@ -898,14 +903,17 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(before["available_actions"], ["end_turn"])
             self.assertFalse({"ok", "state", "snapshot_id", "session", "schema_version", "overlay"} & before.keys())
             after = await tools.end_turn()
-            self.assertEqual(after["turn"], 2)
+            self.assertTrue(after["transition"]["complete"])
+            self.assertEqual(game.turn, 2)
             self.assertEqual(game.operations[-1]["expected_state"], "state-1")
             following = await tools.end_turn()
-            self.assertEqual(following["turn"], 3)
+            self.assertTrue(following["transition"]["complete"])
+            self.assertEqual(game.turn, 3)
             self.assertEqual(len(game.operations), 3)
             self.assertEqual(game.operations[-1]["expected_state"], "state-2")
             self.assertEqual((await tools.get_observation())["turn"], 3)
-            self.assertEqual((await tools.end_turn())["turn"], 4)
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual(game.turn, 4)
             self.assertEqual(game.operations[-1]["expected_state"], "state-3")
 
     async def test_stale_state_is_reported_without_refresh_or_retry(self):
@@ -920,7 +928,8 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(len(game.operations), 2)
             self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
             self.assertEqual((await tools.get_observation())["turn"], 2)
-            self.assertEqual((await tools.end_turn())["turn"], 3)
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual(game.turn, 3)
 
     async def test_timed_out_action_is_not_repeated(self):
         with FakeGame() as game:
@@ -950,7 +959,8 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             results = await asyncio.gather(tools.end_turn(), tools.end_turn())
-            self.assertEqual([result.get("turn") for result in results], [2, None])
+            self.assertEqual([result.get("transition", {}).get("stop_reason") for result in results], ["player_ready", None])
+            self.assertEqual(game.turn, 2)
             self.assertEqual(results[1]["error"]["code"], "observation_required")
             self.assertEqual(len(game.operations), 2)
 
@@ -1077,10 +1087,11 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     await session.call_tool("get_observation", {})
                     executed = await session.call_tool("end_turn", {})
                     self.assertFalse(executed.isError)
-                    self.assertEqual(executed.structuredContent["turn"], 2)
+                    self.assertTrue(executed.structuredContent["transition"]["complete"])
+                    self.assertEqual(game.turn, 2)
                     following = await session.call_tool("end_turn", {})
                     self.assertFalse(following.isError)
-                    self.assertEqual(following.structuredContent["turn"], 3)
+                    self.assertTrue(following.structuredContent["transition"]["complete"])
                     self.assertEqual(game.turn, 3)
                     self.assertEqual([item["expected_state"] for item in game.operations if item["operation"] == "end_turn"],
                                      ["state-1", "state-2"])

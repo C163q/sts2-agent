@@ -1,3 +1,4 @@
+from verification_actions import observe_after_action
 import argparse
 import asyncio
 import json
@@ -39,7 +40,11 @@ async def verify(args):
                 evidence.append({'tool': name, 'arguments': arguments, 'result': data})
                 report.write_text(json.dumps(evidence, indent=2) + '\n')
                 if error: assert data.get('error', {}).get('code') == error, data
-                else: assert 'error' not in data, data
+                else:
+                    if 'error' in data:
+                        diagnostic = await asyncio.to_thread(raw.call, 'get_state')
+                        report.with_suffix('.diagnostic.json').write_text(json.dumps(diagnostic, indent=2) + '\n')
+                    assert 'error' not in data, data
                 return data
 
             async def fixture():
@@ -48,11 +53,11 @@ async def verify(args):
                 evidence.append({'fixture': result['state']})
                 return result['state']
 
-            async def choose(option): return await call('choose_rest_option', {'option_id': option})
+            async def choose(option): return await observe_after_action(call, await call('choose_rest_option', {'option_id': option}))
 
-            async def option(option): return await call('selection_option', {'option_id': option})
+            async def option(option): return await observe_after_action(call, await call('selection_option', {'option_id': option}))
 
-            async def select(card): return await call('select_card', {'card_id': card['id']})
+            async def select(card): return await observe_after_action(call, await call('select_card', {'card_id': card['id']}))
 
             def done(result):
                 assert result['transition'] == {'stop_reason': 'action_completed', 'complete': True, 'events': []}, result
@@ -79,7 +84,7 @@ async def verify(args):
                 assert after['hp'] == 54 and after['deck'] == before['deck'], after
                 assert result['rest_site']['options'] == [] and result['rest_site']['proceed']['enabled'], result
                 await call('capture_screenshot', {'filename': 'healed.png'})
-                result = await call('proceed'); done(result)
+                result = await observe_after_action(call, await call('proceed')); done(result)
                 assert result['screen']['view'] == 'map', result
             elif args.scenario in {'smith', 'multi'}:
                 result = await choose('SMITH')
@@ -133,7 +138,7 @@ async def verify(args):
                 after = await fixture()
                 assert after['lifts'] == 1 and after['kindle'] == before['kindle'] + 5 and after['hp'] == 54, after
                 assert {r['id'] for r in result['rest_site']['options']} == {'SMITH', 'COOK'}, result
-                result = await call('proceed'); done(result)
+                result = await observe_after_action(call, await call('proceed')); done(result)
                 assert result['screen']['view'] == 'map', result
             elif args.scenario == 'disabled':
                 assert all(not r['enabled'] for r in details['rest_site']['options'] if r['id'] in {'SMITH', 'COOK'}), details
@@ -157,10 +162,10 @@ async def verify(args):
                 details = await call('inspect_rewards')
                 if args.scenario == 'heal_rewards':
                     reward = next(r for r in details['rewards']['items'] if r['type'] == 'card')
-                    result = await call('claim_reward', {'reward_id': reward['id']})
+                    result = await observe_after_action(call, await call('claim_reward', {'reward_id': reward['id']}))
                     assert result['transition']['stop_reason'] == 'choice_required', result
                     await option('skip')
-                result = await call('proceed'); done(result)
+                result = await observe_after_action(call, await call('proceed')); done(result)
                 assert result['scene'] == 'rest_site' and result['rest_site']['proceed']['enabled'], result
                 after = await fixture()
                 if args.scenario == 'heal_rewards': assert after['hp'] == 54 and after['deck'] == before['deck'], after
@@ -170,7 +175,7 @@ async def verify(args):
                 result = await confirm_transform(call, result)
                 assert result['scene'] == 'rest_site' and result['rest_site']['proceed']['enabled'], result
                 assert len((await fixture())['deck']) == len(before['deck']), result
-                result = await call('proceed'); done(result)
+                result = await observe_after_action(call, await call('proceed')); done(result)
     report.write_text(json.dumps(evidence, indent=2) + '\n')
     print(f'PASS: {args.scenario}; {len(evidence)} calls/checks; {report}')
 

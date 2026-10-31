@@ -143,7 +143,9 @@ class ConfirmationSessionTests(unittest.IsolatedAsyncioTestCase):
                     cancelled = await session.call_tool('respond_to_confirmation', {'option': 'cancel'})
                     self.assertFalse(cancelled.isError)
                     self.assertEqual(cancelled.structuredContent, json.loads(cancelled.content[0].text))
-                    self.assertIsNone(cancelled.structuredContent['confirmation'])
+                    self.assertNotIn('confirmation', cancelled.structuredContent)
+                    observed = await session.call_tool('get_observation', {})
+                    self.assertIsNone(observed.structuredContent['confirmation'])
 
 
 if __name__ == '__main__': unittest.main()

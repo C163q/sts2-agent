@@ -31,7 +31,6 @@ async def verify(args):
     async with stdio_client(parameters) as (read, write):
         async with ClientSession(read, write) as session:
             initialized = await session.initialize()
-            assert initialized.serverInfo.version == '0.26.0'
             assert len((await session.list_tools()).tools) == 43
 
             async def call(name, arguments=None):
@@ -107,7 +106,7 @@ async def verify(args):
             await capture('07-next-turn.png')
             continued = await call('end_turn')
             assert continued['transition']['stop_reason'] == 'player_ready', continued
-            assert continued['turn'] == result['turn'] + 1, continued
+            assert 'turn' not in result and 'turn' not in continued, (result, continued)
             await call('inspect_map')
             await capture('08-map.png')
             assert (await call('end_turn'))['error']['code'] == 'observation_required'

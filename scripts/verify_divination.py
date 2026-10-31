@@ -1,3 +1,4 @@
+from verification_actions import observe_after_action
 import argparse
 import asyncio
 import base64
@@ -46,7 +47,7 @@ async def verify(args):
                 return data
 
             data = await call('get_observation')
-            data = await call('choose_event_option', {'option_id': data['event']['options'][args.option]['id']})
+            data = await observe_after_action(call, await call('choose_event_option', {'option_id': data['event']['options'][args.option]['id']}))
             assert data['transition']['stop_reason'] == 'action_completed', data
             assert data['divination']['remaining'] == (3 if args.option == 0 else 6), data
             assert data['divination']['tool'] == 'big' and data['divination']['phase'] == 'playing', data
@@ -59,9 +60,9 @@ async def verify(args):
                 await call('close_map'); data = await call('get_observation')
             inspected = await call('inspect_event')
             assert {k:v for k,v in inspected['divination'].items() if k != 'dialogue'} == {k:v for k,v in data['divination'].items() if k != 'dialogue'}, inspected
-            data = await call('set_divination_tool', {'tool': 'small'})
+            data = await observe_after_action(call, await call('set_divination_tool', {'tool': 'small'}))
             assert data['divination']['tool'] == 'small', data
-            data = await call('divine', {'x': 5, 'y': 5})
+            data = await observe_after_action(call, await call('divine', {'x': 5, 'y': 5}))
             geometry = await asyncio.to_thread(raw.call, 'check_test_divination')
             (captures / 'native-check.json').write_text(json.dumps(geometry, indent=2))
             full = await asyncio.to_thread(raw.call, 'capture_screenshot')
@@ -72,7 +73,7 @@ async def verify(args):
             assert data['divination']['remaining'] == (2 if args.option == 0 else 5), data
             await call('divine', {'x': 5, 'y': 5}, error='illegal_action')
             data = await call('get_observation')
-            data = await call('set_divination_tool', {'tool': 'big'})
+            data = await observe_after_action(call, await call('set_divination_tool', {'tool': 'big'}))
             if args.scenario in {'curse', 'rewards', 'full', 'relic'}:
                 kind = {'curse': 'CrystalSphereCurse', 'rewards': 'CrystalSpherePotion', 'full': 'CrystalSpherePotion', 'relic': 'CrystalSphereRelic'}[args.scenario]
                 item = next(i for i in geometry['state']['items'] if i['kind'] == kind)
@@ -91,7 +92,7 @@ async def verify(args):
                     planned.pop(0)
                 x, y = planned.pop(0) if planned else next((x,y) for y,row in enumerate(rows) for x,c in enumerate(row) if c == '#')
                 before_rows = rows
-                data = await call('divine', {'x': x, 'y': y})
+                data = await observe_after_action(call, await call('divine', {'x': x, 'y': y}))
                 assert data['transition']['complete'], data
                 if (data.get('divination') or {}).get('status') == 'visible':
                     expected_rows = [''.join('.' if abs(cx-x) <= 1 and abs(cy-y) <= 1 else c for cx,c in enumerate(row)) for cy,row in enumerate(before_rows)]
@@ -101,10 +102,10 @@ async def verify(args):
                     had_rewards = True
                     if args.scenario == 'full':
                         potion = next(r for r in data['rewards']['items'] if r['type'] == 'potion')
-                        data = await call('claim_reward', {'reward_id': potion['id']})
+                        data = await observe_after_action(call, await call('claim_reward', {'reward_id': potion['id']}))
                         assert data['reward_result']['status'] == 'not_claimed', data
-                        data = await call('discard_potion', {'potion_slot': 0})
-                        data = await call('claim_reward', {'reward_id': potion['id']})
+                        data = await observe_after_action(call, await call('discard_potion', {'potion_slot': 0}))
+                        data = await observe_after_action(call, await call('claim_reward', {'reward_id': potion['id']}))
                         assert data['reward_result']['status'] == 'claimed', data
                         reward_types.add('potion')
                     attempted = set()
@@ -113,12 +114,12 @@ async def verify(args):
                         if not candidates: break
                         reward = candidates[0]; attempted.add(reward['id'])
                         reward_types.add(reward['type'])
-                        data = await call('claim_reward', {'reward_id': reward['id']})
+                        data = await observe_after_action(call, await call('claim_reward', {'reward_id': reward['id']}))
                         if (data.get('selection') or {}).get('status') == 'visible':
                             skip = next(o for o in data['selection']['options'] if o['enabled'] and o['id'] == 'skip')
-                            data = await call('selection_option', {'option_id': skip['id']})
+                            data = await observe_after_action(call, await call('selection_option', {'option_id': skip['id']}))
                     if data['scene'] != 'rewards': break
-                    data = await call('proceed')
+                    data = await observe_after_action(call, await call('proceed'))
             assert data['divination']['phase'] == 'finished' and 'proceed' in data['available_actions'], data
             if args.scenario in {'rewards', 'full', 'relic'}: assert had_rewards, data
             if args.scenario in {'rewards', 'full'}: assert {'card', 'potion'} <= reward_types, reward_types
@@ -126,7 +127,7 @@ async def verify(args):
                 after = await asyncio.to_thread(raw.call, 'check_test_divination')
                 assert after['state']['deck'].count('DOUBT') == geometry['state']['deck'].count('DOUBT') + 1, after
             if args.scenario == 'delayed': await asyncio.sleep(4)
-            data = await call('proceed')
+            data = await observe_after_action(call, await call('proceed'))
             assert data['screen']['view'] == 'map', data
             assert (await call('inspect_map'))['can_travel'], data
     print(f'PASS: divination option {args.option}')

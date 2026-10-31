@@ -122,6 +122,7 @@ class TreasureStdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(bad.structuredContent['error']['code'], 'invalid_request')
                     await session.call_tool('get_observation', {})
                     result = await session.call_tool('loot_treasure', {'open_only': True})
-                    self.assertEqual(result.structuredContent['treasure']['chest'], 'open')
+                    self.assertNotIn('treasure', result.structuredContent)
+                    self.assertEqual(result.structuredContent['transition']['stop_reason'], 'action_completed')
                     self.assertEqual(json.loads(result.content[0].text), result.structuredContent)
             self.assertEqual(game.operations[-1]['arguments'], {'open_only': True})

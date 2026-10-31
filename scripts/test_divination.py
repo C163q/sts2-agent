@@ -74,7 +74,7 @@ class DivinationClient:
         self.calls.append((operation, expected_state, arguments))
         if operation == 'set_divination_tool': self.raw['divination']['tool'] = arguments['tool']
         if operation == 'divine': self.raw['divination']['remaining'] -= 1
-        if operation != 'get_state':
+        if operation in {'set_divination_tool', 'divine'}:
             self.raw['snapshot_id'] = 'sphere-' + str(len(self.calls))
             self.raw['transition'] = {'complete': True, 'stop_reason': 'action_completed', 'events': []}
         return {'ok': True, 'state': copy.deepcopy(self.raw)}
@@ -90,10 +90,13 @@ class DivinationSessionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(json.loads(observed.content[0].text), observed.structuredContent)
         self.assertNotIn('png_base64', observed.content[0].text)
         changed = await tools.set_divination_tool({'tool': 'small'})
-        self.assertEqual(changed['divination']['tool'], 'small')
+        self.assertNotIn('divination', changed)
+        self.assertEqual((await tools.inspect_event())['divination']['tool'], 'small')
         result = await tools.divine({'x': 0, 'y': 10})
-        self.assertEqual(result['divination']['remaining'], 2)
+        self.assertNotIn('divination', result)
+        self.assertEqual([c.type for c in tool_result(result).content], ['text'])
         self.assertEqual(client.calls[-1], ('divine', 'sphere-2', {'x': 0, 'y': 10}))
+        self.assertEqual((await tools.inspect_event())['divination']['remaining'], 2)
 
     async def test_strict_arguments_and_inspection_never_grant_action_permission(self):
         for operation, arguments in [('divine', {'x': True, 'y': 0}), ('divine', {'x': 0.0, 'y': 0}),
@@ -162,5 +165,8 @@ class DivinationSessionTests(unittest.IsolatedAsyncioTestCase):
                     response = await session.call_tool('get_observation', {})
                     self.assertEqual([c.type for c in response.content], ['text', 'image'])
                     response = await session.call_tool('divine', {'x': 3, 'y': 6})
+                    self.assertNotIn('divination', response.structuredContent)
+                    self.assertEqual([c.type for c in response.content], ['text'])
+                    response = await session.call_tool('inspect_event', {})
                     self.assertEqual(response.structuredContent['divination']['remaining'], 2)
                     self.assertEqual([c.type for c in response.content], ['text', 'image'])

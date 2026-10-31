@@ -8,6 +8,7 @@ from pathlib import Path
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from roundtrip_client import Client
+from verification_actions import completed_action_snapshot
 
 
 async def verify(args):
@@ -25,7 +26,8 @@ async def verify(args):
         await asyncio.sleep(.1)
         initial = await asyncio.to_thread(raw.call, 'get_state')
     assert initial['state']['scene'] == 'main_menu', 'Requires a fresh isolated test game.'
-    created = await asyncio.to_thread(raw.call, 'start_test_combat', initial['state']['snapshot_id'])
+    created = await asyncio.to_thread(Client(raw.directory, timeout=120).call,
+                                      'start_test_combat', initial['state']['snapshot_id'])
     assert created['ok'], created
     evidence = []
     params = StdioServerParameters(command=sys.executable, args=[str(root / 'scripts/mcp_server.py'),
@@ -54,7 +56,8 @@ async def verify(args):
                 for discovery in (c for c in state['player']['hand'] if c['name'] == 'Discovery'):
                     choosing = await call('play_card', {'card_id': discovery['id']})
                     assert choosing['transition']['stop_reason'] == 'choice_required' and choosing['transition']['complete'], choosing
-                    candidate = choosing['selection']['cards'][0]['id']
+                    choices = await call('inspect_selection')
+                    candidate = choices['selection']['cards'][0]['id']
                     # The native choose-one UI has a brief click delay; do not refresh permission.
                     await asyncio.sleep(1)
                     resolved = await call('select_card', {'card_id': candidate})
@@ -73,17 +76,18 @@ async def verify(args):
                 strike = next(c for c in state['player']['hand'] if c['name'] == 'Strike')
                 settled = await call('play_card', {'card_id': strike['id'], 'target_id': victim})
             assert settled['transition']['stop_reason'] == 'player_ready' and settled['transition']['complete'], settled
+            settled_snapshot = completed_action_snapshot(raw.directory, settled)
             if args.scenario != 'ui':
                 assert any(e['type'] == 'died' and e['target']['id'] == victim for e in settled['transition']['events']), settled
             # Cross the original native death/fade window without refreshing MCP permission.
             await asyncio.sleep(4)
             following = await call('play_card', {'card_id': defend['id']})
             assert following['transition']['stop_reason'] == 'player_ready' and following['transition']['complete'], following
-            assert following['player']['block'] >= 5, following
+            assert completed_action_snapshot(raw.directory, following)['player']['block'] >= 5, following
             if args.scenario not in {'phase', 'ui'}:
-                assert all(e['id'] != victim for e in settled['enemies']), settled
+                assert all(e['id'] != victim for e in settled_snapshot['enemies']), settled_snapshot
             if args.scenario == 'phase':
-                assert any(e['id'] == victim and e['hp_display'] == 'hidden' for e in settled['enemies']), settled
+                assert any(e['id'] == victim and e['hp_display'] == 'hidden' for e in settled_snapshot['enemies']), settled_snapshot
             await call('capture_screenshot', {'filename': 'continued.png'})
 
             # External actions must still invalidate the last returned permission.

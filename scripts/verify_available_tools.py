@@ -1,3 +1,4 @@
+from verification_actions import observe_after_action
 import argparse
 import asyncio
 import json
@@ -107,7 +108,7 @@ async def verify(args):
             elif args.scenario == 'confirmation':
                 full = await check('event', {'inspect_event', 'choose_event_option'})
                 await call('get_observation')
-                full = await call('choose_event_option', {'option_id': full['event']['options'][1]['id']})
+                full = await observe_after_action(call, await call('choose_event_option', {'option_id': full['event']['options'][1]['id']}))
                 option = next(o for o in full['event']['options'] if o['enabled'] and o['lethal_warning'])
                 await call('get_observation'); await call('choose_event_option', {'option_id': option['id']})
                 await check('confirmation', {'respond_to_confirmation'}, public - {'respond_to_confirmation'})
@@ -129,7 +130,7 @@ async def verify(args):
                 target = await call('inspect_targets', {'potion_slot': 0})
                 assert target['usable'] and not target['requires_target'], target
                 await call('get_observation')
-                following = await call('use_potion', {'potion_slot': 0})
+                following = await observe_after_action(call, await call('use_potion', {'potion_slot': 0}))
                 assert following['top_bar']['max_hp'] == full['top_bar']['max_hp'] + 5, following
                 await check(args.scenario + '-used', required, {'play_card', 'end_turn'})
                 await call('get_observation'); await call('discard_potion', {'potion_slot': 2})

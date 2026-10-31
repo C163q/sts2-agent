@@ -75,7 +75,8 @@ class MapMcpTests(unittest.IsolatedAsyncioTestCase):
                 for arguments in ({"act": 2}, [], False, 0, ""):
                     self.assertEqual((await method(arguments))["error"]["code"], "invalid_request")
             self.assertEqual([x["operation"] for x in game.operations], ["get_state"])
-            self.assertEqual((await tools.end_turn())["turn"], 2)
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual(game.turn, 2)
 
     async def test_errors_timeouts_and_cancellation_do_not_restore_permission_or_retry(self):
         from mcp_server import GameTools

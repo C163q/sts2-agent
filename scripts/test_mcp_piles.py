@@ -52,7 +52,8 @@ class PileMcpTests(unittest.IsolatedAsyncioTestCase):
                 with self.subTest(args=args):
                     self.assertEqual((await tools.inspect_pile(args))["error"]["code"], "invalid_request")
             self.assertEqual([op["operation"] for op in game.operations], ["get_state"])
-            self.assertEqual((await tools.end_turn())["turn"], 2)
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual(game.turn, 2)
 
     async def test_empty_and_unavailable_are_successful_observations_not_action_authorization(self):
         from mcp_server import GameTools

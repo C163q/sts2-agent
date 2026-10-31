@@ -230,7 +230,8 @@ class ScreenshotStdioTests(unittest.IsolatedAsyncioTestCase):
                         self.assertFalse(result.isError)
                         action = await session.call_tool('end_turn', {})
                         self.assertFalse(action.isError)
-                        self.assertEqual(action.structuredContent['turn'], 2)
+                        self.assertTrue(action.structuredContent['transition']['complete'])
+                        self.assertEqual(game.turn, 2)
                         request = next(item for item in game.operations if item['operation'] == 'capture_screenshot')
                         self.assertNotIn('arguments', request)
 

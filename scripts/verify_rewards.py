@@ -1,3 +1,4 @@
+from verification_actions import observe_after_action
 import argparse
 import asyncio
 import json
@@ -79,24 +80,24 @@ async def verify(args):
                 await call('get_observation')
                 check = await call('inspect_rewards')
                 assert {r['id'] for r in check['rewards']['items']} == ids
-                choice = await call('claim_reward', {'reward_id': by_type('card')['id']})
+                choice = await observe_after_action(call, await call('claim_reward', {'reward_id': by_type('card')['id']}))
                 assert choice['transition']['stop_reason'] == 'choice_required', choice
                 assert 'select_card' in choice['available_actions'], choice
                 assert choice['selection']['type'] == 'reward' and choice['rewards']['items'] is None, choice
                 await call('capture_screenshot', {'filename': 'card-choice.png'})
-                skipped = await call('selection_option', {'option_id': 'skip'})
+                skipped = await observe_after_action(call, await call('selection_option', {'option_id': 'skip'}))
                 assert skipped['transition']['stop_reason'] == 'action_completed', skipped
                 assert any(r['id'] == by_type('card')['id'] for r in (await call('inspect_rewards'))['rewards']['items'])
                 await call('claim_reward', {'reward_id': by_type('card')['id']})
                 selection = await call('inspect_selection')
                 anger = next(c for c in selection['selection']['cards'] if c['name'] == 'Anger')
-                chosen = await call('select_card', {'card_id': anger['id']})
+                chosen = await observe_after_action(call, await call('select_card', {'card_id': anger['id']}))
                 assert chosen['transition']['stop_reason'] == 'action_completed', chosen
                 await call('claim_reward', {'reward_id': by_type('special_card')['id']})
                 for row in [r for r in rows if r['type'] == 'gold']:
                     await call('claim_reward', {'reward_id': row['id']})
                 await call('claim_reward', {'reward_id': by_type('potion')['id']})
-                emptied = await call('claim_reward', {'reward_id': by_type('relic')['id']})
+                emptied = await observe_after_action(call, await call('claim_reward', {'reward_id': by_type('relic')['id']}))
                 assert emptied['rewards']['items'] == [], emptied
                 assert emptied['rewards']['proceed']['text'] == 'Proceed', emptied
                 assert not emptied['rewards']['proceed']['skips_remaining'], emptied
@@ -106,12 +107,12 @@ async def verify(args):
                 assert len(after['deck']) == len(before['deck']) + 2, after
                 assert any(c['name'].startswith('Strike') and c['upgrades'] == 1 for c in after['deck']), after
                 assert 'WHETSTONE' in after['relics'] and after['potions'][0] == 'BLOCK_POTION', after
-                proceeded = await call('proceed')
+                proceeded = await observe_after_action(call, await call('proceed'))
                 assert proceeded['transition']['stop_reason'] == 'action_completed', proceeded
                 assert proceeded['screen']['view'] == 'map', proceeded
                 await call('inspect_map')
             elif args.scenario == 'full':
-                blocked = await call('claim_reward', {'reward_id': by_type('potion')['id']})
+                blocked = await observe_after_action(call, await call('claim_reward', {'reward_id': by_type('potion')['id']}))
                 assert blocked['transition']['stop_reason'] == 'action_completed', blocked
                 assert blocked['reward_result']['status'] == 'not_claimed', blocked
                 assert (await fixture())['potions'] == before['potions']
@@ -135,32 +136,32 @@ async def verify(args):
                 await call('capture_screenshot', {'filename': 'final.png'})
             elif args.scenario == 'linked':
                 assert len(rows) == 2 and rows[0]['linked_group'] == rows[1]['linked_group'] is not None, rows
-                result = await call('claim_reward', {'reward_id': by_type('gold')['id']})
+                result = await observe_after_action(call, await call('claim_reward', {'reward_id': by_type('gold')['id']}))
                 assert result['rewards']['items'] == [], result
                 after = await fixture()
                 assert after['gold'] == before['gold'] + 17 and after['potions'] == before['potions'], after
             elif args.scenario in {'skip', 'empty'}:
                 assert initial['rewards']['proceed']['skips_remaining'] == (args.scenario == 'skip'), initial
-                result = await call('proceed')
+                result = await observe_after_action(call, await call('proceed'))
                 assert result['screen']['view'] == 'map' and result['transition']['stop_reason'] == 'action_completed', result
                 await call('inspect_map')
                 after = await fixture()
                 assert before['gold'] == after['gold'] and before['deck'] == after['deck'], after
             elif args.scenario == 'nested':
-                result = await call('claim_reward', {'reward_id': by_type('relic')['id']})
+                result = await observe_after_action(call, await call('claim_reward', {'reward_id': by_type('relic')['id']}))
                 assert result['transition']['stop_reason'] == 'action_completed', result
                 assert (await fixture())['preview_cards'] == 0, 'A native card preview still obscures reward rows.'
                 nested = await call('inspect_rewards')
                 assert len(nested['rewards']['items']) == 3, nested
                 await call('capture_screenshot', {'filename': 'nested.png'})
-                result = await call('proceed')
+                result = await observe_after_action(call, await call('proceed'))
                 assert result['rewards']['items'] == [] and result['rewards']['proceed']['text'] == 'Proceed', result
                 assert 'CALLING_BELL' in (await fixture())['relics']
             elif args.scenario == 'unsupported':
-                result = await call('claim_reward', {'reward_id': by_type('relic')['id']})
+                result = await observe_after_action(call, await call('claim_reward', {'reward_id': by_type('relic')['id']}))
                 result = await confirm_transform(call, result)
                 assert result['scene'] == 'rewards', result
-                result = await call('proceed')
+                result = await observe_after_action(call, await call('proceed'))
                 assert result['transition']['stop_reason'] == 'action_completed', result
             elif args.scenario == 'returned':
                 special = by_type('special_card')

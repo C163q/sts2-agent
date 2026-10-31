@@ -32,7 +32,8 @@ internal static class RestSiteInspection
     public static bool Ready(NRestSiteRoom room)
     {
         if (!Exposed(room) || !RunManager.Instance.ActionQueueSet.IsEmpty
-            || RewardInspection.Animating(room, "_choicesTween")) return false;
+            || RewardInspection.Animating(room, "_choicesTween")
+            || RewardInspection.Animating(room, "_descriptionTween")) return false;
         var buttons = Buttons(room);
         if (buttons.Any(b => CardSelection.Field(b, "_executingOption") is true)) return false;
         if (room.Options.Count == 0) return Proceed(room)?.IsEnabled == true;

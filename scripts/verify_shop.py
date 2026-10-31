@@ -1,3 +1,4 @@
+from verification_actions import observe_after_action
 import argparse
 import asyncio
 import json
@@ -57,12 +58,12 @@ async def verify(args):
                 assert result['transition']['stop_reason'] == 'choice_required', result
                 assert result['shop']['status'] == 'covered' and result['selection']['type'] == 'deck', result
                 if cancel:
-                    return await call('selection_option', {'option_id': 'cancel'})
+                    return await observe_after_action(call, await call('selection_option', {'option_id': 'cancel'}))
                 details = await call('inspect_selection')
-                selected = await call('select_card', {'card_id': details['selection']['cards'][0]['id']})
+                selected = await observe_after_action(call, await call('select_card', {'card_id': details['selection']['cards'][0]['id']}))
                 assert selected['selection']['options'], selected
                 await call('capture_screenshot', {'filename': 'removal-preview.png'})
-                return await call('selection_option', {'option_id': 'confirm'})
+                return await observe_after_action(call, await call('selection_option', {'option_id': 'confirm'}))
 
             await call('open_shop', error='observation_required')
             result = await call('get_observation')
@@ -76,8 +77,8 @@ async def verify(args):
                 await call('buy_item', {'item_id': item['id']}, error='illegal_action')
                 assert (await fixture()) == before
                 await call('get_observation')
-                result = await call('close_shop'); done(result)
-                result = await call('proceed'); done(result)
+                result = await observe_after_action(call, await call('close_shop')); done(result)
+                result = await observe_after_action(call, await call('proceed')); done(result)
                 print(f'PASS: {args.scenario}; {len(evidence)} calls/checks; {report}'); return
             if args.scenario == 'targeting':
                 assert before['targeting'] and before['targeting_pending'], before
@@ -91,8 +92,8 @@ async def verify(args):
                 assert canceled['ok'], canceled
                 evidence.append({'cancel_targeting': canceled})
                 await call('get_observation')
-                result = await call('open_shop'); done(result)
-                result = await call('close_shop'); done(result)
+                result = await observe_after_action(call, await call('open_shop')); done(result)
+                result = await observe_after_action(call, await call('close_shop')); done(result)
                 report.write_text(json.dumps(evidence, indent=2) + '\n')
                 print(f'PASS: {args.scenario}; {len(evidence)} calls/checks; {report}'); return
             if args.scenario == 'sozu':
@@ -124,7 +125,7 @@ async def verify(args):
                 if args.scenario in {'foul', 'fake'}:
                     foul = next(i for i, p in enumerate(result['top_bar']['potion_slots']) if p and p['name'] == 'Foul Potion')
                     assert result['top_bar']['potion_slots'][foul]['usable_here'], result
-                result = await call('open_shop'); done(result)
+                result = await observe_after_action(call, await call('open_shop')); done(result)
                 assert result['shop']['view'] == 'inventory', result
                 items = result['shop']['items']
                 assert len(items) == (6 if args.scenario == 'fake' else 14), result
@@ -143,12 +144,12 @@ async def verify(args):
                     assert covered['shop'] == dict.fromkeys(('view', 'items', 'open', 'back', 'proceed')) | {'status': 'covered'}, covered
                     await call('inspect_shop', error='illegal_action')
                     await call('close_map'); await call('get_observation')
-                    result = await call('close_shop'); done(result)
-                    result = await call('open_shop'); done(result)
+                    result = await observe_after_action(call, await call('close_shop')); done(result)
+                    result = await observe_after_action(call, await call('open_shop')); done(result)
                     for kind in ('card', 'relic', 'potion'):
                         item = next(i for i in result['shop']['items'] if i['kind'] == kind)
                         gold = result['top_bar']['gold']; count = result['top_bar']['deck_count']
-                        result = await call('buy_item', {'item_id': item['id']}); done(result)
+                        result = await observe_after_action(call, await call('buy_item', {'item_id': item['id']})); done(result)
                         assert result['purchase_result'] == {'item_id': item['id'], 'status': 'success'}, result
                         assert all(i['id'] != item['id'] for i in result['shop']['items']), result
                         assert result['top_bar']['gold'] == gold - item['price'], result
@@ -157,11 +158,11 @@ async def verify(args):
                     result = await call('get_observation')
                 elif args.scenario == 'remove':
                     item = next(i for i in items if i['kind'] == 'card_removal')
-                    result = await call('buy_item', {'item_id': item['id']})
+                    result = await observe_after_action(call, await call('buy_item', {'item_id': item['id']}))
                     result = await remove(result, cancel=True); done(result)
                     assert (await fixture())['gold'] == before['gold'], result
                     assert not next(i for i in result['shop']['items'] if i['kind'] == 'card_removal')['used'], result
-                    result = await call('buy_item', {'item_id': item['id']})
+                    result = await observe_after_action(call, await call('buy_item', {'item_id': item['id']}))
                     result = await remove(result); done(result)
                     after = await fixture()
                     assert after['deck_count'] == before['deck_count'] - 1 and after['gold'] == before['gold'] - item['price'], after
@@ -169,16 +170,16 @@ async def verify(args):
                     assert removal['used'] and removal['price'] is None and not removal['enabled'], removal
                 elif args.scenario == 'courier':
                     item = next(i for i in items if i['kind'] == 'card' and i['on_sale'])
-                    result = await call('buy_item', {'item_id': item['id']}); done(result)
+                    result = await observe_after_action(call, await call('buy_item', {'item_id': item['id']})); done(result)
                     replacement = next(i for i in result['shop']['items'] if i['position'] == item['position'])
                     assert replacement['id'] != item['id'] and not replacement['on_sale'], result
                     assert len(result['shop']['items']) == 14, result
                     await call('buy_item', {'item_id': item['id']}, error='illegal_action')
                     result = await call('get_observation')
-                    result = await call('buy_item', {'item_id': replacement['id']}); done(result)
+                    result = await observe_after_action(call, await call('buy_item', {'item_id': replacement['id']})); done(result)
                 elif args.scenario in {'full', 'sozu'}:
                     item = next(i for i in items if i['kind'] == 'potion')
-                    result = await call('buy_item', {'item_id': item['id']}); done(result)
+                    result = await observe_after_action(call, await call('buy_item', {'item_id': item['id']})); done(result)
                     assert result['purchase_result']['status'] == ('failure_forbidden' if args.scenario == 'sozu' else 'failure_space'), result
                     after = await fixture()
                     assert after == before, (before, after)
@@ -188,9 +189,9 @@ async def verify(args):
                     assert not query['usable'] and not query['targets'], query
                     if args.scenario == 'fake':
                         item = items[0]
-                        result = await call('buy_item', {'item_id': item['id']}); done(result)
+                        result = await observe_after_action(call, await call('buy_item', {'item_id': item['id']})); done(result)
                         assert len(result['shop']['items']) == 5, result
-                    result = await call('close_shop'); done(result)
+                    result = await observe_after_action(call, await call('close_shop')); done(result)
                     if args.scenario == 'foul':
                         await call('inspect_map'); await call('get_observation')
                         hidden_target = await call('inspect_targets', {'potion_slot': foul})
@@ -198,7 +199,7 @@ async def verify(args):
                         await call('close_map'); await call('get_observation')
                     query = await call('inspect_targets', {'potion_slot': foul})
                     assert query['usable'] and query['targets'] == [{'id': 'merchant', 'kind': 'merchant', 'name': 'Merchant'}], query
-                    result = await call('use_potion', {'potion_slot': foul, 'target_id': 'merchant'})
+                    result = await observe_after_action(call, await call('use_potion', {'potion_slot': foul, 'target_id': 'merchant'}))
                     if args.scenario == 'fake':
                         assert result['scene'] == 'combat' and result['transition']['stop_reason'] == 'player_ready', result
                         assert result['player']['hand'] and result['available_actions'], result
@@ -207,16 +208,16 @@ async def verify(args):
                         print(f'PASS: {args.scenario}; {len(evidence)} calls/checks; {report}'); return
                     done(result)
                     assert result['top_bar']['gold'] == before['gold'] + 100, result
-                    result = await call('open_shop'); done(result)
+                    result = await observe_after_action(call, await call('open_shop')); done(result)
                 elif args.scenario in {'nested', 'choice', 'cauldron', 'cauldron_sozu'}:
                     item = next(i for i in items if i['kind'] == 'relic')
-                    result = await call('buy_item', {'item_id': item['id']})
+                    result = await observe_after_action(call, await call('buy_item', {'item_id': item['id']}))
                     if args.scenario == 'choice':
                         result = await confirm_transform(call, result)
                         assert result['scene'] == 'shop' and all(i['id'] != item['id'] for i in result['shop']['items']), result
                         await call('capture_screenshot', {'filename': 'transformed.png'})
-                        result = await call('close_shop'); done(result)
-                        result = await call('proceed'); done(result)
+                        result = await observe_after_action(call, await call('close_shop')); done(result)
+                        result = await observe_after_action(call, await call('proceed')); done(result)
                         report.write_text(json.dumps(evidence, indent=2) + '\n')
                         print(f'PASS: {args.scenario}; {len(evidence)} calls/checks; {report}'); return
                     done(result)
@@ -224,25 +225,25 @@ async def verify(args):
                     if args.scenario == 'cauldron_sozu':
                         assert result['top_bar']['potion_slots'] == [None, None, None], result
                         reward = next(i for i in result['rewards']['items'] if i['type'] == 'potion')
-                        result = await call('claim_reward', {'reward_id': reward['id']}); done(result)
+                        result = await observe_after_action(call, await call('claim_reward', {'reward_id': reward['id']})); done(result)
                         assert result['reward_result'] == {'reward_id': reward['id'], 'status': 'not_obtained'}, result
                         assert result['top_bar']['potion_slots'] == [None, None, None], result
                         assert all(i['id'] != reward['id'] for i in result['rewards']['items']), result
                     if args.scenario == 'cauldron':
-                        result = await call('discard_potion', {'potion_slot': 0}); done(result)
+                        result = await observe_after_action(call, await call('discard_potion', {'potion_slot': 0})); done(result)
                         assert result['scene'] == 'rewards' and result['top_bar']['potion_slots'][0] is None, result
                         reward = next(i for i in result['rewards']['items'] if i['type'] == 'potion')
-                        result = await call('claim_reward', {'reward_id': reward['id']}); done(result)
+                        result = await observe_after_action(call, await call('claim_reward', {'reward_id': reward['id']})); done(result)
                         assert result['reward_result']['status'] == 'claimed', result
                         assert result['top_bar']['potion_slots'][0] is not None, result
-                    result = await call('proceed'); done(result)
+                    result = await observe_after_action(call, await call('proceed')); done(result)
                     assert result['scene'] == 'shop', result
                     assert all(i['id'] != item['id'] for i in result['shop']['items']), result
             await call('capture_screenshot', {'filename': 'settled.png'})
             stable = await call('get_observation')
             assert stable['top_bar'] == result['top_bar'] and stable['shop'] == result['shop'], stable
-            result = await call('close_shop'); done(result)
-            result = await call('proceed'); done(result)
+            result = await observe_after_action(call, await call('close_shop')); done(result)
+            result = await observe_after_action(call, await call('proceed')); done(result)
             assert result['screen']['view'] == 'map' and result['shop']['status'] == 'covered', result
     report.write_text(json.dumps(evidence, indent=2) + '\n')
     print(f'PASS: {args.scenario}; {len(evidence)} calls/checks; {report}')

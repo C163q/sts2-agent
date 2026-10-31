@@ -1,6 +1,6 @@
 # 战后搜刮与前进
 
-适用于 Mod `0.31.0`、MCP server `0.27.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。本接口逐项操作原生奖励界面；地图选路另用 `travel_to_node`。地图查看继续使用 `inspect_map` / `close_map`，卡牌奖励继续使用[选牌工具](card-selection.md)。
+适用于 Mod `0.33.0`、MCP server `0.28.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。本接口逐项操作原生奖励界面；地图选路另用 `travel_to_node`。地图查看继续使用 `inspect_map` / `close_map`，卡牌奖励继续使用[选牌工具](card-selection.md)。
 
 ## 观察与详情
 
@@ -43,7 +43,7 @@
 
 `claim_reward({"reward_id": 5})` 点击一行，按模型选择的顺序执行。工具不连领、不自动选择卡牌，也不自动丢弃已有药水。领取遗物可能立即改变牌组或后续奖励，因此每次都应阅读返回结果再决定下一项。
 
-动作返回完整观察、`transition` 和 `reward_result`：
+动作返回[精简回执](mcp.md#动作返回格式)，保留 `transition` 和 `reward_result`：
 
 ```json
 {"reward_result": {"reward_id": 1, "status": "not_claimed"}}

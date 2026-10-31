@@ -27,6 +27,10 @@ class Client:
         self.calls.append((operation, expected_state, arguments))
         if operation == 'inspect_hand':
             return {'ok': True, 'state': {'snapshot_id': self.token, 'hand': []}}
+        if operation == 'inspect_selection':
+            choice = selection()
+            choice['cards'][0]['hover_tips'] = []
+            return {'ok': True, 'state': {'snapshot_id': self.token, 'scene': 'card_selection', 'selection': choice}}
         if operation != 'get_state':
             if self.reply_error:
                 if isinstance(self.reply_error, Exception):
@@ -47,6 +51,83 @@ class Client:
 
 
 class ActionObservationTests(unittest.IsolatedAsyncioTestCase):
+    async def test_actions_return_only_context_and_complete_event_journal(self):
+        actions = [('play_card', {'card_id': 0}), ('end_turn', None),
+                   ('use_potion', {'potion_slot': 0}), ('discard_potion', {'potion_slot': 0}),
+                   ('select_card', {'card_id': 5}), ('selection_option', {'option_id': 'confirm'})]
+        event = {'type': 'card_drawn', 'sequence': 1, 'card': {'id': 8, 'name': 'Strike'}}
+        for name, arguments in actions:
+            with self.subTest(action=name):
+                client = Client()
+                client.mutate_reply = lambda state: state['transition'].update(events=[event])
+                tools = GameTools(client)
+                observed = await tools.get_observation()
+                self.assertIn('player', observed)
+                result = await getattr(tools, name)(arguments)
+                self.assertEqual(set(result), {'scene', 'screen', 'available_actions', 'transition'})
+                self.assertEqual(result['transition']['events'], [event])
+                self.assertEqual(tools.snapshot_id, 'state-2')
+
+    async def test_choice_receipt_omits_candidates_but_inspection_still_returns_them(self):
+        client = Client(); client.reason = 'choice_required'
+        tools = GameTools(client)
+        await tools.get_observation()
+        result = await tools.play_card({'card_id': 0})
+        self.assertEqual(result['selection'], {'type': 'choose_one', 'status': 'visible'})
+        self.assertEqual(set(result['notes']), {'selection'})
+        self.assertIn('set_selection_view', result['notes']['selection'])
+        self.assertNotIn('player', result)
+        self.assertEqual(tools.snapshot_id, 'state-2')
+        inspected = await tools.inspect_selection()
+        self.assertEqual(inspected['selection']['cards'][0]['id'], 5)
+        self.assertEqual(tools.snapshot_id, 'state-2')
+
+    async def test_manual_input_note_and_incomplete_journal_survive_projection(self):
+        for reason, complete in [('manual_input_required', True), ('timeout', False)]:
+            with self.subTest(reason=reason):
+                client = Client(); client.reason = reason; client.complete = complete
+                tools = GameTools(client)
+                await tools.get_observation()
+                result = await tools.end_turn()
+                self.assertNotIn('player', result)
+                self.assertEqual(result['transition'], {'stop_reason': reason, 'complete': complete, 'events': []})
+                if reason == 'manual_input_required':
+                    self.assertEqual(set(result['notes']), {'interaction'})
+                self.assertIsNone(tools.snapshot_id)
+
+    async def test_purchase_and_reward_receipts_keep_native_outcome(self):
+        from test_shop import state as shop_state
+        from test_rewards import state as reward_state
+        for operation, arguments, make_state, key, outcome in [
+                ('buy_item', {'item_id': 0}, shop_state, 'purchase_result', {'item_id': 0, 'status': 'failure_space'}),
+                ('claim_reward', {'reward_id': 12}, reward_state, 'reward_result', {'reward_id': 12, 'status': 'not_obtained'})]:
+            class ReceiptClient:
+                def call(self, name, expected_state=None, arguments=None):
+                    state = make_state()
+                    if name != 'get_state':
+                        state.update(transition={'stop_reason': 'action_completed', 'complete': True, 'events': []},
+                                     **{key: outcome})
+                    return {'ok': True, 'state': state}
+            with self.subTest(operation=operation):
+                tools = GameTools(ReceiptClient())
+                await tools.get_observation()
+                result = await getattr(tools, operation)(arguments)
+                self.assertEqual(result[key], outcome)
+                self.assertEqual(set(result), {'scene', 'screen', 'available_actions', 'transition', key})
+
+    async def test_divination_receipt_is_text_only_but_inspection_preserves_image(self):
+        from mcp_server import tool_result
+        from test_divination import DivinationClient
+        tools = GameTools(DivinationClient())
+        observed = tool_result(await tools.get_observation())
+        self.assertEqual([c.type for c in observed.content], ['text', 'image'])
+        receipt = tool_result(await tools.divine({'x': 0, 'y': 0}))
+        self.assertEqual(set(receipt.structuredContent), {'scene', 'screen', 'available_actions', 'transition'})
+        self.assertEqual([c.type for c in receipt.content], ['text'])
+        self.assertIsNotNone(tools.snapshot_id)
+        inspected = tool_result(await tools.inspect_event())
+        self.assertEqual([c.type for c in inspected.content], ['text', 'image'])
+
     async def test_all_six_actions_advance_the_token_without_extra_observation(self):
         actions = [('play_card', {'card_id': 0}), ('end_turn', None),
                    ('use_potion', {'potion_slot': 0}), ('discard_potion', {'potion_slot': 0}),

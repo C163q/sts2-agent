@@ -1,6 +1,6 @@
 # 选牌与查看战场
 
-适用于 Mod `0.32.0`、MCP server `0.27.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
+适用于 Mod `0.33.0`、MCP server `0.28.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
 
 ## 观察与信息范围
 
@@ -28,11 +28,11 @@
 
 `selection_option({"option_id": "confirm"})` 点击观察中列出的启用按钮。可能出现 `skip`、`confirm`、`cancel_preview`、`cancel` 或奖励 `alternative:N`；含义以当前 `text` 为准。预览取消与放弃整个选择分别处理。奖励替代选项还可能是治疗、献祭或重新生成，不能一律视为跳过。允许选零张的手牌选择通过原生确认按钮提交空选择。
 
-两类动作使用当前观察许可，可以来自 `get_observation` 或上一步完整成功的动作结果，具体条件见[MCP 动作许可](mcp.md#调用和错误语义)；失败后须重新观察。`inspect_selection` 不产生新的动作许可；若读取前后的状态没有改变，保留原许可。原生滚动候选由工具先定位再点击，定位期间若选择已经改变则拒绝输入。选择实例代际参与底层令牌，防止外观相同的连续选择复用旧许可。
+两类动作使用当前观察许可，可以来自 `get_observation` 或上一步满足续接条件的成功动作结果，具体条件见[MCP 动作许可](mcp.md#调用和错误语义)；失败后须重新观察。`inspect_selection` 不产生新的动作许可；若读取前后的状态没有改变，保留原许可。原生滚动候选由工具先定位再点击，定位期间若选择已经改变则拒绝输入。选择实例代际参与底层令牌，防止外观相同的连续选择复用旧许可。
 
 ## 手牌升级
 
-武装等触发的 `hand_upgrade` 复用以上工具。`cards` 只列原生筛选后可见的手牌和已经选中的原牌，不混入升级结果克隆；选择前不生成升级结果。`select_card` 选中后停在 `choice_required`，返回 `selected_ids` 和已经显示的 `upgrade_preview`。`before`、`after` 两侧包含牌名、费用与展开的正文，`id` 都是原手牌 ID。它们是同一张牌的比较，不能当成额外的可选牌。
+武装等触发的 `hand_upgrade` 复用以上工具。`cards` 只列原生筛选后可见的手牌和已经选中的原牌，不混入升级结果克隆；选择前不生成升级结果。`select_card` 选中后停在 `choice_required`，通过 `inspect_selection` 按需读取 `selected_ids` 和已经显示的 `upgrade_preview`。`before`、`after` 两侧包含牌名、费用与展开的正文，`id` 都是原手牌 ID。它们是同一张牌的比较，不能当成额外的可选牌。
 
 再次点击已选 ID 等价于点击预览左侧原牌，取消选择；点击其他候选等价于改选，预览随之替换。只有点击启用的 `selection_option({"option_id":"confirm"})` 才提交选择并继续实际升级。未选择时原生确认按钮可能完全隐藏，以 `options` 为准，不自动确认。眼睛和覆盖页隐藏候选与预览，返回后保留待确认选择。
 
@@ -46,7 +46,7 @@
 
 ## 动作后的结算
 
-选牌动作与 `end_turn` 使用同一可感知事件记录，返回基本观察和 `transition`。点击多选但尚未确认时停在 `choice_required`；真正提交后等待后续选择、玩家可行动、胜负或超时。非战斗选择回到[通用事件](events.md)、[先古之民](ancients.md)、商店、宝箱房、搜刮或[休息处](rest-site.md)时使用 `action_completed`；父事件的异步效果、卡牌预览和资源动画仍须完成。其余非战斗选择完成使用 `selection_resolved`。事件字段、`complete` 和超时恢复规则见 [结束回合](end-turn.md)。连续选择每次单独操作，不自动代选，也不会因等待期间出现下一次选择而一直挂起。
+选牌动作与 `end_turn` 使用同一可感知事件记录，返回[精简动作回执](mcp.md#动作返回格式)。点击多选但尚未确认时停在 `choice_required`；真正提交后等待后续选择、玩家可行动、胜负或超时。非战斗选择回到[通用事件](events.md)、[先古之民](ancients.md)、商店、宝箱房、搜刮或[休息处](rest-site.md)时使用 `action_completed`；父事件的异步效果、卡牌预览和资源动画仍须完成。其余非战斗选择完成使用 `selection_resolved`。事件字段、`complete` 和超时恢复规则见 [结束回合](end-turn.md)。连续选择每次单独操作，不自动代选，也不会因等待期间出现下一次选择而一直挂起。
 
 选择状态直接来自界面，不要求已经完成过一次回合。选择悖论在第一回合开始时也可识别并操作。暴政消耗和本版本计划妥当保留手牌使用同一手牌接口。
 

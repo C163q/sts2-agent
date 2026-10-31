@@ -23,6 +23,8 @@ SERVER_INSTRUCTIONS = (
     "Control a local Slay the Spire 2 game; output is English. "
     "Start with get_observation. Continue sequentially from a successful action result only if transition.complete is true, "
     "available_actions includes a game action, and the action screen or a supported selection is visible. "
+    "Action results contain context and transition events, not a full observation or state delta. "
+    "Use get_observation or inspections for current details, selection candidates, previews, and divination images. "
     "Read-only inspections do not prepare actions. View tools change UI and clear action permission; "
     "return to the action's screen and observe again before acting. "
     "transition.complete confirms the stated boundary, not that choice-paused effects or cosmetic animations have finished. "
@@ -51,7 +53,7 @@ def tool_definitions(*, screenshots_enabled=False):
             'Select the visible big (3x3) or small (one cell) divination tool without spending a reveal.')),
         Tool(name='divine', inputSchema=DIVINE_SCHEMA, annotations=action, description=(
             'Spend one reveal on a covered divination cell at zero-based x,y (right,down). '
-            'Use the attached board image and grid; stops at rewards or the enabled Proceed.')),
+            'Use the board image and grid from get_observation or inspect_event; stops at rewards or the enabled Proceed.')),
         Tool(name='inspect_event', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             'Read the exposed event and hover help, or the current divination board with its image. Does not reveal hidden outcomes.')),
         Tool(name='choose_event_option', inputSchema=EVENT_OPTION_SCHEMA, annotations=action, description=(
@@ -65,7 +67,7 @@ def tool_definitions(*, screenshots_enabled=False):
             'Advance the current ancient or Architect dialogue once. Does not choose a gift or press the final Proceed.')),
 
         Tool(name='open_shop', inputSchema=NO_ARGUMENTS, annotations=action, description=(
-            'Click the exposed merchant to open the shop. Returns card summaries and visible prices.')),
+            'Click the exposed merchant to open the shop. Read items and prices with inspect_shop or get_observation.')),
         Tool(name='close_shop', inputSchema=NO_ARGUMENTS, annotations=action, description=(
             'Click the open shop back button to return to the merchant. Does not proceed or travel.')),
         Tool(name='inspect_shop', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
@@ -154,13 +156,13 @@ def tool_definitions(*, screenshots_enabled=False):
             "Use the latest observation or complete action result.")),
         Tool(name="selection_option", inputSchema=OPTION_SCHEMA, annotations=action, description=(
             "Click an enabled selection.options button by option_id: confirm, cancel preview, skip or a reward alternative. Choose card bundles with the offered bundle:N option. "
-            "Only offered buttons in the latest observation or complete action result are legal.")),
+            "Read offered buttons in get_observation or inspect_selection before choosing.")),
         Tool(name="set_selection_view", inputSchema=VIEW_SCHEMA, annotations=view, description=(
             "Click the native eye to show battlefield or return to selection. "
             "Battlefield view permits available inspections, never normal combat actions. "
             "Close covering card/map views first. Clears action permission.")),
         Tool(name="end_turn", inputSchema=NO_ARGUMENTS, annotations=action, description=(
-            "End the player's turn once; return observed events, a stop reason, and the resulting observation. "
+            "End the player's turn once; return events, a stop reason, and current interaction context. "
             "Stops for player choices; inspect selection and choose separately. "
             "Use the latest observation or complete action result. Never retry an incomplete transition automatically.")),
     ]

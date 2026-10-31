@@ -65,7 +65,9 @@ async def verify(args):
             assert played['selection']['type'] == 'hand_upgrade', played
             await call('inspect_selection')
             selected = await call('select_card', {'card_id': defend['id']})
-            assert selected['selection']['upgrade_preview']['after']['name'] == 'Defend+', selected
+            assert selected['selection'] == {'type': 'hand_upgrade', 'status': 'visible'}, selected
+            preview = await call('inspect_selection')
+            assert preview['selection']['upgrade_preview']['after']['name'] == 'Defend+', preview
             await call('capture_screenshot', {'filename': 'upgrade-preview.png'})
             upgraded = await call('selection_option', {'option_id': 'confirm'})
             assert upgraded['transition']['stop_reason'] == 'player_ready', upgraded
@@ -77,7 +79,8 @@ async def verify(args):
             await call('discard_potion', {'potion_slot': 2})
             await call('use_potion', {'potion_slot': 1})
             ended = await call('end_turn')
-            assert ended['turn'] == initial['turn'] + 1 and ended['transition']['complete'], ended
+            assert ended['transition']['stop_reason'] == 'player_ready' and ended['transition']['complete'], ended
+            assert 'turn' not in ended and 'player' not in ended, ended
             await call('capture_screenshot', {'filename': 'after-chain.png'})
             assert sum(item['tool'] == 'get_observation' for item in evidence) == 1
             actions = {'end_turn', 'play_card', 'use_potion', 'discard_potion', 'select_card', 'selection_option'}
@@ -95,7 +98,9 @@ async def verify(args):
             await call('end_turn', error='observation_required')
             await call('get_observation')
             resumed = await call('end_turn')
-            assert resumed['turn'] == advanced['state']['turn'] + 1, resumed
+            assert resumed['transition']['stop_reason'] == 'player_ready', resumed
+            observed = await call('get_observation')
+            assert observed['turn'] == advanced['state']['turn'] + 1, observed
     print('PASS: one observation supports 10 native chained actions; external state changes and views still require re-observation.')
 
 

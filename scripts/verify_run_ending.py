@@ -1,3 +1,4 @@
+from verification_actions import observe_after_action
 from available_tools import GAME_ACTIONS
 import argparse
 import asyncio
@@ -53,24 +54,24 @@ async def verify(args):
             data = await ready()
             if args.scenario.startswith('victory'):
                 assert data['scene'] == 'rewards', data
-                data = await call('proceed'); complete(data)
+                data = await observe_after_action(call, await call('proceed')); complete(data)
                 for index in range(10):
                     assert data['scene'] == 'epilogue', data
                     assert data['epilogue']['dialogue'], data
                     await capture(f'01-dialogue-{index}')
                     if 'advance_dialogue' in data['available_actions']:
                         previous = data['epilogue']['dialogue']
-                        data = await call('advance_dialogue'); complete(data)
+                        data = await observe_after_action(call, await call('advance_dialogue')); complete(data)
                         assert data['epilogue']['dialogue'] != previous, data
                     else:
                         assert set(data['available_actions']) & GAME_ACTIONS == {'proceed'}, data
-                        data = await call('proceed'); complete(data)
+                        data = await observe_after_action(call, await call('proceed')); complete(data)
                         break
                 else: raise AssertionError('Dialogue failed to terminate.')
             elif args.scenario == 'event_death':
                 assert data['scene'] == 'event', data
                 option = next(o for o in data['event']['options'] if o['enabled'])
-                data = await call('choose_event_option', {'option_id': option['id']})
+                data = await observe_after_action(call, await call('choose_event_option', {'option_id': option['id']}))
                 assert data['transition']['complete'] and data['transition']['stop_reason'] == 'run_lost', data
                 data = await ready()
             assert data['scene'] == 'run_result', data
@@ -81,7 +82,7 @@ async def verify(args):
             await call('inspect_run_result')
             await call('run_result_option', {'option_id': 'not_a_button'}, error='illegal_action')
             await call('get_observation')
-            data = await call('run_result_option', {'option_id': 'continue'}); complete(data)
+            data = await observe_after_action(call, await call('run_result_option', {'option_id': 'continue'})); complete(data)
             assert data['run_result']['phase'] == 'summary', data
             assert data['run_result']['score_lines'], data
             assert any(t.startswith('[') and '/' in t and t.endswith(']') for t in data['run_result']['texts']), data
@@ -96,11 +97,11 @@ async def verify(args):
                 assert not any('\u4e00' <= c <= '\u9fff' for c in tip['description']), tip
             # Details retain the latest complete action observation.
             if any(o['id'] == 'view_run' and o['enabled'] for o in data['run_result']['options']):
-                data = await call('run_result_option', {'option_id': 'view_run'}); complete(data)
+                data = await observe_after_action(call, await call('run_result_option', {'option_id': 'view_run'})); complete(data)
                 assert data['run_result']['phase'] == 'history', data
                 await capture('04-history')
-                data = await call('run_result_option', {'option_id': 'back'}); complete(data)
-            data = await call('run_result_option', {'option_id': 'main_menu'}); complete(data)
+                data = await observe_after_action(call, await call('run_result_option', {'option_id': 'back'})); complete(data)
+            data = await observe_after_action(call, await call('run_result_option', {'option_id': 'main_menu'})); complete(data)
             phases = []
             for index in range(35):
                 if data['scene'] == 'main_menu': break
@@ -132,7 +133,7 @@ async def verify(args):
                     assert response['ok'], response
                     data = await call('get_observation')
                     break
-                data = await call('run_result_option', {'option_id': option['id']}); complete(data)
+                data = await observe_after_action(call, await call('run_result_option', {'option_id': option['id']})); complete(data)
             assert data['scene'] == 'main_menu' and data['available_actions'] == [], data
             await capture('06-main-menu')
             await call('run_result_option', {'option_id': 'continue'}, error='illegal_action' if args.external_back else 'observation_required')

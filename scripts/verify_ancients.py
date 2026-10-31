@@ -1,3 +1,4 @@
+from verification_actions import observe_after_action
 import argparse
 import asyncio
 import json
@@ -62,7 +63,7 @@ async def verify(args):
             for _ in range(30):
                 if 'advance_dialogue' not in result['available_actions']: break
                 assert not any(o['enabled'] for o in result['ancient']['options']), result
-                result = await call('advance_dialogue'); done(result)
+                result = await observe_after_action(call, await call('advance_dialogue')); done(result)
                 advances += 1
             if args.scenario == 'dialogue': assert advances > 0, result
             assert 'choose_ancient_option' in result['available_actions'], result
@@ -78,7 +79,7 @@ async def verify(args):
                 await call('close_map'); result = await call('get_observation')
             option = result['ancient']['options'][0]
             assert option['enabled'], result
-            result = await call('choose_ancient_option', {'option_id': option['id']})
+            result = await observe_after_action(call, await call('choose_ancient_option', {'option_id': option['id']}))
             if args.scenario in {'tooth', 'shrymp', 'multi', 'transform', 'bundle'}:
                 assert result['transition']['stop_reason'] == 'choice_required', result
                 assert result['ancient']['status'] == 'covered', result
@@ -86,10 +87,10 @@ async def verify(args):
                 assert result['selection']['type'] == expected, result
                 await call('capture_screenshot', {'filename': 'selection.png'})
                 if args.scenario == 'bundle':
-                    result = await call('selection_option', {'option_id': 'bundle:0'})
+                    result = await observe_after_action(call, await call('selection_option', {'option_id': 'bundle:0'}))
                     assert result['selection']['cards'], result
                     await call('selection_option', {'option_id': 'cancel_preview'})
-                    result = await call('selection_option', {'option_id': 'bundle:1'})
+                    result = await observe_after_action(call, await call('selection_option', {'option_id': 'bundle:1'}))
                 else:
                     count = 5 if args.scenario == 'tooth' else 3 if args.scenario == 'multi' else 1
                     for attempt in range(2):
@@ -97,11 +98,11 @@ async def verify(args):
                         chosen = details['selection']['cards'][:count]
                         assert len(chosen) == count, details
                         for card in chosen:
-                            result = await call('select_card', {'card_id': card['id']})
+                            result = await observe_after_action(call, await call('select_card', {'card_id': card['id']}))
                             assert result['transition']['stop_reason'] == 'choice_required', result
                         assert any(o['id'] == 'confirm' and o['enabled'] for o in result['selection']['options']), result
                         if attempt == 0:
-                            result = await call('selection_option', {'option_id': 'cancel_preview'})
+                            result = await observe_after_action(call, await call('selection_option', {'option_id': 'cancel_preview'}))
                             assert not result['selection']['selected_ids'], result
                     if args.scenario in {'shrymp', 'multi'}:
                         assert len(result['selection']['enchant_previews']) == count, result
@@ -109,15 +110,15 @@ async def verify(args):
                     if args.scenario == 'transform':
                         assert result['selection']['transform_previews'][0]['random'], result
                 await call('capture_screenshot', {'filename': 'preview.png'})
-                result = await call('selection_option', {'option_id': 'confirm'}); done(result)
+                result = await observe_after_action(call, await call('selection_option', {'option_id': 'confirm'})); done(result)
             elif args.scenario == 'nested':
                 done(result); assert result['scene'] == 'rewards', result
                 assert result['ancient']['status'] == 'covered', result
                 await call('inspect_rewards')
-                result = await call('proceed'); done(result)
+                result = await observe_after_action(call, await call('proceed')); done(result)
             elif args.scenario == 'pandora':
                 assert result['selection']['type'] == 'view_cards', result
-                result = await call('selection_option', {'option_id': 'confirm'}); done(result)
+                result = await observe_after_action(call, await call('selection_option', {'option_id': 'confirm'})); done(result)
             else: done(result)
             after = await fixture()
             assert not after['pending'] and not after['previews'], after
@@ -141,14 +142,14 @@ async def verify(args):
                 if args.scenario == 'earring': assert battle['history_plays'] > 0 and battle['energy'] < 4, battle
                 if args.scenario == 'shrymp': assert battle['history_plays'] >= 1, battle
                 if args.scenario == 'eye':
-                    result = await call('end_turn')
+                    result = await observe_after_action(call, await call('end_turn'))
                     assert result['transition']['stop_reason'] == 'player_ready', result
                     assert result['turn'] == 2 and result['player']['exhaust_count'] == 5, result
                     assert not any(e['type'] == 'damage' for e in result['transition']['events']), result
                 if args.scenario == 'tooth':
                     hand = await call('inspect_hand')
                     attack = next(c for c in hand['hand'] if c['name'] == 'Thunderclap')
-                    result = await call('play_card', {'card_id': attack['id']})
+                    result = await observe_after_action(call, await call('play_card', {'card_id': attack['id']}))
                     assert result['transition']['stop_reason'] == 'combat_won', result
                     assert any(e['type'] == 'card_added' and e['card']['name'].endswith('+') for e in result['transition']['events']), result
                     final = await fixture()
@@ -157,7 +158,7 @@ async def verify(args):
                     assert result['top_bar']['deck_count'] == len(final['deck']), (result, final)
                 await call('capture_screenshot', {'filename': 'combat-result.png'})
             else:
-                result = await call('proceed'); done(result)
+                result = await observe_after_action(call, await call('proceed')); done(result)
                 assert result['screen']['view'] == 'map' and result['ancient']['status'] == 'covered', result
     report.write_text(json.dumps(evidence, indent=2) + '\n')
     print(f'PASS: {args.scenario}; {len(evidence)} calls/checks; {report}')

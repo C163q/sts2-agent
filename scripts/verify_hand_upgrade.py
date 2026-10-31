@@ -1,3 +1,4 @@
+from verification_actions import observe_after_action
 from available_tools import GAME_ACTIONS
 import argparse
 import asyncio
@@ -53,7 +54,7 @@ async def verify(args):
 
             initial = await call('get_observation')
             armaments = next(card for card in initial['player']['hand'] if card['name'] == 'Armaments')
-            played = await call('play_card', {'card_id': armaments['id']})
+            played = await observe_after_action(call, await call('play_card', {'card_id': armaments['id']}))
             await capture('initial')
             selection = played['selection']
             assert selection['status'] == 'visible' and selection['type'] == 'hand_upgrade', played
@@ -69,7 +70,7 @@ async def verify(args):
             first, other = cards[:2]
 
             async def preview(card):
-                selected = await action('select_card', {'card_id': card['id']})
+                selected = await observe_after_action(call, await action('select_card', {'card_id': card['id']}))
                 assert selected['transition']['stop_reason'] == 'choice_required' and selected['transition']['complete'], selected
                 current = selected['selection']
                 assert current['selected_ids'] == [card['id']], current
@@ -105,11 +106,11 @@ async def verify(args):
             assert restored['selection']['selected_ids'] == [first['id']], restored
             await preview(other)
             await capture('replaced')
-            canceled = await action('select_card', {'card_id': other['id']})
+            canceled = await observe_after_action(call, await action('select_card', {'card_id': other['id']}))
             assert canceled['selection']['selected_ids'] == [] and canceled['selection']['upgrade_preview'] is None, canceled
             assert not any(o['id'] == 'confirm' and o['enabled'] for o in canceled['selection']['options']), canceled
             await preview(first)
-            finished = await action('selection_option', {'option_id': 'confirm'})
+            finished = await observe_after_action(call, await action('selection_option', {'option_id': 'confirm'}))
             assert finished['transition']['stop_reason'] == 'player_ready' and finished['transition']['complete'], finished
             assert finished['selection'] is None, finished
             await capture('confirmed')

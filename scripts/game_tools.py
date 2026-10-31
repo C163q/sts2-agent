@@ -24,6 +24,7 @@ from divination_details import attach_divination_image, divination_arguments
 from screenshot_tool import ScreenshotError, ScreenshotStore, screenshot_arguments
 from observation_presets import observation_preset, preset_arguments
 from available_tools import GAME_ACTIONS, public_tools
+from action_output import action_result
 
 
 class GameTools:
@@ -351,7 +352,7 @@ class GameTools:
             if following is not None and transition.get("complete") is True \
                     and any(action in GAME_ACTIONS for action in payload.get("available_actions", [])) and (ready or choosing):
                 self.snapshot_id = following
-            return payload
+            return action_result(payload)
 
     async def _request(self, operation, expected_state=None, arguments=None):
         try:

@@ -28,6 +28,7 @@
 | `scripts/inspection_details.py`、`*_details.py` | 按操作校验并投影响应；牌组、牌堆与地图等具体结构各自维护 |
 | `scripts/observation_presets.py`、`available_tools.py` | 观察预设参数与精简投影、公开工具名称和动作分类 |
 | `scripts/game_tools.py` | 串行游戏会话、动作令牌、检查控制权及在线程中执行文件请求 |
+| `scripts/action_output.py` | 完整校验及许可处理之后的公开动作回执投影，保留事件与必要交互提示 |
 | `scripts/controller_lease.py` | 每个 IPC 目录的 MCP 进程控制锁 |
 | `scripts/mcp_catalog.py` | 工具名称、参数 schema、行为注解及面向模型的说明 |
 | `scripts/mcp_config.py`、`screenshot_tool.py` | 启动配置校验、PNG 校验和独占保存；配置决定截图工具是否注册 |

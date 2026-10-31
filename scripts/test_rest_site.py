@@ -152,7 +152,8 @@ class RestSiteStdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(missing.structuredContent['error']['code'], 'observation_required')
                     await session.call_tool('get_observation', {})
                     selected = await session.call_tool('choose_rest_option', {'option_id': 'HEAL'})
-                    self.assertEqual(selected.structuredContent['rest_site']['options'], [])
+                    self.assertNotIn('rest_site', selected.structuredContent)
+                    self.assertEqual(selected.structuredContent['transition']['stop_reason'], 'action_completed')
                     self.assertEqual(json.loads(selected.content[0].text), selected.structuredContent)
             self.assertEqual([r['operation'] for r in game.operations],
                              ['inspect_rest_site', 'get_state', 'get_state', 'choose_rest_option'])

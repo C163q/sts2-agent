@@ -1,3 +1,27 @@
+async def observe_after_action(call, receipt):
+    """Read current public details explicitly when a GUI check needs a snapshot."""
+    if 'error' in receipt or 'transition' not in receipt or receipt['scene'] == 'main_menu':
+        return receipt
+    observation = await call('get_observation')
+    return {**observation, **{key: receipt[key] for key in ('transition', 'purchase_result', 'reward_result') if key in receipt}}
+
+
+def completed_action_snapshot(ipc, receipt):
+    """Read the exact native response for stability checks without refreshing MCP permission."""
+    import json
+    from action_output import action_result
+    from player_output import player_result
+    from transition_details import end_turn_details
+
+    for path in sorted((ipc / 'responses').glob('*.json'), key=lambda p: p.stat().st_mtime_ns, reverse=True):
+        response = json.loads(path.read_text())
+        if response.get('ok') and 'transition' in response.get('state', {}):
+            full = player_result({'ok': True, 'state': end_turn_details(response['state'])})
+            if action_result(full) == receipt:
+                return full
+    raise AssertionError('No native action response matches the compact MCP receipt.')
+
+
 async def confirm_transform(call, result, count=3):
     """Complete a native transform selection through the public tool contract."""
     assert result['transition']['stop_reason'] == 'choice_required', result
@@ -8,8 +32,9 @@ async def confirm_transform(call, result, count=3):
     for card in cards:
         result = await call('select_card', {'card_id': card['id']})
         assert result['transition']['stop_reason'] == 'choice_required', result
-    assert len(result['selection']['transform_previews']) == count, result
-    assert all(p['random'] and p['after'] is None for p in result['selection']['transform_previews']), result
+    preview = await call('inspect_selection')
+    assert len(preview['selection']['transform_previews']) == count, preview
+    assert all(p['random'] and p['after'] is None for p in preview['selection']['transform_previews']), preview
     result = await call('selection_option', {'option_id': 'confirm'})
     assert result['transition']['complete'] and result['transition']['stop_reason'] == 'action_completed', result
-    return result
+    return await observe_after_action(call, result)

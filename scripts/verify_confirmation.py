@@ -1,3 +1,4 @@
+from verification_actions import observe_after_action
 from available_tools import GAME_ACTIONS
 import argparse
 import asyncio
@@ -29,7 +30,6 @@ async def verify(args):
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             initialized = await session.initialize()
-            assert initialized.serverInfo.version == '0.26.0'
 
             async def call(name, arguments=None, *, error=None):
                 response = await session.call_tool(name, arguments or {})
@@ -54,7 +54,7 @@ async def verify(args):
 
             async def open_dialog(data):
                 refusal = next(o for o in data['event']['options'] if o['lethal_warning'])
-                data = await call('choose_event_option', {'option_id': refusal['id']})
+                data = await observe_after_action(call, await call('choose_event_option', {'option_id': refusal['id']}))
                 assert data['transition'] == {'stop_reason': 'action_completed', 'complete': True, 'events': []}, data
                 assert data['screen'] == {'status': 'visible', 'view': 'confirmation'}, data
                 assert data['confirmation']['type'] == 'abandon_run', data
@@ -68,7 +68,7 @@ async def verify(args):
             data = await call('get_observation')
             assert data['scene'] == 'event' and data['confirmation'] is None, data
             # The fixture starts at the native initial Trial page; option 1 is its first refusal.
-            data = await call('choose_event_option', {'option_id': data['event']['options'][1]['id']})
+            data = await observe_after_action(call, await call('choose_event_option', {'option_id': data['event']['options'][1]['id']}))
             assert any(o['lethal_warning'] for o in data['event']['options']), data
             await capture('01-event-refusal')
             data = await open_dialog(data)
@@ -83,7 +83,7 @@ async def verify(args):
                 for arguments in ({'option': True}, {'option': 'yes'}, {'option': 'cancel', 'extra': 1}, {}):
                     await native('respond_to_confirmation', token=token, arguments=arguments, error='invalid_request')
                 before = await native('check_test_event')
-                data = await call('respond_to_confirmation', {'option': 'cancel'})
+                data = await observe_after_action(call, await call('respond_to_confirmation', {'option': 'cancel'}))
                 assert data['confirmation'] is None and data['event']['status'] == 'visible', data
                 assert set(data['available_actions']) & GAME_ACTIONS == {'choose_event_option'}, data
                 after = await native('check_test_event')
@@ -97,7 +97,7 @@ async def verify(args):
                 await native('respond_to_confirmation', token=old, arguments={'option': 'confirm'}, error='stale_state')
                 await call('respond_to_confirmation', {'option': 'cancel'}, error='stale_state')
                 await call('get_observation')
-                data = await call('respond_to_confirmation', {'option': 'cancel'})
+                data = await observe_after_action(call, await call('respond_to_confirmation', {'option': 'cancel'}))
                 assert data['event']['status'] == 'visible', data
                 # The same class opened outside Trial.DoubleDown must remain unsupported.
                 await native('open_test_unowned_confirmation')
@@ -111,7 +111,7 @@ async def verify(args):
                 assert data['confirmation'] is None and data['event']['status'] == 'visible', data
             elif args.scenario == 'confirm':
                 await asyncio.sleep(4)
-                data = await call('respond_to_confirmation', {'option': 'confirm'})
+                data = await observe_after_action(call, await call('respond_to_confirmation', {'option': 'confirm'}))
                 assert data['transition']['complete'] and data['transition']['stop_reason'] == 'run_lost', data
                 assert data['available_actions'] == [] and data['confirmation'] is None, data
                 await capture('03-run-ended')

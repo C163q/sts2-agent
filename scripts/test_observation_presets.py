@@ -38,13 +38,15 @@ class ObservationPresetTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(tools.snapshot_id, 'state-1')
         self.assertEqual(client.calls, [('get_state', None, None)])
 
-    async def test_actions_only_can_authorize_action_and_does_not_persist_as_action_output_mode(self):
+    async def test_actions_only_authorizes_action_and_full_observation_remains_available(self):
         client = Client(); tools = GameTools(client)
         compact = await tools.get_observation({'preset': 'actions_only'})
         self.assertEqual(set(compact), {'scene', 'screen', 'available_actions'})
         following = await tools.play_card({'card_id': 0})
-        self.assertIn('player', following)
+        self.assertNotIn('player', following)
+        self.assertIn('transition', following)
         self.assertEqual(client.calls[-1], ('play_card', 'state-1', {'card_id': 0}))
+        self.assertIn('player', await tools.get_observation())
         client.revision += 1
         self.assertEqual((await tools.end_turn())['error']['code'], 'stale_state')
         self.assertIsNone(tools.snapshot_id)

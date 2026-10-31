@@ -1,3 +1,4 @@
+from verification_actions import observe_after_action
 from available_tools import GAME_ACTIONS
 import argparse
 import asyncio
@@ -67,7 +68,7 @@ async def verify(args):
             assert data['scene'] == 'rewards', data
             old_token = (await native('get_state'))['snapshot_id']
             if args.scenario in {'boss1', 'boss2', 'boss3', 'double'}:
-                data = await call('proceed')
+                data = await observe_after_action(call, await call('proceed'))
                 if args.scenario == 'boss3':
                     completed(data)
                     assert data['scene'] == 'epilogue' and data['available_actions'] and data.get('map') is None, data
@@ -84,13 +85,13 @@ async def verify(args):
                 if args.scenario != 'double':
                     await call('travel_to_node', {'node_id': 'map:1:1:2'}, error='illegal_action')
                     await call('get_observation')
-                data = await call('travel_to_node', {'node_id': target})
+                data = await observe_after_action(call, await call('travel_to_node', {'node_id': target}))
                 if args.scenario == 'double':
                     completed(data, 'player_ready')
                     assert data['scene'] == 'combat', data
                     await native('finish_test_navigation_boss')
                     await call('get_observation')
-                    data = await call('proceed')
+                    data = await observe_after_action(call, await call('proceed'))
                     completed(data)
                     assert data['map']['act'] == 2, data
                 else:
@@ -133,15 +134,15 @@ async def verify(args):
                 await call('get_observation')
                 await native('scroll_test_navigation')
             await capture('02-map')
-            data = await call('travel_to_node', {'node_id': target})
+            data = await observe_after_action(call, await call('travel_to_node', {'node_id': target}))
             if args.scenario == 'choice':
                 completed(data, 'choice_required')
                 assert data['selection']['status'] == 'visible', data
                 await capture('03-selection')
-                data = await call('select_card', {'card_id': data['selection']['cards'][0]['id']})
+                data = await observe_after_action(call, await call('select_card', {'card_id': data['selection']['cards'][0]['id']}))
                 if data.get('selection'):
                     button = next(o for o in data['selection']['options'] if o['enabled'])
-                    data = await call('selection_option', {'option_id': button['id']})
+                    data = await observe_after_action(call, await call('selection_option', {'option_id': button['id']}))
                 completed(data, 'player_ready')
             elif args.scenario == 'combat':
                 completed(data, 'player_ready')
@@ -155,9 +156,9 @@ async def verify(args):
             assert after['rewards'] is False, after
             assert after['boots_used'] == (3 if args.scenario == 'flight' else state['boots_used']), after
             if args.scenario in {'basic', 'flight'}:
-                data = await call('choose_rest_option', {'option_id': 'HEAL'})
+                data = await observe_after_action(call, await call('choose_rest_option', {'option_id': 'HEAL'}))
                 completed(data)
-                data = await call('proceed')
+                data = await observe_after_action(call, await call('proceed'))
                 completed(data)
                 assert data['map']['current_node'] == target, data
                 if args.scenario == 'flight':

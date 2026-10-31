@@ -1,3 +1,4 @@
+from verification_actions import observe_after_action
 from available_tools import GAME_ACTIONS
 import argparse
 import asyncio
@@ -71,9 +72,9 @@ async def verify(args):
                 await call('loot_treasure', error='observation_required')
                 await call('close_map')
                 await call('get_observation')
-                result = await call('loot_treasure'); done(result)
+                result = await observe_after_action(call, await call('loot_treasure')); done(result)
             elif args.scenario in {'open', 'skip'}:
-                result = await call('loot_treasure', {'open_only': True}); done(result)
+                result = await observe_after_action(call, await call('loot_treasure', {'open_only': True})); done(result)
                 assert result['treasure']['relic'] == {'name': 'Anchor', 'enabled': True}, result
                 assert result['treasure']['proceed']['skips_remaining'], result
                 opened = await fixture()
@@ -82,7 +83,7 @@ async def verify(args):
                 assert '10' in details['treasure']['relic']['description'], details
                 await call('capture_screenshot', {'filename': 'open.png'})
                 if args.scenario == 'skip':
-                    result = await call('proceed'); done(result)
+                    result = await observe_after_action(call, await call('proceed')); done(result)
                     assert result['screen']['view'] == 'map', result
                     assert (await fixture())['relics'] == before['relics']
                     report.write_text(json.dumps(evidence, indent=2) + '\n')
@@ -90,14 +91,14 @@ async def verify(args):
                     return
                 await call('loot_treasure', {'open_only': True}, error='illegal_action')
                 await call('get_observation')
-                result = await call('loot_treasure'); done(result)
+                result = await observe_after_action(call, await call('loot_treasure')); done(result)
             else:
-                result = await call('loot_treasure')
+                result = await observe_after_action(call, await call('loot_treasure'))
                 if args.scenario == 'choice':
                     result = await confirm_transform(call, result)
                     assert result['scene'] == 'treasure' and result['treasure']['relic'] is None, result
                     await call('capture_screenshot', {'filename': 'transformed.png'})
-                    result = await call('proceed'); done(result)
+                    result = await observe_after_action(call, await call('proceed')); done(result)
                     report.write_text(json.dumps(evidence, indent=2) + '\n')
                     print(f'PASS: {args.scenario}; {len(evidence)} calls/checks; {report}')
                     return
@@ -107,16 +108,16 @@ async def verify(args):
                     assert (await fixture())['relics'] == before['relics'], 'Claimed a relic behind extra rewards.'
                     await call('capture_screenshot', {'filename': 'extra.png'})
                     rewards = (await call('inspect_rewards'))['rewards']['items']
-                    result = await call('claim_reward', {'reward_id': rewards[0]['id']})
-                    if result['scene'] == 'rewards': result = await call('proceed')
+                    result = await observe_after_action(call, await call('claim_reward', {'reward_id': rewards[0]['id']}))
+                    if result['scene'] == 'rewards': result = await observe_after_action(call, await call('proceed'))
                     done(result)
                     assert result['treasure']['relic']['name'] == 'Anchor', result
-                    result = await call('loot_treasure'); done(result)
+                    result = await observe_after_action(call, await call('loot_treasure')); done(result)
                 if args.scenario == 'nested':
                     assert result['scene'] == 'rewards' and result['treasure']['status'] == 'covered', result
                     await call('capture_screenshot', {'filename': 'nested.png'})
                     assert (await call('inspect_rewards'))['rewards']['items'], result
-                    result = await call('proceed'); done(result)
+                    result = await observe_after_action(call, await call('proceed')); done(result)
             after = await fixture()
             if args.scenario == 'map_pending':
                 assert result['screen']['view'] == 'map', result
@@ -140,7 +141,7 @@ async def verify(args):
             assert stable['top_bar'] == result['top_bar'] and stable['treasure'] == result['treasure'], stable
             await call('loot_treasure', error='illegal_action')
             await call('get_observation')
-            result = await call('proceed'); done(result)
+            result = await observe_after_action(call, await call('proceed')); done(result)
             assert result['screen']['view'] == 'map' and result['treasure']['status'] == 'covered', result
     report.write_text(json.dumps(evidence, indent=2) + '\n')
     print(f'PASS: {args.scenario}; {len(evidence)} calls/checks; {report}')

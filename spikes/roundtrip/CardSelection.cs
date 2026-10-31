@@ -27,6 +27,8 @@ internal sealed class CardSelection(Control owner, string kind, object key)
     public NPeekButton? Eye => Owner is NPlayerHand hand ? hand.PeekButton : Owner.GetNodeOrNull<NPeekButton>("%PeekButton");
     public bool Peeking => Eye?.IsPeeking == true;
     public static bool AwaitingInput => Current is { Status: "visible" or "unsupported" } selection
+        && (!selection.Supported || selection.Grid == null || !selection.Holders.Any(holder => holder.CardNode is { } card
+            && CombatObservation.CardVisible(card) && RewardInspection.Animating(card.CardHighlight, "_curTween")))
         && (selection.Kind is not ("reward" or "choose_one") || (selection.Holders.Length == 0 || selection.CanSelect)
             && !RewardInspection.Animating(selection.Owner, "_cardTween")
             && !RewardInspection.Animating(selection.Owner, "_buttonTween"));

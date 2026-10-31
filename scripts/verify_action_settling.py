@@ -7,6 +7,7 @@ from pathlib import Path
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from roundtrip_client import Client
+from verification_actions import completed_action_snapshot
 
 
 async def verify(args):
@@ -49,6 +50,7 @@ async def verify(args):
                 played = await call('play_card', {'card_id': card['id'], **(
                     {'target_id': query['targets'][0]['id']} if query['requires_target'] else {})})
                 assert played['transition']['stop_reason'] == 'player_ready' and played['transition']['complete'], played
+                played = completed_action_snapshot(raw.directory, played)
                 await call('capture_screenshot', {'filename': f'{index}-returned.png'})
                 await asyncio.sleep(2)
                 later = await call('get_observation')
@@ -64,6 +66,7 @@ async def verify(args):
                 observed = await call('get_observation')
                 ended = await call('end_turn')
                 assert ended['transition']['stop_reason'] == 'player_ready' and ended['transition']['complete'], ended
+                ended = completed_action_snapshot(raw.directory, ended)
                 assert ended['turn'] == observed['turn'] + 1
                 revived |= any(e['type'] == 'revived' for e in ended['transition']['events'])
                 await call('capture_screenshot', {'filename': f'turn-{index}-returned.png'})

@@ -59,7 +59,8 @@ class DeckMcpTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(closed["available_actions"], ["end_turn"])
             self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
             await tools.get_observation()
-            self.assertEqual((await tools.end_turn())["turn"], 2)
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual(game.turn, 2)
 
     async def test_invalid_parameters_never_reach_game_or_change_existing_permission(self):
         with FakeGame() as game:
@@ -72,7 +73,8 @@ class DeckMcpTests(unittest.IsolatedAsyncioTestCase):
                     result = await tools.inspect_deck(invalid)
                     self.assertEqual(result["error"]["code"], "invalid_request")
             self.assertEqual([op["operation"] for op in game.operations], ["get_state"])
-            self.assertEqual((await tools.end_turn())["turn"], 2)
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual(game.turn, 2)
 
     async def test_malformed_deck_fields_clear_permission(self):
         missing = object()

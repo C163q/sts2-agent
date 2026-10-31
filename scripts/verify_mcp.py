@@ -86,14 +86,17 @@ async def verify(args):
             executed = await call("end_turn")
             assert not executed.isError
             after = executed.structuredContent
-            assert after["turn"] == before["turn"] + 1
+            assert 'turn' not in after and 'player' not in after, after
+            after_turn = (await raw('get_state'))['turn']
+            assert after_turn == before['turn'] + 1
             assert after["transition"]["stop_reason"] == "player_ready" and after["transition"]["complete"], after
             assert any(event["type"] == "damage" for event in after["transition"]["events"]), after
             following = await call("end_turn")
-            assert not following.isError and following.structuredContent["turn"] == after["turn"] + 1
+            assert not following.isError and following.structuredContent['transition']['complete']
             readback = await call("get_observation")
-            assert not readback.isError and readback.structuredContent == {
-                key: value for key, value in following.structuredContent.items() if key != "transition"}
+            assert not readback.isError and readback.structuredContent['turn'] == after_turn + 1
+            for key in ('scene', 'screen', 'available_actions'):
+                assert readback.structuredContent[key] == following.structuredContent[key]
 
             current = await raw("get_state")
             advanced = await raw("end_turn", current["snapshot_id"])
@@ -102,9 +105,9 @@ async def verify(args):
             assert stale.structuredContent["error"]["recovery"] == "get_observation"
             recovered = await call("get_observation")
             assert not recovered.isError and recovered.structuredContent["turn"] == advanced["turn"]
-            evidence.update(completed=True, before_turn=before["turn"], after_turn=after["turn"])
+            evidence.update(completed=True, before_turn=before["turn"], after_turn=after_turn)
             record({"verification": "passed"})
-            print(f'PASS: MCP turn {before["turn"]} -> {after["turn"]}; '
+            print(f'PASS: MCP turn {before["turn"]} -> {after_turn}; '
                   'structured results, chained turns, invalid/missing/stale actions and readback verified')
 
 

@@ -27,7 +27,6 @@ async def verify(args):
             async with ClientSession(read, write, read_timeout_seconds=timedelta(seconds=60)) as session:
                 initialized = await session.initialize()
                 evidence.update(protocol_version=initialized.protocolVersion, server=initialized.serverInfo.model_dump())
-                assert initialized.serverInfo.version == "0.9.0"
                 listed = await session.list_tools()
                 names = {tool.name for tool in listed.tools}
                 assert names == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants",

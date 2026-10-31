@@ -1,3 +1,4 @@
+from verification_actions import observe_after_action
 import argparse
 import asyncio
 import json
@@ -49,7 +50,7 @@ async def verify(args):
                 await call('capture_screenshot', {'filename': name + '.png'})
 
             async def choose(data, index):
-                result = await call('choose_event_option', {'option_id': data['event']['options'][index]['id']})
+                result = await observe_after_action(call, await call('choose_event_option', {'option_id': data['event']['options'][index]['id']}))
                 assert result['transition']['complete'] and result['transition']['stop_reason'] != 'timeout', result
                 return result
 
@@ -60,10 +61,10 @@ async def verify(args):
                     choice = data['selection']
                     if len(choice['selected_ids']) < choice['min_select']:
                         card = next(c for c in choice['cards'] if c['id'] not in choice['selected_ids'])
-                        data = await call('select_card', {'card_id': card['id']})
+                        data = await observe_after_action(call, await call('select_card', {'card_id': card['id']}))
                     else:
                         option = next(o for o in choice['options'] if o['enabled'] and o['id'] == 'confirm')
-                        data = await call('selection_option', {'option_id': option['id']})
+                        data = await observe_after_action(call, await call('selection_option', {'option_id': option['id']}))
                     assert data['transition']['complete'], data
                 return data
 
@@ -72,7 +73,7 @@ async def verify(args):
                 current = await check()
                 assert not current['pending'] and not current['previews'], current
                 await capture('finished')
-                result = await call('proceed')
+                result = await observe_after_action(call, await call('proceed'))
                 assert result['transition']['stop_reason'] == 'action_completed', result
                 assert (await call('inspect_map'))['can_travel'], result
 
@@ -130,9 +131,9 @@ async def verify(args):
                 data = await choose(data, 1)
                 assert not any(o['id'] == 'cancel' and o['enabled'] for o in data['selection']['options']), data
                 card_id = data['selection']['cards'][0]['id']
-                data = await call('select_card', {'card_id': card_id})
+                data = await observe_after_action(call, await call('select_card', {'card_id': card_id}))
                 assert any(o['id'] == 'cancel_preview' and o['enabled'] for o in data['selection']['options']), data
-                data = await call('selection_option', {'option_id': 'cancel_preview'})
+                data = await observe_after_action(call, await call('selection_option', {'option_id': 'cancel_preview'}))
                 assert data['selection']['selected_ids'] == [] and data['selection']['upgrade_previews'] == [], data
                 assert (await check())['upgrades'] == before['upgrades']
                 data = await finish_selection(data)
@@ -144,7 +145,7 @@ async def verify(args):
                 data = await choose(data, 1)
                 assert data['transition']['stop_reason'] == 'action_completed' and data['available_actions'] == ['respond_to_confirmation'], data
                 await capture('confirmation')
-                data = await call('respond_to_confirmation', {'option': 'cancel'})
+                data = await observe_after_action(call, await call('respond_to_confirmation', {'option': 'cancel'}))
                 assert data['event']['status'] == 'visible' and data['confirmation'] is None, data
             elif scenario == 'crystal':
                 data = await choose(data, 0)
@@ -167,11 +168,11 @@ async def verify(args):
                 prepared = await asyncio.to_thread(raw.call, 'prepare_test_event_victory'); assert prepared['ok'], prepared
                 data = await call('get_observation')
                 card = next(c for c in data['player']['hand'] if c['name'] == 'Thunderclap')
-                data = await call('play_card', {'card_id': card['id']})
+                data = await observe_after_action(call, await call('play_card', {'card_id': card['id']}))
                 if data['transition']['stop_reason'] == 'player_ready':
                     attack = next(c for c in data['player']['hand'] if c['name'] in {'Strike', 'Bash'})
                     targets = await call('inspect_targets', {'card_id': attack['id']})
-                    data = await call('play_card', {'card_id': attack['id'], 'target_id': targets['targets'][0]['id']})
+                    data = await observe_after_action(call, await call('play_card', {'card_id': attack['id'], 'target_id': targets['targets'][0]['id']}))
                 assert data['transition']['stop_reason'] == 'combat_won', data
                 # Some event encounters resume immediately instead of offering ordinary combat loot.
                 for _ in range(100):
@@ -184,7 +185,7 @@ async def verify(args):
                         pending = await check()
                         assert pending['room_count'] == 1 and pending['pending'], pending
                         assert len(data['rewards']['items']) == 1 and data['rewards']['items'][0]['type'] == 'potion', data
-                        data = await call('claim_reward', {'reward_id': data['rewards']['items'][0]['id']})
+                        data = await observe_after_action(call, await call('claim_reward', {'reward_id': data['rewards']['items'][0]['id']}))
                         assert (await check())['potions'][0] is not None
                     if scenario == 'dummy2': assert (await check())['upgrades'] == before['upgrades'] + 2
                     if scenario == 'dummy3': assert len((await check())['relics']) == len(before['relics']) + 1
@@ -193,29 +194,29 @@ async def verify(args):
                     if scenario == 'lantern':
                         details = await call('inspect_rewards')
                         key = next(i for i in details['rewards']['items'] if i['type'] == 'special_card')
-                        data = await call('claim_reward', {'reward_id': key['id']})
+                        data = await observe_after_action(call, await call('claim_reward', {'reward_id': key['id']}))
                         if data.get('selection'): data = await finish_selection(data)
                         assert (await check())['deck_count'] == before['deck_count'] + 1
-                    data = await call('proceed')
+                    data = await observe_after_action(call, await call('proceed'))
                     assert data['screen']['view'] == 'map' and data['transition']['stop_reason'] == 'action_completed', data
             elif scenario in {'reward', 'potions', 'future_potions'}:
                 data = await choose(data, 1 if scenario == 'reward' else 0)
                 assert data['scene'] == 'rewards', data
                 if scenario == 'potions':
                     assert len(data['rewards']['items']) == 3 and 'discard_potion' in data['available_actions'], data
-                    data = await call('discard_potion', {'potion_slot': 0})
+                    data = await observe_after_action(call, await call('discard_potion', {'potion_slot': 0}))
                 item = data['rewards']['items'][0]
-                data = await call('claim_reward', {'reward_id': item['id']})
+                data = await observe_after_action(call, await call('claim_reward', {'reward_id': item['id']}))
                 if data.get('selection'):
                     data = await finish_selection(data)
-                if data['scene'] == 'rewards' and data['rewards']['status'] == 'visible': data = await call('proceed')
+                if data['scene'] == 'rewards' and data['rewards']['status'] == 'visible': data = await observe_after_action(call, await call('proceed'))
                 await finish_event(data)
             elif scenario == 'trial_story':
                 data = await choose(data, 0)
                 await call('inspect_event'); assert data['event']['description'], data
                 data = await choose(data, 0)
                 if data.get('selection'): data = await finish_selection(data)
-                if data['scene'] == 'rewards': data = await call('proceed')
+                if data['scene'] == 'rewards': data = await observe_after_action(call, await call('proceed'))
                 detail = await call('inspect_event')
                 assert not re.search('[\u4e00-\u9fff]', json.dumps(detail, ensure_ascii=False)), detail
                 await finish_event(data)
@@ -227,7 +228,7 @@ async def verify(args):
                 data = await choose(data, 1)
                 assert data['scene'] == 'rewards' and len(data['rewards']['items']) == 4, data
                 assert (await check())['deck_count'] == before['deck_count'] - 1
-                data = await call('proceed')
+                data = await observe_after_action(call, await call('proceed'))
                 await finish_event(data)
             elif scenario == 'doll':
                 data = await choose(data, 2)

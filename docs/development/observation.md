@@ -37,7 +37,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 这是结构示例，实际列表随按钮启用、显示和交互状态变化。`scene` 仍表示底层房间或战斗；`screen.view` 标识地图、牌组、占卜、确认或结算，`selection.type/status` 区分选牌及查看战场，没有待处理选择时省略 `selection`。精简输出不附候选参数、提示、数值或占卜图像；后续需要详情时调用相应工具或再次完整观察。
 
-两种预设都会实时读取、完整校验并刷新内部动作令牌，精简模式不改变游戏 UI，也不改变后续动作返回的完整格式。只允许可选字符串 `preset: full/actions_only`；非法值或额外字段返回 `invalid_request`，清除旧动作许可且不请求游戏。预设属于 MCP 输出投影，底层文件 `get_state` 仍返回完整状态。
+两种预设都会实时读取、完整校验并刷新内部动作令牌，精简模式不改变游戏 UI，也不改变后续动作的精简回执格式，见[MCP 动作返回](mcp.md#动作返回格式)。只允许可选字符串 `preset: full/actions_only`；非法值或额外字段返回 `invalid_request`，清除旧动作许可且不请求游戏。预设属于 MCP 输出投影，底层文件 `get_state` 仍返回完整状态。
 
 `available_actions` 包含当前原生页面允许的详情和页面工具，例如 `inspect_selection`、`set_selection_view`、`close_card_view`、`close_map`，不是全部已安装工具。工具出现不意味着任意卡牌、目标、商品或选项参数都有效，也不保证调用前状态不发生变化。列表不携带参数；从完整观察或专用详情读取候选后再提交。
 
