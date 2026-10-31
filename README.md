@@ -68,6 +68,7 @@ MCP 不扫描游戏进程，也不负责启动游戏。客户端与 Mod 通过�
 ## 协作与证据
 
 - [协作约定](AGENTS.md)、[文档规范](docs/documentation.md)、[Codex 环境约定](docs/ai/codex.md)、[Cursor 模型选择](docs/ai/cursor-model-selection.md)。
+- [问号房与事件调研](docs/research/2026-10-31-events.md)：57个注册事件、战斗往返、致死红框、占卜与确认弹窗；通用事件功能尚未实现。
 - [项目审阅与重构](docs/research/2026-10-29-project-review.md)：输出边界、提示词、JSON 格式、官方实践及验证范围。
 - [结束回合事件与交互边界调研](docs/research/2026-10-29-end-turn-events.md)：战斗历史、RitsuLib 与选择暂停的设计依据；实际行为见 [接口说明](docs/development/end-turn.md)。
 - [选牌与查看战场验证](docs/research/2026-10-30-card-selection-validation.md)：候选、确认、跳过、第一回合遗物、信息边界及审阅修复。
