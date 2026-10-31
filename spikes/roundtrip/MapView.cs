@@ -31,7 +31,7 @@ internal static class MapView
         if (global.CapstoneContainer.InUse && !(allowCardView && CardPage != null))
             return false;
         bool rewardsOnly = RunUi.OnlyRewardOverlays();
-        return (global.Overlays.ScreenCount == 0 || rewardsOnly || CardSelection.BattlefieldOverlay) && NModalContainer.Instance?.OpenModal == null
+        return (global.Overlays.ScreenCount == 0 || rewardsOnly || DivinationInspection.OnlyOverlay || CardSelection.BattlefieldOverlay) && NModalContainer.Instance?.OpenModal == null
             && !VisibleUi.Shown(game.InspectCardScreen) && !VisibleUi.Shown(game.InspectRelicScreen)
             && !game.Transition.InTransition
             && !(VisibleUi.Shown(game.Transition) && game.Transition.Material is ShaderMaterial material

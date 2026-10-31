@@ -27,6 +27,7 @@ public static class BridgeMod
         TurnCapture.Initialize();
         RelicObtainTracker.Initialize();
         EventTaskTracker.Initialize();
+        DivinationTasks.Initialize();
         CombatEntryCapture.Initialize();
         ShopTransactions.Initialize();
         mailbox = new FileMailbox(Path.GetFullPath(directory));

@@ -140,6 +140,12 @@ internal sealed partial class GameAdapter(bool testMode)
         if (scene == "shop") visibility = ShopInspection.Exposed(ShopInspection.Current!) ? "visible" : "covered";
         if (scene == "ancient") visibility = AncientInspection.Exposed(AncientInspection.Current!) ? "visible" : "covered";
         if (scene == "event") visibility = EventInspection.Exposed(EventInspection.Current!) ? "visible" : "covered";
+        if (DivinationInspection.Current is { } divination && DivinationInspection.Exposed(divination))
+        {
+            visibility = "visible";
+            if (DivinationInspection.Playing(divination)) { actions.Add("set_divination_tool"); actions.Add("divine"); }
+            else if (DivinationInspection.Ready(divination) && DivinationInspection.Proceed(divination)?.IsEnabled == true) actions.Add("proceed");
+        }
         if (EventInspection.Current is { } currentEvent && EventInspection.Ready(currentEvent))
         {
             if (currentEvent.Layout.OptionButtons.Any(b => !ReferenceEquals(b, EventInspection.Proceed(currentEvent)) && EventInspection.Clickable(b)))
@@ -187,7 +193,7 @@ internal sealed partial class GameAdapter(bool testMode)
         }
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 11, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 12, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -205,16 +211,24 @@ internal sealed partial class GameAdapter(bool testMode)
             shop = shopInspection.Read(),
             ancient = ancientInspection.Read(),
             @event = eventInspection.Read(),
+            divination = DivinationInspection.Read(),
             available_actions = actions
         });
-        string snapshotId = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(body)));
+        string permissionState = body;
+        if (DivinationInspection.Current != null)
+        {
+            var logical = System.Text.Json.Nodes.JsonNode.Parse(body)!;
+            if (logical["divination"] is System.Text.Json.Nodes.JsonObject sphere) sphere["dialogue"] = null;
+            permissionState = logical.ToJsonString();
+        }
+        string snapshotId = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(permissionState)));
         return "{\"snapshot_id\":\"" + snapshotId + "\"," + body[1..];
     }
 
     public async Task<string> Execute(Request request)
     {
         string before = Observe();
-        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option")
+        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
@@ -241,6 +255,8 @@ internal sealed partial class GameAdapter(bool testMode)
         using JsonDocument document = JsonDocument.Parse(before);
         if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_EVENT_SCENARIO") != null && LocalPlayer != null)
         {
+            if (request.Operation == "check_test_divination" && DivinationInspection.Current != null)
+                return Success(request.Id, JsonSerializer.Serialize(DivinationFixture.Read(LocalPlayer)));
             if (request.Operation == "check_test_event") return Success(request.Id, JsonSerializer.Serialize(EventFixture.Read(LocalPlayer)));
             if (request.Operation == "check_test_event_english") return Success(request.Id, JsonSerializer.Serialize(EventTextChecks.Run(
                 System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_EVENT_SCENARIO") == "tea")));
@@ -293,6 +309,9 @@ internal sealed partial class GameAdapter(bool testMode)
         if (request.Operation is "inspect_ancient" or "choose_ancient_option" or "advance_dialogue"
             || request.Operation == "proceed" && RewardInspection.Current == null && AncientInspection.Current != null)
             return await AncientRequest(request, document.RootElement);
+        if (request.Operation is "set_divination_tool" or "divine"
+            || request.Operation is "inspect_event" or "proceed" && RewardInspection.Current == null && DivinationInspection.Current != null)
+            return await DivinationRequest(request, document.RootElement);
         if (request.Operation is "inspect_event" or "choose_event_option"
             || request.Operation == "proceed" && RewardInspection.Current == null && EventInspection.Current != null)
             return await EventRequest(request, document.RootElement);
@@ -804,6 +823,16 @@ internal sealed partial class GameAdapter(bool testMode)
 
     private static string Success(string id, string state)
     {
+        using var document = JsonDocument.Parse(state);
+        if (document.RootElement.TryGetProperty("divination", out var divination) && divination.ValueKind == JsonValueKind.Object
+            && divination.GetProperty("status").GetString() == "visible")
+        {
+            var screen = DivinationInspection.Current;
+            var capture = screen == null ? null : ViewportCapture.Read(DivinationInspection.Bounds(screen));
+            if (capture == null) return FileMailbox.Error(id, "screenshot_unavailable", "A rendered divination board image is required.");
+            var (width, height, png) = capture.Value;
+            state = state[..^1] + ",\"divination_image\":" + JsonSerializer.Serialize(new { width, height, png_base64 = Convert.ToBase64String(png) }) + "}";
+        }
         if (CardSelection.Current is { } selection)
             state = state[..^1] + ",\"selection_view\":\"" + selection.Status + "\"}";
         return "{\"id\":\"" + id + "\",\"ok\":true,\"state\":" + state + "}";

@@ -64,6 +64,9 @@ def map_details(state):
 
 def closed_map(state):
     result = closed_card_view(state)
+    if result['screen'].get('view') == 'divination':
+        from game_output import observation_details
+        return observation_details(state)
     if "view" in result["screen"]:
         raise ValueError("Map close left a browsing page open.")
     return result

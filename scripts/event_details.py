@@ -35,4 +35,7 @@ def event_details(value, *, full=False):
 
 def inspect_event_details(state):
     if state.get('scene') != 'event': raise ValueError('Invalid event inspection scene.')
+    if (state.get('divination') or {}).get('status') == 'visible':
+        from divination_details import divination_details
+        return {'scene': 'event', 'divination': divination_details(state['divination'])}
     return {'scene': 'event', 'event': event_details(state['event'], full=True)}

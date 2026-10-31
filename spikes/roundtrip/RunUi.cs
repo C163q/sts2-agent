@@ -24,7 +24,8 @@ internal static class RunUi
     {
         var overlays = NRun.Instance?.GlobalUi.Overlays;
         return overlays?.ScreenCount > 0 && overlays.Peek() is NRewardsScreen
-            && VisibleUi.Descendants<NRewardsScreen>(overlays).Count(s => !s.IsQueuedForDeletion()) == overlays.ScreenCount;
+            && VisibleUi.Descendants<NRewardsScreen>(overlays).Count(s => !s.IsQueuedForDeletion())
+                + (DivinationInspection.Current == null ? 0 : 1) == overlays.ScreenCount;
     }
 
     public static bool Transitioning()
@@ -44,7 +45,8 @@ internal static class RunUi
         return !CombatManager.Instance.IsInProgress && RunManager.Instance.IsInProgress
             && game != null && game.MainMenu == null && VisibleUi.Shown(run) && global?.IsNodeReady() == true
             && !global.CapstoneContainer.InUse && (global.Overlays.ScreenCount == 0
-                || OnlyRewardOverlays() && global.Overlays.Peek() is NRewardsScreen rewards && VisibleUi.Shown(rewards))
+                || OnlyRewardOverlays() && global.Overlays.Peek() is NRewardsScreen rewards && VisibleUi.Shown(rewards)
+                || DivinationInspection.OnlyOverlay)
             && !global.MapScreen.IsTraveling && NModalContainer.Instance?.OpenModal == null
             && !VisibleUi.Shown(game.InspectCardScreen) && !VisibleUi.Shown(game.InspectRelicScreen)
             && !Transitioning();

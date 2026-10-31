@@ -60,6 +60,8 @@ from ancient_details import inspect_ancient_details
 
 
 READERS = {
+    'set_divination_tool': end_turn_details,
+    'divine': end_turn_details,
     'inspect_event': inspect_event_details,
     'choose_event_option': end_turn_details,
     'inspect_ancient': inspect_ancient_details,

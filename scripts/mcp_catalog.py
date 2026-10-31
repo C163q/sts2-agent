@@ -12,6 +12,7 @@ from treasure_details import LOOT_SCHEMA
 from shop_details import BUY_SCHEMA
 from ancient_details import ANCIENT_OPTION_SCHEMA
 from event_details import EVENT_OPTION_SCHEMA
+from divination_details import TOOL_SCHEMA, DIVINE_SCHEMA
 
 
 SERVER_INSTRUCTIONS = (
@@ -31,8 +32,13 @@ def tool_definitions(*, screenshots_enabled=False):
     view = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False)
     action = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False)
     definitions = [
+        Tool(name='set_divination_tool', inputSchema=TOOL_SCHEMA, annotations=view, description=(
+            'Select the visible big (3x3) or small (one cell) divination tool without spending a reveal.')),
+        Tool(name='divine', inputSchema=DIVINE_SCHEMA, annotations=action, description=(
+            'Spend one reveal on a covered divination cell at zero-based x,y (right,down). '
+            'Use the attached board image and grid; stops at rewards or the enabled Proceed.')),
         Tool(name='inspect_event', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
-            'Read the exposed event, current options and their hover help. Does not reveal future pages or outcomes.')),
+            'Read the exposed event and hover help, or the current divination board with its image. Does not reveal hidden outcomes.')),
         Tool(name='choose_event_option', inputSchema=EVENT_OPTION_SCHEMA, annotations=action, description=(
             'Click one enabled event option by observed option_id; lethal_warning marks the visible red warning. '
             'Handle subsequent card selections, rewards or combat separately.')),

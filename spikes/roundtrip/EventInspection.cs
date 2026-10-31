@@ -31,7 +31,7 @@ internal sealed class EventInspection
 
     public static string? ManualView => Current == null ? null
         : NModalContainer.Instance?.OpenModal is NAbandonRunConfirmPopup popup && VisibleUi.Shown(popup) ? "confirmation"
-        : NRun.Instance?.GlobalUi.Overlays.Peek() is NCrystalSphereScreen divination && VisibleUi.Shown(divination) ? "divination" : null;
+        : null;
 
     public static bool Exposed(Context context) => ReferenceEquals(Current?.Layout, context.Layout)
         && RunUi.NonCombatVisible() && NRun.Instance?.GlobalUi.Overlays.ScreenCount == 0

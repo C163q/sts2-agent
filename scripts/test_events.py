@@ -56,7 +56,7 @@ class EventOutputTests(unittest.TestCase):
             self.assertEqual(public['available_actions'], [])
 
     def test_observation_identifies_unsupported_native_event_views(self):
-        for view in ('divination', 'confirmation'):
+        for view in ('confirmation',):
             raw = state(); raw['screen'] = {'status': 'covered', 'view': view}; raw['available_actions'] = []
             raw['event'] = {'status': 'covered', **dict.fromkeys(('name', 'description', 'options', 'proceed'))}
             public = player_result({'ok': True, 'state': observation_details(raw)})

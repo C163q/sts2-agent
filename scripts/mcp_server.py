@@ -6,7 +6,8 @@ from pathlib import Path
 import anyio
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
-from mcp.types import CallToolResult, TextContent
+from mcp.types import CallToolResult, ImageContent, TextContent
+from divination_details import ImagePayload
 
 from controller_lease import ControllerLease
 from game_tools import GameTools
@@ -17,8 +18,11 @@ from mcp_config import load_config
 
 
 def tool_result(payload):
+    content = [TextContent(type="text", text=json.dumps(payload, ensure_ascii=False, separators=(",", ":")))]
+    if isinstance(payload, ImagePayload):
+        content.append(ImageContent(type='image', mimeType='image/png', data=payload.image))
     return CallToolResult(
-        content=[TextContent(type="text", text=json.dumps(payload, ensure_ascii=False, separators=(",", ":")))],
+        content=content,
         structuredContent=payload,
         isError="error" in payload,
     )
@@ -26,7 +30,7 @@ def tool_result(payload):
 
 
 def create_server(tools, *, screenshots_enabled=False):
-    server = Server("sts2-agent", version="0.22.0", instructions=SERVER_INSTRUCTIONS)
+    server = Server("sts2-agent", version="0.23.0", instructions=SERVER_INSTRUCTIONS)
     definitions = tool_definitions(screenshots_enabled=screenshots_enabled)
     handlers = {tool.name: getattr(tools, tool.name) for tool in definitions}
 
@@ -38,7 +42,7 @@ def create_server(tools, *, screenshots_enabled=False):
     async def call_tool(name, arguments):
         if name not in handlers:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))
-        if name in {"end_turn", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "capture_screenshot", 'claim_reward', 'proceed', 'choose_rest_option', 'loot_treasure', 'open_shop', 'close_shop', 'buy_item', 'choose_ancient_option', 'advance_dialogue', 'choose_event_option'}:
+        if name in {"end_turn", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "capture_screenshot", 'claim_reward', 'proceed', 'choose_rest_option', 'loot_treasure', 'open_shop', 'close_shop', 'buy_item', 'choose_ancient_option', 'advance_dialogue', 'choose_event_option', 'set_divination_tool', 'divine'}:
             return tool_result(await handlers[name](arguments))
         if arguments:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))

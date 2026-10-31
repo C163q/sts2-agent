@@ -48,6 +48,7 @@ internal static class CardView
         if (view == null && NRun.Instance?.GlobalUi.MapScreen.IsOpen == true
             && MapView.Clear())
             view = "map";
+        if (view == null && DivinationInspection.Current is { } divination && DivinationInspection.Exposed(divination)) view = "divination";
         view ??= EventInspection.ManualView;
         if (view != null) result["view"] = view;
         return result;

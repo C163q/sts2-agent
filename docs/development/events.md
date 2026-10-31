@@ -1,6 +1,6 @@
 # 问号房与通用事件
 
-适用于 Mod `0.26.0`、MCP `0.22.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。支持目标版本单人的原生默认事件和战斗背景事件；实际出现的战斗、商店、宝箱继续使用对应工具。问号是地图节点图标，不代表房内交互类型。
+适用于 Mod `0.27.0`、MCP `0.23.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。支持目标版本单人的原生默认事件和战斗背景事件；实际出现的战斗、商店、宝箱继续使用对应工具。问号是地图节点图标，不代表房内交互类型。
 
 ## 工具
 
@@ -82,12 +82,12 @@
 
 ## 专属界面与限制
 
-假商人沿用[商店接口](shop.md)，不额外暴露隐藏身份。占卜与 Trial 确认弹窗本阶段只识别，不操作：
+假商人沿用[商店接口](shop.md)，不额外暴露隐藏身份。[占卜小游戏](divination.md)支持棋盘图像、大小工具、揭开与原生奖励结算。Trial 确认弹窗仍只识别，不操作：
 
 ```json
 {
   "scene": "event",
-  "screen": {"status": "covered", "view": "divination"},
+  "screen": {"status": "covered", "view": "confirmation"},
   "event": {
     "status": "covered",
     "name": null,
@@ -100,9 +100,9 @@
 }
 ```
 
-确认弹窗使用 `screen.view: "confirmation"`。动作还返回 `transition.stop_reason: "manual_input_required"`；之后单独调用观察也保留明确的页面标识及说明。占卜不读取雾下物品、位置或未来奖励；确认框不自动确认或取消。
+动作还返回 `transition.stop_reason: "manual_input_required"`；之后单独调用观察也保留明确的页面标识及说明。确认框不自动确认或取消。
 
-终章 The Architect、多人、第三方事件及专属 UI、占卜操作和确认框操作未接通。注册事件数量及源码分类见[调研](../research/2026-10-31-events.md)，不代表所有事件、分支和遗物组合均已实测。
+终章 The Architect、多人、第三方事件及专属 UI 和确认框操作未接通。注册事件数量及源码分类见[调研](../research/2026-10-31-events.md)，不代表所有事件、分支和遗物组合均已实测。
 
 ## 验证入口
 

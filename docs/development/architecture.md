@@ -18,6 +18,8 @@
 | `spikes/roundtrip/TurnBoundary.cs`、`TurnEventBuffer.cs` | 无游戏依赖的结束条件与有界事件缓冲 |
 | `spikes/roundtrip/EventInspection.cs`、`GameAdapter.Event.cs` | 通用事件的可见页面、稳定选项 ID 和原生按钮执行 |
 | `spikes/roundtrip/EventTaskTracker.cs`、`CombatEntryCapture.cs` | 事件初始化/选择/Resume 任务跟踪，以及首回合自动效果之前的战斗日志订阅 |
+| `spikes/roundtrip/DivinationInspection.cs`、`DivinationTasks.cs`、`GameAdapter.Divination.cs` | 占卜可见状态与原生点击、遮罩等待、棋盘裁剪边界和临时对白来源 |
+| `scripts/divination_details.py` | 占卜参数与投影、PNG 有界像素校验和独立图像载体；MCP server 封装 ImageContent |
 | `spikes/roundtrip/ActionSettling.cs`、`GameAdapter.ActionObservation.cs` | 统一游戏动作停止原因复核、原生牌堆动画、金币计数和药水入栏动画等待及观察稳定；页面查看单独处理 |
 | `scripts/transition_details.py` | 结束回合事件的结构校验与递归过滤 |
 | `scripts/inspection_details.py`、`*_details.py` | 按操作校验并投影响应；牌组、牌堆与地图等具体结构各自维护 |
@@ -25,7 +27,7 @@
 | `scripts/controller_lease.py` | 每个 IPC 目录的 MCP 进程控制锁 |
 | `scripts/mcp_catalog.py` | 工具名称、参数 schema、行为注解及面向模型的说明 |
 | `scripts/mcp_config.py`、`screenshot_tool.py` | 启动配置校验、PNG 校验和独占保存；配置决定截图工具是否注册 |
-| `spikes/roundtrip/ViewportCapture.cs` | 帧后游戏视口读取，不接收用户文件路径或写用户文件 |
+| `spikes/roundtrip/ViewportCapture.cs` | 帧后游戏视口及指定矩形读取，不接收用户文件路径或写用户文件 |
 | `scripts/mcp_server.py` | stdio 启动、MCP 分派和结果封装；保留既有脚本入口 |
 | `scripts/test_*.py` | 无需游戏的单元与真实 stdio/临时文件 IPC 测试 |
 | `scripts/verify_*.py`、`spikes/roundtrip/*Checks.cs` | 显式运行的真实游戏验证及原型内检查，依赖各自指定的场景 |

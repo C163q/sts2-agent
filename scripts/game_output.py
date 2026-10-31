@@ -97,6 +97,12 @@ ANCIENT_OPTION = {'id': int, 'title': str, 'description': str, 'enabled': bool}
 ROOM_EVENT_OPTION = {**ANCIENT_OPTION, 'lethal_warning': bool}
 ROOM_EVENT = {'status': str, 'name': TEXT, 'description': TEXT, 'options': nullable([ROOM_EVENT_OPTION]),
               'proceed': nullable({'text': str, 'enabled': bool})}
+DIVINATION = {'status': str, 'phase': TEXT, 'remaining': NUMBER, 'tool': TEXT,
+              'tools': nullable([{'id': str, 'text': str, 'enabled': bool}]),
+              'instructions': nullable({'title': str, 'description': str}), 'dialogue': TEXT,
+              'grid': nullable({'columns': int, 'rows': int, 'covered_rows': [str],
+                                'image': {'width': int, 'height': int}}),
+              'proceed': nullable({'text': str, 'enabled': bool})}
 ANCIENT = {'status': str, 'name': TEXT, 'epithet': TEXT, 'description': TEXT, 'dialogue': nullable([{'speaker': str, 'text': str}]),
            'options': nullable([ANCIENT_OPTION]), 'continue': nullable({'text': TEXT, 'enabled': bool}),
            'proceed': nullable({'text': str, 'enabled': bool})}
@@ -106,7 +112,7 @@ OBSERVATION = {
     "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
     "available_actions": [str],
 }
-OPTIONAL_OBSERVATION = {"event": nullable(ROOM_EVENT), "ancient": nullable(ANCIENT),"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
+OPTIONAL_OBSERVATION = {'divination': nullable(DIVINATION), "event": nullable(ROOM_EVENT), "ancient": nullable(ANCIENT),"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
 GAMEPLAY = {
     'reward_result': {'reward_id': int, 'status': str},
     'purchase_result': {'item_id': int, 'status': str},
@@ -188,6 +194,15 @@ def observation_details(state):
         result['event'] = event_details(result['event'])
     elif result['scene'] == 'event':
         raise ValueError('Missing event state.')
+    if result.get('divination') is not None:
+        from divination_details import divination_details
+        result['divination'] = divination_details(result['divination'])
+        if result['divination']['status'] == 'visible' and (result['scene'] != 'event'
+                or result['screen'] != {'status': 'visible', 'view': 'divination'}
+                or (result.get('event') or {}).get('status') != 'covered'):
+            raise ValueError('Divination is not the exposed screen.')
+    if result['screen'].get('view') == 'divination' and result.get('divination') is None:
+        raise ValueError('Missing divination state.')
     return result
 
 

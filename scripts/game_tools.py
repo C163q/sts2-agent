@@ -18,6 +18,7 @@ from treasure_details import loot_arguments
 from shop_details import shop_arguments
 from ancient_details import ancient_arguments
 from event_details import event_arguments
+from divination_details import attach_divination_image, divination_arguments
 from screenshot_tool import ScreenshotError, ScreenshotStore, screenshot_arguments
 
 
@@ -50,6 +51,12 @@ class GameTools:
 
     async def choose_event_option(self, arguments=None):
         return await self._action('choose_event_option', arguments)
+
+    async def set_divination_tool(self, arguments=None):
+        return await self._action('set_divination_tool', arguments)
+
+    async def divine(self, arguments=None):
+        return await self._action('divine', arguments)
 
     async def inspect_ancient(self):
         return await self._inspect('inspect_ancient')
@@ -221,6 +228,12 @@ class GameTools:
     async def _action(self, operation, arguments=None, validate_selection=False):
         observed = self.snapshot_id
         async with self.lock:
+            if operation in {'set_divination_tool', 'divine'}:
+                try:
+                    arguments = divination_arguments(operation, arguments)
+                except ValueError:
+                    self.snapshot_id = None
+                    return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
             if operation == 'choose_event_option':
                 try:
                     arguments = event_arguments(operation, arguments)
@@ -322,10 +335,12 @@ class GameTools:
                 if not isinstance(response["error"]["code"], str):
                     raise ValueError("Invalid game error.")
             payload = player_result(response)
+            if response['ok']:
+                payload = attach_divination_image(payload, state)
             if response["ok"] and "available_actions" in payload:
                 payload["available_actions"] = [
                     action for action in payload.get("available_actions", [])
-                    if action in {"end_turn", "play_card", "use_potion", "discard_potion", "select_card", "selection_option", 'claim_reward', 'proceed', 'choose_rest_option', 'loot_treasure', 'open_shop', 'close_shop', 'buy_item', 'choose_ancient_option', 'advance_dialogue', 'choose_event_option'}]
+                    if action in {"end_turn", "play_card", "use_potion", "discard_potion", "select_card", "selection_option", 'claim_reward', 'proceed', 'choose_rest_option', 'loot_treasure', 'open_shop', 'close_shop', 'buy_item', 'choose_ancient_option', 'advance_dialogue', 'choose_event_option', 'set_divination_tool', 'divine'}]
         except ScreenshotError as error:
             payload = player_result({"ok": False, "error": {"code": error.code}})
             snapshot_id = None

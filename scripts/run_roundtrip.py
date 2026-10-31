@@ -46,7 +46,7 @@ def main():
                         help='构造独立实例的先古之民房间与遗物适配验证')
     parser.add_argument('--event-scenario', choices=('basic', 'death', 'rescue', 'locked', 'upgrade', 'upgrade_cancel', 'transform', 'enchant', 'remove',
                         'grid', 'cheese', 'reward', 'potions', 'dense', 'dense_choice', 'lantern', 'repy', 'dummy1', 'dummy2', 'dummy3', 'trial',
-                        'trial_story', 'crystal', 'relic_trader', 'future_potions', 'tea', 'conveyor', 'slippery',
+                        'trial_story', 'crystal', 'crystal_full', 'relic_trader', 'future_potions', 'tea', 'conveyor', 'slippery',
                         'reflections', 'doll', 'wood', 'sapphire', 'symbiote'),
                         help='构造独立实例的通用事件与场景衔接验证')
     args = parser.parse_args()

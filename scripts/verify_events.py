@@ -146,8 +146,8 @@ async def verify(args):
                 await capture('confirmation')
             elif scenario == 'crystal':
                 data = await choose(data, 0)
-                assert data['transition']['stop_reason'] == 'manual_input_required' and data['event']['status'] == 'covered', data
-                assert not data['available_actions'], data
+                assert data['transition']['stop_reason'] == 'action_completed' and data['event']['status'] == 'covered', data
+                assert data['divination']['phase'] == 'playing' and 'divine' in data['available_actions'], data
                 await capture('divination')
             elif scenario in {'dense', 'dense_choice', 'lantern', 'dummy1', 'dummy2', 'dummy3'}:
                 data = await choose(data, int(scenario[-1]) - 1 if scenario.startswith('dummy') else 1)

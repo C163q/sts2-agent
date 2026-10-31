@@ -32,7 +32,7 @@ internal static class EventFixture
             await RelicCmd.Obtain<Anchor>(player); await RelicCmd.Obtain<Vajra>(player);
             await RelicCmd.Obtain<Nunchaku>(player); await RelicCmd.Obtain<PenNib>(player);
         }
-        if (scenario is "future_potions" or "potions")
+        if (scenario is "future_potions" or "potions" or "crystal_full")
         {
             await PotionCmd.TryToProcure<FirePotion>(player);
             await PotionCmd.TryToProcure<BlockPotion>(player);
@@ -52,7 +52,7 @@ internal static class EventFixture
             "repy" => ModelDb.Event<WarHistorianRepy>(),
             "dummy1" or "dummy2" or "dummy3" => ModelDb.Event<BattlewornDummy>(),
             "trial" or "trial_story" => ModelDb.Event<Trial>(),
-            "crystal" => ModelDb.Event<CrystalSphere>(),
+            "crystal" or "crystal_full" => ModelDb.Event<CrystalSphere>(),
             "relic_trader" => ModelDb.Event<RelicTrader>(),
             "future_potions" => ModelDb.Event<TheFutureOfPotions>(),
             "tea" => ModelDb.Event<TeaMaster>(),

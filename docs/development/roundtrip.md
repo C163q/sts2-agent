@@ -74,6 +74,7 @@ python3 scripts/test_prepare_roundtrip.py
 | `inspect_rest_site` | 只读当前休息处选项及动态说明 |
 | `choose_rest_option` | 带 `option_id` 和 `expected_state`，点击一个启用的休息处选项 |
 | `inspect_event` | 只读当前可见事件及原生悬停解释，不推进页面或 RNG |
+| `set_divination_tool` / `divine` | 占卜大小工具切换与格子点击，需要 `expected_state`；参数及图像格式见[占卜接口](divination.md) |
 | `choose_event_option` | 参数为整数 `option_id`，需要 `expected_state`，点击一个当前启用选项，见[事件接口](events.md) |
 | `get_state` | 读取主菜单、战斗、[奖励](rewards.md)、[休息处](rest-site.md)、[宝箱房](treasure.md)、[商店](shop.md)、[先古之民](ancients.md)或[通用事件](events.md)状态及 `available_actions`；未识别场景归为 `loading_or_noncombat` |
 | `inspect_hand` | 只读、无须动作令牌；一次读取全部当前可见手牌的英语正文和悬停解释，格式见 [手牌详情](hand-inspection.md) |
@@ -99,7 +100,7 @@ python3 scripts/test_prepare_roundtrip.py
 请求写入 `requests/<id>.json`，其中 `id` 是不带连字符的 UUID；先写临时文件再原子重命名为 `.json`。请求体包含 `id`、`operation`；动作另带 `expected_state`，有参数操作的选项放在 `arguments` 对象中。响应写入 `responses/<id>.json`，成功包含 `ok: true` 和 `state`，失败包含 `ok: false` 和 `error.code`、`error.message`。
 
 - 文件读写和等待在后台进行，状态读取与动作提交在 Godot 主线程进行；当前串行处理请求。
-- `snapshot_id` 根据当前导出的观察内容、进程会话、战斗代次、工具界面操作代次、选择实例代次及药水实例代次生成。动作在主线程核对令牌和合法性后提交，选牌若跨帧滚动还会在点击前核对候选、已选和数量规则；通过工具查看并关闭牌组后旧令牌不会恢复，须重新观察。这不是对所有游戏内部状态或两次请求之间全部人工 UI 操作历史的完整版本标识。
+- `snapshot_id` 根据当前导出的观察内容、进程会话、战斗代次、工具界面操作代次、选择实例代次及药水实例代次生成。动作在主线程核对令牌和合法性后提交，选牌若跨帧滚动还会在点击前核对候选、已选和数量规则；通过工具查看并关闭牌组后旧令牌不会恢复，须重新观察。占卜的动态图像及临时对白不纳入令牌，次数、工具、格子和可操作状态仍纳入；见[占卜接口](divination.md)。这不是对所有游戏内部状态或两次请求之间全部人工 UI 操作历史的完整版本标识。
 - 相同请求 ID 且缓存响应仍在时返回原结果。重复请求不分配新 ID；删除响应缓存后不再保证同一 ID 不会再次执行。
 - `stale_state` 表示缺少或不匹配的状态令牌，`illegal_action` 表示当前不可执行，`invalid_request` 表示请求格式有误，`expired_request` 表示执行前已过期，`game_error` 表示游戏调用异常。
 - `timeout` 或客户端超时后，动作是否已执行可能不确定。应先重新观察，不能自动换一个 ID 重试动作。创建测试场景过程中发生错误也可能已经部分推进游戏。

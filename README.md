@@ -4,7 +4,7 @@
 
 ## 当前能力
 
-当前为 Linux 游戏 `v0.107.1` 的验证原型：Mod `0.26.0` 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。已有真实游戏及 Codex 模型的观察、结束回合和读回验证；尚未支持地图选路或完整自动游玩。
+当前为 Linux 游戏 `v0.107.1` 的验证原型：Mod `0.27.0` 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。已有真实游戏及 Codex 模型的观察、结束回合和读回验证；尚未支持地图选路或完整自动游玩。
 
 | 能力 | 接口与说明 |
 | --- | --- |
@@ -16,9 +16,9 @@
 
 战后支持[逐项搜刮、跳过与前进](docs/development/rewards.md)，奖励卡牌复用选牌工具；搜刮期间可以查看地图。支持[休息处选项](docs/development/rest-site.md)、锻造升级与烹饪选牌，帐篷下逐项操作。支持[宝箱房开箱、领取与跳过](docs/development/treasure.md)，默认一次调用开箱并领取遗物。支持[商店开关、商品详情、逐项购买与删牌](docs/development/shop.md)。
 
-已接通[先古之民房间](docs/development/ancients.md)：逐句对话、选择遗物、后续选牌与前进。支持[通用问号事件](docs/development/events.md)的正文与选项、致死红框、后续选牌/奖励、战斗及返回事件；占卜和特殊确认弹窗明确停在人工输入边界。
+已接通[先古之民房间](docs/development/ancients.md)：逐句对话、选择遗物、后续选牌与前进。支持[通用问号事件](docs/development/events.md)的正文与选项、致死红框、后续选牌/奖励、战斗及返回事件；[占卜](docs/development/divination.md)支持棋盘图像、大小工具与逐格揭开，特殊确认弹窗仍停在人工输入边界。
 
-MCP 默认提供 36 个工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
+MCP 默认提供 38 个工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
 
 ## 开发与运行入口
 

@@ -72,4 +72,4 @@ Mod `0.20.0` 统一[可见卡牌名称](observation.md#手牌与身份)，目标
 
 MCP server `0.16.0` [复用完整成功动作的观察](mcp.md#调用和错误语义)，可以连续决策与执行。Mod 仍为 `0.20.0`；只需重连 MCP 加载新脚本及公共说明，无须重启或替换游戏内 Mod。
 
-当前 Mod `0.26.0`、MCP `0.22.0` 支持[战后搜刮与前进](rewards.md)、[休息处选项与锻造](rest-site.md)、[宝箱房](treasure.md)、[商店](shop.md)、[先古之民](ancients.md)及[通用事件](events.md)。需替换 Mod DLL/清单并完整重启游戏，同时重连 MCP；RitsuLib 仍由创意工坊管理。
+当前 Mod `0.27.0`、MCP `0.23.0` 支持[战后搜刮与前进](rewards.md)、[休息处选项与锻造](rest-site.md)、[宝箱房](treasure.md)、[商店](shop.md)、[先古之民](ancients.md)及[通用事件](events.md)。需替换 Mod DLL/清单并完整重启游戏，同时重连 MCP；RitsuLib 仍由创意工坊管理。

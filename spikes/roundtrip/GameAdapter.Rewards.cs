@@ -29,12 +29,13 @@ internal sealed partial class GameAdapter
         bool mapReady = global != null && MapView.Ready(global.MapScreen);
         bool manual = NModalContainer.Instance?.OpenModal != null || global?.CapstoneContainer.InUse == true && selection?.Kind != "view_cards"
             || selection is { Supported: false, Exposed: true }
-            || global?.Overlays.ScreenCount > 0 && !RunUi.OnlyRewardOverlays()
+            || global?.Overlays.ScreenCount > 0 && !RunUi.OnlyRewardOverlays() && !DivinationInspection.OnlyOverlay
                 && (selection == null || !ReferenceEquals(global.Overlays.Peek(), selection.Owner))
             || rewards == null && rest == null && treasure == null && shop == null && ancient == null && currentEvent == null && selection == null && !mapReady && RunUi.NonCombatVisible()
             || (treasure != null || shop != null || ancient != null || currentEvent != null) && !TreasureInspection.Singleplayer
             || NGame.Instance?.MainMenu != null;
-        bool ready = rewards != null && RewardInspection.Ready(rewards)
+        bool ready = DivinationInspection.Current is { } divination && DivinationInspection.Ready(divination)
+            || rewards != null && RewardInspection.Ready(rewards)
             || rest != null && RestSiteInspection.Ready(rest)
             || treasure != null && TreasureInspection.Ready(treasure)
             || shop != null && ShopInspection.Ready(shop)
