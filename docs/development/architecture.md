@@ -23,7 +23,7 @@
 | `spikes/roundtrip/DivinationInspection.cs`、`DivinationTasks.cs`、`GameAdapter.Divination.cs` | 占卜可见状态与原生点击、遮罩等待、棋盘裁剪边界和临时对白来源 |
 | `spikes/roundtrip/EventConfirmation.cs`、`GameAdapter.Confirmation.cs` | 当前事件确认框的来源与可见内容、原生按钮操作和失败结算 |
 | `scripts/divination_details.py` | 占卜参数与投影、PNG 有界像素校验和独立图像载体；MCP server 封装 ImageContent |
-| `spikes/roundtrip/ActionSettling.cs`、`GameAdapter.ActionObservation.cs` | 统一游戏动作停止原因复核、原生牌堆动画、金币计数和药水入栏动画等待及观察稳定；页面查看单独处理 |
+| `spikes/roundtrip/ActionSettling.cs`、`GameAdapter.ActionObservation.cs`、`CombatMotion.cs` | 统一动作停止原因复核、牌堆飞行、资源显示、生物死亡及有限 UI 过渡等待与观察稳定；页面查看单独处理 |
 | `scripts/transition_details.py` | 结束回合事件的结构校验与递归过滤 |
 | `scripts/inspection_details.py`、`*_details.py` | 按操作校验并投影响应；牌组、牌堆与地图等具体结构各自维护 |
 | `scripts/observation_presets.py`、`available_tools.py` | 观察预设参数与精简投影、公开工具名称和动作分类 |

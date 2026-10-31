@@ -2,6 +2,7 @@ using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.Entities.UI;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
@@ -9,6 +10,7 @@ using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Powers.Mocks;
 using MegaCrit.Sts2.Core.Nodes.Combat;
+using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace Sts2Agent;
@@ -38,6 +40,12 @@ internal static class PlayFixture
         else Add<StrikeIronclad>();
         Add<DefendIronclad>();
         Add<StrikeIronclad>();
+        if (scenario == "choice_chain")
+        {
+            cards.Clear();
+            for (int i = 0; i < 5; i++) Add<Discovery>();
+            Add<DefendIronclad>(); Add<StrikeIronclad>();
+        }
         if (scenario == "card_names")
         {
             cards.Clear();
@@ -70,6 +78,18 @@ internal static class PlayFixture
             await CardPileCmd.AddGeneratedCardToCombat(combat.CreateCard<DefendIronclad>(player), PileType.Draw, player);
         if (scenario is "victory" or "test_subject")
             foreach (var enemy in combat.Enemies) await CreatureCmd.SetCurrentHp(enemy, 1);
+        if (scenario == "kill_chain") await CreatureCmd.SetCurrentHp(combat.Enemies.First(), 1);
+        if (scenario == "delayed_ui")
+        {
+            void BlockChanged(int _, int __)
+            {
+                player.Creature.BlockChanged -= BlockChanged;
+                // Exercise the native delayed health UI on an otherwise ordinary card action.
+                NCombatRoom.Instance!.GetCreatureNode(player.Creature)!
+                    .GetNode<NCreatureStateDisplay>("%HealthBar").AnimateIn(HealthBarAnimMode.SpawnedAtCombatStart);
+            }
+            player.Creature.BlockChanged += BlockChanged;
+        }
         if (scenario is "death" or "thorns_death") await CreatureCmd.SetCurrentHp(player.Creature, 1);
         if (scenario == "thorns_death")
             await PowerCmd.Apply<ThornsPower>(new ThrowingPlayerChoiceContext(), combat.Enemies.First(), 3, player.Creature, null);

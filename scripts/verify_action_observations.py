@@ -29,8 +29,7 @@ async def verify(args):
         str(root / 'scripts/mcp_server.py'), '--ipc-dir', str(root / '.tmp/roundtrip/ipc'), '--config', str(config)])
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
-            initialized = await session.initialize()
-            assert initialized.serverInfo.version == '0.26.0'
+            await session.initialize()
 
             async def call(name, arguments=None, *, error=None):
                 response = await session.call_tool(name, arguments or {})

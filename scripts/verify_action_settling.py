@@ -40,7 +40,8 @@ async def verify(args):
                 assert 'error' not in data, data
                 return data
 
-            for index, name in enumerate(('Strike', 'Defend')):
+            names = ('Strike', 'Defend') if args.scenario == 'normal' else ('Defend',) if args.scenario == 'delayed_ui' else ()
+            for index, name in enumerate(names):
                 observation = await call('get_observation')
                 card = next(c for c in observation['player']['hand'] if c['name'] == name)
                 query = await call('inspect_targets', {'card_id': card['id']})
@@ -58,22 +59,28 @@ async def verify(args):
                     'player_ready returned before visible discard count settled', played['player'], later['player'])
                 assert played['player'] == later['player'] and played['enemies'] == later['enemies'], (
                     'Public gameplay state changed after a completed action without another input', played, later)
-            observed = await call('get_observation')
-            ended = await call('end_turn')
-            assert ended['transition']['stop_reason'] == 'player_ready' and ended['transition']['complete'], ended
-            assert ended['turn'] == observed['turn'] + 1
-            await call('capture_screenshot', {'filename': 'turn-returned.png'})
-            await asyncio.sleep(2)
-            later = await call('get_observation')
-            await call('capture_screenshot', {'filename': 'turn-later.png'})
-            assert ended['player'] == later['player'] and ended['enemies'] == later['enemies'], (
-                'Public state changed after a completed turn without another input', ended, later)
-    print('PASS: real MCP normal card returns include settled visible pile counts and remain unchanged without input.')
+            revived = False
+            for index in range(3 if args.scenario == 'revive' else 1):
+                observed = await call('get_observation')
+                ended = await call('end_turn')
+                assert ended['transition']['stop_reason'] == 'player_ready' and ended['transition']['complete'], ended
+                assert ended['turn'] == observed['turn'] + 1
+                revived |= any(e['type'] == 'revived' for e in ended['transition']['events'])
+                await call('capture_screenshot', {'filename': f'turn-{index}-returned.png'})
+                await asyncio.sleep(2)
+                later = await call('get_observation')
+                await call('capture_screenshot', {'filename': f'turn-{index}-later.png'})
+                assert ended['player'] == later['player'] and ended['enemies'] == later['enemies'], (
+                    'Public state changed after a completed turn without another input', ended, later)
+            if args.scenario == 'revive':
+                assert revived, 'The native enemy must actually revive during the regression.'
+    print('PASS', args.scenario, 'real MCP results remain stable without another input.')
 
 
 def main():
     parser = argparse.ArgumentParser(description='验证隔离图形实例的出牌返回及稍后可见牌堆计数；会打出打击与防御。')
     parser.add_argument('--report', required=True, type=Path)
+    parser.add_argument('--scenario', choices=('normal', 'revive', 'delayed_ui'), default='normal')
     asyncio.run(verify(parser.parse_args()))
 
 

@@ -21,8 +21,8 @@ internal sealed partial class GameAdapter
             await ObservationFrame();
             string? reason = stopReason();
             state = Observe();
-            // Logical actions finish before independent card flights update visible pile counters.
-            if (settling.Sample(reason, state, CardMotionPending() || RunUi.ResourceMotionPending()
+            // Logical actions finish before independent UI motion stops changing the observation.
+            if (settling.Sample(reason, state, CardMotionPending() || CombatMotion.Pending() || RunUi.ResourceMotionPending()
                 || reason == "combat_won" && RunUi.CardPreviewsPending(), timer.Elapsed))
                 return (state, reason!);
         }

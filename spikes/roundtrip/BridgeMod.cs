@@ -29,6 +29,7 @@ public static class BridgeMod
         EventTaskTracker.Initialize();
         NavigationTasks.Initialize();
         RunResultMotion.Initialize();
+        CombatMotion.Initialize();
         EventConfirmation.Initialize();
         DivinationTasks.Initialize();
         CombatEntryCapture.Initialize();
