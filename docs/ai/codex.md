@@ -51,3 +51,9 @@ git status --short
 - 解释整段命令的用途、各项操作及其影响范围。
 
 只有申请获准后，才能执行申请覆盖的完整命令。已有的一般权限批准不能替代本次特殊情况说明；便利或减少命令调用次数不构成必须合并的理由。
+
+## 异步 stdio 测试挂起
+
+当前环境曾在沙箱内拦截 Python asyncio 唤醒事件循环所需的本地 socket 写入，导致 MCP 初始化或退出挂起；[对照验证记录](../research/2026-11-01-mcp-tool-prompts.md#初始化超时的环境复查)包含最小复现及版本。`IsolatedAsyncioTestCase` 也可能受影响，不能只按测试运行器区分是否可用。
+
+遇到 stdio 初始化无响应时，为探针设置有限超时并清理其自有子进程；检查 asyncio 调试日志是否包含 `self-pipe socket` 和 `PermissionError: [Errno 1] Operation not permitted`。确认后可申请沙箱外执行同一检查，并明确临时 IPC、进程清理和影响范围。目录/握手检查不需要真实游戏。不要通过增大产品超时、修改事件循环实现或改用正式 IPC 掩盖该环境问题。

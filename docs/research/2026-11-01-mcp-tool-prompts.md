@@ -46,8 +46,26 @@
 
 已运行 `.tmp/mcp-venv/bin/python -m unittest discover -s scripts -p 'test_*.py'`，294 项通过，包含真实子进程 stdio 与临时文件 IPC。额外比较修改前后的 SDK 工具定义，递归去除 `description` 后完全一致，确认名称、顺序、schema 约束、默认值和行为注解不变；全部公开参数均有非空说明。
 
-补充目录回读采用现有 `unittest.IsolatedAsyncioTestCase` 与 `FakeGame` 测试方式：42 个公开定义及初始化 instructions 与源码完全一致，未发送游戏请求。临时直接使用 `asyncio.run/anyio.run` 的独立检查曾在初始化阶段超时；单独重跑现有 stdio 用例及上述目录回读均通过，运行方式差异的原因未确认，不将该超时作为提示词回归或游戏连接故障的证据。
+补充目录回读采用现有 `unittest.IsolatedAsyncioTestCase` 与 `FakeGame` 测试方式：42 个公开定义及初始化 instructions 与源码完全一致，未发送游戏请求。临时独立检查的初始化超时已通过下述环境对照复现并定位；不能归因于 `asyncio.run/anyio.run` 与 unittest 的运行方式差异。
 
 独立只读审阅对照了参数来源、目标条件、可见信息、场景及许可实现，未发现重大、重要或次要问题；`git diff --check` 通过。
 
 没有重新启动真实游戏，没有运行模型游玩 A/B 评测；本次验证说明协议和既有行为测试未回归，不能证明模型工具选择准确率、调用次数或通关表现提升。后续评测可覆盖目标必填、满药水槽领奖、查看页面后恢复动作、升级确认、占卜连续揭开及结算回菜单，记录成功率、非法调用和重复观察次数。
+
+## 初始化超时的环境复查
+
+复查代码基线 `c501baa`，使用 Python `3.14.8`、MCP SDK `1.26.0`、AnyIO `4.15.1`。原始临时脚本 `/tmp/sts2_catalog_wire_check.py` 与 `/tmp/test_sts2_catalog_wire.py` 保持不变，仅改变是否在 Codex 文件/网络沙箱内执行：
+
+| 检查 | 受限沙箱 | 宿主环境 |
+| --- | --- | --- |
+| 独立脚本 `anyio.run` | 初始化等待 15 秒后超时 | 成功初始化并读到 42 个工具，零游戏请求 |
+| `IsolatedAsyncioTestCase` 目录回读 | 外层 22 秒限时结束挂起进程 | 1 项通过，约 0.52 秒 |
+| 不加载 MCP 的 `socket.socketpair().send()` | `PermissionError: [Errno 1] Operation not permitted` | 成功写入 1 字节 |
+
+完整握手开启 asyncio 调试日志后，沙箱内记录到 `Fail to write a null byte into the self-pipe socket` 及上述 `EPERM`；服务端主线程停在事件循环的 `select`，AnyIO 工作线程已经回到任务队列等待。相同探针在宿主环境完成初始化和目录读取并正常退出。
+
+本次根因是沙箱禁止了本地 socket 写入。MCP stdio 服务通过 AnyIO 工作线程读取标准输入；线程完成后使用 `call_soon_threadsafe` 通知事件循环，Python 的 `_write_to_self` 再通过本地 socket 唤醒循环。该写入被拒绝时，回调可能无法及时执行，表现为握手等待或退出挂起。Python 在非调试模式下会吞掉这处 `OSError`，因此最外层可能只看到超时；时序变化也可能让部分调用碰巧完成，不能用单次通过排除环境限制。
+
+实现依据为当前环境的 `/usr/lib/python3.14/asyncio/selector_events.py` 中 `_write_to_self`，以及虚拟环境中 `mcp/server/stdio.py` 的 `stdio_server` 和 `anyio/_backends/_asyncio.py` 的 `WorkerThread.run`。这些检查未启动游戏，也未访问正式 IPC；没有证据表明提示词、JSON 内容或 Mod 引发该超时。无须修改工具提示词、改用 unittest 或增大游戏请求超时来处理此环境限制。
+
+证据保留在 `.tmp/2026-11-01-mcp-stdio/`，包括两种运行方式的沙箱/宿主日志、最小 socket 对照，以及 `handshake-debug-*.log` 的线程栈与调试日志。后续遇到相同症状按 [Codex 环境约定](../ai/codex.md#异步-stdio-测试挂起)先取证，再申请宿主环境验证。
