@@ -89,6 +89,12 @@ internal sealed partial class GameAdapter(bool testMode)
         shopInspection.Synchronize();
         ancientInspection.Synchronize();
         eventInspection.Synchronize();
+        var confirmation = MegaCrit.Sts2.Core.Nodes.CommonUi.NModalContainer.Instance?.OpenModal;
+        if (!ReferenceEquals(confirmation, lastConfirmation))
+        {
+            lastConfirmation = confirmation;
+            confirmationGeneration++;
+        }
         if (!ReferenceEquals(RestSiteInspection.Current, lastRestSite))
         {
             lastRestSite = RestSiteInspection.Current;
@@ -191,12 +197,19 @@ internal sealed partial class GameAdapter(bool testMode)
             if (RewardInspection.Buttons(rewards).Any(b => RewardInspection.Type(b.Reward!) != "unsupported")) actions.Add("claim_reward");
             if (RewardInspection.Proceed(rewards)?.IsEnabled == true) actions.Add("proceed");
         }
+        if (EventConfirmation.Current is { } dialog && EventConfirmation.Exposed(dialog))
+        {
+            visibility = "visible";
+            actions.Clear();
+            if (EventConfirmation.Ready(dialog)) actions.Add("respond_to_confirmation");
+        }
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 12, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 13, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
+            confirmation_generation = confirmationGeneration,
             selection_generation = selectionGeneration, scene,
             screen = CardView.Screen(visibility),
             turn = scene == "combat" ? observation.Turn() : null,
@@ -212,6 +225,7 @@ internal sealed partial class GameAdapter(bool testMode)
             ancient = ancientInspection.Read(),
             @event = eventInspection.Read(),
             divination = DivinationInspection.Read(),
+            confirmation = EventConfirmation.Read(),
             available_actions = actions
         });
         string permissionState = body;
@@ -228,7 +242,7 @@ internal sealed partial class GameAdapter(bool testMode)
     public async Task<string> Execute(Request request)
     {
         string before = Observe();
-        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine")
+        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
@@ -253,8 +267,24 @@ internal sealed partial class GameAdapter(bool testMode)
             }));
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (request.Operation == "respond_to_confirmation")
+            return await ConfirmationRequest(request, document.RootElement);
         if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_EVENT_SCENARIO") != null && LocalPlayer != null)
         {
+            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_EVENT_SCENARIO") == "trial")
+            {
+                if (request.Operation == "check_test_confirmation")
+                    return Success(request.Id, JsonSerializer.Serialize(ConfirmationFixture.Read()));
+                if (request.Operation is "open_test_unowned_confirmation" or "cancel_test_confirmation" or "reopen_test_confirmation")
+                {
+                    if (request.Operation == "open_test_unowned_confirmation") ConfirmationFixture.OpenUnowned();
+                    else if (request.Operation == "cancel_test_confirmation") ConfirmationFixture.Cancel();
+                    else ConfirmationFixture.Reopen();
+                    await WaitUntil(() => !EventConfirmation.BackdropAnimating
+                        && (EventConfirmation.Current is not { } popup || EventConfirmation.Ready(popup)));
+                    return Success(request.Id, await SettledObservation());
+                }
+            }
             if (request.Operation == "check_test_divination" && DivinationInspection.Current != null)
                 return Success(request.Id, JsonSerializer.Serialize(DivinationFixture.Read(LocalPlayer)));
             if (request.Operation == "check_test_event") return Success(request.Id, JsonSerializer.Serialize(EventFixture.Read(LocalPlayer)));

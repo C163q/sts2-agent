@@ -12,6 +12,7 @@ from treasure_details import LOOT_SCHEMA
 from shop_details import BUY_SCHEMA
 from ancient_details import ANCIENT_OPTION_SCHEMA
 from event_details import EVENT_OPTION_SCHEMA
+from confirmation_details import CONFIRMATION_SCHEMA
 from divination_details import TOOL_SCHEMA, DIVINE_SCHEMA
 
 
@@ -32,6 +33,9 @@ def tool_definitions(*, screenshots_enabled=False):
     view = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False)
     action = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False)
     definitions = [
+        Tool(name='respond_to_confirmation', inputSchema=CONFIRMATION_SCHEMA, annotations=action, description=(
+            'Click confirm or cancel on the observed Trial event confirmation. Confirm abandons this run; '
+            'cancel returns to the event. Never chooses automatically or operates other dialogs.')),
         Tool(name='set_divination_tool', inputSchema=TOOL_SCHEMA, annotations=view, description=(
             'Select the visible big (3x3) or small (one cell) divination tool without spending a reveal.')),
         Tool(name='divine', inputSchema=DIVINE_SCHEMA, annotations=action, description=(

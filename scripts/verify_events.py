@@ -142,8 +142,10 @@ async def verify(args):
                 assert len(data['event']['options']) == 2 and data['event']['proceed'] is None, data
                 assert data['event']['options'][1]['lethal_warning'], data
                 data = await choose(data, 1)
-                assert data['transition']['stop_reason'] == 'manual_input_required' and not data['available_actions'], data
+                assert data['transition']['stop_reason'] == 'action_completed' and data['available_actions'] == ['respond_to_confirmation'], data
                 await capture('confirmation')
+                data = await call('respond_to_confirmation', {'option': 'cancel'})
+                assert data['event']['status'] == 'visible' and data['confirmation'] is None, data
             elif scenario == 'crystal':
                 data = await choose(data, 0)
                 assert data['transition']['stop_reason'] == 'action_completed' and data['event']['status'] == 'covered', data

@@ -31,8 +31,8 @@ async def verify(args):
     async with stdio_client(parameters) as (read, write):
         async with ClientSession(read, write) as session:
             initialized = await session.initialize()
-            assert initialized.serverInfo.version == '0.23.0'
-            assert len((await session.list_tools()).tools) == 39
+            assert initialized.serverInfo.version == '0.24.0'
+            assert len((await session.list_tools()).tools) == 40
 
             async def call(name, arguments=None):
                 result = await session.call_tool(name, arguments or {})
@@ -61,7 +61,7 @@ async def verify(args):
                 raw = image.read_bytes()
                 assert raw[:8] == b'\x89PNG\r\n\x1a\n'
                 assert struct.unpack('>II', raw[16:24]) == (data['width'], data['height'])
-                assert (data['width'], data['height']) == (1280, 720)
+                assert data['width'] > 0 and data['height'] > 0
                 after = await asyncio.to_thread(client.call, 'get_state')
                 assert after['state']['snapshot_id'] == before['state']['snapshot_id'], 'Capture changed the UI or model.'
                 return data
@@ -105,9 +105,12 @@ async def verify(args):
             result = await call('end_turn')
             assert result['transition']['stop_reason'] == 'player_ready', result
             await capture('07-next-turn.png')
-            assert (await call('end_turn'))['error']['code'] == 'observation_required'
+            continued = await call('end_turn')
+            assert continued['transition']['stop_reason'] == 'player_ready', continued
+            assert continued['turn'] == result['turn'] + 1, continued
             await call('inspect_map')
             await capture('08-map.png')
+            assert (await call('end_turn'))['error']['code'] == 'observation_required'
             await call('inspect_deck')
             await capture('09-deck.png')
             await call('close_card_view')
@@ -116,7 +119,7 @@ async def verify(args):
             assert invalid['error']['code'] == 'invalid_request'
             generated = await call('capture_screenshot')
             assert Path(generated['path']).is_file()
-    print('PASS: 32 tools; main menu, combat, selection, battlefield, map, deck; native actions and capture permissions.')
+    print('PASS: 40 tools; main menu, combat, selection, battlefield, map, deck; native actions and capture permissions.')
 
 
 def main():

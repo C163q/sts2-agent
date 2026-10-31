@@ -18,6 +18,8 @@ internal sealed partial class GameAdapter
     private static string? NonCombatBoundary()
     {
         if (CombatManager.Instance.IsStarting) return null;
+        if (EventConfirmation.Current is { } popup && EventConfirmation.Exposed(popup))
+            return EventConfirmation.Ready(popup) ? "action_completed" : null;
         var selection = CardSelection.Current;
         var rewards = RewardInspection.Current;
         var rest = RestSiteInspection.Current;

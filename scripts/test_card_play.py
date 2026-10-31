@@ -27,7 +27,7 @@ class CardPlayBoundaryTests(unittest.TestCase):
         definitions = {tool.name: tool for tool in tool_definitions()}
         self.assertIn('play_card', definitions)
         self.assertIn('inspect_targets', definitions)
-        self.assertEqual(len(definitions), 38)
+        self.assertEqual(len(definitions), 39)
         self.assertTrue(definitions['inspect_targets'].annotations.readOnlyHint)
         self.assertFalse(definitions['play_card'].annotations.idempotentHint)
         schema = definitions['play_card'].inputSchema

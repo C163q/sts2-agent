@@ -19,6 +19,7 @@
 | `spikes/roundtrip/EventInspection.cs`、`GameAdapter.Event.cs` | 通用事件的可见页面、稳定选项 ID 和原生按钮执行 |
 | `spikes/roundtrip/EventTaskTracker.cs`、`CombatEntryCapture.cs` | 事件初始化/选择/Resume 任务跟踪，以及首回合自动效果之前的战斗日志订阅 |
 | `spikes/roundtrip/DivinationInspection.cs`、`DivinationTasks.cs`、`GameAdapter.Divination.cs` | 占卜可见状态与原生点击、遮罩等待、棋盘裁剪边界和临时对白来源 |
+| `spikes/roundtrip/EventConfirmation.cs`、`GameAdapter.Confirmation.cs` | 当前事件确认框的来源与可见内容、原生按钮操作和失败结算 |
 | `scripts/divination_details.py` | 占卜参数与投影、PNG 有界像素校验和独立图像载体；MCP server 封装 ImageContent |
 | `spikes/roundtrip/ActionSettling.cs`、`GameAdapter.ActionObservation.cs` | 统一游戏动作停止原因复核、原生牌堆动画、金币计数和药水入栏动画等待及观察稳定；页面查看单独处理 |
 | `scripts/transition_details.py` | 结束回合事件的结构校验与递归过滤 |
@@ -97,3 +98,5 @@ C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project spi
 商店由 `ShopInspection.cs` 读取可见商品及槽位身份，`GameAdapter.Shop.cs` 点击原生商人、返回及商品；`ShopTransactions.cs` 只观察原生购买及阳伞任务，避免把选择暂停或自动购买间隙当作完成。`shop_details.py` 校验商品、摘要和购买结果；`ShopFixture.cs` 与 `verify_shop.py` 仅用于隔离验证。契约见[商店](shop.md)。
 
 先古之民由 `AncientInspection.cs` 读取已显示对话、选项及其身份，`GameAdapter.Ancient.cs` 点击原生对话/选项并复用非战斗边界。`EnglishRelicText.cs` 使用已公开的动态引用重建英语文本，不修改游戏语言或生成随机结果；`DeckEnchantSelection.cs`、`TransformSelection.cs` 读取实际预览。`AncientFixture.cs` 与 `verify_ancients.py` 仅用于隔离测试；契约见[先古之民](ancients.md)。
+
+`EventConfirmation.cs` 观察 Trial.DoubleDown 新增弹窗的来源，将节点绑定到当前事件及对局；`GameAdapter.Confirmation.cs` 校验许可、点击原生按钮并等待遮罩及放弃任务。`confirmation_details.py` 校验可见字段与严格参数，`verify_confirmation.py` 通过真实 MCP stdio 在隔离实例验证取消、旧令牌、来源隔离及确认失败。接口见[事件确认弹窗](events.md#事件确认弹窗)。

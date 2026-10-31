@@ -106,13 +106,15 @@ DIVINATION = {'status': str, 'phase': TEXT, 'remaining': NUMBER, 'tool': TEXT,
 ANCIENT = {'status': str, 'name': TEXT, 'epithet': TEXT, 'description': TEXT, 'dialogue': nullable([{'speaker': str, 'text': str}]),
            'options': nullable([ANCIENT_OPTION]), 'continue': nullable({'text': TEXT, 'enabled': bool}),
            'proceed': nullable({'text': str, 'enabled': bool})}
+CONFIRMATION = {'status': str, 'type': str, 'title': str, 'description': str,
+                'options': [{'id': str, 'text': str, 'enabled': bool}]}
 OBSERVATION = {
     "scene": str, "screen": SCREEN, "turn": NUMBER, "player": nullable(PLAYER),
     "enemies": nullable([ENEMY]), "top_bar": nullable(TOP_BAR),
     "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
     "available_actions": [str],
 }
-OPTIONAL_OBSERVATION = {'divination': nullable(DIVINATION), "event": nullable(ROOM_EVENT), "ancient": nullable(ANCIENT),"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
+OPTIONAL_OBSERVATION = {'confirmation': nullable(CONFIRMATION), 'divination': nullable(DIVINATION), "event": nullable(ROOM_EVENT), "ancient": nullable(ANCIENT),"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
 GAMEPLAY = {
     'reward_result': {'reward_id': int, 'status': str},
     'purchase_result': {'item_id': int, 'status': str},
@@ -203,6 +205,19 @@ def observation_details(state):
             raise ValueError('Divination is not the exposed screen.')
     if result['screen'].get('view') == 'divination' and result.get('divination') is None:
         raise ValueError('Missing divination state.')
+    if result.get('confirmation') is not None:
+        from confirmation_details import confirmation_details
+        result['confirmation'] = confirmation_details(result['confirmation'])
+        if (result['scene'] != 'event' or result['screen'] != {'status': 'visible', 'view': 'confirmation'}
+                or (result.get('event') or {}).get('status') != 'covered'
+                or any(action != 'respond_to_confirmation' for action in result['available_actions'])
+                or any(result.get(key) is not None for key in ('turn', 'player', 'enemies', 'top_bar', 'buttons',
+                                                              'selection', 'rewards', 'rest_site', 'treasure', 'shop', 'ancient', 'divination'))
+                or result['available_actions'] and not any(option['enabled'] for option in result['confirmation']['options'])):
+            raise ValueError('Confirmation is not the exposed screen.')
+    elif ('respond_to_confirmation' in result['available_actions']
+          or result['screen'] == {'status': 'visible', 'view': 'confirmation'}):
+        raise ValueError('Missing event confirmation.')
     return result
 
 

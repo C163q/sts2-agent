@@ -1,6 +1,6 @@
 # 问号房与通用事件
 
-适用于 Mod `0.27.0`、MCP `0.23.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。支持目标版本单人的原生默认事件和战斗背景事件；实际出现的战斗、商店、宝箱继续使用对应工具。问号是地图节点图标，不代表房内交互类型。
+适用于 Mod `0.28.0`、MCP `0.24.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。支持目标版本单人的原生默认事件和战斗背景事件；实际出现的战斗、商店、宝箱继续使用对应工具。问号是地图节点图标，不代表房内交互类型。
 
 ## 工具
 
@@ -9,6 +9,7 @@
 | `get_observation()` | 返回当前事件正文、选项、启用状态和原生致死警告 |
 | `inspect_event()` | 增加当前可悬停选项的 `hover_tips`，不推进页面、选项或 RNG |
 | `choose_event_option({"option_id":0})` | 点击一个已观察到且启用的原生选项 |
+| `respond_to_confirmation({"option":"cancel"})` | 点击当前 Trial 原生确认框的取消；`confirm` 确认放弃本局 |
 | `proceed()` | 点击事件完成后的原生前进按钮，通常打开地图 |
 
 选项参数必须是非负的 32 位整数，不接受布尔值、字符串或额外字段。ID 绑定真实选项，翻页后必须使用新页面返回的 ID。动作需要[当前观察许可](mcp.md#调用和错误语义)，可直接复用完整成功的动作返回；详情不新建许可，切换查看页后须重新观察。
@@ -82,12 +83,16 @@
 
 ## 专属界面与限制
 
-假商人沿用[商店接口](shop.md)，不额外暴露隐藏身份。[占卜小游戏](divination.md)支持棋盘图像、大小工具、揭开与原生奖励结算。Trial 确认弹窗仍只识别，不操作：
+假商人沿用[商店接口](shop.md)，不额外暴露隐藏身份。[占卜小游戏](divination.md)支持棋盘图像、大小工具、揭开与原生奖励结算。
+
+### 事件确认弹窗
+
+Trial 第二次拒绝会打开原生放弃本局确认框。`get_observation` 和触发弹窗的完整动作结果直接提供标题、正文及两个按钮，不需要额外详情工具。以下为隔离游戏实测返回的片段：
 
 ```json
 {
   "scene": "event",
-  "screen": {"status": "covered", "view": "confirmation"},
+  "screen": {"status": "visible", "view": "confirmation"},
   "event": {
     "status": "covered",
     "name": null,
@@ -95,14 +100,33 @@
     "options": null,
     "proceed": null
   },
-  "available_actions": [],
-  "notes": {"interaction": "A native dialog or unsupported screen requires manual input."}
+  "confirmation": {
+    "status": "visible",
+    "type": "abandon_run",
+    "title": "Are you sure?",
+    "description": "Abandoning the game will result in a loss.",
+    "options": [
+      {"id": "confirm", "text": "Yes", "enabled": true},
+      {"id": "cancel", "text": "No", "enabled": true}
+    ]
+  },
+  "available_actions": ["respond_to_confirmation"]
 }
 ```
 
-动作还返回 `transition.stop_reason: "manual_input_required"`；之后单独调用观察也保留明确的页面标识及说明。确认框不自动确认或取消。
+弹窗入场完成后，触发动作返回 `transition.stop_reason: "action_completed"` 和 `complete: true`。后续明确调用：
 
-终章 The Architect、多人、第三方事件及专属 UI 和确认框操作未接通。注册事件数量及源码分类见[调研](../research/2026-10-31-events.md)，不代表所有事件、分支和遗物组合均已实测。
+```json
+{"option":"cancel"}
+```
+
+`respond_to_confirmation` 的 `option` 仅接受 `cancel` 或 `confirm` 字符串，不接受额外字段。取消点击原生 No，等待遮罩退出后返回原事件；可以直接复用结果，再点 Double Down 打开新确认框。确认点击原生 Yes，走 `RunManager.Abandon`，等待原生失败信号和放弃任务完成，返回 `run_lost`、`complete: true`、空动作列表；不自动点击失败画面的后续按钮，装饰动画仍可能继续。
+
+`confirmation` 在没有受支持弹窗时为 `null`。操作只接受由当前单人 Trial 事件实际打开、仍属于同一对局的原生弹窗，主菜单或设置打开的同类型弹窗不会因此得到支持。外部取消后再打开同样文字的新弹窗会使旧观察失效。遮挡期间底层事件、顶栏、地图及药水操作不可用。
+
+未知弹窗继续返回覆盖状态、空动作列表及人工输入说明；触发动作返回 `manual_input_required`。工具不自动确认或取消任何弹窗。
+
+终章 The Architect、多人、第三方事件及其他专属 UI 未接通。注册事件数量及源码分类见[调研](../research/2026-10-31-events.md)，不代表所有事件、分支和遗物组合均已实测。
 
 ## 验证入口
 
@@ -119,3 +143,5 @@ python3 scripts/run_roundtrip.py --windowed --event-scenario tea
 ```
 
 使用全新报告和截图路径。验证会真实点击、购买或选择，不得连接正式对局。源码依据见[调研](../research/2026-10-31-events.md)，实际验证及限制见[验证记录](../research/2026-10-31-events-validation.md)。
+
+确认框使用 `--event-scenario trial` 启动新的隔离实例，运行 `scripts/verify_confirmation.py --scenario cancel|confirm --report <新路径>`；两个场景须分别启动实例。`confirm` 会结束该测试对局。结果见[确认弹窗验证](../research/2026-10-31-event-confirmation-validation.md)。

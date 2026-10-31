@@ -57,7 +57,7 @@ def player_result(response):
             result["selection"]["cards"], result["hover_tips"] = share_hand_tips(result["selection"]["cards"])
         notes = {}
         if result.get('transition', {}).get('stop_reason') == 'manual_input_required' \
-                or result.get('screen', {}).get('view') == 'confirmation':
+                or result.get('screen', {}).get('view') == 'confirmation' and result.get('confirmation') is None:
             notes['interaction'] = 'A native dialog or unsupported screen requires manual input.'
         if (result.get('divination') or {}).get('status') == 'visible':
             notes['divination'] = 'Board image: 11x11 cells, (0,0) top-left; x right, y down. # covered, . revealed. Choose a # cell while playing.'
