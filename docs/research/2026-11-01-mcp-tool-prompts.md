@@ -64,8 +64,8 @@
 
 完整握手开启 asyncio 调试日志后，沙箱内记录到 `Fail to write a null byte into the self-pipe socket` 及上述 `EPERM`；服务端主线程停在事件循环的 `select`，AnyIO 工作线程已经回到任务队列等待。相同探针在宿主环境完成初始化和目录读取并正常退出。
 
-本次根因是沙箱禁止了本地 socket 写入。MCP stdio 服务通过 AnyIO 工作线程读取标准输入；线程完成后使用 `call_soon_threadsafe` 通知事件循环，Python 的 `_write_to_self` 再通过本地 socket 唤醒循环。该写入被拒绝时，回调可能无法及时执行，表现为握手等待或退出挂起。Python 在非调试模式下会吞掉这处 `OSError`，因此最外层可能只看到超时；时序变化也可能让部分调用碰巧完成，不能用单次通过排除环境限制。
+本次根因是沙箱拦截了 asyncio 用于本地 socket 唤醒的 `send()` 调用。MCP stdio 服务通过 AnyIO 工作线程读取标准输入；线程完成后使用 `call_soon_threadsafe` 通知事件循环，Python 的 `_write_to_self` 再通过本地 socket 唤醒循环。该写入被拒绝时，回调可能无法及时执行，表现为握手等待或退出挂起。Python 在非调试模式下会吞掉这处 `OSError`，因此最外层可能只看到超时；时序变化也可能让部分调用碰巧完成，不能用单次通过排除环境限制。
 
 实现依据为当前环境的 `/usr/lib/python3.14/asyncio/selector_events.py` 中 `_write_to_self`，以及虚拟环境中 `mcp/server/stdio.py` 的 `stdio_server` 和 `anyio/_backends/_asyncio.py` 的 `WorkerThread.run`。这些检查未启动游戏，也未访问正式 IPC；没有证据表明提示词、JSON 内容或 Mod 引发该超时。无须修改工具提示词、改用 unittest 或增大游戏请求超时来处理此环境限制。
 
-证据保留在 `.tmp/2026-11-01-mcp-stdio/`，包括两种运行方式的沙箱/宿主日志、最小 socket 对照，以及 `handshake-debug-*.log` 的线程栈与调试日志。后续遇到相同症状按 [Codex 环境约定](../ai/codex.md#异步-stdio-测试挂起)先取证，再申请宿主环境验证。
+证据保留在 `.tmp/2026-11-01-mcp-stdio/`，包括两种运行方式的沙箱/宿主日志、最小 socket 对照，以及 `handshake-debug-*.log` 的线程栈与调试日志。后续遇到相同症状按 [Codex 环境约定](../ai/codex.md#沙箱权限与命令拆分)先取证，再申请宿主环境验证。
