@@ -1,6 +1,6 @@
 # 遗物详情 JSON
 
-文件操作 `inspect_relics` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.30.0`。一次只读查看当前遗物栏中可见、可悬停的遗物，以英语返回原生正文和附带解释。支持无遮挡战斗、当前暴露的[先古之民](ancients.md)和[商店](shop.md)，可用于查看已持有的添水等遗物说明。MCP 与文件客户端返回相同的玩法 JSON。
+文件操作 `inspect_relics` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.31.0`。一次只读查看当前遗物栏中可见、可悬停的遗物，以英语返回原生正文和附带解释。支持无遮挡战斗及原生可查看的战斗背景（例如[建筑师](run-ending.md)）、当前暴露的[先古之民](ancients.md)和[商店](shop.md)，可用于查看已持有的添水等遗物说明。MCP 与文件客户端返回相同的玩法 JSON。
 
 ## 读取
 
@@ -10,7 +10,7 @@
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_relics > .tmp/live/relic-inspection.json
 ```
 
-MCP 调用 `inspect_relics()` 无须参数，不能授权动作；已有观察的令牌保留或失效规则见 [MCP 调用语义](mcp.md#调用和错误语义)。文件调用不需要动作令牌，不进入 `available_actions`，不执行游戏动作。默认客户端移除控制信息；加 `--raw` 保留原始响应和状态令牌。
+MCP 调用 `inspect_relics()` 无须参数，不能授权动作；已有观察的令牌保留或失效规则见 [MCP 调用语义](mcp.md#调用和错误语义)。文件调用不需要动作令牌，可用时列入 `available_actions`，不执行游戏动作。默认客户端移除控制信息；加 `--raw` 保留原始响应和状态令牌。
 
 ## 格式
 

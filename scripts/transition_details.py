@@ -1,4 +1,5 @@
 from game_output import TRANSITION, observation_details, project
+from available_tools import INSPECTIONS, VIEWS
 
 
 REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "run_lost", "timeout", "interrupted", "selection_resolved", "action_canceled", "action_completed", 'manual_input_required'}
@@ -52,5 +53,5 @@ def end_turn_details(state):
         result["available_actions"] = [action for action in result["available_actions"]
             if transition["complete"] and transition["stop_reason"] == "choice_required"
             and (result.get("selection") or {}).get("status") == "visible"
-            and action in {"select_card", "selection_option"}]
+            and action in INSPECTIONS | VIEWS | {"select_card", "selection_option"}]
     return result

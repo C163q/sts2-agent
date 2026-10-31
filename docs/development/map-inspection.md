@@ -53,7 +53,7 @@
 
 ## 地图选路
 
-适用于 Mod `0.30.0`、MCP `0.26.0`、schema `15`。`travel_to_node({"node_id":"map:1:2:3"})` 只接受当前已展开地图允许的节点。旅行真实离开当前房间，放弃未领取奖励；工具不会自动领取奖励、挑选路径或决定后续输入。飞鞋的合法路线与次数由原生 Hook 决定，不能只按 `next` 判断合法性。
+适用于 Mod `0.31.0`、MCP `0.27.0`、schema `16`。`travel_to_node({"node_id":"map:1:2:3"})` 只接受当前已展开地图允许的节点。旅行真实离开当前房间，放弃未领取奖励；工具不会自动领取奖励、挑选路径或决定后续输入。飞鞋的合法路线与次数由原生 Hook 决定，不能只按 `next` 判断合法性。
 
 基础观察与成功动作结果在地图暴露时返回摘要，完整图仍通过 `inspect_map` 按需读取：
 
@@ -64,11 +64,11 @@
     "status":"visible","act":1,"current_node":"map:1:1:2",
     "can_travel":true,"selectable_nodes":["map:1:2:1","map:1:2:3"]
   },
-  "available_actions":["travel_to_node"]
+  "available_actions":["travel_to_node","inspect_potions","inspect_map","close_map"]
 }
 ```
 
-这是结构示例。底层 `scene` 保留房间类型，房间正文与奖励保持 covered；地图未展开、被覆盖或旅行中时 `map` 为 null。入场动画、绘图模式、战斗未完成等原生不允许选路的状态，候选与动作列表为空。不会在基础观察附送整幕图或下一房间内容。
+这是结构示例。底层 `scene` 保留房间类型，房间正文与奖励保持 covered；地图未展开、被覆盖或旅行中时 `map` 为 null。入场动画、绘图模式、战斗未完成等原生不允许选路的状态，选路候选为空，不提供 `travel_to_node`；仍可列出当前可用的查看与关闭工具。不会在基础观察附送整幕图或下一房间内容。
 
 `inspect_map` 是切换页面的工具，调用后先 `get_observation` 再旅行。普通房间 `proceed` 的成功结果已经带有地图摘要时，可直接续接旅行。`travel_to_node` 返回完整观察和 `transition`：下一房间普通操作通常为 action_completed，战斗为 player_ready，入场选牌为 choice_required，未知界面为 manual_input_required。父入场任务等待玩家选择时不会死等；卡牌选择仍使用原有工具。失败或不完整结果须重新观察，不自动重试。
 

@@ -10,7 +10,7 @@
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/live/hand-inspection.json
 ```
 
-安装和启动前提见 [正常游戏加载](live-game.md)。旧进程不会热加载新 DLL；旧 Mod 不支持 `inspect_hand`，须先重启。文件调用不要求 `expected_state`，也不出现在 `available_actions` 中；MCP 的动作令牌处理见 [调用语义](mcp.md#调用和错误语义)。诊断时可加 `--raw`，取得原始响应及采样前基础观察的 `snapshot_id`；默认玩法输出省略它。
+安装和启动前提见 [正常游戏加载](live-game.md)。旧进程不会热加载新 DLL；旧 Mod 不支持 `inspect_hand`，须先重启。文件调用不要求 `expected_state`，可用时出现在 `available_actions` 中；MCP 的动作令牌处理见 [调用语义](mcp.md#调用和错误语义)。诊断时可加 `--raw`，取得原始响应及采样前基础观察的 `snapshot_id`；默认玩法输出省略它。
 
 ## 格式
 

@@ -1,3 +1,4 @@
+from available_tools import GAME_ACTIONS
 import argparse
 import asyncio
 import json
@@ -77,7 +78,7 @@ async def verify(args):
                 await capture('02-after-proceed')
                 expected = 1 if args.scenario == 'double' else int(args.scenario[-1]) + 1
                 assert data['map']['act'] == expected, data
-                assert data['available_actions'] == ['travel_to_node'], data
+                assert set(data['available_actions']) & GAME_ACTIONS == {'travel_to_node'}, data
                 await native('travel_to_node', {'node_id': data['map']['selectable_nodes'][0]}, old_token, 'stale_state')
                 target = data['map']['selectable_nodes'][0]
                 if args.scenario != 'double':
@@ -105,7 +106,7 @@ async def verify(args):
             assert data['screen'] == {'status': 'visible', 'view': 'map'}, data
             assert data['map']['selectable_nodes'] == inspected['selectable_nodes'], data
             assert data['rewards']['status'] == 'covered', data
-            assert data['available_actions'] == ['travel_to_node'], data
+            assert set(data['available_actions']) & GAME_ACTIONS == {'travel_to_node'}, data
             state = await native('check_test_navigation')
             source = next(n for n in inspected['nodes'] if n['id'] == inspected['current_node'])
             connected = source['next']
@@ -120,7 +121,7 @@ async def verify(args):
                 await native('set_test_navigation_drawing')
                 await call('travel_to_node', {'node_id': target}, error='stale_state')
                 data = await call('get_observation')
-                assert data['map']['selectable_nodes'] == [] and data['available_actions'] == [], data
+                assert data['map']['selectable_nodes'] == [] and 'travel_to_node' not in data['available_actions'], data
                 await call('travel_to_node', {'node_id': target}, error='illegal_action')
                 await native('clear_test_navigation_drawing')
                 await call('get_observation')

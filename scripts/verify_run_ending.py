@@ -1,3 +1,4 @@
+from available_tools import GAME_ACTIONS
 import argparse
 import asyncio
 import json
@@ -44,7 +45,7 @@ async def verify(args):
                 deadline = time.monotonic() + 30
                 while True:
                     data = await call('get_observation')
-                    if data['available_actions'] or data['scene'] == 'main_menu': return data
+                    if set(data['available_actions']) & GAME_ACTIONS or data['scene'] == 'main_menu': return data
                     assert time.monotonic() < deadline, data
                     await asyncio.sleep(.25)
             def complete(data):
@@ -62,7 +63,7 @@ async def verify(args):
                         data = await call('advance_dialogue'); complete(data)
                         assert data['epilogue']['dialogue'] != previous, data
                     else:
-                        assert data['available_actions'] == ['proceed'], data
+                        assert set(data['available_actions']) & GAME_ACTIONS == {'proceed'}, data
                         data = await call('proceed'); complete(data)
                         break
                 else: raise AssertionError('Dialogue failed to terminate.')

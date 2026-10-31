@@ -98,7 +98,7 @@ def map_details(state):
 
 def closed_map(state):
     result = closed_card_view(state)
-    if result['screen'].get('view') == 'divination':
+    if result['screen'].get('view') in {'divination', 'epilogue'}:
         from game_output import observation_details
         return observation_details(state)
     if "view" in result["screen"]:

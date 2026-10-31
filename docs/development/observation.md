@@ -1,6 +1,6 @@
 # 战斗观察 JSON
 
-适用于 Linux 游戏 `v0.107.1` 与 Mod `0.30.0`。底层观察结构版本为 `15`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+适用于 Linux 游戏 `v0.107.1` 与 Mod `0.31.0`。底层观察结构版本为 `16`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -22,6 +22,25 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 玩法输出按声明的结构递归投影，未知嵌套字段不会转发；基础观察的 `player.hand` 不包含正文或悬停解释。已提供字段须符合对应类型，布尔值不能代替数字。MCP 对基础观察和动作结果另检查全部顶层观察字段，格式错误返回 `transport_error`，不保留动作令牌。这个检查不证明游戏采样本身符合可见信息边界；Mod 的显示过滤仍是读取依据。
 
+## MCP 输出预设
+
+`get_observation()` 与 `get_observation({"preset":"full"})` 返回同一完整基础观察；`full` 不自动展开卡牌正文或悬停详情。`get_observation({"preset":"actions_only"})` 仅返回以下上下文及工具名，例为战斗中的手牌选择：
+
+```json
+{
+  "scene": "combat",
+  "screen": {"status": "covered"},
+  "selection": {"type": "hand", "status": "visible"},
+  "available_actions": ["select_card", "selection_option", "inspect_potions", "inspect_selection", "set_selection_view"]
+}
+```
+
+这是结构示例，实际列表随按钮启用、显示和交互状态变化。`scene` 仍表示底层房间或战斗；`screen.view` 标识地图、牌组、占卜、确认或结算，`selection.type/status` 区分选牌及查看战场，没有待处理选择时省略 `selection`。精简输出不附候选参数、提示、数值或占卜图像；后续需要详情时调用相应工具或再次完整观察。
+
+两种预设都会实时读取、完整校验并刷新内部动作令牌，精简模式不改变游戏 UI，也不改变后续动作返回的完整格式。只允许可选字符串 `preset: full/actions_only`；非法值或额外字段返回 `invalid_request`，清除旧动作许可且不请求游戏。预设属于 MCP 输出投影，底层文件 `get_state` 仍返回完整状态。
+
+`available_actions` 包含当前原生页面允许的详情和页面工具，例如 `inspect_selection`、`set_selection_view`、`close_card_view`、`close_map`，不是全部已安装工具。工具出现不意味着任意卡牌、目标、商品或选项参数都有效，也不保证调用前状态不发生变化。列表不携带参数；从完整观察或专用详情读取候选后再提交。
+
 ## 玩法字段
 
 | 字段 | 内容 |
@@ -42,7 +61,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 | `top_bar.bosses` | 实际显示的首领名称数组，例如 `["Ceremonial Beast"]`；未识别的可见图标以槽内 `null` 保留 |
 | `top_bar.potion_slots` | 按位置排列；槽内 `null` 是已确认空槽，非空为含 `name` 的对象，整个字段为 `null` 是未能观察槽位 |
 | `buttons.end_turn` | 当前按钮的英语文字与启用状态 |
-| `available_actions` | 当前已实现动作的可用性；不是完整工具目录 |
+| `available_actions` | 当前场景可用的查看与操作工具名，不含参数；省略 `get_observation`、截图和测试入口。具体参数、状态和原生条件仍在调用时检查 |
 | `notes` | 按结果内容附带的英语数值解读说明，无适用内容时省略；属于接口说明，不是额外采样到的游戏状态 |
 
 战斗外在 [药水工具支持的页面](potion-actions.md#场景与停止边界) 也提供可见顶栏；搜刮页使用 `scene: "rewards"` 和独立的[奖励结构](rewards.md)，休息处、宝箱房、商店、先古之民和[通用事件](events.md)分别使用 `rest_site`、`treasure`、`shop`、`ancient`、`event`；[终章与结算](run-ending.md)使用 `epilogue` 与 `run_result`；未识别的非战斗页面仍使用 `loading_or_noncombat`。战斗外的 `player/enemies/turn/buttons` 为空；事件被覆盖时不附送其下方的正文和选项。
@@ -146,3 +165,5 @@ python3 scripts/verify_roundtrip.py --ipc-dir .tmp/roundtrip/ipc --report .tmp/r
 [占卜接口](divination.md)通过 `divination` 字段返回可见次数、工具、说明与格子覆盖状态；同时以独立 MCP PNG 图像保留部分揭开的物品图案。底层事件和被覆盖的棋盘内容为 null，不读取雾下物品或未来奖励。
 
 地图展开时返回 `map` 候选摘要及 `travel_to_node` 动作；整幕节点和连线仍由 `inspect_map` 提供，见[地图接口](map-inspection.md#地图选路)。
+
+本次工具可用性、预设与图形回归范围见[核查记录](../research/2026-10-31-observation-presets-validation.md)。

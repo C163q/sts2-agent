@@ -1,6 +1,6 @@
 # 先古之民
 
-适用于 Mod `0.30.0`、MCP `0.26.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。支持实际单人的常规先古之民房间，使用原生对话及事件选项流程；不自动选择遗物或前往地图节点。终章建筑师使用[终章接口](run-ending.md)，与常规先古之民共用 `advance_dialogue`。普通问号事件使用[通用事件工具](events.md)。
+适用于 Mod `0.31.0`、MCP `0.27.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。支持实际单人的常规先古之民房间，使用原生对话及事件选项流程；不自动选择遗物或前往地图节点。终章建筑师使用[终章接口](run-ending.md)，与常规先古之民共用 `advance_dialogue`。普通问号事件使用[通用事件工具](events.md)。
 
 ## 工具与观察
 
@@ -42,7 +42,7 @@
     "continue": null,
     "proceed": null
   },
-  "available_actions": ["choose_ancient_option"]
+  "available_actions": ["choose_ancient_option", "inspect_potions", "inspect_relics", "inspect_map", "inspect_ancient"]
 }
 ```
 

@@ -129,115 +129,13 @@ internal sealed partial class GameAdapter(bool testMode)
             : ShopInspection.Current != null ? "shop"
             : EventInspection.Current != null ? "event"
             : NGame.Instance?.MainMenu != null ? "main_menu" : "loading_or_noncombat";
-        List<string> actions = [];
-        if (CanEndTurn())
-            actions.Add("end_turn");
-        if (CanPlayCards()) actions.Add("play_card");
-        if (testMode && scene == "main_menu" && !RunManager.Instance.IsInProgress)
-            actions.Add("start_test_combat");
-        string visibility = scene == "combat" ? CombatObservation.Status() : "not_applicable";
-        if (scene == "combat" && visibility != "visible")
-            actions.Clear();
-        if (selection is { Status: "visible" } && RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
-        {
-            if (selection.CanSelect) actions.Add("select_card");
-            if (selection.Options().Any(option => option.button.IsEnabled)) actions.Add("selection_option");
-        }
-        if (CanHandlePotions() && PotionInspection.VisibleHolders() is { } holders)
-        {
-            var visiblePotions = holders.Where(h => h.HasPotion).Select(h => h.Potion!.Model).ToArray();
-            if (visiblePotions.Any(p => PotionActions.Reason(p) == null)) actions.Add("use_potion");
-            if (visiblePotions.Any(PotionActions.Discardable)) actions.Add("discard_potion");
-        }
-        if (scene == "loading_or_noncombat" && RunUi.NonCombatVisible()) visibility = "visible";
-        if (scene == "rewards") visibility = RewardInspection.Exposed(RewardInspection.Current!) ? "visible" : "covered";
-        if (scene == "rest_site") visibility = RestSiteInspection.Exposed(RestSiteInspection.Current!) ? "visible" : "covered";
-        if (scene == "treasure") visibility = TreasureInspection.Exposed(TreasureInspection.Current!) ? "visible" : "covered";
-        if (scene == "shop") visibility = ShopInspection.Exposed(ShopInspection.Current!) ? "visible" : "covered";
-        if (scene == "ancient") visibility = AncientInspection.Exposed(AncientInspection.Current!) ? "visible" : "covered";
-        if (scene == "event") visibility = EventInspection.Exposed(EventInspection.Current!) ? "visible" : "covered";
-        if (DivinationInspection.Current is { } divination && DivinationInspection.Exposed(divination))
-        {
-            visibility = "visible";
-            if (DivinationInspection.Playing(divination)) { actions.Add("set_divination_tool"); actions.Add("divine"); }
-            else if (DivinationInspection.Ready(divination) && DivinationInspection.Proceed(divination)?.IsEnabled == true) actions.Add("proceed");
-        }
-        if (EventInspection.Current is { } currentEvent && EventInspection.Ready(currentEvent))
-        {
-            if (currentEvent.Layout.OptionButtons.Any(b => !ReferenceEquals(b, EventInspection.Proceed(currentEvent)) && EventInspection.Clickable(b)))
-                actions.Add("choose_event_option");
-            if (EventInspection.Proceed(currentEvent) is { } button && EventInspection.Clickable(button)) actions.Add("proceed");
-        }
-        if (AncientInspection.Current is { } ancient && AncientInspection.Ready(ancient))
-        {
-            if (AncientInspection.Continue(ancient) != null) actions.Add("advance_dialogue");
-            else
-            {
-                if (ancient.Layout.OptionButtons.Any(b => !b.Option.IsProceed && AncientInspection.Clickable(b))) actions.Add("choose_ancient_option");
-                if (AncientInspection.Proceed(ancient) is { } button && AncientInspection.Clickable(button)) actions.Add("proceed");
-            }
-        }
-        if (ShopInspection.Current is { } shop && ShopInspection.Ready(shop))
-        {
-            if (!shop.Inventory.IsOpen)
-            {
-                if (shop.Merchant.IsEnabled && ShopInspection.MerchantShown(shop)) actions.Add("open_shop");
-                if (shop.Proceed.IsEnabled && VisibleUi.OnScreen(shop.Proceed)) actions.Add("proceed");
-            }
-            else
-            {
-                if (shop.Inventory.GetAllSlots().Any(ShopInspection.Purchasable)) actions.Add("buy_item");
-                if (ShopInspection.Back(shop).IsEnabled) actions.Add("close_shop");
-            }
-        }
-        if (TreasureInspection.Current is { } treasure && TreasureInspection.Ready(treasure))
-        {
-            if (TreasureInspection.CanLoot(treasure)) actions.Add("loot_treasure");
-            if (TreasureInspection.Proceed(treasure)?.IsEnabled == true) actions.Add("proceed");
-        }
-        if (RestSiteInspection.Current is { } rest && RestSiteInspection.Ready(rest)
-            && RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
-        {
-            if (RestSiteInspection.Buttons(rest).Any(RestSiteInspection.Clickable)) actions.Add("choose_rest_option");
-            if (RestSiteInspection.Proceed(rest)?.IsEnabled == true) actions.Add("proceed");
-        }
-        if (RewardInspection.Current is { } rewards && RewardInspection.Ready(rewards)
-            && RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
-        {
-            if (RewardInspection.Buttons(rewards).Any(b => RewardInspection.Type(b.Reward!) != "unsupported")) actions.Add("claim_reward");
-            if (RewardInspection.Proceed(rewards)?.IsEnabled == true) actions.Add("proceed");
-        }
-        if (EventConfirmation.Current is { } dialog && EventConfirmation.Exposed(dialog))
-        {
-            visibility = "visible";
-            actions.Clear();
-            if (EventConfirmation.Ready(dialog)) actions.Add("respond_to_confirmation");
-        }
-        if (map != null)
-        {
-            visibility = "visible";
-            actions.Clear();
-            if (MapInspection.Choices(NRun.Instance!.GlobalUi.MapScreen).Length > 0) actions.Add("travel_to_node");
-        }
-        if (epilogue != null && map == null)
-        {
-            visibility = EpilogueInspection.Exposed(epilogue) ? "visible" : "covered";
-            actions.Clear();
-            if (EpilogueInspection.Ready(epilogue) && EpilogueInspection.Button(epilogue) is { } epilogueButton)
-                actions.Add(EpilogueInspection.IsProceed(epilogueButton) ? "proceed" : "advance_dialogue");
-        }
-        if (ending != null)
-        {
-            visibility = RunResultInspection.Exposed(ending) ? "visible" : "covered";
-            actions.Clear();
-            if (runResultInspection.Ready(ending)) actions.Add("run_result_option");
-            selection = null;
-        }
+        var (actions, visibility) = AvailableTools(scene, map, epilogue, ending, selection);
+        if (ending != null) selection = null;
         var screen = CardView.Screen(visibility);
         if (ending != null || epilogue != null && map == null) screen["view"] = ending != null ? "run_result" : "epilogue";
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 15, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 16, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -540,12 +438,13 @@ internal sealed partial class GameAdapter(bool testMode)
         }
         if (request.Operation == "inspect_combatants")
         {
-            if (CombatObservation.Status() != "visible" || LocalPlayer == null || NCombatRoom.Instance!.Ui.Hand.InCardPlay)
+            var inspectedPlayer = LocalPlayer;
+            if (inspectedPlayer == null || !CanInspectCombatants())
                 return FileMailbox.Error(request.Id, "illegal_action", "Combatant details are unavailable in the current screen.");
             string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_COMBATANT_CHECKS");
             if (testMode && checks != null)
-                CombatantInspectionChecks.Run(checks, LocalPlayer);
-            var inspection = CombatantInspection.Read(LocalPlayer);
+                CombatantInspectionChecks.Run(checks, inspectedPlayer);
+            var inspection = CombatantInspection.Read(inspectedPlayer);
             return Success(request.Id, JsonSerializer.Serialize(new
             {
                 snapshot_id = document.RootElement.GetProperty("snapshot_id").GetString(),
@@ -583,7 +482,7 @@ internal sealed partial class GameAdapter(bool testMode)
         if (request.Operation == "inspect_hand")
         {
             var hand = NCombatRoom.Instance?.Ui.Hand;
-            if (CombatObservation.Status() != "visible" || hand == null || !VisibleUi.Shown(hand) || hand.InCardPlay)
+            if (hand == null || !CanInspectHand())
                 return FileMailbox.Error(request.Id, "illegal_action", "Hand details are unavailable in the current screen.");
             string? handChecks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_HAND_CHECKS");
             if (testMode && handChecks != null)
@@ -735,7 +634,7 @@ internal sealed partial class GameAdapter(bool testMode)
     {
         var run = RunManager.Instance.DebugOnlyGetState();
         var map = NRun.Instance?.GlobalUi.MapScreen;
-        if (run == null || map == null || !MapView.Clear(allowCardView: true) || map.IsTraveling)
+        if (run == null || map == null || !CanInspectMap())
             return FileMailbox.Error(request.Id, "illegal_action", "Map viewing is unavailable in the current screen.");
         var graph = run.Map;
         int act = run.CurrentActIndex;
@@ -774,7 +673,7 @@ internal sealed partial class GameAdapter(bool testMode)
     private async Task<string> InspectDeck(Request request, DeckOptions options)
     {
         var player = LocalPlayer;
-        if (player == null || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer || !CombatManager.Instance.IsInProgress)
+        if (player == null || !CanInspectDeck())
             return FileMailbox.Error(request.Id, "illegal_action", "Deck viewing requires a single-player combat.");
         var screen = DeckView.Current;
         if (screen == null)
@@ -821,9 +720,7 @@ internal sealed partial class GameAdapter(bool testMode)
         var player = LocalPlayer;
         var combat = CombatManager.Instance.DebugOnlyGetState();
         bool cardOpen = CardView.Current != null;
-        if (player == null || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer
-            || CombatObservation.Status(allowCardView: cardOpen) != "visible"
-            || !CanInspectViews(allowPause: cardOpen))
+        if (!CanInspectPiles())
             return FileMailbox.Error(request.Id, "illegal_action", "Pile viewing is unavailable in the current screen.");
         var screen = PileInspection.Current(options);
         if (screen == null)

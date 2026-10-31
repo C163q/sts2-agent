@@ -1,3 +1,4 @@
+from available_tools import GAME_ACTIONS
 import argparse
 import asyncio
 import json
@@ -84,7 +85,7 @@ async def verify(args):
                 before = await native('check_test_event')
                 data = await call('respond_to_confirmation', {'option': 'cancel'})
                 assert data['confirmation'] is None and data['event']['status'] == 'visible', data
-                assert data['available_actions'] == ['choose_event_option'], data
+                assert set(data['available_actions']) & GAME_ACTIONS == {'choose_event_option'}, data
                 after = await native('check_test_event')
                 assert before['state'] == after['state'], (before, after)
                 await capture('03-cancelled')

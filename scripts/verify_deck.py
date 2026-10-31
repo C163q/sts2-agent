@@ -1,3 +1,4 @@
+from available_tools import GAME_ACTIONS
 import argparse
 import json
 from pathlib import Path
@@ -43,7 +44,7 @@ def main():
     ids = [card["id"] for card in summary["deck"]]
     assert len(ids) == len(set(ids)) and all(card_id.startswith("deck:") for card_id in ids), ids
     covered = call("get_state")
-    assert covered["screen"]["status"] == "covered" and not covered["available_actions"], covered
+    assert covered["screen"]["status"] == "covered" and "close_card_view" in covered["available_actions"] and not set(covered["available_actions"]) & GAME_ACTIONS, covered
     if args.exercise_options:
         for operation in ["inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics"]:
             rejected = client.call(operation)

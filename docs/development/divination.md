@@ -1,6 +1,6 @@
 # 占卜小游戏
 
-适用于 Mod `0.30.0`、MCP `0.26.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。支持单人原生 Crystal Sphere 界面，先用[事件工具](events.md)选择进入方式。
+适用于 Mod `0.31.0`、MCP `0.27.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。支持单人原生 Crystal Sphere 界面，先用[事件工具](events.md)选择进入方式。
 
 ## 工具与图像
 
@@ -58,7 +58,7 @@
     },
     "proceed": null
   },
-  "available_actions": ["set_divination_tool", "divine"]
+  "available_actions": ["set_divination_tool", "divine", "inspect_potions", "inspect_map", "inspect_event"]
 }
 ```
 

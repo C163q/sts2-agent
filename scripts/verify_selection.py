@@ -1,3 +1,4 @@
+from available_tools import GAME_ACTIONS
 import argparse
 import json
 import os
@@ -85,7 +86,7 @@ def main():
         peek = call("set_selection_view", {"view": "battlefield"})
         assert peek["selection"]["status"] == "battlefield" and peek["selection"]["cards"] is None, peek
         assert peek["player"] is not None and peek["enemies"], peek
-        assert not peek["available_actions"], peek
+        assert not set(peek["available_actions"]) & GAME_ACTIONS, peek
         assert not call("end_turn", success=False)["ok"]
         assert not call("select_card", {"card_id": cards[0]["id"]}, success=False)["ok"]
         assert not call("inspect_selection", success=False)["ok"]

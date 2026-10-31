@@ -1,6 +1,6 @@
 # 商店
 
-适用于 Mod `0.30.0`、MCP `0.26.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。当前支持实际单人，正常商店和假商人使用同一组工具；工具操作原生界面，不直接改金币或发放商品。
+适用于 Mod `0.31.0`、MCP `0.27.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。当前支持实际单人，正常商店和假商人使用同一组工具；工具操作原生界面，不直接改金币或发放商品。
 
 ## 打开、观察与详情
 
@@ -37,7 +37,7 @@
     "back": {"enabled": true},
     "proceed": null
   },
-  "available_actions": ["buy_item", "close_shop"]
+  "available_actions": ["buy_item", "close_shop", "inspect_potions", "inspect_relics", "inspect_map", "inspect_shop"]
 }
 ```
 

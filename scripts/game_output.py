@@ -1,3 +1,6 @@
+from available_tools import public_tools
+
+
 def nullable(shape):
     return (shape,)
 
@@ -172,11 +175,15 @@ def observation_details(state):
             or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards", 'rest_site', 'treasure', 'shop', 'ancient', 'event', 'epilogue', 'run_result')
             or result["screen"]["status"] not in ("visible", "covered", "hidden", "not_ready", "not_applicable")):
         raise ValueError("Invalid observation structure.")
+    result['available_actions'] = public_tools(result['available_actions'])
     if result.get('map') is not None:
         from map_details import map_summary
         result['map'] = map_summary(result['map'])
+        map_tools = {'travel_to_node', 'inspect_map', 'close_map', 'inspect_deck'}
+        if result['scene'] != 'combat':
+            map_tools |= {'inspect_potions', 'inspect_targets', 'use_potion', 'discard_potion'}
         if (result['screen'] != {'status': 'visible', 'view': 'map'}
-                or any(a != 'travel_to_node' for a in result['available_actions'])
+                or any(a not in map_tools for a in result['available_actions'])
                 or ('travel_to_node' in result['available_actions']) != result['map']['can_travel']):
             raise ValueError('Map is not the exposed action screen.')
     elif 'travel_to_node' in result['available_actions'] or result['screen'] == {'status': 'visible', 'view': 'map'}:

@@ -1,6 +1,6 @@
 # 终章与一局结算
 
-适用于 Mod `0.30.0`、MCP `0.26.0`、观察 schema `15`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。支持单人第三幕结束后的建筑师对话、胜负结算、必要解锁和返回主菜单。实现依据与验证范围见[源码及图形验证](../research/2026-10-31-run-ending-validation.md)。
+适用于 Mod `0.31.0`、MCP `0.27.0`、观察 schema `16`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。支持单人第三幕结束后的建筑师对话、胜负结算、必要解锁和返回主菜单。实现依据与验证范围见[源码及图形验证](../research/2026-10-31-run-ending-validation.md)。
 
 ## 工具与流程
 
@@ -28,7 +28,7 @@
     "continue": null,
     "proceed": {"text": "Continue", "enabled": true}
   },
-  "available_actions": ["proceed"]
+  "available_actions": ["proceed", "inspect_ui", "inspect_combatants", "inspect_potions", "inspect_relics", "inspect_map"]
 }
 ```
 
@@ -63,3 +63,5 @@
 就绪检查包括打字、原生结算创建的补间动画、分数条及各解锁页的入场动画；按钮启用不等于所有可见计数已经稳定。到达已知边界后仍要求观察连续 250 毫秒不变，25 秒内未满足则返回 `timeout/complete=false`。未知模态不自动点击。
 
 每日挑战榜单、原生启用的查看本局/章节翻页入口按当前按钮识别；它们不改变本局胜负。本版本部分入口本来隐藏或禁用，工具不强行启用。相关未实测范围见验证记录。
+
+建筑师使用原生战斗背景；当前可读的界面、对象、遗物、药水及地图工具会列入 `available_actions`，具体合法性仍由调用入口校验。关闭地图会恢复当前对话；不会因此提供普通出牌或结束回合。工具可用性核查见[验证记录](../research/2026-10-31-observation-presets-validation.md)。

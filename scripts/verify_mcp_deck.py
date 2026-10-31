@@ -1,3 +1,4 @@
+from available_tools import GAME_ACTIONS
 import argparse
 import asyncio
 import json
@@ -65,7 +66,7 @@ async def verify(args):
             assert retained["view_upgrades"] and retained["detail_level"] == "summary", retained
             assert retained["sort"] == samples["upgraded"]["sort"], retained
             covered = await call("get_observation")
-            assert covered["screen"] == {"status": "covered", "view": "deck"} and not covered["available_actions"], covered
+            assert covered["screen"] == {"status": "covered", "view": "deck"} and "close_card_view" in covered["available_actions"] and not set(covered["available_actions"]) & GAME_ACTIONS, covered
             closed = await call("close_card_view")
             assert closed == observed, "Closing changed gameplay data."
             assert await call("get_observation") == observed, "Gameplay changed."

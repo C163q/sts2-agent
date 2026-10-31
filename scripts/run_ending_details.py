@@ -12,6 +12,8 @@ RESULT = {'status': str, 'phase': str, 'title': (str,), 'texts': [str],
 EPILOGUE = {'status': str, 'dialogue': ({'speaker': str, 'text': str},),
             'continue': ({'text': str, 'enabled': bool},), 'proceed': ({'text': str, 'enabled': bool},)}
 PHASES = {'outcome', 'summary', 'history', 'leaderboard', 'timeline', 'epoch', 'unlock', 'tutorial'}
+EPILOGUE_TOOLS = {'advance_dialogue', 'proceed', 'inspect_map', 'inspect_potions', 'inspect_targets',
+                  'use_potion', 'discard_potion', 'inspect_ui', 'inspect_combatants', 'inspect_relics'}
 
 
 def option_arguments(arguments):
@@ -77,15 +79,17 @@ def validate_ending(result):
                 if result.get('top_bar') is not None and not set(TOP_BAR) <= result['top_bar'].keys():
                     raise ValueError('Incomplete result top bar.')
                 enabled = any(o['enabled'] for o in value['options'])
-                if any(a != 'run_result_option' for a in result['available_actions']) or result['available_actions'] and not enabled:
+                if any(a not in {'run_result_option', 'inspect_run_result', 'inspect_potions'} for a in result['available_actions']) \
+                        or 'run_result_option' in result['available_actions'] and not enabled:
                     raise ValueError('Unavailable result action.')
             else:
                 for action, field in [('advance_dialogue', 'continue'), ('proceed', 'proceed')]:
                     if action in result['available_actions'] and not (value[field] or {}).get('enabled'):
                         raise ValueError('Unavailable dialogue action.')
-                if any(a not in {'advance_dialogue', 'proceed'} for a in result['available_actions']):
+                if any(a not in EPILOGUE_TOOLS for a in result['available_actions']):
                     raise ValueError('Unexpected dialogue action.')
-        elif result['available_actions']:
+        elif result['available_actions'] and not (key == 'epilogue' and (result.get('map') is not None
+                or value['status'] == 'not_ready' and set(result['available_actions']) <= EPILOGUE_TOOLS - {'advance_dialogue', 'proceed'})):
             raise ValueError('Covered or unready ending actions.')
     if 'run_result_option' in result['available_actions'] and result.get('run_result') is None:
         raise ValueError('Missing result actions.')

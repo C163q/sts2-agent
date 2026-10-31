@@ -1,6 +1,6 @@
 # 当前界面悬停说明 JSON
 
-文件操作 `inspect_ui` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.5.0`，只读返回当前无遮挡战斗画面上可见入口与资源图标的英语悬停说明。不触发鼠标悬停、不打开窗口、不切换游戏语言。工具分工见 [范围核查](../research/2026-10-29-ui-hover-tip-audit.md)。
+文件操作 `inspect_ui` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.31.0`，只读返回当前无遮挡战斗画面上可见入口与资源图标的英语悬停说明。不触发鼠标悬停、不打开窗口、不切换游戏语言。工具分工见 [范围核查](../research/2026-10-29-ui-hover-tip-audit.md)。
 
 ## 读取与格式
 
@@ -28,7 +28,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_ui > .tmp/li
 - `title` 和 `description` 来自游戏的悬停提示文本，移除颜色和字体标记，保留换行、实际快捷键和资源图标占位符，例如 `<Energy>`、`<Star>`。无标题时 `title` 为 `null`。
 - `sources` 是关联的基础观察字段路径，不重复输出字段值。同标题同正文合并，来源去重并保留首次出现顺序；同标题不同正文不合并。
 - 不附带手牌数值或敌人意图的 `notes`。没有可用提示时数组为 `[]`；不可读界面返回结构化错误，不以空集合表示读取失败。
-- 加 `--raw` 时保留 `id/ok/state` 和 `state.snapshot_id`。无须提供动作令牌，读取也不进入 `available_actions`。
+- 加 `--raw` 时保留 `id/ok/state` 和 `state.snapshot_id`。无须提供动作令牌，读取工具可用时列入 `available_actions`。
 - MCP 返回相同玩法格式，`structuredContent` 与 JSON 文本一致；直接查看不授予动作权限，已有观察的令牌处理见 [MCP 调用语义](mcp.md#调用和错误语义)。
 
 ## 覆盖与条件
@@ -48,3 +48,5 @@ python3 scripts/verify_ui.py --ipc-dir .tmp/live/ipc --output .tmp/live/ui-inspe
 ```
 
 脚本检查 `get_state → inspect_ui → get_state` 的令牌一致、提示结构和去重、来源字段存在及查看边界。独立测试实例可用 `scripts/run_roundtrip.py --windowed --capture --check-ui` 启用额外的游戏内可见性、英语文本和缓存检查；该标志不用于正式游戏。已完成中文独立实例及正式进阶 6 缩小甲虫战斗的只读验证，分别取得 11、13 条提示。双首领、可见星星、可见消耗牌堆等场景尚未验证，详细证据见 [实施记录](../research/2026-10-29-ui-inspection-plan.md)。
+
+原生可查看的战斗背景（例如[建筑师](run-ending.md)）同样可提供当前可见详情；这不表示战斗正在进行，也不提供出牌权限。当前是否可调用以基础观察的 `available_actions` 为准。

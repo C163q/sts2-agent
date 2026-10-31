@@ -1,3 +1,4 @@
+from available_tools import GAME_ACTIONS
 import argparse
 import asyncio
 import json
@@ -55,7 +56,7 @@ async def verify(args):
             await call('loot_treasure', error='observation_required')
             initial = await call('get_observation')
             assert initial['scene'] == 'treasure' and initial['treasure']['chest'] == 'closed', initial
-            assert initial['treasure']['relic'] is None and initial['available_actions'] == ['loot_treasure'], initial
+            assert initial['treasure']['relic'] is None and set(initial['available_actions']) & GAME_ACTIONS == {'loot_treasure'}, initial
             details = await call('inspect_treasure')
             assert details['treasure']['relic'] is None, details
             await call('capture_screenshot', {'filename': 'initial.png'})
@@ -125,7 +126,7 @@ async def verify(args):
                 print(f'PASS: {args.scenario}; {len(evidence)} calls/checks; {report}')
                 return
             assert result['scene'] == 'treasure' and result['treasure']['chest'] == 'open', result
-            assert result['treasure']['relic'] is None and result['available_actions'] == ['proceed'], result
+            assert result['treasure']['relic'] is None and set(result['available_actions']) & GAME_ACTIONS == {'proceed'}, result
             assert result['treasure']['proceed']['enabled'] and not result['treasure']['proceed']['skips_remaining'], result
             assert not after['obtaining'] and not after['preview_cards'], after
             if args.scenario == 'empty':

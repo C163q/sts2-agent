@@ -8,6 +8,7 @@
 | --- | --- |
 | `spikes/roundtrip/BridgeMod.cs` | Mod 初始化、后台文件服务和 Godot 主线程任务泵 |
 | `spikes/roundtrip/FileMailbox.cs` | 原子文件协议、请求队列、响应缓存和等待超时 |
+| `spikes/roundtrip/GameAdapter.AvailableTools.cs` | 当前交互上下文的工具列表及与调用入口共享的可用性条件 |
 | `spikes/roundtrip/GameAdapter.cs` | 主线程观察、令牌与合法性检查、动作分派和页面生命周期；测试场景准备以测试模式隔离 |
 | `spikes/roundtrip/*Observation.cs`、`*Inspection.cs`、`*View.cs` | 可见数据采样、按需详情、原生页面操作 |
 | `spikes/roundtrip/GameAdapter.Navigation.cs`、`NavigationTasks.cs` | 原生节点点击、旅行边界和跨幕任务等待；地图摘要与身份并入基础观察 |
@@ -25,6 +26,7 @@
 | `spikes/roundtrip/ActionSettling.cs`、`GameAdapter.ActionObservation.cs` | 统一游戏动作停止原因复核、原生牌堆动画、金币计数和药水入栏动画等待及观察稳定；页面查看单独处理 |
 | `scripts/transition_details.py` | 结束回合事件的结构校验与递归过滤 |
 | `scripts/inspection_details.py`、`*_details.py` | 按操作校验并投影响应；牌组、牌堆与地图等具体结构各自维护 |
+| `scripts/observation_presets.py`、`available_tools.py` | 观察预设参数与精简投影、公开工具名称和动作分类 |
 | `scripts/game_tools.py` | 串行游戏会话、动作令牌、检查控制权及在线程中执行文件请求 |
 | `scripts/controller_lease.py` | 每个 IPC 目录的 MCP 进程控制锁 |
 | `scripts/mcp_catalog.py` | 工具名称、参数 schema、行为注解及面向模型的说明 |

@@ -1,6 +1,6 @@
 # 问号房与通用事件
 
-适用于 Mod `0.30.0`、MCP `0.26.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。支持目标版本单人的原生默认事件和战斗背景事件；实际出现的战斗、商店、宝箱继续使用对应工具。问号是地图节点图标，不代表房内交互类型。
+适用于 Mod `0.31.0`、MCP `0.27.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。支持目标版本单人的原生默认事件和战斗背景事件；实际出现的战斗、商店、宝箱继续使用对应工具。问号是地图节点图标，不代表房内交互类型。
 
 ## 工具
 
@@ -44,7 +44,7 @@
     ],
     "proceed": null
   },
-  "available_actions": ["choose_event_option"]
+  "available_actions": ["choose_event_option", "inspect_potions", "inspect_map", "inspect_event"]
 }
 ```
 

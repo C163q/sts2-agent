@@ -1,6 +1,6 @@
 # 选牌与查看战场
 
-适用于 Mod `0.30.0`、MCP server `0.26.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
+适用于 Mod `0.31.0`、MCP server `0.27.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
 
 ## 观察与信息范围
 
@@ -42,7 +42,7 @@
 
 调用 `set_selection_view({"view":"battlefield"})` 点击原生眼睛。此后基础观察及 `inspect_hand`、`inspect_combatants`、`inspect_ui`、药水、遗物详情按当前可见性工作；牌组、地图和牌堆还要求各自原生入口可用。小型候选和简单网格使用其自己的牌堆入口，不能强行点击被禁用的战斗按钮。
 
-查看战场不允许出牌、结束回合或直接选隐藏的候选，`available_actions` 为空。`close_card_view` 只关闭牌组或牌堆，保留底层选择与原有查看状态；地图由 `close_map` 关闭。关闭覆盖页后，调用 `set_selection_view({"view":"selection"})` 返回候选。视图工具清除动作许可，提交选择前重新观察；普通观察和只读详情都不会自动切换眼睛。
+查看战场不允许出牌、结束回合或直接选隐藏的候选；`available_actions` 列出当前可用的战场详情、页面查看及 `set_selection_view` 返回入口。`close_card_view` 只关闭牌组或牌堆，保留底层选择与原有查看状态；地图由 `close_map` 关闭。关闭覆盖页后，调用 `set_selection_view({"view":"selection"})` 返回候选。视图工具清除动作许可，提交选择前重新观察；普通观察和只读详情都不会自动切换眼睛。
 
 ## 动作后的结算
 

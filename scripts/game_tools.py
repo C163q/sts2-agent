@@ -22,6 +22,8 @@ from event_details import event_arguments
 from confirmation_details import confirmation_arguments
 from divination_details import attach_divination_image, divination_arguments
 from screenshot_tool import ScreenshotError, ScreenshotStore, screenshot_arguments
+from observation_presets import observation_preset, preset_arguments
+from available_tools import GAME_ACTIONS, public_tools
 
 
 class GameTools:
@@ -32,15 +34,19 @@ class GameTools:
         self.snapshot_id = None
         self.screenshots = ScreenshotStore(screenshot_directory) if screenshot_directory is not None else None
 
-    async def get_observation(self):
+    async def get_observation(self, arguments=None):
         async with self.lock:
             self.snapshot_id = None
+            try:
+                preset = preset_arguments(arguments)
+            except ValueError:
+                return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
             if error := self._acquire_controller():
                 return error
             payload, snapshot_id = await self._request("get_state")
             await anyio.lowlevel.checkpoint_if_cancelled()
             self.snapshot_id = snapshot_id
-            return payload
+            return observation_preset(payload, preset)
 
     async def inspect_run_result(self):
         return await self._inspect('inspect_run_result')
@@ -343,7 +349,7 @@ class GameTools:
             choosing = reason == "choice_required" and selection is not None \
                 and selection.get("status") == "visible" and selection.get("type") != "unsupported"
             if following is not None and transition.get("complete") is True \
-                    and payload.get("available_actions") and (ready or choosing):
+                    and any(action in GAME_ACTIONS for action in payload.get("available_actions", [])) and (ready or choosing):
                 self.snapshot_id = following
             return payload
 
@@ -369,10 +375,8 @@ class GameTools:
             payload = player_result(response)
             if response['ok']:
                 payload = attach_divination_image(payload, state)
-            if response["ok"] and "available_actions" in payload:
-                payload["available_actions"] = [
-                    action for action in payload.get("available_actions", [])
-                    if action in {"run_result_option", "travel_to_node", "end_turn", "play_card", "use_potion", "discard_potion", "select_card", "selection_option", 'claim_reward', 'proceed', 'choose_rest_option', 'loot_treasure', 'open_shop', 'close_shop', 'buy_item', 'choose_ancient_option', 'advance_dialogue', 'choose_event_option', 'set_divination_tool', 'divine', 'respond_to_confirmation'}]
+            if response['ok'] and 'available_actions' in payload:
+                payload['available_actions'] = public_tools(payload['available_actions'])
         except ScreenshotError as error:
             payload = player_result({"ok": False, "error": {"code": error.code}})
             snapshot_id = None

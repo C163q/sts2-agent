@@ -1,6 +1,6 @@
 # 宝箱房
 
-适用于 Mod `0.30.0`、MCP `0.26.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。当前支持实际单人宝箱，点击原生按钮完成开箱和领取，不自动前进或选路。
+适用于 Mod `0.31.0`、MCP `0.27.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。当前支持实际单人宝箱，点击原生按钮完成开箱和领取，不自动前进或选路。
 
 ## 观察与详情
 
@@ -15,7 +15,7 @@
     "relic": null,
     "proceed": null
   },
-  "available_actions": ["loot_treasure"]
+  "available_actions": ["loot_treasure", "inspect_potions", "inspect_map", "inspect_treasure"]
 }
 ```
 

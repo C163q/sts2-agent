@@ -1,4 +1,5 @@
 from mcp.types import Tool, ToolAnnotations
+from observation_presets import OBSERVATION_SCHEMA
 
 from run_ending_details import OPTION_SCHEMA as RESULT_OPTION_SCHEMA
 from map_details import TRAVEL_SCHEMA
@@ -21,7 +22,7 @@ from divination_details import TOOL_SCHEMA, DIVINE_SCHEMA
 SERVER_INSTRUCTIONS = (
     "Control a local Slay the Spire 2 game; output is English. "
     "Start with get_observation. Continue sequentially from a successful action result only if transition.complete is true, "
-    "available_actions is nonempty, and the action screen or a supported selection is visible. "
+    "available_actions includes a game action, and the action screen or a supported selection is visible. "
     "Read-only inspections do not prepare actions. View tools change UI and clear action permission; "
     "return to the action's screen and observe again before acting. "
     "transition.complete confirms the stated boundary, not that choice-paused effects or cosmetic animations have finished. "
@@ -74,8 +75,11 @@ def tool_definitions(*, screenshots_enabled=False):
             'Card removal opens selection tools; canceling costs nothing. Full slots or potion-gain restrictions can prevent purchase without spending gold. '
             'Stops at choices or rewards; never buys additional items automatically.')),
 
-        Tool(name="get_observation", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
-            "Read the current visible game state and refresh the action observation. Card effects and hover help require inspections.")),
+        Tool(name="get_observation", inputSchema=OBSERVATION_SCHEMA, annotations=read_only, description=(
+            "Read current state and refresh the action observation. preset=full (default) returns the visible state; "
+            "actions_only returns scene, screen, pending selection type/status and available tool names without parameters. "
+            "available_actions includes current inspections and operations, excluding this tool and screenshots; "
+            "arguments and state are checked at call time. Card effects and hover help require inspections.")),
         Tool(name='inspect_rewards', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             'Read the current browsable reward rows and their hover help. Does not reveal unopened card reward candidates.')),
         Tool(name='claim_reward', inputSchema=CLAIM_SCHEMA, annotations=action, description=(

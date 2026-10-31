@@ -1,3 +1,4 @@
+from available_tools import GAME_ACTIONS
 import argparse
 import asyncio
 import json
@@ -61,7 +62,7 @@ async def verify(args):
                     if result["status"] == "opened":
                         covered = await call("get_observation")
                         assert covered["screen"] == {"status": "covered", "view": pile + "_pile"}
-                        assert covered["available_actions"] == []
+                        assert "close_card_view" in covered["available_actions"] and not set(covered["available_actions"]) & GAME_ACTIONS
                     samples[pile + "-" + level] = result
                 if result["status"] == "opened":
                     assert [card["id"] for card in samples[pile + "-summary"]["cards"]] == ids

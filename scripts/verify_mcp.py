@@ -1,3 +1,4 @@
+from available_tools import GAME_ACTIONS
 import argparse
 import asyncio
 import json
@@ -73,7 +74,7 @@ async def verify(args):
             assert not observed.isError
             before = observed.structuredContent
             assert before["scene"] == "combat" and before["screen"]["status"] == "visible"
-            assert set(before["available_actions"]) == {"end_turn", "play_card"}
+            assert set(before["available_actions"]) & GAME_ACTIONS == {"end_turn", "play_card"}
             assert not {"snapshot_id", "session", "schema_version", "overlay", "language"} & before.keys()
             inspected = await call("inspect_hand")
             assert not inspected.isError

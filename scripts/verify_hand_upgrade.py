@@ -1,3 +1,4 @@
+from available_tools import GAME_ACTIONS
 import argparse
 import asyncio
 import json
@@ -87,7 +88,7 @@ async def verify(args):
             assert detail['selection']['upgrade_preview']['after']['description'], detail
             peek = await call('set_selection_view', {'view': 'battlefield'})
             assert peek['selection']['status'] == 'battlefield' and peek['selection']['cards'] is None, peek
-            assert peek['selection']['upgrade_preview'] is None and not peek['available_actions'], peek
+            assert peek['selection']['upgrade_preview'] is None and not set(peek['available_actions']) & GAME_ACTIONS, peek
             await capture('battlefield')
             hand = await call('inspect_hand')
             assert all(card['name'] == candidate['name'] for candidate in cards
