@@ -16,6 +16,7 @@ from reward_details import reward_arguments
 from rest_site_details import rest_option_arguments
 from treasure_details import loot_arguments
 from shop_details import shop_arguments
+from ancient_details import ancient_arguments
 from screenshot_tool import ScreenshotError, ScreenshotStore, screenshot_arguments
 
 
@@ -42,6 +43,15 @@ class GameTools:
 
     async def inspect_rewards(self):
         return await self._inspect('inspect_rewards')
+
+    async def inspect_ancient(self):
+        return await self._inspect('inspect_ancient')
+
+    async def choose_ancient_option(self, arguments=None):
+        return await self._action('choose_ancient_option', arguments)
+
+    async def advance_dialogue(self, arguments=None):
+        return await self._action('advance_dialogue', arguments)
 
     async def inspect_shop(self):
         return await self._inspect('inspect_shop')
@@ -204,6 +214,12 @@ class GameTools:
     async def _action(self, operation, arguments=None, validate_selection=False):
         observed = self.snapshot_id
         async with self.lock:
+            if operation in {'choose_ancient_option', 'advance_dialogue'}:
+                try:
+                    arguments = ancient_arguments(operation, arguments)
+                except ValueError:
+                    self.snapshot_id = None
+                    return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
             if operation in {'open_shop', 'close_shop', 'buy_item'}:
                 try:
                     arguments = shop_arguments(operation, arguments)
@@ -296,7 +312,7 @@ class GameTools:
             if response["ok"] and "available_actions" in payload:
                 payload["available_actions"] = [
                     action for action in payload.get("available_actions", [])
-                    if action in {"end_turn", "play_card", "use_potion", "discard_potion", "select_card", "selection_option", 'claim_reward', 'proceed', 'choose_rest_option', 'loot_treasure', 'open_shop', 'close_shop', 'buy_item'}]
+                    if action in {"end_turn", "play_card", "use_potion", "discard_potion", "select_card", "selection_option", 'claim_reward', 'proceed', 'choose_rest_option', 'loot_treasure', 'open_shop', 'close_shop', 'buy_item', 'choose_ancient_option', 'advance_dialogue'}]
         except ScreenshotError as error:
             payload = player_result({"ok": False, "error": {"code": error.code}})
             snapshot_id = None

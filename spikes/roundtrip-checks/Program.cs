@@ -32,8 +32,9 @@ Check(!Sample(null, "discard:2", false, 1700) && !Sample("player_ready", "discar
     "loss of interaction boundary resets settling");
 Check(!Sample("choice_required", "choice", true, 2100) && Sample("choice_required", "choice", true, 2350),
     "choice returns without waiting for suspended parent card motion");
-Check(!Sample("combat_won", "won", true, 2400) && Sample("combat_won", "won", true, 2650),
-    "combat outcome does not wait for gameplay card motion");
+Check(!Sample("combat_won", "won", true, 2400) && !Sample("combat_won", "won", true, 2650)
+    && !Sample("combat_won", "won", false, 2700) && Sample("combat_won", "won", false, 2950),
+    "victory waits for postcombat card acquisition motion");
 Check(!Sample("action_completed", "reward", true, 2700) && !Sample("action_completed", "reward", true, 3700),
     "noncombat potion completion waits for pending card motion");
 

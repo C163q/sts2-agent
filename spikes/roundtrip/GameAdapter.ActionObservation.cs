@@ -22,7 +22,8 @@ internal sealed partial class GameAdapter
             string? reason = stopReason();
             state = Observe();
             // Logical actions finish before independent card flights update visible pile counters.
-            if (settling.Sample(reason, state, CardMotionPending() || RunUi.ResourceMotionPending(), timer.Elapsed))
+            if (settling.Sample(reason, state, CardMotionPending() || RunUi.ResourceMotionPending()
+                || reason == "combat_won" && RunUi.CardPreviewsPending(), timer.Elapsed))
                 return (state, reason!);
         }
         return (state, "timeout");

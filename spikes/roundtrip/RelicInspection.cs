@@ -13,6 +13,7 @@ internal static class RelicInspection
     public static NRelicInventoryHolder[]? VisibleHolders()
     {
         if (CombatObservation.Status() != "visible"
+            && !(AncientInspection.Current is { } ancient && AncientInspection.Exposed(ancient))
             && !(ShopInspection.Current is { } shop && ShopInspection.Exposed(shop)))
             return null;
         var inventory = NRun.Instance!.GlobalUi.RelicInventory;
@@ -27,12 +28,12 @@ internal static class RelicInspection
     public static RelicText[] Read(NRelicInventoryHolder[] holders) => EnglishCardText.Read(() =>
         holders.Select(holder => Details(holder.Relic.Model, VisibleUi.Number(holder, "%AmountLabel"))).ToArray());
 
-    internal static RelicText Details(RelicModel model, int? counter) => EnglishCardText.Read(() =>
+    internal static RelicText Details(RelicModel model, int? counter) => EnglishRelicText.Read(model, () =>
     {
         var prefixes = model.DynamicVars.Values.OfType<EnergyVar>().Select(value => (value, value.ColorPrefix)).ToArray();
         try
         {
-            var entries = model.HoverTips.Select(HoverTipText.From).ToArray();
+            var entries = model.HoverTips.Take(1).Concat(EnglishRelicText.ExtraTips(model)).Select(HoverTipText.From).ToArray();
             if (entries.Length == 0)
                 throw new InvalidOperationException("Displayed relic has no main hover tip.");
             var main = entries[0];

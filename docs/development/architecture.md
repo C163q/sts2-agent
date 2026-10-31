@@ -89,3 +89,5 @@ C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project spi
 宝箱房由 `TreasureInspection.cs` 读取当前原生开箱、遗物和按钮状态，`GameAdapter.Treasure.cs` 顺序点击开箱与领取；`RelicObtainTracker.cs` 仅观察原生 `RelicCmd.Obtain` 返回任务的完成状态，补上宝箱 UI 未等待遗物效果的边界，不替换游戏流程。`treasure_details.py` 校验外部字段，`TreasureFixture.cs` 与 `verify_treasure.py` 用于隔离验证。契约见[宝箱房](treasure.md)。
 
 商店由 `ShopInspection.cs` 读取可见商品及槽位身份，`GameAdapter.Shop.cs` 点击原生商人、返回及商品；`ShopTransactions.cs` 只观察原生购买及阳伞任务，避免把选择暂停或自动购买间隙当作完成。`shop_details.py` 校验商品、摘要和购买结果；`ShopFixture.cs` 与 `verify_shop.py` 仅用于隔离验证。契约见[商店](shop.md)。
+
+先古之民由 `AncientInspection.cs` 读取已显示对话、选项及其身份，`GameAdapter.Ancient.cs` 点击原生对话/选项并复用非战斗边界。`EnglishRelicText.cs` 使用已公开的动态引用重建英语文本，不修改游戏语言或生成随机结果；`DeckEnchantSelection.cs`、`TransformSelection.cs` 读取实际预览。`AncientFixture.cs` 与 `verify_ancients.py` 仅用于隔离测试；契约见[先古之民](ancients.md)。

@@ -26,16 +26,19 @@ flowchart LR
 
 ## 工具范围
 
-默认公开 31 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 32 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 表示当前可执行的游戏动作，不是 MCP 工具目录。
+默认公开 34 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 35 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 表示当前可执行的游戏动作，不是 MCP 工具目录。
 
 | 工具 | 用途 |
 | --- | --- |
+| `inspect_ancient()` | [当前先古之民](ancients.md)的选项及悬停解释 |
+| `choose_ancient_option(option_id)` | 点击一个已显示且启用的先古选项 |
+| `advance_dialogue()` | 推进先古之民的一句原生对话，不选择遗物 |
 | `open_shop()` / `close_shop()` | 点击[商店](shop.md)的商人或返回按钮，实际展开/收回商品页 |
 | `inspect_shop()` | 一次查看当前全部商品正文与悬停说明 |
 | `buy_item(item_id)` | 购买一个当前商品；补货使用新 ID，删牌复用选牌工具 |
 | `inspect_rewards()` | [当前可浏览奖励及悬停说明](rewards.md) |
 | `claim_reward(reward_id)` | 逐项点击奖励，后续选牌复用现有选择工具 |
-| `proceed()` | 点击奖励页跳过/前进、宝箱房跳过/前进、休息处或关闭商品页后的商店前进按钮 |
+| `proceed()` | 点击奖励页跳过/前进、宝箱房跳过/前进、休息处、先古之民或关闭商品页后的商店前进按钮 |
 | `loot_treasure(open_only?)` | [宝箱房开箱并领取](treasure.md)，可先开后决定；不自动前进 |
 | `inspect_treasure()` | 当前可见宝箱遗物及悬停说明 |
 | `inspect_rest_site()` | [当前休息处选项及动态悬停说明](rest-site.md) |
@@ -66,7 +69,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.24.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.20.0`，支持[手牌升级选择](card-selection.md#手牌升级)及复用成功动作返回的观察；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。首次使用须匹配 Mod 与外部脚本；商店功能须同时更新 Mod 和 MCP，并完整重启游戏、重连 MCP。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.25.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.21.0`，支持[手牌升级选择](card-selection.md#手牌升级)及复用成功动作返回的观察；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。首次使用须匹配 Mod 与外部脚本；先古之民功能须同时更新 Mod 和 MCP，并完整重启游戏、重连 MCP。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -98,7 +101,7 @@ codex mcp add sts2 -- "$PWD/.tmp/mcp-venv/bin/python" "$PWD/scripts/mcp_server.p
 codex mcp list
 ```
 
-重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation`、`inspect_hand`、`inspect_ui`、`inspect_potions`、`inspect_combatants`、`inspect_relics`、`inspect_deck`、`inspect_pile`、`close_card_view`、`inspect_map`、`close_map`、`inspect_selection`、`select_card`、`selection_option`、`set_selection_view`、`inspect_targets`、`play_card`、`use_potion`、`discard_potion`、`end_turn`、`inspect_rewards`、`claim_reward`、`proceed`、`inspect_rest_site`、`choose_rest_option`、`loot_treasure`、`inspect_treasure`、`open_shop`、`close_shop`、`inspect_shop` 和 `buy_item`；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
+重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation`、`inspect_hand`、`inspect_ui`、`inspect_potions`、`inspect_combatants`、`inspect_relics`、`inspect_deck`、`inspect_pile`、`close_card_view`、`inspect_map`、`close_map`、`inspect_selection`、`select_card`、`selection_option`、`set_selection_view`、`inspect_targets`、`play_card`、`use_potion`、`discard_potion`、`end_turn`、`inspect_rewards`、`claim_reward`、`proceed`、`inspect_rest_site`、`choose_rest_option`、`loot_treasure`、`inspect_treasure`、`open_shop`、`close_shop`、`inspect_shop` 、`buy_item`、`inspect_ancient`、`choose_ancient_option` 和 `advance_dialogue`；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
 
 对应的 TOML 配置示例为：
 

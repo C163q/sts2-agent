@@ -8,7 +8,7 @@ internal sealed class ActionSettling
 
     public bool Sample(string? reason, string state, bool cardMotionPending, TimeSpan now)
     {
-        bool waitsForMotion = reason is "player_ready" or "action_completed" or "action_canceled";
+        bool waitsForMotion = reason is "player_ready" or "action_completed" or "action_canceled" or "combat_won";
         if (reason == null || waitsForMotion && cardMotionPending)
         {
             previousReason = previousState = null;

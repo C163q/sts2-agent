@@ -11,6 +11,8 @@ using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Screens.CardSelection;
+using MegaCrit.Sts2.Core.Nodes.Screens;
+using MegaCrit.Sts2.Core.Nodes.Screens.Capstones;
 using MegaCrit.Sts2.Core.Entities.CardRewardAlternatives;
 
 namespace Sts2Agent;
@@ -21,7 +23,7 @@ internal sealed class CardSelection(Control owner, string kind, object key)
     public string Kind { get; } = kind;
     public object Key { get; } = key;
     public bool Supported => Kind != "unsupported";
-    public NCardGrid? Grid => Owner is NCardGridSelectionScreen ? Owner.GetNodeOrNull<NCardGrid>("%CardGrid") : null;
+    public NCardGrid? Grid => Owner is NCardGridSelectionScreen || Kind == "view_cards" ? Owner.GetNodeOrNull<NCardGrid>("%CardGrid") : null;
     public NPeekButton? Eye => Owner is NPlayerHand hand ? hand.PeekButton : Owner.GetNodeOrNull<NPeekButton>("%PeekButton");
     public bool Peeking => Eye?.IsPeeking == true;
     public static bool AwaitingInput => Current is { Status: "visible" or "unsupported" } selection
@@ -30,20 +32,23 @@ internal sealed class CardSelection(Control owner, string kind, object key)
             && !RewardInspection.Animating(selection.Owner, "_buttonTween"));
     public PileType DisplayingPile => Kind == "combat_pile" && Field(Owner, "_pile") is CardPile pile ? pile.Type : PileType.None;
     public CardSelectorPrefs Prefs => Field(Owner, "_prefs") is CardSelectorPrefs prefs ? prefs : default;
-    public CardModel[] Selected => (Field(Owner, "_selectedCards") as IEnumerable<CardModel>)?.ToArray() ?? [];
+    public CardModel[] Selected => Kind == "bundle" ? (Field(Owner, "_selectedBundle") as NCardBundle)?.Bundle.ToArray() ?? [] : (Field(Owner, "_selectedCards") as IEnumerable<CardModel>)?.ToArray() ?? [];
 
     internal static object? Field(object instance, string name) => AccessTools.Field(instance.GetType(), name)?.GetValue(instance);
     public static CardSelection? Current
     {
         get
         {
+            if (NCapstoneContainer.Instance?.CurrentCapstoneScreen is NSimpleCardsViewScreen view && view.IsNodeReady())
+                return new(view, "view_cards", view);
             var overlay = NRun.Instance?.GlobalUi.Overlays.Peek() as Control;
             string? kind = overlay switch
             {
                 NChooseACardSelectionScreen => "choose_one", NCardRewardSelectionScreen => "reward",
                 NSimpleCardSelectScreen => "grid", NCombatPileCardSelectScreen => "combat_pile",
-                NDeckCardSelectScreen => "deck", NDeckUpgradeSelectScreen => "deck_upgrade",
-                NCardGridSelectionScreen or NChooseABundleSelectionScreen => "unsupported",
+                NDeckTransformSelectScreen => "deck_transform", NChooseABundleSelectionScreen => "bundle",
+                NDeckEnchantSelectScreen => "deck_enchant", NDeckCardSelectScreen => "deck", NDeckUpgradeSelectScreen => "deck_upgrade",
+                NCardGridSelectionScreen => "unsupported",
                 _ => null
             };
             if (kind != null && overlay != null && GodotObject.IsInstanceValid(overlay) && overlay.IsNodeReady())
@@ -72,14 +77,15 @@ internal sealed class CardSelection(Control owner, string kind, object key)
             var game = NGame.Instance;
             var global = NRun.Instance?.GlobalUi;
             if (game == null || global == null || !VisibleUi.Shown(Owner)
-                || global.CapstoneContainer.InUse || VisibleUi.Shown(global.MapScreen)
+                || global.CapstoneContainer.InUse && Kind != "view_cards" || VisibleUi.Shown(global.MapScreen)
                 || NModalContainer.Instance?.OpenModal != null
                 || VisibleUi.Shown(game.InspectCardScreen) || VisibleUi.Shown(game.InspectRelicScreen)
                 || game.Transition.InTransition
                 || (VisibleUi.Shown(game.Transition) && game.Transition.Material is ShaderMaterial material
                     && material.GetShaderParameter("threshold").AsSingle() > 0.000001f)
                 || VisibleUi.Descendants<CanvasItem>(game.Transition).Any(VisibleUi.Shown)) return false;
-            return Owner is NPlayerHand ? global.Overlays.ScreenCount == 0
+            return Kind == "view_cards" ? ReferenceEquals(global.CapstoneContainer.CurrentCapstoneScreen, Owner)
+                : Owner is NPlayerHand ? global.Overlays.ScreenCount == 0
                 : ReferenceEquals(global.Overlays.Peek(), Owner);
         }
     }
@@ -88,7 +94,8 @@ internal sealed class CardSelection(Control owner, string kind, object key)
     public bool CanPeek => Supported && Exposed && Eye is { IsEnabled: true } && VisibleUi.OnScreen(Eye);
 
     public bool InPreview => Kind == "deck" && VisibleUi.Shown(Owner.GetNodeOrNull<Control>("%PreviewContainer"))
-        || DeckUpgradeSelection.Preview(this) != null;
+        || DeckUpgradeSelection.Preview(this) != null || DeckEnchantSelection.Preview(this) != null || TransformSelection.Preview(this) != null
+        || Kind == "bundle" && VisibleUi.Shown(Owner.GetNodeOrNull<Control>("%BundlePreviewContainer"));
 
     public NUpgradePreview? UpgradePreview => Kind == "hand_upgrade" && Field(Owner, "_upgradePreview") is NUpgradePreview preview
         && VisibleUi.Shown(preview) ? preview : null;
@@ -97,7 +104,9 @@ internal sealed class CardSelection(Control owner, string kind, object key)
         ? VisibleUi.Descendants<NCard>(preview.GetNode<Control>(side))
             .FirstOrDefault(card => CombatObservation.CardVisible(card)) : null;
 
-    public NCardHolder[] Holders => Kind == "deck_upgrade" && InPreview ? [] : InPreview
+    public NCardHolder[] Holders => Kind is "deck_upgrade" or "deck_enchant" or "deck_transform" && InPreview ? [] : Kind == "bundle" && InPreview
+        ? VisibleUi.Descendants<NCardHolder>(Owner.GetNode<Control>("%BundlePreviewContainer")).ToArray()
+        : InPreview
         ? VisibleUi.Descendants<NCardHolder>(Owner.GetNode<Control>("%PreviewContainer")).ToArray()
         : Kind == "hand_upgrade"
         ? VisibleUi.Descendants<NHandCardHolder>(((NPlayerHand)Owner).CardHolderContainer).Cast<NCardHolder>()
@@ -112,7 +121,7 @@ internal sealed class CardSelection(Control owner, string kind, object key)
     public CardModel[] Cards => Grid != null ? CardView.Cards(Owner) : Holders
         .Where(holder => holder.CardModel != null).Select(holder => holder.CardModel!).Distinct().ToArray();
 
-    public (int minimum, int maximum) Limits => Kind is "choose_one" or "reward" ? (1, 1)
+    public (int minimum, int maximum) Limits => Kind == "view_cards" ? (0, 0) : Kind is "choose_one" or "reward" or "bundle" ? (1, 1)
         : Kind == "combat_pile" ? (Math.Min(Prefs.MinSelect, Cards.Length), Math.Min(Prefs.MaxSelect, Cards.Length))
         : (Prefs.MinSelect, Prefs.MaxSelect);
 
@@ -123,6 +132,19 @@ internal sealed class CardSelection(Control owner, string kind, object key)
     public IEnumerable<(string id, string? text, NButton button)> Options()
     {
         if (Status != "visible") yield break;
+        if (Kind == "bundle")
+        {
+            if (!InPreview)
+            {
+                var bundles = Owner.GetNode<Control>("%BundleRow").GetChildren().OfType<NCardBundle>().ToArray();
+                for (int i = 0; i < bundles.Length; i++)
+                    if (VisibleUi.OnScreen(bundles[i].Hitbox)) yield return ("bundle:" + i, "Choose bundle " + (i + 1), (NButton)bundles[i].Hitbox);
+            }
+            else
+                foreach (var (id, path) in new[] { ("cancel_preview", "%Cancel"), ("confirm", "%Confirm") })
+                    if (Owner.GetNodeOrNull<NButton>(path) is { } button && VisibleUi.OnScreen(button)) yield return (id, id == "confirm" ? "Confirm" : "Back", button);
+            yield break;
+        }
         if (Kind == "reward")
         {
             var alternatives = Field(Owner, "_extraOptions") as IReadOnlyList<CardRewardAlternative>;
@@ -137,10 +159,16 @@ internal sealed class CardSelection(Control owner, string kind, object key)
         }
         var paths = Kind switch
         {
+            "view_cards" => new[] { ("confirm", "ConfirmButton") },
+            "deck_transform" when InPreview => new[] { ("cancel_preview", "%PreviewContainer/Cancel"), ("confirm", "%PreviewContainer/Confirm") },
+            "deck_transform" => new[] { ("cancel", "%Close"), ("confirm", "Confirm") },
             "choose_one" => new[] { ("skip", "SkipButton") },
             "hand" or "hand_upgrade" => new[] { ("confirm", "%SelectModeConfirmButton") },
             "deck" when InPreview => new[] { ("cancel_preview", "%PreviewCancel"), ("confirm", "%PreviewConfirm") },
             "deck" => new[] { ("cancel", "%Close"), ("confirm", "%Confirm") },
+            "deck_enchant" when InPreview => new[] { ("cancel_preview", DeckEnchantSelection.Preview(this)!.GetPath() + "/Cancel"),
+                ("confirm", DeckEnchantSelection.Preview(this)!.GetPath() + "/Confirm") },
+            "deck_enchant" => new[] { ("cancel", "%Close"), ("confirm", "Confirm") },
             "deck_upgrade" when InPreview => new[] { ("cancel_preview", DeckUpgradeSelection.Preview(this)!.GetPath() + "/Cancel"),
                 ("confirm", DeckUpgradeSelection.Preview(this)!.GetPath() + "/Confirm") },
             "deck_upgrade" => new[] { ("cancel", "%Close") },
@@ -151,7 +179,7 @@ internal sealed class CardSelection(Control owner, string kind, object key)
                 yield return (id, id switch { "skip" => "Skip", "cancel" => "Cancel", "cancel_preview" => "Back", _ => "Confirm" }, button);
     }
 
-    public bool CanSelect => Status == "visible" && !InPreview
+    public bool CanSelect => Kind is not ("bundle" or "view_cards") && Status == "visible" && !InPreview
         && (Kind != "choose_one" || Godot.Time.GetTicksMsec() - (ulong)(Field(Owner, "_openedTicks") ?? 0UL) > 350)
         && (Grid == null || !Grid.IsAnimatingOut) && Holders.Any(Clickable);
 

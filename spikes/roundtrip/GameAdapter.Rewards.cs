@@ -22,20 +22,22 @@ internal sealed partial class GameAdapter
         var rest = RestSiteInspection.Current;
         var treasure = TreasureInspection.Current;
         var shop = ShopInspection.Current;
+        var ancient = AncientInspection.Current;
         var global = NRun.Instance?.GlobalUi;
         bool mapReady = global != null && MapView.Ready(global.MapScreen);
-        bool manual = NModalContainer.Instance?.OpenModal != null || global?.CapstoneContainer.InUse == true
+        bool manual = NModalContainer.Instance?.OpenModal != null || global?.CapstoneContainer.InUse == true && selection?.Kind != "view_cards"
             || selection is { Supported: false, Exposed: true }
             || global?.Overlays.ScreenCount > 0 && !RunUi.OnlyRewardOverlays()
                 && (selection == null || !ReferenceEquals(global.Overlays.Peek(), selection.Owner))
-            || rewards == null && rest == null && treasure == null && shop == null && selection == null && !mapReady && RunUi.NonCombatVisible()
-            || (treasure != null || shop != null) && !TreasureInspection.Singleplayer
+            || rewards == null && rest == null && treasure == null && shop == null && ancient == null && selection == null && !mapReady && RunUi.NonCombatVisible()
+            || (treasure != null || shop != null || ancient != null) && !TreasureInspection.Singleplayer
             || NGame.Instance?.MainMenu != null;
         bool ready = rewards != null && RewardInspection.Ready(rewards)
             || rest != null && RestSiteInspection.Ready(rest)
             || treasure != null && TreasureInspection.Ready(treasure)
             || shop != null && ShopInspection.Ready(shop)
-            || mapReady && (treasure == null || !RelicObtainTracker.Pending) && !ShopInspection.Busy;
+            || ancient != null && AncientInspection.Ready(ancient)
+            || mapReady && (treasure == null || !RelicObtainTracker.Pending) && !ShopInspection.Busy && !AncientInspection.Busy;
         return RewardBoundary.Decide(RunUi.Transitioning(), manual, CardSelection.AwaitingInput, ready);
     }
 

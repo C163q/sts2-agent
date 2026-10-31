@@ -7,6 +7,7 @@ from pathlib import Path
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from roundtrip_client import Client
+from verification_actions import confirm_transform
 
 
 async def verify(args):
@@ -166,9 +167,10 @@ async def verify(args):
                 else: assert 'CALLING_BELL' in after['relics'] and not after['preview_cards'], after
             elif args.scenario == 'dig_choice':
                 result = await choose('DIG')
-                assert result['transition']['stop_reason'] == 'manual_input_required', result
-                assert result['selection']['type'] == 'unsupported' and result['available_actions'] == [], result
-                await call('choose_rest_option', {'option_id': 'HEAL'}, error='observation_required')
+                result = await confirm_transform(call, result)
+                assert result['scene'] == 'rest_site' and result['rest_site']['proceed']['enabled'], result
+                assert len((await fixture())['deck']) == len(before['deck']), result
+                result = await call('proceed'); done(result)
     report.write_text(json.dumps(evidence, indent=2) + '\n')
     print(f'PASS: {args.scenario}; {len(evidence)} calls/checks; {report}')
 

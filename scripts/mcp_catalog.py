@@ -10,6 +10,7 @@ from reward_details import CLAIM_SCHEMA
 from rest_site_details import REST_OPTION_SCHEMA
 from treasure_details import LOOT_SCHEMA
 from shop_details import BUY_SCHEMA
+from ancient_details import ANCIENT_OPTION_SCHEMA
 
 
 SERVER_INSTRUCTIONS = (
@@ -29,6 +30,13 @@ def tool_definitions(*, screenshots_enabled=False):
     view = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False)
     action = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False)
     definitions = [
+        Tool(name='inspect_ancient', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
+            'Read the exposed ancient, visible dialogue, options and their hover help. Never reveals future dialogue or hidden choices.')),
+        Tool(name='choose_ancient_option', inputSchema=ANCIENT_OPTION_SCHEMA, annotations=action, description=(
+            'Click one enabled ancient option by observed option_id. Stops at card selections or rewards; handle those separately.')),
+        Tool(name='advance_dialogue', inputSchema=NO_ARGUMENTS, annotations=action, description=(
+            'Click the ancient dialogue continue area once to show the next line. Does not choose a gift or proceed.')),
+
         Tool(name='open_shop', inputSchema=NO_ARGUMENTS, annotations=action, description=(
             'Click the exposed merchant to open the shop. Returns card summaries and visible prices.')),
         Tool(name='close_shop', inputSchema=NO_ARGUMENTS, annotations=action, description=(
@@ -49,7 +57,7 @@ def tool_definitions(*, screenshots_enabled=False):
             'A full potion belt leaves the reward unclaimed; discard or use a potion separately if desired. '
             'Blocked potion gain can consume the reward without obtaining it (not_obtained).')),
         Tool(name='proceed', inputSchema=NO_ARGUMENTS, annotations=action, description=(
-            'Click the visible rewards/treasure Skip/Proceed, rest-site or closed-shop Proceed button. '
+            'Click the visible rewards/treasure Skip/Proceed, rest-site, ancient or closed-shop Proceed button. '
             'Uses the native flow, which may open the map, resume an event, change act or finish the run.')),
         Tool(name='loot_treasure', inputSchema=LOOT_SCHEMA, annotations=action, description=(
             'Open a single-player treasure chest and take its relic; never proceeds. '
@@ -86,7 +94,7 @@ def tool_definitions(*, screenshots_enabled=False):
             "Read both sides' visible powers and current enemy intent hover help; shared hover_tips use sources paths. "
             "Unavailable while aiming or playing a card.")),
         Tool(name="inspect_relics", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
-            "Read visible, hoverable owned relics in combat or an exposed shop' descriptions and displayed counters; "
+            "Read visible, hoverable owned relics in combat, an exposed ancient or shop: descriptions and displayed counters; "
             "shared hover_tips link to zero-based relic_indices.")),
         Tool(name="inspect_deck", inputSchema=DECK_SCHEMA, annotations=view, description=(
             "Open/reuse the native deck page and read the entire browsable deck. "
@@ -115,7 +123,7 @@ def tool_definitions(*, screenshots_enabled=False):
             "Hand upgrades preview before confirmation; click the selected card to deselect. "
             "Use the latest observation or complete action result.")),
         Tool(name="selection_option", inputSchema=OPTION_SCHEMA, annotations=action, description=(
-            "Click an enabled selection.options button by option_id: confirm, cancel preview, skip or a reward alternative. "
+            "Click an enabled selection.options button by option_id: confirm, cancel preview, skip or a reward alternative. Choose card bundles with the offered bundle:N option. "
             "Only offered buttons in the latest observation or complete action result are legal.")),
         Tool(name="set_selection_view", inputSchema=VIEW_SCHEMA, annotations=view, description=(
             "Click the native eye to show battlefield or return to selection. "

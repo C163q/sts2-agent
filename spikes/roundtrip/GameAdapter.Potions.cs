@@ -15,6 +15,7 @@ internal sealed partial class GameAdapter
     private static bool CanHandlePotions() => RunManager.Instance.IsInProgress
         && RunManager.Instance.IsSingleplayerOrFakeMultiplayer && LocalPlayer?.Creature.IsAlive == true
         && !LocalPlayer.RunState.IsGameOver
+        && (!AncientInspection.Busy || RewardInspection.Current is { } ancientRewards && RewardInspection.Ready(ancientRewards))
         && (!ShopTransactions.Pending || RewardInspection.Current is { } rewards && RewardInspection.Ready(rewards))
         && (ShopInspection.Current is not { } shop || !ShopInspection.Exposed(shop) || ShopInspection.Ready(shop)) && CardSelection.Current == null
         && RunManager.Instance.ActionQueueSet.IsEmpty && !NTargetManager.Instance.IsInSelection

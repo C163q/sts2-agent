@@ -64,7 +64,9 @@ SELECTION = {
     "selected_ids": nullable([int]), "cards": nullable([SELECTION_CARD]),
     "options": [SELECTION_OPTION], "can_view_battlefield": bool,
 }
-SELECTION_OUTPUT = {**SELECTION, "upgrade_preview": nullable(UPGRADE_PREVIEW), "upgrade_previews": [UPGRADE_PREVIEW]}
+SELECTION_OUTPUT = {**SELECTION, "enchantment": nullable({"title": str, "description": str}), "enchant_previews": [UPGRADE_PREVIEW],
+                    "transform_previews": [{"before": SELECTION_CARD, "after": nullable(SELECTION_CARD), "random": bool}],
+                    "bundles": [{"id": str, "cards": [SELECTION_CARD]}], "upgrade_preview": nullable(UPGRADE_PREVIEW), "upgrade_previews": [UPGRADE_PREVIEW]}
 EVENT_ENTITY = {"id": int, "kind": str, "name": TEXT}
 TARGET_ENTITY = {**EVENT_ENTITY, "id": frozenset({int, str})}
 POTION_REF = {"slot_index": int, "name": TEXT}
@@ -91,13 +93,17 @@ SHOP_ITEM = {'id': int, 'kind': str, 'position': str, 'price': NUMBER, 'affordab
 SHOP = {'status': str, 'view': TEXT, 'items': nullable([SHOP_ITEM]),
         'open': nullable({'enabled': bool}), 'back': nullable({'enabled': bool}),
         'proceed': nullable({'text': str, 'enabled': bool})}
+ANCIENT_OPTION = {'id': int, 'title': str, 'description': str, 'enabled': bool}
+ANCIENT = {'status': str, 'name': TEXT, 'epithet': TEXT, 'description': TEXT, 'dialogue': nullable([{'speaker': str, 'text': str}]),
+           'options': nullable([ANCIENT_OPTION]), 'continue': nullable({'text': TEXT, 'enabled': bool}),
+           'proceed': nullable({'text': str, 'enabled': bool})}
 OBSERVATION = {
     "scene": str, "screen": SCREEN, "turn": NUMBER, "player": nullable(PLAYER),
     "enemies": nullable([ENEMY]), "top_bar": nullable(TOP_BAR),
     "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
     "available_actions": [str],
 }
-OPTIONAL_OBSERVATION = {"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
+OPTIONAL_OBSERVATION = {"ancient": nullable(ANCIENT),"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
 GAMEPLAY = {
     'reward_result': {'reward_id': int, 'status': str},
     'purchase_result': {'item_id': int, 'status': str},
@@ -122,7 +128,7 @@ GAMEPLAY = {
 def gameplay_fields(state):
     shape = GAMEPLAY
     if state.get("scene") == "card_selection":
-        shape = {**GAMEPLAY, "selection": {**SELECTION_OUTPUT, "cards": [HAND_CARD]}}
+        shape = {**GAMEPLAY, "selection": {**SELECTION_OUTPUT, "cards": [HAND_CARD], "bundles": [{"id": str, "cards": [HAND_CARD]}]}}
     if (state.get('rewards') or {}).get('items') and 'hover_tips' in state['rewards']['items'][0]:
         shape = {**shape, 'rewards': {**REWARDS, 'items': [{**REWARD_ITEM, 'hover_tips': [TIP]}]}}
     if (state.get('rest_site') or {}).get('options') and 'description' in state['rest_site']['options'][0]:
@@ -134,13 +140,15 @@ def gameplay_fields(state):
         if full:
             shape = {**shape, 'shop': {**SHOP, 'items': nullable([{**SHOP_ITEM, 'description': str, 'hover_tips': [TIP],
                 'card': {**SHOP_CARD, 'description': str, 'hover_tips': [TIP]}}])}}
+    if state.get('scene') == 'ancient' and any('hover_tips' in o for o in (state.get('ancient') or {}).get('options') or []):
+        shape = {**shape, 'ancient': {**ANCIENT, 'options': nullable([{**ANCIENT_OPTION, 'hover_tips': [TIP]}])}}
     return project(state, shape)
 
 
 def observation_details(state):
     result = project(state, {**OBSERVATION, **OPTIONAL_OBSERVATION})
     if (not set(OBSERVATION) <= result.keys() or "status" not in result["screen"]
-            or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards", 'rest_site', 'treasure', 'shop')
+            or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards", 'rest_site', 'treasure', 'shop', 'ancient')
             or result["screen"]["status"] not in ("visible", "covered", "hidden", "not_ready", "not_applicable")):
         raise ValueError("Invalid observation structure.")
     if result.get("selection") is not None:
@@ -165,13 +173,18 @@ def observation_details(state):
         result['shop'] = shop_details(result['shop'])
     elif result['scene'] == 'shop':
         raise ValueError('Missing shop state.')
+    if result.get('ancient') is not None:
+        from ancient_details import ancient_details
+        result['ancient'] = ancient_details(result['ancient'])
+    elif result['scene'] == 'ancient':
+        raise ValueError('Missing ancient state.')
     return result
 
 
 def selection_details(value):
     result = project(value, SELECTION_OUTPUT)
     if (not set(SELECTION) <= result.keys() or result["type"] not in
-            {"choose_one", "reward", "grid", "combat_pile", "deck", "deck_upgrade", "hand", "hand_upgrade", "unsupported"}
+            {"choose_one", "reward", "grid", "combat_pile", "deck", "deck_upgrade", "deck_enchant", "deck_transform", "bundle", "view_cards", "hand", "hand_upgrade", "unsupported"}
             or result["status"] not in {"visible", "battlefield", "covered", "unsupported"}):
         raise ValueError("Invalid card selection.")
     preview = result.get("upgrade_preview")
@@ -201,9 +214,47 @@ def selection_details(value):
             raise ValueError('Invalid deck upgrade preview selection.')
     elif previews:
         raise ValueError('Unexpected deck upgrade previews.')
+    transformations = result.get('transform_previews', [])
+    if result['type'] == 'deck_transform':
+        if 'transform_previews' not in result: raise ValueError('Missing transform previews.')
+        preview_ids = []
+        for pair in transformations:
+            if (set(pair) != {'before', 'after', 'random'} or not {'id', 'name', 'description'} <= pair['before'].keys()
+                    or pair['before']['id'] < 0 or pair['random'] != (pair['after'] is None)
+                    or pair['after'] is not None and (not {'id', 'name', 'description'} <= pair['after'].keys()
+                                                     or pair['after']['id'] != pair['before']['id'])):
+                raise ValueError('Invalid transform preview.')
+            preview_ids.append(pair['before']['id'])
+        if len(set(preview_ids)) != len(preview_ids) or transformations and set(preview_ids) != set(result['selected_ids'] or []):
+            raise ValueError('Invalid transform selection.')
+    elif transformations: raise ValueError('Unexpected transform previews.')
+    bundles = result.get('bundles', [])
+    if result['type'] == 'bundle':
+        if 'bundles' not in result or any(set(b) != {'id', 'cards'} or not b['id'].startswith('bundle:')
+                                         or any(not {'id', 'name'} <= c.keys() for c in b['cards']) for b in bundles):
+            raise ValueError('Invalid bundles.')
+        if len({b['id'] for b in bundles}) != len(bundles): raise ValueError('Repeated bundle.')
+    elif bundles: raise ValueError('Unexpected bundles.')
+    enchantment = result.get('enchantment')
+    enchanted = result.get('enchant_previews', [])
+    if result['type'] == 'deck_enchant':
+        if 'enchantment' not in result or 'enchant_previews' not in result:
+            raise ValueError('Missing enchantment preview state.')
+        if enchantment is not None and set(enchantment) != {'title', 'description'}:
+            raise ValueError('Invalid enchantment help.')
+        preview_ids = []
+        for pair in enchanted:
+            if (set(pair) != set(UPGRADE_PREVIEW) or any(not {'id', 'name', 'description'} <= c.keys() or c['id'] < 0
+                                                      for c in pair.values()) or pair['before']['id'] != pair['after']['id']):
+                raise ValueError('Invalid enchantment preview identity.')
+            preview_ids.append(pair['before']['id'])
+        if len(set(preview_ids)) != len(preview_ids) or enchanted and set(preview_ids) != set(result['selected_ids'] or []):
+            raise ValueError('Invalid enchantment preview selection.')
+    elif enchantment is not None or enchanted:
+        raise ValueError('Unexpected enchantment preview.')
     if result["status"] != "visible":
         if (any(result[key] is not None for key in
-                ("prompt", "min_select", "max_select", "selected_ids", "cards")) or result["options"] or preview is not None or previews):
+                ("prompt", "min_select", "max_select", "selected_ids", "cards")) or result["options"] or preview is not None or previews or enchantment is not None or enchanted or transformations or bundles):
             raise ValueError("Hidden selection contents.")
         return result
     minimum, maximum = result["min_select"], result["max_select"]

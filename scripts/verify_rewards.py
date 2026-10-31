@@ -7,6 +7,7 @@ from pathlib import Path
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from roundtrip_client import Client
+from verification_actions import confirm_transform
 
 
 async def verify(args):
@@ -30,8 +31,8 @@ async def verify(args):
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             initialized = await session.initialize()
-            assert initialized.serverInfo.version == '0.20.0'
-            assert len((await session.list_tools()).tools) == 32
+            assert initialized.serverInfo.version == '0.21.0'
+            assert len((await session.list_tools()).tools) == 35
 
             async def call(name, arguments=None, *, error=None):
                 response = await session.call_tool(name, arguments or {})
@@ -158,10 +159,10 @@ async def verify(args):
                 assert 'CALLING_BELL' in (await fixture())['relics']
             elif args.scenario == 'unsupported':
                 result = await call('claim_reward', {'reward_id': by_type('relic')['id']})
-                assert result['transition']['stop_reason'] == 'manual_input_required', result
-                assert result['available_actions'] == [] and result['selection']['status'] == 'unsupported', result
-                assert result['notes']['interaction']
-                await call('proceed', error='observation_required')
+                result = await confirm_transform(call, result)
+                assert result['scene'] == 'rewards', result
+                result = await call('proceed')
+                assert result['transition']['stop_reason'] == 'action_completed', result
             elif args.scenario == 'returned':
                 special = by_type('special_card')
                 assert special['hover_tips'] and special['text'] == 'Take your stolen card back.', special

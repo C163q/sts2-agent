@@ -33,4 +33,8 @@ def inspect_selection_details(state):
         if (not {"description", "hover_tips"} <= card.keys()
                 or any(set(tip) != set(TIP) for tip in card["hover_tips"] or [])):
             raise ValueError("Incomplete selection detail.")
+    if selection['type'] == 'bundle':
+        selection['bundles'] = project(raw['bundles'], [{'id': str, 'cards': [HAND_CARD]}])
+        if any(not {'description', 'hover_tips'} <= c.keys() for b in selection['bundles'] for c in b['cards']):
+            raise ValueError('Incomplete bundle details.')
     return {"scene": "card_selection", "selection": selection}

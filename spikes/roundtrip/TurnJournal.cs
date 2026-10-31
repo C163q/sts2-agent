@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Cards;
+using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Rooms;
 using STS2RitsuLib;
@@ -209,7 +210,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
 
     private void CapturePublicCards()
     {
-        var ui = NCombatRoom.Instance?.Ui;
+        var ui = NRun.Instance;
         if (ui == null) return;
         foreach (var node in VisibleUi.Descendants<NCard>(ui))
         {
@@ -245,6 +246,10 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
 
     private void SubscribePiles()
     {
+        var deck = PileType.Deck.GetPile(player);
+        void AddedToDeck(CardModel card) { if (ReferenceEquals(card.Owner, player)) generated.Add(card); }
+        deck.CardAdded += AddedToDeck;
+        cleanup.Add(() => deck.CardAdded -= AddedToDeck);
         foreach (var card in player.PlayerCombatState!.Hand.Cards) handCards.Add(card);
         foreach (var type in new[] { PileType.Hand, PileType.Play, PileType.Draw, PileType.Discard, PileType.Exhaust })
         {

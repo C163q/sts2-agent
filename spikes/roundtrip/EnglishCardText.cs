@@ -83,6 +83,13 @@ internal static class EnglishCardText
                 ["ApplierName"] = new StringVar("ApplierName", applier.Title.GetFormattedText())
             };
         }
+        if (EnglishRelicText.Overrides is { Count: > 0 } values)
+        {
+            var detached = new Dictionary<string, object>(variables);
+            foreach (var (key, value) in values)
+                if (detached.ContainsKey(key)) detached[key] = new StringVar(key, value);
+            variables = detached;
+        }
         __result = Smart.Default.Format(CultureInfo.GetCultureInfo("en"), Template(__instance), variables);
         return false;
     }

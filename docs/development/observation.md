@@ -1,6 +1,6 @@
 # 战斗观察 JSON
 
-适用于 Linux 游戏 `v0.107.1` 与 Mod `0.24.0`。底层观察结构版本为 `9`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+适用于 Linux 游戏 `v0.107.1` 与 Mod `0.25.0`。底层观察结构版本为 `10`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -44,7 +44,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 | `available_actions` | 当前已实现动作的可用性；不是完整工具目录 |
 | `notes` | 按结果内容附带的英语数值解读说明，无适用内容时省略；属于接口说明，不是额外采样到的游戏状态 |
 
-战斗外在 [药水工具支持的页面](potion-actions.md#场景与停止边界) 也提供可见顶栏；搜刮页使用 `scene: "rewards"` 和独立的[奖励结构](rewards.md)，其他已接通的非战斗页面使用 `scene: "loading_or_noncombat"`，`screen.status` 为 `visible`，`player/enemies/turn/buttons` 为空，不附送事件选项等未接通内容。
+战斗外在 [药水工具支持的页面](potion-actions.md#场景与停止边界) 也提供可见顶栏；搜刮页使用 `scene: "rewards"` 和独立的[奖励结构](rewards.md)，休息处、宝箱房、商店和先古之民分别使用 `rest_site`、`treasure`、`shop`、`ancient`；尚未识别的非战斗页面使用 `scene: "loading_or_noncombat"`，`screen.status` 为 `visible`，`player/enemies/turn/buttons` 为空，不附送事件选项等未接通内容。
 
 数字来自可见标签，金币动画期间也按标签返回。`null` 不等于 0，表示未显示、尚未准备或不能可靠识别；可见空容器使用 `[]`。正常生命条没有格挡图标时才归一化为 `block: 0`。死亡文字与无限图标分别映射为 `dead`、`infinite`，不从隐藏生命模型补数字。
 
@@ -137,3 +137,5 @@ python3 scripts/verify_roundtrip.py --ipc-dir .tmp/roundtrip/ipc --report .tmp/r
 宝箱房基础观察的 `treasure`、开箱状态和遗物可见性见[宝箱房接口](treasure.md)。未开箱不透露隐藏内容，遗物效果须显式查看。
 
 商店基础观察的 `shop`、商品摘要、补货 ID 和药水可用提示见[商店接口](shop.md)。未打开或被覆盖时不读取商品，完整效果需显式查看。
+
+先古之民基础观察包含已显示的对话及选项正文，结构和悬停边界见[先古之民](ancients.md)。

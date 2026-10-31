@@ -55,7 +55,13 @@ def ui_details(state):
         {key: tip[key] for key in ("title", "description", "sources")} for tip in tips]}
 
 
+from ancient_details import inspect_ancient_details
+
+
 READERS = {
+    'inspect_ancient': inspect_ancient_details,
+    'choose_ancient_option': end_turn_details,
+    'advance_dialogue': end_turn_details,
     'inspect_shop': inspect_shop_details,
     'open_shop': end_turn_details,
     'close_shop': end_turn_details,

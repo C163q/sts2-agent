@@ -31,8 +31,8 @@ async def verify(args):
     async with stdio_client(parameters) as (read, write):
         async with ClientSession(read, write) as session:
             initialized = await session.initialize()
-            assert initialized.serverInfo.version == '0.20.0'
-            assert len((await session.list_tools()).tools) == 32
+            assert initialized.serverInfo.version == '0.21.0'
+            assert len((await session.list_tools()).tools) == 35
 
             async def call(name, arguments=None):
                 result = await session.call_tool(name, arguments or {})

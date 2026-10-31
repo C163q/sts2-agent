@@ -53,6 +53,32 @@ internal sealed class SelectionInspection(CombatObservation observation)
             }
             result["upgrade_preview"] = preview;
         }
+        if (selection.Kind == "bundle")
+            result["bundles"] = visible && !selection.InPreview
+                ? selection.Owner.GetNode<Godot.Control>("%BundleRow").GetChildren().OfType<NCardBundle>().Select((bundle, i) =>
+                    (object)new { id = "bundle:" + i, cards = bundle.CardNodes.Where(CombatObservation.CardVisible)
+                        .Select(node => Card(node, full, expanded: false)).ToArray() }).ToArray() : Array.Empty<object>();
+        if (selection.Kind == "deck_transform")
+            result["transform_previews"] = !visible ? Array.Empty<object>() : TransformSelection.Previews(selection).Select(pair =>
+            {
+                var before = Card(pair.before, full, expanded: true);
+                var after = pair.after == null ? null : Card(pair.after, full, expanded: true);
+                before["id"] = observation.CardId(pair.original);
+                if (after != null) after["id"] = observation.CardId(pair.original);
+                return (object)new { before, after, random = pair.after == null };
+            }).ToArray();
+        if (selection.Kind == "deck_enchant")
+        {
+            result["enchantment"] = visible ? DeckEnchantSelection.Description(selection) : null;
+            result["enchant_previews"] = !visible ? Array.Empty<object>() : DeckEnchantSelection.Previews(selection).Select(pair =>
+            {
+                var before = pair.before == null ? new Dictionary<string, object?> { ["name"] = null, ["description"] = null }
+                    : Card(pair.before, full, expanded: true);
+                var after = Card(pair.after, full, expanded: true);
+                before["id"] = after["id"] = observation.CardId(pair.original);
+                return (object)new { before, after };
+            }).ToArray();
+        }
         if (selection.Kind == "deck_upgrade")
             result["upgrade_previews"] = !visible ? Array.Empty<object>() : DeckUpgradeSelection.Previews(selection).Select(pair =>
             {
