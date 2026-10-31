@@ -17,6 +17,8 @@ internal static class ShopFixture
 {
     private static string scenario = "";
     private static Task? targetingTask;
+    public static Task? Pending => targetingTask;
+    public static void Reset() { targetingTask = null; scenario = ""; }
 
     public static async Task Configure(string name, Player player, Func<Task> frame)
     {

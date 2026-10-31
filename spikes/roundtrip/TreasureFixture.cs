@@ -14,6 +14,8 @@ internal static class TreasureFixture
 {
     private static Func<Task>? nextFrame;
     private static bool delayedDone;
+    public static Task? Pending { get; private set; }
+    public static void Reset() { Pending = null; nextFrame = null; delayedDone = false; }
 
     public static async Task Configure(string scenario, Player player, Func<Task> frame)
     {
@@ -47,7 +49,7 @@ internal static class TreasureFixture
 
     private static void DelayObtain(RelicModel __instance, ref Task __result)
     {
-        if (__instance is Anchor) __result = Delayed(__result, __instance.Owner);
+        if (__instance is Anchor) __result = Pending = Delayed(__result, __instance.Owner);
     }
 
     private static async Task Delayed(Task original, Player player)

@@ -21,6 +21,7 @@ namespace Sts2Agent;
 internal static class RewardFixture
 {
     public static Task? Pending { get; private set; }
+    public static void Reset() => Pending = null;
 
     public static async Task Configure(string scenario, Player player, Func<Task> frame)
     {

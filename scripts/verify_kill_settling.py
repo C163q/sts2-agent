@@ -1,3 +1,4 @@
+from verification_runtime import ensure_run, ipc_directory
 import argparse
 import asyncio
 import json
@@ -19,19 +20,11 @@ async def verify(args):
     report.parent.mkdir(parents=True, exist_ok=True)
     config = report.with_suffix('.config.json')
     config.write_text(json.dumps({'screenshots': {'enabled': True, 'directory': str(report.with_suffix(''))}}))
-    raw = Client(root / '.tmp/roundtrip/ipc')
-    initial = await asyncio.to_thread(raw.call, 'get_state')
-    deadline = time.monotonic() + 30
-    while initial['state']['scene'] == 'loading_or_noncombat' and time.monotonic() < deadline:
-        await asyncio.sleep(.1)
-        initial = await asyncio.to_thread(raw.call, 'get_state')
-    assert initial['state']['scene'] == 'main_menu', 'Requires a fresh isolated test game.'
-    created = await asyncio.to_thread(Client(raw.directory, timeout=120).call,
-                                      'start_test_combat', initial['state']['snapshot_id'])
-    assert created['ok'], created
+    raw = Client(ipc_directory())
+    await asyncio.to_thread(ensure_run, raw)
     evidence = []
     params = StdioServerParameters(command=sys.executable, args=[str(root / 'scripts/mcp_server.py'),
-                                  '--ipc-dir', str(root / '.tmp/roundtrip/ipc'), '--config', str(config)])
+                                  '--ipc-dir', str(ipc_directory()), '--config', str(config)])
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()

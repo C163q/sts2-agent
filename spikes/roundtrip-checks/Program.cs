@@ -47,3 +47,17 @@ Check(RewardBoundary.Decide(false, false, false, true) == "action_completed", "s
 Check(RewardBoundary.Decide(false, false, false, false) == null, "unready reward UI keeps settling");
 Check(RewardBoundary.Decide(false, true, false, true, runLost: true) == "run_lost", "event death takes precedence over manual overlays");
 Check(RewardBoundary.Decide(true, false, false, true, runLost: true) == null, "event death waits for room transition");
+
+var settings = new TestScenarioSettings();
+using (var config = System.Text.Json.JsonDocument.Parse("{\"play\":\"basic\",\"potion\":\"skill\"}"))
+    settings.Configure(config.RootElement);
+Check(settings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") == "basic" && settings.Get("STS2_AGENT_TEST_REST_SCENARIO") == null,
+    "per-run config replaces all scenario defaults");
+try {
+    using var invalid = System.Text.Json.JsonDocument.Parse("{\"rest\":\"bogus\"}");
+    settings.Configure(invalid.RootElement);
+    throw new Exception("Invalid configuration accepted");
+} catch (ArgumentException) { }
+Check(settings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") == "basic", "invalid config is atomic");
+using (var empty = System.Text.Json.JsonDocument.Parse("{}")) settings.Configure(empty.RootElement);
+Check(settings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") == null, "new config drops previous run scenario");

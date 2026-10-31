@@ -1,5 +1,7 @@
+from verification_runtime import ensure_run, ipc_directory
 from verification_actions import observe_after_action
 import argparse
+import sys
 import asyncio
 import json
 import time
@@ -17,18 +19,11 @@ async def verify(args):
     report.parent.mkdir(parents=True, exist_ok=True)
     config = report.with_suffix('.config.json')
     config.write_text(json.dumps({'screenshots': {'enabled': True, 'directory': str(report.parent / report.stem)}}))
-    raw = Client(root / '.tmp/roundtrip/ipc')
-    start = await asyncio.to_thread(raw.call, 'get_state')
-    deadline = time.monotonic() + 30
-    while start['state']['scene'] != 'main_menu' and time.monotonic() < deadline:
-        await asyncio.sleep(.2)
-        start = await asyncio.to_thread(raw.call, 'get_state')
-    assert start['state']['scene'] == 'main_menu', 'Requires a fresh isolated instance.'
-    created = await asyncio.to_thread(raw.call, 'start_test_combat', start['state']['snapshot_id'])
-    assert created['ok'], created
+    raw = Client(ipc_directory())
+    created = await asyncio.to_thread(ensure_run, raw)
     evidence = []
-    params = StdioServerParameters(command=str(root / '.tmp/mcp-venv/bin/python'), args=[
-        str(root / 'scripts/mcp_server.py'), '--ipc-dir', str(root / '.tmp/roundtrip/ipc'), '--config', str(config)])
+    params = StdioServerParameters(command=sys.executable, args=[
+        str(root / 'scripts/mcp_server.py'), '--ipc-dir', str(ipc_directory()), '--config', str(config)])
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()

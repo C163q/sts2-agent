@@ -1,0 +1,64 @@
+# 复用进程的图形测试
+
+图形套件通过一个独立的游戏窗口运行多个测试局，省去逐例重新启动游戏与加载资源的开销。默认每个用例新开一局；同一用例的多个步骤显式共享该局。步骤仍经过真实 stdio MCP 与原生游戏操作，原有断言保留。结算、历史、解锁和 `--check-*` 内嵌检查继续单独启动。
+
+## 准备与执行
+
+先按[构建与准备指南](roundtrip.md#前提与构建)构建 Mod，并运行 `prepare_roundtrip.py` 更新隔离运行时。此步骤不安装或更新正式游戏中的 Mod。停止使用同一隔离运行时的旧测试实例后再更新运行时；正式游戏无须退出。
+
+在仓库根目录，使用已安装 [MCP 依赖](mcp.md#安装与游戏前提)的 Python 执行：
+
+```sh
+.tmp/mcp-venv/bin/python scripts/gui_suite.py --output .tmp/gui-suite-example
+```
+
+`--output` 必须尚不存在。默认清单是 [gui_suite_smoke.json](../../scripts/gui_suite_smoke.json)：连续动作与同局续接、连续选牌、未结束选牌的清理、锻造、商店、奖励，以及附加奖励宝箱后接普通宝箱。最后两例检查测试补丁是否跨局残留。失败立即停止后续步骤和用例，保留证据，再关闭本次拥有的游戏进程；不会在失败现场自动重试动作。
+
+每个套件有独立的 IPC、日志、截图和测试存档目录。游戏资产和 Mod 来自 `.tmp/roundtrip/runtime/`，不使用 Steam、正式存档或 `.tmp/live/ipc`。同一套件内的新局共享测试进度和进程缓存，不能替代要求全新进度或全新进程的测试。
+
+## 清单与同局步骤
+
+通过 `--suite <JSON 文件>` 指定清单。例如：
+
+```json
+[
+  {
+    "name": "combat_chain",
+    "scenarios": {"play": "armaments_free", "potion": "skill"},
+    "steps": [
+      {"name": "actions", "verifier": "verify_action_observations.py", "args": []},
+      {"name": "next_turn", "verifier": "verify_suite_continuation.py", "args": []}
+    ]
+  },
+  {
+    "name": "smith",
+    "scenarios": {"rest": "smith"},
+    "steps": [
+      {"name": "upgrade", "verifier": "verify_rest_site.py", "args": ["--scenario", "smith"]}
+    ]
+  }
+]
+```
+
+每个顶层用例配置场景并创建一次新局。它的所有步骤连续执行，不重建局，也不重置玩家状态；各步骤默认重新连接 MCP，先取得自己的观察许可。编排器检查同局步骤前后的 PID、游戏会话和局身份完全相同，下一用例则必须具有新的局身份。
+
+`scenarios` 使用 [场景白名单](../../scripts/test_scenarios.json)中的名称，与原 `run_roundtrip.py --<名称>-scenario` 对应；`ending` 明确拒绝。参数 `--scenario` 是验证脚本选择断言分支的参数，应与对应夹具一致。每个步骤必须有独立名称；用例名不能为保留的 `game`。`args` 目前只接受空列表或 `["--scenario", "场景名"]`，报告和 IPC 路径由框架管理；不会将 `--help` 的零退出视为完成测试，成功步骤必须产生非空 JSON 证据。
+
+首批允许的验证器是 `verify_action_observations.py`、`verify_kill_settling.py`、`verify_rest_site.py`、`verify_shop.py`、`verify_rewards.py`、`verify_treasure.py`，以及同局续接/保留选择的两个专用验证器。清单不接受尚未接入的脚本；不能把旧脚本简单加入清单后假定它支持复用。
+
+## 生命周期与证据
+
+套件模式通过 `STS2_AGENT_TEST_MODE=1` 和 `STS2_AGENT_TEST_SUITE=1` 双重门控，提供仅文件 IPC 可用的 `configure_test_run`、`reset_test_run`、`get_test_session`。前两项需最新状态令牌；配置仅允许没有对局的主菜单。它们不属于公开 MCP 工具，也不改变玩法 JSON 或动作许可规则。旧的单用例启动命令继续有效。
+
+局间使用游戏原生 `NGame.ReturnToMainMenu` / `RunManager.CleanUp`，等待夹具任务结束、释放夹具引用并移除专用 Harmony 补丁。不能确认清理完成时将进程标记为不可再用，并由套件关闭；不直接重写玩家状态伪造新局。该清理是测试设施，不是正常游玩的“放弃对局”接口。
+
+输出包括：
+
+- `report.json`：总结果、游戏启动次数、PID/会话、每局身份、配置/创建/步骤/清理耗时，以及本次测试 Mod 的 SHA-256。
+- `suite.json`：本次采用的清单副本。
+- `game/`：该进程的独立 IPC、完整日志与测试存档。
+- `<用例>/<步骤>/`：`verifier.log`、`evidence.json`、配置、截图及执行到该步骤时的游戏日志。
+
+不要删除失败目录后原地重跑来覆盖证据；使用新的输出目录。启动失败也保留日志和错误文件。套件退出时仅终止自己启动的 PID，验证脚本超时则清理其进程组内的 MCP 子进程。
+
+本次实际覆盖、阶段耗时和证据位置见[验证记录](../research/2026-11-01-gui-suite.md)。

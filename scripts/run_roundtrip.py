@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import shutil
 import tempfile
@@ -8,17 +9,7 @@ from pathlib import Path
 def main():
     parser = argparse.ArgumentParser(description="启动使用独立数据目录的游戏测试实例。")
     parser.add_argument("--windowed", action="store_true", help="使用图形窗口，验证实际显示与帧后采样")
-    parser.add_argument("--capture", action="store_true", help="每次读取时保存测试窗口截图至 .tmp/roundtrip/observation.png")
-    parser.add_argument("--potion-scenario", choices=("basic", "fruit_combat", "noncombat_event", "noncombat_rest",
-                        "noncombat_shop", "noncombat_map", "noncombat_reward", "skill", "attack", "power", "colorless", "memories", "gamblers",
-                        "merchant", "merchant_map", "merchant_inventory", "aoe", "victory", "death", "fairy_rescue", "blocked", "cancel", "replace", "unhittable", "entropic"),
-                        help="构造独立实例的药水动作验证初始状态")
-    parser.add_argument("--play-scenario", choices=("basic", "discovery", "charge0", "charge1", "charge2", "charge3",
-                        "glimmer", "random", "random_empty", "aoe", "victory", "death",
-                        "armaments", "armaments_free", "armaments_filtered", "armaments_one", "armaments_none", "armaments_upgraded", "x_cost",
-                        "card_logic", "card_names", "unplayable", "ally", "multi_hit", "hook", "stars", "energy",
-                        "test_subject", "thorns_death", "no_target", "cancel", "unhittable", "kill_chain", "delayed_ui", "choice_chain"),
-                        help="构造独立实例的出牌验证初始状态")
+    parser.add_argument("--capture", action="store_true", help="每次读取时保存测试窗口截图至测试工作目录的 observation.png")
     parser.add_argument("--check-observation", action="store_true", help="对独立测试战斗执行可见性过滤检查")
     parser.add_argument("--check-hand", action="store_true", help="在读取手牌时检查英语正文、提示缓存与动态数值")
     parser.add_argument("--check-ui", action="store_true", help="在读取界面说明时检查英语文本、可见性和读取前后一致性")
@@ -28,39 +19,33 @@ def main():
     parser.add_argument("--check-deck", action="store_true", help="检查原生牌组页的完整列表、升级预览和模型不变性")
     parser.add_argument("--check-piles", action="store_true", help="允许独立测试三类牌堆、空堆反馈、替换及生命周期")
     parser.add_argument("--check-map", action="store_true", help="允许独立测试整图、选路候选、飞鞋及双 Boss")
-    parser.add_argument("--selection-scenario", choices=("potion", "potion_skip", "forced_two", "grid_two", "grid_one",
-                        "reward", "reward_skip", "deck", "tyranny", "retain_zero", "retain_one", "paradox", "chain", "grid_scroll",
-                        "knowledge", "retain_death", "retain_victory", "combat_pile", "unsupported_next", "scroll_race"),
-                        help="构造独立测试中的原生选牌流程，不作用于正式游戏")
-    parser.add_argument("--turn-scenario", choices=("normal", "wither", "wither_death", "enemy_death", "tyranny",
-                                                   "retain_choice", "boulder", "doom", "stampede", "revive", "blocked",
-                                                   "hellraiser", "exhaust_block", "hidden_hp"),
-                        help="为独立测试战斗配置结束回合机制；仅在测试模式创建场景时生效")
-    parser.add_argument('--reward-scenario', choices=('basic', 'full', 'skip', 'empty', 'linked', 'card_first', 'relic_first', 'nested', 'returned', 'escaped', 'unsupported'),
-                        help='构造独立实例的战后原生奖励页面')
-    parser.add_argument('--rest-scenario', choices=('basic', 'smith', 'cook', 'tent', 'disabled', 'multi', 'dig', 'heal_rewards', 'dig_nested', 'dig_choice'),
-                        help='构造独立实例的原生休息处选项')
-    parser.add_argument('--treasure-scenario', choices=('basic', 'open', 'skip', 'empty', 'nested', 'choice', 'extra', 'map_pending'),
-                        help='构造独立实例的原生宝箱房')
-    parser.add_argument('--shop-scenario', choices=('basic', 'remove', 'courier', 'full', 'foul', 'fake', 'parasol', 'parasol_courier', 'nested', 'choice', 'cauldron', 'sozu', 'parasol_sozu', 'cauldron_sozu', 'hidden_price', 'targeting'),
-                        help='构造独立实例的原生商店')
-    parser.add_argument('--ancient-scenario', choices=('basic', 'dialogue', 'touch', 'tooth', 'eye', 'earring', 'shrymp', 'multi', 'transform', 'bundle', 'nested', 'pandora'),
-                        help='构造独立实例的先古之民房间与遗物适配验证')
-    parser.add_argument('--event-scenario', choices=('basic', 'death', 'rescue', 'locked', 'upgrade', 'upgrade_cancel', 'transform', 'enchant', 'remove',
-                        'grid', 'cheese', 'reward', 'potions', 'dense', 'dense_choice', 'lantern', 'repy', 'dummy1', 'dummy2', 'dummy3', 'trial',
-                        'trial_story', 'crystal', 'crystal_full', 'relic_trader', 'future_potions', 'tea', 'conveyor', 'slippery',
-                        'reflections', 'doll', 'wood', 'sapphire', 'symbiote'),
-                        help='构造独立实例的通用事件与场景衔接验证')
-    parser.add_argument('--navigation-scenario', choices=('basic', 'flight', 'combat', 'choice', 'shop', 'treasure', 'unknown', 'boss1', 'boss2', 'boss3', 'double'),
-                        help='构造隔离地图选路与 Boss 跨幕验证初始状态')
-    parser.add_argument('--ending-scenario', choices=('victory', 'victory_unlock', 'death', 'event_death'),
-                        help='构造隔离终章、死亡与结算验证初始状态')
+    catalog = json.loads(Path(__file__).with_name('test_scenarios.json').read_text())
+    for name, choices in catalog.items():
+        parser.add_argument('--' + name + '-scenario', choices=choices)
+    parser.add_argument('--suite', action='store_true', help='启用仅测试的动态场景与对局清理接口')
+    parser.add_argument('--work-dir', type=Path, help='新建的独立日志、IPC 与存档目录；运行时仍使用已准备目录')
     args = parser.parse_args()
     if args.capture and not args.windowed:
         parser.error("--capture 需要 --windowed。")
     root = Path(__file__).resolve().parents[1]
     work = root / ".tmp" / "roundtrip"
-    runtime = work / "runtime"
+    prepared = work
+    runtime = prepared / "runtime"
+    if args.work_dir:
+        work = args.work_dir.resolve()
+        work.mkdir(parents=True, exist_ok=True)
+        if any(work.iterdir()):
+            parser.error('--work-dir 必须为空，避免混用旧 IPC、日志和存档。')
+        settings_path = Path('sts2_agent-roundtrip/default/1/settings.save')
+        target = work / 'userdata' / settings_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(prepared / 'userdata' / settings_path, target)
+    if args.suite and not args.work_dir:
+        parser.error('--suite 需要显式 --work-dir。')
+    if args.suite and any(value for key, value in vars(args).items() if key.startswith('check_')):
+        parser.error('--suite 暂未接入 --check-* 内嵌检查，请单独启动。')
+    if args.suite and any(getattr(args, name + '_scenario') for name in catalog):
+        parser.error('--suite 场景由每局配置，不接受启动场景。')
     executable = runtime / "SlayTheSpire2"
     if not executable.is_file():
         raise SystemExit("请先运行 scripts/prepare_roundtrip.py。")
@@ -70,6 +55,12 @@ def main():
         "STS2_AGENT_IPC_DIR": str(work / "ipc"),
         "STS2_AGENT_TEST_MODE": "1",
     })
+    for variable in list(environment):
+        if variable.startswith('STS2_AGENT_TEST_'):
+            del environment[variable]
+    environment['STS2_AGENT_TEST_MODE'] = '1'
+    if args.suite:
+        environment['STS2_AGENT_TEST_SUITE'] = '1'
     if args.ending_scenario:
         isolated = Path(tempfile.mkdtemp(prefix='ending-userdata-', dir=work))
         settings_path = Path('sts2_agent-roundtrip/default/1/settings.save')
@@ -78,26 +69,12 @@ def main():
         shutil.copy2(work / 'userdata' / settings_path, target)
         environment['XDG_DATA_HOME'] = str(isolated)
         environment['STS2_AGENT_TEST_ENDING_SCENARIO'] = args.ending_scenario
-    if args.navigation_scenario:
-        environment['STS2_AGENT_TEST_NAVIGATION_SCENARIO'] = args.navigation_scenario
-    if args.event_scenario:
-        environment['STS2_AGENT_TEST_EVENT_SCENARIO'] = args.event_scenario
-    if args.ancient_scenario:
-        environment['STS2_AGENT_TEST_ANCIENT_SCENARIO'] = args.ancient_scenario
-    if args.shop_scenario:
-        environment['STS2_AGENT_TEST_SHOP_SCENARIO'] = args.shop_scenario
-    if args.treasure_scenario:
-        environment['STS2_AGENT_TEST_TREASURE_SCENARIO'] = args.treasure_scenario
-    if args.rest_scenario:
-        environment['STS2_AGENT_TEST_REST_SCENARIO'] = args.rest_scenario
-    if args.reward_scenario:
-        environment['STS2_AGENT_TEST_REWARD_SCENARIO'] = args.reward_scenario
+    for name in catalog:
+        value = getattr(args, name + '_scenario')
+        if value:
+            environment['STS2_AGENT_TEST_' + name.upper() + '_SCENARIO'] = value
     if args.capture:
         environment["STS2_AGENT_TEST_CAPTURE"] = str(work / "observation.png")
-    if args.play_scenario:
-        environment["STS2_AGENT_TEST_PLAY_SCENARIO"] = args.play_scenario
-    if args.potion_scenario:
-        environment["STS2_AGENT_TEST_POTION_SCENARIO"] = args.potion_scenario
     if args.check_observation:
         environment["STS2_AGENT_TEST_CHECKS"] = str(work / "observation-checks.json")
     if args.check_hand:
@@ -116,10 +93,6 @@ def main():
         environment["STS2_AGENT_TEST_PILE_CHECKS"] = str(work / "pile-checks.json")
     if args.check_map:
         environment["STS2_AGENT_TEST_MAP_CHECKS"] = str(work / "map-checks.json")
-    if args.turn_scenario:
-        environment["STS2_AGENT_TEST_TURN_SCENARIO"] = args.turn_scenario
-    if args.selection_scenario:
-        environment["STS2_AGENT_TEST_SELECTION_SCENARIO"] = args.selection_scenario
     print(f"启动独立测试实例，日志位于 {work / 'stdout.log'}，按 Ctrl+C 停止。", flush=True)
     arguments = [str(executable), "--path", str(runtime),
                  "--force-steam", "off", "--log-file", str(work / "game.log"), "--max-fps", "30"]

@@ -22,6 +22,7 @@ MCP `0.28.0` 默认提供 42 个工具，可通过启动配置增加[截图存�
 
 ## 开发与运行入口
 
+- [图形测试套件](docs/development/gui-testing.md)：复用游戏进程执行多局，支持显式同局连续步骤。
 - [最小流程验证指南](docs/development/roundtrip.md)：.NET 9 构建、独立游戏实例和文件协议。
 - [正常游戏加载与读取](docs/development/live-game.md)：安装 Mod、配置游戏启动和读取正式战斗。
 - [本地 MCP 接入](docs/development/mcp.md)：依赖安装、Codex 配置、工具与错误恢复。

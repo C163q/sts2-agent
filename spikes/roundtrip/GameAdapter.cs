@@ -173,6 +173,8 @@ internal sealed partial class GameAdapter(bool testMode)
 
     public async Task<string> Execute(Request request)
     {
+        if (request.Operation is "configure_test_run" or "reset_test_run" or "get_test_session")
+            return await TestRunRequest(request);
         string before = Observe();
         if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
@@ -187,7 +189,7 @@ internal sealed partial class GameAdapter(bool testMode)
                 ObservationChecks.Run(checks);
             return Success(request.Id, before);
         }
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_ENDING_SCENARIO") != null
+        if (testMode && testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") != null
             && request.Operation is "external_back_test_result" or "reopen_test_timeline" or "close_test_timeline")
         {
             if (request.Operation == "reopen_test_timeline")
@@ -212,9 +214,9 @@ internal sealed partial class GameAdapter(bool testMode)
         using JsonDocument document = JsonDocument.Parse(before);
         if (request.Operation == "respond_to_confirmation")
             return await ConfirmationRequest(request, document.RootElement);
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_EVENT_SCENARIO") != null && LocalPlayer != null)
+        if (testMode && testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") != null && LocalPlayer != null)
         {
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_EVENT_SCENARIO") == "trial")
+            if (testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") == "trial")
             {
                 if (request.Operation == "check_test_confirmation")
                     return Success(request.Id, JsonSerializer.Serialize(ConfirmationFixture.Read()));
@@ -232,14 +234,14 @@ internal sealed partial class GameAdapter(bool testMode)
                 return Success(request.Id, JsonSerializer.Serialize(DivinationFixture.Read(LocalPlayer)));
             if (request.Operation == "check_test_event") return Success(request.Id, JsonSerializer.Serialize(EventFixture.Read(LocalPlayer)));
             if (request.Operation == "check_test_event_english") return Success(request.Id, JsonSerializer.Serialize(EventTextChecks.Run(
-                System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_EVENT_SCENARIO") == "tea")));
+                testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") == "tea")));
             if (request.Operation == "prepare_test_event_victory")
             {
                 await EventFixture.PrepareVictory(LocalPlayer);
                 return Success(request.Id, await SettledObservation());
             }
         }
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_ANCIENT_SCENARIO") is { } ancientScenario && LocalPlayer != null)
+        if (testMode && testSettings.Get("STS2_AGENT_TEST_ANCIENT_SCENARIO") is { } ancientScenario && LocalPlayer != null)
         {
             if (request.Operation == "check_test_ancient") return Success(request.Id, JsonSerializer.Serialize(AncientFixture.Read(LocalPlayer)));
             if (request.Operation == "start_test_ancient_combat")
@@ -248,7 +250,7 @@ internal sealed partial class GameAdapter(bool testMode)
                 return Success(request.Id, await SettledObservation());
             }
         }
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_NAVIGATION_SCENARIO") != null && LocalPlayer != null)
+        if (testMode && testSettings.Get("STS2_AGENT_TEST_NAVIGATION_SCENARIO") != null && LocalPlayer != null)
         {
             if (request.Operation == "check_test_navigation")
                 return Success(request.Id, JsonSerializer.Serialize(NavigationFixture.Read(LocalPlayer)));
@@ -271,25 +273,25 @@ internal sealed partial class GameAdapter(bool testMode)
                 return Success(request.Id, Observe());
             }
         }
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SHOP_SCENARIO") == "targeting"
+        if (testMode && testSettings.Get("STS2_AGENT_TEST_SHOP_SCENARIO") == "targeting"
             && request.Operation == "cancel_test_shop_targeting")
         {
             await ShopFixture.CancelTargeting();
             return Success(request.Id, Observe());
         }
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SHOP_SCENARIO") != null
+        if (testMode && testSettings.Get("STS2_AGENT_TEST_SHOP_SCENARIO") != null
             && request.Operation == "check_test_shop" && LocalPlayer != null)
             return Success(request.Id, JsonSerializer.Serialize(ShopFixture.Read(LocalPlayer)));
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_TREASURE_SCENARIO") != null
+        if (testMode && testSettings.Get("STS2_AGENT_TEST_TREASURE_SCENARIO") != null
             && request.Operation == "check_test_treasure" && LocalPlayer != null)
             return Success(request.Id, JsonSerializer.Serialize(TreasureFixture.Read(LocalPlayer)));
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_REST_SCENARIO") != null
+        if (testMode && testSettings.Get("STS2_AGENT_TEST_REST_SCENARIO") != null
             && request.Operation == "check_test_rest_site" && LocalPlayer != null)
             return Success(request.Id, JsonSerializer.Serialize(RestSiteFixture.Read(LocalPlayer)));
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_REWARD_SCENARIO") != null
+        if (testMode && testSettings.Get("STS2_AGENT_TEST_REWARD_SCENARIO") != null
             && request.Operation == "check_test_rewards" && LocalPlayer != null)
             return Success(request.Id, JsonSerializer.Serialize(RewardFixture.Read(LocalPlayer)));
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_POTION_SCENARIO") != null && LocalPlayer != null)
+        if (testMode && testSettings.Get("STS2_AGENT_TEST_POTION_SCENARIO") != null && LocalPlayer != null)
         {
             if (request.Operation == "check_test_potion_state")
                 return Success(request.Id, JsonSerializer.Serialize(PotionFixture.Read(LocalPlayer)));
@@ -327,12 +329,12 @@ internal sealed partial class GameAdapter(bool testMode)
         if (request.Operation is "inspect_rewards" or "claim_reward" or "proceed")
             return await RewardRequest(request, document.RootElement);
         if (request.Operation == "check_test_play_state" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_PLAY_SCENARIO") != null && LocalPlayer != null)
+            && testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") != null && LocalPlayer != null)
             return Success(request.Id, JsonSerializer.Serialize(PlayFixture.Read(LocalPlayer)));
         if (request.Operation is "inspect_targets" or "play_card")
             return await CardPlayRequest(request, document.RootElement);
         if (request.Operation == "check_test_selection_race" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SELECTION_SCENARIO") == "scroll_race")
+            && testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO") == "scroll_race")
             return Success(request.Id, JsonSerializer.Serialize(await SelectionFixture.CheckScrollRace(ObservationFrame)));
         if (request.Operation is "inspect_selection" or "set_selection_view" or "select_card" or "selection_option")
             return await SelectionRequest(request, document.RootElement);
@@ -507,12 +509,12 @@ internal sealed partial class GameAdapter(bool testMode)
             SaveManager.Instance.SetFtuesEnabled(false);
             NGame game = NGame.Instance!;
             await game.StartNewSingleplayerRun(ModelDb.Character<Ironclad>(),
-                System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_ENDING_SCENARIO") != null,
+                testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") != null,
                 ModelDb.ActsByIndex.Select(acts => acts[0]).ToArray(),
                 Array.Empty<ModifierModel>(), "STS2AGENTROUNDTRIP", GameMode.Standard);
-            string? turnScenario = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_TURN_SCENARIO");
-            string? selectionScenario = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SELECTION_SCENARIO");
-            string? playScenario = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_PLAY_SCENARIO");
+            string? turnScenario = testSettings.Get("STS2_AGENT_TEST_TURN_SCENARIO");
+            string? selectionScenario = testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO");
+            string? playScenario = testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO");
             if (selectionScenario == "paradox")
                 await RelicCmd.Obtain<ChoicesParadox>(LocalContext.GetMe(RunManager.Instance.DebugOnlyGetState())!);
             Task roomEntry = RunManager.Instance.EnterRoomDebug(RoomType.Monster,
@@ -545,23 +547,23 @@ internal sealed partial class GameAdapter(bool testMode)
             }
             if (turnScenario != null) await TurnFixture.Configure(turnScenario, LocalPlayer!);
             if (playScenario != null) await PlayFixture.Configure(playScenario, LocalPlayer!);
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_POTION_SCENARIO") is { } potionScenario)
+            if (testSettings.Get("STS2_AGENT_TEST_POTION_SCENARIO") is { } potionScenario)
                 await PotionFixture.Configure(potionScenario, LocalPlayer!);
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_REWARD_SCENARIO") is { } rewardScenario)
+            if (testSettings.Get("STS2_AGENT_TEST_REWARD_SCENARIO") is { } rewardScenario)
                 await RewardFixture.Configure(rewardScenario, LocalPlayer!, ObservationFrame);
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SHOP_SCENARIO") is { } shopScenario)
+            if (testSettings.Get("STS2_AGENT_TEST_SHOP_SCENARIO") is { } shopScenario)
                 await ShopFixture.Configure(shopScenario, LocalPlayer!, ObservationFrame);
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_TREASURE_SCENARIO") is { } treasureScenario)
+            if (testSettings.Get("STS2_AGENT_TEST_TREASURE_SCENARIO") is { } treasureScenario)
                 await TreasureFixture.Configure(treasureScenario, LocalPlayer!, ObservationFrame);
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_REST_SCENARIO") is { } restScenario)
+            if (testSettings.Get("STS2_AGENT_TEST_REST_SCENARIO") is { } restScenario)
                 await RestSiteFixture.Configure(restScenario, LocalPlayer!, ObservationFrame);
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_ANCIENT_SCENARIO") is { } ancientScenarioName)
+            if (testSettings.Get("STS2_AGENT_TEST_ANCIENT_SCENARIO") is { } ancientScenarioName)
                 await AncientFixture.Configure(ancientScenarioName, LocalPlayer!, ObservationFrame);
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_EVENT_SCENARIO") is { } eventScenarioName)
+            if (testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") is { } eventScenarioName)
                 await EventFixture.Configure(eventScenarioName, LocalPlayer!, ObservationFrame);
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_ENDING_SCENARIO") is { } endingScenario)
+            if (testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") is { } endingScenario)
                 await EndingFixture.Configure(endingScenario, LocalPlayer!, ObservationFrame);
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_NAVIGATION_SCENARIO") is { } navigationScenario)
+            if (testSettings.Get("STS2_AGENT_TEST_NAVIGATION_SCENARIO") is { } navigationScenario)
                 await NavigationFixture.Configure(navigationScenario, LocalPlayer!, ObservationFrame);
             // Debug room entry bypasses the normal map-travel disabling step.
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_MAP_CHECKS") != null)

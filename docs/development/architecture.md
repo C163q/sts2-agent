@@ -73,6 +73,8 @@ C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project spi
 
 ## 游戏内验证
 
+多用例图形回归使用[图形测试套件](gui-testing.md)：`gui_suite.py` 管理进程、分局和证据，`verification_runtime.py` 为首批验证器提供独立/复用两种启动方式；`GameAdapter.Testing.cs` 与 `TestScenarioSettings.cs` 只承担测试生命周期和每局配置。场景白名单由 `test_scenarios.json` 同时供 Python 启动器和 C# 嵌入资源使用。
+
 独立测试实例的准备、启动与结束回合验证见 [往返指南](roundtrip.md)。各详情和页面的 `verify_*.py` 命令见对应开发指南；页面检查会真实打开或关闭页面，往返检查会推进回合。不要把独立测试场景入口用于正式对局。
 
 游戏 API 或生命周期变更须重新验证加载与相关行为。只修改外部输出层时，先用错误输入回归、真实 stdio 和已有合法游戏样本回放检查；报告仍须明确是否重新运行真实游戏。

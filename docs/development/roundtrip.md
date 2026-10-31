@@ -24,6 +24,8 @@ python3 scripts/prepare_roundtrip.py --game-dir "${Sts2Dir:?请先配置并加�
 
 ## 启动与验证
 
+批量图形回归可使用[复用进程的图形测试框架](gui-testing.md)，一个窗口运行多个新局，显式步骤可以复用同一局。以下仍是单用例启动方式。
+
 终端一执行：
 
 ```sh
