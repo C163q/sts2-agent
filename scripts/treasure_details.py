@@ -1,7 +1,10 @@
 from game_output import TREASURE, TREASURE_RELIC, TIP, project
 
 
-LOOT_SCHEMA = {'type': 'object', 'properties': {'open_only': {'type': 'boolean', 'default': False}},
+LOOT_SCHEMA = {'type': 'object', 'properties': {'open_only': {
+    'type': 'boolean', 'default': False,
+    'description': 'true opens the chest without taking its relic; false (default) also takes the relic. Does not proceed.',
+}},
                'additionalProperties': False}
 
 

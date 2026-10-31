@@ -2,13 +2,17 @@ from game_output import EVENT_ENTITY, TEXT, project
 from potion_action_details import POTION_SCHEMA, potion_arguments, potion_target_details
 
 
-CARD_ID = {"type": "integer", "minimum": 0, "maximum": 2147483647}
+CARD_ID = {"type": "integer", "minimum": 0, "maximum": 2147483647,
+           "description": "Hand card ID from player.hand[].id or inspect_hand's hand[].id; not a position or deck/pile ID."}
 CARD_TARGET_SCHEMA = {"type": "object", "properties": {"card_id": CARD_ID},
                  "required": ["card_id"], "additionalProperties": False}
 TARGET_SCHEMA = {"type": "object", "properties": {"card_id": CARD_ID, "potion_slot": POTION_SCHEMA["properties"]["potion_slot"]},
                  "additionalProperties": False, "oneOf": [CARD_TARGET_SCHEMA, POTION_SCHEMA]}
 PLAY_SCHEMA = {**CARD_TARGET_SCHEMA, "properties": {
-    "card_id": CARD_ID, "target_id": {"type": "integer", "minimum": 0, "maximum": 4294967295}}}
+    "card_id": CARD_ID, "target_id": {
+        "type": "integer", "minimum": 0, "maximum": 4294967295,
+        "description": "A targets[].id from inspect_targets. Required when requires_target=true, even for one target; otherwise omit.",
+    }}}
 TARGET_DETAILS = {"card": {"id": int, "name": TEXT}, "playable": bool, "target_type": str,
                   "requires_target": bool, "targets": [EVENT_ENTITY], "reason": TEXT}
 TARGET_TYPES = {"none", "self", "any_enemy", "all_enemies", "random_enemy", "any_player",

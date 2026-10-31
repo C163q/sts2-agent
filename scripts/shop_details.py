@@ -1,7 +1,10 @@
 from game_output import SHOP, SHOP_ITEM, SHOP_CARD, TIP, project
 
 
-BUY_SCHEMA = {'type': 'object', 'properties': {'item_id': {'type': 'integer', 'minimum': 0}},
+BUY_SCHEMA = {'type': 'object', 'properties': {'item_id': {
+    'type': 'integer', 'minimum': 0,
+    'description': 'A current shop.items[].id from get_observation or inspect_shop; restocked items have new IDs.',
+}},
               'required': ['item_id'], 'additionalProperties': False}
 
 

@@ -2,7 +2,10 @@ from game_output import REST_SITE, REST_OPTION, project
 from selection_details import OPTION_SCHEMA, selection_arguments
 
 
-REST_OPTION_SCHEMA = OPTION_SCHEMA
+REST_OPTION_SCHEMA = {**OPTION_SCHEMA, 'properties': {'option_id': {
+    **OPTION_SCHEMA['properties']['option_id'],
+    'description': 'An enabled rest_site.options[].id from get_observation or inspect_rest_site.',
+}}}
 
 
 def rest_option_arguments(arguments):

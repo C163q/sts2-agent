@@ -1,11 +1,20 @@
 from game_output import HAND_CARD, OBSERVATION_SCENES, TIP, project, selection_details
 
 
-CARD_SCHEMA = {"type": "object", "properties": {"card_id": {"type": "integer", "minimum": 0, "maximum": 2147483647}},
+CARD_SCHEMA = {"type": "object", "properties": {"card_id": {
+    "type": "integer", "minimum": 0, "maximum": 2147483647,
+    "description": "A current selection.cards[].id from get_observation or inspect_selection; not a candidate position.",
+}},
                "required": ["card_id"], "additionalProperties": False}
-OPTION_SCHEMA = {"type": "object", "properties": {"option_id": {"type": "string", "minLength": 1, "maxLength": 128}},
+OPTION_SCHEMA = {"type": "object", "properties": {"option_id": {
+    "type": "string", "minLength": 1, "maxLength": 128,
+    "description": "An enabled selection.options[].id from get_observation or inspect_selection; use the exact offered value.",
+}},
                  "required": ["option_id"], "additionalProperties": False}
-VIEW_SCHEMA = {"type": "object", "properties": {"view": {"type": "string", "enum": ["battlefield", "selection"]}},
+VIEW_SCHEMA = {"type": "object", "properties": {"view": {
+    "type": "string", "enum": ["battlefield", "selection"],
+    "description": "battlefield hides the pending selection for inspection; selection returns to its candidates and buttons.",
+}},
                "required": ["view"], "additionalProperties": False}
 
 

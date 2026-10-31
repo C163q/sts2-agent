@@ -22,7 +22,9 @@ def travel_arguments(arguments):
     return {'node_id': arguments['node_id']}
 
 
-TRAVEL_SCHEMA = {'type': 'object', 'properties': {'node_id': {'type': 'string'}},
+TRAVEL_SCHEMA = {'type': 'object', 'properties': {'node_id': {
+    'type': 'string', 'description': 'An exact node ID from the current map.selectable_nodes; not an arbitrary connected or visited node.',
+}},
                  'required': ['node_id'], 'additionalProperties': False}
 
 

@@ -1,6 +1,9 @@
 from game_output import ROOM_EVENT, ROOM_EVENT_OPTION, TIP, project
 
-EVENT_OPTION_SCHEMA = {'type': 'object', 'properties': {'option_id': {'type': 'integer', 'minimum': 0, 'maximum': 2147483647}},
+EVENT_OPTION_SCHEMA = {'type': 'object', 'properties': {'option_id': {
+    'type': 'integer', 'minimum': 0, 'maximum': 2147483647,
+    'description': 'An enabled event.options[].id from get_observation or inspect_event; lethal_warning marks a visible death warning.',
+}},
                        'required': ['option_id'], 'additionalProperties': False}
 
 

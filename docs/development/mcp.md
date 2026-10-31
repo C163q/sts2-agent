@@ -77,7 +77,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.33.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.28.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。输出精简位于 Python MCP；本次图形回归还补齐网格选择描边淡出的等待，须安装 Mod `0.33.0` 并完整重启游戏，再重连 MCP。首次安装和其他功能升级仍须匹配 Mod 与外部脚本。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.34.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.29.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -109,7 +109,7 @@ codex mcp add sts2 -- "$PWD/.tmp/mcp-venv/bin/python" "$PWD/scripts/mcp_server.p
 codex mcp list
 ```
 
-重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供 `get_observation`、`inspect_hand`、`inspect_ui`、`inspect_potions`、`inspect_combatants`、`inspect_relics`、`inspect_deck`、`inspect_pile`、`close_card_view`、`inspect_map`、`close_map`、`inspect_selection`、`select_card`、`selection_option`、`set_selection_view`、`inspect_targets`、`play_card`、`use_potion`、`discard_potion`、`end_turn`、`inspect_rewards`、`claim_reward`、`proceed`、`inspect_rest_site`、`choose_rest_option`、`loot_treasure`、`inspect_treasure`、`open_shop`、`close_shop`、`inspect_shop`、`buy_item`、`inspect_ancient`、`choose_ancient_option`、`advance_dialogue`、`inspect_event`、`choose_event_option`、`set_divination_tool`、`divine` 和 `respond_to_confirmation`；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
+重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供上方[工具范围](#工具范围)中的完整目录，默认 42 项；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
 
 对应的 TOML 配置示例为：
 
@@ -178,7 +178,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 | `observation_required` | 调用 `get_observation` |
 | `controller_busy` | 断开占用控制权的连接，再观察；当前连接仍可握手和发现工具 |
 | `stale_state`、`illegal_action`、`expired_request` | 重新观察并核对当前动作或页面是否合法 |
-| `invalid_request` | 对照工具 schema 修正参数 |
+| `invalid_request` | 对照工具 schema 修正参数；再次执行动作前重新观察 |
 | `timeout`、`game_error` | 先观察结果，禁止自动重试动作 |
 | `transport_error` | 检查游戏、Mod、IPC 路径、权限与响应格式，再观察 |
 
@@ -205,3 +205,5 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 已有独立游戏与正式游戏的只读采样，及真实 Codex 模型结束一次回合的验证。历史环境、样本和未覆盖项见 [首次 MCP 往返](../research/2026-10-29-mcp-plan.md)、[牌组](../research/2026-10-29-mcp-deck-inspection.md)、[牌堆](../research/2026-10-29-pile-inspection.md) 和 [地图](../research/2026-10-29-mcp-map-inspection.md) 等阶段性记录。
 
 历史外部层兼容重构的检查、样本回放与当时未重新执行的游戏内验证范围见[项目审阅](../research/2026-10-29-project-review.md)。当前只提供 stdio，其他客户端、HTTP 服务及完整自动游玩尚未实测或实现。
+
+全部工具的说明、参数提示与官方实践核查见[工具提示词审阅](../research/2026-11-01-mcp-tool-prompts.md)。维护入口和说明分层见[代码结构的变更入口](architecture.md#变更入口)。

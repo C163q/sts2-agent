@@ -1,11 +1,14 @@
 from game_output import POTION_REF, TARGET_ENTITY, TEXT, project
 
 
-POTION_SLOT = {"type": "integer", "minimum": 0, "maximum": 2147483647}
+POTION_SLOT = {"type": "integer", "minimum": 0, "maximum": 2147483647,
+               "description": "Zero-based occupied slot in top_bar.potion_slots or inspect_potions.potion_slots; count empty slots."}
 POTION_SCHEMA = {"type": "object", "properties": {"potion_slot": POTION_SLOT},
                  "required": ["potion_slot"], "additionalProperties": False}
 USE_SCHEMA = {**POTION_SCHEMA, "properties": {
-    "potion_slot": POTION_SLOT, "target_id": {"oneOf": [
+    "potion_slot": POTION_SLOT, "target_id": {
+        "description": "A targets[].id from inspect_targets, including merchant when offered. Required when requires_target=true, even for one target; otherwise omit.",
+        "oneOf": [
         {"type": "integer", "minimum": 0, "maximum": 4294967295}, {"type": "string", "enum": ["merchant"]}]}}}
 POTION_TARGET_DETAILS = {"potion": POTION_REF, "usable": bool, "discardable": bool,
                          "target_type": str, "requires_target": bool, "targets": [TARGET_ENTITY], "reason": TEXT}

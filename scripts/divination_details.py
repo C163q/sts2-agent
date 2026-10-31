@@ -6,10 +6,17 @@ from game_output import DIVINATION, project
 from screenshot_tool import _png_data
 
 
-TOOL_SCHEMA = {'type': 'object', 'properties': {'tool': {'type': 'string', 'enum': ['big', 'small']}},
+TOOL_SCHEMA = {'type': 'object', 'properties': {'tool': {
+    'type': 'string', 'enum': ['big', 'small'],
+    'description': 'big reveals a centered 3x3 area clipped to the board; small reveals one cell.',
+}},
                'required': ['tool'], 'additionalProperties': False}
-DIVINE_SCHEMA = {'type': 'object', 'properties': {key: {'type': 'integer', 'minimum': 0, 'maximum': 10}
-                                                for key in ('x', 'y')},
+DIVINE_SCHEMA = {'type': 'object', 'properties': {
+    'x': {'type': 'integer', 'minimum': 0, 'maximum': 10,
+          'description': 'Zero-based column, increasing right from the top-left (0,0). Choose a # cell in divination.grid.covered_rows.'},
+    'y': {'type': 'integer', 'minimum': 0, 'maximum': 10,
+          'description': 'Zero-based row, increasing down from the top-left (0,0).'},
+},
                  'required': ['x', 'y'], 'additionalProperties': False}
 
 

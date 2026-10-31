@@ -1,6 +1,9 @@
 from game_output import ANCIENT, ANCIENT_OPTION, TIP, project
 
-ANCIENT_OPTION_SCHEMA = {'type': 'object', 'properties': {'option_id': {'type': 'integer', 'minimum': 0, 'maximum': 2147483647}},
+ANCIENT_OPTION_SCHEMA = {'type': 'object', 'properties': {'option_id': {
+    'type': 'integer', 'minimum': 0, 'maximum': 2147483647,
+    'description': 'An enabled ancient.options[].id from get_observation or inspect_ancient.',
+}},
                          'required': ['option_id'], 'additionalProperties': False}
 
 

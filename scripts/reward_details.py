@@ -2,7 +2,10 @@ from game_output import REWARDS, REWARD_ITEM, TIP, project
 
 
 CLAIM_SCHEMA = {
-    'type': 'object', 'properties': {'reward_id': {'type': 'integer', 'minimum': 0, 'maximum': 2147483647}},
+    'type': 'object', 'properties': {'reward_id': {
+        'type': 'integer', 'minimum': 0, 'maximum': 2147483647,
+        'description': 'A current rewards.items[].id from get_observation or inspect_rewards.',
+    }},
     'required': ['reward_id'], 'additionalProperties': False,
 }
 

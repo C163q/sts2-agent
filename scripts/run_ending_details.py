@@ -1,6 +1,9 @@
 import re
 
-OPTION_SCHEMA = {'type': 'object', 'properties': {'option_id': {'type': 'string', 'minLength': 1}},
+OPTION_SCHEMA = {'type': 'object', 'properties': {'option_id': {
+    'type': 'string', 'minLength': 1,
+    'description': 'An enabled run_result.options[].id from get_observation or inspect_run_result; use the exact offered value.',
+}},
                  'required': ['option_id'], 'additionalProperties': False}
 OPTION = {'id': str, 'text': str, 'enabled': bool}
 RESULT = {'status': str, 'phase': str, 'title': (str,), 'texts': [str],

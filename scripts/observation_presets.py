@@ -1,6 +1,9 @@
 OBSERVATION_SCHEMA = {
     'type': 'object',
-    'properties': {'preset': {'type': 'string', 'enum': ['full', 'actions_only'], 'default': 'full'}},
+    'properties': {'preset': {
+        'type': 'string', 'enum': ['full', 'actions_only'], 'default': 'full',
+        'description': 'full includes visible gameplay state and any exposed divination image; actions_only returns scene, screen, selection type/status and tool names. Both refresh action permission.',
+    }},
     'additionalProperties': False,
 }
 

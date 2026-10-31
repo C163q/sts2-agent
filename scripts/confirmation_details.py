@@ -1,7 +1,10 @@
 from game_output import CONFIRMATION, project
 
 
-CONFIRMATION_SCHEMA = {'type': 'object', 'properties': {'option': {'type': 'string', 'enum': ['confirm', 'cancel']}},
+CONFIRMATION_SCHEMA = {'type': 'object', 'properties': {'option': {
+    'type': 'string', 'enum': ['confirm', 'cancel'],
+    'description': 'confirm abandons the run; cancel dismisses the Trial confirmation and returns to the event.',
+}},
                        'required': ['option'], 'additionalProperties': False}
 
 
