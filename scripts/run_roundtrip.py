@@ -1,5 +1,7 @@
 import argparse
 import os
+import shutil
+import tempfile
 from pathlib import Path
 
 
@@ -51,6 +53,8 @@ def main():
                         help='构造独立实例的通用事件与场景衔接验证')
     parser.add_argument('--navigation-scenario', choices=('basic', 'flight', 'combat', 'choice', 'shop', 'treasure', 'unknown', 'boss1', 'boss2', 'boss3', 'double'),
                         help='构造隔离地图选路与 Boss 跨幕验证初始状态')
+    parser.add_argument('--ending-scenario', choices=('victory', 'victory_unlock', 'death', 'event_death'),
+                        help='构造隔离终章、死亡与结算验证初始状态')
     args = parser.parse_args()
     if args.capture and not args.windowed:
         parser.error("--capture 需要 --windowed。")
@@ -66,6 +70,14 @@ def main():
         "STS2_AGENT_IPC_DIR": str(work / "ipc"),
         "STS2_AGENT_TEST_MODE": "1",
     })
+    if args.ending_scenario:
+        isolated = Path(tempfile.mkdtemp(prefix='ending-userdata-', dir=work))
+        settings_path = Path('sts2_agent-roundtrip/default/1/settings.save')
+        target = isolated / settings_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(work / 'userdata' / settings_path, target)
+        environment['XDG_DATA_HOME'] = str(isolated)
+        environment['STS2_AGENT_TEST_ENDING_SCENARIO'] = args.ending_scenario
     if args.navigation_scenario:
         environment['STS2_AGENT_TEST_NAVIGATION_SCENARIO'] = args.navigation_scenario
     if args.event_scenario:

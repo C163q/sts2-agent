@@ -17,6 +17,7 @@ using MegaCrit.Sts2.Core.Models.Potions;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes;
+using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Screens;
@@ -110,14 +111,17 @@ internal sealed partial class GameAdapter(bool testMode)
         {
             lastRun = run; lastMap = run?.Map; mapGeneration++;
         }
-        var map = MapInspection.Summary(run);
+        runResultInspection.Synchronize();
+        var ending = runResultInspection.Current;
+        var epilogue = EpilogueInspection.Current;
+        var map = ending == null ? MapInspection.Summary(run) : null;
         var selection = CardSelection.Current;
         if (!ReferenceEquals(selection?.Key, lastSelection))
         {
             lastSelection = selection?.Key;
             selectionGeneration++;
         }
-        string scene = CombatManager.Instance.IsInProgress ? "combat"
+        string scene = ending != null ? "run_result" : epilogue != null ? "epilogue" : CombatManager.Instance.IsInProgress ? "combat"
             : RewardInspection.Current != null ? "rewards"
             : RestSiteInspection.Current != null ? "rest_site"
             : TreasureInspection.Current != null ? "treasure"
@@ -215,29 +219,47 @@ internal sealed partial class GameAdapter(bool testMode)
             actions.Clear();
             if (MapInspection.Choices(NRun.Instance!.GlobalUi.MapScreen).Length > 0) actions.Add("travel_to_node");
         }
+        if (epilogue != null && map == null)
+        {
+            visibility = EpilogueInspection.Exposed(epilogue) ? "visible" : "covered";
+            actions.Clear();
+            if (EpilogueInspection.Ready(epilogue) && EpilogueInspection.Button(epilogue) is { } epilogueButton)
+                actions.Add(EpilogueInspection.IsProceed(epilogueButton) ? "proceed" : "advance_dialogue");
+        }
+        if (ending != null)
+        {
+            visibility = RunResultInspection.Exposed(ending) ? "visible" : "covered";
+            actions.Clear();
+            if (runResultInspection.Ready(ending)) actions.Add("run_result_option");
+            selection = null;
+        }
+        var screen = CardView.Screen(visibility);
+        if (ending != null || epilogue != null && map == null) screen["view"] = ending != null ? "run_result" : "epilogue";
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 14, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 15, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
             confirmation_generation = confirmationGeneration,
-            selection_generation = selectionGeneration, map_generation = mapGeneration, scene, map,
-            screen = CardView.Screen(visibility),
+            run_result_generation = runResultInspection.Generation, selection_generation = selectionGeneration, map_generation = mapGeneration, scene, map,
+            screen,
             turn = scene == "combat" ? observation.Turn() : null,
             player = scene == "combat" ? observation.Player(player) : null,
             enemies = scene == "combat" ? observation.Enemies() : null,
             top_bar = observation.TopBar(),
             buttons = scene == "combat" ? observation.Buttons() : null,
             selection = new SelectionInspection(observation).Read(selection),
-            rewards = rewardInspection.Read(),
-            rest_site = RestSiteInspection.Read(),
-            treasure = TreasureInspection.Read(),
-            shop = shopInspection.Read(),
-            ancient = ancientInspection.Read(),
-            @event = eventInspection.Read(),
-            divination = DivinationInspection.Read(),
-            confirmation = EventConfirmation.Read(),
+            rewards = ending == null ? rewardInspection.Read() : null,
+            rest_site = ending == null ? RestSiteInspection.Read() : null,
+            treasure = ending == null ? TreasureInspection.Read() : null,
+            shop = ending == null ? shopInspection.Read() : null,
+            ancient = ending == null ? ancientInspection.Read() : null,
+            @event = ending == null ? eventInspection.Read() : null,
+            divination = ending == null ? DivinationInspection.Read() : null,
+            confirmation = ending == null ? EventConfirmation.Read() : null,
+            epilogue = ending == null ? EpilogueInspection.Read() : null,
+            run_result = runResultInspection.Read(),
             available_actions = actions
         });
         string permissionState = body;
@@ -254,7 +276,7 @@ internal sealed partial class GameAdapter(bool testMode)
     public async Task<string> Execute(Request request)
     {
         string before = Observe();
-        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node")
+        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
@@ -266,6 +288,17 @@ internal sealed partial class GameAdapter(bool testMode)
             if (testMode && checks != null)
                 ObservationChecks.Run(checks);
             return Success(request.Id, before);
+        }
+        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_ENDING_SCENARIO") != null
+            && request.Operation is "external_back_test_result" or "reopen_test_timeline" or "close_test_timeline")
+        {
+            if (request.Operation == "reopen_test_timeline")
+                NGame.Instance!.MainMenu!.SubmenuStack.PushSubmenuType<MegaCrit.Sts2.Core.Nodes.Screens.Timeline.NTimelineScreen>();
+            else if (request.Operation == "external_back_test_result")
+                NGame.Instance!.MainMenu!.SubmenuStack.Peek()!.GetNode<NButton>("BackButton").ForceClick();
+            else NGame.Instance!.MainMenu!.SubmenuStack.Peek()!.GetNode<NButton>("BackButton").ForceClick();
+            for (int i = 0; i < 100; i++) await ObservationFrame();
+            return Success(request.Id, await SettledObservation());
         }
         if (request.Operation == "capture_screenshot")
         {
@@ -368,6 +401,9 @@ internal sealed partial class GameAdapter(bool testMode)
                 return Success(request.Id, Observe());
             }
         }
+        if (request.Operation is "inspect_run_result" or "run_result_option") return await RunResultRequest(request, document.RootElement);
+        if (request.Operation is "advance_dialogue" or "proceed" && EpilogueInspection.Current != null)
+            return await EpilogueRequest(request, document.RootElement);
         if (request.Operation == "travel_to_node") return await TravelRequest(request, document.RootElement);
         if (request.Operation is "use_potion" or "discard_potion" || request.Operation == "inspect_targets"
             && request.Arguments is { } targetArguments && targetArguments.TryGetProperty("potion_slot", out _))
@@ -571,7 +607,8 @@ internal sealed partial class GameAdapter(bool testMode)
             // Fixture setup is explicitly gated and is not a gameplay tool.
             SaveManager.Instance.SetFtuesEnabled(false);
             NGame game = NGame.Instance!;
-            await game.StartNewSingleplayerRun(ModelDb.Character<Ironclad>(), false,
+            await game.StartNewSingleplayerRun(ModelDb.Character<Ironclad>(),
+                System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_ENDING_SCENARIO") != null,
                 ModelDb.ActsByIndex.Select(acts => acts[0]).ToArray(),
                 Array.Empty<ModifierModel>(), "STS2AGENTROUNDTRIP", GameMode.Standard);
             string? turnScenario = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_TURN_SCENARIO");
@@ -623,6 +660,8 @@ internal sealed partial class GameAdapter(bool testMode)
                 await AncientFixture.Configure(ancientScenarioName, LocalPlayer!, ObservationFrame);
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_EVENT_SCENARIO") is { } eventScenarioName)
                 await EventFixture.Configure(eventScenarioName, LocalPlayer!, ObservationFrame);
+            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_ENDING_SCENARIO") is { } endingScenario)
+                await EndingFixture.Configure(endingScenario, LocalPlayer!, ObservationFrame);
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_NAVIGATION_SCENARIO") is { } navigationScenario)
                 await NavigationFixture.Configure(navigationScenario, LocalPlayer!, ObservationFrame);
             // Debug room entry bypasses the normal map-travel disabling step.

@@ -1,5 +1,6 @@
 from mcp.types import Tool, ToolAnnotations
 
+from run_ending_details import OPTION_SCHEMA as RESULT_OPTION_SCHEMA
 from map_details import TRAVEL_SCHEMA
 from deck_details import DECK_SCHEMA
 from pile_details import PILE_SCHEMA
@@ -34,6 +35,11 @@ def tool_definitions(*, screenshots_enabled=False):
     view = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False)
     action = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False)
     definitions = [
+        Tool(name='inspect_run_result', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
+            'Read the current run result page and visible badge/discovery hover help. Never reads hidden future pages.')),
+        Tool(name='run_result_option', inputSchema=RESULT_OPTION_SCHEMA, annotations=action, description=(
+            'Click one enabled run_result.options button by option_id: continue, view this run, reveal/confirm unlocks or return to menu. '
+            'Stops at the next page; never starts another run.')),
         Tool(name='travel_to_node', inputSchema=TRAVEL_SCHEMA, annotations=action, description=(
             'Travel to one node_id from the exposed map.selectable_nodes. Leaves the room and forfeits unclaimed rewards. '
             'Uses native routes and Winged Boots charges; stops at the next input boundary.')),
@@ -55,7 +61,7 @@ def tool_definitions(*, screenshots_enabled=False):
         Tool(name='choose_ancient_option', inputSchema=ANCIENT_OPTION_SCHEMA, annotations=action, description=(
             'Click one enabled ancient option by observed option_id. Stops at card selections or rewards; handle those separately.')),
         Tool(name='advance_dialogue', inputSchema=NO_ARGUMENTS, annotations=action, description=(
-            'Click the ancient dialogue continue area once to show the next line. Does not choose a gift or proceed.')),
+            'Advance the current ancient or Architect dialogue once. Does not choose a gift or press the final Proceed.')),
 
         Tool(name='open_shop', inputSchema=NO_ARGUMENTS, annotations=action, description=(
             'Click the exposed merchant to open the shop. Returns card summaries and visible prices.')),

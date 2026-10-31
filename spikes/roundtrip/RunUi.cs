@@ -68,6 +68,10 @@ internal static class RunUi
             && !Transitioning();
     }
 
+    private static bool ResultTopBarVisible() => NRun.Instance?.GlobalUi.Overlays.Peek()
+        is MegaCrit.Sts2.Core.Nodes.Screens.GameOverScreen.NGameOverScreen screen
+        && RunResultInspection.Exposed(new(screen, "outcome"));
+
     public static bool TopBarReadable() => VisibleUi.OnScreen(NRun.Instance?.GlobalUi.TopBar)
-        && (CombatObservation.Status() == "visible" || CardSelection.Current is { Status: "visible" } || NonCombatVisible());
+        && (CombatObservation.Status() == "visible" || CardSelection.Current is { Status: "visible" } || NonCombatVisible() || ResultTopBarVisible());
 }

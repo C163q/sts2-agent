@@ -68,8 +68,8 @@ async def verify(args):
             if args.scenario in {'boss1', 'boss2', 'boss3', 'double'}:
                 data = await call('proceed')
                 if args.scenario == 'boss3':
-                    completed(data, 'manual_input_required')
-                    assert data['available_actions'] == [] and data.get('map') is None, data
+                    completed(data)
+                    assert data['scene'] == 'epilogue' and data['available_actions'] and data.get('map') is None, data
                     assert (await native('check_test_navigation'))['event'] == 'THE_ARCHITECT'
                     await capture('02-architect')
                     print('PASS boss3 terminal boundary'); return

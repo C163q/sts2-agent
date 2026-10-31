@@ -59,7 +59,11 @@ def ui_details(state):
 from ancient_details import inspect_ancient_details
 
 
+from run_ending_details import inspect_result_details
+
 READERS = {
+    'inspect_run_result': inspect_result_details,
+    'run_result_option': end_turn_details,
     'travel_to_node': end_turn_details,
     'respond_to_confirmation': end_turn_details,
     'set_divination_tool': end_turn_details,

@@ -1,0 +1,65 @@
+# 终章与一局结算
+
+适用于 Mod `0.30.0`、MCP `0.26.0`、观察 schema `15`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。支持单人第三幕结束后的建筑师对话、胜负结算、必要解锁和返回主菜单。实现依据与验证范围见[源码及图形验证](../research/2026-10-31-run-ending-validation.md)。
+
+## 工具与流程
+
+| 工具 | 操作 |
+| --- | --- |
+| `get_observation()` | 获取当前台词或当前结算页；不提前展开后页 |
+| `advance_dialogue()` | 点击当前建筑师继续/回应按钮一次；与先古之民共用工具 |
+| `proceed()` | 点击建筑师最后的前进，沿原生流程进入“胜利？”结算 |
+| `inspect_run_result()` | 当前结算页详情，增加徽章、发现图标的悬停说明，时间线图标的原生说明，以及已显示解锁物品的效果与解释 |
+| `run_result_option({"option_id":"continue"})` | 点击 `run_result.options` 中实际启用的一个按钮或解锁条目 |
+
+第三幕最后 Boss 的奖励页 `proceed` 返回 `scene: "epilogue"`。依次操作观察提供的 `advance_dialogue` 或 `proceed`，不会跳过台词。结算使用 `scene: "run_result"`，按 `options` 继续、解锁、确认或返回。`main_menu` 按钮的文字有时是 Unlock，点击后先进入时间线；只有 `scene: "main_menu"`、结算字段为空时才真正回到菜单。工具不新开一局。
+
+成功动作使用现有 `transition`：`action_completed/complete=true` 表示下一页已就绪，可直接依据其观察继续。纯详情不刷新动作许可；失败、超时或人工改动后重新观察。工具只接受 `option_id`，不接受额外参数；按钮、页面身份和状态令牌在游戏线程再次核对。工具将时间线绑定到本次结算的原生菜单栈；人工返回菜单同样结束关联。工具入口不用于操作平常打开的时间线或其他主菜单页面。
+
+## 建筑师观察
+
+```json
+{
+  "scene": "epilogue",
+  "screen": {"status": "visible", "view": "epilogue"},
+  "epilogue": {
+    "status": "visible",
+    "dialogue": {"speaker": "Ironclad", "text": "Enemy...\nKill..."},
+    "continue": null,
+    "proceed": {"text": "Continue", "enabled": true}
+  },
+  "available_actions": ["proceed"]
+}
+```
+
+示例仅展示相关字段；具体台词及按钮文字由当前原生对话决定。只读取已出现且显示完整的当前气泡，不返回整段脚本、未来台词、访问次数或选择的随机分支。
+
+## 结算观察
+
+`run_result` 提供下列字段：
+
+| 字段 | 含义 |
+| --- | --- |
+| `status` | `visible`、`not_ready` 或 `covered` |
+| `phase` | `outcome` 首屏、`summary` 汇总、`tutorial` 时间线教程、`timeline`、`epoch` 章节故事、`unlock` 解锁确认；原生提供时也识别 `history` 和 `leaderboard` |
+| `title` / `texts` | 当前实际可见横幅与文本，英文转写；保留 `Victory...?` 中的问号和分数进度 `[140/200]` |
+| `score_lines` | 当前可见计分行，每项为 `label`、`value` |
+| `badges` | 当前可见徽章名称及 `bronze/silver/gold` 外观等级；悬停效果在详情调用中读取 |
+| `discoveries` | 当前发现图标的类别及显示数量，`cards/relics/potions/enemies/epochs` |
+| `cards` | 当前解锁页中已显示卡牌的牌面信息与正文；不包含后续页面的卡牌 |
+| `relics` / `potions` | 当前已显示的解锁物品名称；效果由详情调用提供 |
+| `options` | 当前按钮的 `id`、`text`、`enabled`；调用时原样传回 ID |
+
+`top_bar` 仅在原生结算上方确实可见时保留；不由本局历史补出未显示的数值。战斗、事件、奖励等底层操作不再提供。初始 `outcome` 页不会提前给出分数行、徽章或发现列表。
+
+详情增加 `hover_tips`，来源如 `badge:0`、`discovery:cards`；卡牌、遗物、药水的附加说明位于各自条目。原生发现提示最多列十个名称，之后用省略号，工具保留这个限制。累计建筑师伤害与随机死亡语句来自已显示标签的本地化来源，不能重新抽签或根据当前存档重算。
+
+原生胜利流程会让玩家生命归零后展示 `Victory...?`；不能用结算时 HP 为零改判失败。死亡首屏同样保留原生随机横幅和语句。
+
+## 解锁及等待
+
+时间线可能出现多个待揭示条目，`epoch:N` 是工具定位 ID，不是提前公开的物品结果。与地图/牌组浏览一致，当前时间线中可浏览的待揭示条目可以列出；选择离屏条目时先沿原生滚动流程将它展示，再重新核对并点击。每个章节和确认页分别返回，不自动领取后续页。
+
+就绪检查包括打字、原生结算创建的补间动画、分数条及各解锁页的入场动画；按钮启用不等于所有可见计数已经稳定。到达已知边界后仍要求观察连续 250 毫秒不变，25 秒内未满足则返回 `timeout/complete=false`。未知模态不自动点击。
+
+每日挑战榜单、原生启用的查看本局/章节翻页入口按当前按钮识别；它们不改变本局胜负。本版本部分入口本来隐藏或禁用，工具不强行启用。相关未实测范围见验证记录。

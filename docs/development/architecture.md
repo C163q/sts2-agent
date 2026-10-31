@@ -101,3 +101,7 @@ C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project spi
 先古之民由 `AncientInspection.cs` 读取已显示对话、选项及其身份，`GameAdapter.Ancient.cs` 点击原生对话/选项并复用非战斗边界。`EnglishRelicText.cs` 使用已公开的动态引用重建英语文本，不修改游戏语言或生成随机结果；`DeckEnchantSelection.cs`、`TransformSelection.cs` 读取实际预览。`AncientFixture.cs` 与 `verify_ancients.py` 仅用于隔离测试；契约见[先古之民](ancients.md)。
 
 `EventConfirmation.cs` 观察 Trial.DoubleDown 新增弹窗的来源，将节点绑定到当前事件及对局；`GameAdapter.Confirmation.cs` 校验许可、点击原生按钮并等待遮罩及放弃任务。`confirmation_details.py` 校验可见字段与严格参数，`verify_confirmation.py` 通过真实 MCP stdio 在隔离实例验证取消、旧令牌、来源隔离及确认失败。接口见[事件确认弹窗](events.md#事件确认弹窗)。
+
+## 终章与结算
+
+`EpilogueInspection.cs` 读取建筑师当前气泡和按钮；`RunResultInspection.cs` 识别原生结算、解锁及其可见内容；`RunResultMotion.cs` 追踪原生结算创建的有限补间，避免计分条提前就绪。`GameAdapter.RunEnding.cs` 执行原生按钮与令牌校验，`run_ending_details.py` 维护外部字段和工具参数边界。[接口说明](run-ending.md)统一定义阶段与返回菜单语义。

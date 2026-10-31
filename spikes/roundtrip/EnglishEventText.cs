@@ -15,11 +15,14 @@ internal static class EnglishEventText
 {
     private sealed record Source(LocString Text, bool Raw = false, string Suffix = "");
     private sealed record Rendered(string Value, Source Source);
-    private sealed record TipSources(Source? Title, Source? Description);
+    private sealed record TipSources(Source? Title, Source? Description, BoundText? Composite = null);
     private static readonly ConditionalWeakTable<StringVar, Source> VariablesByReference = new();
     private static readonly ConditionalWeakTable<LocString, Dictionary<string, Source>> LiteralVariables = new();
     // Native struct copies retain this ID object; keep provenance as long as the tip survives.
     private static readonly ConditionalWeakTable<string, TipSources> Tips = new();
+    private static readonly LinkedList<Rendered> Recent = new();
+    private sealed record BoundText(string Original, (string literal, Source? source)[] Parts);
+    private static readonly ConditionalWeakTable<Node, BoundText> Labels = new();
     private static readonly MethodInfo Clone = typeof(object).GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic)!;
     [ThreadStatic] private static Rendered? last;
     [ThreadStatic] private static bool active;
@@ -31,6 +34,8 @@ internal static class EnglishEventText
     public static void Initialize()
     {
         var harmony = new Harmony("sts2_agent.event_english");
+        foreach (var type in new[] { typeof(MegaCrit.Sts2.addons.mega_text.MegaLabel), typeof(MegaCrit.Sts2.addons.mega_text.MegaRichTextLabel) })
+            harmony.Patch(AccessTools.Method(type, "SetTextAutoSize"), prefix: new HarmonyMethod(typeof(EnglishEventText), nameof(BindLabel)));
         void Patch(MethodBase method, string postfix, string? prefix = null) => harmony.Patch(method,
             prefix: prefix == null ? null : new HarmonyMethod(typeof(EnglishEventText), prefix),
             postfix: new HarmonyMethod(typeof(EnglishEventText), postfix));
@@ -76,12 +81,51 @@ internal static class EnglishEventText
     private static Source? ImmediateSource(string value) => last is { } rendered && rendered.Value == value ? rendered.Source : null;
     private static void Formatted(LocString __instance, string __result)
     {
-        if (Capturing) last = new(__result, Snapshot(__instance));
+        if (Capturing) Remember(__result, Snapshot(__instance));
     }
     private static void Raw(LocString __instance, string __result)
     {
-        if (Capturing) last = new(__result, Snapshot(__instance, raw: true));
+        if (Capturing) Remember(__result, Snapshot(__instance, raw: true));
     }
+
+    private static void Remember(string value, Source source)
+    {
+        last = new(value, source);
+        if (value.Length < 2) return;
+        Recent.AddFirst(last);
+        if (Recent.Count > 128) Recent.RemoveLast();
+    }
+
+    private static void BindLabel(Node __instance, string __0)
+    {
+        if (!Capturing) return;
+        Labels.Remove(__instance);
+        Labels.Add(__instance, CaptureText(__0));
+    }
+
+    private static BoundText CaptureText(string text)
+    {
+        var parts = new List<(string literal, Source? source)>();
+        string remaining = text;
+        while (remaining.Length > 0)
+        {
+            // Bind source objects at assignment, including concatenated victory statistics.
+            var candidate = Recent.Where(r => remaining.Contains(r.Value, StringComparison.Ordinal))
+                .OrderBy(r => remaining.IndexOf(r.Value, StringComparison.Ordinal)).ThenByDescending(r => r.Value.Length).FirstOrDefault();
+            if (candidate == null) { parts.Add((remaining, null)); break; }
+            int start = remaining.IndexOf(candidate.Value, StringComparison.Ordinal);
+            if (start > 0) parts.Add((remaining[..start], null));
+            parts.Add(("", candidate.Source));
+            remaining = remaining[(start + candidate.Value.Length)..];
+        }
+        return new(text, parts.ToArray());
+    }
+
+    public static string Label(Node node, string current) => Read(() =>
+        EnglishCardText.Plain(Labels.TryGetValue(node, out var bound) && bound.Original == current
+            ? RenderBound(bound) : current));
+
+    private static string RenderBound(BoundText bound) => string.Concat(bound.Parts.Select(p => p.source == null ? p.literal : Render(p.source)));
 
     private static void Assigned(StringVar __instance, string __0)
     {
@@ -129,7 +173,7 @@ internal static class EnglishEventText
 
     private static void CardTitle(CardModel __instance, string __result)
     {
-        if (Capturing) last = new(__result, Snapshot(__instance.TitleLocString,
+        if (Capturing) Remember(__result, Snapshot(__instance.TitleLocString,
             suffix: Regex.Match(__result, @"\+\d*$").Value));
     }
 
@@ -145,7 +189,7 @@ internal static class EnglishEventText
             : __args[1] is LocString text ? Snapshot(text)
             : __state?.Value == __instance.Description ? __state.Source : null;
         Tips.Remove(__instance.Id);
-        Tips.Add(__instance.Id, new(title, description));
+        Tips.Add(__instance.Id, new(title, description, description == null ? CaptureText(__instance.Description) : null));
     }
 
     public static T Read<T>(Func<T> read)
@@ -181,6 +225,6 @@ internal static class EnglishEventText
         if (tip is not HoverTip text) return HoverTipText.From(tip);
         Tips.TryGetValue(text.Id, out var sources);
         return new(text.Title == null ? null : EnglishCardText.Plain(sources?.Title is { } title ? Render(title) : text.Title),
-            EnglishCardText.Plain(sources?.Description is { } description ? Render(description) : text.Description));
+            EnglishCardText.Plain(sources?.Description is { } description ? Render(description) : sources?.Composite is { } composite ? RenderBound(composite) : text.Description));
     }
 }

@@ -60,6 +60,8 @@ python3 scripts/test_prepare_roundtrip.py
 
 | 操作 | 适用条件与结果 |
 | --- | --- |
+| `inspect_run_result` | 只读当前结算页及悬停详情，见[终章接口](run-ending.md) |
+| `run_result_option` | 参数 `option_id`，需要 `expected_state`；点击当前结算按钮、解锁条目或确认 |
 | `inspect_ancient` | 只读当前先古之民选项及悬停解释 |
 | `choose_ancient_option` | 带 `expected_state` 和非负整数 `option_id`，点击一个启用的先古选项 |
 | `advance_dialogue` | 带 `expected_state`，点击原生对话继续区域一次 |
@@ -114,3 +116,5 @@ python3 scripts/test_prepare_roundtrip.py
 原型已扩展可见战斗观察，字段与验证方式见 [战斗观察 JSON](observation.md)，范围按 [可见信息边界](../observation.md) 维护；未展开的手牌效果由专门查看调用提供。动作支持结束回合、出牌、使用/丢弃药水和已接通的选牌；stdio MCP 的当前工具范围见 [接入指南](mcp.md)。地图推进、多玩家、断线恢复和异常退出恢复尚未覆盖。通信目录假设仅由可信的本地程序访问，不作为远程服务。
 
 API 核对依据与实测结果见 [验证记录](../research/2026-10-28-roundtrip-validation.md)。
+
+终章专用验证使用 `--ending-scenario victory_unlock`、`death` 或 `event_death`，配合 `scripts/verify_run_ending.py`；每次启动单独创建 `.tmp/roundtrip/ending-userdata-*`，只复制测试设置，不继承其他测试存档。此模式创建可保存的隔离对局以验证原生结算、历史与解锁；测试标志和构造操作不作为公开 MCP 工具。
