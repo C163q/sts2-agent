@@ -40,6 +40,8 @@ def main():
                         help='构造独立实例的原生休息处选项')
     parser.add_argument('--treasure-scenario', choices=('basic', 'open', 'skip', 'empty', 'nested', 'choice', 'extra', 'map_pending'),
                         help='构造独立实例的原生宝箱房')
+    parser.add_argument('--shop-scenario', choices=('basic', 'remove', 'courier', 'full', 'foul', 'fake', 'parasol', 'parasol_courier', 'nested', 'choice', 'cauldron', 'sozu', 'parasol_sozu', 'cauldron_sozu', 'hidden_price', 'targeting'),
+                        help='构造独立实例的原生商店')
     args = parser.parse_args()
     if args.capture and not args.windowed:
         parser.error("--capture 需要 --windowed。")
@@ -55,6 +57,8 @@ def main():
         "STS2_AGENT_IPC_DIR": str(work / "ipc"),
         "STS2_AGENT_TEST_MODE": "1",
     })
+    if args.shop_scenario:
+        environment['STS2_AGENT_TEST_SHOP_SCENARIO'] = args.shop_scenario
     if args.treasure_scenario:
         environment['STS2_AGENT_TEST_TREASURE_SCENARIO'] = args.treasure_scenario
     if args.rest_scenario:

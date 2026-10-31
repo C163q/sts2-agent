@@ -55,7 +55,7 @@ def claim_reward_details(state):
     result = end_turn_details(state)
     outcome = project(state['reward_result'], {'reward_id': int, 'status': str})
     if (set(outcome) != {'reward_id', 'status'} or not 0 <= outcome['reward_id'] <= 2147483647
-            or outcome['status'] not in {'claimed', 'not_claimed', 'pending'}):
+            or outcome['status'] not in {'claimed', 'not_claimed', 'pending', 'not_obtained'}):
         raise ValueError('Invalid reward outcome.')
     result['reward_result'] = outcome
     return result

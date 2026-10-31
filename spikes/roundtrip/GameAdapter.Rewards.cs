@@ -6,6 +6,8 @@ using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Rewards;
 using MegaCrit.Sts2.Core.Runs;
+using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Rewards;
 
 namespace Sts2Agent;
 
@@ -19,19 +21,21 @@ internal sealed partial class GameAdapter
         var rewards = RewardInspection.Current;
         var rest = RestSiteInspection.Current;
         var treasure = TreasureInspection.Current;
+        var shop = ShopInspection.Current;
         var global = NRun.Instance?.GlobalUi;
         bool mapReady = global != null && MapView.Ready(global.MapScreen);
         bool manual = NModalContainer.Instance?.OpenModal != null || global?.CapstoneContainer.InUse == true
             || selection is { Supported: false, Exposed: true }
             || global?.Overlays.ScreenCount > 0 && !RunUi.OnlyRewardOverlays()
                 && (selection == null || !ReferenceEquals(global.Overlays.Peek(), selection.Owner))
-            || rewards == null && rest == null && treasure == null && selection == null && !mapReady && RunUi.NonCombatVisible()
-            || treasure != null && !TreasureInspection.Singleplayer
+            || rewards == null && rest == null && treasure == null && shop == null && selection == null && !mapReady && RunUi.NonCombatVisible()
+            || (treasure != null || shop != null) && !TreasureInspection.Singleplayer
             || NGame.Instance?.MainMenu != null;
         bool ready = rewards != null && RewardInspection.Ready(rewards)
             || rest != null && RestSiteInspection.Ready(rest)
             || treasure != null && TreasureInspection.Ready(treasure)
-            || mapReady && (treasure == null || !RelicObtainTracker.Pending);
+            || shop != null && ShopInspection.Ready(shop)
+            || mapReady && (treasure == null || !RelicObtainTracker.Pending) && !ShopInspection.Busy;
         return RewardBoundary.Decide(RunUi.Transitioning(), manual, CardSelection.AwaitingInput, ready);
     }
 
@@ -63,6 +67,9 @@ internal sealed partial class GameAdapter
             return FileMailbox.Error(request.Id, "illegal_action", "The requested reward or proceed button is unavailable.");
         bool finished = row == null;
         bool? claimed = null;
+        var potionReward = row?.Reward as PotionReward;
+        bool potionObtained = false;
+        void Procured(PotionModel potion) { if (ReferenceEquals(potion, potionReward?.Potion)) potionObtained = true; }
         void Claimed(NRewardButton _) { finished = true; claimed = true; }
         void Skipped(NRewardButton _) { finished = true; claimed = false; }
         if (row != null)
@@ -76,6 +83,7 @@ internal sealed partial class GameAdapter
             RewardCompatibility.AdaptLinkedClaim(row);
             row.RewardClaimed += Claimed;
             row.RewardSkipped += Skipped;
+            if (potionReward != null) potionReward.Player.PotionProcured += Procured;
         }
         try
         {
@@ -92,7 +100,8 @@ internal sealed partial class GameAdapter
             });
             string rewardResult = row == null ? "" : ",\"reward_result\":" + JsonSerializer.Serialize(new
             {
-                reward_id = rewardId, status = claimed == true ? "claimed" : claimed == false ? "not_claimed" : "pending"
+                reward_id = rewardId, status = claimed == true ? potionReward != null && !potionObtained ? "not_obtained" : "claimed"
+                    : claimed == false ? "not_claimed" : "pending"
             });
             return Success(request.Id, after[..^1] + rewardResult + ",\"transition\":" + JsonSerializer.Serialize(new
             {
@@ -101,6 +110,7 @@ internal sealed partial class GameAdapter
         }
         finally
         {
+            if (potionReward != null) potionReward.Player.PotionProcured -= Procured;
             if (row != null && GodotObject.IsInstanceValid(row))
             {
                 row.RewardClaimed -= Claimed;

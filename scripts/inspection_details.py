@@ -10,6 +10,7 @@ from card_play_details import target_details
 from reward_details import claim_reward_details, inspect_rewards_details
 from rest_site_details import inspect_rest_site_details
 from treasure_details import inspect_treasure_details
+from shop_details import inspect_shop_details, purchase_details
 
 
 def potion_details(state):
@@ -55,6 +56,10 @@ def ui_details(state):
 
 
 READERS = {
+    'inspect_shop': inspect_shop_details,
+    'open_shop': end_turn_details,
+    'close_shop': end_turn_details,
+    'buy_item': purchase_details,
     "get_state": observation_details,
     "end_turn": end_turn_details,
     "inspect_hand": hand_details,

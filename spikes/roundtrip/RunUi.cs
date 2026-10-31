@@ -10,6 +10,11 @@ namespace Sts2Agent;
 
 internal static class RunUi
 {
+    public static bool ResourceMotionPending() => NRun.Instance is { } run
+        && (CardSelection.Field(run.GlobalUi.TopBar.Gold, "_alreadyRunning") is true
+            || VisibleUi.Descendants<MegaCrit.Sts2.Core.Nodes.Potions.NPotion>(run.GlobalUi.TopBar.PotionContainer)
+                .Any(potion => RewardInspection.Animating(potion, "_obtainedTween")));
+
     public static bool CardPreviewsPending() => NRun.Instance is { } run
         && new Node[] { run.GlobalUi.CardPreviewContainer, run.GlobalUi.MessyCardPreviewContainer,
             run.GlobalUi.EventCardPreviewContainer, run.GlobalUi.GridCardPreviewContainer }

@@ -290,8 +290,15 @@ internal sealed class CombatObservation
         var holders = layout!.GetChildren().OfType<NPotionHolder>().ToArray();
         if (holders.Any(holder => !VisibleUi.OnScreen(holder)))
             return null;
-        return holders.Select(holder => !holder.HasPotion ? null
-            : new { name = english.Name(holder.Potion!.Model.Title) }).ToArray();
+        return holders.Select(holder =>
+        {
+            if (!holder.HasPotion) return null;
+            var value = new Dictionary<string, object?> { ["name"] = english.Name(holder.Potion!.Model.Title) };
+            if (holder.Potion.Model is MegaCrit.Sts2.Core.Models.Potions.FoulPotion && ShopInspection.Current is { } shop && ShopInspection.Exposed(shop))
+                value["usable_here"] = PotionActions.MerchantVisible(holder.Potion.Model) && PotionActions.Reason(holder.Potion.Model) == null;
+            if (RewardInspection.Animating(holder.Potion, "_bounceTween")) value["bouncing"] = true;
+            return value;
+        }).ToArray();
     }
 
     private static string? Icon(TextureRect? icon) => VisibleUi.OnScreen(icon)

@@ -1,6 +1,6 @@
 # 使用与丢弃药水
 
-适用于 Mod `0.23.0`、MCP server `0.19.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。使用及丢弃均提交原生动作；游戏负责扣除药水、效果、记录和触发。依据见 [源码核对](../research/2026-10-30-potion-actions.md)。
+适用于 Mod `0.24.0`、MCP server `0.20.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。使用及丢弃均提交原生动作；游戏负责扣除药水、效果、记录和触发。依据见 [源码核对](../research/2026-10-30-potion-actions.md)。
 
 ## 查询与定位
 
@@ -60,3 +60,5 @@
 ```
 
 测试场景只在独立测试模式配置初始状态，不能用于正式对局。标准库客户端提供 `inspect_targets --potion-slot 0`、`use_potion --potion-slot 0 --target-id 2 --expected-state <令牌>` 和 `discard_potion --potion-slot 0 --expected-state <令牌>`；均须传 `--ipc-dir`。MCP 内部管理令牌。实际通过范围及限制见 [验证记录](../research/2026-10-30-potion-actions-validation.md)。
+
+商店观察可显示恶臭药水当前 `usable_here` 提示及实际 `bouncing` 状态。商品页须先用 `close_shop` 关闭，原生目标才可用；假商人触发战斗时，等待新战斗可行动或选择边界，详见[商店接口](shop.md#恶臭药水与假商人)。

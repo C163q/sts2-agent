@@ -9,6 +9,7 @@ from screenshot_tool import SCREENSHOT_SCHEMA
 from reward_details import CLAIM_SCHEMA
 from rest_site_details import REST_OPTION_SCHEMA
 from treasure_details import LOOT_SCHEMA
+from shop_details import BUY_SCHEMA
 
 
 SERVER_INSTRUCTIONS = (
@@ -28,15 +29,27 @@ def tool_definitions(*, screenshots_enabled=False):
     view = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False)
     action = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False)
     definitions = [
+        Tool(name='open_shop', inputSchema=NO_ARGUMENTS, annotations=action, description=(
+            'Click the exposed merchant to open the shop. Returns card summaries and visible prices.')),
+        Tool(name='close_shop', inputSchema=NO_ARGUMENTS, annotations=action, description=(
+            'Click the open shop back button to return to the merchant. Does not proceed or travel.')),
+        Tool(name='inspect_shop', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
+            'Read all currently displayed shop items, card effects and hover help. Open the shop first.')),
+        Tool(name='buy_item', inputSchema=BUY_SCHEMA, annotations=action, description=(
+            'Buy one observed shop item by item_id. Restocked goods have new IDs. '
+            'Card removal opens selection tools; canceling costs nothing. Full slots or potion-gain restrictions can prevent purchase without spending gold. '
+            'Stops at choices or rewards; never buys additional items automatically.')),
+
         Tool(name="get_observation", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read the current visible game state and refresh the action observation. Card effects and hover help require inspections.")),
         Tool(name='inspect_rewards', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             'Read the current browsable reward rows and their hover help. Does not reveal unopened card reward candidates.')),
         Tool(name='claim_reward', inputSchema=CLAIM_SCHEMA, annotations=action, description=(
             'Click one observed reward row by reward_id; choose the order yourself. Card rewards open selection tools. '
-            'A full potion belt leaves the reward unclaimed; discard or use a potion separately if desired.')),
+            'A full potion belt leaves the reward unclaimed; discard or use a potion separately if desired. '
+            'Blocked potion gain can consume the reward without obtaining it (not_obtained).')),
         Tool(name='proceed', inputSchema=NO_ARGUMENTS, annotations=action, description=(
-            'Click the visible rewards/treasure Skip/Proceed or rest-site Proceed button. '
+            'Click the visible rewards/treasure Skip/Proceed, rest-site or closed-shop Proceed button. '
             'Uses the native flow, which may open the map, resume an event, change act or finish the run.')),
         Tool(name='loot_treasure', inputSchema=LOOT_SCHEMA, annotations=action, description=(
             'Open a single-player treasure chest and take its relic; never proceeds. '
@@ -73,7 +86,7 @@ def tool_definitions(*, screenshots_enabled=False):
             "Read both sides' visible powers and current enemy intent hover help; shared hover_tips use sources paths. "
             "Unavailable while aiming or playing a card.")),
         Tool(name="inspect_relics", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
-            "Read visible, hoverable combat relics' descriptions and displayed counters; "
+            "Read visible, hoverable owned relics in combat or an exposed shop' descriptions and displayed counters; "
             "shared hover_tips link to zero-based relic_indices.")),
         Tool(name="inspect_deck", inputSchema=DECK_SCHEMA, annotations=view, description=(
             "Open/reuse the native deck page and read the entire browsable deck. "

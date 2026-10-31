@@ -88,7 +88,7 @@ internal sealed partial class GameAdapter
             if (journal == null)
             {
                 var current = CardSelection.Current;
-                if (RewardInspection.Current != null || RestSiteInspection.Current != null || TreasureInspection.Current != null) boundary = NonCombatBoundary();
+                if (RewardInspection.Current != null || RestSiteInspection.Current != null || TreasureInspection.Current != null || ShopInspection.Current != null) boundary = NonCombatBoundary();
                 else if (CardSelection.AwaitingInput) boundary = "choice_required";
                 else if (current == null) boundary = "selection_resolved";
             }

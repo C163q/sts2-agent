@@ -16,7 +16,7 @@
 | `scripts/player_output.py` | 去除控制包装、共享悬停解释、条件数值说明和错误恢复文案 |
 | `spikes/roundtrip/TurnJournal.cs`、`TurnCapture.cs` | RitsuLib 与原生事件记录、伤害补录及来源追踪 |
 | `spikes/roundtrip/TurnBoundary.cs`、`TurnEventBuffer.cs` | 无游戏依赖的结束条件与有界事件缓冲 |
-| `spikes/roundtrip/ActionSettling.cs`、`GameAdapter.ActionObservation.cs` | 统一游戏动作停止原因复核、原生牌堆动画等待及观察稳定；页面查看单独处理 |
+| `spikes/roundtrip/ActionSettling.cs`、`GameAdapter.ActionObservation.cs` | 统一游戏动作停止原因复核、原生牌堆动画、金币计数和药水入栏动画等待及观察稳定；页面查看单独处理 |
 | `scripts/transition_details.py` | 结束回合事件的结构校验与递归过滤 |
 | `scripts/inspection_details.py`、`*_details.py` | 按操作校验并投影响应；牌组、牌堆与地图等具体结构各自维护 |
 | `scripts/game_tools.py` | 串行游戏会话、动作令牌、检查控制权及在线程中执行文件请求 |
@@ -87,3 +87,5 @@ C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project spi
 `RestSiteInspection.cs` 判定房间可见性、按钮特有灰置状态与结算后就绪；`GameAdapter.RestSite.cs` 校验并点击原生选项或前进。`DeckUpgradeSelection.cs` 读取已显示的升级比较，与原有选择工具共用确认和取消流程。`rest_site_details.py` 维护外部字段与参数边界；`RestSiteFixture.cs` 和 `verify_rest_site.py` 仅用于隔离验证。完整契约见[休息处](rest-site.md)。
 
 宝箱房由 `TreasureInspection.cs` 读取当前原生开箱、遗物和按钮状态，`GameAdapter.Treasure.cs` 顺序点击开箱与领取；`RelicObtainTracker.cs` 仅观察原生 `RelicCmd.Obtain` 返回任务的完成状态，补上宝箱 UI 未等待遗物效果的边界，不替换游戏流程。`treasure_details.py` 校验外部字段，`TreasureFixture.cs` 与 `verify_treasure.py` 用于隔离验证。契约见[宝箱房](treasure.md)。
+
+商店由 `ShopInspection.cs` 读取可见商品及槽位身份，`GameAdapter.Shop.cs` 点击原生商人、返回及商品；`ShopTransactions.cs` 只观察原生购买及阳伞任务，避免把选择暂停或自动购买间隙当作完成。`shop_details.py` 校验商品、摘要和购买结果；`ShopFixture.cs` 与 `verify_shop.py` 仅用于隔离验证。契约见[商店](shop.md)。

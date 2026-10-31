@@ -1,10 +1,10 @@
 # 遗物详情 JSON
 
-文件操作 `inspect_relics` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.8.0`。一次只读查看当前遗物栏中可见、可悬停的遗物，以英语返回原生正文和附带解释。当前仅支持无遮挡战斗。MCP 与文件客户端返回相同的玩法 JSON。
+文件操作 `inspect_relics` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.24.0`。一次只读查看当前遗物栏中可见、可悬停的遗物，以英语返回原生正文和附带解释。支持无遮挡战斗和当前暴露的[商店](shop.md)，可用于查看已持有的添水等遗物说明。MCP 与文件客户端返回相同的玩法 JSON。
 
 ## 读取
 
-按 [正常游戏加载](live-game.md) 安装并重启，在无遮挡战斗中执行：
+按 [正常游戏加载](live-game.md) 安装并重启，在无遮挡战斗或暴露的商店中执行：
 
 ```sh
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_relics > .tmp/live/relic-inspection.json
@@ -29,7 +29,7 @@ MCP 调用 `inspect_relics()` 无须参数，不能授权动作；已有观察�
 
 ## 读取边界
 
-遗物来自实际 `NRelicInventory.RelicNodes`，不遍历玩家模型中未展示的遗物。必须有可见的 holder、遗物节点和带纹理的图标，holder 须启用且接受鼠标事件。隐藏、透明、屏幕外、被裁剪或不可悬停的条目排除；整个遗物栏隐藏或当前不是无遮挡战斗时返回 `illegal_action`。可见性采用现有节点及矩形规则，不能精确判断任意像素遮挡。
+遗物来自实际 `NRelicInventory.RelicNodes`，不遍历玩家模型中未展示的遗物。必须有可见的 holder、遗物节点和带纹理的图标，holder 须启用且接受鼠标事件。隐藏、透明、屏幕外、被裁剪或不可悬停的条目排除；整个遗物栏隐藏或当前既不是无遮挡战斗也不是暴露商店时返回 `illegal_action`。可见性采用现有节点及矩形规则，不能精确判断任意像素遮挡。
 
 正文和附带说明取自已显示遗物实例的 `RelicModel.HoverTips`，与原生悬停入口相同。只输出原生悬停正文，不附送风味文本、内部计数、获取楼层、未来触发结果或概率推演。不会调用 `OnFocus`、触发动画、切换语言、设置目标或打开遗物检查页。格式化对 `EnergyVar.ColorPrefix` 的临时修改在 `finally` 恢复，未知提示类型整次报错，不静默丢弃。
 

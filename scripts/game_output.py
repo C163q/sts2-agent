@@ -52,7 +52,7 @@ RELIC = {"name": TEXT, "counter": NUMBER}
 TOP_BAR = {
     "hp": NUMBER, "max_hp": NUMBER,
     "gold": NUMBER, "floor": NUMBER, "ascension": NUMBER, "deck_count": NUMBER,
-    "room_icon": TEXT, "bosses": [TEXT], "potion_slots": nullable([nullable({"name": TEXT})]),
+    "room_icon": TEXT, "bosses": [TEXT], "potion_slots": nullable([nullable({"name": TEXT, "usable_here": bool, "bouncing": bool})]),
     "relics": nullable([RELIC]), "map_visible": bool, "deck_visible": bool, "settings_visible": bool,
 }
 SCREEN = {"status": str, "view": str}
@@ -85,15 +85,22 @@ REST_SITE = {'status': str, 'prompt': TEXT, 'description': TEXT, 'options': null
 TREASURE_RELIC = {'name': str, 'enabled': bool}
 TREASURE = {'status': str, 'chest': TEXT, 'relic': nullable(TREASURE_RELIC),
             'proceed': nullable({'text': str, 'enabled': bool, 'skips_remaining': bool})}
+SHOP_CARD = {key: BROWSED_CARD[key] for key in ('name', 'type', 'rarity', 'visual_card_pool', 'energy_cost', 'star_cost')}
+SHOP_ITEM = {'id': int, 'kind': str, 'position': str, 'price': NUMBER, 'affordable': nullable(bool),
+             'enabled': bool, 'name': str, 'used': bool, 'on_sale': bool, 'card': SHOP_CARD}
+SHOP = {'status': str, 'view': TEXT, 'items': nullable([SHOP_ITEM]),
+        'open': nullable({'enabled': bool}), 'back': nullable({'enabled': bool}),
+        'proceed': nullable({'text': str, 'enabled': bool})}
 OBSERVATION = {
     "scene": str, "screen": SCREEN, "turn": NUMBER, "player": nullable(PLAYER),
     "enemies": nullable([ENEMY]), "top_bar": nullable(TOP_BAR),
     "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
     "available_actions": [str],
 }
-OPTIONAL_OBSERVATION = {"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE)}
+OPTIONAL_OBSERVATION = {"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
 GAMEPLAY = {
     'reward_result': {'reward_id': int, 'status': str},
+    'purchase_result': {'item_id': int, 'status': str},
     **OBSERVATION, **OPTIONAL_OBSERVATION, "transition": TRANSITION, "hand": nullable([HAND_CARD]),
     "selection_view": str,
     "hover_tips": [{**TIP, "sources": [str]}], "slot_tip": TIP,
@@ -122,13 +129,18 @@ def gameplay_fields(state):
         shape = {**shape, 'rest_site': {**REST_SITE, 'options': [{**REST_OPTION, 'description': str}]}}
     if (state.get('treasure') or {}).get('relic') and 'description' in state['treasure']['relic']:
         shape = {**shape, 'treasure': {**TREASURE, 'relic': nullable({**TREASURE_RELIC, 'description': str, 'hover_tips': [TIP]})}}
+    if state.get('scene') == 'shop' and (state.get('shop') or {}).get('items'):
+        full = any('description' in (i.get('card') or i) for i in state['shop']['items'])
+        if full:
+            shape = {**shape, 'shop': {**SHOP, 'items': nullable([{**SHOP_ITEM, 'description': str, 'hover_tips': [TIP],
+                'card': {**SHOP_CARD, 'description': str, 'hover_tips': [TIP]}}])}}
     return project(state, shape)
 
 
 def observation_details(state):
     result = project(state, {**OBSERVATION, **OPTIONAL_OBSERVATION})
     if (not set(OBSERVATION) <= result.keys() or "status" not in result["screen"]
-            or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards", 'rest_site', 'treasure')
+            or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards", 'rest_site', 'treasure', 'shop')
             or result["screen"]["status"] not in ("visible", "covered", "hidden", "not_ready", "not_applicable")):
         raise ValueError("Invalid observation structure.")
     if result.get("selection") is not None:
@@ -148,6 +160,11 @@ def observation_details(state):
         result['treasure'] = treasure_details(result['treasure'])
     elif result['scene'] == 'treasure':
         raise ValueError('Missing treasure state.')
+    if result.get('shop') is not None:
+        from shop_details import shop_details
+        result['shop'] = shop_details(result['shop'])
+    elif result['scene'] == 'shop':
+        raise ValueError('Missing shop state.')
     return result
 
 

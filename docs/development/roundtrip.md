@@ -62,12 +62,15 @@ python3 scripts/test_prepare_roundtrip.py
 | --- | --- |
 | `inspect_rewards` | 只读当前可浏览奖励及悬停说明 |
 | `claim_reward` | 带 `reward_id` 和 `expected_state`，点击一项奖励 |
-| `proceed` | 带 `expected_state`，点击奖励页或宝箱房跳过/前进、休息处前进 |
+| `proceed` | 带 `expected_state`，点击奖励页或宝箱房跳过/前进、休息处或关闭商品页后的商店前进 |
+| `open_shop` / `close_shop` | 带 `expected_state`，点击商人或返回按钮 |
+| `inspect_shop` | 只读当前已打开商品页的全部详情 |
+| `buy_item` | 带 `expected_state`，参数 `item_id` 为非负整数，购买一个当前商品 |
 | `inspect_treasure` | 只读暴露的宝箱房和可见遗物悬停说明 |
 | `loot_treasure` | 带 `expected_state`，可选布尔 `open_only`；默认开箱并领取，不前进 |
 | `inspect_rest_site` | 只读当前休息处选项及动态说明 |
 | `choose_rest_option` | 带 `option_id` 和 `expected_state`，点击一个启用的休息处选项 |
-| `get_state` | 读取主菜单、战斗、[奖励](rewards.md)、[休息处](rest-site.md)或[宝箱房](treasure.md)状态及 `available_actions`；未识别场景归为 `loading_or_noncombat` |
+| `get_state` | 读取主菜单、战斗、[奖励](rewards.md)、[休息处](rest-site.md)、[宝箱房](treasure.md)或[商店](shop.md)状态及 `available_actions`；未识别场景归为 `loading_or_noncombat` |
 | `inspect_hand` | 只读、无须动作令牌；一次读取全部当前可见手牌的英语正文和悬停解释，格式见 [手牌详情](hand-inspection.md) |
 | `inspect_targets` | 参数 `card_id` 或 `potion_slot` 二选一，只读查询可见手牌或药水的可用性与目标范围，见 [出牌](card-play.md) 和 [药水](potion-actions.md) |
 | `play_card` | 需最新令牌，参数 `card_id` 与必要的 `target_id`；提交一次原生手动出牌，后续选择单独操作 |
