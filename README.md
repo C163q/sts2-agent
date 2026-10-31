@@ -4,7 +4,7 @@
 
 ## 当前能力
 
-当前为 Linux 游戏 `v0.107.1` 的验证原型：Mod `0.25.0` 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。已有真实游戏及 Codex 模型的观察、结束回合和读回验证；尚未支持地图选路或完整自动游玩。
+当前为 Linux 游戏 `v0.107.1` 的验证原型：Mod `0.26.0` 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。已有真实游戏及 Codex 模型的观察、结束回合和读回验证；尚未支持地图选路或完整自动游玩。
 
 | 能力 | 接口与说明 |
 | --- | --- |
@@ -16,9 +16,9 @@
 
 战后支持[逐项搜刮、跳过与前进](docs/development/rewards.md)，奖励卡牌复用选牌工具；搜刮期间可以查看地图。支持[休息处选项](docs/development/rest-site.md)、锻造升级与烹饪选牌，帐篷下逐项操作。支持[宝箱房开箱、领取与跳过](docs/development/treasure.md)，默认一次调用开箱并领取遗物。支持[商店开关、商品详情、逐项购买与删牌](docs/development/shop.md)。
 
-已接通[先古之民房间](docs/development/ancients.md)：逐句对话、选择遗物、后续选牌与前进；通用问号事件尚未开放。
+已接通[先古之民房间](docs/development/ancients.md)：逐句对话、选择遗物、后续选牌与前进。支持[通用问号事件](docs/development/events.md)的正文与选项、致死红框、后续选牌/奖励、战斗及返回事件；占卜和特殊确认弹窗明确停在人工输入边界。
 
-MCP 默认提供 34 个工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
+MCP 默认提供 36 个工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
 
 ## 开发与运行入口
 
@@ -68,7 +68,8 @@ MCP 不扫描游戏进程，也不负责启动游戏。客户端与 Mod 通过�
 ## 协作与证据
 
 - [协作约定](AGENTS.md)、[文档规范](docs/documentation.md)、[Codex 环境约定](docs/ai/codex.md)、[Cursor 模型选择](docs/ai/cursor-model-selection.md)。
-- [问号房与事件调研](docs/research/2026-10-31-events.md)：57个注册事件、战斗往返、致死红框、占卜与确认弹窗；通用事件功能尚未实现。
+- [问号房与事件调研](docs/research/2026-10-31-events.md)：57个注册事件、战斗往返、致死红框、占卜与确认弹窗；当前已实现范围见[事件接口](docs/development/events.md)。
+- [通用事件验证](docs/research/2026-10-31-events-validation.md)：33个事件场景用例、相邻回归、英文来源修复及未覆盖范围。
 - [项目审阅与重构](docs/research/2026-10-29-project-review.md)：输出边界、提示词、JSON 格式、官方实践及验证范围。
 - [结束回合事件与交互边界调研](docs/research/2026-10-29-end-turn-events.md)：战斗历史、RitsuLib 与选择暂停的设计依据；实际行为见 [接口说明](docs/development/end-turn.md)。
 - [选牌与查看战场验证](docs/research/2026-10-30-card-selection-validation.md)：候选、确认、跳过、第一回合遗物、信息边界及审阅修复。

@@ -23,8 +23,11 @@ public static class BridgeMod
             return;
         }
         EnglishCardText.Initialize();
+        EnglishEventText.Initialize();
         TurnCapture.Initialize();
         RelicObtainTracker.Initialize();
+        EventTaskTracker.Initialize();
+        CombatEntryCapture.Initialize();
         ShopTransactions.Initialize();
         mailbox = new FileMailbox(Path.GetFullPath(directory));
         adapter = new GameAdapter(System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_MODE") == "1");

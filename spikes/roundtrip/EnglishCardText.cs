@@ -18,6 +18,7 @@ internal static class EnglishCardText
     private static readonly EnglishText English = new();
     [ThreadStatic] private static bool active;
     [ThreadStatic] private static PowerModel? activePower;
+    internal static bool Active => active;
 
     static EnglishCardText()
     {
@@ -72,7 +73,7 @@ internal static class EnglishCardText
     {
         if (!active)
             return true;
-        var variables = __instance.Variables;
+        var variables = EnglishEventText.Variables(__instance, __instance.Variables);
         if (activePower?.Applier?.Monster is { } applier && __instance.LocTable == "powers"
             && __instance.LocEntryKey.StartsWith(activePower.Id.Entry + ".", StringComparison.Ordinal)
             && variables.GetValueOrDefault("ApplierName") is StringVar)

@@ -26,7 +26,7 @@ def tool_result(payload):
 
 
 def create_server(tools, *, screenshots_enabled=False):
-    server = Server("sts2-agent", version="0.21.0", instructions=SERVER_INSTRUCTIONS)
+    server = Server("sts2-agent", version="0.22.0", instructions=SERVER_INSTRUCTIONS)
     definitions = tool_definitions(screenshots_enabled=screenshots_enabled)
     handlers = {tool.name: getattr(tools, tool.name) for tool in definitions}
 
@@ -38,7 +38,7 @@ def create_server(tools, *, screenshots_enabled=False):
     async def call_tool(name, arguments):
         if name not in handlers:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))
-        if name in {"end_turn", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "capture_screenshot", 'claim_reward', 'proceed', 'choose_rest_option', 'loot_treasure', 'open_shop', 'close_shop', 'buy_item', 'choose_ancient_option', 'advance_dialogue'}:
+        if name in {"end_turn", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "capture_screenshot", 'claim_reward', 'proceed', 'choose_rest_option', 'loot_treasure', 'open_shop', 'close_shop', 'buy_item', 'choose_ancient_option', 'advance_dialogue', 'choose_event_option'}:
             return tool_result(await handlers[name](arguments))
         if arguments:
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))
@@ -54,7 +54,7 @@ async def run_stdio(tools, screenshots_enabled=False):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="通过 stdio MCP 提供 STS2 战斗观察、各类只读详情与结束回合。")
+    parser = argparse.ArgumentParser(description="通过 stdio MCP 提供 STS2 可见观察、按需详情与原生动作。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
     parser.add_argument("--config", type=Path, help="MCP JSON 配置；默认读取仓库根 mcp-config.json，不存在时截图关闭")
     parser.add_argument("--timeout", type=float, default=40, help="文件通信超时秒数，默认 40")

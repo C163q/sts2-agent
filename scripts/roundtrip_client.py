@@ -49,7 +49,7 @@ class Client:
 def main():
     parser = argparse.ArgumentParser(description="调用最小验证原型的文件工具接口。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
-    parser.add_argument("operation", choices=("get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "inspect_map", "close_map", "close_card_view", "close_deck", "inspect_selection", "select_card", "selection_option", "set_selection_view", "start_test_combat", "end_turn", "inspect_targets", "play_card", "use_potion", "discard_potion", "inspect_rewards", "claim_reward", "proceed", "inspect_rest_site", "choose_rest_option", "loot_treasure", "inspect_treasure", "open_shop", "close_shop", "inspect_shop", "buy_item", "inspect_ancient", "choose_ancient_option", "advance_dialogue"))
+    parser.add_argument("operation", choices=("get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "inspect_map", "close_map", "close_card_view", "close_deck", "inspect_selection", "select_card", "selection_option", "set_selection_view", "start_test_combat", "end_turn", "inspect_targets", "play_card", "use_potion", "discard_potion", "inspect_rewards", "claim_reward", "proceed", "inspect_rest_site", "choose_rest_option", "loot_treasure", "inspect_treasure", "open_shop", "close_shop", "inspect_shop", "buy_item", "inspect_ancient", "choose_ancient_option", "advance_dialogue", "inspect_event", "choose_event_option"))
     parser.add_argument("--pile", choices=("draw", "discard", "exhaust"))
     parser.add_argument("--detail-level", choices=("summary", "full"))
     parser.add_argument("--view-upgrades", action=argparse.BooleanOptionalAction, default=None)
@@ -71,7 +71,7 @@ def main():
     try:
         arguments = {key: getattr(args, key) for key in ("pile", "detail_level", "view_upgrades", "sort_by", "descending", "card_id", "potion_slot", "target_id", "option_id", "view", "reward_id", "open_only", "item_id")
                      if getattr(args, key) is not None}
-        if args.operation == 'choose_ancient_option' and args.option_id is not None:
+        if args.operation in {'choose_ancient_option', 'choose_event_option'} and args.option_id is not None:
             arguments['option_id'] = int(args.option_id)
         if args.target_id is not None and args.target_id.isascii() and args.target_id.isdecimal():
             arguments["target_id"] = int(args.target_id)

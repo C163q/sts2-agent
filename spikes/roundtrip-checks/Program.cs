@@ -45,3 +45,5 @@ Check(RewardBoundary.Decide(true, true, false, false) == null, "transition is no
 Check(RewardBoundary.Decide(false, false, true, false) == "choice_required", "supported reward selection remains interactive");
 Check(RewardBoundary.Decide(false, false, false, true) == "action_completed", "supported reward or map is a completion boundary");
 Check(RewardBoundary.Decide(false, false, false, false) == null, "unready reward UI keeps settling");
+Check(RewardBoundary.Decide(false, true, false, true, runLost: true) == "run_lost", "event death takes precedence over manual overlays");
+Check(RewardBoundary.Decide(true, false, false, true, runLost: true) == null, "event death waits for room transition");

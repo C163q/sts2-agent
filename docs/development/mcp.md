@@ -26,10 +26,12 @@ flowchart LR
 
 ## 工具范围
 
-默认公开 34 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 35 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 表示当前可执行的游戏动作，不是 MCP 工具目录。
+默认公开 36 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 37 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 表示当前可执行的游戏动作，不是 MCP 工具目录。
 
 | 工具 | 用途 |
 | --- | --- |
+| `inspect_event()` | [当前通用事件](events.md)正文、选项及悬停解释 |
+| `choose_event_option(option_id)` | 点击一个启用的事件选项，保留原生后续流程与致死警告 |
 | `inspect_ancient()` | [当前先古之民](ancients.md)的选项及悬停解释 |
 | `choose_ancient_option(option_id)` | 点击一个已显示且启用的先古选项 |
 | `advance_dialogue()` | 推进先古之民的一句原生对话，不选择遗物 |
@@ -38,7 +40,7 @@ flowchart LR
 | `buy_item(item_id)` | 购买一个当前商品；补货使用新 ID，删牌复用选牌工具 |
 | `inspect_rewards()` | [当前可浏览奖励及悬停说明](rewards.md) |
 | `claim_reward(reward_id)` | 逐项点击奖励，后续选牌复用现有选择工具 |
-| `proceed()` | 点击奖励页跳过/前进、宝箱房跳过/前进、休息处、先古之民或关闭商品页后的商店前进按钮 |
+| `proceed()` | 点击奖励页跳过/前进、宝箱房跳过/前进、休息处、已完成事件、先古之民或关闭商品页后的商店前进按钮；保留原生返回父事件等行为 |
 | `loot_treasure(open_only?)` | [宝箱房开箱并领取](treasure.md)，可先开后决定；不自动前进 |
 | `inspect_treasure()` | 当前可见宝箱遗物及悬停说明 |
 | `inspect_rest_site()` | [当前休息处选项及动态悬停说明](rest-site.md) |
@@ -69,7 +71,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.25.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.21.0`，支持[手牌升级选择](card-selection.md#手牌升级)及复用成功动作返回的观察；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。首次使用须匹配 Mod 与外部脚本；先古之民功能须同时更新 Mod 和 MCP，并完整重启游戏、重连 MCP。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.26.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.22.0`，支持[通用事件](events.md)及复用成功动作返回的观察；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。首次使用须匹配 Mod 与外部脚本；通用事件功能须同时更新 Mod 和 MCP，并完整重启游戏、重连 MCP。本次使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 

@@ -48,6 +48,7 @@ internal static class CardView
         if (view == null && NRun.Instance?.GlobalUi.MapScreen.IsOpen == true
             && MapView.Clear())
             view = "map";
+        view ??= EventInspection.ManualView;
         if (view != null) result["view"] = view;
         return result;
     }

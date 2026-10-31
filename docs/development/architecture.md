@@ -16,6 +16,8 @@
 | `scripts/player_output.py` | 去除控制包装、共享悬停解释、条件数值说明和错误恢复文案 |
 | `spikes/roundtrip/TurnJournal.cs`、`TurnCapture.cs` | RitsuLib 与原生事件记录、伤害补录及来源追踪 |
 | `spikes/roundtrip/TurnBoundary.cs`、`TurnEventBuffer.cs` | 无游戏依赖的结束条件与有界事件缓冲 |
+| `spikes/roundtrip/EventInspection.cs`、`GameAdapter.Event.cs` | 通用事件的可见页面、稳定选项 ID 和原生按钮执行 |
+| `spikes/roundtrip/EventTaskTracker.cs`、`CombatEntryCapture.cs` | 事件初始化/选择/Resume 任务跟踪，以及首回合自动效果之前的战斗日志订阅 |
 | `spikes/roundtrip/ActionSettling.cs`、`GameAdapter.ActionObservation.cs` | 统一游戏动作停止原因复核、原生牌堆动画、金币计数和药水入栏动画等待及观察稳定；页面查看单独处理 |
 | `scripts/transition_details.py` | 结束回合事件的结构校验与递归过滤 |
 | `scripts/inspection_details.py`、`*_details.py` | 按操作校验并投影响应；牌组、牌堆与地图等具体结构各自维护 |
@@ -33,6 +35,8 @@
 不为统一目录而批量迁移现有脚本或 C# 文件；后续正式打包、分离测试程序集或拆分游戏适配器时，须同时更新构建路径、启动配置及独立游戏验证。
 
 ## 变更入口
+
+事件场景复用原生同步器、选牌、奖励和战斗，不为每个事件重新实现效果。英文事件格式化按原生变量赋值与克隆来源读取分离数据，不能靠重新生成选项或全文相等猜测引用身份；契约与专属界面边界见[事件接口](events.md)。
 
 增加工具时，先核对目标版本游戏 API 与可见信息边界，再实现游戏内采样或正常动作。外部层分别补齐操作响应校验、玩法字段投影、会话中的令牌规则和工具定义。状态、正文和字段语义只在对应的开发指南完整定义；MCP 公共规则放在服务说明，工具描述只保留用途和独特约束，参数放在 schema 中。
 

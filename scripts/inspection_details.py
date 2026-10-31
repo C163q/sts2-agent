@@ -11,6 +11,7 @@ from reward_details import claim_reward_details, inspect_rewards_details
 from rest_site_details import inspect_rest_site_details
 from treasure_details import inspect_treasure_details
 from shop_details import inspect_shop_details, purchase_details
+from event_details import inspect_event_details
 
 
 def potion_details(state):
@@ -59,6 +60,8 @@ from ancient_details import inspect_ancient_details
 
 
 READERS = {
+    'inspect_event': inspect_event_details,
+    'choose_event_option': end_turn_details,
     'inspect_ancient': inspect_ancient_details,
     'choose_ancient_option': end_turn_details,
     'advance_dialogue': end_turn_details,

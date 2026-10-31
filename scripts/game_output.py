@@ -94,6 +94,9 @@ SHOP = {'status': str, 'view': TEXT, 'items': nullable([SHOP_ITEM]),
         'open': nullable({'enabled': bool}), 'back': nullable({'enabled': bool}),
         'proceed': nullable({'text': str, 'enabled': bool})}
 ANCIENT_OPTION = {'id': int, 'title': str, 'description': str, 'enabled': bool}
+ROOM_EVENT_OPTION = {**ANCIENT_OPTION, 'lethal_warning': bool}
+ROOM_EVENT = {'status': str, 'name': TEXT, 'description': TEXT, 'options': nullable([ROOM_EVENT_OPTION]),
+              'proceed': nullable({'text': str, 'enabled': bool})}
 ANCIENT = {'status': str, 'name': TEXT, 'epithet': TEXT, 'description': TEXT, 'dialogue': nullable([{'speaker': str, 'text': str}]),
            'options': nullable([ANCIENT_OPTION]), 'continue': nullable({'text': TEXT, 'enabled': bool}),
            'proceed': nullable({'text': str, 'enabled': bool})}
@@ -103,7 +106,7 @@ OBSERVATION = {
     "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
     "available_actions": [str],
 }
-OPTIONAL_OBSERVATION = {"ancient": nullable(ANCIENT),"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
+OPTIONAL_OBSERVATION = {"event": nullable(ROOM_EVENT), "ancient": nullable(ANCIENT),"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
 GAMEPLAY = {
     'reward_result': {'reward_id': int, 'status': str},
     'purchase_result': {'item_id': int, 'status': str},
@@ -142,13 +145,15 @@ def gameplay_fields(state):
                 'card': {**SHOP_CARD, 'description': str, 'hover_tips': [TIP]}}])}}
     if state.get('scene') == 'ancient' and any('hover_tips' in o for o in (state.get('ancient') or {}).get('options') or []):
         shape = {**shape, 'ancient': {**ANCIENT, 'options': nullable([{**ANCIENT_OPTION, 'hover_tips': [TIP]}])}}
+    if state.get('scene') == 'event' and any('hover_tips' in o for o in (state.get('event') or {}).get('options') or []):
+        shape = {**shape, 'event': {**ROOM_EVENT, 'options': nullable([{**ROOM_EVENT_OPTION, 'hover_tips': [TIP]}])}}
     return project(state, shape)
 
 
 def observation_details(state):
     result = project(state, {**OBSERVATION, **OPTIONAL_OBSERVATION})
     if (not set(OBSERVATION) <= result.keys() or "status" not in result["screen"]
-            or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards", 'rest_site', 'treasure', 'shop', 'ancient')
+            or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards", 'rest_site', 'treasure', 'shop', 'ancient', 'event')
             or result["screen"]["status"] not in ("visible", "covered", "hidden", "not_ready", "not_applicable")):
         raise ValueError("Invalid observation structure.")
     if result.get("selection") is not None:
@@ -178,6 +183,11 @@ def observation_details(state):
         result['ancient'] = ancient_details(result['ancient'])
     elif result['scene'] == 'ancient':
         raise ValueError('Missing ancient state.')
+    if result.get('event') is not None:
+        from event_details import event_details
+        result['event'] = event_details(result['event'])
+    elif result['scene'] == 'event':
+        raise ValueError('Missing event state.')
     return result
 
 

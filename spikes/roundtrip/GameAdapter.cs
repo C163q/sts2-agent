@@ -88,6 +88,7 @@ internal sealed partial class GameAdapter(bool testMode)
         rewardInspection.Synchronize();
         shopInspection.Synchronize();
         ancientInspection.Synchronize();
+        eventInspection.Synchronize();
         if (!ReferenceEquals(RestSiteInspection.Current, lastRestSite))
         {
             lastRestSite = RestSiteInspection.Current;
@@ -110,6 +111,7 @@ internal sealed partial class GameAdapter(bool testMode)
             : TreasureInspection.Current != null ? "treasure"
             : AncientInspection.Current != null ? "ancient"
             : ShopInspection.Current != null ? "shop"
+            : EventInspection.Current != null ? "event"
             : NGame.Instance?.MainMenu != null ? "main_menu" : "loading_or_noncombat";
         List<string> actions = [];
         if (CanEndTurn())
@@ -137,6 +139,13 @@ internal sealed partial class GameAdapter(bool testMode)
         if (scene == "treasure") visibility = TreasureInspection.Exposed(TreasureInspection.Current!) ? "visible" : "covered";
         if (scene == "shop") visibility = ShopInspection.Exposed(ShopInspection.Current!) ? "visible" : "covered";
         if (scene == "ancient") visibility = AncientInspection.Exposed(AncientInspection.Current!) ? "visible" : "covered";
+        if (scene == "event") visibility = EventInspection.Exposed(EventInspection.Current!) ? "visible" : "covered";
+        if (EventInspection.Current is { } currentEvent && EventInspection.Ready(currentEvent))
+        {
+            if (currentEvent.Layout.OptionButtons.Any(b => !ReferenceEquals(b, EventInspection.Proceed(currentEvent)) && EventInspection.Clickable(b)))
+                actions.Add("choose_event_option");
+            if (EventInspection.Proceed(currentEvent) is { } button && EventInspection.Clickable(button)) actions.Add("proceed");
+        }
         if (AncientInspection.Current is { } ancient && AncientInspection.Ready(ancient))
         {
             if (AncientInspection.Continue(ancient) != null) actions.Add("advance_dialogue");
@@ -178,9 +187,10 @@ internal sealed partial class GameAdapter(bool testMode)
         }
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 10, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 11, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
+            event_generation = eventInspection.Generation,
             selection_generation = selectionGeneration, scene,
             screen = CardView.Screen(visibility),
             turn = scene == "combat" ? observation.Turn() : null,
@@ -194,6 +204,7 @@ internal sealed partial class GameAdapter(bool testMode)
             treasure = TreasureInspection.Read(),
             shop = shopInspection.Read(),
             ancient = ancientInspection.Read(),
+            @event = eventInspection.Read(),
             available_actions = actions
         });
         string snapshotId = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(body)));
@@ -203,7 +214,7 @@ internal sealed partial class GameAdapter(bool testMode)
     public async Task<string> Execute(Request request)
     {
         string before = Observe();
-        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option")
+        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
@@ -228,6 +239,17 @@ internal sealed partial class GameAdapter(bool testMode)
             }));
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_EVENT_SCENARIO") != null && LocalPlayer != null)
+        {
+            if (request.Operation == "check_test_event") return Success(request.Id, JsonSerializer.Serialize(EventFixture.Read(LocalPlayer)));
+            if (request.Operation == "check_test_event_english") return Success(request.Id, JsonSerializer.Serialize(EventTextChecks.Run(
+                System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_EVENT_SCENARIO") == "tea")));
+            if (request.Operation == "prepare_test_event_victory")
+            {
+                await EventFixture.PrepareVictory(LocalPlayer);
+                return Success(request.Id, await SettledObservation());
+            }
+        }
         if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_ANCIENT_SCENARIO") is { } ancientScenario && LocalPlayer != null)
         {
             if (request.Operation == "check_test_ancient") return Success(request.Id, JsonSerializer.Serialize(AncientFixture.Read(LocalPlayer)));
@@ -271,6 +293,9 @@ internal sealed partial class GameAdapter(bool testMode)
         if (request.Operation is "inspect_ancient" or "choose_ancient_option" or "advance_dialogue"
             || request.Operation == "proceed" && RewardInspection.Current == null && AncientInspection.Current != null)
             return await AncientRequest(request, document.RootElement);
+        if (request.Operation is "inspect_event" or "choose_event_option"
+            || request.Operation == "proceed" && RewardInspection.Current == null && EventInspection.Current != null)
+            return await EventRequest(request, document.RootElement);
         if (request.Operation is "open_shop" or "close_shop" or "inspect_shop" or "buy_item"
             || request.Operation == "proceed" && RewardInspection.Current == null && ShopInspection.Current != null)
             return await ShopRequest(request, document.RootElement);
@@ -511,6 +536,8 @@ internal sealed partial class GameAdapter(bool testMode)
                 await RestSiteFixture.Configure(restScenario, LocalPlayer!, ObservationFrame);
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_ANCIENT_SCENARIO") is { } ancientScenarioName)
                 await AncientFixture.Configure(ancientScenarioName, LocalPlayer!, ObservationFrame);
+            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_EVENT_SCENARIO") is { } eventScenarioName)
+                await EventFixture.Configure(eventScenarioName, LocalPlayer!, ObservationFrame);
             // Debug room entry bypasses the normal map-travel disabling step.
             if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_MAP_CHECKS") != null)
             {

@@ -88,14 +88,14 @@ internal sealed partial class GameAdapter
             if (journal == null)
             {
                 var current = CardSelection.Current;
-                if (RewardInspection.Current != null || RestSiteInspection.Current != null || TreasureInspection.Current != null || ShopInspection.Current != null || AncientInspection.Current != null) boundary = NonCombatBoundary();
+                if (RewardInspection.Current != null || RestSiteInspection.Current != null || TreasureInspection.Current != null || ShopInspection.Current != null || AncientInspection.Current != null || EventInspection.Current != null) boundary = NonCombatBoundary();
                 else if (CardSelection.AwaitingInput) boundary = "choice_required";
                 else if (current == null) boundary = "selection_resolved";
             }
             return boundary;
         });
         object transition = journal?.Result(reason) ?? new { stop_reason = reason,
-            complete = reason != "timeout", events = Array.Empty<object>() };
+            complete = reason is not ("timeout" or "interrupted"), events = Array.Empty<object>() };
         return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(transition) + "}");
     }
 }

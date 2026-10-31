@@ -16,6 +16,7 @@ internal sealed partial class GameAdapter
         && RunManager.Instance.IsSingleplayerOrFakeMultiplayer && LocalPlayer?.Creature.IsAlive == true
         && !LocalPlayer.RunState.IsGameOver
         && (!AncientInspection.Busy || RewardInspection.Current is { } ancientRewards && RewardInspection.Ready(ancientRewards))
+        && (CombatManager.Instance.IsInProgress || !EventTaskTracker.Pending || RewardInspection.Current is { } eventRewards && RewardInspection.Ready(eventRewards))
         && (!ShopTransactions.Pending || RewardInspection.Current is { } rewards && RewardInspection.Ready(rewards))
         && (ShopInspection.Current is not { } shop || !ShopInspection.Exposed(shop) || ShopInspection.Ready(shop)) && CardSelection.Current == null
         && RunManager.Instance.ActionQueueSet.IsEmpty && !NTargetManager.Instance.IsInSelection

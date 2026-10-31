@@ -44,6 +44,11 @@ def main():
                         help='构造独立实例的原生商店')
     parser.add_argument('--ancient-scenario', choices=('basic', 'dialogue', 'touch', 'tooth', 'eye', 'earring', 'shrymp', 'multi', 'transform', 'bundle', 'nested', 'pandora'),
                         help='构造独立实例的先古之民房间与遗物适配验证')
+    parser.add_argument('--event-scenario', choices=('basic', 'death', 'rescue', 'locked', 'upgrade', 'upgrade_cancel', 'transform', 'enchant', 'remove',
+                        'grid', 'cheese', 'reward', 'potions', 'dense', 'dense_choice', 'lantern', 'repy', 'dummy1', 'dummy2', 'dummy3', 'trial',
+                        'trial_story', 'crystal', 'relic_trader', 'future_potions', 'tea', 'conveyor', 'slippery',
+                        'reflections', 'doll', 'wood', 'sapphire', 'symbiote'),
+                        help='构造独立实例的通用事件与场景衔接验证')
     args = parser.parse_args()
     if args.capture and not args.windowed:
         parser.error("--capture 需要 --windowed。")
@@ -59,6 +64,8 @@ def main():
         "STS2_AGENT_IPC_DIR": str(work / "ipc"),
         "STS2_AGENT_TEST_MODE": "1",
     })
+    if args.event_scenario:
+        environment['STS2_AGENT_TEST_EVENT_SCENARIO'] = args.event_scenario
     if args.ancient_scenario:
         environment['STS2_AGENT_TEST_ANCIENT_SCENARIO'] = args.ancient_scenario
     if args.shop_scenario:

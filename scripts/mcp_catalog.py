@@ -11,6 +11,7 @@ from rest_site_details import REST_OPTION_SCHEMA
 from treasure_details import LOOT_SCHEMA
 from shop_details import BUY_SCHEMA
 from ancient_details import ANCIENT_OPTION_SCHEMA
+from event_details import EVENT_OPTION_SCHEMA
 
 
 SERVER_INSTRUCTIONS = (
@@ -30,6 +31,11 @@ def tool_definitions(*, screenshots_enabled=False):
     view = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False)
     action = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False, openWorldHint=False)
     definitions = [
+        Tool(name='inspect_event', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
+            'Read the exposed event, current options and their hover help. Does not reveal future pages or outcomes.')),
+        Tool(name='choose_event_option', inputSchema=EVENT_OPTION_SCHEMA, annotations=action, description=(
+            'Click one enabled event option by observed option_id; lethal_warning marks the visible red warning. '
+            'Handle subsequent card selections, rewards or combat separately.')),
         Tool(name='inspect_ancient', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             'Read the exposed ancient, visible dialogue, options and their hover help. Never reveals future dialogue or hidden choices.')),
         Tool(name='choose_ancient_option', inputSchema=ANCIENT_OPTION_SCHEMA, annotations=action, description=(
@@ -57,7 +63,7 @@ def tool_definitions(*, screenshots_enabled=False):
             'A full potion belt leaves the reward unclaimed; discard or use a potion separately if desired. '
             'Blocked potion gain can consume the reward without obtaining it (not_obtained).')),
         Tool(name='proceed', inputSchema=NO_ARGUMENTS, annotations=action, description=(
-            'Click the visible rewards/treasure Skip/Proceed, rest-site, ancient or closed-shop Proceed button. '
+            'Click the visible rewards/treasure Skip/Proceed, rest-site, event, ancient or closed-shop Proceed button. '
             'Uses the native flow, which may open the map, resume an event, change act or finish the run.')),
         Tool(name='loot_treasure', inputSchema=LOOT_SCHEMA, annotations=action, description=(
             'Open a single-player treasure chest and take its relic; never proceeds. '
