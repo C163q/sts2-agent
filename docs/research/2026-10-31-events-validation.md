@@ -8,7 +8,7 @@
 
 ## 基线与证据
 
-代码起点为 `de57f3c`。目标游戏为 Linux `v0.107.1`，分支 `v0.107.1`，提交 `59260271`；RitsuLib为 `0.6.10` 的 `0.107.1` 兼容运行时。目标 `data_sts2_linuxbsd_x86_64/sts2.dll` SHA-256 为 `d13f3f150b1413b24c3a9c5575cdf5398dc74270877d55dec9a556dd8150bd03`。
+代码起点为 `de57f3c`，功能提交为 `18ccee9`，已快进合入 `main`。目标游戏为 Linux `v0.107.1`，分支 `v0.107.1`，提交 `59260271`；RitsuLib为 `0.6.10` 的 `0.107.1` 兼容运行时。目标 `data_sts2_linuxbsd_x86_64/sts2.dll` SHA-256 为 `d13f3f150b1413b24c3a9c5575cdf5398dc74270877d55dec9a556dd8150bd03`。
 
 事件注册集合和主要原生流程依据[前置调研](2026-10-31-events.md)。本阶段补核对了 `LocString`、`StringVar`、`DynamicVar`、`HoverTip` 六种构造、`HoverTipFactory`、`CardModel.Title`、`CombatManager`、`CreatureCmd.Kill`、`RunManager.OnEnded`、`RunState.IsGameOver` 和 `CardSelectorPrefs` 等目标程序集实现。
 
@@ -79,3 +79,9 @@
 安装文件校验不能替代正式对局重启后的加载；本次真实加载和行为验证仅针对隔离实例。语音、其他游戏版本、所有旧验证脚本以及整局自主游玩未重新验证。
 
 隔离测试结束由脚本终止自建进程，部分日志在 Godot 关闭阶段出现静态字符串清理信息；本次未诊断引擎退出流程，也未声称运行日志完全没有警告或关闭期错误。
+
+## 安装交付
+
+已将 DLL 和清单安装到配置目标游戏的 `mods/Sts2Agent/`，版本为 `0.26.0`，与上述已验证产物哈希一致。旧文件备份在 `.tmp/mod-backups/2026-10-31-181621-events/`，安装记录为 `.tmp/2026-10-31-events-implementation/install.json`。RitsuLib 未修改，继续由创意工坊管理。
+
+安装时正式游戏进程仍在运行，使用原子重命名替换文件，保留已加载文件的旧 inode，没有退出或操作正式对局。当前进程继续使用先前加载的版本；本次没有验证正式对局重新加载 `0.26.0`。必须完整退出后重新启动游戏，并重连 MCP，才能使用新增工具。
