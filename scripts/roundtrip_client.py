@@ -83,7 +83,7 @@ def main():
         result = Client(args.ipc_dir).call(args.operation, args.expected_state, arguments=arguments or None)
         if not isinstance(result, dict) or type(result.get("ok")) is not bool:
             raise ValueError("Invalid game response.")
-        payload = result if args.raw else player_result(result)
+        payload = result if args.raw else player_result(result, operation=args.operation)
     except (OSError, RuntimeError, ValueError, KeyError, TypeError) as error:
         code = "timeout" if isinstance(error, TimeoutError) else "transport_error"
         result = {"ok": False, "error": {"code": code, "message": str(error)}}

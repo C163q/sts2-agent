@@ -30,7 +30,7 @@ class Client:
         if operation == 'inspect_selection':
             choice = selection()
             choice['cards'][0]['hover_tips'] = []
-            return {'ok': True, 'state': {'snapshot_id': self.token, 'scene': 'card_selection', 'selection': choice}}
+            return {'ok': True, 'state': {'snapshot_id': self.token, 'scene': 'combat', 'selection': choice}}
         if operation != 'get_state':
             if self.reply_error:
                 if isinstance(self.reply_error, Exception):
@@ -79,7 +79,9 @@ class ActionObservationTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('player', result)
         self.assertEqual(tools.snapshot_id, 'state-2')
         inspected = await tools.inspect_selection()
+        self.assertEqual(inspected['scene'], 'combat')
         self.assertEqual(inspected['selection']['cards'][0]['id'], 5)
+        self.assertEqual(inspected['selection']['cards'][0]['description'], 'Gain 5 Block.')
         self.assertEqual(tools.snapshot_id, 'state-2')
 
     async def test_manual_input_note_and_incomplete_journal_survive_projection(self):

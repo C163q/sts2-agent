@@ -7,7 +7,7 @@
 - 自行安装 Linux 版《杀戮尖塔 2》，按 [README 配置路径](../../README.md#开发与运行入口)，在当前终端加载 `.env`。游戏路径通过 `Sts2Dir` 和 `--game-dir` 传入。
 - 安装 .NET 9 SDK；本次使用 `9.0.122`，仓库的 `global.json` 允许同系列更高功能带。需要 .NET 9 引用包，单独安装运行时不足以编译。
 - 安装 Python 3；本文原有文件客户端和验证脚本只使用标准库，MCP 服务的额外依赖见接入指南。
-- 从 [RitsuLib 0.6.10 官方发布](https://github.com/BAKAOLC/STS2-RitsuLib/releases/tag/v0.6.10) 下载 `STS2.RitsuLib.Compat.0.107.1.0.6.10.github.zip`，解压到自行选择的目录并配置 `RitsuLibDir`。目录须直接包含 `RitsuLib.References.props`、`mod_manifest.json`、根 DLL、`assets.zip`、`shared/` 和 `compat/0.107.1/`，不能只复制根 DLL。发布包 SHA-256：`3c7dafb8a8d36d66891abd6c601aec6f43de9890693d1b583e67e2c6d71ebfb5`。
+- `RitsuLibDir` 可直接指向 Steam 创意工坊安装的兼容 RitsuLib `0.6.10` 完整目录，无须重新下载或修改该安装。也可从 [RitsuLib 0.6.10 官方发布](https://github.com/BAKAOLC/STS2-RitsuLib/releases/tag/v0.6.10) 下载 `STS2.RitsuLib.Compat.0.107.1.0.6.10.github.zip` 并解压。目录须直接包含 `RitsuLib.References.props`、`mod_manifest.json`、根 DLL、`assets.zip`、`shared/` 和 `compat/0.107.1/`，不能只复制根 DLL。发布包 SHA-256：`3c7dafb8a8d36d66891abd6c601aec6f43de9890693d1b583e67e2c6d71ebfb5`。
 - 构建引用上述本地库与游戏自带程序集，不下载 NuGet 包，原型目录的 NuGet 配置不启用远程源。
 
 在仓库根目录执行：

@@ -1,8 +1,10 @@
 # 选牌与查看战场
 
-适用于 Mod `0.33.0`、MCP server `0.28.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
+适用于 Mod `0.34.0`、MCP server `0.29.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
 
 ## 观察与信息范围
+
+`get_observation`、动作回执和 `inspect_selection` 中的 `scene` 均表示同一个底层房间或战斗，不随选牌类型改变。例如涅奥牌包选择仍为 `scene:"ancient"`，火堆锻造仍为 `scene:"rest_site"`；当前选择由 `selection.type/status` 表达。`inspect_selection` 只扩展当前选择的详情，不切换页面；[一致性验证记录](../research/2026-11-01-selection-scene.md)包含适用版本与覆盖范围。
 
 `get_observation` 的 `selection` 在没有选择时为 `null`；有选择时包含：
 

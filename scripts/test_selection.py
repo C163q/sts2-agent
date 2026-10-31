@@ -6,6 +6,7 @@ from game_tools import GameTools
 from inspection_details import inspection_details
 from mcp_catalog import tool_definitions
 from player_output import player_result
+from selection_details import inspect_selection_details
 
 
 def selection(status="visible"):
@@ -29,6 +30,38 @@ def state():
 
 
 class SelectionBoundaryTests(unittest.TestCase):
+    def test_inspection_preserves_room_scene_and_complete_card_details(self):
+        for scene in ('combat', 'ancient', 'event', 'rest_site', 'shop', 'rewards', 'treasure', 'loading_or_noncombat'):
+            raw = {'scene': scene, 'selection': selection()}
+            raw['selection']['cards'][0]['hover_tips'] = [{'title': 'Block', 'description': 'Prevents damage.'}]
+            raw['selection']['cards'][0]['private'] = 'hidden'
+            with self.subTest(scene=scene):
+                details = inspect_selection_details(raw)
+                public = player_result({'ok': True, 'state': details}, operation='inspect_selection')
+                self.assertEqual(public['scene'], scene)
+                self.assertEqual(public['selection']['cards'][0]['description'], 'Gain 5 Block.')
+                self.assertEqual(public['hover_tips'], [{'title': 'Block', 'description': 'Prevents damage.', 'card_ids': [5]}])
+                self.assertNotIn('private', str(public))
+
+    def test_bundle_inspection_preserves_full_cards_without_changing_scene(self):
+        choice = selection()
+        card = {**choice['cards'][0], 'hover_tips': []}
+        choice.update(type='bundle', cards=[], bundles=[{'id': 'bundle:0', 'cards': [card]}])
+        public = player_result({'ok': True, 'state': inspect_selection_details(
+            {'scene': 'ancient', 'selection': choice})}, operation='inspect_selection')
+        self.assertEqual(public['scene'], 'ancient')
+        self.assertEqual(public['selection']['bundles'][0]['cards'][0]['description'], 'Gain 5 Block.')
+        self.assertEqual(public['selection']['bundles'][0]['cards'][0]['hover_tips'], [])
+
+    def test_inspection_rejects_unknown_scene_and_hidden_selection(self):
+        for scene, status in [('card_selection', 'visible'), ('unknown', 'visible'), (None, 'visible'),
+                              ('ancient', 'covered'), ('combat', 'battlefield')]:
+            choice = selection(status)
+            if choice['cards']:
+                choice['cards'][0]['hover_tips'] = []
+            with self.subTest(scene=scene, status=status), self.assertRaises(ValueError):
+                inspect_selection_details({'scene': scene, 'selection': choice})
+
     def test_upgrade_preview_keeps_original_identity_and_filters_private_fields(self):
         data = state()
         data['selection']['type'] = 'hand_upgrade'

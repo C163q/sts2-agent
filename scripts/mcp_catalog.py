@@ -148,7 +148,7 @@ def tool_definitions(*, screenshots_enabled=False):
             "Cannot close through card pages or force a mandatory map closed.")),
         Tool(name="inspect_selection", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read the current selection's entire browsable candidate list and card details. "
-            "Unavailable while the selection is hidden; does not switch views.")),
+            "Scene matches get_observation. Unavailable while the selection is hidden; does not switch views.")),
         Tool(name="select_card", inputSchema=CARD_SCHEMA, annotations=action, description=(
             "Click one candidate by its observed card_id. Multi-select clicks toggle that card; "
             "single-choice screens may immediately submit. Use enabled selection.options to confirm when required. "

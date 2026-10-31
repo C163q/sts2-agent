@@ -38,6 +38,15 @@ class SessionDouble:
 
 
 class GuiSuiteTests(unittest.TestCase):
+    def test_selection_metadata_does_not_change_run_identity(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = gui_suite.GameSession(Path(directory), sys.executable)
+            reply = {'state': {'process_id': 123, 'session': 'game-one', 'run_id': 'run-one'}}
+            with patch.object(session, 'request', return_value=reply):
+                self.assertEqual(session.identity(), {'process_id': 123, 'session': 'game-one', 'run_id': 'run-one'})
+                reply['state']['selection_view'] = 'visible'
+                self.assertEqual(session.identity(), {'process_id': 123, 'session': 'game-one', 'run_id': 'run-one'})
+
     def load(self, value):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'suite.json'

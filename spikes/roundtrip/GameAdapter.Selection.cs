@@ -42,7 +42,7 @@ internal sealed partial class GameAdapter
             if (selection.Status != "visible")
                 return FileMailbox.Error(request.Id, "illegal_action", "Return to the selection before reading its candidates.");
             return Success(request.Id, JsonSerializer.Serialize(new { snapshot_id = before.GetProperty("snapshot_id").GetString(),
-                scene = "card_selection", selection = new SelectionInspection(observation).Read(selection, full: true) }));
+                scene = before.GetProperty("scene").GetString(), selection = new SelectionInspection(observation).Read(selection, full: true) }));
         }
         if (request.Operation == "set_selection_view")
         {

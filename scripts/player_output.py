@@ -40,9 +40,9 @@ def share_potion_tips(slots):
     return share_indexed_tips(slots, "slot_indices")
 
 
-def player_result(response):
+def player_result(response, *, operation=None):
     if response["ok"]:
-        result = gameplay_fields(response["state"])
+        result = gameplay_fields(response["state"], operation=operation)
         if "hand" in result and result["hand"] is not None:
             result["hand"], result["hover_tips"] = share_hand_tips(result["hand"])
         if "potion_slots" in result and result["potion_slots"] is not None:
@@ -53,7 +53,7 @@ def player_result(response):
             result["deck"], result["hover_tips"] = share_hand_tips(result["deck"])
         if result.get("scene") == "card_pile" and result.get("detail_level") == "full" and result.get("cards") is not None:
             result["cards"], result["hover_tips"] = share_hand_tips(result["cards"])
-        if result.get("scene") == "card_selection":
+        if operation == "inspect_selection":
             result["selection"]["cards"], result["hover_tips"] = share_hand_tips(result["selection"]["cards"])
         notes = {}
         if result.get('transition', {}).get('stop_reason') == 'manual_input_required' \

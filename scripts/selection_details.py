@@ -1,4 +1,4 @@
-from game_output import HAND_CARD, TIP, project, selection_details
+from game_output import HAND_CARD, OBSERVATION_SCENES, TIP, project, selection_details
 
 
 CARD_SCHEMA = {"type": "object", "properties": {"card_id": {"type": "integer", "minimum": 0, "maximum": 2147483647}},
@@ -22,7 +22,7 @@ def selection_arguments(operation, arguments):
 
 
 def inspect_selection_details(state):
-    if state.get("scene") != "card_selection":
+    if state.get("scene") not in OBSERVATION_SCENES:
         raise ValueError("Invalid selection inspection scene.")
     raw = state["selection"]
     selection = selection_details(raw)
@@ -37,4 +37,4 @@ def inspect_selection_details(state):
         selection['bundles'] = project(raw['bundles'], [{'id': str, 'cards': [HAND_CARD]}])
         if any(not {'description', 'hover_tips'} <= c.keys() for b in selection['bundles'] for c in b['cards']):
             raise ValueError('Incomplete bundle details.')
-    return {"scene": "card_selection", "selection": selection}
+    return {"scene": state["scene"], "selection": selection}

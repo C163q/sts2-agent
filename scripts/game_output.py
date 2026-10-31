@@ -117,6 +117,8 @@ OBSERVATION = {
     "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
     "available_actions": [str],
 }
+OBSERVATION_SCENES = frozenset(('combat', 'main_menu', 'loading_or_noncombat', 'rewards', 'rest_site',
+                              'treasure', 'shop', 'ancient', 'event', 'epilogue', 'run_result'))
 from map_details import MAP_SUMMARY
 
 
@@ -144,9 +146,9 @@ GAMEPLAY = {
 }
 
 
-def gameplay_fields(state):
+def gameplay_fields(state, *, operation=None):
     shape = GAMEPLAY
-    if state.get("scene") == "card_selection":
+    if operation == "inspect_selection":
         shape = {**GAMEPLAY, "selection": {**SELECTION_OUTPUT, "cards": [HAND_CARD], "bundles": [{"id": str, "cards": [HAND_CARD]}]}}
     if (state.get('rewards') or {}).get('items') and 'hover_tips' in state['rewards']['items'][0]:
         shape = {**shape, 'rewards': {**REWARDS, 'items': [{**REWARD_ITEM, 'hover_tips': [TIP]}]}}
@@ -172,7 +174,7 @@ def gameplay_fields(state):
 def observation_details(state):
     result = project(state, {**OBSERVATION, **OPTIONAL_OBSERVATION})
     if (not set(OBSERVATION) <= result.keys() or "status" not in result["screen"]
-            or result["scene"] not in ("combat", "main_menu", "loading_or_noncombat", "rewards", 'rest_site', 'treasure', 'shop', 'ancient', 'event', 'epilogue', 'run_result')
+            or result["scene"] not in OBSERVATION_SCENES
             or result["screen"]["status"] not in ("visible", "covered", "hidden", "not_ready", "not_applicable")):
         raise ValueError("Invalid observation structure.")
     result['available_actions'] = public_tools(result['available_actions'])

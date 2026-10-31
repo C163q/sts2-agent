@@ -373,7 +373,7 @@ class GameTools:
             else:
                 if not isinstance(response["error"]["code"], str):
                     raise ValueError("Invalid game error.")
-            payload = player_result(response)
+            payload = player_result(response, operation=operation)
             if response['ok']:
                 payload = attach_divination_image(payload, state)
             if response['ok'] and 'available_actions' in payload:

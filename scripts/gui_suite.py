@@ -19,6 +19,7 @@ SUPPORTED_VERIFIERS = {
     'verify_action_observations.py', 'verify_kill_settling.py', 'verify_rest_site.py',
     'verify_shop.py', 'verify_rewards.py', 'verify_treasure.py',
     'verify_suite_continuation.py', 'verify_suite_pending.py',
+    'verify_selection_scene.py',
 }
 
 
@@ -60,6 +61,7 @@ def load_cases(path):
                 'verify_rest_site.py': CATALOG['rest'], 'verify_shop.py': CATALOG['shop'],
                 'verify_rewards.py': CATALOG['reward'], 'verify_treasure.py': CATALOG['treasure'],
                 'verify_kill_settling.py': ('card', 'potion', 'phase', 'ui', 'choice'),
+                'verify_selection_scene.py': ('ancient_bundle', 'rest_smith', 'combat_discovery', 'event_deck', 'shop_remove'),
             }
             if args and (verifier not in scenario_options or len(args) != 2
                          or args[0] != '--scenario' or args[1] not in scenario_options[verifier]):
@@ -183,7 +185,8 @@ class GameSession:
         return result
 
     def identity(self):
-        return self.request('get_test_session')['state']
+        state = self.request('get_test_session')['state']
+        return {key: state[key] for key in ('process_id', 'session', 'run_id')}
 
     def begin_run(self, scenarios):
         begin = time.monotonic()
