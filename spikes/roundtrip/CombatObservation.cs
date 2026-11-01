@@ -236,7 +236,7 @@ internal sealed class CombatObservation
             ? VisibleUi.Number(bar, "%BlockLabel") : 0;
     }
 
-    private static (int? current, int? maximum) Pair(string? text)
+    internal static (int? current, int? maximum) Pair(string? text)
     {
         string[] parts = text?.Split('/') ?? [];
         return parts.Length == 2 && int.TryParse(parts[0], out int current) && int.TryParse(parts[1], out int maximum)

@@ -17,6 +17,7 @@
 | `scripts/game_output.py` | 已知玩法字段的递归投影与类型检查、基础观察与手牌结构校验 |
 | `scripts/player_output.py` | 去除控制包装、共享悬停解释、条件数值说明和错误恢复文案 |
 | `spikes/roundtrip/TurnJournal.cs`、`TurnCapture.cs` | RitsuLib 与原生事件记录、伤害补录及来源追踪 |
+| `spikes/roundtrip/ActionEventScope.cs`、`GameAdapter.Resources.cs`、`RunResourceJournal.cs` | 单次游戏动作的共享事件缓冲、响应附加及顶栏可读的玩家 HP／最大生命／金币订阅；与现有战斗和药水日志共用顺序及上限 |
 | `spikes/roundtrip/TurnBoundary.cs`、`TurnEventBuffer.cs` | 无游戏依赖的结束条件与有界事件缓冲 |
 | `spikes/roundtrip/EventInspection.cs`、`GameAdapter.Event.cs` | 通用事件的可见页面、稳定选项 ID 和原生按钮执行 |
 | `spikes/roundtrip/EventTaskTracker.cs`、`CombatEntryCapture.cs` | 事件初始化/选择/Resume 任务跟踪，以及首回合自动效果之前的战斗日志订阅 |

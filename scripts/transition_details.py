@@ -6,6 +6,8 @@ REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "run_
 FIELDS = {
     "damage": {"target", "hp_loss", "blocked"},
     "hp_changed": {"target", "before", "after"},
+    "max_hp_changed": {"target", "before", "after"},
+    "gold_changed": {"target", "before", "after"},
     "block_changed": {"target", "before", "after"},
     "power_changed": {"target", "name", "change", "before", "after"},
     "died": {"target"}, "revived": {"target"}, "creature_added": {"target"},
@@ -46,6 +48,10 @@ def end_turn_details(state):
             raise ValueError("Invalid event damage.")
         if kind in {"hp_changed", "block_changed"} and any(type(event[key]) is not int for key in ("before", "after")):
             raise ValueError("Invalid event values.")
+        if kind in {'max_hp_changed', 'gold_changed'} and (
+                event['target']['kind'] != 'player'
+                or any(type(event[key]) is not int or event[key] < 0 for key in ('before', 'after'))):
+            raise ValueError('Invalid player resource change.')
         if kind == "power_changed" and event["change"] not in {"applied", "modified", "removed"}:
             raise ValueError("Invalid power change.")
     result["transition"] = transition

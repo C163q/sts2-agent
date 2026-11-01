@@ -21,7 +21,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     private readonly Player player;
     private readonly Func<CardModel, int> cardId;
     private readonly EnglishText english = new();
-    private readonly TurnEventBuffer buffer = new();
+    private readonly TurnEventBuffer buffer = ActionEventScope.Current?.Buffer ?? new();
     private readonly List<Action> cleanup = [];
     private readonly HashSet<Creature> subscribed = [];
     private readonly Dictionary<Creature, object> identities = [];

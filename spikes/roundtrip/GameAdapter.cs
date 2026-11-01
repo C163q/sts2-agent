@@ -72,6 +72,7 @@ internal sealed partial class GameAdapter(bool testMode)
     {
         if (!NGame.IsMainThread())
             throw new InvalidOperationException("Game access requires the main thread.");
+        RunResourceJournal.Current?.SampleVisibility();
         CombatState? combat = CombatManager.Instance.DebugOnlyGetState();
         if (!ReferenceEquals(combat, lastCombat))
         {
@@ -135,7 +136,7 @@ internal sealed partial class GameAdapter(bool testMode)
         if (ending != null || epilogue != null && map == null) screen["view"] = ending != null ? "run_result" : "epilogue";
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 17, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 18, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -171,7 +172,7 @@ internal sealed partial class GameAdapter(bool testMode)
         return "{\"snapshot_id\":\"" + snapshotId + "\"," + body[1..];
     }
 
-    public async Task<string> Execute(Request request)
+    private async Task<string> ExecuteCore(Request request)
     {
         if (request.Operation is "configure_test_run" or "reset_test_run" or "get_test_session")
             return await TestRunRequest(request);
@@ -189,6 +190,13 @@ internal sealed partial class GameAdapter(bool testMode)
                 ObservationChecks.Run(checks);
             return Success(request.Id, before);
         }
+        if (request.Operation == "check_test_resources" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } resourcePlayer)
+            return Success(request.Id, JsonSerializer.Serialize(await RunResourceChecks.Run(resourcePlayer, ObservationFrame)));
+        if (request.Operation == "check_test_resource_masks" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+            && testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO") == "deck" && LocalPlayer is { } maskedPlayer)
+            return Success(request.Id, JsonSerializer.Serialize(await RunResourceChecks.Covered(maskedPlayer, ObservationFrame)));
         if (testMode && testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") != null
             && request.Operation is "external_back_test_result" or "reopen_test_timeline" or "close_test_timeline")
         {

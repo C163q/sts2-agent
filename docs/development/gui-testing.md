@@ -64,6 +64,8 @@
 
 ## 生命周期与证据
 
+`verify_resource_events.py` 核对 HP、最大生命与金币事件能按捕获顺序还原实际顶栏变化，并检查精简回执及直接续接。场景对应：`event/rescue` 使用 `event:basic/rescue`，`rest/cook` 使用 `rest:basic/cook`，`shop` 使用 `shop:basic`，`reward` 使用 `reward:skip`，`ancient` 使用 `ancient:basic`，`potion_rest/potion_combat` 使用 `potion:noncombat_rest/fruit_combat`，`combat/visibility` 使用 `play:basic`，`entry` 使用 `navigation:combat`，`masks` 使用 `selection:deck`。`visibility` 执行嵌入可见性、持续隐藏、恢复基线与释放检查；`masks` 在保留原生选择页时打开原生卡牌详情及地图，验证遮挡期间资源不进入日志。两者只使用隔离测试入口。事件与烹饪场景纳入默认集，范围和证据见[资源事件第一阶段](../research/2026-11-01-run-resource-events.md)。
+
 套件模式通过 `STS2_AGENT_TEST_MODE=1` 和 `STS2_AGENT_TEST_SUITE=1` 双重门控，提供仅文件 IPC 可用的 `configure_test_run`、`reset_test_run`、`get_test_session`。前两项需最新状态令牌；配置仅允许没有对局的主菜单。它们不属于公开 MCP 工具，也不改变玩法 JSON 或动作许可规则。旧的单用例启动命令继续有效。
 
 局间使用游戏原生 `NGame.ReturnToMainMenu` / `RunManager.CleanUp`，等待夹具任务结束、释放夹具引用并移除专用 Harmony 补丁。不能确认清理完成时将进程标记为不可再用，并由套件关闭；不直接重写玩家状态伪造新局。该清理是测试设施，不是正常游玩的“放弃对局”接口。

@@ -20,6 +20,38 @@ Check(events.Events.Count == 2 && (int)events.Events[0]["sequence"]! == 1
 events.Add("died", new());
 Check(events.Truncated && events.Events.Count == 2, "overflow is explicit");
 
+using (var actionEvents = new ActionEventScope(2))
+{
+    Check(ReferenceEquals(ActionEventScope.Current?.Buffer, actionEvents.Buffer), "one action owns the shared buffer");
+    actionEvents.Buffer.Add("gold_changed", new() { ["before"] = 99, ["after"] = 89 });
+    ActionEventScope.Current!.Buffer.Add("card_drawn", new() { ["card"] = new { id = 3, name = "Strike" } });
+    string original = "{\"id\":\"fixture\",\"ok\":true,\"state\":{\"snapshot_id\":\"same\",\"transition\":{\"stop_reason\":\"choice_required\",\"complete\":true,\"events\":[]},\"reward_result\":{\"status\":\"pending\"}}}";
+    using var recorded = System.Text.Json.JsonDocument.Parse(actionEvents.Apply(original));
+    var state = recorded.RootElement.GetProperty("state");
+    var transition = state.GetProperty("transition");
+    Check(transition.GetProperty("events")[0].GetProperty("sequence").GetInt32() == 1
+        && transition.GetProperty("events")[1].GetProperty("sequence").GetInt32() == 2
+        && transition.GetProperty("events")[1].GetProperty("type").GetString() == "card_drawn",
+        "resource and combat events keep one capture sequence");
+    Check(state.GetProperty("snapshot_id").GetString() == "same"
+        && state.GetProperty("reward_result").GetProperty("status").GetString() == "pending"
+        && transition.GetProperty("stop_reason").GetString() == "choice_required",
+        "event attachment preserves tokens, boundaries and native outcomes");
+    actionEvents.Buffer.Add("hp_changed", new());
+    using var truncated = System.Text.Json.JsonDocument.Parse(actionEvents.Apply(original));
+    Check(!truncated.RootElement.GetProperty("state").GetProperty("transition").GetProperty("complete").GetBoolean(),
+        "shared buffer overflow makes the action incomplete");
+    string error = "{\"ok\":false,\"error\":{\"code\":\"illegal_action\"}}";
+    string inspection = "{\"ok\":true,\"state\":{\"hand\":[]}}";
+    Check(actionEvents.Apply(error) == error && actionEvents.Apply(inspection) == inspection,
+        "errors and observations without transitions are not rewritten");
+}
+Check(ActionEventScope.Current == null, "disposing releases the current action buffer");
+try { using var scope = new ActionEventScope(); throw new InvalidOperationException("fixture"); }
+catch (InvalidOperationException) { }
+using (var nextAction = new ActionEventScope())
+    Check(nextAction.Buffer.Events.Count == 0, "failed and consecutive actions never reuse earlier events");
+
 var settling = new ActionSettling();
 bool Sample(string? reason, string state, bool motion, int ms) => settling.Sample(reason, state, motion, TimeSpan.FromMilliseconds(ms));
 Check(!Sample("player_ready", "discard:0", true, 0) && !Sample("player_ready", "discard:0", true, 1000),

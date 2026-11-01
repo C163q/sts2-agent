@@ -13,5 +13,6 @@
     <Compile Include="../roundtrip/RewardBoundary.cs" Link="RewardBoundary.cs" />
     <Compile Include="../roundtrip/TurnBoundary.cs" Link="TurnBoundary.cs" />
     <Compile Include="../roundtrip/TurnEventBuffer.cs" Link="TurnEventBuffer.cs" />
+    <Compile Include="../roundtrip/ActionEventScope.cs" Link="ActionEventScope.cs" />
   </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@ internal sealed class PotionJournal : IDisposable
     private readonly Player player;
     private readonly Action<string, object> record;
     private readonly Dictionary<PotionModel, int> slots = [];
-    private readonly TurnEventBuffer buffer = new();
+    private readonly TurnEventBuffer buffer = ActionEventScope.Current?.Buffer ?? new();
 
     public PotionJournal(Player player, Action<string, object>? record = null)
     {

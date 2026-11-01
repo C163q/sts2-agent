@@ -1,5 +1,19 @@
 [
   {
+    "name": "event_resource_changes",
+    "scenarios": { "event": "basic" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_resource_events.py", "args": ["--scenario", "event"] }
+    ]
+  },
+  {
+    "name": "selection_resource_changes",
+    "scenarios": { "rest": "cook" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_resource_events.py", "args": ["--scenario", "cook"] }
+    ]
+  },
+  {
     "name": "selection_presets",
     "scenarios": { "play": "armaments_free" },
     "steps": [

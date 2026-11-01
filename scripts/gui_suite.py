@@ -29,6 +29,7 @@ SUPPORTED_VERIFIERS = {
     'verify_power_text.py',
     'verify_hand_presets.py',
     'verify_selection_presets.py',
+    'verify_resource_events.py',
 }
 
 
@@ -67,6 +68,8 @@ def load_cases(path):
             if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
+                'verify_resource_events.py': ('event', 'rescue', 'rest', 'cook', 'shop', 'reward', 'ancient',
+                    'potion_combat', 'potion_rest', 'combat', 'visibility', 'entry', 'masks'),
                 'verify_rest_site.py': CATALOG['rest'], 'verify_shop.py': CATALOG['shop'],
                 'verify_rewards.py': CATALOG['reward'], 'verify_treasure.py': CATALOG['treasure'],
                 'verify_kill_settling.py': ('card', 'potion', 'phase', 'ui', 'choice', 'energy'),
