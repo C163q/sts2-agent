@@ -1,6 +1,6 @@
 # 战斗观察 JSON
 
-适用于 Linux 游戏 `v0.107.1` 与 Mod `0.38.0`。底层观察结构版本为 `20`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+适用于 Linux 游戏 `v0.107.1` 与 Mod `0.39.0`。底层观察结构版本为 `21`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -53,6 +53,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 | `hp`、`max_hp`、`hp_display` | 实际显示的生命数字，以及 `numeric/dead/infinite/hidden/unknown` 显示状态；用于角色和敌人 |
 | `block`、`energy`、`max_energy`、`stars` | 当前可见资源与计数 |
 | `player.hand[]` | 从左到右排列的当前可见手牌，包含稳定 ID、名称、固有属性、显示费用与标记，不含卡牌正文 |
+| `player.orb_slots` | 按原生队列排列的充能球槽；整个字段 `null` 表示不可读，`[]` 表示没有槽位，数组项 `null` 表示空槽。非空项含 `name/passive/evoke`，数字仅取实际显示标签 |
 | `powers[]` | 实际显示状态图标的英语名称和可见计数，不枚举全部模型状态 |
 | `enemies[]` | 从左到右排列的可见敌人身份、定位 ID、生命、格挡、状态图标和当前意图 |
 | `intents[]` | 当前渲染意图的 `category/value`，不读取下一招模型或悬停说明 |
@@ -60,6 +61,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 | `top_bar` | 当前可见生命与最大生命（`hp/max_hp`）、金币、总楼层、可见进阶等级、主牌组数量、房间图标、首领、药水槽、遗物及入口可见性 |
 | `top_bar.bosses` | 实际显示的首领名称数组，例如 `["Ceremonial Beast"]`；未识别的可见图标以槽内 `null` 保留 |
 | `top_bar.potion_slots` | 按位置排列；槽内 `null` 是已确认空槽，非空为含 `name` 的对象，整个字段为 `null` 是未能观察槽位 |
+| `top_bar.relics[].melted` | 根据当前可见蜡制图标与熔化着色判断；图标不可读时为 `null`，普通禁用不表示熔化 |
 | `buttons.end_turn` | 当前按钮的英语文字与启用状态 |
 | `available_actions` | 当前场景可用的查看与操作工具名，不含参数；省略 `get_observation`、截图和测试入口。具体参数、状态和原生条件仍在调用时检查 |
 | `notes` | 按结果内容附带的英语数值解读说明，无适用内容时省略；属于接口说明，不是额外采样到的游戏状态 |
@@ -67,6 +69,8 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 战斗外在 [药水工具支持的页面](potion-actions.md#场景与停止边界) 也提供可见顶栏；搜刮页使用 `scene: "rewards"` 和独立的[奖励结构](rewards.md)，休息处、宝箱房、商店、先古之民和[通用事件](events.md)分别使用 `rest_site`、`treasure`、`shop`、`ancient`、`event`；[终章与结算](run-ending.md)使用 `epilogue` 与 `run_result`；未识别的非战斗页面仍使用 `loading_or_noncombat`。战斗外的 `player/enemies/turn/buttons` 为空；事件被覆盖时不附送其下方的正文和选项。
 
 数字来自可见标签，金币动画期间也按标签返回。`null` 不等于 0，表示未显示、尚未准备或不能可靠识别；可见空容器使用 `[]`。正常生命条没有格挡图标时才归一化为 `block: 0`。死亡文字与无限图标分别映射为 `dead`、`infinite`，不从隐藏生命模型补数字。
+
+充能球按当前 UI 队列顺序输出，首项是最先激发的槽位，不按屏幕横坐标排序；不包含已脱离队列但仍在淡出的旧图像。球种可以按外观识别，普通球未显示的激发数值为 `null`，等离子球不补出模型数字。任一槽位隐藏、离屏或被裁剪时，整个 `orb_slots` 为 `null`，避免把未知槽当空槽。已生成球的悬停说明由 [inspect_combatants](combatant-inspection.md) 提供；空槽的通用帮助由 [inspect_ui](ui-inspection.md) 提供。
 
 ## 数值预览说明
 

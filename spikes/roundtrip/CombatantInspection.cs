@@ -18,7 +18,7 @@ internal sealed class CombatantInspection
     private readonly Dictionary<(string? title, string description), List<string>> tips = [];
 
     internal sealed record PowerText(string? name, int? amount);
-    internal sealed record PlayerText(PowerText[]? powers);
+    internal sealed record PlayerText(PowerText[]? powers, OrbInspection.OrbText?[]? orb_slots);
     internal sealed record EnemyText(uint? id, string? name, PowerText[]? powers, object[]? intents);
     internal sealed record SharedTip(string? title, string description, string[] sources);
     internal sealed record Result(string scene, PlayerText? player, EnemyText[] enemies, SharedTip[] hover_tips);
@@ -31,7 +31,7 @@ internal sealed class CombatantInspection
             throw new InvalidOperationException("Combatant details require a visible combat screen.");
         var playerNode = NCombatRoom.Instance!.GetCreatureNode(player.Creature);
         var playerText = VisibleUi.Shown(playerNode) && VisibleUi.OnScreen(playerNode!.Body)
-            ? new PlayerText(Powers(playerNode, "player")) : null;
+            ? new PlayerText(Powers(playerNode, "player"), Orbs(playerNode)) : null;
         var enemies = CombatObservation.EnemyNodes().Select((node, index) => new EnemyText(
             node.Entity.CombatId, EnglishCardText.Plain(node.Entity.Monster!.Title.GetFormattedText()),
             Powers(node, $"enemies.{index}"), Intents(node, $"enemies.{index}"))).ToArray();
@@ -41,6 +41,16 @@ internal sealed class CombatantInspection
 
     internal static NPowerContainer? PowerContainer(NCreature node) =>
         node.GetNodeOrNull<NCreatureStateDisplay>("%HealthBar")?.GetNodeOrNull<NPowerContainer>("%PowerContainer");
+
+    private OrbInspection.OrbText?[]? Orbs(NCreature node)
+    {
+        var slots = OrbInspection.VisibleNodes(node);
+        if (slots == null) return null;
+        for (int i = 0; i < slots.Length; i++)
+            if (slots[i].Model is { } model && OrbInspection.Hoverable(slots[i]))
+                Add(model.HoverTips, $"player.orb_slots.{i}");
+        return OrbInspection.Read(node);
+    }
 
     private PowerText[]? Powers(NCreature node, string source)
     {

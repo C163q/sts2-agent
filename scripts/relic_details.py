@@ -20,4 +20,8 @@ def relic_details(state):
             raise ValueError("Invalid relic details.")
         details.append({"name": relic["name"], "counter": relic["counter"], "description": relic["description"],
                         "hover_tips": [tip_text(tip) for tip in relic["hover_tips"]]})
+        if 'melted' in relic:
+            if relic['melted'] is not None and type(relic['melted']) is not bool:
+                raise ValueError('Invalid visible melted state.')
+            details[-1]['melted'] = relic['melted']
     return {"relics": details}

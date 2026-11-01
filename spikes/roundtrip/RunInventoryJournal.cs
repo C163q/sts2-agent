@@ -17,6 +17,8 @@ internal sealed class RunInventoryJournal : IDisposable
     private readonly EnglishText english = new();
     private readonly Dictionary<CardModel, string> knownCards = [];
     private readonly Dictionary<RelicModel, string> knownRelics = [];
+    private readonly Dictionary<RelicModel, bool> knownMelted = [];
+    private readonly HashSet<RelicModel> watchedRelics = [];
     private readonly HashSet<CardModel> watched = [];
     private readonly List<Action> cleanup = [];
     private readonly List<Action> pending = [];
@@ -29,6 +31,7 @@ internal sealed class RunInventoryJournal : IDisposable
         this.cardId = cardId;
         SampleVisibility();
         foreach (var card in player.Deck.Cards) Watch(card);
+        foreach (var relic in player.Relics) Watch(relic);
         player.Deck.CardAdded += Added;
         player.Deck.CardRemoved += Removed;
         player.RelicObtained += RelicObtained;
@@ -54,6 +57,7 @@ internal sealed class RunInventoryJournal : IDisposable
         {
             knownCards.Clear();
             knownRelics.Clear();
+            knownMelted.Clear();
             pending.Clear();
             return;
         }
@@ -69,11 +73,19 @@ internal sealed class RunInventoryJournal : IDisposable
         }
         var inventory = NRun.Instance!.GlobalUi.RelicInventory;
         knownRelics.Clear();
+        var visibleRelics = new HashSet<RelicModel>();
         if (VisibleUi.OnScreen(inventory))
             foreach (var holder in inventory.RelicNodes)
                 if (VisibleUi.OnScreen(holder) && VisibleUi.OnScreen(holder.Relic.Icon)
-                    && holder.Relic.Icon.Texture != null && english.Name(holder.Relic.Model.Title) is { } name)
-                    knownRelics[holder.Relic.Model] = name;
+                    && holder.Relic.Icon.Texture != null && english.RelicName(holder.Relic.Model) is { } name)
+                {
+                    var relic = holder.Relic.Model;
+                    knownRelics[relic] = name;
+                    visibleRelics.Add(relic);
+                    SampleMelted(relic);
+                }
+        foreach (var relic in knownMelted.Keys.Where(relic => !visibleRelics.Contains(relic)).ToArray())
+            knownMelted.Remove(relic);
         foreach (var publish in pending.ToArray()) publish();
     }
 
@@ -132,12 +144,40 @@ internal sealed class RunInventoryJournal : IDisposable
         cleanup.Add(() => { card.Upgraded -= Upgraded; card.EnchantmentChanged -= Enchanted; });
     }
 
-    private void RelicObtained(RelicModel relic) => Defer("relic_obtained", () =>
-        knownRelics.TryGetValue(relic, out string? name) ? new() { ["relic"] = new { name } } : null,
-        () => VisibleUi.OnScreen(NRun.Instance?.GlobalUi.RelicInventory));
+    private void Watch(RelicModel relic)
+    {
+        if (!watchedRelics.Add(relic)) return;
+        void Status() => SampleMelted(relic);
+        relic.StatusChanged += Status;
+        cleanup.Add(() => relic.StatusChanged -= Status);
+    }
+
+    private void SampleMelted(RelicModel relic)
+    {
+        var holder = Visible ? NRun.Instance!.GlobalUi.RelicInventory.RelicNodes
+            .FirstOrDefault(node => ReferenceEquals(node.Relic.Model, relic) && VisibleUi.OnScreen(node)) : null;
+        if (holder == null || RelicInspection.Melted(holder.Relic) is not { } melted)
+        {
+            knownMelted.Remove(relic);
+            return;
+        }
+        if (melted && knownMelted.TryGetValue(relic, out bool before) && !before
+            && english.RelicName(relic) is { } name)
+            buffer.Add("relic_melted", new() { ["relic"] = new { name } });
+        knownMelted[relic] = melted;
+    }
+
+    private void RelicObtained(RelicModel relic)
+    {
+        Watch(relic);
+        Defer("relic_obtained", () =>
+            knownRelics.TryGetValue(relic, out string? name) ? new() { ["relic"] = new { name } } : null,
+            () => VisibleUi.OnScreen(NRun.Instance?.GlobalUi.RelicInventory));
+    }
 
     private void RelicRemoved(RelicModel relic)
     {
+        knownMelted.Remove(relic);
         if (Visible && VisibleUi.OnScreen(NRun.Instance!.GlobalUi.RelicInventory)
             && knownRelics.Remove(relic, out string? name))
             buffer.Add("relic_removed", new() { ["relic"] = new { name } });

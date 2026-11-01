@@ -104,6 +104,11 @@ internal static class UiInspection
             Static(stars, "STAR_COUNT", ["player.stars"], configure: (_, description) =>
                 description.Add("singleStarIcon", "[img]res://images/packed/sprite_fonts/star_icon.png[/img]"));
 
+        var orbSlots = room.GetCreatureNode(player.Creature) is { } creature ? OrbInspection.VisibleNodes(creature) : null;
+        for (int i = 0; i < (orbSlots?.Length ?? 0); i++)
+            if (orbSlots![i].Model == null && OrbInspection.Hoverable(orbSlots[i]))
+                Add(OrbModel.EmptySlotHoverTipHoverTip, $"player.orb_slots.{i}");
+
         void Pile(NCombatCardPile pile, string key, string source)
         {
             if (!VisibleUi.OnScreen(pile) || BoundPile.GetValue(pile) == null)

@@ -139,7 +139,7 @@ internal sealed partial class GameAdapter(bool testMode)
         if (ending != null || epilogue != null && map == null) screen["view"] = ending != null ? "run_result" : "epilogue";
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 20, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 21, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -192,6 +192,18 @@ internal sealed partial class GameAdapter(bool testMode)
             if (testMode && checks != null)
                 ObservationChecks.Run(checks);
             return Success(request.Id, before);
+        }
+        if (request.Operation == "check_test_orb_visibility" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } orbPlayer)
+        {
+            async Task Frame() { await ObservationFrame(); Observe(); }
+            return Success(request.Id, JsonSerializer.Serialize(await OrbVisibilityChecks.Run(orbPlayer, Frame, Observe)));
+        }
+        if (request.Operation == "check_test_capacity" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } capacityPlayer)
+        {
+            async Task Frame() { await ObservationFrame(); Observe(); }
+            return Success(request.Id, JsonSerializer.Serialize(await CapacityChecks.Run(capacityPlayer, Frame, observation.CardId, Observe)));
         }
         if (request.Operation is "check_test_combat_resources" or "check_test_star_reveal" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } combatResourcePlayer)
@@ -537,7 +549,8 @@ internal sealed partial class GameAdapter(bool testMode)
             // Fixture setup is explicitly gated and is not a gameplay tool.
             SaveManager.Instance.SetFtuesEnabled(false);
             NGame game = NGame.Instance!;
-            await game.StartNewSingleplayerRun(ModelDb.Character<Ironclad>(),
+            await game.StartNewSingleplayerRun(testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") == "orbs"
+                ? ModelDb.Character<Defect>() : ModelDb.Character<Ironclad>(),
                 testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") != null,
                 ModelDb.ActsByIndex.Select(acts => acts[0]).ToArray(),
                 Array.Empty<ModifierModel>(), "STS2AGENTROUNDTRIP", GameMode.Standard);

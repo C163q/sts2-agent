@@ -9,6 +9,7 @@ FIELDS = {
     "max_hp_changed": {"target", "before", "after"},
     "gold_changed": {"target", "before", "after"},
     "energy_changed": {"target", "before", "after"},
+    "max_energy_changed": {"target", "before", "after"},
     "stars_changed": {"target", "before", "after"},
     "block_changed": {"target", "before", "after"},
     "power_changed": {"target", "name", "change", "before", "after"},
@@ -18,7 +19,7 @@ FIELDS = {
     "card_added": {"card"},
     "potion_used": {"potion"}, "potion_discarded": {"potion"},
     "potion_obtained": {"potion"},
-    "relic_obtained": {"relic"}, "relic_removed": {"relic"},
+    "relic_obtained": {"relic"}, "relic_removed": {"relic"}, "relic_melted": {"relic"},
     "card_removed": {"card", "pile"}, "card_upgraded": {"card", "pile"},
     "card_downgraded": {"card", "pile"}, "card_enchantment_changed": {"card", "pile"},
 }
@@ -56,7 +57,7 @@ def end_turn_details(state):
         if kind in {'card_removed', 'card_upgraded', 'card_downgraded', 'card_enchantment_changed'} or 'pile' in event:
             if not event['card']['name']:
                 raise ValueError('Missing visible permanent card identity.')
-        if kind in {'relic_obtained', 'relic_removed'} and (
+        if kind in {'relic_obtained', 'relic_removed', 'relic_melted'} and (
                 set(event['relic']) != {'name'} or not event['relic']['name']):
             raise ValueError('Invalid visible relic identity.')
         if kind == 'potion_obtained' and not event['potion']['name']:
@@ -65,7 +66,7 @@ def end_turn_details(state):
             raise ValueError("Invalid event damage.")
         if kind in {"hp_changed", "block_changed"} and any(type(event[key]) is not int for key in ("before", "after")):
             raise ValueError("Invalid event values.")
-        if kind in {'max_hp_changed', 'gold_changed', 'energy_changed', 'stars_changed'}:
+        if kind in {'max_hp_changed', 'gold_changed', 'energy_changed', 'max_energy_changed', 'stars_changed'}:
             before, after = event['before'], event['after']
             if (event['target']['kind'] != 'player' or type(after) is not int or after < 0
                     or not (type(before) is int and before >= 0 or kind == 'stars_changed' and before is None)):

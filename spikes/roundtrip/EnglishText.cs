@@ -4,12 +4,26 @@ using Godot;
 using MegaCrit.Sts2.Core.Entities.UI;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Nodes.Cards;
+using MegaCrit.Sts2.Core.Models;
 
 namespace Sts2Agent;
 
 internal sealed class EnglishText
 {
     private readonly Dictionary<string, Dictionary<string, string>> tables = [];
+
+    public string? RelicName(RelicModel relic)
+    {
+        var title = relic.Title;
+        if (!relic.IsWax) return Name(title);
+        // The native wax prefix eagerly formats its nested title in the UI locale.
+        var detached = new LocString(title.LocTable, title.LocEntryKey);
+        string? baseName = Name(new LocString("relics", relic.Id.Entry + ".title"));
+        if (baseName == null) return null;
+        foreach (var (key, value) in title.Variables)
+            detached.AddObj(key, key == "Title" ? baseName : value);
+        return Name(detached);
+    }
 
     public string? CardName(NCard? card)
     {

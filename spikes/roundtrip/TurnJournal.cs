@@ -122,7 +122,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     {
         CardModel card => new { kind = "card", name = CardName(card) },
         PowerModel power when power.IsVisible => new { kind = "power", name = english.Name(power.Title) },
-        RelicModel relic => new { kind = "relic", name = english.Name(relic.Title) },
+        RelicModel relic => new { kind = "relic", name = english.RelicName(relic) },
         PotionModel potion => new { kind = "potion", name = english.Name(potion.Title) },
         _ => null
     };

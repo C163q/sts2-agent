@@ -34,7 +34,7 @@ def main():
             assert not any(word in source for word in ("potion", "power", "relic", "intent", "hand", "block")), source
             observed = before["state"]
             for component in source.split("."):
-                observed = observed[component]
+                observed = observed[int(component)] if isinstance(observed, list) else observed[component]
             if source.endswith("_visible"):
                 assert observed is True, (source, observed)
     args.output.parent.mkdir(parents=True, exist_ok=True)

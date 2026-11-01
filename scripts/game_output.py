@@ -43,16 +43,19 @@ BROWSED_CARD = {**HAND_CARD, "id": str}
 POWER = {"name": TEXT, "amount": NUMBER}
 INTENT = {"category": TEXT, "value": TEXT}
 HEALTH = {"hp": NUMBER, "max_hp": NUMBER, "hp_display": str, "block": NUMBER}
+ORB = {"name": str, "passive": NUMBER, "evoke": NUMBER}
+ORB_SLOTS = nullable([nullable(ORB)])
 PLAYER = {
     **HEALTH, "character": TEXT, "energy": NUMBER, "max_energy": NUMBER, "stars": NUMBER,
     "powers": nullable([POWER]), "hand": nullable([CARD]),
+    "orb_slots": ORB_SLOTS,
     "draw_count": NUMBER, "discard_count": NUMBER, "exhaust_count": NUMBER,
 }
 ENEMY = {
     **HEALTH, "id": NUMBER, "name": TEXT, "powers": nullable([POWER]),
     "intents": nullable([INTENT]),
 }
-RELIC = {"name": TEXT, "counter": NUMBER}
+RELIC = {"name": TEXT, "counter": NUMBER, "melted": nullable(bool)}
 TOP_BAR = {
     "hp": NUMBER, "max_hp": NUMBER,
     "gold": NUMBER, "floor": NUMBER, "ascension": NUMBER, "deck_count": NUMBER,
@@ -173,6 +176,14 @@ def gameplay_fields(state, *, operation=None):
     return project(state, shape)
 
 
+def orb_slots(value):
+    result = project(value, ORB_SLOTS)
+    if result is not None and (len(result) > 10 or any(
+            slot is not None and (set(slot) != set(ORB) or not slot['name']) for slot in result)):
+        raise ValueError('Invalid public orb slots.')
+    return result
+
+
 def observation_details(state):
     result = project(state, {**OBSERVATION, **OPTIONAL_OBSERVATION})
     if (not set(OBSERVATION) <= result.keys() or "status" not in result["screen"]
@@ -180,6 +191,8 @@ def observation_details(state):
             or result["screen"]["status"] not in ("visible", "covered", "hidden", "not_ready", "not_applicable")):
         raise ValueError("Invalid observation structure.")
     result['available_actions'] = public_tools(result['available_actions'])
+    if result['player'] is not None and 'orb_slots' in result['player']:
+        result['player']['orb_slots'] = orb_slots(result['player']['orb_slots'])
     if result.get('map') is not None:
         from map_details import map_summary
         result['map'] = map_summary(result['map'])

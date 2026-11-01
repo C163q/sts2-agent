@@ -1,5 +1,19 @@
 [
   {
+    "name": "defect_orb_observation",
+    "scenarios": { "play": "orbs" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_capacity.py", "args": ["--scenario", "orbs"] }
+    ]
+  },
+  {
+    "name": "wax_melt_receipt",
+    "scenarios": { "play": "wax_melt" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_capacity.py", "args": ["--scenario", "wax_melt"] }
+    ]
+  },
+  {
     "name": "potion_combat_entry_events",
     "scenarios": { "shop": "fake" },
     "steps": [

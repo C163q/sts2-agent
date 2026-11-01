@@ -86,6 +86,7 @@ internal sealed class CombatObservation
             stars = VisibleUi.Descendants<NStarCounter>(room.Ui).Where(VisibleUi.OnScreen)
                 .Select(counter => VisibleUi.Number(counter, "%CountLabel")).FirstOrDefault(),
             powers = Powers(node!),
+            orb_slots = OrbInspection.Read(node!),
             hand = VisibleUi.Shown(room.Ui.Hand) ? room.Ui.Hand.ActiveHolders
                 .Where(holder => VisibleUi.Shown(holder) && CardVisible(holder.CardNode))
                 .Select(holder => Card(holder.CardNode!)).ToArray() : null,
@@ -282,8 +283,9 @@ internal sealed class CombatObservation
             relics = VisibleUi.Shown(global.RelicInventory) ? global.RelicInventory.RelicNodes
                 .Where(VisibleUi.OnScreen).Select(holder => new
                 {
-                    name = english.Name(holder.Relic.Model.Title),
-                    counter = VisibleUi.Number(holder, "%AmountLabel")
+                    name = english.RelicName(holder.Relic.Model),
+                    counter = VisibleUi.Number(holder, "%AmountLabel"),
+                    melted = RelicInspection.Melted(holder.Relic)
                 }).ToArray() : null,
             map_visible = VisibleUi.OnScreen(bar.Map), deck_visible = VisibleUi.OnScreen(bar.Deck),
             settings_visible = VisibleUi.OnScreen(bar.Pause)

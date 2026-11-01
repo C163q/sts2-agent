@@ -10,6 +10,12 @@ internal sealed class VisibleResourceChange(string type, TurnEventBuffer buffer,
     public bool HasBaseline => known.HasValue;
     public bool PendingReveal { get; private set; }
 
+    public void SampleChange(int? displayed)
+    {
+        if (known.HasValue && displayed is >= 0 && known != displayed) Changed(displayed.Value, displayed);
+        else Sample(displayed);
+    }
+
     public void Sample(int? displayed)
     {
         if (displayed is not >= 0)

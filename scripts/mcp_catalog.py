@@ -115,7 +115,8 @@ def tool_definitions(*, screenshots_enabled=False):
             "Play one current hand card. Use inspect_targets when target requirements are unknown. "
             "Stops at choices; continue with selection tools.")),
         Tool(name="inspect_ui", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
-            "Read hover help for visible combat UI and resources. Use dedicated inspections for cards, potions, relics and combatants.")),
+            "Read hover help for visible combat UI, resources and empty orb slots. Use inspect_combatants for occupied orbs; "
+            "use dedicated inspections for cards, potions and relics.")),
         Tool(name="inspect_potions", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read visible potion descriptions and hover help. potion_slots preserves belt positions, with null for empty slots.")),
         Tool(name="use_potion", inputSchema=USE_SCHEMA, annotations=action, description=(
@@ -125,7 +126,7 @@ def tool_definitions(*, screenshots_enabled=False):
             "Discard one potion through the native action. "
             "Allowed only when potions can be removed; automatic potions may be discarded.")),
         Tool(name="inspect_combatants", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
-            "Read both sides' visible powers and current enemy intent explanations. "
+            "Read both sides' visible powers, current enemy intent explanations and your occupied orbs' hover help. "
             "Unavailable while aiming or playing a card.")),
         Tool(name="inspect_relics", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read descriptions, displayed counters and hover help for visible, hoverable owned relics.")),

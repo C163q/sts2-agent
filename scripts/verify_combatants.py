@@ -38,8 +38,9 @@ def main():
         assert set(result["notes"]) == {"enemy_attack_intents"}, result
     assert set(result) == expected and result["scene"] == "combat", result
     if result["player"] is not None:
-        assert set(result["player"]) == {"powers"}, result["player"]
+        assert set(result["player"]) == {"powers", "orb_slots"}, result["player"]
         assert_visible_subsequence(result["player"]["powers"], before["state"]["player"]["powers"])
+        assert result['player']['orb_slots'] == before['state']['player']['orb_slots'], result['player']
     observed = {enemy["id"]: enemy for enemy in before["state"]["enemies"]}
     for enemy in result["enemies"]:
         assert set(enemy) == {"id", "name", "powers", "intents"}, enemy
@@ -55,7 +56,8 @@ def main():
         assert "[img]" not in tip["description"] and "[gold]" not in tip["description"], tip
         assert tip["sources"] and len(tip["sources"]) == len(set(tip["sources"])), tip
         for source in tip["sources"]:
-            assert ".powers." in source or (source.startswith("enemies.") and ".intents." in source), source
+            assert (".powers." in source or source.startswith('player.orb_slots.')
+                    or (source.startswith("enemies.") and ".intents." in source)), source
             value = result
             for part in source.split("."):
                 value = value[int(part)] if isinstance(value, list) else value[part]

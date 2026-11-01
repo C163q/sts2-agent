@@ -1,6 +1,6 @@
-# 双方 powers 与敌人意图详情
+# 战斗对象与充能球详情
 
-文件操作 `inspect_combatants` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.34.4`。一次只读查看本地玩家和当前可见敌人的 powers，以及敌人当前展示的意图，返回原生英语悬停说明。不触发实际鼠标悬停，不改变目标、语言或游戏流程。MCP 与文件客户端返回相同的玩法 JSON。
+文件操作 `inspect_combatants` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.39.0`。一次只读查看本地玩家和当前可见敌人的 powers、敌人当前展示的意图，以及玩家已生成充能球的原生英语悬停说明。不触发实际鼠标悬停，不改变目标、语言或游戏流程。MCP 与文件客户端返回相同的玩法 JSON。
 
 ## 读取
 
@@ -18,14 +18,17 @@ MCP 调用 `inspect_combatants()` 无须参数，成功时刷新状态令牌；�
 | --- | --- |
 | `scene` | 当前固定为 `combat` |
 | `player.powers[]` | 玩家当前可读的 power 名称和可见计数 `name/amount` |
+| `player.orb_slots` | 与[基础观察](observation.md#玩法字段)相同的球槽顺序、空值和显示数字；不把悬停才出现的数字填入该摘要 |
 | `enemies[]` | 当前可见敌人，从左到右排列 |
 | `enemies[].id/name` | 基础观察相同的战斗对象 ID 和英语名称 |
 | `enemies[].powers[]` | 该敌人当前可读的 powers，格式同玩家 |
 | `enemies[].intents[]` | 当前渲染意图的 `category/value`，格式同基础观察 |
 | `hover_tips[]` | 主说明和附带原生解释，按 `title/description` 同时相同去重 |
-| `hover_tips[].sources[]` | 关联到本次结果的具体 power 或 intent，如 `player.powers.0`、`enemies.1.intents.0` |
+| `hover_tips[].sources[]` | 关联到本次结果的具体 power、intent 或已生成球，如 `player.powers.0`、`enemies.1.intents.0`、`player.orb_slots.0` |
 
 `sources` 中的数组下标从 0 开始，只对本次结果有效。重复怪物用 `id` 区分；不要把数组位置当作跨请求的稳定 ID。同名提示正文不同时分开保留，包括层数、持续回合或拥有者不同造成的区别。附带的术语或卡牌预览也关联到提供它的 power。
+
+充能球说明使用可见且可悬停 `NOrb` 所绑定实例的原生 `HoverTips`，包含人悬停时可读的当前被动／激发效果及附带术语；这些正文可以包含基础画面未显示的激发数值。空槽不生成这里的正文，通用空槽帮助由 [inspect_ui](ui-inspection.md) 提供。隐藏、离屏、裁剪或不可悬停的球不提供正文；读取不调用 `OnFocus` 或改变标签显示状态。
 
 计数取自屏幕标签，不使用模型 Amount 替代不可见的计数。无计数标签时 `amount: null`。容器隐藏时 powers 或 intents 为 `null`；可见容器中没有可读条目时为 `[]`。玩家节点不可见时 `player: null`。正文保留换行，移除格式标记，图标沿用 `<Energy>`、`<Star>` 等文本表示。
 

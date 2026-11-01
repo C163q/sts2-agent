@@ -11,6 +11,7 @@ using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Enchantments;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Powers.Mocks;
+using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
@@ -29,6 +30,8 @@ internal static class PlayFixture
         var cards = new List<CardModel>();
         void Add<T>() where T : CardModel => cards.Add(combat.CreateCard<T>(player));
         if (scenario == "anger") Add<Anger>();
+        else if (scenario == "wax_melt") Add<DefendIronclad>();
+        else if (scenario == "orbs") { Add<Dualcast>(); Add<Capacitor>(); Add<Zap>(); }
         else if (scenario == "turbo") Add<Turbo>();
         else if (scenario == "blade_dance") Add<BladeDance>();
         else if (scenario == "pommel_strike") Add<PommelStrike>();
@@ -94,7 +97,22 @@ internal static class PlayFixture
         }
         if (scenario is "stars" or "star_spend") cards[0].SetStarCostThisCombat(2);
         if (scenario == "star_spend") await PlayerCmd.SetStars(5, player);
+        if (scenario == "wax_melt")
+        {
+            var wax = ModelDb.Relic<PhilosophersStone>().ToMutable();
+            wax.IsWax = true;
+            await RelicCmd.Obtain(wax, player);
+            void MeltOnBlock(int _, int __)
+            {
+                player.Creature.BlockChanged -= MeltOnBlock;
+                // Keep a legal native melt inside a public card action for receipt verification.
+                if (!RelicCmd.Melt(wax).IsCompletedSuccessfully)
+                    throw new InvalidOperationException("The fixture relic's removal unexpectedly deferred.");
+            }
+            player.Creature.BlockChanged += MeltOnBlock;
+        }
         await CardPileCmd.AddGeneratedCardsToCombat(cards, PileType.Hand, player);
+        if (scenario == "orbs") await OrbFixture.Configure(player);
         int drawCount = scenario.StartsWith("charge", StringComparison.Ordinal) ? int.Parse(scenario[^1..])
             : scenario is "glimmer" or "card_logic" or "pommel_strike" ? 3 : 0;
         for (int i = 0; i < drawCount; i++)

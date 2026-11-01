@@ -71,5 +71,23 @@ internal static class VisibleResourceChecks
         check(consecutiveBuffer.Events.Count == 2 && consecutiveBuffer.Events[0]["before"] == null
             && (int)consecutiveBuffer.Events[0]["after"]! == 1 && (int)consecutiveBuffer.Events[1]["before"]! == 1,
             "a visible first reveal is published before a subsequent star notification");
+        var sampledBuffer = new TurnEventBuffer(2);
+        var sampled = new VisibleResourceChange("max_energy_changed", sampledBuffer, () => new { id = 0 });
+        sampled.SampleChange(3);
+        for (int i = 0; i < 20; i++) sampled.SampleChange(3);
+        check(sampledBuffer.Events.Count == 0 && !sampledBuffer.Truncated,
+            "unchanged visible capacity never reserves event positions");
+        sampled.SampleChange(4);
+        check(sampledBuffer.Events.Count == 1 && (int)sampledBuffer.Events[0]["before"]! == 3
+            && (int)sampledBuffer.Events[0]["after"]! == 4, "visible capacity changes keep public endpoints");
+        sampled.SampleChange(null);
+        sampled.SampleChange(7);
+        check(sampledBuffer.Events.Count == 1, "hidden capacity changes never replay on restoration");
+        sampled.SampleChange(6);
+        check(sampledBuffer.Events.Count == 2 && (int)sampledBuffer.Events[1]["before"]! == 7,
+            "restored capacity uses its new visible baseline");
+        sampled.SampleChange(5);
+        check(sampledBuffer.Truncated && sampledBuffer.Events.Count == 2,
+            "sampled capacity respects the shared buffer limit");
     }
 }
