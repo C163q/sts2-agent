@@ -133,7 +133,7 @@ class SelectionPresetTests(unittest.IsolatedAsyncioTestCase):
         tools = GameTools(client)
         await tools.get_observation()
         for args in ([], False, 0, '', {'preset': None}, {'preset': []}, {'preset': True},
-                     {'preset': 'FULL'}, {'card_ids': [9]}, {'preset': 'summary', 'extra': 1}):
+                     {'preset': 'FULL'}, {'card_ids': None}, {'preset': 'summary', 'extra': 1}):
             with self.subTest(args=args):
                 result = await tools.inspect_selection(args)
                 self.assertEqual(result['error']['code'], 'invalid_request')
@@ -184,7 +184,7 @@ class SelectionPresetStdioTests(unittest.IsolatedAsyncioTestCase):
                 await session.initialize()
                 tools = {t.name: t for t in (await session.list_tools()).tools}
                 self.assertEqual(len(tools), 42)
-                self.assertEqual(set(tools['inspect_selection'].inputSchema['properties']), {'preset'})
+                self.assertEqual(set(tools['inspect_selection'].inputSchema['properties']), {'preset', 'card_ids'})
                 self.assertTrue(tools['inspect_selection'].annotations.readOnlyHint)
                 for args in ({}, {'preset': 'full'}, {'preset': 'summary'}):
                     result = await session.call_tool('inspect_selection', args)
@@ -195,6 +195,13 @@ class SelectionPresetStdioTests(unittest.IsolatedAsyncioTestCase):
                 result = await session.call_tool('inspect_selection', {'preset': 'invalid'})
                 self.assertTrue(result.isError, result)
                 self.assertEqual(result.structuredContent['error']['code'], 'invalid_request')
+                for preset in ('full', 'summary'):
+                    result = await session.call_tool('inspect_selection', {'preset': preset, 'card_ids': [9, 80, 80]})
+                    self.assertFalse(result.isError, result)
+                    self.assertEqual(result.structuredContent, json.loads(result.content[0].text))
+                    self.assertEqual([c['id'] for c in result.structuredContent['selection']['cards']], [9])
+                    self.assertEqual(result.structuredContent['errors'], [
+                        {'code': 'cards_not_in_selection', 'card_ids': [80]}])
 
 
 if __name__ == '__main__':

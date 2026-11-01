@@ -1,6 +1,6 @@
 # 选牌与查看战场
 
-适用于 Mod `0.35.0`、MCP server `0.33.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
+适用于 Mod `0.43.0`、MCP server `0.42.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
 
 ## 观察与信息范围
 
@@ -26,15 +26,32 @@
 
 ## MCP 输出预设
 
-`inspect_selection` 接受可选参数 `preset`，仅允许 `full`、`summary`；省略或传 `{}` 等同 `full`，保持完整详情。底层文件协议仍无参数。这项功能只需更新 Python 脚本并重连 MCP，不需要为预设功能替换 DLL。
+`inspect_selection` 接受以下可选参数。省略或传 `{}` 保持完整详情。底层文件协议仍无参数；预设和筛选只需更新 Python 脚本并重连 MCP，不需要替换 DLL。
+
+| 参数 | 默认值 | 含义 |
+| --- | --- | --- |
+| `preset` | `full` | `full` 保留正文与悬停帮助；`summary` 使用手牌摘要字段 |
+| `card_ids` | 省略 | MCP `0.42.0` 起支持当前选择中的非负整数卡牌 ID 数组；省略返回全部，`[]` 不返回卡牌详情，重复 ID 去重，结果保持原生顺序 |
 
 ```json
-{"preset": "summary"}
+{"preset": "summary", "card_ids": [1, 2, 3]}
 ```
 
 `summary` 的每张卡牌沿用[手牌摘要字段](hand-inspection.md#参数与返回范围)：保留身份、费用、可见附魔及卡面标记，移除正文、稀有度、卡池和悬停帮助；没有星耗时不输出该项。规则统一作用于 `cards`、`bundles[].cards`，以及 `upgrade_preview`、`upgrade_previews`、`enchant_previews`、`transform_previews` 的 `before/after`；预览也不保留正文，需要时另读 `full`。
 
 摘要保留场景、选择类型和状态、提示、数量限制、已选 ID、按钮、包 ID、随机变牌标记及原有空值。选择级 `selection.enchantment` 仍保留附魔操作名称与说明，它描述当前要执行的操作。不会补全未知卡牌或随机变牌结果，也不影响候选范围和 UI。读取成功后可直接选择；仍先验证完整原生详情，再投影为摘要，错误不会被转为空结果。非法参数不发往游戏，也不丢弃已有动作许可。
+
+`card_ids` 同时筛选 `cards`、`bundles[].cards` 和已经展开的预览。预览按原牌 `before.id` 命中，保留整组 `before/after`，不生成尚未展开的比较或随机结果；未命中的 `upgrade_preview` 为 `null`，列表预览移除对应项。包 ID 保留，包内 `cards` 可为空；查看包内某张牌不改变整包选择方式。full 的共享提示同步裁剪卡牌关联，summary 继续不提供悬停效果。
+
+筛选仅限制返回的卡牌详情，提示、数量限制、**全部** `selected_ids`、按钮和选择级附魔说明保持完整；因此过滤结果中的空列表或 `null` 不表示原生页面没有候选或预览。结果确认页的牌也可筛选，但不会因此变成可点击候选。ID 仅在本次可浏览详情及已展开预览中匹配，不查询其他牌堆或隐藏页面。
+
+无效 ID 按请求首次出现的顺序合并报告，有效卡牌照常返回：
+
+```json
+{"errors": [{"code": "cards_not_in_selection", "card_ids": [80, 70]}]}
+```
+
+此时 MCP `isError` 为 `false`，客户端须检查 `errors`；没有无效 ID 时省略它。参数校验与 `inspect_hand` 相同：ID 为 0 至 2147483647 的整数，不接受布尔值、浮点数、字符串或 `null`。空筛选和混合错误仍验证完整底层详情并刷新动作许可；原生读取失败保持顶层 `error`，不转换为卡牌缺失。测试范围见[筛选实现记录](../research/2026-11-02-selection-filters.md)。
 
 ## 操作
 

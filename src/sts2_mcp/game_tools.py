@@ -126,10 +126,10 @@ class GameTools:
 
     async def inspect_selection(self, arguments=None):
         try:
-            preset = selection_inspection_arguments(arguments)
+            settings = selection_inspection_arguments(arguments)
         except ValueError:
             return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
-        return selection_preset(await self._inspect('inspect_selection'), preset)
+        return selection_preset(await self._inspect('inspect_selection'), **settings)
 
     async def inspect_targets(self, arguments=None):
         return await self._inspect("inspect_targets", arguments)

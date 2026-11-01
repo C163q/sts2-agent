@@ -68,6 +68,8 @@
 
 ## 生命周期与证据
 
+`verify_selection_presets.py` 在候选、已展开比较、包内容与结果页的每次预设对照中，同时检查两种预设的 `card_ids`：混合有效／无效 ID、重复 ID、原生排序、空筛选、共享提示裁剪、选择上下文保留及读取前后原生状态不变。筛选后的成功读取可直接继续原生选择或确认；覆盖范围与证据见[选择筛选记录](../research/2026-11-02-selection-filters.md)。
+
 `verify_companions.py` 的 `osty/blade/first` 分别配合 `play:companions_osty/companions_blade/companions_first`，验证奥斯提的友方身份、原生攻击、死亡与再召唤、成长，以及君王之剑的铸造、手牌外预览、攻击来源和公转期间令牌稳定。`checks/blade_checks` 分别使用前两个场景，经双重门控文件入口检查共享格挡、部分／完全格挡及伤害溢出、隐藏生命不补发、多剑身份、可悬停边界、消耗移除，并对照中英文原生悬停卡牌预览。独立夹具用原生命令构造初始场景，不修改正式存档；具体证据见[奥斯提与君王之剑记录](../research/2026-11-02-companions.md)。
 
 `verify_permanent_cards.py` 的 `genetic/cost/enchant` 对应 `play:permanent_genetic/permanent_cost/permanent_enchant`，验证永久变量、基础能量费用及附魔数量变化的真实 MCP 回执和直接续接。遗传算法使用正常出牌，并打开永久牌组核对成长；费用及附魔场景用测试夹具回调调用原生修改入口，不声称游戏存在对应可叠加玩法。`checks` 配合 `play:permanent_genetic`，检查预览／临时值排除、隐藏取消、身份延后、升级抑制、异常释放和共享上限。默认清单包含遗传算法成长；范围和证据见[第五阶段记录](../research/2026-11-01-permanent-card-events.md)。

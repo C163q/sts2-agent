@@ -72,7 +72,7 @@ Mod `0.20.0` 统一[可见卡牌名称](observation.md#手牌与身份)，目标
 
 MCP server `0.16.0` [复用完整成功动作的观察](mcp.md#调用和错误语义)，可以连续决策与执行。Mod 仍为 `0.20.0`；只需重连 MCP 加载新脚本及公共说明，无须重启或替换游戏内 Mod。
 
-当前 Mod `0.43.0`、MCP `0.41.0` 支持[战后搜刮与前进](rewards.md)、[休息处选项与锻造](rest-site.md)、[宝箱房](treasure.md)、[商店](shop.md)、[先古之民](ancients.md)、[通用事件](events.md)及[终章结算](run-ending.md)。Mod 等待战斗卡牌预览、手牌描边、先古之民入场横幅及遗物入栏和计数等有限过渡结束，避免成功动作后的许可自行过期。需退出游戏后替换 Mod DLL/清单，再完整启动；RitsuLib 仍由创意工坊管理。只更新 Mod 不要求重连 MCP；更新 Python 脚本时须重连客户端。
+当前 Mod `0.43.0`、MCP `0.42.0` 支持[战后搜刮与前进](rewards.md)、[休息处选项与锻造](rest-site.md)、[宝箱房](treasure.md)、[商店](shop.md)、[先古之民](ancients.md)、[通用事件](events.md)及[终章结算](run-ending.md)。Mod 等待战斗卡牌预览、手牌描边、先古之民入场横幅及遗物入栏和计数等有限过渡结束，避免成功动作后的许可自行过期。需退出游戏后替换 Mod DLL/清单，再完整启动；RitsuLib 仍由创意工坊管理。只更新 Mod 不要求重连 MCP；更新 Python 脚本时须重连客户端。
 
 MCP `0.29.1` 允许依据成功的专项详情及页面操作直接行动，不再要求额外 `get_observation`。从更早的 MCP 版本更新脚本后，须重连客户端加载新规则。
 
@@ -85,5 +85,7 @@ Mod `0.36.0` 与 MCP `0.32.0` 为[基础手牌观察](observation.md#手牌与�
 工具说明来自 Python，不能据此确认游戏内 DLL 已更新。若 full 能读到附魔悬停效果，而基础观察和 summary 都没有结构化附魔字段，先核对安装的 Mod 清单与原始观察 schema；旧游戏端也能提供 full 的悬停效果。[r9 核查](../research/2026-11-02-r9-enchantments.md)记录了新 Python 搭配旧 DLL 的实例。
 
 MCP `0.33.0` 为 `inspect_selection` 增加[完整与摘要预设](card-selection.md#mcp-输出预设)，所有候选、包内卡牌及预览均可使用手牌摘要字段；默认完整输出不变。预设功能只改 Python，无须为此替换 DLL，更新脚本后重连 MCP 即可。
+
+MCP `0.42.0` 为同一工具增加 `card_ids`，按当前卡牌 ID 筛选候选、包内卡牌和已经展开的预览，保留选择提示与按钮；规则见[选择输出参数](card-selection.md#mcp-输出预设)。只需重连 MCP，Mod `0.43.0` 无须替换。
 
 Mod `0.42.1` 与 MCP `0.40.0` 的[动作事件记录](end-turn.md#事件语义)包含可见玩家 HP、最大生命、金币、遗物与药水变化，永久牌组入组、离组、升级、降级、基础变量／能量费用直接变化和附魔变化，以及公开能量／星星、最大能量和蜡制遗物熔化、充能球生成／激发／离栏及槽位变化；战斗外入战及同次动作战斗替换统一接入日志，`combat_started` 分隔新战斗的 ID 作用域，底层 schema 为 `24`。需同时更新 DLL/清单和 Python，完整重启游戏并重连 MCP；旧客户端不认识新增事件类型。充能球观察及悬停分工见[第四阶段记录](../research/2026-11-01-capacity-and-orbs.md)；永久变化边界见[第五阶段记录](../research/2026-11-01-permanent-card-events.md)，充能球日志边界见[第六阶段记录](../research/2026-11-01-orb-events.md)，战斗间交接及本阶段实测见[第七阶段记录](../research/2026-11-01-combat-handoff.md)。

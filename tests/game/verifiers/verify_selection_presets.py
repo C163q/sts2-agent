@@ -34,6 +34,42 @@ def compare_summary(full, summary):
         assert full == summary, (full, summary)
 
 
+def card_lists(choice):
+    yield choice['cards']
+    for bundle in choice.get('bundles', []):
+        yield bundle['cards']
+    pairs = ([choice['upgrade_preview']] if choice.get('upgrade_preview') is not None else [])
+    for field in ('upgrade_previews', 'enchant_previews', 'transform_previews'):
+        pairs += choice.get(field, [])
+    for pair in pairs:
+        yield [card for card in (pair['before'], pair['after']) if card is not None]
+
+
+def compare_filter(source, result, requested):
+    selected = set(requested)
+    before, after = source['selection'], result['selection']
+    card_fields = {'cards', 'bundles', 'upgrade_preview', 'upgrade_previews', 'enchant_previews', 'transform_previews'}
+    assert {k: v for k, v in before.items() if k not in card_fields} == {
+        k: v for k, v in after.items() if k not in card_fields}, (before, after)
+    assert after['cards'] == [c for c in before['cards'] if c['id'] in selected]
+    assert after.get('bundles', []) == [{**b, 'cards': [c for c in b['cards'] if c['id'] in selected]}
+                                         for b in before.get('bundles', [])]
+    if 'upgrade_preview' in before:
+        pair = before['upgrade_preview']
+        assert after['upgrade_preview'] == (pair if pair and pair['before']['id'] in selected else None)
+    for field in ('upgrade_previews', 'enchant_previews', 'transform_previews'):
+        if field in before:
+            assert after[field] == [p for p in before[field] if p['before']['id'] in selected]
+    known = {c['id'] for cards in card_lists(before) for c in cards}
+    missing = list(dict.fromkeys(i for i in requested if i not in known))
+    assert result.get('errors') == ([{'code': 'cards_not_in_selection', 'card_ids': missing}] if missing else None)
+    if 'hover_tips' in source:
+        assert result['hover_tips'] == [{**t, 'card_ids': [i for i in t['card_ids'] if i in selected]}
+                                         for t in source['hover_tips'] if selected.intersection(t['card_ids'])]
+    else:
+        assert 'hover_tips' not in result
+
+
 async def verify(args):
     raw = Client(ipc_directory())
     await asyncio.to_thread(ensure_run, raw)
@@ -70,6 +106,13 @@ async def verify(args):
                 assert full == await call('inspect_selection', {'preset': 'full'})
                 summary = await call('inspect_selection', {'preset': 'summary'})
                 compare_summary(full, summary)
+                ids = list(dict.fromkeys(c['id'] for cards in card_lists(full['selection']) for c in cards))
+                missing = max(ids, default=0) + 100000
+                requested = [ids[-1], ids[0], ids[0], missing, missing] if ids else [missing]
+                for preset, source in (('full', full), ('summary', summary)):
+                    for selected in (requested, []):
+                        filtered = await call('inspect_selection', {'preset': preset, 'card_ids': selected})
+                        compare_filter(source, filtered, selected)
                 after = await asyncio.to_thread(raw.call, 'get_state')
                 record({'label': label, 'native_before': before, 'native_after': after})
                 assert before['ok'] and after['ok'] and before['state'] == after['state'], 'Presets changed the native UI.'

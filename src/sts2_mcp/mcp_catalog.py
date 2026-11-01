@@ -150,6 +150,7 @@ def tool_definitions(*, screenshots_enabled=False):
         Tool(name="inspect_selection", inputSchema=SELECTION_SCHEMA, annotations=read_only, description=(
             "Read all browsable candidates, offered buttons and visible previews of the current card selection. "
             "Full card details by default; summary compacts every card, including bundles and previews. "
+            "card_ids filters returned card details only; instructions and buttons remain. "
             "Unavailable while the selection is hidden; does not switch views.")),
         Tool(name="select_card", inputSchema=CARD_SCHEMA, annotations=action, description=(
             "Click one current selection candidate. Multi-select clicks toggle that card; "
