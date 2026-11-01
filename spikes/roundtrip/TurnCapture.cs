@@ -10,7 +10,12 @@ namespace Sts2Agent;
 
 internal static class TurnCapture
 {
-    internal sealed record Origin(AbstractModel? Model, Creature? Dealer, bool IsDamage);
+    internal sealed record Origin(AbstractModel? Model, Creature? Dealer, bool IsDamage)
+    {
+        public HashSet<Creature> LethalTargets { get; } = [];
+        public Creature? DeathTarget { get; init; }
+        public IReadOnlyList<Creature>? DoomTargets { get; init; }
+    }
     private static readonly AsyncLocal<Origin?> Context = new();
     [ThreadStatic] private static int hpLossDepth;
     public static TurnJournal? Journal { get; set; }
@@ -30,6 +35,9 @@ internal static class TurnCapture
             finalizer: new HarmonyMethod(typeof(TurnCapture), nameof(Restore)));
         harmony.Patch(AccessTools.Method(typeof(DoomPower), nameof(DoomPower.DoomKill)),
             prefix: new HarmonyMethod(typeof(TurnCapture), nameof(Doom)),
+            finalizer: new HarmonyMethod(typeof(TurnCapture), nameof(Restore)));
+        harmony.Patch(AccessTools.Method(typeof(CreatureCmd), "KillWithoutCheckingWinCondition"),
+            prefix: new HarmonyMethod(typeof(TurnCapture), nameof(Kill)),
             finalizer: new HarmonyMethod(typeof(TurnCapture), nameof(Restore)));
         harmony.Patch(AccessTools.Method(typeof(Creature), nameof(Creature.LoseHpInternal)),
             prefix: new HarmonyMethod(typeof(TurnCapture), nameof(BeforeHpLoss)),
@@ -53,7 +61,19 @@ internal static class TurnCapture
     private static void Doom(IReadOnlyList<Creature> __0, out Origin? __state)
     {
         __state = Context.Value;
-        Context.Value = new Origin(__0.FirstOrDefault()?.GetPower<DoomPower>(), null, false);
+        Context.Value = new Origin(__0.FirstOrDefault()?.GetPower<DoomPower>(), null, false) { DoomTargets = __0 };
+    }
+
+    private static void Kill(Creature __0, out Origin? __state)
+    {
+        __state = Context.Value;
+        AbstractModel? source = null;
+        if (__state?.LethalTargets.Contains(__0) == true || ReferenceEquals(__state?.DeathTarget, __0))
+            source = __state!.Model;
+        else if (__state?.DoomTargets?.Contains(__0) == true)
+            source = __0.GetPower<DoomPower>();
+        // Native death cleanup can zero other creatures' HP; it is not another hit by the caller.
+        Context.Value = new Origin(source, null, false) { DeathTarget = __0 };
     }
 
     // Restore the caller immediately; the game's async method captures its own execution context.
@@ -67,7 +87,9 @@ internal static class TurnCapture
 
     private static void AfterHpLoss(DamageResult __result)
     {
-        if (Current?.IsDamage == true) Journal?.Damage(__result, Current);
+        if (Current is not { IsDamage: true } origin) return;
+        if (__result.WasTargetKilled) origin.LethalTargets.Add(__result.Receiver);
+        Journal?.Damage(__result, origin);
     }
 
     private static void RestoreHpLoss(int __state) => hpLossDepth = __state;

@@ -1,5 +1,26 @@
 [
   {
+    "name": "minion_death_attribution",
+    "scenarios": { "play": "minion_card" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_damage_attribution.py", "args": ["--scenario", "card"] }
+    ]
+  },
+  {
+    "name": "gas_bomb_intent_and_self_destruct",
+    "scenarios": { "play": "fog_natural" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_damage_attribution.py", "args": ["--scenario", "fog_natural"] }
+    ]
+  },
+  {
+    "name": "gas_bomb_counterattack_death",
+    "scenarios": { "play": "fog_thorns" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_damage_attribution.py", "args": ["--scenario", "fog_thorns"] }
+    ]
+  },
+  {
     "name": "combat_handoff",
     "scenarios": { "play": "handoff_play" },
     "steps": [

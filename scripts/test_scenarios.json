@@ -27,6 +27,15 @@
     "entropic"
   ],
   "play": [
+    "fog_natural",
+    "fog_card",
+    "fog_cleanup",
+    "fog_thorns",
+    "minion_card",
+    "minion_aoe",
+    "minion_aoe_lethal",
+    "minion_doom",
+    "minion_potion",
     "handoff_play",
     "handoff_selection",
     "handoff_choice",

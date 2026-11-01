@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.Models.Enchantments;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Powers.Mocks;
 using MegaCrit.Sts2.Core.Models.Relics;
+using MegaCrit.Sts2.Core.Models.Monsters;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
@@ -25,6 +26,25 @@ internal static class PlayFixture
     {
         var combat = CombatManager.Instance.DebugOnlyGetState()!;
         var state = player.PlayerCombatState!;
+        if (scenario.StartsWith("minion_", StringComparison.Ordinal))
+        {
+            var leader = combat.Enemies.Single();
+            await CreatureCmd.Add<Parafright>(combat, "illusion");
+            var minion = combat.Enemies.Single(enemy => !ReferenceEquals(enemy, leader));
+            await CreatureCmd.SetCurrentHp(leader, 3);
+            await CreatureCmd.SetCurrentHp(minion, scenario == "minion_aoe_lethal" ? 3 : 15);
+            if (scenario == "minion_doom")
+                await PowerCmd.Apply<DoomPower>(new ThrowingPlayerChoiceContext(), leader, 999, player.Creature, null);
+        }
+        if (scenario is "fog_card" or "fog_cleanup")
+        {
+            var leader = combat.Enemies.Single();
+            await CreatureCmd.Add<GasBomb>(combat, "bomb1");
+            var bomb = combat.Enemies.Single(enemy => !ReferenceEquals(enemy, leader));
+            await CreatureCmd.SetCurrentHp(scenario == "fog_card" ? bomb : leader, 3);
+        }
+        if (scenario == "fog_thorns")
+            await PowerCmd.Apply<ThornsPower>(new ThrowingPlayerChoiceContext(), player.Creature, 10, player.Creature, null);
         await CardPileCmd.RemoveFromCombat(state.AllCards.ToArray());
         state.Energy = scenario == "energy" ? 0 : scenario == "x_cost" ? 2 : scenario is "energy_chain" or "orb_chain" ? 3 : 20;
         if (scenario.StartsWith("permanent_", StringComparison.Ordinal))
@@ -34,7 +54,8 @@ internal static class PlayFixture
         }
         var cards = new List<CardModel>();
         void Add<T>() where T : CardModel => cards.Add(combat.CreateCard<T>(player));
-        if (scenario == "anger") Add<Anger>();
+        if (scenario is "anger" or "minion_card") Add<Anger>();
+        else if (scenario is "minion_aoe" or "minion_aoe_lethal") Add<Thunderclap>();
         else if (scenario is "wax_melt" or "handoff_play" or "handoff_choice") Add<DefendIronclad>();
         else if (scenario == "handoff_selection") Add<Armaments>();
         else if (scenario == "orbs") { Add<Dualcast>(); Add<Capacitor>(); Add<Zap>(); }
@@ -59,6 +80,11 @@ internal static class PlayFixture
         else Add<StrikeIronclad>();
         Add<DefendIronclad>();
         Add<StrikeIronclad>();
+        if (scenario == "minion_card")
+        {
+            cards[0].UpgradeInternal(); cards[0].FinalizeUpgradeInternal();
+            CardCmd.Enchant<Sharp>(cards[0], 3);
+        }
         if (scenario == "choice_chain")
         {
             cards.Clear();

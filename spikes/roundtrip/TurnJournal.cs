@@ -24,6 +24,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     private readonly TurnEventBuffer buffer = ActionEventScope.Current?.Buffer ?? new();
     private readonly List<Action> cleanup = [];
     private readonly HashSet<Creature> subscribed = [];
+    private readonly HashSet<Creature> dead = [];
     private readonly Dictionary<Creature, object> identities = [];
     private readonly Dictionary<PowerModel, int?> powerAmounts = [];
     private readonly HashSet<PowerModel> watchedPowers = [];
@@ -142,6 +143,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         foreach (var creature in combat.Creatures.ToArray())
         {
             if (!subscribed.Add(creature)) continue;
+            if (creature.IsDead) dead.Add(creature);
             RememberVisible(creature);
             foreach (var power in creature.Powers)
             {
@@ -181,8 +183,16 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
             void Applied(PowerModel power) { Power(power); WatchPower(power); }
             void Increased(PowerModel power, int _, bool silent) => Power(power);
             void Decreased(PowerModel power, bool silent) => Power(power);
-            void Died(Creature target) => Add("died", target, new() { ["source"] = Source(TurnCapture.Current?.Model) });
-            void Revived(Creature target) => Add("revived", target);
+            void Died(Creature target)
+            {
+                // Native self-destruction may notify again after a lethal counterattack.
+                if (dead.Add(target)) Add("died", target, new() { ["source"] = Source(TurnCapture.Current?.Model) });
+            }
+            void Revived(Creature target)
+            {
+                dead.Remove(target);
+                Add("revived", target);
+            }
             creature.CurrentHpChanged += Hp;
             creature.BlockChanged += Block;
             creature.PowerApplied += Applied;

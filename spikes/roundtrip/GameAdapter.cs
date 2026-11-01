@@ -207,6 +207,9 @@ internal sealed partial class GameAdapter(bool testMode)
             async Task Frame() { await ObservationFrame(); Observe(); }
             return Success(request.Id, JsonSerializer.Serialize(await CombatHandoffChecks.Run(handoffPlayer, observation, Frame, Observe)));
         }
+        if (request.Operation == "check_test_death_notifications" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } deathPlayer)
+            return Success(request.Id, JsonSerializer.Serialize(await DeathNotificationChecks.Run(deathPlayer, observation.CardId)));
         if (request.Operation == "check_test_orb_events" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } orbEventPlayer)
         {
@@ -273,6 +276,9 @@ internal sealed partial class GameAdapter(bool testMode)
         if (testMode && testSettings.Get("STS2_AGENT_TEST_TURN_SCENARIO") == "thieving_hopper"
             && request.Operation == "capture_test_power_tips")
             return Success(request.Id, JsonSerializer.Serialize(await PowerTextChecks.CaptureHopper(ObservationFrame)));
+        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+            && request.Operation == "capture_test_gas_bomb_intent")
+            return Success(request.Id, JsonSerializer.Serialize(await IntentTextChecks.CaptureGasBomb(ObservationFrame)));
         if (request.Operation == "respond_to_confirmation")
             return await ConfirmationRequest(request, document.RootElement);
         if (testMode && testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") != null && LocalPlayer != null)
@@ -584,6 +590,8 @@ internal sealed partial class GameAdapter(bool testMode)
                     : playScenario is "test_subject" or "no_target" or "random_empty" ? ModelDb.Encounter<TestSubjectBoss>().ToMutable()
                     : turnScenario == "revive" ? ModelDb.Encounter<DecimillipedeElite>().ToMutable()
                     : turnScenario == "thieving_hopper" ? ModelDb.Encounter<ThievingHopperWeak>().ToMutable()
+                    : playScenario?.StartsWith("minion_", StringComparison.Ordinal) == true ? ModelDb.Encounter<TheObscuraNormal>().ToMutable()
+                    : playScenario?.StartsWith("fog_", StringComparison.Ordinal) == true ? ModelDb.Encounter<LivingFogNormal>().ToMutable()
                     : ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
             if (selectionScenario == "paradox")
             {
