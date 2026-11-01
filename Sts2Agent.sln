@@ -1,0 +1,38 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6852AA5D-EF2D-44EE-AF6E-46D7CB9A3791}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sts2Agent", "src\Sts2Agent\Sts2Agent.csproj", "{75B8F93F-9633-421C-B007-17EFE5185E75}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C9FAED5C-8346-41CF-854B-80D9822D3B94}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "csharp", "csharp", "{2D18F48C-CE52-4DA2-B5AA-87C763858605}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sts2Agent.Checks", "tests\csharp\Sts2Agent.Checks\Sts2Agent.Checks.csproj", "{2D255035-9AEC-46D5-8FA8-B9F1E9BF6850}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75B8F93F-9633-421C-B007-17EFE5185E75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75B8F93F-9633-421C-B007-17EFE5185E75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75B8F93F-9633-421C-B007-17EFE5185E75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75B8F93F-9633-421C-B007-17EFE5185E75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D255035-9AEC-46D5-8FA8-B9F1E9BF6850}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D255035-9AEC-46D5-8FA8-B9F1E9BF6850}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D255035-9AEC-46D5-8FA8-B9F1E9BF6850}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D255035-9AEC-46D5-8FA8-B9F1E9BF6850}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{75B8F93F-9633-421C-B007-17EFE5185E75} = {6852AA5D-EF2D-44EE-AF6E-46D7CB9A3791}
+		{2D18F48C-CE52-4DA2-B5AA-87C763858605} = {C9FAED5C-8346-41CF-854B-80D9822D3B94}
+		{2D255035-9AEC-46D5-8FA8-B9F1E9BF6850} = {2D18F48C-CE52-4DA2-B5AA-87C763858605}
+	EndGlobalSection
+EndGlobal

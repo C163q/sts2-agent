@@ -60,7 +60,7 @@
 
 ## 当前实现
 
-[观察实现](../spikes/roundtrip/CombatObservation.cs) 结合实际 UI 与模型身份信息，已覆盖基础战斗数值、手牌名称与费用、当前意图、状态图标和顶栏。隐藏内容不以模型数据补齐；覆盖层或过渡期间保守返回不可读状态。字段、空值语义、过滤规则和仍未覆盖的像素遮挡情形统一维护在 [战斗观察 JSON](development/observation.md)。
+[观察实现](../src/Sts2Agent/Observation/CombatObservation.cs) 结合实际 UI 与模型身份信息，已覆盖基础战斗数值、手牌名称与费用、当前意图、状态图标和顶栏。隐藏内容不以模型数据补齐；覆盖层或过渡期间保守返回不可读状态。字段、空值语义、过滤规则和仍未覆盖的像素遮挡情形统一维护在 [战斗观察 JSON](development/observation.md)。
 
 ## 占卜
 

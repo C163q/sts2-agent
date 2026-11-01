@@ -39,7 +39,7 @@
 
 ### 任务 2：游戏端可用性核查与修复
 
-**文件：** 新建 spikes/roundtrip/GameAdapter.AvailableTools.cs、scripts/verify_available_tools.py；修改 GameAdapter.cs 及必要动作入口。
+**文件：** 新建 src/Sts2Agent/Adapter/GameAdapter.AvailableTools.cs、scripts/verify_available_tools.py；修改 GameAdapter.cs 及必要动作入口。
 
 **接口：** 游戏端 AvailableTools 汇总当前工具；CanInspectMap/Deck/Piles 等共享条件由观察和执行复用。
 

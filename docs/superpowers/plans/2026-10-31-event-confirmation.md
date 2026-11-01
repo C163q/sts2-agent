@@ -26,7 +26,7 @@
 
 - [x] 新建 `scripts/test_event_confirmation.py`：观察投影与缺损、严格参数、许可复用、未知弹窗不授予动作；先运行失败。
 - [x] 新建 `scripts/confirmation_details.py` 并接入 game_output、game_tools、inspection_details、player_output、mcp_catalog/server 和 CLI。新增 respond_to_confirmation；动作结果走完整观察。
-- [x] 新建 `spikes/roundtrip/EventConfirmation.cs` 与 `GameAdapter.Confirmation.cs`，接入初始化、Observe、CardView、NonCombatBoundary；来源与按钮都核对原生源码。
+- [x] 新建 `src/Sts2Agent/Actions/EventConfirmation.cs` 与 `GameAdapter.Confirmation.cs`，接入初始化、Observe、CardView、NonCombatBoundary；来源与按钮都核对原生源码。
 - [x] 运行新增及完整 Python 测试、C# 检查与编译；版本改为 Mod0.28.0、MCP0.24.0、schema13。
 
 ### 2. 隔离图形验证与文档

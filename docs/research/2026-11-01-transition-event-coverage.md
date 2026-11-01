@@ -66,8 +66,8 @@ Python 的 `action_output.action_result` 保留已验证的整个 `transition`�
 
 源码入口：
 
-- [事件动作](../../spikes/roundtrip/GameAdapter.Event.cs)、[当前战斗记录作用域](../../spikes/roundtrip/CombatJournalScope.cs)（原 `CombatEntryCapture` 的替代实现）、[旅行](../../spikes/roundtrip/GameAdapter.Navigation.cs)。
-- [选牌动作](../../spikes/roundtrip/GameAdapter.Selection.cs)、[药水动作](../../spikes/roundtrip/GameAdapter.Potions.cs)、[药水记录器](../../spikes/roundtrip/PotionJournal.cs)、[战斗记录器](../../spikes/roundtrip/TurnJournal.cs)。
+- [事件动作](../../src/Sts2Agent/Adapter/GameAdapter.Event.cs)、[当前战斗记录作用域](../../src/Sts2Agent/Events/CombatJournalScope.cs)（原 `CombatEntryCapture` 的替代实现）、[旅行](../../src/Sts2Agent/Adapter/GameAdapter.Navigation.cs)。
+- [选牌动作](../../src/Sts2Agent/Adapter/GameAdapter.Selection.cs)、[药水动作](../../src/Sts2Agent/Adapter/GameAdapter.Potions.cs)、[药水记录器](../../src/Sts2Agent/Events/PotionJournal.cs)、[战斗记录器](../../src/Sts2Agent/Events/TurnJournal.cs)。
 - [Python 事件校验](../../scripts/transition_details.py)、[精简回执](../../scripts/action_output.py)、[动作分类](../../scripts/available_tools.py)。
 
 复核的已有真实 stdio MCP 图形证据位于未纳入 Git 的 `.tmp/2026-11-01-selection-presets/`：

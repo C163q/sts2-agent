@@ -6,29 +6,29 @@
 
 | 位置 | 职责 |
 | --- | --- |
-| `spikes/roundtrip/BridgeMod.cs` | Mod 初始化、后台文件服务和 Godot 主线程任务泵 |
-| `spikes/roundtrip/FileMailbox.cs` | 原子文件协议、请求队列、响应缓存和等待超时 |
-| `spikes/roundtrip/GameAdapter.AvailableTools.cs` | 当前交互上下文的工具列表及与调用入口共享的可用性条件 |
-| `spikes/roundtrip/GameAdapter.cs` | 主线程观察、令牌与合法性检查、动作分派和页面生命周期；测试场景准备以测试模式隔离 |
-| `spikes/roundtrip/VisibleUi.cs` | 可见控件与几何读取、共享绘制完成计数，供充能球和战场首次展示判断使用 |
-| `spikes/roundtrip/*Observation.cs`、`*Inspection.cs`、`*View.cs` | 可见数据采样、按需详情、原生页面操作 |
-| `spikes/roundtrip/GameAdapter.Navigation.cs`、`NavigationTasks.cs` | 原生节点点击、旅行边界和跨幕任务等待；地图摘要与身份并入基础观察 |
-| `spikes/roundtrip/English*.cs`、`HoverTipText.cs` | 英语资源读取与受控格式化，不切换全局语言 |
+| `src/Sts2Agent/Infrastructure/BridgeMod.cs` | Mod 初始化、后台文件服务和 Godot 主线程任务泵 |
+| `src/Sts2Agent/Infrastructure/FileMailbox.cs` | 原子文件协议、请求队列、响应缓存和等待超时 |
+| `src/Sts2Agent/Adapter/GameAdapter.AvailableTools.cs` | 当前交互上下文的工具列表及与调用入口共享的可用性条件 |
+| `src/Sts2Agent/Adapter/GameAdapter.cs` | 主线程观察、令牌与合法性检查、动作分派和页面生命周期；测试场景准备以测试模式隔离 |
+| `src/Sts2Agent/Observation/VisibleUi.cs` | 可见控件与几何读取、共享绘制完成计数，供充能球和战场首次展示判断使用 |
+| `src/Sts2Agent/Observation/` | 可见数据采样、按需详情、原生页面操作 |
+| `src/Sts2Agent/Adapter/GameAdapter.Navigation.cs`、`NavigationTasks.cs` | 原生节点点击、旅行边界和跨幕任务等待；地图摘要与身份并入基础观察 |
+| `src/Sts2Agent/Localization/` | 英语资源读取与受控格式化，不切换全局语言 |
 | `scripts/roundtrip_client.py` | 标准库文件客户端和 CLI；默认玩法输出，`--raw` 保留诊断协议 |
 | `scripts/game_output.py` | 已知玩法字段的递归投影与类型检查、基础观察与手牌结构校验 |
 | `scripts/player_output.py` | 去除控制包装、共享悬停解释、条件数值说明和错误恢复文案 |
-| `spikes/roundtrip/TurnJournal.cs`、`TurnCapture.cs`、`CombatResourceJournal.cs`、`VisibleResourceChange.cs` | RitsuLib 与原生事件记录、伤害补录及来源追踪；能量／星星通知与真实数字显示对齐，最大能量按实际分母变化采样 |
-| `spikes/roundtrip/ActionEventScope.cs`、`GameAdapter.Resources.cs`、`RunResourceJournal.cs`、`RunInventoryJournal.cs` | 单次游戏动作的共享事件缓冲、响应附加及可见玩家资源、物品、永久牌组订阅；延后发布尚未展示的身份，与战斗和药水日志共用顺序及上限 |
-| `spikes/roundtrip/PermanentCardCapture.cs` | 主线程原生基础变量／能量费用／附魔数量修改采集；仅永久成员有效，嵌套升级与附魔重算抑制低层重复 |
-| `spikes/roundtrip/TurnBoundary.cs`、`TurnEventBuffer.cs` | 无游戏依赖的结束条件与有界事件缓冲 |
-| `spikes/roundtrip/OrbCapture.cs`、`OrbJournal.cs` | 原生充能球 UI 更新与激发入口采集，共用动作缓冲；入场延后发布、隐藏取消及槽位端点合并 |
-| `spikes/roundtrip/OrbInspection.cs` | 实际充能球 UI 队列、图像和数字过滤；基础观察、占用球详情及空槽帮助共用槽位对应关系 |
-| `spikes/roundtrip/EventInspection.cs`、`GameAdapter.Event.cs` | 通用事件的可见页面、稳定选项 ID 和原生按钮执行 |
-| `spikes/roundtrip/EventTaskTracker.cs`、`CombatJournalScope.cs` | 事件初始化/选择/Resume 任务跟踪；每次动作的初始战斗及后续入战日志所有权、原生重置前释放、房间任务等待与战斗间交接 |
-| `spikes/roundtrip/DivinationInspection.cs`、`DivinationTasks.cs`、`GameAdapter.Divination.cs` | 占卜可见状态与原生点击、遮罩等待、棋盘裁剪边界和临时对白来源 |
-| `spikes/roundtrip/EventConfirmation.cs`、`GameAdapter.Confirmation.cs` | 当前事件确认框的来源与可见内容、原生按钮操作和失败结算 |
+| `src/Sts2Agent/Events/TurnJournal.cs`、`TurnCapture.cs`、`CombatResourceJournal.cs`、`VisibleResourceChange.cs` | RitsuLib 与原生事件记录、伤害补录及来源追踪；能量／星星通知与真实数字显示对齐，最大能量按实际分母变化采样 |
+| `src/Sts2Agent/Events/ActionEventScope.cs`、`GameAdapter.Resources.cs`、`RunResourceJournal.cs`、`RunInventoryJournal.cs` | 单次游戏动作的共享事件缓冲、响应附加及可见玩家资源、物品、永久牌组订阅；延后发布尚未展示的身份，与战斗和药水日志共用顺序及上限 |
+| `src/Sts2Agent/Events/PermanentCardCapture.cs` | 主线程原生基础变量／能量费用／附魔数量修改采集；仅永久成员有效，嵌套升级与附魔重算抑制低层重复 |
+| `src/Sts2Agent/Events/TurnBoundary.cs`、`TurnEventBuffer.cs` | 无游戏依赖的结束条件与有界事件缓冲 |
+| `src/Sts2Agent/Events/OrbCapture.cs`、`OrbJournal.cs` | 原生充能球 UI 更新与激发入口采集，共用动作缓冲；入场延后发布、隐藏取消及槽位端点合并 |
+| `src/Sts2Agent/Observation/OrbInspection.cs` | 实际充能球 UI 队列、图像和数字过滤；基础观察、占用球详情及空槽帮助共用槽位对应关系 |
+| `src/Sts2Agent/Observation/EventInspection.cs`、`GameAdapter.Event.cs` | 通用事件的可见页面、稳定选项 ID 和原生按钮执行 |
+| `src/Sts2Agent/Actions/EventTaskTracker.cs`、`CombatJournalScope.cs` | 事件初始化/选择/Resume 任务跟踪；每次动作的初始战斗及后续入战日志所有权、原生重置前释放、房间任务等待与战斗间交接 |
+| `src/Sts2Agent/Observation/DivinationInspection.cs`、`DivinationTasks.cs`、`GameAdapter.Divination.cs` | 占卜可见状态与原生点击、遮罩等待、棋盘裁剪边界和临时对白来源 |
+| `src/Sts2Agent/Actions/EventConfirmation.cs`、`GameAdapter.Confirmation.cs` | 当前事件确认框的来源与可见内容、原生按钮操作和失败结算 |
 | `scripts/divination_details.py` | 占卜参数与投影、PNG 有界像素校验和独立图像载体；MCP server 封装 ImageContent |
-| `spikes/roundtrip/ActionSettling.cs`、`GameAdapter.ActionObservation.cs`、`CombatMotion.cs` | 统一动作停止原因复核、牌堆飞行、资源显示、生物死亡及有限 UI 过渡等待与观察稳定；页面查看单独处理 |
+| `src/Sts2Agent/Actions/ActionSettling.cs`、`GameAdapter.ActionObservation.cs`、`CombatMotion.cs` | 统一动作停止原因复核、牌堆飞行、资源显示、生物死亡及有限 UI 过渡等待与观察稳定；页面查看单独处理 |
 | `scripts/transition_details.py` | 结束回合事件的结构校验与递归过滤 |
 | `scripts/inspection_details.py`、`*_details.py` | 按操作校验并投影响应；牌组、牌堆与地图等具体结构各自维护 |
 | `scripts/observation_presets.py`、`available_tools.py` | 观察预设参数与精简投影、公开工具名称和动作分类 |
@@ -37,14 +37,14 @@
 | `scripts/controller_lease.py` | 每个 IPC 目录的 MCP 进程控制锁 |
 | `scripts/mcp_catalog.py` | 工具名称、参数 schema、行为注解及面向模型的说明 |
 | `scripts/mcp_config.py`、`screenshot_tool.py` | 启动配置校验、PNG 校验和独占保存；配置决定截图工具是否注册 |
-| `spikes/roundtrip/ViewportCapture.cs` | 帧后游戏视口及指定矩形读取，不接收用户文件路径或写用户文件 |
+| `src/Sts2Agent/Observation/ViewportCapture.cs` | 帧后游戏视口及指定矩形读取，不接收用户文件路径或写用户文件 |
 | `scripts/mcp_server.py` | stdio 启动、MCP 分派和结果封装；保留既有脚本入口 |
 | `scripts/test_*.py` | 无需游戏的单元与真实 stdio/临时文件 IPC 测试 |
-| `scripts/verify_*.py`、`spikes/roundtrip/*Checks.cs` | 显式运行的真实游戏验证及原型内检查，依赖各自指定的场景 |
+| `scripts/verify_*.py`、`src/Sts2Agent/Testing/Checks/` | 显式运行的真实游戏验证及游戏内检查，依赖各自指定的场景 |
 
 `roundtrip_client.player_result` 仍可导入；`mcp_server.GameTools` 和 `mcp_server.ControllerLease` 继续保留原有导入方式。标准库客户端不导入 MCP SDK。
 
-不为统一目录而批量迁移现有脚本或 C# 文件；后续正式打包、分离测试程序集或拆分游戏适配器时，须同时更新构建路径、启动配置及独立游戏验证。
+C# 项目位于 `src/Sts2Agent/`，根 `Sts2Agent.sln` 同时包含 Mod 与 `tests/csharp/Sts2Agent.Checks/`。目录按职责分组，命名空间仍为 `Sts2Agent`；`Testing/` 中的夹具和原生检查仍随 Mod 编译，仅在隔离测试模式调用。结构变化须同步构建路径、启动配置和游戏验证；不因移动文件而拆分程序集。
 
 ## 变更入口
 
@@ -76,7 +76,7 @@
 
 C# 构建需要自行安装游戏程序集，命令见 [构建前提](roundtrip.md#前提与构建)。构建只验证编译与引用，不能替代游戏内 Mod 加载、线程与页面行为验证。
 
-C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project spikes/roundtrip-checks/Sts2Agent.Checks.csproj`；它不替代游戏内生命周期验证。
+C# 停止条件与缓冲检查无需游戏，可运行 `dotnet run --project tests/csharp/Sts2Agent.Checks/Sts2Agent.Checks.csproj`；它不替代游戏内生命周期验证。
 
 ## 游戏内验证
 

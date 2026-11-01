@@ -21,7 +21,7 @@ mkdir -p "${Sts2Dir:?请先配置并加载 .env}/mods/Sts2Agent"
 ```
 
 ```sh
-cp spikes/roundtrip/bin/Debug/net9.0/Sts2Agent.dll spikes/roundtrip/bin/Debug/net9.0/Sts2Agent.json "${Sts2Dir:?请先配置并加载 .env}/mods/Sts2Agent/"
+cp src/Sts2Agent/bin/Debug/net9.0/Sts2Agent.dll src/Sts2Agent/bin/Debug/net9.0/Sts2Agent.json "${Sts2Dir:?请先配置并加载 .env}/mods/Sts2Agent/"
 ```
 
 该 Mod 清单声明依赖 RitsuLib `0.6.10` 的 `0.107.1` 兼容运行时。已经通过 Steam 创意工坊安装并启用兼容版本时，保留创意工坊管理的安装，不再手工复制第二套。

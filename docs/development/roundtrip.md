@@ -1,6 +1,6 @@
 # 最小流程验证指南
 
-适用于 `spikes/roundtrip/` 中的 Linux 验证原型。已验证的游戏基线为 `v0.107.1`，验证内容是读取状态、通过正常动作队列结束回合、读回下一回合状态。本文说明底层文件协议；agent 接入使用 [本地 MCP server](mcp.md)，当前不是完整的自动游玩工具。
+适用于 `src/Sts2Agent/` 中的 Linux 验证原型。已验证的游戏基线为 `v0.107.1`，验证内容是读取状态、通过正常动作队列结束回合、读回下一回合状态。本文说明底层文件协议；agent 接入使用 [本地 MCP server](mcp.md)，当前不是完整的自动游玩工具。
 
 ## 前提与构建
 
@@ -13,7 +13,7 @@
 在仓库根目录执行：
 
 ```sh
-env DOTNET_CLI_HOME=/tmp/sts2-agent-dotnet NUGET_PACKAGES=/tmp/sts2-agent-nuget DOTNET_CLI_TELEMETRY_OPTOUT=1 dotnet build spikes/roundtrip/Sts2Agent.csproj -p:Sts2Dir="${Sts2Dir:?请先配置并加载 .env}" -p:RitsuLibDir="${RitsuLibDir:?请先配置并加载 .env}"
+env DOTNET_CLI_HOME=/tmp/sts2-agent-dotnet NUGET_PACKAGES=/tmp/sts2-agent-nuget DOTNET_CLI_TELEMETRY_OPTOUT=1 dotnet build src/Sts2Agent/Sts2Agent.csproj -p:Sts2Dir="${Sts2Dir:?请先配置并加载 .env}" -p:RitsuLibDir="${RitsuLibDir:?请先配置并加载 .env}"
 ```
 
 ```sh

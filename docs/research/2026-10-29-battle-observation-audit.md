@@ -59,7 +59,7 @@
 
 ## 代码核对依据
 
-当前输出来自 [GameAdapter.cs](../../spikes/roundtrip/GameAdapter.cs) 的 `Observe` 与 `EnemyObservation`。下列 UI 规则通过同版本本地 `data_sts2_linuxbsd_x86_64/sts2.dll` 定向反编译核对，产物仅存于 `.tmp/decompiled/`：
+当前输出来自 [GameAdapter.cs](../../src/Sts2Agent/Adapter/GameAdapter.cs) 的 `Observe` 与 `EnemyObservation`。下列 UI 规则通过同版本本地 `data_sts2_linuxbsd_x86_64/sts2.dll` 定向反编译核对，产物仅存于 `.tmp/decompiled/`：
 
 - `NTopBar.Initialize` 将进阶等级显示在角标；`NTopBarFloorIcon.UpdateIcon` 将总楼层显示为楼层文字。
 - `NHealthBar.RefreshBlockUi` 在没有相应格挡时隐藏格挡标记，说明本图的 0 可以作为无信息增益的归一化；不能将该规则扩展到被遮挡或隐藏的生命条。

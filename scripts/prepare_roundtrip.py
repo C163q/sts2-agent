@@ -14,11 +14,11 @@ def main():
     root = Path(__file__).resolve().parents[1]
     game = args.game_dir.expanduser().resolve()
     runtime = root / ".tmp" / "roundtrip" / "runtime"
-    build = root / "spikes" / "roundtrip" / "bin" / "Debug" / "net9.0"
+    build = root / "src" / "Sts2Agent" / "bin" / "Debug" / "net9.0"
     if not (game / "SlayTheSpire2").is_file():
         parser.error("游戏目录中缺少 SlayTheSpire2。")
     if not (build / "Sts2Agent.dll").is_file():
-        parser.error("请先构建 spikes/roundtrip/Sts2Agent.csproj。")
+        parser.error("请先构建 src/Sts2Agent/Sts2Agent.csproj。")
     if not args.ritsu_lib_dir:
         parser.error("请配置 RitsuLibDir 或 --ritsu-lib-dir，指向完整的 RitsuLib 0.6.10 运行时。")
     library = args.ritsu_lib_dir.expanduser().resolve()

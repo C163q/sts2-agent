@@ -14,7 +14,7 @@ class PrepareRoundtripTests(unittest.TestCase):
             script = root / "scripts" / "prepare_roundtrip.py"
             script.parent.mkdir()
             shutil.copy2(Path(__file__).with_name("prepare_roundtrip.py"), script)
-            build = root / "spikes" / "roundtrip" / "bin" / "Debug" / "net9.0"
+            build = root / "src" / "Sts2Agent" / "bin" / "Debug" / "net9.0"
             build.mkdir(parents=True)
             for name in ("Sts2Agent.dll", "Sts2Agent.json"):
                 (build / name).write_text("fixture")

@@ -49,10 +49,10 @@ cp .env.example .env
 1. **编译 Mod**：
 
    ```sh
-   dotnet build spikes/roundtrip/Sts2Agent.csproj -p:Sts2Dir="${Sts2Dir:?请先配置并加载 .env}" -p:RitsuLibDir="${RitsuLibDir:?请先配置并加载 .env}"
+   dotnet build src/Sts2Agent/Sts2Agent.csproj -p:Sts2Dir="${Sts2Dir:?请先配置并加载 .env}" -p:RitsuLibDir="${RitsuLibDir:?请先配置并加载 .env}"
    ```
 
-   产物位于 `spikes/roundtrip/bin/Debug/net9.0/`。依赖获取和构建前提见[构建指南](docs/development/roundtrip.md#前提与构建)；正常使用不需要运行独立实例的准备脚本。
+   产物位于 `src/Sts2Agent/bin/Debug/net9.0/`。依赖获取和构建前提见[构建指南](docs/development/roundtrip.md#前提与构建)；正常使用不需要运行独立实例的准备脚本。
 2. **安装并启用**：退出游戏，将产物中的 `Sts2Agent.dll` 和 `Sts2Agent.json` 复制到 `<游戏安装目录>/mods/Sts2Agent/`，在游戏 Mod 界面启用后按提示重启。已有 Steam 创意工坊管理的兼容 RitsuLib 时保留该安装，不再复制另一套；文件及加载步骤见[安装说明](docs/development/live-game.md#安装文件)。
 3. **配置游戏通信目录**：在 Steam 启动选项中设置 `STS2_AGENT_IPC_DIR`，例如：
 
