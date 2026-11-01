@@ -29,7 +29,7 @@ internal sealed partial class GameAdapter
             // Logical actions finish before independent UI motion stops changing the observation.
             if (settling.Sample(reason, state, CardMotionPending() || RunUi.CardPreviewsPending()
                 || CombatMotion.Pending() || RunUi.ResourceMotionPending()
-                || CombatResourceJournal.Current?.Pending == true, timer.Elapsed))
+                || CombatResourceJournal.Current?.Pending == true || OrbJournal.Current?.Pending == true, timer.Elapsed))
                 return (state, reason!);
         }
         return (state, "timeout");

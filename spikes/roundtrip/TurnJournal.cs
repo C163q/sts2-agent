@@ -63,6 +63,8 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
             SubscribePiles();
             var resources = new CombatResourceJournal(combat, player, buffer);
             cleanup.Add(resources.Dispose);
+            var orbs = new OrbJournal(combat, player, buffer);
+            cleanup.Add(orbs.Dispose);
             var potions = new PotionJournal(player, (type, potion) => buffer.Add(type, new() { ["potion"] = potion }));
             cleanup.Add(potions.Dispose);
         }

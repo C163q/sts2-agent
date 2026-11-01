@@ -76,6 +76,7 @@ internal sealed partial class GameAdapter(bool testMode)
         RunInventoryJournal.Current?.SampleVisibility();
         PotionJournal.Current?.SampleVisibility();
         CombatResourceJournal.Current?.SampleVisibility();
+        OrbJournal.Current?.SampleVisibility();
         CombatState? combat = CombatManager.Instance.DebugOnlyGetState();
         if (!ReferenceEquals(combat, lastCombat))
         {
@@ -139,7 +140,7 @@ internal sealed partial class GameAdapter(bool testMode)
         if (ending != null || epilogue != null && map == null) screen["view"] = ending != null ? "run_result" : "epilogue";
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 22, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 23, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -198,6 +199,12 @@ internal sealed partial class GameAdapter(bool testMode)
         {
             async Task Frame() { await ObservationFrame(); Observe(); }
             return Success(request.Id, JsonSerializer.Serialize(await PermanentCardChecks.Run(permanentPlayer, Frame, observation.CardId)));
+        }
+        if (request.Operation == "check_test_orb_events" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } orbEventPlayer)
+        {
+            async Task Frame() { await ObservationFrame(); Observe(); }
+            return Success(request.Id, JsonSerializer.Serialize(await OrbEventChecks.Run(orbEventPlayer, Frame, observation.CardId)));
         }
         if (request.Operation == "check_test_orb_visibility" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } orbPlayer)
@@ -555,7 +562,7 @@ internal sealed partial class GameAdapter(bool testMode)
             // Fixture setup is explicitly gated and is not a gameplay tool.
             SaveManager.Instance.SetFtuesEnabled(false);
             NGame game = NGame.Instance!;
-            await game.StartNewSingleplayerRun(testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") == "orbs"
+            await game.StartNewSingleplayerRun(testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") is "orbs" or "orb_chain"
                 ? ModelDb.Character<Defect>() : ModelDb.Character<Ironclad>(),
                 testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") != null,
                 ModelDb.ActsByIndex.Select(acts => acts[0]).ToArray(),

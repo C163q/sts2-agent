@@ -34,6 +34,7 @@ SUPPORTED_VERIFIERS = {
     'verify_combat_resources.py',
     'verify_capacity.py',
     'verify_permanent_cards.py',
+    'verify_orb_events.py',
 }
 
 
@@ -72,6 +73,7 @@ def load_cases(path):
             if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
+                'verify_orb_events.py': ('play', 'checks', 'chain'),
                 'verify_permanent_cards.py': ('genetic', 'cost', 'enchant', 'checks'),
                 'verify_capacity.py': ('resources', 'orbs', 'orb_visibility', 'wax_melt'),
                 'verify_combat_resources.py': ('spend', 'gain', 'stars', 'star_spend', 'turbo', 'choice', 'fake_merchant', 'visibility', 'reveal_visibility', 'selection_entry'),

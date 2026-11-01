@@ -11,23 +11,29 @@ internal static class OrbInspection
 
     public static NOrb[]? VisibleNodes(NCreature node)
     {
+        var slots = DisplayedNodes(node);
+        return slots != null && slots.All(slot => SlotVisible(slot)) ? slots : null;
+    }
+
+    internal static NOrb[]? DisplayedNodes(NCreature node)
+    {
         var manager = node.OrbManager;
         if (CombatObservation.Status() != "visible" || !VisibleUi.Shown(manager)) return null;
         // The UI list excludes the old orb that may still be fading after an evoke.
         if (CardSelection.Field(manager!, "_orbs") is not IEnumerable<NOrb> displayed) return null;
-        var slots = displayed.ToArray();
-        if (slots.Any(slot => !VisibleUi.Shown(slot) || (slot.Model == null
-                ? !VisibleUi.OnScreen(slot.GetNodeOrNull<Control>("%Outline"))
-                : !VisibleUi.OnScreen(slot.GetNodeOrNull<Control>("Bounds"))
-                    || !SpriteVisible(slot)))) return null;
-        return slots;
+        return displayed.ToArray();
     }
 
-    private static bool SpriteVisible(NOrb slot)
+    internal static bool SlotVisible(NOrb slot, bool entering = false) => VisibleUi.Shown(slot) && (slot.Model == null
+        ? VisibleUi.OnScreen(slot.GetNodeOrNull<Control>("%Outline"))
+        : VisibleUi.OnScreen(slot.GetNodeOrNull<Control>("Bounds")) && SpriteVisible(slot, entering));
+
+    private static bool SpriteVisible(NOrb slot, bool entering)
     {
         if (CardSelection.Field(slot, "_sprite") is not Node2D sprite || !VisibleUi.OnScreen(sprite)) return false;
         var transform = sprite.GetGlobalTransformWithCanvas();
-        if (Mathf.Abs(transform.Determinant()) <= 0.000001f) return false;
+        if (Mathf.Abs(transform.Determinant()) <= 0.000001f
+            && !(entering && RewardInspection.Animating(slot, "_curTween"))) return false;
         // The fixed hitbox can remain visible while the animated sprite moves or is clipped.
         for (Node? ancestor = sprite.GetParent(); ancestor != null; ancestor = ancestor.GetParent())
             if (ancestor is Control { ClipContents: true } clip

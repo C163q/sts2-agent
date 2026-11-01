@@ -30,7 +30,7 @@ def tool_result(payload):
 
 
 def create_server(tools, *, screenshots_enabled=False):
-    server = Server("sts2-agent", version="0.38.0", instructions=SERVER_INSTRUCTIONS)
+    server = Server("sts2-agent", version="0.39.0", instructions=SERVER_INSTRUCTIONS)
     definitions = tool_definitions(screenshots_enabled=screenshots_enabled)
     handlers = {tool.name: getattr(tools, tool.name) for tool in definitions}
 

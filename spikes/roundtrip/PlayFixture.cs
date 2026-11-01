@@ -26,7 +26,7 @@ internal static class PlayFixture
         var combat = CombatManager.Instance.DebugOnlyGetState()!;
         var state = player.PlayerCombatState!;
         await CardPileCmd.RemoveFromCombat(state.AllCards.ToArray());
-        state.Energy = scenario == "energy" ? 0 : scenario == "x_cost" ? 2 : scenario == "energy_chain" ? 3 : 20;
+        state.Energy = scenario == "energy" ? 0 : scenario == "x_cost" ? 2 : scenario is "energy_chain" or "orb_chain" ? 3 : 20;
         if (scenario.StartsWith("permanent_", StringComparison.Ordinal))
         {
             await PermanentCardFixture.Configure(scenario, player);
@@ -37,6 +37,7 @@ internal static class PlayFixture
         if (scenario == "anger") Add<Anger>();
         else if (scenario == "wax_melt") Add<DefendIronclad>();
         else if (scenario == "orbs") { Add<Dualcast>(); Add<Capacitor>(); Add<Zap>(); }
+        else if (scenario == "orb_chain") Add<Tempest>();
         else if (scenario == "turbo") Add<Turbo>();
         else if (scenario == "blade_dance") Add<BladeDance>();
         else if (scenario == "pommel_strike") Add<PommelStrike>();
@@ -118,6 +119,11 @@ internal static class PlayFixture
         }
         await CardPileCmd.AddGeneratedCardsToCombat(cards, PileType.Hand, player);
         if (scenario == "orbs") await OrbFixture.Configure(player);
+        if (scenario == "orb_chain")
+        {
+            OrbCmd.RemoveSlots(player, state.OrbQueue.Capacity);
+            await OrbCmd.AddSlots(player, 2);
+        }
         int drawCount = scenario.StartsWith("charge", StringComparison.Ordinal) ? int.Parse(scenario[^1..])
             : scenario is "glimmer" or "card_logic" or "pommel_strike" ? 3 : 0;
         for (int i = 0; i < drawCount; i++)

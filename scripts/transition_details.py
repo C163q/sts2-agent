@@ -4,6 +4,10 @@ from available_tools import INSPECTIONS, VIEWS
 
 REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "run_lost", "timeout", "interrupted", "selection_resolved", "action_canceled", "action_completed", 'manual_input_required'}
 FIELDS = {
+    'orb_channeled': {'target', 'orb', 'slot_index'},
+    'orb_evoked': {'target', 'orb', 'slot_index'},
+    'orb_removed': {'target', 'orb', 'slot_index'},
+    'orb_slots_changed': {'target', 'before', 'after'},
     "damage": {"target", "hp_loss", "blocked"},
     "hp_changed": {"target", "before", "after"},
     "max_hp_changed": {"target", "before", "after"},
@@ -39,6 +43,16 @@ def end_turn_details(state):
                 or event.get("sequence", 0) <= previous):
             raise ValueError("Invalid transition event.")
         previous = event["sequence"]
+        if kind in {'orb_channeled', 'orb_evoked', 'orb_removed', 'orb_slots_changed'}:
+            if set(event) != {'sequence', 'type'} | FIELDS[kind] or event['target'].get('kind') != 'player':
+                raise ValueError('Invalid public orb event fields.')
+            if kind == 'orb_slots_changed':
+                before, after = event['before'], event['after']
+                if (type(before) is not int or type(after) is not int
+                        or not 0 <= before <= 10 or not 0 <= after <= 10 or before == after):
+                    raise ValueError('Invalid public orb capacity change.')
+            elif set(event['orb']) != {'name'} or not event['orb']['name'] or not 0 <= event['slot_index'] < 10:
+                raise ValueError('Invalid public orb identity or position.')
         if kind in {'card_stats_changed', 'card_energy_cost_changed', 'card_enchantment_changed'} and (
                 set(event) != {'sequence', 'type', 'card', 'pile'}):
             raise ValueError('Unexpected fields in an identity-only card change.')

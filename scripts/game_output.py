@@ -84,6 +84,7 @@ EVENT = {
     "hp_loss": NUMBER, "blocked": int, "before": NUMBER, "after": NUMBER,
     "name": TEXT, "autoplay": bool, "change": str, "potion": POTION_REF,
     "relic": {"name": TEXT}, "pile": str,
+    "orb": {"name": str}, "slot_index": int,
 }
 TRANSITION = {"stop_reason": str, "complete": bool, "events": [EVENT]}
 REWARD_ITEM = {'id': int, 'type': str, 'text': str, 'enabled': bool, 'linked_group': NUMBER}

@@ -1,5 +1,12 @@
 [
   {
+    "name": "orb_event_receipts",
+    "scenarios": { "play": "orbs" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_orb_events.py", "args": ["--scenario", "play"] }
+    ]
+  },
+  {
     "name": "permanent_genetic_growth",
     "scenarios": { "play": "permanent_genetic" },
     "steps": [

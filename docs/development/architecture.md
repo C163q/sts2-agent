@@ -20,6 +20,7 @@
 | `spikes/roundtrip/ActionEventScope.cs`、`GameAdapter.Resources.cs`、`RunResourceJournal.cs`、`RunInventoryJournal.cs` | 单次游戏动作的共享事件缓冲、响应附加及可见玩家资源、物品、永久牌组订阅；延后发布尚未展示的身份，与战斗和药水日志共用顺序及上限 |
 | `spikes/roundtrip/PermanentCardCapture.cs` | 主线程原生基础变量／能量费用／附魔数量修改采集；仅永久成员有效，嵌套升级与附魔重算抑制低层重复 |
 | `spikes/roundtrip/TurnBoundary.cs`、`TurnEventBuffer.cs` | 无游戏依赖的结束条件与有界事件缓冲 |
+| `spikes/roundtrip/OrbCapture.cs`、`OrbJournal.cs` | 原生充能球 UI 更新与激发入口采集，共用动作缓冲；入场延后发布、隐藏取消及槽位端点合并 |
 | `spikes/roundtrip/OrbInspection.cs` | 实际充能球 UI 队列、图像和数字过滤；基础观察、占用球详情及空槽帮助共用槽位对应关系 |
 | `spikes/roundtrip/EventInspection.cs`、`GameAdapter.Event.cs` | 通用事件的可见页面、稳定选项 ID 和原生按钮执行 |
 | `spikes/roundtrip/EventTaskTracker.cs`、`CombatEntryCapture.cs` | 事件初始化/选择/Resume 任务跟踪，以及所有战斗外游戏动作进入战斗时的日志订阅 |
