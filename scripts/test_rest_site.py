@@ -91,11 +91,8 @@ class RestClient:
 
 
 class RestSiteSessionTests(unittest.IsolatedAsyncioTestCase):
-    async def test_inspection_does_not_grant_permission_but_action_result_can_chain(self):
+    async def test_inspection_and_action_result_support_continuation(self):
         tools = GameTools(RestClient())
-        await tools.inspect_rest_site()
-        self.assertEqual((await tools.choose_rest_option({'option_id': 'HEAL'}))['error']['code'], 'observation_required')
-        await tools.get_observation()
         await tools.inspect_rest_site()
         result = await tools.choose_rest_option({'option_id': 'HEAL'})
         self.assertEqual(result['available_actions'], ['proceed'])
@@ -143,9 +140,6 @@ class RestSiteStdioTests(unittest.IsolatedAsyncioTestCase):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
                     await session.call_tool('inspect_rest_site', {})
-                    missing = await session.call_tool('choose_rest_option', {'option_id': 'HEAL'})
-                    self.assertEqual(missing.structuredContent['error']['code'], 'observation_required')
-                    await session.call_tool('get_observation', {})
                     bad = await session.call_tool('choose_rest_option', {'option_id': 'HEAL', 'repeat': True})
                     self.assertEqual(bad.structuredContent['error']['code'], 'invalid_request')
                     missing = await session.call_tool('choose_rest_option', {'option_id': 'HEAL'})
@@ -156,4 +150,4 @@ class RestSiteStdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(selected.structuredContent['transition']['stop_reason'], 'action_completed')
                     self.assertEqual(json.loads(selected.content[0].text), selected.structuredContent)
             self.assertEqual([r['operation'] for r in game.operations],
-                             ['inspect_rest_site', 'get_state', 'get_state', 'choose_rest_option'])
+                             ['inspect_rest_site', 'get_state', 'choose_rest_option'])

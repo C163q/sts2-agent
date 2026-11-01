@@ -90,13 +90,11 @@ async def verify(args):
             await call('get_observation')
             await call('inspect_deck')
             await call('close_card_view')
-            await call('end_turn', error='observation_required')
-            await call('get_observation')
             resumed = await call('end_turn')
             assert resumed['transition']['stop_reason'] == 'player_ready', resumed
             observed = await call('get_observation')
             assert observed['turn'] == advanced['state']['turn'] + 1, observed
-    print('PASS: one observation supports 10 native chained actions; external state changes and views still require re-observation.')
+    print('PASS: one observation supports 10 native chained actions; stale state is rejected and closing a view supports continuation.')
 
 
 def main():

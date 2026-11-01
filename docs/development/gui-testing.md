@@ -48,6 +48,8 @@
 
 `verify_action_stability.py` 的 `--scenario` 与 `play` 场景使用同名值：`anger`、`turbo`、`blade_dance`、`pommel_strike`、`bloodletting`、`gather_light`、`preview_draw`、`preview_messy`。前六项执行原生卡牌；后两项用防御触发测试夹具预置的原生抽牌堆预览，分别覆盖普通和七张牌的散列布局。验证器在动作返回后 0、0.25、0.75、1.5、3.5 秒采样底层观察，要求令牌始终等于回执令牌，并在不刷新 MCP 许可的情况下继续出牌；同时保留外部动作导致过期的反例检查。
 
+`verify_observation_sources.py` 全程不调用 `get_observation`，验证成功详情和页面操作可以提供下一动作的状态：`--scenario map` 配合 `navigation:basic`，检查地图详情直接旅行及非法节点拒绝；`views` 配合 `play:pommel_strike`，检查关闭牌组/牌堆后直接结束回合及详情后出牌；`selection` 配合 `play:discovery`，检查切回选择后直接提交，以及查看战场时拒绝选择隐藏候选。三项均纳入默认冒烟集。
+
 ## 生命周期与证据
 
 套件模式通过 `STS2_AGENT_TEST_MODE=1` 和 `STS2_AGENT_TEST_SUITE=1` 双重门控，提供仅文件 IPC 可用的 `configure_test_run`、`reset_test_run`、`get_test_session`。前两项需最新状态令牌；配置仅允许没有对局的主菜单。它们不属于公开 MCP 工具，也不改变玩法 JSON 或动作许可规则。旧的单用例启动命令继续有效。

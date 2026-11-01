@@ -77,7 +77,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.34.1` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.29.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.34.1` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.29.1`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -137,16 +137,20 @@ approval_mode = "approve"
 
 > 使用 sts2 工具读取当前战斗，结束一次回合，再读取状态，说明回合和生命值的变化。只结束一次回合。
 
-首次行动先 `get_observation`。每次动作消耗当前令牌，服务完整校验动作后的状态，在满足以下条件时保存新的动作令牌并返回精简回执，可直接据此选择下一动作：
+`get_observation`、专项详情及查看/关闭/切换页面的成功结果都会刷新内部动作令牌；首次也可直接读取相关详情。只要已有足够信息，就不必额外调用 `get_observation`。例如 `inspect_map → travel_to_node`、`inspect_hand → play_card`、`close_card_view → end_turn`；覆盖页仍须显式关闭，工具不会穿透页面行动。
 
-- `transition.complete == true`，并且 `available_actions` 包含实际游戏动作；仅有详情或页面查看工具不续接动作许可。
+每次动作消耗当前令牌，服务完整校验动作后的状态，在满足以下条件时保存新的动作令牌并返回精简回执，可直接据此选择下一动作：
+
+- `transition.complete == true`，并且 `available_actions` 包含实际游戏动作；若该动作结果只列出详情或页面查看工具，则不续接动作许可。
 - 停止原因为 `player_ready` 或 `action_completed` 时，普通动作画面可见且没有待处理选择；`choice_required` 则要求受支持的选择界面可见。
 
 例如 `get_observation → play_card → play_card → end_turn`，或 `use_potion → inspect_selection → select_card`，中间无需为了取得许可再次读取相同观察。每一步都根据上一返回结果重新决策，按需查询卡牌或目标；不得把同一观察复用成预先排队的一组动作。服务拒绝用请求排队后才产生的新观察授权该请求；同一连接的操作仍串行执行。
 
-Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其他客户端使状态改变时返回 `stale_state`，不自动刷新或重试。失败、非法参数、坏响应、超时、取消、不完整结果、无可执行动作、未支持选择及胜负停止均不续接动作许可，须先重新观察再决定。取消不能撤回已提交给游戏的操作。状态令牌留在 MCP 内部，不增加模型参数，也不回放未收到的动作结果。
+Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其他客户端使状态改变时返回 `stale_state`，不自动刷新或重试。失败、非法参数、坏响应、超时、取消、不完整结果、无可执行动作、未支持选择及胜负停止均不续接动作许可，须先重新读取当前状态再决定。取消不能撤回已提交给游戏的操作。状态令牌留在 MCP 内部，不增加模型参数，也不回放未收到的动作结果。
 
-纯详情不会准备动作。已有令牌仅在成功读取且采样令牌未变时保留；失败、格式错误或取消会清除它。牌组、牌堆、地图及关闭操作会清除令牌；看完显式关闭相应页面，再 `get_observation` 后行动。`close_card_view` 可保留下层地图，须继续 `close_map` 才能回到战斗。这些页面操作有 UI 副作用，客户端按自己的策略处理授权。
+专项详情会使用本次成功读取的新令牌，不要求它与旧令牌相同。页面操作先清除旧令牌，完整校验成功响应后保存新令牌；空牌堆或入口不可用的成功结果也按返回时的实际状态刷新。失败、格式错误或取消不保存新令牌。截图只在状态未变时保留已有令牌，不提供新令牌。`close_card_view` 可保留下层地图，须继续 `close_map` 才能回到战斗。这些页面操作有 UI 副作用，客户端按自己的策略处理授权。
+
+结构化读取直接续接动作的实现与验证范围见[验证记录](../research/2026-11-01-observation-sources.md)。
 
 成功时 `structuredContent` 是玩法对象，`content` 同时提供相同对象的紧凑 JSON 文本。[占卜](divination.md)的完整观察和详情还带独立 PNG 图像内容，需要支持图像的客户端和视觉模型；图片不进入文字 JSON，也不依赖截图工具配置；`actions_only` 预设及动作回执不返回棋盘或图像。正文中的换行和空格保留；终端与证据文件使用两空格缩进。对象本身没有排版属性，客户端决定如何转换为模型输入。协议、文本、显示的区别及官方依据见 [项目审阅](../research/2026-10-29-project-review.md#mcp-json-与官方实践)。
 
@@ -169,13 +173,13 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 回执不附送玩家、敌人、手牌、顶栏、候选牌、升级预览、场景正文、占卜图像或无关空字段。事件不是完整状态差量；最新能量、费用、可出牌标记等不能仅靠战报还原。普通动作可以依据已有信息续接；抽牌、随机生成、费用变化、回合切换或需要新决策信息时，按需使用 `get_observation` 或专项详情。
 
-例如 `play_card → inspect_selection → select_card → inspect_selection → selection_option` 分别读取候选与确认预览；只读详情在状态未变时保留已有动作许可。`get_observation` 的默认完整输出、`actions_only` 预设、纯详情和切换查看页工具的格式不受动作精简影响。底层文件 IPC 仍保留完整状态和事件，等待稳定及过期校验也使用完整状态。
+例如 `play_card → inspect_selection → select_card → inspect_selection → selection_option` 分别读取候选与确认预览，详情同时刷新状态令牌。`get_observation` 的默认完整输出、`actions_only` 预设、纯详情和切换查看页工具的格式不受动作精简影响。底层文件 IPC 仍保留完整状态和事件，等待稳定及过期校验也使用完整状态。
 
 业务错误为 `isError: true`，包含 `error.code/message/recovery`；执行结果未知时另带 `outcome: unknown`。内部异常写入标准错误，不交给模型；标准输出专用于 MCP 消息。
 
 | 错误 | 恢复方式 |
 | --- | --- |
-| `observation_required` | 调用 `get_observation` |
+| `observation_required` | 读取当前状态，可用 `get_observation` 或相关专项详情；`recovery` 提供通用的 `get_observation` 恢复入口 |
 | `controller_busy` | 断开占用控制权的连接，再观察；当前连接仍可握手和发现工具 |
 | `stale_state`、`illegal_action`、`expired_request` | 重新观察并核对当前动作或页面是否合法 |
 | `invalid_request` | 对照工具 schema 修正参数；再次执行动作前重新观察 |

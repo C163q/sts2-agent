@@ -235,7 +235,7 @@ class ActionObservationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(client.calls), 3)
         self.assertIsNone(tools.snapshot_id)
 
-    async def test_read_only_inspection_preserves_only_the_matching_action_result(self):
+    async def test_read_only_inspection_refreshes_the_action_result_state(self):
         client = Client()
         tools = GameTools(client)
         await tools.get_observation()
@@ -244,7 +244,9 @@ class ActionObservationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(tools.snapshot_id, 'state-2')
         client.revision += 1
         await tools.inspect_hand()
-        self.assertIsNone(tools.snapshot_id)
+        self.assertEqual(tools.snapshot_id, 'state-3')
+        self.assertNotIn('error', await tools.end_turn())
+        self.assertEqual(client.calls[-1], ('end_turn', 'state-3', None))
 
     async def test_cancelled_action_does_not_publish_its_new_permission(self):
         started, release = threading.Event(), threading.Event()

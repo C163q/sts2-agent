@@ -200,8 +200,9 @@ class GameTools:
                     return player_result({"ok": False, "error": {"code": "invalid_request"}})
             if error := self._acquire_controller():
                 return error
-            payload, _ = await self._request(operation, arguments=arguments)
+            payload, snapshot_id = await self._request(operation, arguments=arguments)
             await anyio.lowlevel.checkpoint_if_cancelled()
+            self.snapshot_id = snapshot_id
             return payload
 
     async def _inspect(self, operation, arguments=None):
@@ -223,8 +224,8 @@ class GameTools:
                 return error
             payload, snapshot_id = await self._request(operation, arguments=arguments)
             await anyio.lowlevel.checkpoint_if_cancelled()
-            if previous == snapshot_id:
-                self.snapshot_id = previous
+            if operation != "capture_screenshot" or previous == snapshot_id:
+                self.snapshot_id = snapshot_id
             return payload
 
     def _acquire_controller(self):
@@ -336,7 +337,7 @@ class GameTools:
                 self.snapshot_id = None
                 return {"error": {
                     "code": "observation_required",
-                    "message": "Call get_observation to obtain a current action observation.",
+                    "message": "Read current state with get_observation or a relevant inspection before acting.",
                     "recovery": "get_observation",
                 }}
             snapshot_id, self.snapshot_id = self.snapshot_id, None

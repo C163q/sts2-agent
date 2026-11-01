@@ -10,7 +10,7 @@
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_potions > .tmp/live/potion-inspection.json
 ```
 
-MCP 调用 `inspect_potions()` 无须参数，不能授权动作；已有观察的令牌保留与失效规则见 [MCP 调用语义](mcp.md#调用和错误语义)。文件读取无须动作令牌，可用时列入 `available_actions`。加 `--raw` 保留文件协议的 `id/ok/state`、`state.snapshot_id` 和逐药水额外提示；默认输出移除控制信息，并合并共享提示。不附带手牌或敌人意图的数值解读 notes。
+MCP 调用 `inspect_potions()` 无须参数，成功时刷新状态令牌；完整规则见 [MCP 调用语义](mcp.md#调用和错误语义)。文件读取无须动作令牌，可用时列入 `available_actions`。加 `--raw` 保留文件协议的 `id/ok/state`、`state.snapshot_id` 和逐药水额外提示；默认输出移除控制信息，并合并共享提示。不附带手牌或敌人意图的数值解读 notes。
 
 ## 格式
 

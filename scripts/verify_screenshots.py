@@ -109,7 +109,7 @@ async def verify(args):
             assert 'turn' not in result and 'turn' not in continued, (result, continued)
             await call('inspect_map')
             await capture('08-map.png')
-            assert (await call('end_turn'))['error']['code'] == 'observation_required'
+            assert (await call('end_turn'))['error']['code'] == 'illegal_action'
             await call('inspect_deck')
             await capture('09-deck.png')
             await call('close_card_view')

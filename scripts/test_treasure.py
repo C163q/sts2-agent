@@ -69,9 +69,6 @@ class TreasureSessionTests(unittest.IsolatedAsyncioTestCase):
     async def test_inspection_permission_and_default_compound_action_chain(self):
         client = TreasureClient(); tools = GameTools(client)
         await tools.inspect_treasure()
-        self.assertEqual((await tools.loot_treasure())['error']['code'], 'observation_required')
-        await tools.get_observation()
-        await tools.inspect_treasure()
         result = await tools.loot_treasure()
         self.assertEqual(result['available_actions'], ['proceed'])
         self.assertEqual(tools.snapshot_id, 'treasure-2')

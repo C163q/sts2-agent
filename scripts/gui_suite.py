@@ -21,6 +21,7 @@ SUPPORTED_VERIFIERS = {
     'verify_suite_continuation.py', 'verify_suite_pending.py',
     'verify_selection_scene.py',
     'verify_action_stability.py',
+    'verify_observation_sources.py',
 }
 
 
@@ -65,6 +66,7 @@ def load_cases(path):
                 'verify_selection_scene.py': ('ancient_bundle', 'rest_smith', 'combat_discovery', 'event_deck', 'shop_remove'),
                 'verify_action_stability.py': ('anger', 'turbo', 'blade_dance', 'pommel_strike',
                                               'bloodletting', 'gather_light', 'preview_draw', 'preview_messy'),
+                'verify_observation_sources.py': ('map', 'views', 'selection'),
             }
             if args and (verifier not in scenario_options or len(args) != 2
                          or args[0] != '--scenario' or args[1] not in scenario_options[verifier]):

@@ -21,16 +21,17 @@ from divination_details import TOOL_SCHEMA, DIVINE_SCHEMA
 
 SERVER_INSTRUCTIONS = (
     "Control a local Slay the Spire 2 game; output is English. "
-    "Start with get_observation. Call tools sequentially and decide after each result. "
+    "Call tools sequentially and decide after each result. "
     "available_actions lists currently offered tool names; arguments and state are checked at call time. "
     "Use IDs from current observations or inspections. "
-    "Continue from a successful action only when transition.complete is true, available_actions includes a game action, "
-    "and its screen or a supported selection is visible. Action receipts contain context and events, not full state or state deltas. "
+    "Action receipts contain context and events, not full state or state deltas. "
     "After draws, cost changes or turn changes, read current values with get_observation or inspections as needed. "
     "Handle card choices with selection tools; transition.complete can mean effects are paused for input. "
-    "Read-only inspections preserve existing action permission only while state is unchanged; they do not grant it. "
-    "Opening, closing or switching deck, pile, map or selection views clears permission: observe on the required screen before acting. "
-    "After errors, timeouts or incomplete transitions, observe before deciding; never automatically retry an action with unknown outcome."
+    "Successful observations, inspections and view changes refresh the state used to validate the next action; screenshots do not. "
+    "No extra get_observation is needed when a result already provides the information needed to act. "
+    "Close covering views before acting on the underlying screen. "
+    "After errors, timeouts or incomplete transitions, check current state with get_observation or a relevant inspection before deciding; "
+    "never automatically retry an action with unknown outcome."
 )
 NO_ARGUMENTS = {"type": "object", "properties": {}, "additionalProperties": False}
 
@@ -80,7 +81,7 @@ def tool_definitions(*, screenshots_enabled=False):
             'Full potion slots or gain restrictions can block purchase without spending gold. Check purchase_result for the outcome.')),
 
         Tool(name="get_observation", inputSchema=OBSERVATION_SCHEMA, annotations=read_only, description=(
-            "Read the current visible screen and refresh action permission. Includes available inspection/action names, excluding this tool and screenshots. "
+            "Read an overview of the current visible screen. Includes available inspection/action names, excluding this tool and screenshots. "
             "Ordinary hand effects and hover help require dedicated inspections.")),
         Tool(name='inspect_rewards', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             'Read the current browsable reward rows and their hover help. Does not reveal unopened card reward candidates.')),
@@ -154,7 +155,7 @@ def tool_definitions(*, screenshots_enabled=False):
         Tool(name="set_selection_view", inputSchema=VIEW_SCHEMA, annotations=view, description=(
             "Click the native eye to show battlefield or return to selection. "
             "Battlefield view permits available inspections, never normal combat actions. "
-            "Close covering card/map views first; observe after switching before acting.")),
+            "Close covering card/map views first.")),
         Tool(name="end_turn", inputSchema=NO_ARGUMENTS, annotations=action, description=(
             "End the player's turn once and wait for the next input boundary, turn or run end. "
             "May stop for a choice before the next turn; inspect and resolve that selection separately.")),

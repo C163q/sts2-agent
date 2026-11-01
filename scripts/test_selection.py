@@ -205,13 +205,13 @@ class SelectionPermissionTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(tools.snapshot_id)
         self.assertTrue(all(call[0] == "get_state" for call in client.calls))
 
-    async def test_view_change_clears_permission(self):
+    async def test_view_change_returns_current_action_state(self):
         tools = GameTools(Client())
         self.assertTrue(hasattr(tools, "set_selection_view"), "Missing explicit battlefield view")
         await tools.get_observation()
         result = await tools.set_selection_view({"view": "battlefield"})
         self.assertNotIn("error", result)
-        self.assertIsNone(tools.snapshot_id)
+        self.assertEqual(tools.snapshot_id, "fixture-1")
 
 
 if __name__ == "__main__":

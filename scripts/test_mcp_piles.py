@@ -18,7 +18,7 @@ def opened(pile="draw", level="summary"):
 
 
 class PileMcpTests(unittest.IsolatedAsyncioTestCase):
-    async def test_summary_full_and_repeat_clear_permission_without_default_ui_options(self):
+    async def test_summary_full_and_repeat_keep_covered_actions_illegal_without_default_ui_options(self):
         from mcp_server import GameTools
         with FakeGame() as game:
             tools = GameTools(Client(game.directory))
@@ -38,7 +38,7 @@ class PileMcpTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual((await tools.inspect_pile({"pile": pile}))["cards"], summary["cards"])
                 await tools.get_observation()
                 await tools.inspect_pile({"pile": pile})
-                self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+                self.assertEqual((await tools.end_turn())["error"]["code"], "illegal_action")
                 await tools.close_card_view()
 
     async def test_invalid_arguments_do_not_reach_ipc_or_consume_existing_permission(self):
@@ -55,7 +55,7 @@ class PileMcpTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue((await tools.end_turn())["transition"]["complete"])
             self.assertEqual(game.turn, 2)
 
-    async def test_empty_and_unavailable_are_successful_observations_not_action_authorization(self):
+    async def test_empty_and_unavailable_return_current_state_without_opening_a_page(self):
         from mcp_server import GameTools
         for status, pile, cards, screen in (("empty", "discard", [], {"status": "visible"}),
                                            ("unavailable", "exhaust", None, {"status": "covered", "view": "deck"})):
@@ -63,6 +63,7 @@ class PileMcpTests(unittest.IsolatedAsyncioTestCase):
                 game.pile_payload = {"scene": "card_pile", "pile": pile, "detail_level": "full",
                     "status": status, "screen": screen, "message": "An English explanation.", "cards": cards}
                 if status == "unavailable": game.pile_payload["reason"] = "entry_not_visible"
+                game.deck_open = status == "unavailable"
                 tools = GameTools(Client(game.directory))
                 await tools.get_observation()
                 result = await tools.inspect_pile({"pile": pile, "detail_level": "full"})
@@ -71,7 +72,11 @@ class PileMcpTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(result["screen"], screen)
                 if cards is None: self.assertNotIn("hover_tips", result)
                 else: self.assertEqual(result["hover_tips"], [])
-                self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+                result = await tools.end_turn()
+                if status == "unavailable":
+                    self.assertEqual(result["error"]["code"], "illegal_action")
+                else:
+                    self.assertTrue(result["transition"]["complete"])
 
     async def test_malformed_payloads_fail_closed(self):
         from mcp_server import GameTools

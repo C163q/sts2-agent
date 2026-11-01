@@ -101,7 +101,6 @@ async def verify(args):
                 print('PASS', args.scenario); return
 
             inspected = await call('inspect_map')
-            await call('travel_to_node', {'node_id': inspected['selectable_nodes'][0]}, error='observation_required')
             data = await call('get_observation')
             assert data.get('map') is not None, 'Missing get_observation map summary.'
             assert data['screen'] == {'status': 'visible', 'view': 'map'}, data
@@ -127,8 +126,6 @@ async def verify(args):
                 await native('clear_test_navigation_drawing')
                 await call('get_observation')
                 await call('close_map')
-                await call('travel_to_node', {'node_id': target}, error='observation_required')
-                await call('get_observation')
                 await call('travel_to_node', {'node_id': target}, error='illegal_action')
                 await call('inspect_map')
                 await call('get_observation')

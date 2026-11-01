@@ -66,7 +66,6 @@ async def verify(args):
                 await call('inspect_treasure', error='illegal_action')
                 await call('loot_treasure', error='observation_required')
                 await call('close_map')
-                await call('get_observation')
                 result = await observe_after_action(call, await call('loot_treasure')); done(result)
             elif args.scenario in {'open', 'skip'}:
                 result = await observe_after_action(call, await call('loot_treasure', {'open_only': True})); done(result)

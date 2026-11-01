@@ -98,7 +98,7 @@ class DivinationSessionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(client.calls[-1], ('divine', 'sphere-2', {'x': 0, 'y': 10}))
         self.assertEqual((await tools.inspect_event())['divination']['remaining'], 2)
 
-    async def test_strict_arguments_and_inspection_never_grant_action_permission(self):
+    async def test_strict_arguments_and_inspection_supports_action(self):
         for operation, arguments in [('divine', {'x': True, 'y': 0}), ('divine', {'x': 0.0, 'y': 0}),
                 ('divine', {'x': 11, 'y': 0}), ('divine', {'x': -1, 'y': 0}), ('divine', {'x': 0, 'y': '0'}),
                 ('divine', {'x': 0, 'y': 0, 'extra': 1}), ('divine', {}),
@@ -108,7 +108,7 @@ class DivinationSessionTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(client.calls, [])
         tools = GameTools(DivinationClient())
         await tools.inspect_event()
-        self.assertEqual((await tools.divine({'x': 5, 'y': 5}))['error']['code'], 'observation_required')
+        self.assertNotIn('error', await tools.divine({'x': 5, 'y': 5}))
 
     async def test_missing_invalid_or_mismatched_image_revokes_permission(self):
         for mutate in (lambda r: r.pop('divination_image'), lambda r: r['divination_image'].update(png_base64='invalid'),

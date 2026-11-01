@@ -108,8 +108,6 @@ class ShopSessionTests(unittest.IsolatedAsyncioTestCase):
     async def test_inspection_preserves_permission_and_restock_action_can_chain(self):
         client = ShopClient(); tools = GameTools(client)
         await tools.inspect_shop()
-        self.assertEqual((await tools.buy_item({'item_id': 0}))['error']['code'], 'observation_required')
-        await tools.get_observation(); await tools.inspect_shop()
         result = await tools.buy_item({'item_id': 0})
         self.assertNotIn('shop', result)
         self.assertEqual((await tools.inspect_shop())['shop']['items'][0]['id'], 15)

@@ -77,12 +77,10 @@ class EventClient:
 
 
 class EventSessionTests(unittest.IsolatedAsyncioTestCase):
-    async def test_inspection_does_not_grant_permission_and_action_snapshot_can_be_reused(self):
+    async def test_inspection_and_action_snapshot_can_be_reused(self):
         from game_tools import GameTools
         client = EventClient(); tools = GameTools(client)
         await tools.inspect_event()
-        self.assertEqual((await tools.choose_event_option({'option_id': 0}))['error']['code'], 'observation_required')
-        await tools.get_observation(); await tools.inspect_event()
         result = await tools.choose_event_option({'option_id': 0})
         self.assertEqual(result['available_actions'], ['proceed'])
         self.assertNotIn('error', await tools.proceed())

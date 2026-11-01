@@ -1,6 +1,6 @@
 # 选牌与查看战场
 
-适用于 Mod `0.34.1`、MCP server `0.29.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
+适用于 Mod `0.34.1`、MCP server `0.29.1`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
 
 ## 观察与信息范围
 
@@ -30,7 +30,7 @@
 
 `selection_option({"option_id": "confirm"})` 点击观察中列出的启用按钮。可能出现 `skip`、`confirm`、`cancel_preview`、`cancel` 或奖励 `alternative:N`；含义以当前 `text` 为准。预览取消与放弃整个选择分别处理。奖励替代选项还可能是治疗、献祭或重新生成，不能一律视为跳过。允许选零张的手牌选择通过原生确认按钮提交空选择。
 
-两类动作使用当前观察许可，可以来自 `get_observation` 或上一步满足续接条件的成功动作结果，具体条件见[MCP 动作许可](mcp.md#调用和错误语义)；失败后须重新观察。`inspect_selection` 不产生新的动作许可；若读取前后的状态没有改变，保留原许可。原生滚动候选由工具先定位再点击，定位期间若选择已经改变则拒绝输入。选择实例代际参与底层令牌，防止外观相同的连续选择复用旧许可。
+两类动作使用当前观察许可，可以来自基础观察、专项详情、视图操作或满足续接条件的成功动作结果，具体条件见[MCP 动作许可](mcp.md#调用和错误语义)；失败后须重新观察。`inspect_selection` 成功时刷新状态令牌，可直接选择已读取的候选。原生滚动候选由工具先定位再点击，定位期间若选择已经改变则拒绝输入。选择实例代际参与底层令牌，防止外观相同的连续选择复用旧许可。
 
 ## 手牌升级
 
@@ -44,7 +44,7 @@
 
 调用 `set_selection_view({"view":"battlefield"})` 点击原生眼睛。此后基础观察及 `inspect_hand`、`inspect_combatants`、`inspect_ui`、药水、遗物详情按当前可见性工作；牌组、地图和牌堆还要求各自原生入口可用。小型候选和简单网格使用其自己的牌堆入口，不能强行点击被禁用的战斗按钮。
 
-查看战场不允许出牌、结束回合或直接选隐藏的候选；`available_actions` 列出当前可用的战场详情、页面查看及 `set_selection_view` 返回入口。`close_card_view` 只关闭牌组或牌堆，保留底层选择与原有查看状态；地图由 `close_map` 关闭。关闭覆盖页后，调用 `set_selection_view({"view":"selection"})` 返回候选。视图工具清除动作许可，提交选择前重新观察；普通观察和只读详情都不会自动切换眼睛。
+查看战场不允许出牌、结束回合或直接选隐藏的候选；`available_actions` 列出当前可用的战场详情、页面查看及 `set_selection_view` 返回入口。`close_card_view` 只关闭牌组或牌堆，保留底层选择与原有查看状态；地图由 `close_map` 关闭。关闭覆盖页后，调用 `set_selection_view({"view":"selection"})` 返回候选。返回候选的成功视图结果可以直接续接选择；普通观察和只读详情都不会自动切换眼睛。
 
 ## 动作后的结算
 

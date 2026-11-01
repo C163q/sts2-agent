@@ -1,5 +1,26 @@
 [
   {
+    "name": "observation_map",
+    "scenarios": { "navigation": "basic" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_observation_sources.py", "args": ["--scenario", "map"] }
+    ]
+  },
+  {
+    "name": "observation_views",
+    "scenarios": { "play": "pommel_strike" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_observation_sources.py", "args": ["--scenario", "views"] }
+    ]
+  },
+  {
+    "name": "observation_selection",
+    "scenarios": { "play": "discovery" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_observation_sources.py", "args": ["--scenario", "selection"] }
+    ]
+  },
+  {
     "name": "chain",
     "scenarios": {
       "play": "armaments_free",

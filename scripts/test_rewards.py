@@ -194,9 +194,6 @@ class RewardStdioTests(unittest.IsolatedAsyncioTestCase):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
                     await session.call_tool('inspect_rewards', {})
-                    missing = await session.call_tool('claim_reward', {'reward_id': 12})
-                    self.assertEqual(missing.structuredContent['error']['code'], 'observation_required')
-                    await session.call_tool('get_observation', {})
                     claimed = await session.call_tool('claim_reward', {'reward_id': 12})
                     self.assertNotIn('rewards', claimed.structuredContent)
                     details = await session.call_tool('inspect_rewards', {})
@@ -210,4 +207,4 @@ class RewardStdioTests(unittest.IsolatedAsyncioTestCase):
                     result = await session.call_tool('proceed', {})
                     self.assertEqual(result.structuredContent['screen']['view'], 'map')
             self.assertEqual([r['operation'] for r in game.operations],
-                             ['inspect_rewards', 'get_state', 'claim_reward', 'inspect_rewards', 'get_state', 'proceed'])
+                             ['inspect_rewards', 'claim_reward', 'inspect_rewards', 'get_state', 'proceed'])

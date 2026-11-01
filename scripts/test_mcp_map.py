@@ -39,7 +39,7 @@ class MapStdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(viewed.structuredContent, map_payload())
                     self.assertEqual(json.loads(viewed.content[0].text), viewed.structuredContent)
                     permission = await session.call_tool("end_turn", {})
-                    self.assertEqual(permission.structuredContent["error"]["code"], "observation_required")
+                    self.assertEqual(permission.structuredContent["error"]["code"], "illegal_action")
                     closed = await session.call_tool("close_map", {})
                     self.assertFalse(closed.isError)
                     self.assertEqual(closed.structuredContent["screen"], {"status": "visible"})
@@ -48,23 +48,23 @@ class MapStdioTests(unittest.IsolatedAsyncioTestCase):
 
 
 class MapMcpTests(unittest.IsolatedAsyncioTestCase):
-    async def test_repeat_close_and_flight_choices_clear_action_permission(self):
+    async def test_repeat_and_close_refresh_state_while_game_rejects_covered_actions(self):
         from mcp_server import GameTools
         with FakeGame() as game:
             tools = GameTools(Client(game.directory))
             await tools.get_observation()
             self.assertEqual(await tools.inspect_map(), map_payload())
             self.assertEqual(await tools.inspect_map(), map_payload())
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual((await tools.end_turn())["error"]["code"], "illegal_action")
             game.map_payload.update(can_travel=True, selectable_nodes=["map:1:2:1", "map:1:2:5"])
             viewed = await tools.inspect_map()
             self.assertEqual(viewed["selectable_nodes"], ["map:1:2:1", "map:1:2:5"])
             self.assertEqual(viewed["nodes"][1]["next"], ["map:1:2:1"])
             await tools.get_observation()
             self.assertEqual((await tools.close_map())["screen"], {"status": "visible"})
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
             self.assertEqual([x["operation"] for x in game.operations],
-                             ["get_state", "inspect_map", "inspect_map", "inspect_map", "get_state", "close_map"])
+                             ["get_state", "inspect_map", "inspect_map", "end_turn", "inspect_map", "get_state", "close_map", "end_turn"])
 
     async def test_invalid_arguments_preserve_permission_and_never_reach_game(self):
         from mcp_server import GameTools

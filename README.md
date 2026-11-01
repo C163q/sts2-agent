@@ -18,7 +18,7 @@
 
 已接通[先古之民房间](docs/development/ancients.md)：逐句对话、选择遗物、后续选牌与前进。支持[通用问号事件](docs/development/events.md)的正文与选项、致死红框、后续选牌/奖励、战斗及返回事件；[占卜](docs/development/divination.md)支持棋盘图像、大小工具与逐格揭开。[Trial 确认弹窗](docs/development/events.md#事件确认弹窗)支持明确确认或取消；未知弹窗仍停在人工输入边界。
 
-MCP `0.29.0` 默认提供 42 个工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察支持[完整或仅工具预设](docs/development/observation.md#mcp-输出预设)，按当前页面列出可用查看与操作工具，不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
+MCP `0.29.1` 默认提供 42 个工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察支持[完整或仅工具预设](docs/development/observation.md#mcp-输出预设)，按当前页面列出可用查看与操作工具，不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
 
 ## 开发与运行入口
 
@@ -60,7 +60,7 @@ cp .env.example .env
 
    将示例路径替换为实际路径，已有启动选项须保留；设置后完整重启游戏，详见[启动配置](docs/development/live-game.md#steam-启动配置)。
 4. **接入 LLM 客户端**：按[MCP 接入](docs/development/mcp.md#安装与游戏前提)安装 Python 依赖，将 `scripts/mcp_server.py --ipc-dir <相同通信目录>` 配置为客户端的 stdio MCP 服务。脚本应使用已安装依赖的 Python 解释器启动；Codex 等客户端的完整参数示例见该指南。截图工具按[启动配置](docs/development/screenshots.md#启动配置)单独启用。
-5. **验证并游玩**：启动游戏后先调用 `get_observation`，成功返回当前画面才说明游戏内接口能够响应。正常使用自行进入对局与战斗；LLM 根据当前观察按需查看详情、目标或选牌，满足续接条件的成功动作结果可直接用于下一动作；动作返回精简回执，当前数值及候选按需查看；失败或切换查看页面后重新观察，详见[MCP 调用规则](docs/development/mcp.md#调用和错误语义)。更新 DLL 后须完整重启游戏，更新 MCP 脚本或配置后须重连 MCP。
+5. **验证并游玩**：启动游戏后可用 `get_observation` 读取画面总览，成功读取才说明游戏内接口能够响应。正常使用自行进入对局与战斗；LLM 根据当前观察按需查看详情、目标或选牌，满足续接条件的成功动作结果可直接用于下一动作；动作返回精简回执，当前数值及候选按需查看；成功详情及页面操作也可直接支持下一动作；失败后重新读取当前状态，详见[MCP 调用规则](docs/development/mcp.md#调用和错误语义)。更新 DLL 后须完整重启游戏，更新 MCP 脚本或配置后须重连 MCP。
 
 MCP 不扫描游戏进程，也不负责启动游戏。客户端与 Mod 通过配置好的同一目录交换请求和响应；列出工具只说明 MCP 服务已启动，不能证明游戏已运行或 Mod 已连通。交互过程及超时含义见[通信方式](docs/development/mcp.md#通信方式与连接状态)。
 

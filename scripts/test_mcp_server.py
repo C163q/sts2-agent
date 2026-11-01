@@ -148,6 +148,14 @@ class FakeGame:
                         response.update(ok=False, error={"code": "illegal_action", "message": "/private/game/path"})
                     else:
                         self.turn += 1
+                if operation == "travel_to_node":
+                    if request.get("expected_state") != self.token():
+                        response.update(ok=False, error={"code": "stale_state"})
+                    elif not self.map_open or request.get("arguments", {}).get("node_id") not in self.map_payload["selectable_nodes"]:
+                        response.update(ok=False, error={"code": "illegal_action"})
+                    else:
+                        self.map_open = False
+                        self.ui_generation += 1
                 if response["ok"]:
                     response["state"] = {
                         "snapshot_id": self.token(), "schema_version": 3, "language": "en",
@@ -157,7 +165,7 @@ class FakeGame:
                         "top_bar": {}, "buttons": {}, "available_actions": ["end_turn", "start_test_combat"],
                         "overlay": {"seed": "private"},
                     }
-                if operation == "end_turn" and response["ok"]:
+                if operation in {"end_turn", "travel_to_node"} and response["ok"]:
                     response["state"]["transition"] = {"stop_reason": "player_ready", "complete": True, "events": []}
                 if operation == "capture_screenshot" and self.screenshot_payload is not None:
                     response["state"] = {**self.screenshot_payload, "snapshot_id": self.token()}
@@ -205,6 +213,7 @@ class FakeGame:
                         response = {"id": request["id"], "ok": False,
                                     "error": {"code": "illegal_action", "message": "/private/game/path"}}
                 if operation == "inspect_pile":
+                    previous_deck, previous_pile = self.deck_open, self.pile_open
                     arguments = request.get("arguments", {})
                     pile = arguments["pile"]
                     if self.pile_open != pile: self.ui_generation += 1
@@ -217,6 +226,8 @@ class FakeGame:
                             "visual_card_pool": "ironclad", "energy_cost": "1", "star_cost": None,
                             "description": "Gain 5 Block.", "hover_tips": [{"title": "Block", "description": "Prevents damage."}]}],
                         **(self.pile_payload or {})}
+                    if response["state"]["status"] != "opened":
+                        self.deck_open, self.pile_open = previous_deck, previous_pile
                     if self.pile_error:
                         response = {"id": request["id"], "ok": False,
                                     "error": {"code": "illegal_action", "message": "/private/game/path"}}
@@ -289,7 +300,7 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
         from mcp_server import GameTools
         self.tools_type = GameTools
 
-    async def test_relic_inspection_shares_tips_and_does_not_authorize_action(self):
+    async def test_relic_inspection_shares_tips_and_supports_action(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             self.assertEqual(await tools.inspect_relics(), {
@@ -299,8 +310,8 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
                     {"name": "Anchor", "counter": None, "description": "Start with 10 Block."},
                 ], "hover_tips": [{"title": "Block", "description": "Prevents damage.", "relic_indices": [0, 2]}],
             })
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
-            self.assertEqual([item["operation"] for item in game.operations], ["inspect_relics"])
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual([item["operation"] for item in game.operations], ["inspect_relics", "end_turn"])
 
     async def test_relic_inspection_rejects_malformed_details_and_clears_token(self):
         missing = object()
@@ -371,14 +382,15 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(game.turn, 2)
             self.assertEqual(game.operations[-1]["expected_state"], "state-1")
 
-    async def test_relic_inspection_invalidates_a_changed_observation_token(self):
+    async def test_relic_inspection_refreshes_a_changed_observation_token(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             game.turn = 2
             self.assertNotIn("error", await tools.inspect_relics())
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
-            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_relics"])
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_relics", "end_turn"])
+            self.assertEqual(game.operations[-1]["expected_state"], "state-2")
 
     async def test_failed_relic_inspection_clears_token_and_sanitizes_game_error(self):
         with FakeGame() as game:
@@ -439,8 +451,8 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
                 ],
                 "notes": {"enemy_attack_intents": ENEMY_ATTACK_INTENT_NOTE},
             })
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
-            self.assertEqual([item["operation"] for item in game.operations], ["inspect_combatants"])
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual([item["operation"] for item in game.operations], ["inspect_combatants", "end_turn"])
 
     async def test_combatant_inspection_preserves_an_unchanged_observation_token(self):
         with FakeGame() as game:
@@ -451,14 +463,15 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(game.turn, 2)
             self.assertEqual(game.operations[-1]["expected_state"], "state-1")
 
-    async def test_combatant_inspection_invalidates_a_changed_observation_token(self):
+    async def test_combatant_inspection_refreshes_a_changed_observation_token(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             game.turn = 2
             self.assertNotIn("error", await tools.inspect_combatants())
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
-            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_combatants"])
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_combatants", "end_turn"])
+            self.assertEqual(game.operations[-1]["expected_state"], "state-2")
 
     async def test_combatant_inspection_rejects_malformed_data_or_sources_and_clears_token(self):
         missing = object()
@@ -585,7 +598,7 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
             self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_combatants"])
 
-    async def test_potion_inspection_shares_tips_preserves_slots_and_does_not_authorize_action(self):
+    async def test_potion_inspection_shares_tips_preserves_slots_and_supports_action(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             self.assertEqual(await tools.inspect_potions(), {
@@ -594,8 +607,8 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
                                  {"name": "Block Potion", "description": "Gain 12 Block."}],
                 "hover_tips": [{"title": "Block", "description": "Prevents damage.", "slot_indices": [0, 2]}],
             })
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
-            self.assertEqual([item["operation"] for item in game.operations], ["inspect_potions"])
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual([item["operation"] for item in game.operations], ["inspect_potions", "end_turn"])
 
     async def test_potion_inspection_preserves_an_unchanged_observation_token(self):
         with FakeGame() as game:
@@ -606,14 +619,15 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(game.turn, 2)
             self.assertEqual(game.operations[-1]["expected_state"], "state-1")
 
-    async def test_potion_inspection_invalidates_a_changed_observation_token(self):
+    async def test_potion_inspection_refreshes_a_changed_observation_token(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             game.turn = 2
             self.assertNotIn("error", await tools.inspect_potions())
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
-            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_potions"])
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_potions", "end_turn"])
+            self.assertEqual(game.operations[-1]["expected_state"], "state-2")
 
     async def test_potion_inspection_rejects_malformed_details_and_clears_token(self):
         cases = [
@@ -720,12 +734,12 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
             self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_potions"])
 
-    async def test_ui_inspection_does_not_authorize_an_action(self):
+    async def test_ui_inspection_supports_an_action(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             self.assertEqual(await tools.inspect_ui(), game.ui_payload)
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
-            self.assertEqual([item["operation"] for item in game.operations], ["inspect_ui"])
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual([item["operation"] for item in game.operations], ["inspect_ui", "end_turn"])
 
     async def test_ui_inspection_preserves_an_unchanged_observation_token(self):
         with FakeGame() as game:
@@ -736,14 +750,15 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(game.turn, 2)
             self.assertEqual(game.operations[-1]["expected_state"], "state-1")
 
-    async def test_ui_inspection_invalidates_a_changed_observation_token(self):
+    async def test_ui_inspection_refreshes_a_changed_observation_token(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             game.turn = 2
             self.assertNotIn("error", await tools.inspect_ui())
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
-            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_ui"])
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_ui", "end_turn"])
+            self.assertEqual(game.operations[-1]["expected_state"], "state-2")
 
     async def test_ui_inspection_rejects_malformed_details_and_clears_token(self):
         cases = [
@@ -813,7 +828,7 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
             self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_ui"])
 
-    async def test_inspection_does_not_authorize_an_action(self):
+    async def test_inspection_supports_an_action(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             result = await tools.inspect_hand()
@@ -822,8 +837,8 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(result["hover_tips"], [{"title": "Block",
                 "description": "Until next turn, prevents damage.", "card_ids": [9, 2]}])
             self.assertEqual(set(result["notes"]), {"card_values"})
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
-            self.assertEqual([item["operation"] for item in game.operations], ["inspect_hand"])
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual([item["operation"] for item in game.operations], ["inspect_hand", "end_turn"])
 
     async def test_inspection_preserves_an_unchanged_observation_token(self):
         with FakeGame() as game:
@@ -848,14 +863,15 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             result = await self.tools_type(Client(game.directory)).inspect_hand()
             self.assertEqual(result["error"]["code"], "transport_error")
 
-    async def test_inspection_invalidates_a_changed_observation_token(self):
+    async def test_inspection_refreshes_a_changed_observation_token(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             game.turn = 2
             self.assertNotIn("error", await tools.inspect_hand())
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
-            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_hand"])
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
+            self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_hand", "end_turn"])
+            self.assertEqual(game.operations[-1]["expected_state"], "state-2")
 
     async def test_failed_inspection_invalidates_the_observation_token(self):
         with FakeGame() as game:
@@ -1113,7 +1129,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     closed = await session.call_tool("close_card_view", {})
                     self.assertFalse(closed.isError)
                     self.assertEqual(json.loads(closed.content[0].text), closed.structuredContent)
-                    self.assertEqual((await session.call_tool("end_turn", {})).structuredContent["error"]["code"], "observation_required")
+                    self.assertFalse((await session.call_tool("end_turn", {})).isError)
 
                     invalid_pile = await session.call_tool("inspect_pile", {})
                     self.assertTrue(invalid_pile.isError)
@@ -1124,7 +1140,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                         self.assertEqual(json.loads(inspected.content[0].text), inspected.structuredContent)
                         self.assertEqual(inspected.structuredContent["pile"], pile)
                         self.assertEqual(inspected.structuredContent["hover_tips"][0]["card_ids"], ["pile:0"])
-                        self.assertEqual((await session.call_tool("end_turn", {})).structuredContent["error"]["code"], "observation_required")
+                        self.assertEqual((await session.call_tool("end_turn", {})).structuredContent["error"]["code"], "illegal_action")
                     self.assertFalse((await session.call_tool("close_card_view", {})).isError)
 
     async def test_handshake_succeeds_when_another_controller_owns_game(self):

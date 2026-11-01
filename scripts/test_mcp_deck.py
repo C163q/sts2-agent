@@ -35,8 +35,8 @@ class DeckMcpTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(game.operations[1]["arguments"], options)
             self.assertFalse(game.operations[0].get("arguments"))
             self.assertFalse(game.operations[2].get("arguments"))
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
-            self.assertEqual([op["operation"] for op in game.operations], ["inspect_deck"] * 3)
+            self.assertEqual((await tools.end_turn())["error"]["code"], "illegal_action")
+            self.assertEqual([op["operation"] for op in game.operations], ["inspect_deck"] * 3 + ["end_turn"])
 
     async def test_explicit_false_is_forwarded_without_resetting_unspecified_sort(self):
         with FakeGame() as game:
@@ -47,18 +47,15 @@ class DeckMcpTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(result["sort"], {"by": "name", "descending": True})
             self.assertEqual(game.operations[-1]["arguments"], {"view_upgrades": False})
 
-    async def test_open_and_close_always_clear_action_permission(self):
+    async def test_close_returns_action_state_without_redundant_observation(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             await tools.inspect_deck()
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
-            await tools.get_observation()
+            self.assertEqual((await tools.end_turn())["error"]["code"], "illegal_action")
             closed = await tools.close_card_view()
             self.assertEqual(closed["screen"], {"status": "visible"})
             self.assertEqual(closed["available_actions"], ["end_turn"])
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
-            await tools.get_observation()
             self.assertTrue((await tools.end_turn())["transition"]["complete"])
             self.assertEqual(game.turn, 2)
 
@@ -132,16 +129,17 @@ class DeckMcpTests(unittest.IsolatedAsyncioTestCase):
             result = await tools.close_card_view()
             self.assertEqual(set(result), {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions"})
 
-    async def test_close_preserves_underlying_map_marker_without_preparing_action(self):
+    async def test_close_preserves_underlying_map_and_rejects_combat_input(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             await tools.inspect_deck()
+            game.map_open = True
             game.close_payload.update(screen={"status": "covered", "view": "map", "private": True},
                                       player=None, enemies=None, top_bar=None, buttons=None, available_actions=[])
             result = await tools.close_card_view()
             self.assertEqual(result["screen"], {"status": "covered", "view": "map"})
             self.assertEqual(result["available_actions"], [])
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertEqual((await tools.end_turn())["error"]["code"], "illegal_action")
 
     async def test_malformed_close_observation_clears_permission(self):
         for invalid in [{"screen": None}, {"screen": {}}, {"screen": {"status": False}},

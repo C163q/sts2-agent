@@ -72,8 +72,6 @@ async def verify(args):
                                                 'options': None, 'proceed': None}, covered
                 await call('inspect_rest_site', error='illegal_action')
                 await call('close_map')
-                await call('choose_rest_option', {'option_id': 'HEAL'}, error='observation_required')
-                await call('get_observation')
                 result = await choose('HEAL'); done(result)
                 after = await fixture()
                 assert after['hp'] == 54 and after['deck'] == before['deck'], after

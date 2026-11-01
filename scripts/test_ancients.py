@@ -109,8 +109,6 @@ class AncientSessionTests(unittest.IsolatedAsyncioTestCase):
         from game_tools import GameTools
         client = AncientClient(); tools = GameTools(client)
         await tools.inspect_ancient()
-        self.assertEqual((await tools.choose_ancient_option({'option_id': 0}))['error']['code'], 'observation_required')
-        await tools.get_observation(); await tools.inspect_ancient()
         result = await tools.choose_ancient_option({'option_id': 0})
         self.assertIn('proceed', result['available_actions'])
         self.assertNotIn('error', await tools.proceed())

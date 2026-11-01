@@ -115,9 +115,8 @@ class PotionPermissionTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(hasattr(tools, 'use_potion'))
         self.assertTrue(hasattr(tools, 'discard_potion'))
         self.assertNotIn('error', await tools.inspect_targets({'potion_slot': 0}))
-        self.assertIsNone(tools.snapshot_id)
+        self.assertEqual(tools.snapshot_id, 'fixture-1')
         for name in ('use_potion', 'discard_potion'):
-            await tools.get_observation()
             await tools.inspect_targets({'potion_slot': 0})
             self.assertEqual(tools.snapshot_id, 'fixture-1')
             result = await getattr(tools, name)({'potion_slot': 0})

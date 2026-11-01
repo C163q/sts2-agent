@@ -118,14 +118,12 @@ class CardPlayPermissionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await invalid)['error']['code'], 'invalid_request')
         self.assertIsNone(tools.snapshot_id)
 
-    async def test_query_does_not_prepare_but_preserves_matching_observation(self):
+    async def test_query_provides_state_for_subsequent_play(self):
         client = Client()
         tools = GameTools(client)
         self.assertTrue(hasattr(tools, 'inspect_targets'), 'Target query is missing')
         self.assertNotIn('error', await tools.inspect_targets({'card_id': 7}))
-        self.assertIsNone(tools.snapshot_id)
-        observed = await tools.get_observation()
-        self.assertIn('play_card', observed['available_actions'])
+        self.assertEqual(tools.snapshot_id, 'fixture-1')
         await tools.inspect_targets({'card_id': 7})
         self.assertEqual(tools.snapshot_id, 'fixture-1')
         played = await tools.play_card({'card_id': 7, 'target_id': 3})

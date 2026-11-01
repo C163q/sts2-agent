@@ -10,7 +10,7 @@
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_relics > .tmp/live/relic-inspection.json
 ```
 
-MCP 调用 `inspect_relics()` 无须参数，不能授权动作；已有观察的令牌保留或失效规则见 [MCP 调用语义](mcp.md#调用和错误语义)。文件调用不需要动作令牌，可用时列入 `available_actions`，不执行游戏动作。默认客户端移除控制信息；加 `--raw` 保留原始响应和状态令牌。
+MCP 调用 `inspect_relics()` 无须参数，成功时刷新状态令牌；完整规则见 [MCP 调用语义](mcp.md#调用和错误语义)。文件调用不需要动作令牌，可用时列入 `available_actions`，不执行游戏动作。默认客户端移除控制信息；加 `--raw` 保留原始响应和状态令牌。
 
 ## 格式
 

@@ -71,8 +71,6 @@ async def verify(args):
                 await call('claim_reward', {'reward_id': by_type('gold')['id']}, error='illegal_action')
                 await call('inspect_rewards', error='illegal_action')
                 await call('close_map')
-                await call('claim_reward', {'reward_id': by_type('card')['id']}, error='observation_required')
-                await call('get_observation')
                 check = await call('inspect_rewards')
                 assert {r['id'] for r in check['rewards']['items']} == ids
                 choice = await observe_after_action(call, await call('claim_reward', {'reward_id': by_type('card')['id']}))
