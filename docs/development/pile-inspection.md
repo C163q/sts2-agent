@@ -85,13 +85,13 @@ UI 操作在游戏线程执行，异步等待不阻塞游戏。等待期间被�
 文件验证脚本只执行 UI 操作，不出牌或结束回合：
 
 ```sh
-python3 scripts/verify_piles.py --ipc-dir .tmp/live/ipc --output-dir .tmp/live/piles
+python3 -m tests.game.verifiers.verify_piles --ipc-dir .tmp/live/ipc --output-dir .tmp/live/piles
 ```
 
 真实 stdio MCP 验证：
 
 ```sh
-.tmp/mcp-venv/bin/python scripts/verify_mcp_piles.py --ipc-dir .tmp/live/ipc --output-dir .tmp/live/mcp-piles
+.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_mcp_piles --ipc-dir .tmp/live/ipc --output-dir .tmp/live/mcp-piles
 ```
 
 独立实例用 `run_roundtrip.py --windowed --capture --check-piles` 开启原生测试场景，再运行 `verify_piles.py --ipc-dir .tmp/roundtrip/ipc --output-dir .tmp/roundtrip/piles --exercise-cases`。原生检查覆盖空堆、隐藏入口、非空消耗、整堆及顺序、原卡/RNG/语言不变、跨页替换、同页复用、地图遮挡和异步期间人的操作。测试场景仅允许独立目录，不能在 Steam 正式游戏设置测试标志。

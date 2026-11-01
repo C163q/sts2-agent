@@ -87,7 +87,7 @@ python3 scripts/run_roundtrip.py --windowed --event-scenario crystal
 另一终端验证6次及奖励衔接：
 
 ```sh
-.tmp/mcp-venv/bin/python scripts/verify_divination.py --option 1 --scenario rewards --report .tmp/divination-check/rewards.json
+.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_divination --option 1 --scenario rewards --report .tmp/divination-check/rewards.json
 ```
 
 使用全新报告路径，只连接隔离 IPC，不用于正式对局。验证脚本使用私有测试真值安排覆盖用例；真实 LLM 不会获得这些数据。

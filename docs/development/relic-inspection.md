@@ -39,7 +39,7 @@ MCP 调用 `inspect_relics()` 无须参数，成功时刷新状态令牌；完�
 运行脚本时避免手动改变游戏：
 
 ```sh
-python3 scripts/verify_relics.py --ipc-dir .tmp/live/ipc --output .tmp/live/relic-inspection.json --report .tmp/live/relic-inspection-check.json
+python3 -m tests.game.verifiers.verify_relics --ipc-dir .tmp/live/ipc --output .tmp/live/relic-inspection.json --report .tmp/live/relic-inspection-check.json
 ```
 
 脚本检查重复读取一致、前后基础观察令牌不变、名称和计数与基础观察按顺序对应、共享解释去重及下标有效。令牌只覆盖已导出的基础观察，不是全部游戏内部状态的版本。

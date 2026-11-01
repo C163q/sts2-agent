@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../../src/Sts2Agent/Testing/TestScenarioSettings.cs" Link="TestScenarioSettings.cs" />
-    <EmbeddedResource Include="../../../scripts/test_scenarios.json" LogicalName="Sts2Agent.TestScenarios" />
+    <EmbeddedResource Include="../../game/data/test_scenarios.json" LogicalName="Sts2Agent.TestScenarios" />
     <Compile Include="../../../src/Sts2Agent/Actions/ActionSettling.cs" Link="ActionSettling.cs" />
     <Compile Include="../../../src/Sts2Agent/Actions/RewardBoundary.cs" Link="RewardBoundary.cs" />
     <Compile Include="../../../src/Sts2Agent/Events/TurnBoundary.cs" Link="TurnBoundary.cs" />

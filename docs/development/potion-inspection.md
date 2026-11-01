@@ -38,7 +38,7 @@ MCP 调用 `inspect_potions()` 无须参数，成功时刷新状态令牌；完�
 运行期间应避免手动改变游戏状态：
 
 ```sh
-python3 scripts/verify_potions.py --ipc-dir .tmp/live/ipc --output .tmp/live/potion-inspection.json --report .tmp/live/potion-inspection-check.json
+python3 -m tests.game.verifiers.verify_potions --ipc-dir .tmp/live/ipc --output .tmp/live/potion-inspection.json --report .tmp/live/potion-inspection-check.json
 ```
 
 脚本核对读取前、中、后的观察令牌一致、槽位位置及名称与基础观察对应、通用说明只出现一次，以及共享提示和所有槽位关联一致。

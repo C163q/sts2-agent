@@ -77,7 +77,7 @@ python3 scripts/run_roundtrip.py --windowed --ancient-scenario shrymp
 另一终端执行：
 
 ```sh
-.tmp/mcp-venv/bin/python scripts/verify_ancients.py --scenario shrymp --report .tmp/ancient-check/shrymp.json
+.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_ancients --scenario shrymp --report .tmp/ancient-check/shrymp.json
 ```
 
 报告及截图路径必须全新；测试会真实选择遗物、选牌并进入隔离战斗，不得指向正式对局。源码依据、验证记录及限制见[本次核对](../research/2026-10-31-ancients.md)。

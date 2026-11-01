@@ -60,7 +60,7 @@ python3 scripts/run_roundtrip.py --windowed --treasure-scenario basic
 ```
 
 ```sh
-.tmp/mcp-venv/bin/python scripts/verify_treasure.py --scenario basic --report .tmp/treasure-check/basic.json
+.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_treasure --scenario basic --report .tmp/treasure-check/basic.json
 ```
 
 报告和截图目录必须全新。测试真实开箱、领取并前进，只能对新建隔离实例运行。其他夹具、证据与未测范围见[调研记录](../research/2026-10-31-treasure.md)。

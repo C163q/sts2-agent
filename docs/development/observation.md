@@ -148,7 +148,7 @@ python3 scripts/run_roundtrip.py --windowed --capture --check-observation
 ```
 
 ```sh
-python3 scripts/verify_roundtrip.py --ipc-dir .tmp/roundtrip/ipc --report .tmp/roundtrip/player-format-roundtrip.json --observation-output .tmp/player-observation-v3.json
+python3 -m tests.game.verifiers.verify_roundtrip --ipc-dir .tmp/roundtrip/ipc --report .tmp/roundtrip/player-format-roundtrip.json --observation-output .tmp/player-observation-v3.json
 ```
 
 独立测试入口创建铁甲战士临时战斗并关闭该测试存档的教学。截图和布局、临时 UI 扰动检查仅由测试标志启用；正常游戏不启用测试环境变量。当前调整及验证记录见 [实施说明](../research/2026-10-29-player-observation-plan.md)，上一版图形验证见 [历史记录](../research/2026-10-29-visible-combat-validation.md)。

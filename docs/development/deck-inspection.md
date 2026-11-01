@@ -79,7 +79,7 @@ Mod 将界面操作代次加入状态令牌。通过工具打开、显式切换�
 下面脚本会打开、切换升级预览并显式关闭页面，只改变界面；执行期间不要手动操作游戏：
 
 ```sh
-python3 scripts/verify_deck.py --ipc-dir .tmp/live/ipc --output-dir .tmp/live/deck
+python3 -m tests.game.verifiers.verify_deck --ipc-dir .tmp/live/ipc --output-dir .tmp/live/deck
 ```
 
 独立测试实例使用 `scripts/run_roundtrip.py --windowed --capture --check-deck`，完整参数检查另加 `verify_deck.py --exercise-options`，该参数仅接受仓库的独立 IPC 目录。测试入口准备 28 张牌，包括重复卡、已升级卡和不能升级的诅咒，并补齐原生加牌完成通知。不要为正式游戏设置测试标志。来源、结果与未验证范围见 [设计](../research/2026-10-29-deck-view-design.md) 和 [实施记录](../research/2026-10-29-deck-view-plan.md)。

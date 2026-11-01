@@ -78,7 +78,7 @@ python3 scripts/run_roundtrip.py --windowed --reward-scenario basic
 在另一终端运行：
 
 ```sh
-.tmp/mcp-venv/bin/python scripts/verify_rewards.py --scenario basic --report .tmp/rewards-check/basic.json
+.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_rewards --scenario basic --report .tmp/rewards-check/basic.json
 ```
 
 只允许新建的隔离实例；报告及截图目录须全新。该检查会实际领取奖励、跳过卡牌、打开地图和前进。其他场景参数与验证范围见[本次调研记录](../research/2026-10-31-rewards.md)。

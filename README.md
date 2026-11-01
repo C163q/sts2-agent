@@ -30,6 +30,8 @@ MCP `0.40.0` 默认提供 42 个工具，可通过启动配置增加[截图存�
 - [本地 MCP 接入](docs/development/mcp.md)：依赖安装、Codex 配置、工具与错误恢复。
 - [代码结构与验证](docs/development/architecture.md)：模块职责、修改入口和无需游戏的检查。
 
+生产源码位于 `src/Sts2Agent/`（C# Mod）和 `src/sts2_mcp/`（Python）；测试位于 `tests/`，`scripts/` 仅保留常用启动入口。C# 项目与纯检查项目可通过根 [Sts2Agent.sln](Sts2Agent.sln) 一起查看。
+
 需要自行安装 Linux 游戏、.NET 9 SDK 和 Python 3；MCP 另需 [requirements-mcp.txt](requirements-mcp.txt)。先复制 [配置示例](.env.example)：
 
 ```sh

@@ -37,7 +37,7 @@ python3 scripts/run_roundtrip.py
 终端二执行：
 
 ```sh
-python3 scripts/verify_roundtrip.py --ipc-dir .tmp/roundtrip/ipc --report .tmp/roundtrip/evidence.json
+python3 -m tests.game.verifiers.verify_roundtrip --ipc-dir .tmp/roundtrip/ipc --report .tmp/roundtrip/evidence.json
 ```
 
 验证脚本要求从新启动实例的主菜单执行，检查非法动作，创建不保存对局的铁甲战士史莱姆测试战斗，结束一次回合，再核对恰好推进一回合、状态读回、旧状态拒绝及重复请求不再次执行。脚本成功时输出 `PASS`；原始请求结果保存在指定的 JSON 报告中。启动后若仍处于加载阶段，可等待日志出现主菜单完成提示再执行验证。再次运行完整验证前应先重启测试实例。
@@ -51,7 +51,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/roundtrip/ipc get_state
 准备脚本的安装路径隔离回归检查可单独运行，无须启动游戏：
 
 ```sh
-python3 scripts/test_prepare_roundtrip.py
+python3 -m tests.python.test_prepare_roundtrip
 ```
 
 原型中 `start_test_combat` 和 `end_turn` 都需要 `--expected-state`，其值为最近一次 `--raw` 观察返回的 `state.snapshot_id`；调用形式可参考客户端的 `--help`。动作返回的是执行结束后的状态，而不是仅提交队列时的状态。
@@ -119,4 +119,4 @@ python3 scripts/test_prepare_roundtrip.py
 
 API 核对依据与实测结果见 [验证记录](../research/2026-10-28-roundtrip-validation.md)。
 
-终章专用验证使用 `--ending-scenario victory_unlock`、`death` 或 `event_death`，配合 `scripts/verify_run_ending.py`；每次启动单独创建 `.tmp/roundtrip/ending-userdata-*`，只复制测试设置，不继承其他测试存档。此模式创建可保存的隔离对局以验证原生结算、历史与解锁；测试标志和构造操作不作为公开 MCP 工具。
+终章专用验证使用 `--ending-scenario victory_unlock`、`death` 或 `event_death`，配合 `tests/game/verifiers/verify_run_ending.py`；每次启动单独创建 `.tmp/roundtrip/ending-userdata-*`，只复制测试设置，不继承其他测试存档。此模式创建可保存的隔离对局以验证原生结算、历史与解锁；测试标志和构造操作不作为公开 MCP 工具。

@@ -19,7 +19,7 @@ def main():
     parser.add_argument("--check-deck", action="store_true", help="检查原生牌组页的完整列表、升级预览和模型不变性")
     parser.add_argument("--check-piles", action="store_true", help="允许独立测试三类牌堆、空堆反馈、替换及生命周期")
     parser.add_argument("--check-map", action="store_true", help="允许独立测试整图、选路候选、飞鞋及双 Boss")
-    catalog = json.loads(Path(__file__).with_name('test_scenarios.json').read_text())
+    catalog = json.loads((Path(__file__).resolve().parents[1] / 'tests/game/data/test_scenarios.json').read_text())
     for name, choices in catalog.items():
         parser.add_argument('--' + name + '-scenario', choices=choices)
     parser.add_argument('--suite', action='store_true', help='启用仅测试的动态场景与对局清理接口')

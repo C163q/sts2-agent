@@ -76,13 +76,13 @@ MCP 启动时默认读取仓库根目录的 `mcp-config.json`，与启动进程�
 边界测试：
 
 ```sh
-.tmp/mcp-venv/bin/python -m unittest discover -s scripts -p test_screenshots.py
+.tmp/mcp-venv/bin/python -m unittest discover -s tests -t . -p test_screenshots.py
 ```
 
 真实游戏验证只用于独立实例，先按[往返指南](roundtrip.md)准备运行时。图形验证启动参数为 `python3 scripts/run_roundtrip.py --windowed --potion-scenario skill`，在新实例主菜单运行：
 
 ```sh
-.tmp/mcp-venv/bin/python scripts/verify_screenshots.py --report .tmp/screenshot-check/graphical.json
+.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_screenshots --report .tmp/screenshot-check/graphical.json
 ```
 
 验证会创建测试战斗、喝技能药水、切换选牌/战场、打开地图及牌组、结束一个回合，并保存截图。重复执行须更换报告目录，避免覆盖检查触发。headless 验证另启动新的无窗口测试实例，并给验证命令增加 `--headless`。阶段证据与未验证范围见[截图验证](../research/2026-10-30-screenshots-validation.md)。

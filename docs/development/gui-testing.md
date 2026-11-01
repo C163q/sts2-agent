@@ -12,7 +12,7 @@
 .tmp/mcp-venv/bin/python scripts/gui_suite.py --output .tmp/gui-suite-example
 ```
 
-`--output` 必须尚不存在。默认清单是 [gui_suite_smoke.json](../../scripts/gui_suite_smoke.json)：跨幕进入先古之民后的状态稳定、对话和选牌，详情或页面操作后直接行动，连续动作与同局续接、连续选牌、未结束选牌的清理、锻造、商店、奖励，以及附加奖励宝箱后接普通宝箱。最后两例检查测试补丁是否跨局残留。失败立即停止后续步骤和用例，保留证据，再关闭本次拥有的游戏进程；不会在失败现场自动重试动作。
+`--output` 必须尚不存在。默认清单是 [gui_suite_smoke.json](../../tests/game/data/gui_suite_smoke.json)：跨幕进入先古之民后的状态稳定、对话和选牌，详情或页面操作后直接行动，连续动作与同局续接、连续选牌、未结束选牌的清理、锻造、商店、奖励，以及附加奖励宝箱后接普通宝箱。最后两例检查测试补丁是否跨局残留。失败立即停止后续步骤和用例，保留证据，再关闭本次拥有的游戏进程；不会在失败现场自动重试动作。
 
 每个套件有独立的 IPC、日志、截图和测试存档目录。游戏资产和 Mod 来自 `.tmp/roundtrip/runtime/`，不使用 Steam、正式存档或 `.tmp/live/ipc`。同一套件内的新局共享测试进度和进程缓存，不能替代要求全新进度或全新进程的测试。
 
@@ -42,7 +42,7 @@
 
 每个顶层用例配置场景并创建一次新局。它的所有步骤连续执行，不重建局，也不重置玩家状态；各步骤默认重新连接 MCP，先取得自己的观察许可。编排器检查同局步骤前后的 PID、游戏会话和局身份完全相同，下一用例则必须具有新的局身份。
 
-`scenarios` 使用 [场景白名单](../../scripts/test_scenarios.json)中的名称，与原 `run_roundtrip.py --<名称>-scenario` 对应；`ending` 明确拒绝。参数 `--scenario` 是验证脚本选择断言分支的参数，应与对应夹具一致。每个步骤必须有独立名称；用例名不能为保留的 `game`。`args` 目前只接受空列表或 `["--scenario", "场景名"]`，报告和 IPC 路径由框架管理；不会将 `--help` 的零退出视为完成测试，成功步骤必须产生非空 JSON 证据。
+`scenarios` 使用 [场景白名单](../../tests/game/data/test_scenarios.json)中的名称，与原 `run_roundtrip.py --<名称>-scenario` 对应；`ending` 明确拒绝。参数 `--scenario` 是验证脚本选择断言分支的参数，应与对应夹具一致。每个步骤必须有独立名称；用例名不能为保留的 `game`。`args` 目前只接受空列表或 `["--scenario", "场景名"]`，报告和 IPC 路径由框架管理；不会将 `--help` 的零退出视为完成测试，成功步骤必须产生非空 JSON 证据。
 
 允许的验证器包括 `verify_action_observations.py`、`verify_kill_settling.py`、`verify_action_stability.py`、`verify_rest_site.py`、`verify_shop.py`、`verify_rewards.py`、`verify_treasure.py`，以及同局续接/保留选择的两个专用验证器。`verify_kill_settling.py --scenario energy` 配合 `play:energy_chain`，验证 `Bash → Dominate` 耗尽能量后，手牌描边完成渐隐且无需重新观察即可结束回合。`verify_selection_scene.py` 校验基础观察与选牌详情的场景一致性，场景参数为 `ancient_bundle`、`rest_smith`、`combat_discovery`、`event_deck` 或 `shop_remove`，分别配合 `ancient:bundle`、`rest:smith`、`play:discovery`、`selection:deck`、`shop:remove`。清单不接受尚未接入的脚本；不能把旧脚本简单加入清单后假定它支持复用。
 

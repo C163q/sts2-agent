@@ -139,9 +139,9 @@ python3 scripts/run_roundtrip.py --windowed --event-scenario tea
 另一终端运行：
 
 ```sh
-.tmp/mcp-venv/bin/python scripts/verify_events.py --scenario tea --report .tmp/event-check/tea.json
+.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_events --scenario tea --report .tmp/event-check/tea.json
 ```
 
 使用全新报告和截图路径。验证会真实点击、购买或选择，不得连接正式对局。源码依据见[调研](../research/2026-10-31-events.md)，实际验证及限制见[验证记录](../research/2026-10-31-events-validation.md)。
 
-确认框使用 `--event-scenario trial` 启动新的隔离实例，运行 `scripts/verify_confirmation.py --scenario cancel|confirm --report <新路径>`；两个场景须分别启动实例。`confirm` 会结束该测试对局。结果见[确认弹窗验证](../research/2026-10-31-event-confirmation-validation.md)。
+确认框使用 `--event-scenario trial` 启动新的隔离实例，运行 `tests/game/verifiers/verify_confirmation.py --scenario cancel|confirm --report <新路径>`；两个场景须分别启动实例。`confirm` 会结束该测试对局。结果见[确认弹窗验证](../research/2026-10-31-event-confirmation-validation.md)。

@@ -49,7 +49,7 @@ power 主说明使用当前实例 `HoverTips` 的动态正文，而非静态通�
 运行期间避免手动改变游戏：
 
 ```sh
-python3 scripts/verify_combatants.py --ipc-dir .tmp/live/ipc --output .tmp/live/combatant-inspection.json --report .tmp/live/combatant-inspection-check.json
+python3 -m tests.game.verifiers.verify_combatants --ipc-dir .tmp/live/ipc --output .tmp/live/combatant-inspection.json --report .tmp/live/combatant-inspection-check.json
 ```
 
 该脚本重复读取并核对前后状态令牌一致、敌人 ID 和基础字段对应、共享说明去重、来源路径可解析及数值 note 的范围。详情仅保留可悬停图标，核对时按顺序匹配基础观察的子序列。

@@ -68,7 +68,7 @@ python3 scripts/run_roundtrip.py --windowed --rest-scenario smith
 另一终端执行：
 
 ```sh
-.tmp/mcp-venv/bin/python scripts/verify_rest_site.py --scenario smith --report .tmp/rest-check/smith.json
+.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_rest_site --scenario smith --report .tmp/rest-check/smith.json
 ```
 
 报告和截图目录须全新；仅用于新建隔离实例，会真实选择、取消和升级。其他夹具及实际验证范围见[调研与验证记录](../research/2026-10-31-rest-site.md)。

@@ -46,7 +46,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_ui > .tmp/li
 下面的脚本只读取当前游戏，不执行动作；运行期间应避免手动改变场景：
 
 ```sh
-python3 scripts/verify_ui.py --ipc-dir .tmp/live/ipc --output .tmp/live/ui-inspection.json --report .tmp/live/ui-inspection-check.json
+python3 -m tests.game.verifiers.verify_ui --ipc-dir .tmp/live/ipc --output .tmp/live/ui-inspection.json --report .tmp/live/ui-inspection-check.json
 ```
 
 脚本检查 `get_state → inspect_ui → get_state` 的令牌一致、提示结构和去重、来源字段存在及查看边界。独立测试实例可用 `scripts/run_roundtrip.py --windowed --capture --check-ui` 启用额外的游戏内可见性、英语文本和缓存检查；该标志不用于正式游戏。已完成中文独立实例及正式进阶 6 缩小甲虫战斗的只读验证，分别取得 11、13 条提示。双首领、可见星星、可见消耗牌堆等场景尚未验证，详细证据见 [实施记录](../research/2026-10-29-ui-inspection-plan.md)。

@@ -56,7 +56,7 @@
 隔离实例入口：`python3 scripts/run_roundtrip.py --potion-scenario basic`。另一终端执行：
 
 ```sh
-.tmp/mcp-venv/bin/python scripts/verify_potion_actions.py --scenario basic --report .tmp/roundtrip/potion-basic.json
+.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_potion_actions --scenario basic --report .tmp/roundtrip/potion-basic.json
 ```
 
 测试场景只在独立测试模式配置初始状态，不能用于正式对局。标准库客户端提供 `inspect_targets --potion-slot 0`、`use_potion --potion-slot 0 --target-id 2 --expected-state <令牌>` 和 `discard_potion --potion-slot 0 --expected-state <令牌>`；均须传 `--ipc-dir`。MCP 内部管理令牌。实际通过范围及限制见 [验证记录](../research/2026-10-30-potion-actions-validation.md)。

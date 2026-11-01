@@ -14,9 +14,9 @@
 | `src/Sts2Agent/Observation/` | 可见数据采样、按需详情、原生页面操作 |
 | `src/Sts2Agent/Adapter/GameAdapter.Navigation.cs`、`NavigationTasks.cs` | 原生节点点击、旅行边界和跨幕任务等待；地图摘要与身份并入基础观察 |
 | `src/Sts2Agent/Localization/` | 英语资源读取与受控格式化，不切换全局语言 |
-| `scripts/roundtrip_client.py` | 标准库文件客户端和 CLI；默认玩法输出，`--raw` 保留诊断协议 |
-| `scripts/game_output.py` | 已知玩法字段的递归投影与类型检查、基础观察与手牌结构校验 |
-| `scripts/player_output.py` | 去除控制包装、共享悬停解释、条件数值说明和错误恢复文案 |
+| `src/sts2_mcp/roundtrip_client.py` | 标准库文件客户端和 CLI；默认玩法输出，`--raw` 保留诊断协议 |
+| `src/sts2_mcp/output/game_output.py` | 已知玩法字段的递归投影与类型检查、基础观察与手牌结构校验 |
+| `src/sts2_mcp/output/player_output.py` | 去除控制包装、共享悬停解释、条件数值说明和错误恢复文案 |
 | `src/Sts2Agent/Events/TurnJournal.cs`、`TurnCapture.cs`、`CombatResourceJournal.cs`、`VisibleResourceChange.cs` | RitsuLib 与原生事件记录、伤害补录及来源追踪；能量／星星通知与真实数字显示对齐，最大能量按实际分母变化采样 |
 | `src/Sts2Agent/Events/ActionEventScope.cs`、`GameAdapter.Resources.cs`、`RunResourceJournal.cs`、`RunInventoryJournal.cs` | 单次游戏动作的共享事件缓冲、响应附加及可见玩家资源、物品、永久牌组订阅；延后发布尚未展示的身份，与战斗和药水日志共用顺序及上限 |
 | `src/Sts2Agent/Events/PermanentCardCapture.cs` | 主线程原生基础变量／能量费用／附魔数量修改采集；仅永久成员有效，嵌套升级与附魔重算抑制低层重复 |
@@ -27,22 +27,25 @@
 | `src/Sts2Agent/Actions/EventTaskTracker.cs`、`CombatJournalScope.cs` | 事件初始化/选择/Resume 任务跟踪；每次动作的初始战斗及后续入战日志所有权、原生重置前释放、房间任务等待与战斗间交接 |
 | `src/Sts2Agent/Observation/DivinationInspection.cs`、`DivinationTasks.cs`、`GameAdapter.Divination.cs` | 占卜可见状态与原生点击、遮罩等待、棋盘裁剪边界和临时对白来源 |
 | `src/Sts2Agent/Actions/EventConfirmation.cs`、`GameAdapter.Confirmation.cs` | 当前事件确认框的来源与可见内容、原生按钮操作和失败结算 |
-| `scripts/divination_details.py` | 占卜参数与投影、PNG 有界像素校验和独立图像载体；MCP server 封装 ImageContent |
+| `src/sts2_mcp/output/divination_details.py` | 占卜参数与投影、PNG 有界像素校验和独立图像载体；MCP server 封装 ImageContent |
 | `src/Sts2Agent/Actions/ActionSettling.cs`、`GameAdapter.ActionObservation.cs`、`CombatMotion.cs` | 统一动作停止原因复核、牌堆飞行、资源显示、生物死亡及有限 UI 过渡等待与观察稳定；页面查看单独处理 |
-| `scripts/transition_details.py` | 结束回合事件的结构校验与递归过滤 |
-| `scripts/inspection_details.py`、`*_details.py` | 按操作校验并投影响应；牌组、牌堆与地图等具体结构各自维护 |
-| `scripts/observation_presets.py`、`available_tools.py` | 观察预设参数与精简投影、公开工具名称和动作分类 |
-| `scripts/game_tools.py` | 串行游戏会话、动作令牌、检查控制权及在线程中执行文件请求 |
-| `scripts/action_output.py` | 完整校验及许可处理之后的公开动作回执投影，保留事件与必要交互提示 |
-| `scripts/controller_lease.py` | 每个 IPC 目录的 MCP 进程控制锁 |
-| `scripts/mcp_catalog.py` | 工具名称、参数 schema、行为注解及面向模型的说明 |
-| `scripts/mcp_config.py`、`screenshot_tool.py` | 启动配置校验、PNG 校验和独占保存；配置决定截图工具是否注册 |
+| `src/sts2_mcp/output/transition_details.py` | 结束回合事件的结构校验与递归过滤 |
+| `src/sts2_mcp/output/inspection_details.py`、`*_details.py` | 按操作校验并投影响应；牌组、牌堆与地图等具体结构各自维护 |
+| `src/sts2_mcp/output/observation_presets.py`、`available_tools.py` | 观察预设参数与精简投影、公开工具名称和动作分类 |
+| `src/sts2_mcp/game_tools.py` | 串行游戏会话、动作令牌、检查控制权及在线程中执行文件请求 |
+| `src/sts2_mcp/output/action_output.py` | 完整校验及许可处理之后的公开动作回执投影，保留事件与必要交互提示 |
+| `src/sts2_mcp/controller_lease.py` | 每个 IPC 目录的 MCP 进程控制锁 |
+| `src/sts2_mcp/mcp_catalog.py` | 工具名称、参数 schema、行为注解及面向模型的说明 |
+| `src/sts2_mcp/mcp_config.py`、`screenshot_tool.py` | 启动配置校验、PNG 校验和独占保存；配置决定截图工具是否注册 |
 | `src/Sts2Agent/Observation/ViewportCapture.cs` | 帧后游戏视口及指定矩形读取，不接收用户文件路径或写用户文件 |
-| `scripts/mcp_server.py` | stdio 启动、MCP 分派和结果封装；保留既有脚本入口 |
-| `scripts/test_*.py` | 无需游戏的单元与真实 stdio/临时文件 IPC 测试 |
-| `scripts/verify_*.py`、`src/Sts2Agent/Testing/Checks/` | 显式运行的真实游戏验证及游戏内检查，依赖各自指定的场景 |
+| `src/sts2_mcp/mcp_server.py` | stdio 启动、MCP 分派和结果封装 |
+| `scripts/` | 常用 CLI 入口、隔离运行时准备／启动及统一源码路径引导 |
+| `tests/python/test_*.py` | 无需游戏的单元与真实 stdio/临时文件 IPC 测试 |
+| `tests/game/verifiers/verify_*.py`、`src/Sts2Agent/Testing/Checks/` | 显式运行的真实游戏验证及游戏内检查，依赖各自指定的场景 |
 
 `roundtrip_client.player_result` 仍可导入；`mcp_server.GameTools` 和 `mcp_server.ControllerLease` 继续保留原有导入方式。标准库客户端不导入 MCP SDK。
+
+Python 实现位于 `src/sts2_mcp/`，`output/` 集中维护响应校验、详情与预设。现有客户端继续使用 `scripts/mcp_server.py`；入口通过 `scripts/_bootstrap.py` 定位当前仓库，无须新增安装步骤或设置 `PYTHONPATH`。无需游戏的测试位于 `tests/python/`，游戏验证器通过仓库根目录下的 `python -m tests.game.verifiers.<名称>` 运行；`scripts/gui_suite.py` 转发到 `tests/game/suite.py`，共享支持代码和 JSON 数据分别位于 `support/`、`data/`。内部导入使用完整包名；不再依赖将所有 Python 文件放入同一目录。
 
 C# 项目位于 `src/Sts2Agent/`，根 `Sts2Agent.sln` 同时包含 Mod 与 `tests/csharp/Sts2Agent.Checks/`。目录按职责分组，命名空间仍为 `Sts2Agent`；`Testing/` 中的夹具和原生检查仍随 Mod 编译，仅在隔离测试模式调用。结构变化须同步构建路径、启动配置和游戏验证；不因移动文件而拆分程序集。
 
@@ -63,7 +66,7 @@ C# 项目位于 `src/Sts2Agent/`，根 `Sts2Agent.sln` 同时包含 Mod 与 `tes
 安装依赖后，在仓库根目录运行全部 Python 检查：
 
 ```sh
-.tmp/mcp-venv/bin/python -m unittest discover -s scripts -p 'test_*.py'
+.tmp/mcp-venv/bin/python -m unittest discover -s tests -t . -p 'test_*.py'
 ```
 
 覆盖文件投影、参数与错误输入、动作令牌、取消和超时、控制权竞争，以及通过真正子进程建立的 stdio 协议。测试中的游戏响应来自临时文件服务或固定载荷，不需要运行游戏，不操作正式存档。
@@ -71,7 +74,7 @@ C# 项目位于 `src/Sts2Agent/`，根 `Sts2Agent.sln` 同时包含 Mod 与 `tes
 只检查输出边界：
 
 ```sh
-.tmp/mcp-venv/bin/python -m unittest discover -s scripts -p 'test_output_boundaries.py'
+.tmp/mcp-venv/bin/python -m unittest discover -s tests -t . -p 'test_output_boundaries.py'
 ```
 
 C# 构建需要自行安装游戏程序集，命令见 [构建前提](roundtrip.md#前提与构建)。构建只验证编译与引用，不能替代游戏内 Mod 加载、线程与页面行为验证。

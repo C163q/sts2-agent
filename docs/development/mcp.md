@@ -197,12 +197,12 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 无需游戏的自动检查见 [代码结构与验证](architecture.md#无需游戏的验证)。独立游戏验证须先按 [往返指南](roundtrip.md) 启动新的测试实例，再在主菜单执行：
 
 ```sh
-.tmp/mcp-venv/bin/python scripts/verify_mcp.py --report .tmp/roundtrip/mcp-evidence.json
+.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_mcp --report .tmp/roundtrip/mcp-evidence.json
 ```
 
 该脚本只允许仓库的独立 IPC 目录，会创建临时战斗并推进回合以检查正常动作、连续执行及过期观察，不能用于正式存档。
 
-完整动作链验证先启动新的图形测试实例 `python3 scripts/run_roundtrip.py --windowed --play-scenario armaments_free --potion-scenario skill`，再运行 `.tmp/mcp-venv/bin/python scripts/verify_action_observations.py --report .tmp/action-chain/run.json`。它会连续出牌、使用/丢弃药水、完成选择并切换查看页面，报告目录须全新；结果与范围见[动作观察复用记录](../research/2026-10-30-action-observations.md)。
+完整动作链验证先启动新的图形测试实例 `python3 scripts/run_roundtrip.py --windowed --play-scenario armaments_free --potion-scenario skill`，再运行 `.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_action_observations --report .tmp/action-chain/run.json`。它会连续出牌、使用/丢弃药水、完成选择并切换查看页面，报告目录须全新；结果与范围见[动作观察复用记录](../research/2026-10-30-action-observations.md)。
 
 详情及页面的真实 stdio 验证分别使用 `verify_mcp_hand.py`、`verify_mcp_ui.py`、`verify_mcp_potions.py`、`verify_mcp_combatants.py`、`verify_mcp_relics.py`、`verify_mcp_deck.py`、`verify_mcp_piles.py`、`verify_mcp_map.py`；参数见各脚本 `--help` 和上表对应指南。页面检查会真实打开、切换及关闭页面。
 

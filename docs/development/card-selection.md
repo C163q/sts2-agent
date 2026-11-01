@@ -77,7 +77,7 @@
 
 当前接通小型候选、卡牌奖励、简单网格、战斗牌堆选择、普通牌组选择、普通手牌选择以及手牌升级选择。[休息处锻造](rest-site.md#锻造与烹饪选牌)的牌组升级使用 `deck_upgrade`，`upgrade_previews` 提供已经显示的单牌或多牌比较。牌组变牌、附魔、卡牌包和结果确认已接通，见下节。其他尚未接通的页面返回 `unsupported`，不提供动作；战斗与通用选择把它作为已识别边界返回 `choice_required`，[搜刮动作](rewards.md) 则返回 `manual_input_required`；任意第三方页面仍需额外适配。静态遮挡按已核实的原生页面判断，不能保证覆盖任意像素级遮挡。声音、其他游戏版本与完整自动游玩不属于已验证范围。
 
-手牌升级的真实图形 MCP 回归须使用新建的隔离实例：先按[构建与运行](roundtrip.md)准备目录，运行 `python3 scripts/run_roundtrip.py --windowed --play-scenario armaments`，再在另一终端运行 `.tmp/mcp-venv/bin/python scripts/verify_hand_upgrade.py --report .tmp/upgrade-check/run.json`。报告目录不能复用已有截图文件。检查会出牌、选牌、取消、切换视图并确认，不能指向正式对局。
+手牌升级的真实图形 MCP 回归须使用新建的隔离实例：先按[构建与运行](roundtrip.md)准备目录，运行 `python3 scripts/run_roundtrip.py --windowed --play-scenario armaments`，再在另一终端运行 `.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_hand_upgrade --report .tmp/upgrade-check/run.json`。报告目录不能复用已有截图文件。检查会出牌、选牌、取消、切换视图并确认，不能指向正式对局。
 
 标准库文件客户端支持相同操作：`select_card --card-id 7 --expected-state <令牌>`、`selection_option --option-id confirm --expected-state <令牌>`，以及 `set_selection_view --view battlefield`；这些参数与既有 `--ipc-dir` 一起使用。原始令牌通过 `get_state --raw` 获取，MCP 客户端由会话内部管理。
 

@@ -65,7 +65,7 @@
 隔离实例可用 `python3 scripts/run_roundtrip.py --play-scenario basic` 启动，再在另一终端运行：
 
 ```sh
-.tmp/mcp-venv/bin/python scripts/verify_card_play.py --scenario basic --report .tmp/roundtrip/play-basic.json
+.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_card_play --scenario basic --report .tmp/roundtrip/play-basic.json
 ```
 
 场景入口只在测试模式配置初始条件，不能用于正式对局。其他场景及实际通过范围见 [验证记录](../research/2026-10-30-card-play-validation.md)。构建通过不替代原生游戏、图形显示和 stdio MCP 行为验证。
@@ -73,7 +73,7 @@
 验证动作返回后的可见计数时，另启动新图形实例 `python3 scripts/run_roundtrip.py --windowed --play-scenario basic`，再运行：
 
 ```sh
-.tmp/mcp-venv/bin/python scripts/verify_action_settling.py --report .tmp/settling-check/run.json
+.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_action_settling --report .tmp/settling-check/run.json
 ```
 
 该检查通过真实 MCP 打出打击和防御、结束一个回合，并分别比较返回状态与无输入两秒后的状态，保存六张截图；重复执行须使用新的报告目录。结果及边界见[修复记录](../research/2026-10-30-action-settling.md)。

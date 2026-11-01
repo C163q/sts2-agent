@@ -132,7 +132,7 @@ RitsuLib 提供统一通知，用于出牌、生成牌、角色加入及生命�
 先按 [运行指南](roundtrip.md) 准备隔离实例。一个终端用 `python3 scripts/run_roundtrip.py --turn-scenario tyranny` 启动新实例；另一个终端运行：
 
 ```sh
-python3 scripts/verify_end_turn.py --ipc-dir .tmp/roundtrip/ipc --scenario tyranny --report .tmp/turn-tyranny.json
+python3 -m tests.game.verifiers.verify_end_turn --ipc-dir .tmp/roundtrip/ipc --scenario tyranny --report .tmp/turn-tyranny.json
 ```
 
 验证只用于带相同场景参数的新测试实例主菜单。场景入口改变测试初始条件，仅由 `STS2_AGENT_TEST_MODE=1` 下的 `start_test_combat` 使用，不是公开玩法工具。每个场景须重启实例，不能在正式对局执行；`--windowed` 可验证图形显示。

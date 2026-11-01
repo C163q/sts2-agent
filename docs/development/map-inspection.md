@@ -134,11 +134,11 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_map
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_map
 ```
 
-端到端脚本为 `scripts/verify_map.py`；`--exercise-cases` 仅允许 `.tmp/roundtrip/ipc`，需启动时启用 `--check-map`。它会在一次性隔离夹具中完成敌人死亡、原生奖励页继续、飞鞋获取与耗尽、双 Boss 和跨幕等场景，不可对正式游戏启用测试标志。
+端到端脚本为 `tests/game/verifiers/verify_map.py`；`--exercise-cases` 仅允许 `.tmp/roundtrip/ipc`，需启动时启用 `--check-map`。它会在一次性隔离夹具中完成敌人死亡、原生奖励页继续、飞鞋获取与耗尽、双 Boss 和跨幕等场景，不可对正式游戏启用测试标志。
 
 Mod 0.12.0 已在正式 Steam 单人战斗中重启验证：第一幕 64 个节点、76 条连线，Boss 为 Ceremonial Beast；战斗中候选为空，重复读取一致，显式关闭后战斗观察不变。正式样本为 `.tmp/live/map/map-inspection.json`，请求证据为同目录 `map-evidence.json`。飞鞋、双 Boss、跨幕和战后候选仍以独立夹具的验证为准。实施证据见 [地图设计与实施记录](../research/2026-10-29-map-inspection.md)。
 
-真实 stdio MCP 也已在该正式对局验证，输出与文件 JSON 完全一致，参数拒绝、重复查看、显式关闭和前后玩法不变均通过；样本为 `.tmp/live/mcp-map/map-inspection.json`，证据为同目录 `mcp-map-evidence.json`。使用 `.tmp/mcp-venv/bin/python scripts/verify_mcp_map.py --ipc-dir .tmp/live/ipc --output-dir .tmp/live/mcp-map` 可执行同一套 UI 验证，不选路、出牌或结束回合。范围与检查见 [地图 MCP 实施记录](../research/2026-10-29-mcp-map-inspection.md)。
+真实 stdio MCP 也已在该正式对局验证，输出与文件 JSON 完全一致，参数拒绝、重复查看、显式关闭和前后玩法不变均通过；样本为 `.tmp/live/mcp-map/map-inspection.json`，证据为同目录 `mcp-map-evidence.json`。使用 `.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_mcp_map --ipc-dir .tmp/live/ipc --output-dir .tmp/live/mcp-map` 可执行同一套 UI 验证，不选路、出牌或结束回合。范围与检查见 [地图 MCP 实施记录](../research/2026-10-29-mcp-map-inspection.md)。
 
 选路与跨幕的目标版本源码证据、图形验证及未验证范围见[选路验证记录](../research/2026-10-31-map-travel-validation.md)。
 
