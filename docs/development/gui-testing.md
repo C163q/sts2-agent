@@ -12,7 +12,7 @@
 .tmp/mcp-venv/bin/python scripts/gui_suite.py --output .tmp/gui-suite-example
 ```
 
-`--output` 必须尚不存在。默认清单是 [gui_suite_smoke.json](../../scripts/gui_suite_smoke.json)：连续动作与同局续接、连续选牌、未结束选牌的清理、锻造、商店、奖励，以及附加奖励宝箱后接普通宝箱。最后两例检查测试补丁是否跨局残留。失败立即停止后续步骤和用例，保留证据，再关闭本次拥有的游戏进程；不会在失败现场自动重试动作。
+`--output` 必须尚不存在。默认清单是 [gui_suite_smoke.json](../../scripts/gui_suite_smoke.json)：跨幕进入先古之民后的状态稳定、对话和选牌，详情或页面操作后直接行动，连续动作与同局续接、连续选牌、未结束选牌的清理、锻造、商店、奖励，以及附加奖励宝箱后接普通宝箱。最后两例检查测试补丁是否跨局残留。失败立即停止后续步骤和用例，保留证据，再关闭本次拥有的游戏进程；不会在失败现场自动重试动作。
 
 每个套件有独立的 IPC、日志、截图和测试存档目录。游戏资产和 Mod 来自 `.tmp/roundtrip/runtime/`，不使用 Steam、正式存档或 `.tmp/live/ipc`。同一套件内的新局共享测试进度和进程缓存，不能替代要求全新进度或全新进程的测试。
 
@@ -49,6 +49,8 @@
 `verify_action_stability.py` 的 `--scenario` 与 `play` 场景使用同名值：`anger`、`turbo`、`blade_dance`、`pommel_strike`、`bloodletting`、`gather_light`、`preview_draw`、`preview_messy`。前六项执行原生卡牌；后两项用防御触发测试夹具预置的原生抽牌堆预览，分别覆盖普通和七张牌的散列布局。验证器在动作返回后 0、0.25、0.75、1.5、3.5 秒采样底层观察，要求令牌始终等于回执令牌，并在不刷新 MCP 许可的情况下继续出牌；同时保留外部动作导致过期的反例检查。
 
 `verify_observation_sources.py` 全程不调用 `get_observation`，验证成功详情和页面操作可以提供下一动作的状态：`--scenario map` 配合 `navigation:basic`，检查地图详情直接旅行及非法节点拒绝；`views` 配合 `play:pommel_strike`，检查关闭牌组/牌堆后直接结束回合及详情后出牌；`selection` 配合 `play:discovery`，检查切回选择后直接提交，以及查看战场时拒绝选择隐藏候选。三项均纳入默认冒烟集。
+
+`verify_ancient_stability.py` 的 `travel` 和 `travel_action` 均配合 `navigation:boss1`，经过原生跨幕和地图旅行；前者从 `inspect_ancient` 续接，后者用原始回执中的夹具选项 ID 检查动作许可续接。两者保存旅行返回的精确状态，再采样九秒且不刷新 MCP 许可，要求令牌始终不变并能直接领取佩尔之血；同时检查外部操作使旧令牌过期、覆盖页及重复领取被拒绝。`direct` 配合 `ancient:tooth`，用于已构造房间的详情续接对照。`verify_ancients.py` 支持复用局及其 `ancient` 同名场景，对话和佩尔之牙多选纳入默认集。
 
 ## 生命周期与证据
 

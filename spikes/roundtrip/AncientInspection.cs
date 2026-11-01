@@ -34,8 +34,15 @@ internal sealed class AncientInspection
     public static bool Ready(Context context) => TreasureInspection.Singleplayer && Exposed(context)
         && !Busy && !RunUi.CardPreviewsPending() && !RunUi.ResourceMotionPending()
         && !NTargetManager.Instance.IsInSelection && RunManager.Instance.ActionQueueSet.IsEmpty
-        && !RewardInspection.Animating(context.Layout, "_contentTween")
+        && !MotionPending(context)
         && (Continue(context) != null || context.Layout.OptionButtons.Any(Shown));
+
+    private static bool MotionPending(Context context) => RewardInspection.Animating(context.Layout, "_contentTween")
+        || RewardInspection.Animating(context.Layout, "_descriptionTween")
+        || RewardInspection.Animating(context.Layout, "_bannerTween")
+        // The name banner can reveal its epithet after the options have become clickable.
+        || CardSelection.Field(context.Layout, "_ancientNameBanner") is Control banner && GodotObject.IsInstanceValid(banner)
+            && (RewardInspection.Animating(banner, "_tween") || RewardInspection.Animating(banner, "_moveTween"));
 
     public static NAncientDialogueHitbox? Continue(Context context) => context.Layout.GetNodeOrNull<NAncientDialogueHitbox>("%DialogueHitbox")
         is { IsEnabled: true } button && VisibleUi.OnScreen(button) ? button : null;

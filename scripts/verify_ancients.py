@@ -9,6 +9,7 @@ from pathlib import Path
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from roundtrip_client import Client
+from verification_runtime import ensure_run, ipc_directory
 
 
 async def verify(args):
@@ -18,18 +19,12 @@ async def verify(args):
     report.parent.mkdir(parents=True, exist_ok=True)
     config = report.with_suffix('.config.json')
     config.write_text(json.dumps({'screenshots': {'enabled': True, 'directory': str(report.with_suffix(''))}}))
-    raw = Client(root / '.tmp/roundtrip/ipc')
-    deadline = time.monotonic() + 45
-    while True:
-        start = await asyncio.to_thread(raw.call, 'get_state')
-        if start['state']['scene'] == 'main_menu' or time.monotonic() >= deadline: break
-        await asyncio.sleep(.2)
-    assert start['state']['scene'] == 'main_menu', 'Requires fresh isolated instance.'
-    created = await asyncio.to_thread(raw.call, 'start_test_combat', start['state']['snapshot_id'])
+    raw = Client(ipc_directory())
+    created = await asyncio.to_thread(ensure_run, raw)
     assert created['ok'], created
     evidence = [{'created': created}]
     params = StdioServerParameters(command=str(root / '.tmp/mcp-venv/bin/python'), args=[
-        str(root / 'scripts/mcp_server.py'), '--ipc-dir', str(root / '.tmp/roundtrip/ipc'), '--config', str(config)])
+        str(root / 'scripts/mcp_server.py'), '--ipc-dir', str(raw.directory), '--config', str(config)])
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
@@ -59,6 +54,12 @@ async def verify(args):
             assert result['scene'] == 'ancient', result
             first = await fixture()
             await call('capture_screenshot', {'filename': 'arrival.png'})
+            # Wait for reported input readiness before acting on an initializing page.
+            deadline = time.monotonic() + 10
+            while not {'advance_dialogue', 'choose_ancient_option'} & set(result['available_actions']) \
+                    and time.monotonic() < deadline:
+                await asyncio.sleep(.1)
+                result = await call('get_observation')
             advances = 0
             for _ in range(30):
                 if 'advance_dialogue' not in result['available_actions']: break

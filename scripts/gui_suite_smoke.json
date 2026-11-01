@@ -1,5 +1,33 @@
 [
   {
+    "name": "ancient_travel",
+    "scenarios": { "navigation": "boss1" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_ancient_stability.py", "args": ["--scenario", "travel"] }
+    ]
+  },
+  {
+    "name": "ancient_travel_action",
+    "scenarios": { "navigation": "boss1" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_ancient_stability.py", "args": ["--scenario", "travel_action"] }
+    ]
+  },
+  {
+    "name": "ancient_dialogue",
+    "scenarios": { "ancient": "dialogue" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_ancients.py", "args": ["--scenario", "dialogue"] }
+    ]
+  },
+  {
+    "name": "ancient_tooth",
+    "scenarios": { "ancient": "tooth" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_ancients.py", "args": ["--scenario", "tooth"] }
+    ]
+  },
+  {
     "name": "observation_map",
     "scenarios": { "navigation": "basic" },
     "steps": [
