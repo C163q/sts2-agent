@@ -73,6 +73,8 @@ internal sealed partial class GameAdapter(bool testMode)
         if (!NGame.IsMainThread())
             throw new InvalidOperationException("Game access requires the main thread.");
         RunResourceJournal.Current?.SampleVisibility();
+        RunInventoryJournal.Current?.SampleVisibility();
+        PotionJournal.Current?.SampleVisibility();
         CombatState? combat = CombatManager.Instance.DebugOnlyGetState();
         if (!ReferenceEquals(combat, lastCombat))
         {
@@ -136,7 +138,7 @@ internal sealed partial class GameAdapter(bool testMode)
         if (ending != null || epilogue != null && map == null) screen["view"] = ending != null ? "run_result" : "epilogue";
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 18, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 19, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -190,6 +192,9 @@ internal sealed partial class GameAdapter(bool testMode)
                 ObservationChecks.Run(checks);
             return Success(request.Id, before);
         }
+        if (request.Operation == "check_test_inventory" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } inventoryPlayer)
+            return Success(request.Id, JsonSerializer.Serialize(await RunInventoryChecks.Run(inventoryPlayer, ObservationFrame, observation.CardId)));
         if (request.Operation == "check_test_resources" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } resourcePlayer)
             return Success(request.Id, JsonSerializer.Serialize(await RunResourceChecks.Run(resourcePlayer, ObservationFrame)));

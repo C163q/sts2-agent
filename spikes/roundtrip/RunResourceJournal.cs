@@ -29,7 +29,7 @@ internal sealed class RunResourceJournal : IDisposable
         Current = this;
     }
 
-    private bool TopBarVisible
+    internal bool TopBarVisible
     {
         get
         {

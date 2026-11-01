@@ -53,6 +53,25 @@ using (var nextAction = new ActionEventScope())
     Check(nextAction.Buffer.Events.Count == 0, "failed and consecutive actions never reuse earlier events");
 
 var settling = new ActionSettling();
+var deferred = new TurnEventBuffer(4);
+var firstSlot = deferred.Reserve("relic_obtained");
+deferred.Add("max_hp_changed", new() { ["before"] = 80, ["after"] = 82 });
+var hiddenSlot = deferred.Reserve("card_added");
+deferred.Add("hp_changed", new() { ["before"] = 40, ["after"] = 42 });
+Check(deferred.Events.Count == 2 && (int)deferred.Events[0]["sequence"]! == 1,
+    "unpublished changes never enter a receipt or leave sequence gaps");
+firstSlot?.Publish(new() { ["relic"] = new { name = "Strawberry" } });
+Check(deferred.Events.Count == 3 && (string)deferred.Events[0]["type"]! == "relic_obtained"
+    && (int)deferred.Events[2]["sequence"]! == 3,
+    "late visible identity retains native occurrence order");
+firstSlot?.Publish(new() { ["relic"] = new { name = "Other" } });
+Check(deferred.Events.Count == 3 && (int)deferred.Events[1]["before"]! == 80,
+    "publishing one reservation twice never creates duplicate events");
+Check(deferred.Reserve("card_added") == null && deferred.Truncated,
+    "unpublished slots share the action event memory bound");
+Check(!deferred.Events.Any(e => (string)e["type"]! == "card_added"),
+    "never-visible reserved identities are omitted");
+
 bool Sample(string? reason, string state, bool motion, int ms) => settling.Sample(reason, state, motion, TimeSpan.FromMilliseconds(ms));
 Check(!Sample("player_ready", "discard:0", true, 0) && !Sample("player_ready", "discard:0", true, 1000),
     "quiet JSON does not finish pending native card motion");

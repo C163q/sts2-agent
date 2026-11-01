@@ -247,7 +247,10 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     private void SubscribePiles()
     {
         var deck = PileType.Deck.GetPile(player);
-        void AddedToDeck(CardModel card) { if (ReferenceEquals(card.Owner, player)) generated.Add(card); }
+        void AddedToDeck(CardModel card)
+        {
+            if (RunInventoryJournal.Current == null && ReferenceEquals(card.Owner, player)) generated.Add(card);
+        }
         deck.CardAdded += AddedToDeck;
         cleanup.Add(() => deck.CardAdded -= AddedToDeck);
         foreach (var card in player.PlayerCombatState!.Hand.Cards) handCards.Add(card);

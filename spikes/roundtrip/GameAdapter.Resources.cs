@@ -14,6 +14,8 @@ internal sealed partial class GameAdapter
         if (!RecordedActions.Contains(request.Operation)) return await ExecuteCore(request);
         using var events = new ActionEventScope();
         using var resources = LocalPlayer is { } player ? new RunResourceJournal(player, events.Buffer) : null;
+        using var inventory = LocalPlayer is { } owner ? new RunInventoryJournal(owner, events.Buffer, observation.CardId) : null;
+        using var potions = LocalPlayer is { } potionOwner ? new PotionJournal(potionOwner) : null;
         return events.Apply(await ExecuteCore(request));
     }
 }

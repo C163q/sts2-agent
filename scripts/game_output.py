@@ -80,6 +80,7 @@ EVENT = {
     "source": nullable(EVENT_SOURCE), "card": {"id": int, "name": TEXT},
     "hp_loss": NUMBER, "blocked": int, "before": NUMBER, "after": NUMBER,
     "name": TEXT, "autoplay": bool, "change": str, "potion": POTION_REF,
+    "relic": {"name": TEXT}, "pile": str,
 }
 TRANSITION = {"stop_reason": str, "complete": bool, "events": [EVENT]}
 REWARD_ITEM = {'id': int, 'type': str, 'text': str, 'enabled': bool, 'linked_group': NUMBER}

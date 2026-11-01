@@ -1,5 +1,19 @@
 [
   {
+    "name": "inventory_visibility",
+    "scenarios": { "play": "basic" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_inventory_events.py", "args": ["--scenario", "visibility"] }
+    ]
+  },
+  {
+    "name": "permanent_enchantment_events",
+    "scenarios": { "event": "enchant" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_inventory_events.py", "args": ["--scenario", "enchant"] }
+    ]
+  },
+  {
     "name": "event_resource_changes",
     "scenarios": { "event": "basic" },
     "steps": [

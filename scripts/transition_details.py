@@ -15,6 +15,10 @@ FIELDS = {
     "card_discarded": {"card"}, "card_exhausted": {"card"},
     "card_added": {"card"},
     "potion_used": {"potion"}, "potion_discarded": {"potion"},
+    "potion_obtained": {"potion"},
+    "relic_obtained": {"relic"}, "relic_removed": {"relic"},
+    "card_removed": {"card", "pile"}, "card_upgraded": {"card", "pile"},
+    "card_downgraded": {"card", "pile"}, "card_enchantment_changed": {"card", "pile"},
 }
 
 
@@ -44,6 +48,17 @@ def end_turn_details(state):
         if "potion" in event and (set(event["potion"]) != {"slot_index", "name"}
                                   or not 0 <= event["potion"]["slot_index"] <= 2147483647):
             raise ValueError("Invalid event potion.")
+        if 'pile' in event and (event['pile'] != 'deck' or kind not in {
+                'card_added', 'card_removed', 'card_upgraded', 'card_downgraded', 'card_enchantment_changed'}):
+            raise ValueError('Invalid permanent card scope.')
+        if kind in {'card_removed', 'card_upgraded', 'card_downgraded', 'card_enchantment_changed'} or 'pile' in event:
+            if not event['card']['name']:
+                raise ValueError('Missing visible permanent card identity.')
+        if kind in {'relic_obtained', 'relic_removed'} and (
+                set(event['relic']) != {'name'} or not event['relic']['name']):
+            raise ValueError('Invalid visible relic identity.')
+        if kind == 'potion_obtained' and not event['potion']['name']:
+            raise ValueError('Missing visible potion identity.')
         if any(event.get(key) is not None and event[key] < 0 for key in ("hp_loss", "blocked")):
             raise ValueError("Invalid event damage.")
         if kind in {"hp_changed", "block_changed"} and any(type(event[key]) is not int for key in ("before", "after")):
