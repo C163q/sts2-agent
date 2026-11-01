@@ -19,6 +19,19 @@
     ]
   },
   {
+    "name": "energy_chain",
+    "scenarios": {
+      "play": "energy_chain"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_kill_settling.py",
+        "args": ["--scenario", "energy"]
+      }
+    ]
+  },
+  {
     "name": "choice",
     "scenarios": {
       "play": "choice_chain"

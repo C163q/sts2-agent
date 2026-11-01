@@ -23,7 +23,11 @@ internal static class CombatMotion
         => UiTweens.GetValue(__instance, _ => []).Add(__result);
 
     public static bool Pending() => NCombatRoom.Instance is { } room
-        && room.CreatureNodes.Concat(room.RemovingCreatureNodes).Distinct().Any(Pending);
+        && (room.CreatureNodes.Concat(room.RemovingCreatureNodes).Distinct().Any(Pending)
+            // Outline JSON stays unchanged until the native half-second fade reaches zero.
+            || room.Ui.Hand.ActiveHolders.Any(holder => VisibleUi.Shown(holder)
+                && holder.CardNode is { } card && CombatObservation.CardVisible(card)
+                && RewardInspection.Animating(card.CardHighlight, "_curTween")));
 
     private static bool Pending(NCreature node)
     {

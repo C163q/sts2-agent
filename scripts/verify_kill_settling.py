@@ -45,6 +45,24 @@ async def verify(args):
 
             state = await call('get_observation')
             defend = next(c for c in state['player']['hand'] if c['name'] == 'Defend')
+            if args.scenario == 'energy':
+                victim = state['enemies'][0]['id']
+                for name in ('Bash', 'Dominate'):
+                    card = next(c for c in state['player']['hand'] if c['name'] == name)
+                    query = await call('inspect_targets', {'card_id': card['id']})
+                    assert query['playable'], query
+                    settled = await call('play_card', {'card_id': card['id'], 'target_id': victim})
+                    assert settled['transition']['stop_reason'] == 'player_ready' and settled['transition']['complete'], settled
+                snapshot = completed_action_snapshot(raw.directory, settled)
+                assert snapshot['player']['energy'] == 0, snapshot
+                # Let any unfinished outline fade finish without refreshing MCP permission.
+                await asyncio.sleep(1)
+                ended = await call('end_turn')
+                assert ended['transition']['stop_reason'] == 'player_ready' and ended['transition']['complete'], ended
+                assert all(card['outline'] == 'none' for card in snapshot['player']['hand']), snapshot
+                assert sum(e.get('tool') == 'get_observation' for e in evidence) == 1
+                print('PASS energy depletion settles hand outlines before chained end_turn')
+                return
             if args.scenario == 'choice':
                 for discovery in (c for c in state['player']['hand'] if c['name'] == 'Discovery'):
                     choosing = await call('play_card', {'card_id': discovery['id']})
@@ -100,8 +118,8 @@ async def verify(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='验证击杀退场后直接续接动作，不刷新或重试。')
-    parser.add_argument('--scenario', choices=('card', 'potion', 'phase', 'ui', 'choice'), default='card')
+    parser = argparse.ArgumentParser(description='验证战斗 UI 结算后直接续接动作，不刷新或重试。')
+    parser.add_argument('--scenario', choices=('card', 'potion', 'phase', 'ui', 'choice', 'energy'), default='card')
     parser.add_argument('--report', required=True, type=Path)
     asyncio.run(verify(parser.parse_args()))
 

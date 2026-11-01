@@ -60,7 +60,7 @@ def load_cases(path):
             scenario_options = {
                 'verify_rest_site.py': CATALOG['rest'], 'verify_shop.py': CATALOG['shop'],
                 'verify_rewards.py': CATALOG['reward'], 'verify_treasure.py': CATALOG['treasure'],
-                'verify_kill_settling.py': ('card', 'potion', 'phase', 'ui', 'choice'),
+                'verify_kill_settling.py': ('card', 'potion', 'phase', 'ui', 'choice', 'energy'),
                 'verify_selection_scene.py': ('ancient_bundle', 'rest_smith', 'combat_discovery', 'event_deck', 'shop_remove'),
             }
             if args and (verifier not in scenario_options or len(args) != 2

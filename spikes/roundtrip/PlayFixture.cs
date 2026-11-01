@@ -22,7 +22,7 @@ internal static class PlayFixture
         var combat = CombatManager.Instance.DebugOnlyGetState()!;
         var state = player.PlayerCombatState!;
         await CardPileCmd.RemoveFromCombat(state.AllCards.ToArray());
-        state.Energy = scenario == "energy" ? 0 : scenario == "x_cost" ? 2 : 20;
+        state.Energy = scenario == "energy" ? 0 : scenario == "x_cost" ? 2 : scenario == "energy_chain" ? 3 : 20;
         var cards = new List<CardModel>();
         void Add<T>() where T : CardModel => cards.Add(combat.CreateCard<T>(player));
         if (scenario.StartsWith("charge", StringComparison.Ordinal)) Add<Charge>();
@@ -45,6 +45,11 @@ internal static class PlayFixture
             cards.Clear();
             for (int i = 0; i < 5; i++) Add<Discovery>();
             Add<DefendIronclad>(); Add<StrikeIronclad>();
+        }
+        if (scenario == "energy_chain")
+        {
+            cards.Clear();
+            Add<Bash>(); Add<Dominate>(); Add<StrikeIronclad>(); Add<StrikeIronclad>(); Add<DefendIronclad>();
         }
         if (scenario == "card_names")
         {
