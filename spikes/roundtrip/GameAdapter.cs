@@ -212,6 +212,9 @@ internal sealed partial class GameAdapter(bool testMode)
             }));
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (testMode && testSettings.Get("STS2_AGENT_TEST_TURN_SCENARIO") == "thieving_hopper"
+            && request.Operation == "capture_test_power_tips")
+            return Success(request.Id, JsonSerializer.Serialize(await PowerTextChecks.CaptureHopper(ObservationFrame)));
         if (request.Operation == "respond_to_confirmation")
             return await ConfirmationRequest(request, document.RootElement);
         if (testMode && testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") != null && LocalPlayer != null)
@@ -521,6 +524,7 @@ internal sealed partial class GameAdapter(bool testMode)
                 model: selectionScenario == "knowledge" ? ModelDb.Encounter<KnowledgeDemonBoss>().ToMutable()
                     : playScenario is "test_subject" or "no_target" or "random_empty" ? ModelDb.Encounter<TestSubjectBoss>().ToMutable()
                     : turnScenario == "revive" ? ModelDb.Encounter<DecimillipedeElite>().ToMutable()
+                    : turnScenario == "thieving_hopper" ? ModelDb.Encounter<ThievingHopperWeak>().ToMutable()
                     : ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
             if (selectionScenario == "paradox")
             {
@@ -610,6 +614,7 @@ internal sealed partial class GameAdapter(bool testMode)
                 await PowerCmd.Apply<VulnerablePower>(choices, player, 2, player, null);
                 await PowerCmd.Apply<VulnerablePower>(choices, enemies, 2, player, null);
                 await PowerCmd.Apply<ShrinkPower>(choices, player, -1, enemies[0], null);
+                await PowerCmd.Apply<EscapeArtistPower>(choices, enemies[0], 5, enemies[0], null);
             }
         }
         else if (request.Operation == "end_turn")

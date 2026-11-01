@@ -1,5 +1,12 @@
 [
   {
+    "name": "hopper_power_text",
+    "scenarios": { "turn": "thieving_hopper" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_power_text.py", "args": [] }
+    ]
+  },
+  {
     "name": "paels_wing",
     "scenarios": { "reward": "paels_wing" },
     "steps": [

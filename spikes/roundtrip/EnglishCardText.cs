@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using HarmonyLib;
@@ -28,6 +29,8 @@ internal static class EnglishCardText
         var harmony = new Harmony("sts2_agent.hand_english");
         harmony.Patch(AccessTools.Method(typeof(LocString), nameof(LocString.GetFormattedText)),
             prefix: new HarmonyMethod(typeof(EnglishCardText), nameof(FormattedText)));
+        harmony.Patch(AccessTools.PropertyGetter(typeof(PowerModel), nameof(PowerModel.HoverTips)),
+            transpiler: new HarmonyMethod(typeof(EnglishCardText), nameof(PowerFormatting)));
         harmony.Patch(AccessTools.Method(typeof(LocTable), nameof(LocTable.GetRawText)),
             prefix: new HarmonyMethod(typeof(EnglishCardText), nameof(RawText)));
         harmony.Patch(AccessTools.Method(typeof(HoverTipFactory), nameof(HoverTipFactory.FromKeyword)),
@@ -93,6 +96,24 @@ internal static class EnglishCardText
         }
         __result = Smart.Default.Format(CultureInfo.GetCultureInfo("en"), Template(__instance), variables);
         return false;
+    }
+
+    private static IEnumerable<CodeInstruction> PowerFormatting(IEnumerable<CodeInstruction> instructions)
+    {
+        var original = AccessTools.Method(typeof(LocString), nameof(LocString.GetFormattedText));
+        var replacement = AccessTools.Method(typeof(EnglishCardText), nameof(PowerFormattedText));
+        foreach (var instruction in instructions)
+        {
+            // Rebind precompiled native calls that can bypass the patched LocString wrapper.
+            if (instruction.Calls(original)) { instruction.opcode = OpCodes.Call; instruction.operand = replacement; }
+            yield return instruction;
+        }
+    }
+
+    private static string PowerFormattedText(LocString text)
+    {
+        string result = "";
+        return FormattedText(text, ref result) ? text.GetFormattedText() : result;
     }
 
     private static bool RawText(string key, string ____name, ref string __result)

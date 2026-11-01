@@ -1,6 +1,6 @@
 # 双方 powers 与敌人意图详情
 
-文件操作 `inspect_combatants` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.31.0`。一次只读查看本地玩家和当前可见敌人的 powers，以及敌人当前展示的意图，返回原生英语悬停说明。不触发实际鼠标悬停，不改变目标、语言或游戏流程。MCP 与文件客户端返回相同的玩法 JSON。
+文件操作 `inspect_combatants` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.34.4`。一次只读查看本地玩家和当前可见敌人的 powers，以及敌人当前展示的意图，返回原生英语悬停说明。不触发实际鼠标悬停，不改变目标、语言或游戏流程。MCP 与文件客户端返回相同的玩法 JSON。
 
 ## 读取
 
@@ -37,6 +37,8 @@ MCP 调用 `inspect_combatants()` 无须参数，成功时刷新状态令牌；�
 
 power 主说明使用当前实例 `HoverTips` 的动态正文，而非静态通用定义；包含人悬停时会看到的当前持续回合、层数、拥有者或施加者等变量。意图从已显示 `NIntent` 绑定的意图、目标和拥有者构造原生提示，包含当前预览伤害及连击次数。对 Shrink 等施加时缓存怪物本地化名称的情况，仅在独立格式化变量中放入英语施加者名称，不修改实际 power 的缓存或中文说明。读取不调用控件的 `OnFocus/OnHovered` 或更新流程；未知提示类型显式返回错误，不静默丢弃。
 
+原生 `PowerModel.HoverTips` 的格式化调用在英语读取作用域内显式经过英语渲染器，避免预编译或内联调用绕过 `LocString.GetFormattedText` 的拦截后，以中文复数规则解释英文模板。实例变量仍由原生提示流程填入；例如 Escape Artist 计数为 5、4 时分别显示 `after 5 turns`、`after 4 turns`，为 1 时显示 `this turn`。这是当前 UI 状态说明，不提供敌人后续招式或对未来回合的额外推演。修复与同类审查见[状态说明验证](../research/2026-11-01-power-descriptions.md)。
+
 沿用 [信息边界](../observation.md) 和现有英语作用域。当前可见性判断使用节点、透明度、视口及裁剪矩形，不能精确判断任意像素遮挡。读取过程中如果发现绑定对象无效，则整次报错，不用其他模型状态补齐。其他 Mod 改写悬停行为、其他游戏版本、多人/宠物及非战斗场景尚未验证。
 
 ## 验证
@@ -49,7 +51,7 @@ python3 scripts/verify_combatants.py --ipc-dir .tmp/live/ipc --output .tmp/live/
 
 该脚本重复读取并核对前后状态令牌一致、敌人 ID 和基础字段对应、共享说明去重、来源路径可解析及数值 note 的范围。详情仅保留可悬停图标，核对时按顺序匹配基础观察的子序列。
 
-独立中文实例可用 `scripts/run_roundtrip.py --windowed --capture --check-combatants`。此标志仅在原有测试入口创建战斗时，通过 `PowerCmd.Apply` 给测试玩家准备 Strength、Vulnerable、怪物施加的永久 Shrink，给测试敌人准备 Vulnerable，并检查动态说明、共享提示及可见性。不要为正式游戏设置测试标志。实施依据、验证结果和未验证范围见 [实施记录](../research/2026-10-29-combatant-inspection-plan.md)。
+独立中文实例可用 `scripts/run_roundtrip.py --windowed --capture --check-combatants`。此标志仅在原有测试入口创建战斗时，通过 `PowerCmd.Apply` 给测试玩家准备 Strength、Vulnerable、怪物施加的永久 Shrink，给测试敌人准备 Vulnerable 与计数 5 的 Escape Artist，并检查动态说明、共享提示及可见性；另用控制变量对照原生英文与中文环境下英语作用域的状态说明模板。模板对照不代表全部状态的生命周期均已实机验证。不要为正式游戏设置测试标志。实施依据、验证结果和未验证范围见 [实施记录](../research/2026-10-29-combatant-inspection-plan.md)。
 
 已完成独立中文游戏的 31 项检查和前后状态一致的只读导出，取得 3 个敌人及 6 条共享提示；样本为 `.tmp/roundtrip/combatant-inspection.json`。原有观察、手牌、界面及药水均回归通过，Python 全套 60 项通过。正式重启后另完成 2 个敌人、3 条共享提示的只读采样：玩家没有 powers，Twig Slime (M) 有 2 回合 Vulnerable；攻击预览分别为 3 和 11。重复详情及前后观察均一致，样本为 `.tmp/live/combatant-inspection.json`。正式与独立数据分别保存，未在正式游戏中执行动作。
 

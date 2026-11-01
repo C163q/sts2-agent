@@ -3,6 +3,7 @@ import argparse
 import asyncio
 import json
 import sys
+import time
 from pathlib import Path
 
 from mcp import ClientSession, StdioServerParameters
@@ -28,6 +29,11 @@ async def verify(args):
 
             state = await call('get_observation')
             if args.scenario == 'ancient_bundle':
+                deadline = time.monotonic() + 10
+                while not {'advance_dialogue', 'choose_ancient_option'} & set(state['available_actions']):
+                    assert time.monotonic() < deadline, 'Ancient input did not become ready.'
+                    await asyncio.sleep(.1)
+                    state = await call('get_observation')
                 while 'advance_dialogue' in state['available_actions']:
                     await call('advance_dialogue')
                     state = await call('get_observation')

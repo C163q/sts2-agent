@@ -35,6 +35,13 @@ internal static class CombatantInspectionChecks
         string cachedApplierName = cachedApplier.StringValue;
         string chineseShrinkTip = JsonSerializer.Serialize(shrink.HoverTips.Select(HoverTipText.From));
         var before = CombatantInspection.Read(player);
+        var escape = enemy.Entity.GetPower<EscapeArtistPower>()!;
+        var nativeEscape = escape.HoverTips.Select(HoverTipText.From).ToArray();
+        var escapeText = new LocString("powers", "ESCAPE_ARTIST_POWER.smartDescription");
+        escapeText.Add("Amount", 5);
+        string formattedEscape = EnglishCardText.Read(() => escapeText.GetFormattedText());
+        Check("escape_countdown_uses_english_plural", before.hover_tips.Any(tip => tip.title == "Escape Artist"
+            && tip.description == "Tries to escape the combat after 5 turns."));
         Check("player_power_amounts", before.player?.powers?.Any(item => item.name == "Strength" && item.amount == 2) == true);
         Check("enemy_power_amounts", before.enemies.All(item => item.powers?.Any(power => power.name == "Vulnerable" && power.amount == 2) == true));
         Check("english_dynamic_vulnerable", before.hover_tips.Any(tip => tip.title == "Vulnerable"
@@ -126,7 +133,9 @@ internal static class CombatantInspectionChecks
         Check("locale_unchanged", language == LocManager.Instance.Language && localized.GetFormattedText() == original);
         Check("keyword_cache_unchanged", HoverTipFactory.FromKeyword(MegaCrit.Sts2.Core.Entities.Cards.CardKeyword.Exhaust).Equals(cachedKeyword));
         Check("read_is_repeatable", JsonSerializer.Serialize(before) == JsonSerializer.Serialize(CombatantInspection.Read(player)));
-        File.WriteAllText(reportPath, JsonSerializer.Serialize(new { language, inspection = before, results }, new JsonSerializerOptions { WriteIndented = true }));
+        var audit = PowerTextChecks.Run();
+        Check("native_english_power_parity", JsonSerializer.SerializeToElement(audit).GetProperty("passed").GetBoolean());
+        File.WriteAllText(reportPath, JsonSerializer.Serialize(new { language, nativeEscape, formattedEscape, inspection = before, results, audit }, new JsonSerializerOptions { WriteIndented = true }));
         if (results.Any(result => !JsonSerializer.SerializeToElement(result).GetProperty("passed").GetBoolean()))
             throw new InvalidOperationException("Combatant inspection checks failed; see the local report.");
     }

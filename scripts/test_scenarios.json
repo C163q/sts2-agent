@@ -95,6 +95,7 @@
     "scroll_race"
   ],
   "turn": [
+    "thieving_hopper",
     "normal",
     "wither",
     "wither_death",

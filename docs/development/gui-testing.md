@@ -56,6 +56,8 @@
 
 `verify_reward_alternatives.py` 的 `paels_wing`、`driftwood` 分别配合同名 `reward` 场景，并纳入默认集。通过真实遗物获取和奖励生成 hook，检查基础观察与详情中的献祭/重掷按钮、实际效果、候选刷新及旧 ID 拒绝；献祭两次后还保留原许可直接前进，重掷后检查跳过再打开不会恢复次数。动作后在数秒内只读采样，诊断读取不刷新 MCP 许可。两者分别测试，不代表双遗物组合已验证。
 
+`verify_power_text.py` 配合 `turn:thieving_hopper`，验证原生偷窃草蜢从计数 5 到 1 的动态说明及最终逃跑，保存首回合完整 MCP 回执 `hopper-first-end-turn.json`。计数 5、4、1 时在独立实例内切换语言并触发原生悬停，保存中英文提示截图；测试专用入口不属于公开 MCP 工具，验证后恢复原语言。此场景纳入默认冒烟集；模板范围与限制见[状态说明验证](../research/2026-11-01-power-descriptions.md)。
+
 ## 生命周期与证据
 
 套件模式通过 `STS2_AGENT_TEST_MODE=1` 和 `STS2_AGENT_TEST_SUITE=1` 双重门控，提供仅文件 IPC 可用的 `configure_test_run`、`reset_test_run`、`get_test_session`。前两项需最新状态令牌；配置仅允许没有对局的主菜单。它们不属于公开 MCP 工具，也不改变玩法 JSON 或动作许可规则。旧的单用例启动命令继续有效。

@@ -15,7 +15,7 @@ internal static class TurnFixture
     {
         var choice = new ThrowingPlayerChoiceContext();
         var combat = CombatManager.Instance.DebugOnlyGetState()!;
-        if (scenario == "normal") return;
+        if (scenario is "normal" or "thieving_hopper") return;
         if (scenario is "wither" or "wither_death")
         {
             await CardPileCmd.AddGeneratedCardToCombat(combat.CreateCard<Wither>(player), PileType.Hand, player);

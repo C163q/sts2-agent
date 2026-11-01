@@ -26,6 +26,7 @@ SUPPORTED_VERIFIERS = {
     'verify_ancients.py',
     'verify_map_presets.py',
     'verify_reward_alternatives.py',
+    'verify_power_text.py',
 }
 
 
