@@ -1,5 +1,12 @@
 [
   {
+    "name": "map_presets",
+    "scenarios": { "navigation": "basic" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_map_presets.py", "args": ["--scenario", "flight"] }
+    ]
+  },
+  {
     "name": "ancient_travel",
     "scenarios": { "navigation": "boss1" },
     "steps": [

@@ -52,6 +52,8 @@
 
 `verify_ancient_stability.py` 的 `travel` 和 `travel_action` 均配合 `navigation:boss1`，经过原生跨幕和地图旅行；前者从 `inspect_ancient` 续接，后者用原始回执中的夹具选项 ID 检查动作许可续接。两者保存旅行返回的精确状态，再采样九秒且不刷新 MCP 许可，要求令牌始终不变并能直接领取佩尔之血；同时检查外部操作使旧令牌过期、覆盖页及重复领取被拒绝。`direct` 配合 `ancient:tooth`，用于已构造房间的详情续接对照。`verify_ancients.py` 支持复用局及其 `ancient` 同名场景，对话和佩尔之牙多选纳入默认集。
 
+`verify_map_presets.py` 逐项对照同一原生全图，检查默认结果兼容、`selectable` 优先、前瞻节点与子图边界连线，再直接选路或关闭地图后结束回合，全程不调用 `get_observation`。`flight` 配合 `navigation:basic`，检查无连线的飞鞋候选并纳入默认集；`combat` 配合 `navigation:combat`，先经原生选路进入战斗，再检查零候选；`entry` 配合 `navigation:boss1` 检查新幕未进入节点；`double` 配合 `navigation:double` 检查第二 Boss。验证器自行保存地图截图，参数不改变原生地图显示范围。
+
 ## 生命周期与证据
 
 套件模式通过 `STS2_AGENT_TEST_MODE=1` 和 `STS2_AGENT_TEST_SUITE=1` 双重门控，提供仅文件 IPC 可用的 `configure_test_run`、`reset_test_run`、`get_test_session`。前两项需最新状态令牌；配置仅允许没有对局的主菜单。它们不属于公开 MCP 工具，也不改变玩法 JSON 或动作许可规则。旧的单用例启动命令继续有效。

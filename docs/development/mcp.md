@@ -63,7 +63,7 @@ flowchart LR
 | `inspect_deck(...)` | [打开或复用全牌组页面](deck-inspection.md)，可选信息档位、升级预览和排序 |
 | `inspect_pile(...)` | [打开或复用战斗牌堆](pile-inspection.md)，必填 `pile`，可选 `detail_level` |
 | `close_card_view()` | 关闭顶层牌组/牌堆查看页，保留下层地图 |
-| `inspect_map()` | [打开或复用当前幕地图](map-inspection.md)，返回实际可选节点 |
+| `inspect_map(preset?, max_steps?)` | [打开或复用当前幕地图](map-inspection.md)，可返回全图、前瞻子图或实际可选节点详情 |
 | `travel_to_node(node_id)` | [按当前候选选路](map-inspection.md#地图选路)，离开房间并放弃未领取奖励；飞鞋由原生流程处理 |
 | `close_map()` | 通过可用的原生返回入口关闭地图，不穿透卡牌页 |
 | `inspect_selection()` | [整个可浏览候选及详情](card-selection.md) |
@@ -77,7 +77,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.34.2` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.29.1`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.34.2` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.30.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 

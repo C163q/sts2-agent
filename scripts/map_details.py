@@ -7,6 +7,16 @@ NODE_TYPES = ("ancient", "boss", "monster", "elite", "shop", "treasure", "rest_s
 REVEALED_TYPES = ("monster", "elite", "shop", "treasure", "rest_site")
 NODE_ID = re.compile(r'map:([1-9][0-9]*):(0|[1-9][0-9]*):(0|[1-9][0-9]*)')
 MAP_SUMMARY = {'status': str, 'act': int, 'current_node': (str,), 'can_travel': bool, 'selectable_nodes': [str]}
+MAP_SCHEMA = {
+    'type': 'object',
+    'properties': {
+        'preset': {'type': 'string', 'enum': ['full', 'selectable'], 'default': 'full',
+                   'description': 'full returns the map graph and route context; selectable returns only current candidates with node details, omitting links and visited_path. selectable overrides max_steps.'},
+        'max_steps': {'type': 'integer', 'minimum': 0, 'maximum': 2147483647, 'default': 0,
+                      'description': '0 keeps the entire graph. Positive N keeps the current node and nodes within N drawn directed links, clipping links at the boundary. Before first entry, the lowest row counts as step 1. Route context and native selectable IDs stay unfiltered; off-link flight choices are not added to the subgraph.'},
+    },
+    'additionalProperties': False,
+}
 
 
 def valid_node_id(value, act=None):
@@ -42,8 +52,42 @@ def map_summary(value):
 
 
 def map_arguments(arguments):
-    if arguments is not None and (not isinstance(arguments, dict) or arguments):
-        raise ValueError("Map tools do not accept arguments.")
+    if arguments is None:
+        arguments = {}
+    if not isinstance(arguments, dict) or set(arguments) - {'preset', 'max_steps'}:
+        raise ValueError('Invalid map arguments.')
+    preset = arguments.get('preset', 'full')
+    steps = arguments.get('max_steps', 0)
+    if not isinstance(preset, str) or preset not in ('full', 'selectable') \
+            or type(steps) is not int or not 0 <= steps <= 2147483647:
+        raise ValueError('Invalid map preset or step limit.')
+    return {'preset': preset, 'max_steps': steps}
+
+
+def map_preset(payload, preset, max_steps):
+    if 'error' in payload or preset == 'full' and max_steps == 0:
+        return payload
+    if preset == 'selectable':
+        choices = set(payload['selectable_nodes'])
+        return {**{key: payload[key] for key in ('scene', 'screen', 'act', 'current_node', 'can_travel', 'selectable_nodes')},
+                'preset': preset, 'nodes': [{key: value for key, value in node.items() if key != 'next'}
+                                          for node in payload['nodes'] if node['id'] in choices]}
+    nodes = {node['id']: node for node in payload['nodes']}
+    if payload['current_node'] is not None:
+        included = {payload['current_node']}
+        remaining = max_steps
+    else:
+        first_row = min(node['row'] for node in nodes.values())
+        included = {node['id'] for node in nodes.values() if node['row'] == first_row}
+        remaining = max_steps - 1
+    frontier = included
+    while frontier and remaining > 0:
+        frontier = {child for parent in frontier for child in nodes[parent]['next']} - included
+        included.update(frontier)
+        remaining -= 1
+    return {**payload, 'max_steps': max_steps,
+            'nodes': [{**node, 'next': [child for child in node['next'] if child in included]}
+                      for node in payload['nodes'] if node['id'] in included]}
 
 
 def identifiers(values, known):

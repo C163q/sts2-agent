@@ -2,7 +2,7 @@ from mcp.types import Tool, ToolAnnotations
 from observation_presets import OBSERVATION_SCHEMA
 
 from run_ending_details import OPTION_SCHEMA as RESULT_OPTION_SCHEMA
-from map_details import TRAVEL_SCHEMA
+from map_details import MAP_SCHEMA, TRAVEL_SCHEMA
 from deck_details import DECK_SCHEMA
 from pile_details import PILE_SCHEMA
 from selection_details import CARD_SCHEMA, OPTION_SCHEMA, VIEW_SCHEMA
@@ -135,9 +135,9 @@ def tool_definitions(*, screenshots_enabled=False):
         Tool(name="close_card_view", inputSchema=NO_ARGUMENTS, annotations=view, description=(
             "Close the top deck/draw/discard/exhaust browsing page and return a basic observation. "
             "Preserves an underlying map; cannot close card selections or other screens.")),
-        Tool(name="inspect_map", inputSchema=NO_ARGUMENTS, annotations=view, description=(
-            "Open/reuse the entire current-act map, replacing a covering card page. Leaves it open. "
-            "Returns nodes, connections, visited_path and selectable_nodes for travel_to_node. "
+        Tool(name="inspect_map", inputSchema=MAP_SCHEMA, annotations=view, description=(
+            "Open/reuse the current-act map, replacing a covering card page. Leaves it open. "
+            "Returns the full graph by default; preset and max_steps limit returned data only. "
             "Does not travel or reveal unknown encounters; close with close_map.")),
         Tool(name="close_map", inputSchema=NO_ARGUMENTS, annotations=view, description=(
             "Close the exposed map using its enabled native back button; return a basic observation. "

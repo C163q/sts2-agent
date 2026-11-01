@@ -29,11 +29,13 @@ async def verify(args):
                 evidence.update(protocol_version=initialized.protocolVersion, server=initialized.serverInfo.model_dump())
                 listed = await session.list_tools()
                 names = {tool.name for tool in listed.tools}
-                assert names == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants",
-                                 "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"}, names
+                assert len(names - {'capture_screenshot'}) == 42 and {'get_observation', 'inspect_map', 'close_map', 'end_turn'} <= names, names
                 for tool in listed.tools:
                     if tool.name in {"inspect_map", "close_map"}:
-                        assert tool.inputSchema == {"type": "object", "properties": {}, "additionalProperties": False}
+                        if tool.name == 'inspect_map':
+                            assert set(tool.inputSchema['properties']) == {'preset', 'max_steps'}
+                        else:
+                            assert tool.inputSchema == {"type": "object", "properties": {}, "additionalProperties": False}
                         assert tool.annotations.readOnlyHint is False and tool.annotations.destructiveHint is False
                         assert tool.annotations.idempotentHint is False and tool.annotations.openWorldHint is False
                 evidence["tools"] = [tool.model_dump(exclude_none=True) for tool in listed.tools]
@@ -61,7 +63,8 @@ async def verify(args):
                 assert "available_actions" not in sample and "notes" not in sample and "snapshot_id" not in sample
                 assert await call("inspect_map") == sample
                 covered = await call("get_observation")
-                assert covered["screen"] == {"status": "covered", "view": "map"} and "close_map" in covered["available_actions"] and not set(covered["available_actions"]) & GAME_ACTIONS
+                assert covered["screen"] == {"status": "visible", "view": "map"} and "close_map" in covered["available_actions"] and not set(covered["available_actions"]) & GAME_ACTIONS
+                assert covered['map']['selectable_nodes'] == sample['selectable_nodes']
                 await call("close_map", {"force": True}, error="invalid_request")
                 assert await call("get_observation") == covered
                 assert await call("close_map") == observed

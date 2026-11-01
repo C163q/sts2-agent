@@ -1044,7 +1044,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertFalse(close_tool.annotations.readOnlyHint)
                     self.assertEqual(close_tool.inputSchema, {"type": "object", "properties": {}, "additionalProperties": False})
                     for tool in listed.tools:
-                        if tool.name not in {"get_observation", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "claim_reward", "choose_rest_option", "loot_treasure", "buy_item", "choose_ancient_option", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation", "travel_to_node", "run_result_option"}:
+                        if tool.name not in {"get_observation", "inspect_map", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "claim_reward", "choose_rest_option", "loot_treasure", "buy_item", "choose_ancient_option", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation", "travel_to_node", "run_result_option"}:
                             self.assertEqual(tool.inputSchema.get("properties", {}), {})
                     missing = await session.call_tool("end_turn", {})
                     self.assertTrue(missing.isError)

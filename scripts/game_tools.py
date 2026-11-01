@@ -7,7 +7,7 @@ import anyio
 from run_ending_details import option_arguments
 from deck_details import deck_arguments
 from inspection_details import inspection_details
-from map_details import map_arguments, travel_arguments
+from map_details import map_arguments, map_preset, travel_arguments
 from pile_details import pile_arguments
 from player_output import player_result
 from selection_details import selection_arguments
@@ -171,17 +171,16 @@ class GameTools:
         return await self._action('travel_to_node', arguments)
 
     async def inspect_map(self, arguments=None):
-        return await self._map_view("inspect_map", arguments)
-
-    async def close_map(self, arguments=None):
-        return await self._map_view("close_map", arguments)
-
-    async def _map_view(self, operation, arguments):
         try:
-            map_arguments(arguments)
+            options = map_arguments(arguments)
         except ValueError:
             return player_result({"ok": False, "error": {"code": "invalid_request"}})
-        return await self._change_view(operation)
+        return map_preset(await self._change_view('inspect_map'), **options)
+
+    async def close_map(self, arguments=None):
+        if arguments is not None and (not isinstance(arguments, dict) or arguments):
+            return player_result({"ok": False, "error": {"code": "invalid_request"}})
+        return await self._change_view('close_map')
 
     async def inspect_pile(self, arguments=None):
         try:
