@@ -61,6 +61,8 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
                     && CombatObservation.CardVisible(node) && english.CardName(node) is { } name)
                     knownCards[card] = name;
             SubscribePiles();
+            var resources = new CombatResourceJournal(combat, player, buffer);
+            cleanup.Add(resources.Dispose);
             var potions = new PotionJournal(player, (type, potion) => buffer.Add(type, new() { ["potion"] = potion }));
             cleanup.Add(potions.Dispose);
         }
@@ -81,9 +83,14 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
 
     public object Result(string reason)
     {
-        foreach (var (result, entry) in damageResults) entry["blocked"] = result.BlockedDamage;
+        Flush();
         return new { stop_reason = reason, complete = !buffer.Truncated && reason is not ("timeout" or "interrupted"),
             events = buffer.Events };
+    }
+
+    public void Flush()
+    {
+        foreach (var (result, entry) in damageResults) entry["blocked"] = result.BlockedDamage;
     }
 
     private void Won(CombatRoom room) { if (ReferenceEquals(room.CombatState, combat)) won = true; }

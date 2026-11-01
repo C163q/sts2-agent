@@ -20,10 +20,16 @@ internal sealed partial class GameAdapter
         {
             await ObservationFrame();
             string? reason = stopReason();
+            if (CombatEntryCapture.Current != null && MegaCrit.Sts2.Core.Combat.CombatManager.Instance.IsStarting
+                && reason is not ("interrupted" or "manual_input_required")) reason = null;
+            if (CombatEntryCapture.Current is { Capturing: true } entering
+                && reason is not ("interrupted" or "manual_input_required"))
+                reason = entering.StopReason(CanPlayCards());
             state = Observe();
             // Logical actions finish before independent UI motion stops changing the observation.
             if (settling.Sample(reason, state, CardMotionPending() || RunUi.CardPreviewsPending()
-                || CombatMotion.Pending() || RunUi.ResourceMotionPending(), timer.Elapsed))
+                || CombatMotion.Pending() || RunUi.ResourceMotionPending()
+                || CombatResourceJournal.Current?.Pending == true, timer.Elapsed))
                 return (state, reason!);
         }
         return (state, "timeout");

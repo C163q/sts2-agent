@@ -15,6 +15,35 @@ def resource(kind, before, after, sequence=1):
 
 
 class ResourceEventTests(unittest.TestCase):
+    def test_first_star_counter_reveal_preserves_unknown_previous_value(self):
+        event = resource('stars_changed', None, 1)
+        clean = inspection_details('play_card', {**observation(), 'transition': {
+            'stop_reason': 'player_ready', 'complete': True, 'events': [event]}})
+        self.assertEqual(player_result({'ok': True, 'state': clean})['transition']['events'], [event])
+
+    def test_combat_resources_pass_through_compact_action_receipts(self):
+        events = [resource('energy_changed', 3, 2), resource('stars_changed', 9, 1, 2)]
+        for operation in ('play_card', 'end_turn', 'use_potion', 'selection_option', 'choose_event_option'):
+            raw = copy.deepcopy(events)
+            raw[0]['unrendered_intermediate'] = 0
+            with self.subTest(operation=operation):
+                clean = inspection_details(operation, {**observation(), 'transition': {
+                    'stop_reason': 'player_ready', 'complete': True, 'events': raw}})
+                self.assertEqual(player_result({'ok': True, 'state': clean})['transition']['events'], events)
+
+    def test_combat_resources_require_valid_public_player_endpoints(self):
+        for kind in ('energy_changed', 'stars_changed'):
+            invalid = [{'before': None}, {'after': None}, {'before': True}, {'after': '1'},
+                       {'before': -1}, {'after': -1},
+                       {'target': {'id': 2, 'kind': 'enemy', 'name': 'Leaf Slime'}}]
+            for change in invalid:
+                if kind == 'stars_changed' and change == {'before': None}:
+                    continue
+                with self.subTest(kind=kind, change=change), self.assertRaises(ValueError):
+                    inspection_details('end_turn', {**observation(), 'transition': {
+                        'stop_reason': 'player_ready', 'complete': True,
+                        'events': [{**resource(kind, 3, 2), **change}]}})
+
     def test_gold_and_maximum_hp_retain_actual_changes_and_drop_private_fields(self):
         events = [resource('gold_changed', 99, 74), resource('max_hp_changed', 80, 82, 2),
                   resource('hp_changed', 40, 39, 3), resource('gold_changed', 74, 99, 4)]

@@ -12,6 +12,8 @@ internal sealed class CombatEntryCapture(Player player, Func<CardModel, int> car
     private static CombatEntryCapture? active;
     private CombatState? combat;
     private TurnJournal? journal;
+    public static CombatEntryCapture? Current => active;
+    public bool Capturing => journal != null;
 
     public static void Initialize() => new Harmony("sts2_agent.combat_entry").Patch(
         AccessTools.Method(typeof(CombatManager), nameof(CombatManager.StartCombatInternal)),
@@ -36,6 +38,8 @@ internal sealed class CombatEntryCapture(Player player, Func<CardModel, int> car
 
     public object Result(string reason) => journal?.Result(reason) ?? new {
         stop_reason = reason, complete = reason is not ("timeout" or "interrupted"), events = Array.Empty<object>() };
+
+    public void Flush() => journal?.Flush();
 
     public void Dispose()
     {

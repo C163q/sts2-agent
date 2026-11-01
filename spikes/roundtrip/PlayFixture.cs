@@ -92,7 +92,8 @@ internal static class PlayFixture
             for (int i = 0; i < 4; i++) Add<DefendIronclad>();
             Add<Normality>();
         }
-        if (scenario == "stars") cards[0].SetStarCostThisCombat(2);
+        if (scenario is "stars" or "star_spend") cards[0].SetStarCostThisCombat(2);
+        if (scenario == "star_spend") await PlayerCmd.SetStars(5, player);
         await CardPileCmd.AddGeneratedCardsToCombat(cards, PileType.Hand, player);
         int drawCount = scenario.StartsWith("charge", StringComparison.Ordinal) ? int.Parse(scenario[^1..])
             : scenario is "glimmer" or "card_logic" or "pommel_strike" ? 3 : 0;

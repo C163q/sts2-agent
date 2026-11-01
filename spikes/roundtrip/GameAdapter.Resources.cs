@@ -1,3 +1,5 @@
+using MegaCrit.Sts2.Core.Combat;
+
 namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
@@ -16,6 +18,10 @@ internal sealed partial class GameAdapter
         using var resources = LocalPlayer is { } player ? new RunResourceJournal(player, events.Buffer) : null;
         using var inventory = LocalPlayer is { } owner ? new RunInventoryJournal(owner, events.Buffer, observation.CardId) : null;
         using var potions = LocalPlayer is { } potionOwner ? new PotionJournal(potionOwner) : null;
-        return events.Apply(await ExecuteCore(request));
+        using var enteringCombat = LocalPlayer is { } combatPlayer && !CombatManager.Instance.IsInProgress
+            ? CombatEntryCapture.Begin(combatPlayer, observation.CardId) : null;
+        string response = await ExecuteCore(request);
+        enteringCombat?.Flush();
+        return events.Apply(response);
     }
 }

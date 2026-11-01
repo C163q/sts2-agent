@@ -64,6 +64,8 @@
 
 `verify_inventory_events.py` 验证物品与永久牌组的真实 MCP 回执。`smith/cook` 配合 `rest:smith/cook`，`upgrade/transform/enchant/remove` 配合同名 `event` 场景，`shop/reward/ancient` 配合各自 `basic` 场景，`rescue` 配合 `event:rescue`，`temporary` 配合 `play:armaments`。`visibility` 配合 `play:basic`，执行隐藏遗物／药水栏、隐藏后恢复不补发、永久附魔附加／清除、升级／降级及订阅释放检查，仅通过测试模式文件接口运行。`temporary` 验证战斗临时升级不被标记为永久变化；随机变牌只记录真正公开的入组结果。`enchant` 和 `visibility` 纳入默认集。范围与证据见[第二阶段记录](../research/2026-11-01-inventory-events.md)。
 
+`verify_combat_resources.py` 核对能量／星星的公开端点、原生通知与实际数字刷新、精简回执及入战后直接续接。`spend/gain/turbo/stars/star_spend/choice` 配合 `play:basic/bloodletting/turbo/gather_light/star_spend/armaments`；`visibility` 配合 `play:basic`，执行局部标签隐藏、地图和战斗 UI 遮挡、滚动动画取消、恢复基线与订阅释放的测试模式检查；`reveal_visibility` 同样使用 `play:basic`，检查首次星星布局、隐藏、离屏和裁剪取消，以及后续公开基线。`fake_merchant` 配合 `shop:fake`，检查药水入战日志与随后出牌／结束回合；`selection_entry` 配合 `selection:combat_entry`，检查选择完成后父流程进入战斗的停止原因及抽牌日志。后两者纳入默认集。范围与证据见[第三阶段记录](../research/2026-11-01-combat-resource-events.md)。
+
 ## 生命周期与证据
 
 `verify_resource_events.py` 核对 HP、最大生命与金币事件能按捕获顺序还原实际顶栏变化，并检查精简回执及直接续接。场景对应：`event/rescue` 使用 `event:basic/rescue`，`rest/cook` 使用 `rest:basic/cook`，`shop` 使用 `shop:basic`，`reward` 使用 `reward:skip`，`ancient` 使用 `ancient:basic`，`potion_rest/potion_combat` 使用 `potion:noncombat_rest/fruit_combat`，`combat/visibility` 使用 `play:basic`，`entry` 使用 `navigation:combat`，`masks` 使用 `selection:deck`。`visibility` 执行嵌入可见性、持续隐藏、恢复基线与释放检查；`masks` 在保留原生选择页时打开原生卡牌详情及地图，验证遮挡期间资源不进入日志。两者只使用隔离测试入口。事件与烹饪场景纳入默认集，范围和证据见[资源事件第一阶段](../research/2026-11-01-run-resource-events.md)。

@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.Models.Monsters;
 using MegaCrit.Sts2.Core.Models.Potions;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Models.Powers;
+using MegaCrit.Sts2.Core.Models.Encounters;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Rewards;
 using MegaCrit.Sts2.Core.Rooms;
@@ -55,6 +56,11 @@ internal static class SelectionFixture
                 ? (Task)HarmonyLib.AccessTools.Method(typeof(BrainLeech), "ShareKnowledge").Invoke(model, null)!
                 : Reward(model);
         }
+        else if (scenario == "combat_entry")
+        {
+            await RunManager.Instance.EnterRoomDebug(RoomType.Event, model: ModelDb.Event<BrainLeech>(), showTransition: false);
+            Pending = ChooseThenFight(player);
+        }
         else if (scenario == "deck")
         {
             await RunManager.Instance.EnterRoomDebug(RoomType.Event, model: ModelDb.Event<BrainLeech>(), showTransition: false);
@@ -81,6 +87,13 @@ internal static class SelectionFixture
                 new CardSelectorPrefs(CardSelectorPrefs.ExhaustSelectionPrompt, scenario == "scroll_race" ? 2 : 1));
         }
         else throw new ArgumentException("Unknown card selection test scenario.");
+    }
+
+    private static async Task ChooseThenFight(Player player)
+    {
+        CardModel[] cards = [player.RunState.CreateCard<DefendIronclad>(player), player.RunState.CreateCard<StrikeIronclad>(player)];
+        await CardSelectCmd.FromChooseACardScreen(new BlockingPlayerChoiceContext(), cards, player);
+        await RunManager.Instance.EnterRoomDebug(RoomType.Monster, model: ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
     }
 
     private static async Task Choose(Player player, int count, bool upgradeAfter = false)

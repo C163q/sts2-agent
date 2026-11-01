@@ -28,6 +28,7 @@
   ],
   "play": [
     "enchantments",
+    "star_spend",
     "basic",
     "anger",
     "turbo",
@@ -76,6 +77,7 @@
   "selection": [
     "potion",
     "potion_skip",
+    "combat_entry",
     "forced_two",
     "grid_two",
     "grid_one",

@@ -6,6 +6,8 @@ static void Check(bool value, string name)
     Console.WriteLine("PASS " + name);
 }
 
+VisibleResourceChecks.Run(Check);
+
 Check(TurnBoundary.Decide(true, false, true, false, false) == "choice_required", "choice before next turn");
 Check(TurnBoundary.Decide(true, false, false, false, false) == null, "animations are not completion");
 Check(TurnBoundary.Decide(true, false, false, true, false) == "player_ready", "next playable turn");

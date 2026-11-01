@@ -16,11 +16,11 @@
 | `scripts/roundtrip_client.py` | 标准库文件客户端和 CLI；默认玩法输出，`--raw` 保留诊断协议 |
 | `scripts/game_output.py` | 已知玩法字段的递归投影与类型检查、基础观察与手牌结构校验 |
 | `scripts/player_output.py` | 去除控制包装、共享悬停解释、条件数值说明和错误恢复文案 |
-| `spikes/roundtrip/TurnJournal.cs`、`TurnCapture.cs` | RitsuLib 与原生事件记录、伤害补录及来源追踪 |
+| `spikes/roundtrip/TurnJournal.cs`、`TurnCapture.cs`、`CombatResourceJournal.cs`、`VisibleResourceChange.cs` | RitsuLib 与原生事件记录、伤害补录及来源追踪；能量／星星通知与真实数字显示对齐 |
 | `spikes/roundtrip/ActionEventScope.cs`、`GameAdapter.Resources.cs`、`RunResourceJournal.cs`、`RunInventoryJournal.cs` | 单次游戏动作的共享事件缓冲、响应附加及可见玩家资源、物品、永久牌组订阅；延后发布尚未展示的身份，与战斗和药水日志共用顺序及上限 |
 | `spikes/roundtrip/TurnBoundary.cs`、`TurnEventBuffer.cs` | 无游戏依赖的结束条件与有界事件缓冲 |
 | `spikes/roundtrip/EventInspection.cs`、`GameAdapter.Event.cs` | 通用事件的可见页面、稳定选项 ID 和原生按钮执行 |
-| `spikes/roundtrip/EventTaskTracker.cs`、`CombatEntryCapture.cs` | 事件初始化/选择/Resume 任务跟踪，以及首回合自动效果之前的战斗日志订阅 |
+| `spikes/roundtrip/EventTaskTracker.cs`、`CombatEntryCapture.cs` | 事件初始化/选择/Resume 任务跟踪，以及所有战斗外游戏动作进入战斗时的日志订阅 |
 | `spikes/roundtrip/DivinationInspection.cs`、`DivinationTasks.cs`、`GameAdapter.Divination.cs` | 占卜可见状态与原生点击、遮罩等待、棋盘裁剪边界和临时对白来源 |
 | `spikes/roundtrip/EventConfirmation.cs`、`GameAdapter.Confirmation.cs` | 当前事件确认框的来源与可见内容、原生按钮操作和失败结算 |
 | `scripts/divination_details.py` | 占卜参数与投影、PNG 有界像素校验和独立图像载体；MCP server 封装 ImageContent |

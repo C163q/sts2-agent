@@ -6,7 +6,6 @@ using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Potions;
 using MegaCrit.Sts2.Core.Runs;
-using MegaCrit.Sts2.Core.Rooms;
 
 namespace Sts2Agent;
 
@@ -53,9 +52,6 @@ internal sealed partial class GameAdapter
             || merchant != (potion.TargetType == TargetType.TargetedNoCreature)
             || suppliedTarget && !potion.IsValidTarget(target)))
             return FileMailbox.Error(request.Id, "illegal_action", "The potion or specified target cannot be used or discarded now.");
-        bool startsMerchantCombat = use && potion is MegaCrit.Sts2.Core.Models.Potions.FoulPotion
-            && player.RunState.CurrentRoom is MegaCrit.Sts2.Core.Rooms.EventRoom
-                { CanonicalEvent: MegaCrit.Sts2.Core.Models.Events.FakeMerchant };
         bool inCombat = CombatManager.Instance.IsInProgress;
         if (inCombat && !STS2RitsuLib.RitsuLibFramework.IsActive)
             return FileMailbox.Error(request.Id, "illegal_action", "RitsuLib is unavailable; no potion action was submitted.");
@@ -65,11 +61,6 @@ internal sealed partial class GameAdapter
         using var potionEvents = journal == null ? new PotionJournal(player) : null;
         GameAction? submitted = null;
         bool canceled = false;
-        CombatState? enteredCombat = null;
-        bool enteredWon = false, enteredEnded = false;
-        void SetUp(CombatState state) => enteredCombat = state;
-        void Won(CombatRoom room) { if (ReferenceEquals(room.CombatState, enteredCombat)) enteredWon = true; }
-        void Ended(CombatRoom room) { if (ReferenceEquals(room.CombatState, enteredCombat)) enteredEnded = true; }
         void Canceled(GameAction _) => canceled = true;
         void Enqueued(GameAction action)
         {
@@ -80,12 +71,6 @@ internal sealed partial class GameAdapter
             action.BeforeCancelled += Canceled;
         }
         RunManager.Instance.ActionQueueSet.ActionEnqueued += Enqueued;
-        if (startsMerchantCombat)
-        {
-            CombatManager.Instance.CombatSetUp += SetUp;
-            CombatManager.Instance.CombatWon += Won;
-            CombatManager.Instance.CombatEnded += Ended;
-        }
         try
         {
             uiGeneration++;
@@ -100,10 +85,7 @@ internal sealed partial class GameAdapter
                 if (journal == null)
                     boundary = !ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState()) ? "interrupted"
                         : RunUi.Transitioning() ? null
-                        : startsMerchantCombat && enteredWon ? "combat_won"
-                        : startsMerchantCombat && enteredEnded ? "combat_lost"
                         : CardSelection.AwaitingInput ? NonCombatBoundary()
-                        : startsMerchantCombat ? finished && CanPlayCards() && RunManager.Instance.ActionQueueSet.IsEmpty ? "player_ready" : null
                         : ready ? ShopInspection.Current == null ? "action_completed" : NonCombatBoundary() : null;
                 return boundary is "player_ready" or "action_completed" && canceled ? "action_canceled" : boundary;
             });
@@ -113,12 +95,6 @@ internal sealed partial class GameAdapter
         finally
         {
             RunManager.Instance.ActionQueueSet.ActionEnqueued -= Enqueued;
-            if (startsMerchantCombat)
-            {
-                CombatManager.Instance.CombatSetUp -= SetUp;
-                CombatManager.Instance.CombatWon -= Won;
-                CombatManager.Instance.CombatEnded -= Ended;
-            }
             if (submitted != null) submitted.BeforeCancelled -= Canceled;
         }
     }

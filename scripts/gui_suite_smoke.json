@@ -1,5 +1,19 @@
 [
   {
+    "name": "potion_combat_entry_events",
+    "scenarios": { "shop": "fake" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_combat_resources.py", "args": ["--scenario", "fake_merchant"] }
+    ]
+  },
+  {
+    "name": "selection_combat_entry_events",
+    "scenarios": { "selection": "combat_entry" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_combat_resources.py", "args": ["--scenario", "selection_entry"] }
+    ]
+  },
+  {
     "name": "inventory_visibility",
     "scenarios": { "play": "basic" },
     "steps": [

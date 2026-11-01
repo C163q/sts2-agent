@@ -75,6 +75,7 @@ internal sealed partial class GameAdapter(bool testMode)
         RunResourceJournal.Current?.SampleVisibility();
         RunInventoryJournal.Current?.SampleVisibility();
         PotionJournal.Current?.SampleVisibility();
+        CombatResourceJournal.Current?.SampleVisibility();
         CombatState? combat = CombatManager.Instance.DebugOnlyGetState();
         if (!ReferenceEquals(combat, lastCombat))
         {
@@ -138,7 +139,7 @@ internal sealed partial class GameAdapter(bool testMode)
         if (ending != null || epilogue != null && map == null) screen["view"] = ending != null ? "run_result" : "epilogue";
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 19, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 20, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -191,6 +192,15 @@ internal sealed partial class GameAdapter(bool testMode)
             if (testMode && checks != null)
                 ObservationChecks.Run(checks);
             return Success(request.Id, before);
+        }
+        if (request.Operation is "check_test_combat_resources" or "check_test_star_reveal" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } combatResourcePlayer)
+        {
+            async Task Frame() { await ObservationFrame(); Observe(); }
+            var checks = request.Operation == "check_test_star_reveal"
+                ? await CombatResourceChecks.FirstReveal(combatResourcePlayer, Frame, observation.CardId)
+                : await CombatResourceChecks.Run(combatResourcePlayer, Frame, observation.CardId);
+            return Success(request.Id, JsonSerializer.Serialize(checks));
         }
         if (request.Operation == "check_test_inventory" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } inventoryPlayer)
