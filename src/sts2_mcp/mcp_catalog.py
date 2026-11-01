@@ -2,6 +2,7 @@ from mcp.types import Tool, ToolAnnotations
 from sts2_mcp.output.observation_presets import OBSERVATION_SCHEMA
 from sts2_mcp.output.hand_presets import HAND_SCHEMA
 from sts2_mcp.output.selection_presets import SELECTION_SCHEMA
+from sts2_mcp.output.relic_presets import RELIC_SCHEMA
 
 from sts2_mcp.output.run_ending_details import OPTION_SCHEMA as RESULT_OPTION_SCHEMA
 from sts2_mcp.output.map_details import MAP_SCHEMA, TRAVEL_SCHEMA
@@ -128,8 +129,9 @@ def tool_definitions(*, screenshots_enabled=False):
         Tool(name="inspect_combatants", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read visible combatant powers, enemy intent explanations, occupied orb help and floating Sovereign Blade previews. "
             "Unavailable while aiming or playing a card.")),
-        Tool(name="inspect_relics", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
-            "Read descriptions, displayed counters and hover help for visible, hoverable owned relics.")),
+        Tool(name="inspect_relics", inputSchema=RELIC_SCHEMA, annotations=read_only, description=(
+            "Read visible, hoverable owned relics. Full descriptions and hover help by default; "
+            "summary keeps basic fields. relic_indices filters by positions in the current unfiltered inspection.")),
         Tool(name="inspect_deck", inputSchema=DECK_SCHEMA, annotations=view, description=(
             "Open/reuse the native full-deck page during combat and read the entire browsable deck. "
             "Upgrade preview does not upgrade owned cards. Leaves the page open; close with close_card_view.")),

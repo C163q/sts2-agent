@@ -8,6 +8,7 @@ from sts2_mcp.output.run_ending_details import option_arguments
 from sts2_mcp.output.deck_details import deck_arguments
 from sts2_mcp.output.inspection_details import inspection_details
 from sts2_mcp.output.hand_presets import hand_arguments, hand_preset
+from sts2_mcp.output.relic_presets import relic_arguments, relic_preset
 from sts2_mcp.output.map_details import map_arguments, map_preset, travel_arguments
 from sts2_mcp.output.pile_details import pile_arguments
 from sts2_mcp.output.player_output import player_result
@@ -164,8 +165,12 @@ class GameTools:
     async def inspect_combatants(self):
         return await self._inspect("inspect_combatants")
 
-    async def inspect_relics(self):
-        return await self._inspect("inspect_relics")
+    async def inspect_relics(self, arguments=None):
+        try:
+            settings = relic_arguments(arguments)
+        except ValueError:
+            return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
+        return relic_preset(await self._inspect('inspect_relics'), **settings)
 
     async def inspect_deck(self, arguments=None):
         try:

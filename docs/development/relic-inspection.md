@@ -1,6 +1,6 @@
 # 遗物详情 JSON
 
-文件操作 `inspect_relics` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.39.0`。一次只读查看当前遗物栏中可见、可悬停的遗物，以英语返回原生正文和附带解释。支持无遮挡战斗及原生可查看的战斗背景（例如[建筑师](run-ending.md)）、当前暴露的[先古之民](ancients.md)和[商店](shop.md)，可用于查看已持有的添水等遗物说明。MCP 与文件客户端返回相同的玩法 JSON。
+文件操作 `inspect_relics` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.39.0`。一次只读查看当前遗物栏中可见、可悬停的遗物，以英语返回原生正文和附带解释。支持无遮挡战斗及原生可查看的战斗背景（例如[建筑师](run-ending.md)）、当前暴露的[先古之民](ancients.md)和[商店](shop.md)，可用于查看已持有的添水等遗物说明。MCP 默认 full 与文件客户端返回相同的玩法 JSON。
 
 ## 读取
 
@@ -10,7 +10,32 @@
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_relics > .tmp/live/relic-inspection.json
 ```
 
-MCP 调用 `inspect_relics()` 无须参数，成功时刷新状态令牌；完整规则见 [MCP 调用语义](mcp.md#调用和错误语义)。文件调用不需要动作令牌，可用时列入 `available_actions`，不执行游戏动作。默认客户端移除控制信息；加 `--raw` 保留原始响应和状态令牌。
+MCP 调用 `inspect_relics()` 默认返回完整详情，也可传入以下预设与筛选参数，成功时刷新状态令牌；完整规则见 [MCP 调用语义](mcp.md#调用和错误语义)。底层文件调用仍无参数，不需要动作令牌，可用时列入 `available_actions`，不执行游戏动作。默认客户端移除控制信息；加 `--raw` 保留原始响应和状态令牌。
+
+## MCP 参数
+
+MCP `0.43.0` 起支持以下可选参数。只修改 Python 输出，更新后重连 MCP，无须替换 Mod。
+
+| 参数 | 默认值 | 含义 |
+| --- | --- | --- |
+| `preset` | `full` | `full` 保留现有正文与共享解释；`summary` 的遗物条目仅保留 `name/counter/melted`，与基础观察的字段一致 |
+| `relic_indices` | 省略 | 当前未筛选 `inspect_relics` 列表从 0 开始的下标数组；省略返回全部，`[]` 返回空列表，重复值去重，结果保持遗物栏顺序 |
+
+```json
+{"preset":"summary","relic_indices":[1,2,3]}
+```
+
+遗物当前没有稳定 ID，因此使用 `relic_indices`；这些下标不保证与基础观察的 `top_bar.relics` 相同，也不能在遗物增减、重排或可见性改变后直接复用。summary 沿用本调用可见、可悬停的遗物范围，不扩大为其他图标。可见计数为 0 时保留 0，不可读为 `null`；兼容旧 Mod 时不补原本缺失的 `melted`。
+
+传入筛选时，顶层 `relic_indices` 与返回的 `relics` 一一对应，保留它们在未筛选列表中的原始位置。例如请求 `[3,1,3]`，结果映射为 `[1,3]`。full 的 `hover_tips[].relic_indices` 仍指向**本次返回数组**，同步重新编号并删除无关联解释；summary 不返回正文或 `hover_tips`。省略筛选时不增加顶层映射，默认 full 与原格式兼容。
+
+下标仅接受 0 至 2147483647 的整数，拒绝布尔值、浮点数、字符串、`null` 与未知参数。超出本次可读列表范围的下标按请求首次出现顺序合并，有效结果照常返回：
+
+```json
+{"errors":[{"code":"relic_indices_out_of_range","relic_indices":[80,70]}]}
+```
+
+带此 `errors` 时 MCP `isError:false`，没有无效下标时省略它。所有预设及空筛选都先验证完整底层详情，不用筛选掩盖坏数据；成功读取仍刷新动作许可。非法参数不发往游戏或清除旧许可，原生错误保持顶层 `error`，不转换为下标缺失。实现与实测范围见[遗物预设记录](../research/2026-11-02-relic-presets.md)。
 
 ## 格式
 
