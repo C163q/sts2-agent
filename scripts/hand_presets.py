@@ -1,5 +1,6 @@
 """Project validated hand details without changing the game's observation token."""
 from card_play_details import CARD_ID
+from card_summary import card_summary
 
 
 HAND_SCHEMA = {
@@ -12,8 +13,6 @@ HAND_SCHEMA = {
     },
     'additionalProperties': False,
 }
-SUMMARY_FIELDS = frozenset({'id', 'name', 'type', 'energy_cost', 'star_cost',
-                            'energy_cost_color', 'star_cost_color', 'unplayable_markers', 'outline', 'enchantment'})
 
 
 def hand_arguments(arguments):
@@ -39,8 +38,7 @@ def hand_preset(payload, preset, card_ids):
     cards = [card for card in payload['hand'] if card['id'] in selected]
     result = {**payload, 'hand': cards}
     if preset == 'summary':
-        result['hand'] = [{key: value for key, value in card.items() if key in SUMMARY_FIELDS
-                           and not (key == 'star_cost' and value is None)} for card in cards]
+        result['hand'] = [card_summary(card) for card in cards]
         result.pop('hover_tips', None)
     else:
         result['hover_tips'] = [{**tip, 'card_ids': [i for i in tip['card_ids'] if i in selected]}

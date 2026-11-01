@@ -12,6 +12,7 @@ from map_details import map_arguments, map_preset, travel_arguments
 from pile_details import pile_arguments
 from player_output import player_result
 from selection_details import selection_arguments
+from selection_presets import selection_inspection_arguments, selection_preset
 from card_play_details import card_play_arguments
 from potion_action_details import potion_arguments
 from reward_details import reward_arguments
@@ -123,8 +124,12 @@ class GameTools:
     async def capture_screenshot(self, arguments=None):
         return await self._inspect("capture_screenshot", arguments)
 
-    async def inspect_selection(self):
-        return await self._inspect("inspect_selection")
+    async def inspect_selection(self, arguments=None):
+        try:
+            preset = selection_inspection_arguments(arguments)
+        except ValueError:
+            return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
+        return selection_preset(await self._inspect('inspect_selection'), preset)
 
     async def inspect_targets(self, arguments=None):
         return await self._inspect("inspect_targets", arguments)

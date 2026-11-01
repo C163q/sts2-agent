@@ -1,6 +1,7 @@
 from mcp.types import Tool, ToolAnnotations
 from observation_presets import OBSERVATION_SCHEMA
 from hand_presets import HAND_SCHEMA
+from selection_presets import SELECTION_SCHEMA
 
 from run_ending_details import OPTION_SCHEMA as RESULT_OPTION_SCHEMA
 from map_details import MAP_SCHEMA, TRAVEL_SCHEMA
@@ -145,9 +146,10 @@ def tool_definitions(*, screenshots_enabled=False):
         Tool(name="close_map", inputSchema=NO_ARGUMENTS, annotations=view, description=(
             "Close the exposed map using its enabled native back button; return a basic observation. "
             "Cannot close through card pages or force a mandatory map closed.")),
-        Tool(name="inspect_selection", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
-            "Read the current selection's entire browsable candidate list and card details. "
-            "Includes offered buttons and upgrade previews. Unavailable while the selection is hidden; does not switch views.")),
+        Tool(name="inspect_selection", inputSchema=SELECTION_SCHEMA, annotations=read_only, description=(
+            "Read all browsable candidates, offered buttons and visible previews of the current card selection. "
+            "Full card details by default; summary compacts every card, including bundles and previews. "
+            "Unavailable while the selection is hidden; does not switch views.")),
         Tool(name="select_card", inputSchema=CARD_SCHEMA, annotations=action, description=(
             "Click one current selection candidate. Multi-select clicks toggle that card; "
             "single-choice screens may immediately submit. Use enabled selection.options to confirm when required. "

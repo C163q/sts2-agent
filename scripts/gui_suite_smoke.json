@@ -1,5 +1,12 @@
 [
   {
+    "name": "selection_presets",
+    "scenarios": { "play": "armaments_free" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_selection_presets.py", "args": ["--scenario", "hand_upgrade"] }
+    ]
+  },
+  {
     "name": "card_enchantments",
     "scenarios": { "play": "enchantments" },
     "steps": [

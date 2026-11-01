@@ -60,6 +60,8 @@
 
 `verify_hand_presets.py` 验证完整输出兼容、摘要字段、共享提示裁剪、重复及无效 ID、空筛选、读取前后 UI 令牌不变，以及读取后直接出牌/结束回合。`basic`、`stars`、`x_cost`、`card_names` 配合同名 `play` 场景；`selection` 配合 `play:armaments_free`，检查查看战场时保留导航说明、已离手的武装 ID 不再命中。`enchantments` 配合 `play:enchantments`，检查 Sharp、禁用 Swift、无数字 Clone 与普通同名副本；另执行 17 项嵌入可见性、显示计数、置灰和身份边界检查。`basic` 与 `enchantments` 纳入默认集。附魔范围和证据见[卡面附魔记录](../research/2026-11-01-card-enchantments.md)，参数范围和证据见[手牌参数验证记录](../research/2026-11-01-hand-presets.md)。
 
+`verify_selection_presets.py` 对照默认完整、显式完整和摘要结果，核对读取前后原生状态相同，并从摘要直接选择或确认。`hand_upgrade` 配合 `play:armaments_free`，包含眼睛隐藏与返回后查看，纳入默认集。其他场景：`discovery` 配合 `play:discovery`，`smith` 配合 `rest:smith`，`ancient_multi/ancient_transform/ancient_bundle/ancient_pandora` 分别配合 `ancient:multi/transform/bundle/pandora`，`paels_wing/driftwood` 配合同名 `reward` 场景，`grid/combat_pile/deck/hand` 分别配合 `selection:grid_scroll/combat_pile/deck/retain_one`。覆盖包内卡牌、各类预览、随机结果空值及奖励替代按钮；范围和证据见[选择预设验证记录](../research/2026-11-01-selection-presets.md)。
+
 ## 生命周期与证据
 
 套件模式通过 `STS2_AGENT_TEST_MODE=1` 和 `STS2_AGENT_TEST_SUITE=1` 双重门控，提供仅文件 IPC 可用的 `configure_test_run`、`reset_test_run`、`get_test_session`。前两项需最新状态令牌；配置仅允许没有对局的主菜单。它们不属于公开 MCP 工具，也不改变玩法 JSON 或动作许可规则。旧的单用例启动命令继续有效。

@@ -28,6 +28,7 @@ SUPPORTED_VERIFIERS = {
     'verify_reward_alternatives.py',
     'verify_power_text.py',
     'verify_hand_presets.py',
+    'verify_selection_presets.py',
 }
 
 
@@ -78,6 +79,9 @@ def load_cases(path):
                 'verify_map_presets.py': ('flight', 'combat', 'entry', 'double'),
                 'verify_reward_alternatives.py': ('paels_wing', 'driftwood'),
                 'verify_hand_presets.py': ('basic', 'stars', 'x_cost', 'card_names', 'selection', 'enchantments'),
+                'verify_selection_presets.py': ('discovery', 'hand_upgrade', 'smith', 'ancient_multi',
+                    'ancient_transform', 'ancient_bundle', 'ancient_pandora', 'paels_wing', 'driftwood',
+                    'grid', 'combat_pile', 'deck', 'hand'),
             }
             if args and (verifier not in scenario_options or len(args) != 2
                          or args[0] != '--scenario' or args[1] not in scenario_options[verifier]):

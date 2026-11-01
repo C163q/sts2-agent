@@ -1,6 +1,6 @@
 # 选牌与查看战场
 
-适用于 Mod `0.34.3`、MCP server `0.30.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
+适用于 Mod `0.35.0`、MCP server `0.33.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
 
 ## 观察与信息范围
 
@@ -20,9 +20,21 @@
 | `upgrade_previews` | 仅 `deck_upgrade` 提供；已经显示的单牌或多牌升级比较，未进入预览或隐藏时为空列表 |
 | `upgrade_preview` | 仅 `hand_upgrade` 提供；已显示的升级前后牌面 `before`、`after`，未选择或隐藏时为 `null` |
 
-`cards` 在查看战场、被覆盖或未支持时为 `null`，与没有候选的空列表不同。网格可能滚动，基础观察不补齐屏幕外候选；`inspect_selection()` 显式读取整个可浏览候选列表、正文及共享 `hover_tips`，不会展开尚未生成的结果，也不会切换视图。共享解释通过整数 `card_ids` 引用候选。手牌选择沿用战斗手牌 ID。
+`cards` 在查看战场、被覆盖或未支持时为 `null`，与没有候选的空列表不同。网格可能滚动，基础观察不补齐屏幕外候选；`inspect_selection()` 默认显式读取整个可浏览候选列表、正文及共享 `hover_tips`，不会展开尚未生成的结果，也不会切换视图。共享解释通过整数 `card_ids` 引用候选。手牌选择沿用战斗手牌 ID。
 
 基础观察和查看结果按情境附简短 `notes.selection`：选择遮挡时提示用眼睛查看战场；查看战场时提醒仍有选择待完成，须返回选择界面；牌组、牌堆或地图覆盖选择时提醒先关闭当前查看页。这些说明不重复候选正文或按钮列表。
+
+## MCP 输出预设
+
+`inspect_selection` 接受可选参数 `preset`，仅允许 `full`、`summary`；省略或传 `{}` 等同 `full`，保持完整详情。底层文件协议仍无参数。这项功能只需更新 Python 脚本并重连 MCP，不需要为预设功能替换 DLL。
+
+```json
+{"preset": "summary"}
+```
+
+`summary` 的每张卡牌沿用[手牌摘要字段](hand-inspection.md#参数与返回范围)：保留身份、费用、可见附魔及卡面标记，移除正文、稀有度、卡池和悬停帮助；没有星耗时不输出该项。规则统一作用于 `cards`、`bundles[].cards`，以及 `upgrade_preview`、`upgrade_previews`、`enchant_previews`、`transform_previews` 的 `before/after`；预览也不保留正文，需要时另读 `full`。
+
+摘要保留场景、选择类型和状态、提示、数量限制、已选 ID、按钮、包 ID、随机变牌标记及原有空值。选择级 `selection.enchantment` 仍保留附魔操作名称与说明，它描述当前要执行的操作。不会补全未知卡牌或随机变牌结果，也不影响候选范围和 UI。读取成功后可直接选择；仍先验证完整原生详情，再投影为摘要，错误不会被转为空结果。非法参数不发往游戏，也不丢弃已有动作许可。
 
 ## 操作
 
