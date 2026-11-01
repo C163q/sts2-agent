@@ -6,14 +6,14 @@ HAND_SCHEMA = {
     'type': 'object',
     'properties': {
         'preset': {'type': 'string', 'enum': ['full', 'summary'], 'default': 'full',
-                   'description': 'full includes card descriptions and shared hover help; summary keeps identity, visible costs, cost colors and playability markers, without effects or hover help.'},
+                   'description': 'full includes card descriptions and shared hover help; summary keeps identity, visible costs, enchantments and UI markers, without effects or hover help.'},
         'card_ids': {'type': 'array', 'items': CARD_ID,
                      'description': 'Optional current hand IDs. Omit for all visible hand cards; [] returns none. Duplicates are ignored; results keep hand order. Unavailable IDs are grouped in errors[].card_ids alongside valid cards.'},
     },
     'additionalProperties': False,
 }
 SUMMARY_FIELDS = frozenset({'id', 'name', 'type', 'energy_cost', 'star_cost',
-                            'energy_cost_color', 'star_cost_color', 'unplayable_markers', 'outline'})
+                            'energy_cost_color', 'star_cost_color', 'unplayable_markers', 'outline', 'enchantment'})
 
 
 def hand_arguments(arguments):

@@ -1,5 +1,12 @@
 [
   {
+    "name": "card_enchantments",
+    "scenarios": { "play": "enchantments" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_hand_presets.py", "args": ["--scenario", "enchantments"] }
+    ]
+  },
+  {
     "name": "hand_presets",
     "scenarios": { "play": "basic" },
     "steps": [

@@ -135,7 +135,7 @@ internal sealed partial class GameAdapter(bool testMode)
         if (ending != null || epilogue != null && map == null) screen["view"] = ending != null ? "run_result" : "epilogue";
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 16, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 17, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -212,6 +212,9 @@ internal sealed partial class GameAdapter(bool testMode)
             }));
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (testMode && testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") == "enchantments"
+            && request.Operation == "check_test_enchantments")
+            return Success(request.Id, JsonSerializer.Serialize(EnchantmentObservationChecks.Run()));
         if (testMode && testSettings.Get("STS2_AGENT_TEST_TURN_SCENARIO") == "thieving_hopper"
             && request.Operation == "capture_test_power_tips")
             return Success(request.Id, JsonSerializer.Serialize(await PowerTextChecks.CaptureHopper(ObservationFrame)));

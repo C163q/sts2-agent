@@ -1,6 +1,6 @@
 # 战斗观察 JSON
 
-适用于 Linux 游戏 `v0.107.1` 与 Mod `0.31.0`。底层观察结构版本为 `16`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+适用于 Linux 游戏 `v0.107.1` 与 Mod `0.35.0`。底层观察结构版本为 `17`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -111,6 +111,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 - `energy_cost/star_cost` 是显示字符串，保留 `X`、`?` 等形式。`energy_cost_color/star_cost_color` 仅在文字出现特殊颜色时输出 `red/green/blue/other`，默认颜色省略字段；不输出 RGB 或费用图标配色。
 - `unplayable_markers` 合并标记位置：`[]`、`["energy"]`、`["star"]` 或二者都有。没有标记不等于可以打出。
 - `outline` 为 `none/cyan/gold/red/other`，只表达当前描边，不据此声明动作合法。
+- `enchantment` 仅在已识别卡牌的原生附魔图标当前可见且与模型身份一致时提供。`name` 是图标身份的英语名称；计数标签可读时才提供整数 `amount`，不以内部 Amount 补齐；`dimmed` 表示图标当前使用原生置灰材质，不是未来效果或可打出性判断。没有可见附魔、未知/锁定卡牌、图标隐藏或视口外时省略整个对象。附魔正文不进入基础观察，仍由手牌完整详情的共享提示提供。来源与边界验证见[卡面附魔记录](../research/2026-11-01-card-enchantments.md)。
 - [手牌详情调用](hand-inspection.md) 一次返回全部当前可见手牌及其效果，沿用这些 ID；基础观察仍不输出完整效果、关键词或目标规则。
 
 ## 失败结果

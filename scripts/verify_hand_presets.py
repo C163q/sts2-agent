@@ -45,18 +45,31 @@ async def verify(args):
 
             before = await asyncio.to_thread(raw.call, 'get_state')
             assert before['ok'], before
+            if args.scenario == 'enchantments':
+                checks = await asyncio.to_thread(raw.call, 'check_test_enchantments')
+                record({'enchantment_checks': checks})
+                assert checks['ok'] and checks['state']['passed'], checks
+                observed = await call('get_observation')
+                assert [card.get('enchantment') for card in observed['player']['hand']] == [
+                    {'name': 'Sharp', 'amount': 3, 'dimmed': False},
+                    {'name': 'Swift', 'amount': 2, 'dimmed': True},
+                    {'name': 'Clone', 'dimmed': False}, None], observed
+                assert all('description' not in card for card in observed['player']['hand'])
             full = await call('inspect_hand')
             assert full == await call('inspect_hand', {'preset': 'full'})
             assert [card['id'] for card in full['hand']] == [card['id'] for card in before['state']['player']['hand']]
             summary = await call('inspect_hand', {'preset': 'summary'})
             allowed = {'id', 'name', 'type', 'energy_cost', 'star_cost', 'energy_cost_color',
-                       'star_cost_color', 'unplayable_markers', 'outline'}
+                       'star_cost_color', 'unplayable_markers', 'outline', 'enchantment'}
             assert set(summary) == {'hand'}, summary
             for brief, card in zip(summary['hand'], full['hand'], strict=True):
                 assert set(brief) <= allowed
                 assert all(brief[key] == card[key] for key in brief)
                 assert {'id', 'name', 'type', 'energy_cost', 'unplayable_markers', 'outline'} <= brief.keys()
                 assert ('star_cost' in brief) == (card['star_cost'] is not None), brief
+                if args.scenario == 'enchantments':
+                    basic = next(c for c in observed['player']['hand'] if c['id'] == brief['id'])
+                    assert brief.get('enchantment') == card.get('enchantment') == basic.get('enchantment')
             if args.scenario == 'stars':
                 assert any(card.get('star_cost') == '2' and card.get('star_cost_color') == 'red'
                            and card['outline'] == 'none' for card in summary['hand']), summary
@@ -112,6 +125,6 @@ async def verify(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='验证手牌摘要、筛选和合并错误。')
-    parser.add_argument('--scenario', choices=('basic', 'stars', 'x_cost', 'card_names', 'selection'), default='basic')
+    parser.add_argument('--scenario', choices=('basic', 'stars', 'x_cost', 'card_names', 'selection', 'enchantments'), default='basic')
     parser.add_argument('--report', type=Path, required=True)
     asyncio.run(verify(parser.parse_args()))

@@ -1,6 +1,6 @@
 # 当前手牌详情 JSON
 
-适用于 Linux 游戏 `v0.107.1` 和当前 Mod `0.34.4`。文件接口 `inspect_hand` 读取全部当前可见手牌详情；同名 [MCP 工具](mcp.md) 支持返回预设和按 ID 筛选，输出英语，不切换游戏语言。它不移动鼠标、不出牌、不结束回合，也不读取牌堆内容；信息范围遵循 [观察约定](../observation.md)。
+适用于 Linux 游戏 `v0.107.1` 和当前 Mod `0.35.0`。文件接口 `inspect_hand` 读取全部当前可见手牌详情；同名 [MCP 工具](mcp.md) 支持返回预设和按 ID 筛选，输出英语，不切换游戏语言。它不移动鼠标、不出牌、不结束回合，也不读取牌堆内容；信息范围遵循 [观察约定](../observation.md)。
 
 ## 读取
 
@@ -14,7 +14,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 
 ## 参数与返回范围
 
-MCP `0.31.0` 支持以下可选参数；底层文件 `inspect_hand` 仍无参数，本次只更新 Python 输出，重连 MCP 即可使用。
+MCP `0.31.0` 起支持以下可选参数；底层文件 `inspect_hand` 仍无参数。参数功能只更新 Python 输出；MCP `0.32.0` 与 Mod `0.35.0` 新增的卡面附魔字段需要同时更新 DLL 并完整重启游戏，再重连 MCP。
 
 | 参数 | 默认值 | 含义 |
 | --- | --- | --- |
@@ -27,7 +27,7 @@ MCP `0.31.0` 支持以下可选参数；底层文件 `inspect_hand` 仍无参数
 {"preset":"summary","card_ids":[1,2,3]}
 ```
 
-`summary` 的每张牌保留 `id/name/type/energy_cost/unplayable_markers/outline`，以及实际显示的 `star_cost` 和已有特殊费用颜色。费用仍是显示字符串，保留 `X`、`?`；未显示耗星时省略 `star_cost`。名称保留可见升级后缀，未知身份和不可读费用继续保留原有空值，不补真实内容或假定为零。摘要省略正文、稀有度、卡池、共享提示和 `notes.card_values`；选牌查看战场等仍适用的导航说明保留。标记和描边不等于可打出判断，合法性仍由 `inspect_targets` 或动作校验确认。
+`summary` 的每张牌保留 `id/name/type/energy_cost/unplayable_markers/outline`，以及实际显示的 `star_cost`、已有特殊费用颜色和可见 `enchantment`。附魔名称、显示计数及置灰字段与[基础观察](observation.md#手牌与身份)完全相同，summary 不附送其效果正文；full 沿用原生共享悬停提示提供正文。费用仍是显示字符串，保留 `X`、`?`；未显示耗星时省略 `star_cost`。名称保留可见升级后缀，未知身份和不可读费用继续保留原有空值，不补真实内容或假定为零。摘要省略正文、稀有度、卡池、共享提示和 `notes.card_values`；选牌查看战场等仍适用的导航说明保留。标记和描边不等于可打出判断，合法性仍由 `inspect_targets` 或动作校验确认。
 
 筛选后的 `full` 仅保留命中卡牌及其共享提示关联；空结果为 `hand: []/hover_tips: []`，不附卡牌数值说明。摘要空结果仅包含 `hand: []`，可能另有下述错误或导航说明。省略参数或显式 `preset: full` 的结果与原输出兼容。
 

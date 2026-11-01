@@ -105,7 +105,7 @@ def tool_definitions(*, screenshots_enabled=False):
             'card choices use selection tools. Smith previews require confirmation; use offered cancel buttons to go back.')),
         Tool(name="inspect_hand", inputSchema=HAND_SCHEMA, annotations=read_only, description=(
             "Read current visible hand cards, optionally by card_ids. full includes descriptions and hover help; "
-            "summary keeps identity, visible costs and markers. Unavailable IDs are grouped in errors; valid cards remain. "
+            "summary keeps identity, visible costs, enchantments and UI markers. Unavailable IDs are grouped in errors; valid cards remain. "
             "Markers do not guarantee a legal play.")),
         Tool(name="inspect_targets", inputSchema=TARGET_SCHEMA, annotations=read_only, description=(
             "Query exactly one hand card or potion for usability, requires_target and targeting range. "

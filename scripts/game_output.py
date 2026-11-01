@@ -36,6 +36,7 @@ CARD = {
     "id": int, "name": TEXT, "type": TEXT, "rarity": TEXT, "visual_card_pool": TEXT,
     "energy_cost": TEXT, "star_cost": TEXT, "energy_cost_color": str, "star_cost_color": str,
     "unplayable_markers": [str], "outline": str,
+    "enchantment": {"name": TEXT, "amount": int, "dimmed": bool},
 }
 HAND_CARD = {**CARD, "description": TEXT, "hover_tips": nullable([TIP])}
 BROWSED_CARD = {**HAND_CARD, "id": str}

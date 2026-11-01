@@ -176,6 +176,24 @@ internal sealed class CombatObservation
             result["energy_cost_color"] = energyColor;
         if (starColor != null)
             result["star_cost_color"] = starColor;
+        if (identified && VisibleEnchantment(card) is { } enchantment)
+            result["enchantment"] = enchantment;
+        return result;
+    }
+
+    private Dictionary<string, object?>? VisibleEnchantment(NCard card)
+    {
+        var tab = card.EnchantmentTab;
+        var icon = card.GetNodeOrNull<TextureRect>("%Enchantment/Icon");
+        if (!VisibleUi.OnScreen(tab) || !VisibleUi.OnScreen(icon) || icon!.Texture == null
+            || card.Model!.Enchantment is not { } model || icon.Texture != model.Icon)
+            return null;
+        var result = new Dictionary<string, object?>
+        {
+            ["name"] = english.Name(model.Title), ["dimmed"] = icon.UseParentMaterial
+        };
+        if (VisibleUi.Number(card, "%Enchantment/Label") is { } amount)
+            result["amount"] = amount;
         return result;
     }
 

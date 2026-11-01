@@ -3,10 +3,12 @@ using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.UI;
+using MegaCrit.Sts2.Core.Entities.Enchantments;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
+using MegaCrit.Sts2.Core.Models.Enchantments;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Powers.Mocks;
 using MegaCrit.Sts2.Core.Nodes.Combat;
@@ -64,6 +66,14 @@ internal static class PlayFixture
             Add<TrueGrit>(); Add<StrikeIronclad>(); Add<DefendIronclad>();
             foreach (var card in cards) { card.UpgradeInternal(); card.FinalizeUpgradeInternal(); }
             Add<StrikeIronclad>(); Add<DefendIronclad>();
+        }
+        if (scenario == "enchantments")
+        {
+            cards.Clear();
+            Add<StrikeIronclad>(); Add<DefendIronclad>(); Add<StrikeIronclad>(); Add<StrikeIronclad>();
+            CardCmd.Enchant<Sharp>(cards[0], 3);
+            CardCmd.Enchant<Swift>(cards[1], 2)!.Status = EnchantmentStatus.Disabled;
+            CardCmd.Enchant<Clone>(cards[2], 7);
         }
         if (scenario == "armaments_free") cards[0].SetToFreeThisTurn();
         if (scenario == "armaments_filtered")
