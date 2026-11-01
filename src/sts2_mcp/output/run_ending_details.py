@@ -16,7 +16,7 @@ EPILOGUE = {'status': str, 'dialogue': ({'speaker': str, 'text': str},),
             'continue': ({'text': str, 'enabled': bool},), 'proceed': ({'text': str, 'enabled': bool},)}
 PHASES = {'outcome', 'summary', 'history', 'leaderboard', 'timeline', 'epoch', 'unlock', 'tutorial'}
 EPILOGUE_TOOLS = {'advance_dialogue', 'proceed', 'inspect_map', 'inspect_potions', 'inspect_targets',
-                  'use_potion', 'discard_potion', 'inspect_ui', 'inspect_combatants', 'inspect_relics'}
+                  'use_potion', 'discard_potion', 'inspect_ui', 'inspect_combatants', 'inspect_relics', 'inspect_deck'}
 
 
 def option_arguments(arguments):
@@ -82,7 +82,7 @@ def validate_ending(result):
                 if result.get('top_bar') is not None and not set(TOP_BAR) <= result['top_bar'].keys():
                     raise ValueError('Incomplete result top bar.')
                 enabled = any(o['enabled'] for o in value['options'])
-                if any(a not in {'run_result_option', 'inspect_run_result', 'inspect_potions'} for a in result['available_actions']) \
+                if any(a not in {'run_result_option', 'inspect_run_result', 'inspect_potions', 'inspect_relics'} for a in result['available_actions']) \
                         or 'run_result_option' in result['available_actions'] and not enabled:
                     raise ValueError('Unavailable result action.')
             else:
@@ -91,8 +91,14 @@ def validate_ending(result):
                         raise ValueError('Unavailable dialogue action.')
                 if any(a not in EPILOGUE_TOOLS for a in result['available_actions']):
                     raise ValueError('Unexpected dialogue action.')
-        elif result['available_actions'] and not (key == 'epilogue' and (result.get('map') is not None
-                or value['status'] == 'not_ready' and set(result['available_actions']) <= EPILOGUE_TOOLS - {'advance_dialogue', 'proceed'})):
+        elif result['available_actions'] and not (
+                key == 'run_result' and value['status'] == 'not_ready'
+                    and result['screen'] == {'status': 'visible', 'view': 'run_result'}
+                    and set(result['available_actions']) <= {'inspect_potions', 'inspect_relics'}
+                or key == 'epilogue' and (result.get('map') is not None
+                    or value['status'] == 'not_ready' and set(result['available_actions']) <= EPILOGUE_TOOLS - {'advance_dialogue', 'proceed'}
+                    or value['status'] == 'covered' and result['screen'] == {'status': 'covered', 'view': 'deck'}
+                        and set(result['available_actions']) <= {'inspect_deck', 'close_card_view', 'inspect_map'})):
             raise ValueError('Covered or unready ending actions.')
     if 'run_result_option' in result['available_actions'] and result.get('run_result') is None:
         raise ValueError('Missing result actions.')

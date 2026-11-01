@@ -1,5 +1,19 @@
 [
   {
+    "name": "event_view_availability",
+    "scenarios": { "event": "basic" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_view_availability.py", "args": ["--scenario", "event"] }
+    ]
+  },
+  {
+    "name": "epilogue_view_availability",
+    "scenarios": { "navigation": "boss3" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_view_availability.py", "args": ["--scenario", "epilogue"] }
+    ]
+  },
+  {
     "name": "osty",
     "scenarios": { "play": "companions_osty" },
     "steps": [

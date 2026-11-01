@@ -133,7 +133,7 @@ def tool_definitions(*, screenshots_enabled=False):
             "Read visible, hoverable owned relics. Full descriptions and hover help by default; "
             "summary keeps basic fields. relic_indices filters by positions in the current unfiltered inspection.")),
         Tool(name="inspect_deck", inputSchema=DECK_SCHEMA, annotations=view, description=(
-            "Open/reuse the native full-deck page during combat and read the entire browsable deck. "
+            "Open/reuse the native full-deck page when its entry is available and read the entire browsable deck. "
             "Upgrade preview does not upgrade owned cards. Leaves the page open; close with close_card_view.")),
         Tool(name="inspect_pile", inputSchema=PILE_SCHEMA, annotations=view, description=(
             "Open/reuse a combat draw, discard or exhaust page, replacing another card page. "

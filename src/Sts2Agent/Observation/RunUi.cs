@@ -68,14 +68,16 @@ internal static class RunUi
             || VisibleUi.Descendants<CanvasItem>(game.Transition).Any(VisibleUi.Shown);
     }
 
-    public static bool NonCombatVisible()
+    public static bool NonCombatVisible(bool allowCardView = false)
     {
         var run = NRun.Instance;
         var global = run?.GlobalUi;
         var game = NGame.Instance;
         return !CombatManager.Instance.IsInProgress && RunManager.Instance.IsInProgress
             && game != null && game.MainMenu == null && VisibleUi.Shown(run) && global?.IsNodeReady() == true
-            && !global.CapstoneContainer.InUse && (global.Overlays.ScreenCount == 0
+            && (!global.CapstoneContainer.InUse || allowCardView
+                && global.CapstoneContainer.CurrentCapstoneScreen is NDeckViewScreen)
+            && (global.Overlays.ScreenCount == 0
                 || OnlyRewardOverlays() && global.Overlays.Peek() is NRewardsScreen rewards && VisibleUi.Shown(rewards)
                 || DivinationInspection.OnlyOverlay)
             && !global.MapScreen.IsTraveling && NModalContainer.Instance?.OpenModal == null

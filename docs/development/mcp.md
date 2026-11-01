@@ -28,7 +28,7 @@ flowchart LR
 
 默认公开 42 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 43 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 列出当前可用的查看与操作工具名，不含参数；省略观察、截图和测试入口。完整语义与精简预设见[观察输出预设](observation.md#mcp-输出预设)。
 
-当前详情调用不返回 `available_actions`，可用 `get_observation({"preset":"actions_only"})` 获取。遗物和牌组查看仍有非战斗场景限制；已核对的缺口与后续修复范围见[可用工具审查](../research/2026-11-02-available-actions.md)。
+当前详情调用不返回 `available_actions`，可用 `get_observation({"preset":"actions_only"})` 获取。遗物查看遵循当前可见、可悬停的遗物栏，牌组查看也支持原生按钮可用的非战斗页面；适用范围见[遗物详情](relic-inspection.md)和[牌组页面](deck-inspection.md)。
 
 | 工具 | 用途 |
 | --- | --- |
@@ -79,7 +79,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.43.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.43.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.44.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.44.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 

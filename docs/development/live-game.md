@@ -72,7 +72,7 @@ Mod `0.20.0` 统一[可见卡牌名称](observation.md#手牌与身份)，目标
 
 MCP server `0.16.0` [复用完整成功动作的观察](mcp.md#调用和错误语义)，可以连续决策与执行。Mod 仍为 `0.20.0`；只需重连 MCP 加载新脚本及公共说明，无须重启或替换游戏内 Mod。
 
-当前 Mod `0.43.0`、MCP `0.43.0` 支持[战后搜刮与前进](rewards.md)、[休息处选项与锻造](rest-site.md)、[宝箱房](treasure.md)、[商店](shop.md)、[先古之民](ancients.md)、[通用事件](events.md)及[终章结算](run-ending.md)。Mod 等待战斗卡牌预览、手牌描边、先古之民入场横幅及遗物入栏和计数等有限过渡结束，避免成功动作后的许可自行过期。需退出游戏后替换 Mod DLL/清单，再完整启动；RitsuLib 仍由创意工坊管理。只更新 Mod 不要求重连 MCP；更新 Python 脚本时须重连客户端。
+当前 Mod `0.44.0`、MCP `0.44.0` 支持[战后搜刮与前进](rewards.md)、[休息处选项与锻造](rest-site.md)、[宝箱房](treasure.md)、[商店](shop.md)、[先古之民](ancients.md)、[通用事件](events.md)及[终章结算](run-ending.md)。Mod 等待战斗卡牌预览、手牌描边、先古之民入场横幅及遗物入栏和计数等有限过渡结束，避免成功动作后的许可自行过期。需退出游戏后替换 Mod DLL/清单，再完整启动；RitsuLib 仍由创意工坊管理。只更新 Mod 不要求重连 MCP；更新 Python 脚本时须重连客户端。
 
 MCP `0.29.1` 允许依据成功的专项详情及页面操作直接行动，不再要求额外 `get_observation`。从更早的 MCP 版本更新脚本后，须重连客户端加载新规则。
 
@@ -87,6 +87,8 @@ Mod `0.36.0` 与 MCP `0.32.0` 为[基础手牌观察](observation.md#手牌与�
 MCP `0.33.0` 为 `inspect_selection` 增加[完整与摘要预设](card-selection.md#mcp-输出预设)，所有候选、包内卡牌及预览均可使用手牌摘要字段；默认完整输出不变。预设功能只改 Python，无须为此替换 DLL，更新脚本后重连 MCP 即可。
 
 MCP `0.42.0` 为同一工具增加 `card_ids`，按当前卡牌 ID 筛选候选、包内卡牌和已经展开的预览，保留选择提示与按钮；规则见[选择输出参数](card-selection.md#mcp-输出预设)。只需重连 MCP，Mod `0.43.0` 无须替换。
+
+Mod `0.44.0` 与 MCP `0.44.0` 扩大遗物详情的非战斗场景，并支持原生入口可用的非战斗牌组查看；详情返回格式保持不变。需更新 DLL/清单和 Python，重启游戏并重连 MCP；范围与验证见[可用工具修复](../research/2026-11-02-available-actions-fix.md)。
 
 MCP `0.43.0` 为 `inspect_relics` 增加 `preset: full/summary` 和 `relic_indices`，详情见[遗物参数](relic-inspection.md#mcp-参数)。使用当前未筛选详情列表的下标，不作为稳定 ID；只需重连 MCP，无须替换 Mod。
 

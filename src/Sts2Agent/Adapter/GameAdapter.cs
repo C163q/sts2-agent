@@ -139,7 +139,8 @@ internal sealed partial class GameAdapter(bool testMode)
         var (actions, visibility) = AvailableTools(scene, map, epilogue, ending, selection);
         if (ending != null) selection = null;
         var screen = CardView.Screen(visibility);
-        if (ending != null || epilogue != null && map == null) screen["view"] = ending != null ? "run_result" : "epilogue";
+        if (ending != null || epilogue != null && map == null && CardView.Current == null)
+            screen["view"] = ending != null ? "run_result" : "epilogue";
         string body = JsonSerializer.Serialize(new
         {
             schema_version = 25, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
@@ -768,16 +769,12 @@ internal sealed partial class GameAdapter(bool testMode)
     {
         var player = LocalPlayer;
         if (player == null || !CanInspectDeck())
-            return FileMailbox.Error(request.Id, "illegal_action", "Deck viewing requires a single-player combat.");
+            return FileMailbox.Error(request.Id, "illegal_action", "The local deck is unavailable in this screen.");
         var screen = DeckView.Current;
         if (screen == null)
         {
             var button = NRun.Instance!.GlobalUi.TopBar.Deck;
-            bool mapOpen = NRun.Instance.GlobalUi.MapScreen.IsOpen;
-            bool cardOpen = CardView.Current != null;
-            if (CombatObservation.Status(allowCardView: cardOpen, allowMap: true) != "visible"
-                || !CanInspectViews(allowPause: mapOpen || cardOpen)
-                || !VisibleUi.OnScreen(button) || !button.IsEnabled)
+            if (!CanInspectDeck())
                 return FileMailbox.Error(request.Id, "illegal_action", "The deck button is unavailable.");
             uiGeneration++;
             button.ForceClick();

@@ -21,9 +21,7 @@ internal static class RelicInspection
 
     public static NRelicInventoryHolder[]? VisibleHolders()
     {
-        if (CombatObservation.Status() != "visible"
-            && !(AncientInspection.Current is { } ancient && AncientInspection.Exposed(ancient))
-            && !(ShopInspection.Current is { } shop && ShopInspection.Exposed(shop)))
+        if (!RunUi.TopBarReadable())
             return null;
         var inventory = NRun.Instance!.GlobalUi.RelicInventory;
         if (!VisibleUi.Shown(inventory))

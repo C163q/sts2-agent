@@ -29,14 +29,17 @@ internal sealed partial class GameAdapter
 
     private static bool CanInspectDeck()
     {
-        if (LocalPlayer == null || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer || !CombatManager.Instance.IsInProgress)
+        if (LocalPlayer == null || !RunManager.Instance.IsInProgress || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
             return false;
         if (DeckView.Current is { } current) return DeckView.Ready(current);
         var button = NRun.Instance!.GlobalUi.TopBar.Deck;
         bool cardOpen = CardView.Current != null;
         bool mapOpen = NRun.Instance.GlobalUi.MapScreen.IsOpen;
-        return CombatObservation.Status(allowCardView: cardOpen, allowMap: true) == "visible"
-            && CanInspectViews(allowPause: mapOpen || cardOpen) && VisibleUi.OnScreen(button) && button.IsEnabled;
+        bool exposed = CombatManager.Instance.IsInProgress
+            ? CombatObservation.Status(allowCardView: cardOpen, allowMap: true) == "visible"
+                && CanInspectViews(allowPause: mapOpen || cardOpen)
+            : RunUi.NonCombatVisible(allowCardView: true);
+        return exposed && VisibleUi.OnScreen(button) && button.IsEnabled;
     }
 
     private static bool CanInspectPiles()
@@ -159,8 +162,9 @@ internal sealed partial class GameAdapter
             if (runResultInspection.Ready(ending))
             {
                 actions.Add("inspect_run_result");
-                if (PotionInspection.VisibleHolders() != null) actions.Add("inspect_potions");
             }
+            if (PotionInspection.VisibleHolders() != null) actions.Add("inspect_potions");
+            if (RelicInspection.VisibleHolders() != null) actions.Add("inspect_relics");
             return (actions.Distinct().ToList(), visibility);
         }
         if ((!CombatManager.Instance.IsInProgress || STS2RitsuLib.RitsuLibFramework.IsActive)

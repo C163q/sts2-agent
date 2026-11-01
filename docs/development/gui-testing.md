@@ -102,3 +102,5 @@
 不要删除失败目录后原地重跑来覆盖证据；使用新的输出目录。启动失败也保留日志和错误文件。套件退出时仅终止自己启动的 PID，验证脚本超时则清理其进程组内的 MCP 子进程。
 
 本次实际覆盖、阶段耗时和证据位置见[验证记录](../research/2026-11-01-gui-suite.md)。
+
+`verify_view_availability.py` 的 `event/rest/treasure/reward/shop/ancient/selection/combat/result` 分别使用 `event:basic`、`rest:basic`、`treasure:basic`、`reward:basic`、`shop:courier`、`ancient:basic`、`rest:smith`、`play:basic`、`turn:wither_death`。检查完整／仅动作观察一致、已列出的只读工具实际可调用、非战斗牌组排序和升级预览、关闭恢复及地图切换；选择和结算场景检查拒绝打开牌组；`confirmation` 配合 `event:trial` 检查弹窗覆盖和取消恢复，`epilogue` 配合 `navigation:boss3`，从奖励前进至建筑师对话后检查牌组及地图覆盖。详情不新增动作列表，证据范围见[可用工具修复记录](../research/2026-11-02-available-actions-fix.md)。

@@ -26,7 +26,8 @@ internal static class CardView
             bool supported = screen is NDeckViewScreen || screen is NCardPileScreen pile
                 && pile.Pile?.Type is PileType.Draw or PileType.Discard or PileType.Exhaust;
             return supported && VisibleUi.Shown(screen) && screen!.IsNodeReady()
-                && CombatObservation.Status(allowCardView: true, allowMap: true) == "visible" ? screen : null;
+                && (CombatObservation.Status(allowCardView: true, allowMap: true) == "visible"
+                    || screen is NDeckViewScreen && RunUi.NonCombatVisible(allowCardView: true)) ? screen : null;
         }
     }
 
