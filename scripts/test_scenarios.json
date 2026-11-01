@@ -111,6 +111,8 @@
     "hidden_hp"
   ],
   "reward": [
+    "paels_wing",
+    "driftwood",
     "basic",
     "full",
     "skip",

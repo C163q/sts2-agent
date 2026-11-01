@@ -5,6 +5,8 @@ using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.Cards;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
+using MegaCrit.Sts2.Core.Nodes.Relics;
+using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Models;
@@ -30,7 +32,12 @@ internal static class RunUi
     public static bool ResourceMotionPending() => NRun.Instance is { } run
         && (CardSelection.Field(run.GlobalUi.TopBar.Gold, "_alreadyRunning") is true
             || VisibleUi.Descendants<MegaCrit.Sts2.Core.Nodes.Potions.NPotion>(run.GlobalUi.TopBar.PotionContainer)
-                .Any(potion => RewardInspection.Animating(potion, "_obtainedTween")));
+                .Any(potion => RewardInspection.Animating(potion, "_obtainedTween"))
+            || VisibleUi.Descendants<NRelicInventoryHolder>(run.GlobalUi.RelicInventory)
+                .Any(holder => holder.IsNodeReady() && !holder.IsQueuedForDeletion()
+                    && (RewardInspection.Animating(holder, "_obtainedTween")
+                        // Pael's Wing resets its counter after an independent activation task.
+                        || holder.Relic.Model is PaelsWing wing && CardSelection.Field(wing, "_isActivating") is true)));
 
     public static bool CardPreviewsPending()
     {

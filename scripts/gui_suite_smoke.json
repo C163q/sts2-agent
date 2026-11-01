@@ -1,5 +1,19 @@
 [
   {
+    "name": "paels_wing",
+    "scenarios": { "reward": "paels_wing" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_reward_alternatives.py", "args": ["--scenario", "paels_wing"] }
+    ]
+  },
+  {
+    "name": "driftwood",
+    "scenarios": { "reward": "driftwood" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_reward_alternatives.py", "args": ["--scenario", "driftwood"] }
+    ]
+  },
+  {
     "name": "map_presets",
     "scenarios": { "navigation": "basic" },
     "steps": [

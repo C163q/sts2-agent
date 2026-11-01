@@ -25,6 +25,7 @@ SUPPORTED_VERIFIERS = {
     'verify_ancient_stability.py',
     'verify_ancients.py',
     'verify_map_presets.py',
+    'verify_reward_alternatives.py',
 }
 
 
@@ -73,6 +74,7 @@ def load_cases(path):
                 'verify_ancient_stability.py': ('direct', 'travel', 'travel_action'),
                 'verify_ancients.py': CATALOG['ancient'],
                 'verify_map_presets.py': ('flight', 'combat', 'entry', 'double'),
+                'verify_reward_alternatives.py': ('paels_wing', 'driftwood'),
             }
             if args and (verifier not in scenario_options or len(args) != 2
                          or args[0] != '--scenario' or args[1] not in scenario_options[verifier]):

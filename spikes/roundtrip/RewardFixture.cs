@@ -29,6 +29,8 @@ internal static class RewardFixture
         var room = player.RunState.CurrentRoom as CombatRoom ?? throw new InvalidOperationException("Expected combat room.");
         RunManager.Instance.DebugOnlyGetState()!.ActFloor = 1;
         foreach (var potion in player.Potions.ToArray()) await PotionCmd.Discard(potion);
+        if (scenario == "paels_wing") await RelicCmd.Obtain<PaelsWing>(player);
+        if (scenario == "driftwood") await RelicCmd.Obtain<Driftwood>(player);
         if (scenario == "full")
             for (int i = 0; i < player.PotionSlots.Count; i++) await PotionCmd.TryToProcure<BlockPotion>(player);
         // An isolated fixture may replace the deck to make the pickup order observable without RNG assumptions.
@@ -87,6 +89,7 @@ internal static class RewardFixture
         else if (scenario == "nested") list.Add(new RelicReward(ModelDb.Relic<CallingBell>().ToMutable(), player));
         else if (scenario == "unsupported") list.Add(new RelicReward(ModelDb.Relic<Astrolabe>().ToMutable(), player));
         else if (scenario == "skip") { list.Add(new GoldReward(17, player)); list.Add(Cards()); }
+        else if (scenario is "paels_wing" or "driftwood") { list.Add(Cards()); list.Add(Cards()); }
         else if (scenario != "empty") throw new InvalidOperationException("Unknown reward fixture.");
         var set = new RewardsSet(player).EmptyForRoom(room).WithCustomRewards(list);
         Pending = set.Offer();
@@ -106,6 +109,7 @@ internal static class RewardFixture
         deck = player.Deck.Cards.Select(c => new { name = EnglishCardText.Read(() => EnglishCardText.Plain(c.Title)),
             upgrades = c.CurrentUpgradeLevel }).ToArray(),
         relics = player.Relics.Select(r => r.Id.Entry).ToArray(),
+        sacrifices = player.GetRelic<PaelsWing>()?.RewardsSacrificed,
         potions = player.PotionSlots.Select(p => p?.Id.Entry).ToArray(),
         preview_cards = NRun.Instance is { } run ? new Godot.Node[] { run.GlobalUi.CardPreviewContainer,
             run.GlobalUi.MessyCardPreviewContainer, run.GlobalUi.EventCardPreviewContainer, run.GlobalUi.GridCardPreviewContainer }

@@ -1,6 +1,6 @@
 # 战后搜刮与前进
 
-适用于 Mod `0.33.0`、MCP server `0.28.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。本接口逐项操作原生奖励界面；地图选路另用 `travel_to_node`。地图查看继续使用 `inspect_map` / `close_map`，卡牌奖励继续使用[选牌工具](card-selection.md)。
+适用于 Mod `0.34.3`、MCP server `0.30.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。本接口逐项操作原生奖励界面；地图选路另用 `travel_to_node`。地图查看继续使用 `inspect_map` / `close_map`，卡牌奖励继续使用[选牌工具](card-selection.md)。
 
 ## 观察与详情
 
@@ -52,6 +52,8 @@
 `status` 为 `claimed`、`not_claimed`、`not_obtained` 或 `pending`。`not_obtained` 表示药水奖励行已被原生处理并消耗，但玩家没有获得该药水，例如添水禁止获取；不能把它当作已入栏或自动重试。满槽等原生拒绝通常返回 `not_claimed`，保留奖励行；需要腾出药水槽时，由模型另外调用 `discard_potion` 或合法的 `use_potion`，再决定是否领取。`pending` 表示已进入选择或后续交互，不能据此认为已获得奖励，也不能自动重试。`complete` 仍只确认 `stop_reason` 所述边界。
 
 点开卡牌奖励后，在已显示的候选中使用 `select_card`，或点击当前 `selection.options` 提供的 `selection_option`。卡牌奖励的 Skip 与整页跳过不同：原生通常返回搜刮列表并保留这一奖励入口，可以重新打开。不能把卡牌候选 ID 传给 `claim_reward`。奖励卡牌启用和入场动画完成后才返回可继续选择的边界。已识别的原生大卡预览存在时，奖励视为被覆盖；等待其结束后再提供奖励动作。领取遗物若打开另一张奖励页，返回新页面供模型继续决策，不等待依赖后续操作的父任务。
+
+佩尔之翼的献祭、浮木的重掷同样使用[卡牌奖励替代按钮](card-selection.md#卡牌奖励替代按钮)，不新增 `claim_reward` 参数，也不把所有替代选项视为跳过。
 
 两类动作沿用[MCP 动作许可](mcp.md#调用和错误语义)：成功读取及完整动作结果可以续接下一步，查看页关闭后无需额外观察。失败或超时后重新读取当前状态再决定。动作始终校验当前原始令牌和界面合法性。
 

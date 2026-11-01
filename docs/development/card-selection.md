@@ -1,6 +1,6 @@
 # 选牌与查看战场
 
-适用于 Mod `0.34.1`、MCP server `0.29.1`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
+适用于 Mod `0.34.3`、MCP server `0.30.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
 
 ## 观察与信息范围
 
@@ -31,6 +31,17 @@
 `selection_option({"option_id": "confirm"})` 点击观察中列出的启用按钮。可能出现 `skip`、`confirm`、`cancel_preview`、`cancel` 或奖励 `alternative:N`；含义以当前 `text` 为准。预览取消与放弃整个选择分别处理。奖励替代选项还可能是治疗、献祭或重新生成，不能一律视为跳过。允许选零张的手牌选择通过原生确认按钮提交空选择。
 
 两类动作使用当前观察许可，可以来自基础观察、专项详情、视图操作或满足续接条件的成功动作结果，具体条件见[MCP 动作许可](mcp.md#调用和错误语义)；失败后须重新观察。`inspect_selection` 成功时刷新状态令牌，可直接选择已读取的候选。原生滚动候选由工具先定位再点击，定位期间若选择已经改变则拒绝输入。选择实例代际参与底层令牌，防止外观相同的连续选择复用旧许可。
+
+## 卡牌奖励替代按钮
+
+`selection.type: "reward"` 的替代按钮由原生奖励实际生成，在基础观察及 `inspect_selection` 的 `selection.options` 中提供相同的 `id/text/enabled`。除 `skip` 外使用 `alternative:N`，通过 `selection_option` 点击；编号是当前页面的位置，不代表固定效果，须结合本次 `text` 判断。
+
+| 遗物 | 当前按钮文字 | 行为 |
+| --- | --- | --- |
+| 佩尔之翼 `PaelsWing` | `Sacrifice` | 消耗这一份卡牌奖励，不加入卡牌；每两次献祭由原生流程获得遗物 |
+| 浮木 `Driftwood` | `Reroll` | 当前奖励重新生成候选，不加入卡牌；每份奖励可重掷一次，使用后按钮消失，跳过后重新打开同一奖励也不恢复次数 |
+
+重掷后的卡牌使用新的当前候选 ID；从观察或详情读取后操作，不复用旧候选或已经消失的替代按钮。献祭获得遗物时，普通完成还等待遗物入栏和佩尔之翼的计数动画结束；遇到原生后续选择仍先返回输入边界，不等待依赖选择的父任务。分别持有两个遗物时的实测、截图及组合边界见[验证记录](../research/2026-11-01-reward-alternatives.md)。
 
 ## 手牌升级
 

@@ -54,6 +54,8 @@
 
 `verify_map_presets.py` 逐项对照同一原生全图，检查默认结果兼容、`selectable` 优先、前瞻节点与子图边界连线，再直接选路或关闭地图后结束回合，全程不调用 `get_observation`。`flight` 配合 `navigation:basic`，检查无连线的飞鞋候选并纳入默认集；`combat` 配合 `navigation:combat`，先经原生选路进入战斗，再检查零候选；`entry` 配合 `navigation:boss1` 检查新幕未进入节点；`double` 配合 `navigation:double` 检查第二 Boss。验证器自行保存地图截图，参数不改变原生地图显示范围。
 
+`verify_reward_alternatives.py` 的 `paels_wing`、`driftwood` 分别配合同名 `reward` 场景，并纳入默认集。通过真实遗物获取和奖励生成 hook，检查基础观察与详情中的献祭/重掷按钮、实际效果、候选刷新及旧 ID 拒绝；献祭两次后还保留原许可直接前进，重掷后检查跳过再打开不会恢复次数。动作后在数秒内只读采样，诊断读取不刷新 MCP 许可。两者分别测试，不代表双遗物组合已验证。
+
 ## 生命周期与证据
 
 套件模式通过 `STS2_AGENT_TEST_MODE=1` 和 `STS2_AGENT_TEST_SUITE=1` 双重门控，提供仅文件 IPC 可用的 `configure_test_run`、`reset_test_run`、`get_test_session`。前两项需最新状态令牌；配置仅允许没有对局的主菜单。它们不属于公开 MCP 工具，也不改变玩法 JSON 或动作许可规则。旧的单用例启动命令继续有效。
