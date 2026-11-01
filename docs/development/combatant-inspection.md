@@ -38,6 +38,8 @@ MCP 调用 `inspect_combatants()` 无须参数，成功时刷新状态令牌；�
 
 仅支持无遮挡战斗；瞄准或打出卡牌期间，原生界面会抑制战斗对象悬停说明，因此整次读取返回 `illegal_action`。敌人身份与顺序复用基础观察的可见节点筛选；power 必须有可见图标、模型允许展示且能接收鼠标悬停；意图必须有可见的 holder 和图标且能接收悬停。不枚举隐藏 powers，不读 `Monster.NextMove` 或后续招式，不增加格挡说明。`HasIntentTip: false` 的意图不构造说明。
 
+已知缺口：复用的筛选会将可见奥斯提误列入敌人，其状态说明也随之关联到 `enemies`；悬浮君王之剑的原生卡牌预览尚未接入本工具或 `inspect_ui`。两者不能视作已完整支持，见[核查记录](../research/2026-11-02-companions.md)。
+
 power 主说明使用当前实例 `HoverTips` 的动态正文，而非静态通用定义；包含人悬停时会看到的当前持续回合、层数、拥有者或施加者等变量。意图从已显示 `NIntent` 绑定的意图、目标和拥有者构造原生提示，包含当前预览伤害及连击次数。对 Shrink 等施加时缓存怪物本地化名称的情况，仅在独立格式化变量中放入英语施加者名称，不修改实际 power 的缓存或中文说明。读取不调用控件的 `OnFocus/OnHovered` 或更新流程；未知提示类型显式返回错误，不静默丢弃。
 
 原生 `PowerModel.HoverTips` 的格式化调用在英语读取作用域内显式经过英语渲染器，避免预编译或内联调用绕过 `LocString.GetFormattedText` 的拦截后，以中文复数规则解释英文模板。实例变量仍由原生提示流程填入；例如 Escape Artist 计数为 5、4 时分别显示 `after 5 turns`、`after 4 turns`，为 1 时显示 `this turn`。这是当前 UI 状态说明，不提供敌人后续招式或对未来回合的额外推演。修复与同类审查见[状态说明验证](../research/2026-11-01-power-descriptions.md)。
