@@ -18,6 +18,7 @@
 | `scripts/player_output.py` | 去除控制包装、共享悬停解释、条件数值说明和错误恢复文案 |
 | `spikes/roundtrip/TurnJournal.cs`、`TurnCapture.cs`、`CombatResourceJournal.cs`、`VisibleResourceChange.cs` | RitsuLib 与原生事件记录、伤害补录及来源追踪；能量／星星通知与真实数字显示对齐，最大能量按实际分母变化采样 |
 | `spikes/roundtrip/ActionEventScope.cs`、`GameAdapter.Resources.cs`、`RunResourceJournal.cs`、`RunInventoryJournal.cs` | 单次游戏动作的共享事件缓冲、响应附加及可见玩家资源、物品、永久牌组订阅；延后发布尚未展示的身份，与战斗和药水日志共用顺序及上限 |
+| `spikes/roundtrip/PermanentCardCapture.cs` | 主线程原生基础变量／能量费用／附魔数量修改采集；仅永久成员有效，嵌套升级与附魔重算抑制低层重复 |
 | `spikes/roundtrip/TurnBoundary.cs`、`TurnEventBuffer.cs` | 无游戏依赖的结束条件与有界事件缓冲 |
 | `spikes/roundtrip/OrbInspection.cs` | 实际充能球 UI 队列、图像和数字过滤；基础观察、占用球详情及空槽帮助共用槽位对应关系 |
 | `spikes/roundtrip/EventInspection.cs`、`GameAdapter.Event.cs` | 通用事件的可见页面、稳定选项 ID 和原生按钮执行 |

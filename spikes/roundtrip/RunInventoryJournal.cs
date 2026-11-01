@@ -20,6 +20,7 @@ internal sealed class RunInventoryJournal : IDisposable
     private readonly Dictionary<RelicModel, bool> knownMelted = [];
     private readonly HashSet<RelicModel> watchedRelics = [];
     private readonly HashSet<CardModel> watched = [];
+    private readonly HashSet<(CardModel card, string type)> numericChanges = [];
     private readonly List<Action> cleanup = [];
     private readonly List<Action> pending = [];
 
@@ -59,6 +60,7 @@ internal sealed class RunInventoryJournal : IDisposable
             knownRelics.Clear();
             knownMelted.Clear();
             pending.Clear();
+            numericChanges.Clear();
             return;
         }
         foreach (var node in VisibleCards()) Remember(node.Model!, node);
@@ -92,7 +94,21 @@ internal sealed class RunInventoryJournal : IDisposable
     private void Remember(CardModel original, NCard? node)
     {
         if (node?.Visibility == ModelVisibility.Visible && CombatObservation.CardVisible(node)
-            && english.CardName(node) is { } name) knownCards[original] = name;
+            && english.CardName(node) is { } name)
+        {
+            knownCards[original] = name;
+            // A combat-only upgrade does not establish the permanent card's upgrade suffix.
+            if (original.DeckVersion is { } deck && TracksPermanent(deck) && original.Id.Equals(deck.Id)
+                && english.Name(original.TitleLocString) is { } baseName) knownCards.TryAdd(deck, baseName);
+        }
+    }
+
+    internal bool TracksPermanent(CardModel card) => card.IsMutable && ReferenceEquals(card.Owner, player)
+        && player.Deck.Cards.Contains(card);
+
+    internal void NumericChanged(CardModel card, string type)
+    {
+        if (Visible && TracksPermanent(card) && numericChanges.Add((card, type))) Card(type, card);
     }
 
     private void Defer(string type, Func<Dictionary<string, object?>?> fields, Func<bool>? areaVisible = null)

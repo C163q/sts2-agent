@@ -1,5 +1,12 @@
 [
   {
+    "name": "permanent_genetic_growth",
+    "scenarios": { "play": "permanent_genetic" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_permanent_cards.py", "args": ["--scenario", "genetic"] }
+    ]
+  },
+  {
     "name": "defect_orb_observation",
     "scenarios": { "play": "orbs" },
     "steps": [

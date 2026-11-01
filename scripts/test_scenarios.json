@@ -27,6 +27,9 @@
     "entropic"
   ],
   "play": [
+    "permanent_genetic",
+    "permanent_cost",
+    "permanent_enchant",
     "wax_melt",
     "orbs",
     "enchantments",

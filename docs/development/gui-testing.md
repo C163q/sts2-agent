@@ -68,6 +68,8 @@
 
 ## 生命周期与证据
 
+`verify_permanent_cards.py` 的 `genetic/cost/enchant` 对应 `play:permanent_genetic/permanent_cost/permanent_enchant`，验证永久变量、基础能量费用及附魔数量变化的真实 MCP 回执和直接续接。遗传算法使用正常出牌，并打开永久牌组核对成长；费用及附魔场景用测试夹具回调调用原生修改入口，不声称游戏存在对应可叠加玩法。`checks` 配合 `play:permanent_genetic`，检查预览／临时值排除、隐藏取消、身份延后、升级抑制、异常释放和共享上限。默认清单包含遗传算法成长；范围和证据见[第五阶段记录](../research/2026-11-01-permanent-card-events.md)。
+
 `verify_capacity.py` 验证最大能量、蜡制遗物熔化与充能球：`resources` 配合 `play:basic`，运行仅文件可用的原生容量／熔化嵌入检查；`wax_melt` 配合 `play:wax_melt`，验证真实 MCP 出牌回执及直接结束回合；`orbs` 和 `orb_visibility` 配合 `play:orbs`，使用故障机器人验证球序、激发、增槽、生成、暗球增长及图像／标签可见性。充能球游玩及熔化回执已纳入默认清单。夹具仅通过原生命令准备场景，图像扰动及无通知重绘仅用于隔离检查。范围与证据见[第四阶段记录](../research/2026-11-01-capacity-and-orbs.md)。
 
 `verify_resource_events.py` 核对 HP、最大生命与金币事件能按捕获顺序还原实际顶栏变化，并检查精简回执及直接续接。场景对应：`event/rescue` 使用 `event:basic/rescue`，`rest/cook` 使用 `rest:basic/cook`，`shop` 使用 `shop:basic`，`reward` 使用 `reward:skip`，`ancient` 使用 `ancient:basic`，`potion_rest/potion_combat` 使用 `potion:noncombat_rest/fruit_combat`，`combat/visibility` 使用 `play:basic`，`entry` 使用 `navigation:combat`，`masks` 使用 `selection:deck`。`visibility` 执行嵌入可见性、持续隐藏、恢复基线与释放检查；`masks` 在保留原生选择页时打开原生卡牌详情及地图，验证遮挡期间资源不进入日志。两者只使用隔离测试入口。事件与烹饪场景纳入默认集，范围和证据见[资源事件第一阶段](../research/2026-11-01-run-resource-events.md)。

@@ -27,6 +27,11 @@ internal static class PlayFixture
         var state = player.PlayerCombatState!;
         await CardPileCmd.RemoveFromCombat(state.AllCards.ToArray());
         state.Energy = scenario == "energy" ? 0 : scenario == "x_cost" ? 2 : scenario == "energy_chain" ? 3 : 20;
+        if (scenario.StartsWith("permanent_", StringComparison.Ordinal))
+        {
+            await PermanentCardFixture.Configure(scenario, player);
+            return;
+        }
         var cards = new List<CardModel>();
         void Add<T>() where T : CardModel => cards.Add(combat.CreateCard<T>(player));
         if (scenario == "anger") Add<Anger>();

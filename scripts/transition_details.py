@@ -22,6 +22,7 @@ FIELDS = {
     "relic_obtained": {"relic"}, "relic_removed": {"relic"}, "relic_melted": {"relic"},
     "card_removed": {"card", "pile"}, "card_upgraded": {"card", "pile"},
     "card_downgraded": {"card", "pile"}, "card_enchantment_changed": {"card", "pile"},
+    "card_stats_changed": {"card", "pile"}, "card_energy_cost_changed": {"card", "pile"},
 }
 
 
@@ -38,6 +39,9 @@ def end_turn_details(state):
                 or event.get("sequence", 0) <= previous):
             raise ValueError("Invalid transition event.")
         previous = event["sequence"]
+        if kind in {'card_stats_changed', 'card_energy_cost_changed', 'card_enchantment_changed'} and (
+                set(event) != {'sequence', 'type', 'card', 'pile'}):
+            raise ValueError('Unexpected fields in an identity-only card change.')
         for key in ("actor", "target"):
             if key in event and (set(event[key]) != {"id", "kind", "name"}
                                 or event[key]["kind"] not in {"player", "enemy", "ally"}):
@@ -52,9 +56,11 @@ def end_turn_details(state):
                                   or not 0 <= event["potion"]["slot_index"] <= 2147483647):
             raise ValueError("Invalid event potion.")
         if 'pile' in event and (event['pile'] != 'deck' or kind not in {
-                'card_added', 'card_removed', 'card_upgraded', 'card_downgraded', 'card_enchantment_changed'}):
+                'card_added', 'card_removed', 'card_upgraded', 'card_downgraded', 'card_enchantment_changed',
+                'card_stats_changed', 'card_energy_cost_changed'}):
             raise ValueError('Invalid permanent card scope.')
-        if kind in {'card_removed', 'card_upgraded', 'card_downgraded', 'card_enchantment_changed'} or 'pile' in event:
+        if kind in {'card_removed', 'card_upgraded', 'card_downgraded', 'card_enchantment_changed',
+                    'card_stats_changed', 'card_energy_cost_changed'} or 'pile' in event:
             if not event['card']['name']:
                 raise ValueError('Missing visible permanent card identity.')
         if kind in {'relic_obtained', 'relic_removed', 'relic_melted'} and (

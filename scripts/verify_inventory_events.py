@@ -109,7 +109,8 @@ async def verify(args):
                 card = next(c for c in state['player']['hand'] if c['name'] == 'Armaments')
                 await call('play_card', {'card_id': card['id']})
                 await choose_cards()
-                assert not any(e['type'] in ('card_upgraded', 'card_downgraded', 'card_enchantment_changed') for e in changes), changes
+                assert not any(e['type'] in ('card_upgraded', 'card_downgraded', 'card_enchantment_changed',
+                                            'card_stats_changed', 'card_energy_cost_changed') for e in changes), changes
                 required = ['card_played']
             else:
                 result = await asyncio.to_thread(raw.call, 'check_test_inventory')
@@ -118,7 +119,8 @@ async def verify(args):
                 required = []
             assert set(required) <= {e['type'] for e in changes}, ('Missing inventory changes', required, changes)
             for event in changes:
-                if event['type'] in ('card_removed', 'card_upgraded', 'card_downgraded', 'card_enchantment_changed'):
+                if event['type'] in ('card_removed', 'card_upgraded', 'card_downgraded', 'card_enchantment_changed',
+                                     'card_stats_changed', 'card_energy_cost_changed'):
                     assert event['pile'] == 'deck' and event['card']['name'], event
             record({'changes': changes})
     print(f'PASS inventory events: {args.scenario}')
