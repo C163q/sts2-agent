@@ -15,7 +15,8 @@ internal static class EnchantmentObservationChecks
         var sharp = cards.Single(card => card.Model!.Enchantment?.Id.Entry == "SHARP");
         var swift = cards.Single(card => card.Model!.Enchantment?.Id.Entry == "SWIFT");
         var clone = cards.Single(card => card.Model!.Enchantment?.Id.Entry == "CLONE");
-        var plain = cards.Single(card => card.Model!.Enchantment == null);
+        var plain = cards.First(card => card.Model!.Enchantment == null);
+        var spiral = cards.Single(card => card.Model!.Enchantment?.Id.Entry == "SPIRAL");
         var reader = new CombatObservation();
         List<object> results = [];
         void Check(string name, bool passed) => results.Add(new { name, passed });
@@ -32,6 +33,8 @@ internal static class EnchantmentObservationChecks
         Check("no_enchantment", Absent(plain));
         Check("unshown_model_amount_omitted", Value(clone, "name", "Clone")
             && !Enchantment(clone).TryGetProperty("amount", out _));
+        Check("sixth_card_spiral", ReferenceEquals(cards[5], spiral) && Value(spiral, "name", "Spiral")
+            && Value(spiral, "dimmed", false) && !Enchantment(spiral).TryGetProperty("amount", out _));
         var tab = sharp.EnchantmentTab;
         var icon = sharp.GetNode<TextureRect>("%Enchantment/Icon");
         var label = sharp.GetNode<Label>("%Enchantment/Label");

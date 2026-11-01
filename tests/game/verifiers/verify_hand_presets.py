@@ -54,12 +54,21 @@ async def verify(args):
                 assert [card.get('enchantment') for card in observed['player']['hand']] == [
                     {'name': 'Sharp', 'amount': 3, 'dimmed': False},
                     {'name': 'Swift', 'amount': 2, 'dimmed': True},
-                    {'name': 'Clone', 'dimmed': False}, None], observed
+                    {'name': 'Clone', 'dimmed': False}, None, None,
+                    {'name': 'Spiral', 'dimmed': False}], observed
                 assert all('description' not in card for card in observed['player']['hand'])
             full = await call('inspect_hand')
             assert full == await call('inspect_hand', {'preset': 'full'})
             assert [card['id'] for card in full['hand']] == [card['id'] for card in before['state']['player']['hand']]
             summary = await call('inspect_hand', {'preset': 'summary'})
+            if args.scenario == 'enchantments':
+                for hand in (observed['player']['hand'], full['hand'], summary['hand']):
+                    assert hand[5]['name'] == 'Defend+', hand[5]
+                    assert hand[5]['enchantment'] == {'name': 'Spiral', 'dimmed': False}, hand[5]
+                spiral_id = full['hand'][5]['id']
+                assert 'Replay 1.' in full['hand'][5]['description'], full['hand'][5]
+                assert any(tip['title'] == 'Spiral' and spiral_id in tip['card_ids']
+                           for tip in full['hover_tips']), full
             allowed = {'id', 'name', 'type', 'energy_cost', 'star_cost', 'energy_cost_color',
                        'star_cost_color', 'unplayable_markers', 'outline', 'enchantment'}
             assert set(summary) == {'hand'}, summary

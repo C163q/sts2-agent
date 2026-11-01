@@ -115,6 +115,9 @@ internal static class PlayFixture
             CardCmd.Enchant<Sharp>(cards[0], 3);
             CardCmd.Enchant<Swift>(cards[1], 2)!.Status = EnchantmentStatus.Disabled;
             CardCmd.Enchant<Clone>(cards[2], 7);
+            Add<StrikeIronclad>(); Add<DefendIronclad>();
+            cards[5].UpgradeInternal(); cards[5].FinalizeUpgradeInternal();
+            CardCmd.Enchant<Spiral>(cards[5], 1);
         }
         if (scenario == "armaments_free") cards[0].SetToFreeThisTurn();
         if (scenario == "armaments_filtered")
