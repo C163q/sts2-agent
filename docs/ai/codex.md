@@ -23,11 +23,11 @@
 不符合要求：
 
 ```sh
-git commit -m "更新项目文档" && git status --short
+git commit -m "docs: update project documentation" && git status --short
 ```
 
 ```sh
-git add AGENTS.md && git commit -m "更新协作约定"
+git add AGENTS.md && git commit -m "docs: update collaboration guidelines"
 ```
 
 符合要求：下列每个代码块分别作为一次命令调用，依次执行，检查前一步结果后再继续。
@@ -37,7 +37,7 @@ git add AGENTS.md
 ```
 
 ```sh
-git commit -m "更新协作约定"
+git commit -m "docs: update collaboration guidelines"
 ```
 
 ```sh
