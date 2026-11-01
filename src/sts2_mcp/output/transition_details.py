@@ -91,7 +91,8 @@ def end_turn_details(state):
             raise ValueError("Invalid event values.")
         if kind in {'max_hp_changed', 'gold_changed', 'energy_changed', 'max_energy_changed', 'stars_changed'}:
             before, after = event['before'], event['after']
-            if (event['target']['kind'] != 'player' or type(after) is not int or after < 0
+            allowed = {'player', 'ally'} if kind == 'max_hp_changed' else {'player'}
+            if (event['target']['kind'] not in allowed or type(after) is not int or after < 0
                     or not (type(before) is int and before >= 0 or kind == 'stars_changed' and before is None)):
                 raise ValueError('Invalid player resource change.')
         if kind == "power_changed" and event["change"] not in {"applied", "modified", "removed"}:

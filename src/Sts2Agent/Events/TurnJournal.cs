@@ -33,11 +33,14 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     private readonly HashSet<CardModel> generated = [];
     private readonly HashSet<CardModel> handCards = [];
     private readonly Dictionary<CardModel, string?> knownCards = [];
+    private readonly Dictionary<Creature, VisibleResourceChange> companionHealth = [];
+    private readonly List<(Creature creature, TurnEventBuffer.Reservation slot, ulong frame)> pendingCreatures = [];
     private readonly IDisposable? lifecycle;
     private bool ended, won, disposed;
     private int historyCursor;
     public bool SawTurnStart { get; private set; }
     public int LifecycleEvents { get; private set; }
+    public bool Pending => companionHealth.Values.Any(health => health.Pending) || pendingCreatures.Count > 0;
 
     public TurnJournal(CombatState combat, Player player, Func<CardModel, int> cardId)
     {
@@ -78,6 +81,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
 
     public string? StopReason(bool sameCombat, bool playerReady, bool requireTurnStarted = true)
     {
+        SampleVisibility();
         foreach (var creature in combat.Creatures) RememberVisible(creature);
         CapturePublicCards();
         bool choiceReady = CardSelection.AwaitingInput;
@@ -145,6 +149,15 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
             if (!subscribed.Add(creature)) continue;
             if (creature.IsDead) dead.Add(creature);
             RememberVisible(creature);
+            if (!creature.IsPlayer && !creature.IsEnemy)
+            {
+                var maximum = new VisibleResourceChange("max_hp_changed", buffer, () => Entity(creature)!);
+                companionHealth[creature] = maximum;
+                maximum.Sample(MaximumHealthDisplay(creature));
+                void Maximum(int before, int after) => maximum.Changed(after, MaximumHealthDisplay(creature));
+                creature.MaxHpChanged += Maximum;
+                cleanup.Add(() => creature.MaxHpChanged -= Maximum);
+            }
             foreach (var power in creature.Powers)
             {
                 powerAmounts[power] = DisplayAmount(power);
@@ -252,6 +265,12 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         if (entry != null) damageResults.Add((result, entry));
     }
 
+    public void BeforeDamage(TurnCapture.Origin origin)
+    {
+        foreach (var creature in subscribed)
+            if (CombatObservation.BlockNumbersVisible(creature)) origin.VisibleBlockTargets.Add(creature);
+    }
+
     private void HistoryChanged()
     {
         var entries = CombatManager.Instance.History.Entries.ToArray();
@@ -260,6 +279,42 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         {
             var entry = entries[historyCursor++];
             if (entry is CardDrawnEntry draw) Card("card_drawn", draw.Card);
+            // Redirection can create a block-only result without calling LoseHpInternal.
+            if (entry is DamageReceivedEntry damage && damage.Result.BlockedDamage > 0
+                && TurnCapture.Current?.VisibleBlockTargets.Contains(damage.Receiver) == true
+                && CombatObservation.BlockNumbersVisible(damage.Receiver)
+                && !damageResults.Any(captured => ReferenceEquals(captured.result, damage.Result)))
+                Damage(damage.Result, new TurnCapture.Origin(damage.CardSource ?? TurnCapture.Current?.Model,
+                    damage.Dealer, true));
+        }
+    }
+
+    private static int? MaximumHealthDisplay(Creature creature)
+    {
+        var node = NCombatRoom.Instance?.GetCreatureNode(creature);
+        return CombatObservation.Status() == "visible" && VisibleUi.Shown(node) && VisibleUi.OnScreen(node!.Body)
+            ? CombatObservation.Health(node).maximum : null;
+    }
+
+    public void SampleVisibility()
+    {
+        if (disposed) return;
+        foreach (var (creature, health) in companionHealth) health.Sample(MaximumHealthDisplay(creature));
+        if (CombatObservation.Status() != "visible") { pendingCreatures.Clear(); return; }
+        foreach (var pending in pendingCreatures.ToArray())
+        {
+            var node = NCombatRoom.Instance?.GetCreatureNode(pending.creature);
+            if (node == null || !GodotObject.IsInstanceValid(node) || node.IsQueuedForDeletion() || !node.IsVisibleInTree())
+            {
+                pendingCreatures.Remove(pending);
+                continue;
+            }
+            // A native summon can briefly set the whole creature to transparent before fading in.
+            if (!VisibleUi.Shown(node)) continue;
+            if (!VisibleUi.OnScreen(node.Body)) { pendingCreatures.Remove(pending); continue; }
+            if (VisibleUi.FrameNumber <= pending.frame) continue;
+            if (Entity(pending.creature) is { } identity) pending.slot.Publish(new() { ["target"] = identity });
+            pendingCreatures.Remove(pending);
         }
     }
 
@@ -327,7 +382,8 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
                 break;
             case CreatureAddedToCombatEvent e when ReferenceEquals(e.CombatState, combat):
                 SubscribeCreatures();
-                Add("creature_added", e.Creature);
+                if (CombatObservation.Status() == "visible" && buffer.Reserve("creature_added") is { } slot)
+                    pendingCreatures.Add((e.Creature, slot, VisibleUi.FrameNumber));
                 break;
         }
     }
@@ -336,6 +392,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     {
         if (disposed) return;
         disposed = true;
+        pendingCreatures.Clear();
         if (ReferenceEquals(TurnCapture.Journal, this)) TurnCapture.Journal = null;
         lifecycle?.Dispose();
         CombatManager.Instance.CombatWon -= Won;

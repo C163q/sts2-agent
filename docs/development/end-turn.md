@@ -1,6 +1,6 @@
 # 结束回合与期间事件
 
-适用于 Mod `0.42.1`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10` 的 `0.107.1` 兼容运行时。MCP 调用仍为无参数的 `end_turn()`；文件协议为 `end_turn`，需要最新观察令牌。
+适用于 Mod `0.43.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10` 的 `0.107.1` 兼容运行时。MCP 调用仍为无参数的 `end_turn()`；文件协议为 `end_turn`，需要最新观察令牌。
 
 ## 执行与停止边界
 
@@ -88,7 +88,8 @@
 | `hp_changed` | 未作为伤害记录的公开 HP 变化，含 `before`、`after`，例如治疗或直接处决；生命数字隐藏时不返回内部绝对值 |
 | `energy_changed`、`stars_changed` | 可读战斗计数的本地玩家能量／星星变化，含玩家 `target` 及公开端点；`after` 为非负整数，`before` 亦为非负整数，首次星星显现但旧值未公开时为 `null`；等待真实数字达到本次目标，滚动动画不逐帧生成事件 |
 | `max_energy_changed` | 当前战斗能量标签分母的可见变化，含玩家 `target` 和非负整数 `before/after`；仅记录实际采样到的公开变化，不读取隐藏容量或补出未显示中间值 |
-| `max_hp_changed`、`gold_changed` | 顶栏可读的本地玩家最大生命或金币变化，含玩家 `target` 及非负整数 `before/after`；按原生通知记录，金币计数动画不拆成多个事件 |
+| `max_hp_changed` | 本地玩家顶栏或可见友方召唤物生命条的最大生命变化，含玩家或友方 `target` 及非负整数 `before/after`；友方等待实际显示端点，隐藏取消且恢复不补发 |
+| `gold_changed` | 顶栏可读的本地玩家金币变化，含玩家 `target` 及非负整数 `before/after`；按原生通知记录，金币计数动画不拆成多个事件 |
 | `block_changed` | 格挡变化，含 `before`、`after`；普通伤害消耗的格挡由 `damage.blocked` 表达 |
 | `power_changed` | 名称、`change`（`applied` / `modified` / `removed`）及显示计数前后值；无数字图标或不存在的一侧用 `null` |
 | `died`、`revived`、`creature_added` | 可见实例的死亡、复活或加入，分别保留；未复活前的重复死亡通知只记录一次，复活后可再次记录死亡 |
@@ -123,7 +124,9 @@ RitsuLib 提供统一通知，用于出牌、生成牌、角色加入及生命�
 
 偷窃草蜢的首回合会记录 Swipe 的 `power_changed/applied`、攻击伤害及 Escape Artist 计数变化。当前没有专门的偷牌事件，回执不附送被偷牌名或移出位置；已公开的被偷卡牌预览及归还说明可通过 `inspect_combatants` 的 Swipe 提示读取。实测完整回执与可见性核对见[状态说明验证](../research/2026-11-01-power-descriptions.md)。
 
-当前不是完整游戏回放系统。未接入资源、牌面数值变化、复杂召唤和任意第三方 Mod 效果仍可能缺项；Osty 代受伤分支可能缺少原目标的格挡记录，不能用于这类战斗的完整伤害核算。未知选择界面、超时后的持续事件、断线恢复不在本版覆盖范围。升级游戏或 RitsuLib 后须重新验证。设计依据见 [调研](../research/2026-10-29-end-turn-events.md)。
+奥斯提攻击的 `actor` 为友方奥斯提，`source` 为所用卡牌；君王之剑攻击的 `actor` 为玩家，`source` 为君王之剑卡牌，不创建独立的剑生物。奥斯提代受伤按原生结果分别记录主人格挡、奥斯提生命损失及超出其生命后回到主人的伤害；原生未调用主人 `LoseHpInternal` 的格挡结果从本次新产生的伤害记录补录，按同一结果实例去重。首次加入仅在至少一帧绘制后公开身份，覆盖时取消且不补发。来源与验证见[核查及实现记录](../research/2026-11-02-companions.md)。
+
+当前不是完整游戏回放系统。未接入资源、牌面数值变化、其他复杂召唤和任意第三方 Mod 效果仍可能缺项。未知选择界面、超时后的持续事件、断线恢复不在本版覆盖范围。升级游戏或 RitsuLib 后须重新验证。设计依据见 [调研](../research/2026-10-29-end-turn-events.md)。
 
 各类游戏动作已接入可见玩家 HP、最大生命、金币及上述物品和永久牌组通知；战斗能量、最大能量、星星和蜡制遗物熔化遵循公开显示边界。遗传算法等基础变量、基础能量费用及已附着附魔的直接数值变化已接入；未经过上述入口的直接存储字段、更多特殊机制仍可能缺项。充能球已接入原生生成、激发、离栏及槽位变化；被动触发、数值变化与替换球尚无专用事件。战斗外动作进入首场战斗已统一接入日志，包含 `FoulPotion` 和选牌恢复父流程；同一动作从已有战斗更换为新战斗也已接入统一日志；双 Boss 等需要奖励或选路的流程仍逐次调用，不自动替玩家推进。纯 UI 操作可以返回空事件，空数组也不证明没有其他尚未接入的效果，`complete` 不证明记录完整。历史基线与后续范围见[覆盖审查](../research/2026-11-01-transition-event-coverage.md)，永久变化见[第五阶段记录](../research/2026-11-01-permanent-card-events.md)，充能球见[第六阶段记录](../research/2026-11-01-orb-events.md)，本阶段交接实现与验证见[第七阶段记录](../research/2026-11-01-combat-handoff.md)。
 
@@ -143,4 +146,4 @@ python3 -m tests.game.verifiers.verify_end_turn --ipc-dir .tmp/roundtrip/ipc --s
 
 [出牌工具](card-play.md) 同样复用期间事件，并增加 `action_canceled`：原生动作已取消且恢复可行动。入队成功不代表实际打出，失败或取消后仍须重新观察。
 
-[搜刮动作](rewards.md) 复用 `transition` 并记录受支持的玩家资源变化，尚未提供通用物品变化日志。`action_completed` 表示当前奖励交互已经结算或到达新的奖励页面；`manual_input_required` 表示已识别的原生对话或未支持页面需要手动输入，不续接动作许可。
+[搜刮动作](rewards.md) 复用 `transition` 并记录受支持的玩家资源、物品与永久牌组变化。`action_completed` 表示当前奖励交互已经结算或到达新的奖励页面；`manual_input_required` 表示已识别的原生对话或未支持页面需要手动输入，不续接动作许可。

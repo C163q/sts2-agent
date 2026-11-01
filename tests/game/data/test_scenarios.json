@@ -27,6 +27,9 @@
     "entropic"
   ],
   "play": [
+    "companions_osty",
+    "companions_first",
+    "companions_blade",
     "fog_natural",
     "fog_card",
     "fog_cleanup",

@@ -1,5 +1,26 @@
 [
   {
+    "name": "osty",
+    "scenarios": { "play": "companions_osty" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_companions.py", "args": ["--scenario", "osty"] }
+    ]
+  },
+  {
+    "name": "sovereign_blade",
+    "scenarios": { "play": "companions_blade" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_companions.py", "args": ["--scenario", "blade"] }
+    ]
+  },
+  {
+    "name": "first_summon",
+    "scenarios": { "play": "companions_first" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_companions.py", "args": ["--scenario", "first"] }
+    ]
+  },
+  {
     "name": "minion_death_attribution",
     "scenarios": { "play": "minion_card" },
     "steps": [

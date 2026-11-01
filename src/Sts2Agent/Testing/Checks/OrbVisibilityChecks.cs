@@ -13,6 +13,7 @@ internal static class OrbVisibilityChecks
 {
     public static async Task<object> Run(Player player, Func<Task> frame, Func<string> observe)
     {
+        var cardIds = new CardIdentityMap<MegaCrit.Sts2.Core.Models.CardModel>();
         var node = NCombatRoom.Instance!.GetCreatureNode(player.Creature)!;
         var manager = node.OrbManager!;
         var slots = OrbInspection.VisibleNodes(node) ?? throw new InvalidOperationException("Fixture slots are not visible.");
@@ -25,7 +26,7 @@ internal static class OrbVisibilityChecks
             return state.RootElement.GetProperty("player").Clone();
         }
         bool Unknown() => ReadPlayer().GetProperty("orb_slots").ValueKind == JsonValueKind.Null;
-        bool NoTips() => !CombatantInspection.Read(player).hover_tips.Any(t => t.sources.Any(s => s.StartsWith("player.orb_slots.")))
+        bool NoTips() => !CombatantInspection.Read(player, cardIds.Get).hover_tips.Any(t => t.sources.Any(s => s.StartsWith("player.orb_slots.")))
             && !UiInspection.Read().Any(t => t.sources.Any(s => s.StartsWith("player.orb_slots.")));
         Check("native five slots are exposed", ReadPlayer().GetProperty("orb_slots").GetArrayLength() == 5);
         foreach (var (item, name) in new (CanvasItem, string)[] {
@@ -88,7 +89,7 @@ internal static class OrbVisibilityChecks
             {
                 slots[i].MouseFilter = Control.MouseFilterEnum.Ignore; await frame();
                 string source = $"player.orb_slots.{i}";
-                Check("non-hoverable slot has no help: " + i, !CombatantInspection.Read(player).hover_tips.Any(t => t.sources.Contains(source))
+                Check("non-hoverable slot has no help: " + i, !CombatantInspection.Read(player, cardIds.Get).hover_tips.Any(t => t.sources.Contains(source))
                     && !UiInspection.Read().Any(t => t.sources.Contains(source)));
             }
             finally { slots[i].MouseFilter = filter; }

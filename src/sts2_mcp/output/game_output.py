@@ -45,16 +45,19 @@ INTENT = {"category": TEXT, "value": TEXT}
 HEALTH = {"hp": NUMBER, "max_hp": NUMBER, "hp_display": str, "block": NUMBER}
 ORB = {"name": str, "passive": NUMBER, "evoke": NUMBER}
 ORB_SLOTS = nullable([nullable(ORB)])
+BLADE = {"id": int, "name": TEXT}
 PLAYER = {
     **HEALTH, "character": TEXT, "energy": NUMBER, "max_energy": NUMBER, "stars": NUMBER,
     "powers": nullable([POWER]), "hand": nullable([CARD]),
     "orb_slots": ORB_SLOTS,
+    "sovereign_blades": nullable([BLADE]),
     "draw_count": NUMBER, "discard_count": NUMBER, "exhaust_count": NUMBER,
 }
 ENEMY = {
     **HEALTH, "id": NUMBER, "name": TEXT, "powers": nullable([POWER]),
     "intents": nullable([INTENT]),
 }
+ALLY = {**HEALTH, "id": int, "name": TEXT, "powers": nullable([POWER]), "block_shared_with": str}
 RELIC = {"name": TEXT, "counter": NUMBER, "melted": nullable(bool)}
 TOP_BAR = {
     "hp": NUMBER, "max_hp": NUMBER,
@@ -130,7 +133,7 @@ from sts2_mcp.output.map_details import MAP_SUMMARY
 
 from sts2_mcp.output.run_ending_details import RESULT, EPILOGUE
 
-OPTIONAL_OBSERVATION = {'run_result': nullable(RESULT), 'epilogue': nullable(EPILOGUE), 'map': nullable(MAP_SUMMARY), 'confirmation': nullable(CONFIRMATION), 'divination': nullable(DIVINATION), "event": nullable(ROOM_EVENT), "ancient": nullable(ANCIENT),"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
+OPTIONAL_OBSERVATION = {'allies': nullable([ALLY]), 'run_result': nullable(RESULT), 'epilogue': nullable(EPILOGUE), 'map': nullable(MAP_SUMMARY), 'confirmation': nullable(CONFIRMATION), 'divination': nullable(DIVINATION), "event": nullable(ROOM_EVENT), "ancient": nullable(ANCIENT),"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
 GAMEPLAY = {
     'reward_result': {'reward_id': int, 'status': str},
     'purchase_result': {'item_id': int, 'status': str},
@@ -177,6 +180,24 @@ def gameplay_fields(state, *, operation=None):
     return project(state, shape)
 
 
+def validate_identities(items, maximum):
+    seen = set()
+    for item in items:
+        identity = item.get('id')
+        if type(identity) is not int or not 0 <= identity <= maximum or identity in seen:
+            raise ValueError('Invalid or duplicate public identity.')
+        seen.add(identity)
+
+
+def blade_refs(value):
+    result = project(value, nullable([BLADE]))
+    if result is not None:
+        validate_identities(result, 2147483647)
+        if any(set(item) != set(BLADE) for item in result):
+            raise ValueError('Incomplete public blade identity.')
+    return result
+
+
 def orb_slots(value):
     result = project(value, ORB_SLOTS)
     if result is not None and (len(result) > 10 or any(
@@ -194,6 +215,13 @@ def observation_details(state):
     result['available_actions'] = public_tools(result['available_actions'])
     if result['player'] is not None and 'orb_slots' in result['player']:
         result['player']['orb_slots'] = orb_slots(result['player']['orb_slots'])
+    if result['player'] is not None and 'sovereign_blades' in result['player']:
+        result['player']['sovereign_blades'] = blade_refs(result['player']['sovereign_blades'])
+    if result.get('allies') is not None:
+        validate_identities(result['allies'], 4294967295)
+        for ally in result['allies']:
+            if not {'id', 'name', *HEALTH, 'powers'} <= ally.keys() or ally.get('block_shared_with', 'player') != 'player':
+                raise ValueError('Invalid public ally.')
     if result.get('map') is not None:
         from sts2_mcp.output.map_details import map_summary
         result['map'] = map_summary(result['map'])

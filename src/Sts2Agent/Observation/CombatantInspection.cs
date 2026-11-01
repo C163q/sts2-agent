@@ -2,6 +2,8 @@ using System.Reflection;
 using Godot;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 using MegaCrit.Sts2.Core.Nodes.Combat;
@@ -18,29 +20,47 @@ internal sealed class CombatantInspection
     private readonly Dictionary<(string? title, string description), List<string>> tips = [];
 
     internal sealed record PowerText(string? name, int? amount);
-    internal sealed record PlayerText(PowerText[]? powers, OrbInspection.OrbText?[]? orb_slots);
+    internal sealed record PlayerText(PowerText[]? powers, OrbInspection.OrbText?[]? orb_slots,
+        SovereignBladeInspection.BladeText[] sovereign_blades);
+    internal sealed record AllyText(uint? id, string? name, PowerText[]? powers);
     internal sealed record EnemyText(uint? id, string? name, PowerText[]? powers, object[]? intents);
     internal sealed record SharedTip(string? title, string description, string[] sources);
-    internal sealed record Result(string scene, PlayerText? player, EnemyText[] enemies, SharedTip[] hover_tips);
+    internal sealed record Result(string scene, PlayerText? player, EnemyText[] enemies, AllyText[] allies, SharedTip[] hover_tips);
 
-    public static Result Read(Player player) => EnglishCardText.Read(() => new CombatantInspection().ReadAll(player));
+    public static Result Read(Player player, Func<CardModel, int> cardId) =>
+        EnglishCardText.Read(() => new CombatantInspection().ReadAll(player, cardId));
 
-    private Result ReadAll(Player player)
+    private Result ReadAll(Player player, Func<CardModel, int> cardId)
     {
         if (CombatObservation.Status() != "visible" || NCombatRoom.Instance!.Ui.Hand.InCardPlay)
             throw new InvalidOperationException("Combatant details require a visible combat screen.");
         var playerNode = NCombatRoom.Instance!.GetCreatureNode(player.Creature);
         var playerText = VisibleUi.Shown(playerNode) && VisibleUi.OnScreen(playerNode!.Body)
-            ? new PlayerText(Powers(playerNode, "player"), Orbs(playerNode)) : null;
+            ? new PlayerText(Powers(playerNode, "player"), Orbs(playerNode), Blades(playerNode, cardId)) : null;
         var enemies = CombatObservation.EnemyNodes().Select((node, index) => new EnemyText(
             node.Entity.CombatId, EnglishCardText.Plain(node.Entity.Monster!.Title.GetFormattedText()),
             Powers(node, $"enemies.{index}"), Intents(node, $"enemies.{index}"))).ToArray();
-        return new Result("combat", playerText, enemies,
+        var allies = CombatObservation.AllyNodes().Select((node, index) => new AllyText(
+            node.Entity.CombatId, EnglishCardText.Plain(node.Entity.Monster!.Title.GetFormattedText()),
+            Powers(node, $"allies.{index}"))).ToArray();
+        return new Result("combat", playerText, enemies, allies,
             tips.Select(pair => new SharedTip(pair.Key.title, pair.Key.description, pair.Value.ToArray())).ToArray());
     }
 
     internal static NPowerContainer? PowerContainer(NCreature node) =>
         node.GetNodeOrNull<NCreatureStateDisplay>("%HealthBar")?.GetNodeOrNull<NPowerContainer>("%PowerContainer");
+
+    private SovereignBladeInspection.BladeText[] Blades(NCreature node, Func<CardModel, int> cardId)
+    {
+        var blades = SovereignBladeInspection.VisibleNodes(node, cardId);
+        for (int i = 0; i < blades.Length; i++)
+            if (SovereignBladeInspection.Hoverable(blades[i]))
+                // Hover-card rendering recalculates previews; an off-hand card can retain stale cached values.
+                AddText(new HoverTipText(EnglishCardText.Plain(blades[i].Card.Title),
+                    (string)BrowsedCard.Read(blades[i].Card, "preview", PileType.Deck, upgrades: false,
+                        full: true, preservePile: true)["description"]!), $"player.sovereign_blades.{i}");
+        return SovereignBladeInspection.Read(node, cardId);
+    }
 
     private OrbInspection.OrbText?[]? Orbs(NCreature node)
     {
@@ -102,12 +122,13 @@ internal sealed class CombatantInspection
     private void Add(IEnumerable<IHoverTip> entries, string source)
     {
         foreach (var tip in entries.Select(HoverTipText.From))
-        {
-            var key = (tip.title, tip.description);
-            if (!tips.TryGetValue(key, out var sources))
-                tips[key] = sources = [];
-            if (!sources.Contains(source))
-                sources.Add(source);
-        }
+            AddText(tip, source);
+    }
+
+    private void AddText(HoverTipText tip, string source)
+    {
+        var key = (tip.title, tip.description);
+        if (!tips.TryGetValue(key, out var sources)) tips[key] = sources = [];
+        if (!sources.Contains(source)) sources.Add(source);
     }
 }

@@ -1,5 +1,5 @@
 import re
-from sts2_mcp.output.game_output import orb_slots
+from sts2_mcp.output.game_output import blade_refs, orb_slots, validate_identities
 
 
 def nullable_text(value):
@@ -30,7 +30,21 @@ def intents(items):
     return [{"category": nullable_text(item["category"]), "value": nullable_text(item["value"])} for item in items]
 
 
-def validate_source(source, player, enemies):
+def validate_source(source, player, enemies, allies):
+    blade = re.fullmatch(r'player\.sovereign_blades\.(0|[1-9][0-9]*)', source)
+    if blade:
+        items = player.get('sovereign_blades') if player is not None else None
+        if items is None or int(blade[1]) >= len(items):
+            raise ValueError('Missing public blade.')
+        return
+    ally = re.fullmatch(r'allies\.(0|[1-9][0-9]*)\.powers\.(0|[1-9][0-9]*)', source)
+    if ally:
+        if allies is None or int(ally[1]) >= len(allies):
+            raise ValueError('Missing public ally.')
+        items = allies[int(ally[1])]['powers']
+        if items is None or int(ally[2]) >= len(items):
+            raise ValueError('Missing allied power.')
+        return
     orb = re.fullmatch(r'player\.orb_slots\.(0|[1-9][0-9]*)', source)
     if orb:
         slots = player.get('orb_slots') if player is not None else None
@@ -57,6 +71,15 @@ def combatant_details(state):
     player = None if state["player"] is None else {"powers": powers(state["player"]["powers"])}
     if player is not None and 'orb_slots' in state['player']:
         player['orb_slots'] = orb_slots(state['player']['orb_slots'])
+    if player is not None and 'sovereign_blades' in state['player']:
+        player['sovereign_blades'] = blade_refs(state['player']['sovereign_blades'])
+    allies = None
+    if state.get('allies') is not None:
+        if not isinstance(state['allies'], list):
+            raise ValueError('Invalid public allies.')
+        allies = [{'id': item['id'], 'name': nullable_text(item['name']), 'powers': powers(item['powers'])}
+                  for item in state['allies']]
+        validate_identities(allies, 4294967295)
     enemies = []
     for enemy in state["enemies"]:
         identity = enemy["id"]
@@ -77,6 +100,9 @@ def combatant_details(state):
             raise ValueError("Duplicate combatant hover tip or source.")
         seen.add((title, description))
         for source in sources:
-            validate_source(source, player, enemies)
+            validate_source(source, player, enemies, allies)
         tips.append({"title": title, "description": description, "sources": list(sources)})
-    return {"scene": "combat", "player": player, "enemies": enemies, "hover_tips": tips}
+    result = {"scene": "combat", "player": player, "enemies": enemies, "hover_tips": tips}
+    if 'allies' in state:
+        result['allies'] = allies
+    return result

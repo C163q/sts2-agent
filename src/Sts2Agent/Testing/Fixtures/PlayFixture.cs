@@ -26,6 +26,11 @@ internal static class PlayFixture
     {
         var combat = CombatManager.Instance.DebugOnlyGetState()!;
         var state = player.PlayerCombatState!;
+        if (scenario.StartsWith("companions_", StringComparison.Ordinal))
+        {
+            await CompanionFixture.Configure(scenario, player);
+            return;
+        }
         if (scenario.StartsWith("minion_", StringComparison.Ordinal))
         {
             var leader = combat.Enemies.Single();

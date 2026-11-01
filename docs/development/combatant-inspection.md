@@ -1,6 +1,6 @@
 # 战斗对象与充能球详情
 
-文件操作 `inspect_combatants` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.39.0`。一次只读查看本地玩家和当前可见敌人的 powers、敌人当前展示的意图，以及玩家已生成充能球的原生英语悬停说明。不触发实际鼠标悬停，不改变目标、语言或游戏流程。MCP 与文件客户端返回相同的玩法 JSON。
+文件操作 `inspect_combatants` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.43.0`。一次只读查看玩家、可见敌人和友方召唤物的 powers、敌人当前意图、玩家已生成充能球及悬浮君王之剑的原生英语说明。不触发实际鼠标悬停，不改变目标、语言或游戏流程。MCP 与文件客户端返回相同的玩法 JSON。
 
 ## 读取
 
@@ -19,12 +19,14 @@ MCP 调用 `inspect_combatants()` 无须参数，成功时刷新状态令牌；�
 | `scene` | 当前固定为 `combat` |
 | `player.powers[]` | 玩家当前可读的 power 名称和可见计数 `name/amount` |
 | `player.orb_slots` | 与[基础观察](observation.md#玩法字段)相同的球槽顺序、空值和显示数字；不把悬停才出现的数字填入该摘要 |
+| `player.sovereign_blades[]` | 当前可见悬浮剑的绑定卡牌 `id/name`，与基础观察和手牌 ID 一致；按稳定 ID 排列 |
+| `allies[]` | 当前可见友方召唤物的 `id/name/powers`；如奥斯提，powers 格式同玩家 |
 | `enemies[]` | 当前可见敌人，从左到右排列 |
 | `enemies[].id/name` | 基础观察相同的战斗对象 ID 和英语名称 |
 | `enemies[].powers[]` | 该敌人当前可读的 powers，格式同玩家 |
 | `enemies[].intents[]` | 当前渲染意图的 `category/value`，格式同基础观察 |
 | `hover_tips[]` | 主说明和附带原生解释，按 `title/description` 同时相同去重 |
-| `hover_tips[].sources[]` | 关联到本次结果的具体 power、intent 或已生成球，如 `player.powers.0`、`enemies.1.intents.0`、`player.orb_slots.0` |
+| `hover_tips[].sources[]` | 关联到本次结果的对象，如 `player.powers.0`、`enemies.1.intents.0`、`allies.0.powers.0`、`player.orb_slots.0`、`player.sovereign_blades.0` |
 
 `sources` 中的数组下标从 0 开始，只对本次结果有效。重复怪物用 `id` 区分；不要把数组位置当作跨请求的稳定 ID。同名提示正文不同时分开保留，包括层数、持续回合或拥有者不同造成的区别。附带的术语或卡牌预览也关联到提供它的 power。
 
@@ -38,13 +40,13 @@ MCP 调用 `inspect_combatants()` 无须参数，成功时刷新状态令牌；�
 
 仅支持无遮挡战斗；瞄准或打出卡牌期间，原生界面会抑制战斗对象悬停说明，因此整次读取返回 `illegal_action`。敌人身份与顺序复用基础观察的可见节点筛选；power 必须有可见图标、模型允许展示且能接收鼠标悬停；意图必须有可见的 holder 和图标且能接收悬停。不枚举隐藏 powers，不读 `Monster.NextMove` 或后续招式，不增加格挡说明。`HasIntentTip: false` 的意图不构造说明。
 
-已知缺口：复用的筛选会将可见奥斯提误列入敌人，其状态说明也随之关联到 `enemies`；悬浮君王之剑的原生卡牌预览尚未接入本工具或 `inspect_ui`。两者不能视作已完整支持，见[核查记录](../research/2026-11-02-companions.md)。
+奥斯提按真实阵营进入 `allies`，不占用敌人下标。君王之剑的说明来自可见 `NSovereignBladeVfx.Card` 的原生卡牌预览，按原生 `PileType.Deck` 格式化；不返回独立铸造计数、所在牌堆或隐藏卡牌信息。剑可见但 hitbox 不可悬停、攻击动画进行中或被隐藏时不提供正文；多把剑分别绑定卡牌 ID，相同提示仍可共享多个来源。核对与验证见[记录](../research/2026-11-02-companions.md)。
 
 power 主说明使用当前实例 `HoverTips` 的动态正文，而非静态通用定义；包含人悬停时会看到的当前持续回合、层数、拥有者或施加者等变量。意图从已显示 `NIntent` 绑定的意图、目标和拥有者构造原生提示，包含当前预览伤害及连击次数。对 Shrink 等施加时缓存怪物本地化名称的情况，仅在独立格式化变量中放入英语施加者名称，不修改实际 power 的缓存或中文说明。读取不调用控件的 `OnFocus/OnHovered` 或更新流程；未知提示类型显式返回错误，不静默丢弃。
 
 原生 `PowerModel.HoverTips` 的格式化调用在英语读取作用域内显式经过英语渲染器，避免预编译或内联调用绕过 `LocString.GetFormattedText` 的拦截后，以中文复数规则解释英文模板。实例变量仍由原生提示流程填入；例如 Escape Artist 计数为 5、4 时分别显示 `after 5 turns`、`after 4 turns`，为 1 时显示 `this turn`。这是当前 UI 状态说明，不提供敌人后续招式或对未来回合的额外推演。修复与同类审查见[状态说明验证](../research/2026-11-01-power-descriptions.md)。
 
-沿用 [信息边界](../observation.md) 和现有英语作用域。当前可见性判断使用节点、透明度、视口及裁剪矩形，不能精确判断任意像素遮挡。读取过程中如果发现绑定对象无效，则整次报错，不用其他模型状态补齐。其他 Mod 改写悬停行为、其他游戏版本、多人/宠物及非战斗场景尚未验证。
+沿用 [信息边界](../observation.md) 和现有英语作用域。当前可见性判断使用节点、透明度、视口及裁剪矩形，不能精确判断任意像素遮挡。读取过程中如果发现绑定对象无效，则整次报错，不用其他模型状态补齐。其他 Mod 改写悬停行为、其他游戏版本、多人及非战斗场景尚未验证。
 
 ## 验证
 

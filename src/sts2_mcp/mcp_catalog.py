@@ -126,7 +126,7 @@ def tool_definitions(*, screenshots_enabled=False):
             "Discard one potion through the native action. "
             "Allowed only when potions can be removed; automatic potions may be discarded.")),
         Tool(name="inspect_combatants", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
-            "Read both sides' visible powers, current enemy intent explanations and your occupied orbs' hover help. "
+            "Read visible combatant powers, enemy intent explanations, occupied orb help and floating Sovereign Blade previews. "
             "Unavailable while aiming or playing a card.")),
         Tool(name="inspect_relics", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read descriptions, displayed counters and hover help for visible, hoverable owned relics.")),

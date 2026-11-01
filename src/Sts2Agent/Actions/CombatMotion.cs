@@ -40,6 +40,7 @@ internal static class CombatMotion
         }
         // A completed death task may remain non-null on creatures that later revive.
         return node.DeathAnimationTask is { IsCompleted: false } || fading
+            || SovereignBladeInspection.Pending(node)
             || RewardInspection.Animating(node, "_intentFadeTween")
             || RewardInspection.Animating(node, "_scaleTween")
             || VisibleUi.Descendants<NCreatureStateDisplay>(node).Any(display => RewardInspection.Animating(display, "_showHideTween"))

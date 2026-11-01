@@ -1,6 +1,6 @@
 # 战斗观察 JSON
 
-适用于 Linux 游戏 `v0.107.1` 与 Mod `0.42.1`。底层观察结构版本为 `24`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+适用于 Linux 游戏 `v0.107.1` 与 Mod `0.43.0`。底层观察结构版本为 `25`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -56,6 +56,9 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 | `player.orb_slots` | 按原生队列排列的充能球槽；整个字段 `null` 表示不可读，`[]` 表示没有槽位，数组项 `null` 表示空槽。非空项含 `name/passive/evoke`，数字仅取实际显示标签 |
 | `powers[]` | 实际显示状态图标的英语名称和可见计数，不枚举全部模型状态 |
 | `enemies[]` | 从左到右排列的可见敌人身份、定位 ID、生命、格挡、状态图标和当前意图 |
+| `allies[]` | 从左到右排列的可见友方召唤物，包含 `id/name/hp/max_hp/hp_display/block/powers`；奥斯提不属于敌人 |
+| `allies[].block_shared_with` | 实际生命条控件跟踪本地玩家格挡时为 `"player"`；该格挡是玩家同一资源的重复显示，不是额外一份 |
+| `player.sovereign_blades[]` | 当前可见悬浮君王之剑的 `id/name`，ID 与绑定卡牌共用；不自动提供正文或伤害数值 |
 | `intents[]` | 当前渲染意图的 `category/value`，不读取下一招模型或悬停说明 |
 | `draw_count/discard_count/exhaust_count` | 当前可见牌堆计数，不返回内容或顺序 |
 | `top_bar` | 当前可见生命与最大生命（`hp/max_hp`）、金币、总楼层、可见进阶等级、主牌组数量、房间图标、首领、药水槽、遗物及入口可见性 |
@@ -70,7 +73,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 数字来自可见标签，金币动画期间也按标签返回。`null` 不等于 0，表示未显示、尚未准备或不能可靠识别；可见空容器使用 `[]`。正常生命条没有格挡图标时才归一化为 `block: 0`。死亡文字与无限图标分别映射为 `dead`、`infinite`，不从隐藏生命模型补数字。
 
-当前已知缺口：奥斯提使用原生怪物模型，现有筛选会将其误列入 `enemies`，尚无独立友方召唤物字段；战场悬浮的君王之剑也没有对象摘要。攻击事件中的敌我身份使用真实阵营，与该静态观察缺陷不同。核对依据及待补范围见[奥斯提与君王之剑核查](../research/2026-11-02-companions.md)。
+`allies: null` 表示战场不可读，`[]` 表示当前可见范围中没有友方召唤物；死亡奥斯提的身体仍可识别，但已隐藏的生命数字保持 `null`，不从模型补出 0。悬浮剑按卡牌稳定 ID 排列，公转不改变顺序或状态令牌；隐藏、零缩放与视口外的剑不列出，也不借其读取其他隐藏卡牌。剑离开手牌后，只要悬浮对象仍然可见，就仍可通过 [inspect_combatants](combatant-inspection.md) 查看原生卡牌预览；消耗及变牌后随原生对象移除。来源和验证见[奥斯提与君王之剑](../research/2026-11-02-companions.md)。
 
 充能球按当前 UI 队列顺序输出，首项是最先激发的槽位，不按屏幕横坐标排序；不包含已脱离队列但仍在淡出的旧图像。球种可以按外观识别，普通球未显示的激发数值为 `null`，等离子球不补出模型数字。任一槽位隐藏、离屏或被裁剪时，整个 `orb_slots` 为 `null`，避免把未知槽当空槽。已生成球的悬停说明由 [inspect_combatants](combatant-inspection.md) 提供；空槽的通用帮助由 [inspect_ui](ui-inspection.md) 提供。
 

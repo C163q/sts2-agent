@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using Godot;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Combat.History.Entries;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Helpers;
@@ -87,6 +88,7 @@ internal sealed class CombatObservation
                 .Select(counter => VisibleUi.Number(counter, "%CountLabel")).FirstOrDefault(),
             powers = Powers(node!),
             orb_slots = OrbInspection.Read(node!),
+            sovereign_blades = SovereignBladeInspection.Read(node!, CardId),
             hand = VisibleUi.Shown(room.Ui.Hand) ? room.Ui.Hand.ActiveHolders
                 .Where(holder => VisibleUi.Shown(holder) && CardVisible(holder.CardNode))
                 .Select(holder => Card(holder.CardNode!)).ToArray() : null,
@@ -107,10 +109,34 @@ internal sealed class CombatObservation
         return EnemyNodes().Select(Enemy).ToArray();
     }
 
-    internal static IEnumerable<NCreature> EnemyNodes() =>
+    internal static IEnumerable<NCreature> VisibleCreatureNodes() =>
         NCombatRoom.Instance!.CreatureNodes.Concat(NCombatRoom.Instance.RemovingCreatureNodes).Distinct()
-            .Where(node => node.Entity.IsMonster && VisibleUi.Shown(node) && VisibleUi.OnScreen(node.Body))
+            .Where(node => VisibleUi.Shown(node) && VisibleUi.OnScreen(node.Body))
             .OrderBy(node => node.GlobalPosition.X);
+
+    internal static IEnumerable<NCreature> EnemyNodes() => VisibleCreatureNodes().Where(node => node.Entity.IsEnemy);
+    internal static IEnumerable<NCreature> AllyNodes() => VisibleCreatureNodes()
+        .Where(node => !node.Entity.IsPlayer && !node.Entity.IsEnemy);
+
+    public object[]? Allies()
+    {
+        if (Status() != "visible") return null;
+        return AllyNodes().Select(node =>
+        {
+            var hp = Health(node);
+            var result = new Dictionary<string, object?>
+            {
+                ["id"] = node.Entity.CombatId, ["name"] = english.Name(node.Entity.Monster!.Title),
+                ["hp"] = hp.current, ["max_hp"] = hp.maximum, ["hp_display"] = hp.display,
+                ["block"] = Block(node), ["powers"] = Powers(node)
+            };
+            var display = node.GetNodeOrNull<NCreatureStateDisplay>("%HealthBar");
+            if (display != null && CardSelection.Field(display, "_blockTrackingCreature") is Creature { IsPlayer: true } tracked
+                && ReferenceEquals(tracked.Player, node.Entity.PetOwner) && LocalContext.IsMe(tracked))
+                result["block_shared_with"] = "player";
+            return (object)result;
+        }).ToArray();
+    }
 
     private object Enemy(NCreature node)
     {
@@ -210,7 +236,7 @@ internal sealed class CombatObservation
                 amount = VisibleUi.Number(power, "%AmountLabel") }).ToArray();
     }
 
-    private static (int? current, int? maximum, string display) Health(NCreature node)
+    internal static (int? current, int? maximum, string display) Health(NCreature node)
     {
         var bar = node.GetNodeOrNull<NCreatureStateDisplay>("%HealthBar")?.GetNodeOrNull<NHealthBar>("%HealthBar");
         string? text = VisibleUi.Text(bar, "%HpLabel");
@@ -235,6 +261,13 @@ internal sealed class CombatObservation
             return null;
         return VisibleUi.Shown(bar?.GetNodeOrNull<Control>("%BlockContainer"))
             ? VisibleUi.Number(bar, "%BlockLabel") : 0;
+    }
+
+    internal static bool BlockNumbersVisible(Creature creature)
+    {
+        var node = NCombatRoom.Instance?.GetCreatureNode(creature);
+        return Status() == "visible" && VisibleUi.Shown(node) && VisibleUi.OnScreen(node!.Body)
+            && Block(node).HasValue;
     }
 
     internal static (int? current, int? maximum) Pair(string? text)

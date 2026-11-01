@@ -6,12 +6,12 @@
 
 ## 当前能力
 
-当前为 Linux 游戏 `v0.107.1` 的验证原型：Mod `0.42.1` 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。已有真实游戏及 Codex 模型的观察、结束回合和读回验证；已接通单人地图选路，完整自动通关仍待验证。
+当前为 Linux 游戏 `v0.107.1` 的验证原型：Mod `0.43.0` 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。已有真实游戏及 Codex 模型的观察、结束回合和读回验证；已接通单人地图选路，完整自动通关仍待验证。
 
 | 能力 | 接口与说明 |
 | --- | --- |
-| 基础观察 | 当前静态画面的英语 JSON，包含角色、手牌名称与费用、敌人当前意图、状态图标及顶栏；见 [观察格式](docs/development/observation.md) |
-| 按需详情 | 查看 [手牌](docs/development/hand-inspection.md)、[界面帮助](docs/development/ui-inspection.md)、[药水](docs/development/potion-inspection.md)、[双方 powers 与意图](docs/development/combatant-inspection.md)、[遗物](docs/development/relic-inspection.md) |
+| 基础观察 | 当前静态画面的英语 JSON，包含角色、友方召唤物、悬浮君王之剑身份、手牌名称与费用、敌人当前意图、状态图标及顶栏；见 [观察格式](docs/development/observation.md) |
+| 按需详情 | 查看 [手牌](docs/development/hand-inspection.md)、[界面帮助](docs/development/ui-inspection.md)、[药水](docs/development/potion-inspection.md)、[战斗对象、充能球与悬浮剑](docs/development/combatant-inspection.md)、[遗物](docs/development/relic-inspection.md) |
 | 原生页面 | 查看 [全牌组](docs/development/deck-inspection.md)、[战斗牌堆](docs/development/pile-inspection.md) 和 [当前幕地图](docs/development/map-inspection.md)，保留页面直到显式关闭 |
 | 游戏动作 | [出牌与目标查询](docs/development/card-play.md)，一次提交卡牌及必要目标；[结束回合](docs/development/end-turn.md)，返回期间事件、停止原因及当前交互状态；遇到选择时返回；通过 [选牌工具](docs/development/card-selection.md) 操作候选、确认及跳过，支持显式查看战场 |
 | 药水动作 | [使用、丢弃与目标查询](docs/development/potion-actions.md)，支持单人战斗和符合原生条件的战斗外使用，后续选牌单独处理 |
@@ -20,7 +20,7 @@
 
 已接通[先古之民房间](docs/development/ancients.md)：逐句对话、选择遗物、后续选牌与前进。支持[通用问号事件](docs/development/events.md)的正文与选项、致死红框、后续选牌/奖励、战斗及返回事件；[占卜](docs/development/divination.md)支持棋盘图像、大小工具与逐格揭开。[Trial 确认弹窗](docs/development/events.md#事件确认弹窗)支持明确确认或取消；未知弹窗仍停在人工输入边界。
 
-MCP `0.40.0` 默认提供 42 个工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察支持[完整或仅工具预设](docs/development/observation.md#mcp-输出预设)，按当前页面列出可用查看与操作工具，不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
+MCP `0.41.0` 默认提供 42 个工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。基础观察支持[完整或仅工具预设](docs/development/observation.md#mcp-输出预设)，按当前页面列出可用查看与操作工具，不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
 
 ## 开发与运行入口
 

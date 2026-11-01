@@ -16,6 +16,7 @@ internal static class CombatantInspectionChecks
 {
     public static void Run(string reportPath, Player player)
     {
+        var cardIds = new CardIdentityMap<MegaCrit.Sts2.Core.Models.CardModel>();
         List<object> results = [];
         void Check(string name, bool passed) => results.Add(new { name, passed });
         var room = NCombatRoom.Instance!;
@@ -34,7 +35,7 @@ internal static class CombatantInspectionChecks
         var cachedApplier = (StringVar)shrink.DynamicVars["ApplierName"];
         string cachedApplierName = cachedApplier.StringValue;
         string chineseShrinkTip = JsonSerializer.Serialize(shrink.HoverTips.Select(HoverTipText.From));
-        var before = CombatantInspection.Read(player);
+        var before = CombatantInspection.Read(player, cardIds.Get);
         var escape = enemy.Entity.GetPower<EscapeArtistPower>()!;
         var nativeEscape = escape.HoverTips.Select(HoverTipText.From).ToArray();
         var escapeText = new LocString("powers", "ESCAPE_ARTIST_POWER.smartDescription");
@@ -69,7 +70,7 @@ internal static class CombatantInspectionChecks
         void Hidden(CanvasItem item, string name, Func<CombatantInspection.Result, bool> verify)
         {
             bool visible = item.Visible;
-            try { item.Visible = false; Check(name, verify(CombatantInspection.Read(player))); }
+            try { item.Visible = false; Check(name, verify(CombatantInspection.Read(player, cardIds.Get))); }
             finally { item.Visible = visible; }
         }
         Hidden(playerPowers, "hidden_player_powers_are_unknown", state => state.player?.powers == null
@@ -85,10 +86,10 @@ internal static class CombatantInspectionChecks
         try
         {
             power.MouseFilter = Control.MouseFilterEnum.Ignore;
-            Check("non_hoverable_power_is_excluded", CombatantInspection.Read(player).player!.powers!.Length == count - 1);
+            Check("non_hoverable_power_is_excluded", CombatantInspection.Read(player, cardIds.Get).player!.powers!.Length == count - 1);
             power.MouseFilter = mouseFilter;
             power.Position = new Vector2(-10000, -10000);
-            Check("offscreen_power_is_excluded", CombatantInspection.Read(player).player!.powers!.Length == count - 1);
+            Check("offscreen_power_is_excluded", CombatantInspection.Read(player, cardIds.Get).player!.powers!.Length == count - 1);
         }
         finally { power.MouseFilter = mouseFilter; power.Position = position; }
         var intentNode = enemies.First(node => node.IntentContainer.GetChildren().Contains(intent));
@@ -104,17 +105,17 @@ internal static class CombatantInspectionChecks
         try
         {
             intent.MouseFilter = Control.MouseFilterEnum.Ignore;
-            Check("non_hoverable_intent_is_excluded", CombatantInspection.Read(player).enemies[intentIndex].intents!.Length == intentCount - 1);
+            Check("non_hoverable_intent_is_excluded", CombatantInspection.Read(player, cardIds.Get).enemies[intentIndex].intents!.Length == intentCount - 1);
             intent.MouseFilter = intentMouseFilter;
             field.SetValue(intent, new HiddenIntent());
-            Check("hidden_intent_has_no_explanation", !CombatantInspection.Read(player).hover_tips.Any(tip =>
+            Check("hidden_intent_has_no_explanation", !CombatantInspection.Read(player, cardIds.Get).hover_tips.Any(tip =>
                 tip.sources.Contains($"enemies.{intentIndex}.intents.0")));
             field.SetValue(intent, new BuffIntent());
             string buffTitle = EnglishCardText.Read(() => new LocString("intents", "BUFF.title").GetFormattedText());
-            Check("uses_displayed_intent_binding", CombatantInspection.Read(player).hover_tips.Any(tip =>
+            Check("uses_displayed_intent_binding", CombatantInspection.Read(player, cardIds.Get).hover_tips.Any(tip =>
                 tip.title == buffTitle && tip.sources.Contains($"enemies.{intentIndex}.intents.0")));
             field.SetValue(intent, new MultiAttackIntent(13, 2));
-            Check("native_multiattack_uses_player_vulnerable", CombatantInspection.Read(player).hover_tips.Any(tip =>
+            Check("native_multiattack_uses_player_vulnerable", CombatantInspection.Read(player, cardIds.Get).hover_tips.Any(tip =>
                 tip.sources.Contains($"enemies.{intentIndex}.intents.0") && tip.description.Contains("19") && tip.description.Contains("2")));
         }
         finally { field.SetValue(intent, model); intent.MouseFilter = intentMouseFilter; }
@@ -125,14 +126,14 @@ internal static class CombatantInspectionChecks
         {
             cardPlayField.SetValue(room.Ui.Hand, dummyPlay);
             bool rejected = false;
-            try { CombatantInspection.Read(player); }
+            try { CombatantInspection.Read(player, cardIds.Get); }
             catch (InvalidOperationException) { rejected = true; }
             Check("card_aiming_is_unavailable", rejected);
         }
         finally { cardPlayField.SetValue(room.Ui.Hand, previousPlay); dummyPlay.Free(); }
         Check("locale_unchanged", language == LocManager.Instance.Language && localized.GetFormattedText() == original);
         Check("keyword_cache_unchanged", HoverTipFactory.FromKeyword(MegaCrit.Sts2.Core.Entities.Cards.CardKeyword.Exhaust).Equals(cachedKeyword));
-        Check("read_is_repeatable", JsonSerializer.Serialize(before) == JsonSerializer.Serialize(CombatantInspection.Read(player)));
+        Check("read_is_repeatable", JsonSerializer.Serialize(before) == JsonSerializer.Serialize(CombatantInspection.Read(player, cardIds.Get)));
         var audit = PowerTextChecks.Run();
         Check("native_english_power_parity", JsonSerializer.SerializeToElement(audit).GetProperty("passed").GetBoolean());
         File.WriteAllText(reportPath, JsonSerializer.Serialize(new { language, nativeEscape, formattedEscape, inspection = before, results, audit }, new JsonSerializerOptions { WriteIndented = true }));

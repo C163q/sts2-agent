@@ -78,6 +78,7 @@ internal sealed partial class GameAdapter(bool testMode)
         PotionJournal.Current?.SampleVisibility();
         CombatResourceJournal.Current?.SampleVisibility();
         OrbJournal.Current?.SampleVisibility();
+        TurnCapture.Journal?.SampleVisibility();
         CombatState? combat = CombatManager.Instance.DebugOnlyGetState();
         if (!ReferenceEquals(combat, lastCombat))
         {
@@ -141,7 +142,7 @@ internal sealed partial class GameAdapter(bool testMode)
         if (ending != null || epilogue != null && map == null) screen["view"] = ending != null ? "run_result" : "epilogue";
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 24, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 25, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -151,6 +152,7 @@ internal sealed partial class GameAdapter(bool testMode)
             turn = scene == "combat" ? observation.Turn() : null,
             player = scene == "combat" ? observation.Player(player) : null,
             enemies = scene == "combat" ? observation.Enemies() : null,
+            allies = scene == "combat" ? observation.Allies() : null,
             top_bar = observation.TopBar(),
             buttons = scene == "combat" ? observation.Buttons() : null,
             selection = new SelectionInspection(observation).Read(selection),
@@ -215,6 +217,18 @@ internal sealed partial class GameAdapter(bool testMode)
         {
             async Task Frame() { await ObservationFrame(); Observe(); }
             return Success(request.Id, JsonSerializer.Serialize(await OrbEventChecks.Run(orbEventPlayer, Frame, observation.CardId)));
+        }
+        if (request.Operation == "check_test_companions" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } companionPlayer)
+        {
+            async Task Frame() { await ObservationFrame(); Observe(); }
+            return Success(request.Id, JsonSerializer.Serialize(await CompanionChecks.Run(companionPlayer, Frame, observation.CardId, Observe)));
+        }
+        if (request.Operation == "check_test_blades" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } bladePlayer)
+        {
+            async Task Frame() { await ObservationFrame(); Observe(); }
+            return Success(request.Id, JsonSerializer.Serialize(await SovereignBladeChecks.Run(bladePlayer, Frame, observation.CardId, Observe)));
         }
         if (request.Operation == "check_test_orb_visibility" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } orbPlayer)
@@ -513,11 +527,11 @@ internal sealed partial class GameAdapter(bool testMode)
             string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_COMBATANT_CHECKS");
             if (testMode && checks != null)
                 CombatantInspectionChecks.Run(checks, inspectedPlayer);
-            var inspection = CombatantInspection.Read(inspectedPlayer);
+            var inspection = CombatantInspection.Read(inspectedPlayer, observation.CardId);
             return Success(request.Id, JsonSerializer.Serialize(new
             {
                 snapshot_id = document.RootElement.GetProperty("snapshot_id").GetString(),
-                inspection.scene, inspection.player, inspection.enemies, inspection.hover_tips
+                inspection.scene, inspection.player, inspection.enemies, inspection.allies, inspection.hover_tips
             }));
         }
         if (request.Operation == "inspect_potions")
@@ -575,14 +589,22 @@ internal sealed partial class GameAdapter(bool testMode)
             // Fixture setup is explicitly gated and is not a gameplay tool.
             SaveManager.Instance.SetFtuesEnabled(false);
             NGame game = NGame.Instance!;
-            await game.StartNewSingleplayerRun(testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") is "orbs" or "orb_chain"
-                ? ModelDb.Character<Defect>() : ModelDb.Character<Ironclad>(),
+            await game.StartNewSingleplayerRun(testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") switch
+                {
+                    "companions_osty" or "companions_first" => ModelDb.Character<Necrobinder>(),
+                    "companions_blade" => ModelDb.Character<Regent>(),
+                    "orbs" or "orb_chain" => ModelDb.Character<Defect>(),
+                    _ => ModelDb.Character<Ironclad>()
+                },
                 testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") != null,
                 ModelDb.ActsByIndex.Select(acts => acts[0]).ToArray(),
                 Array.Empty<ModifierModel>(), "STS2AGENTROUNDTRIP", GameMode.Standard);
             string? turnScenario = testSettings.Get("STS2_AGENT_TEST_TURN_SCENARIO");
             string? selectionScenario = testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO");
             string? playScenario = testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO");
+            if (playScenario == "companions_first")
+                await RelicCmd.Remove(LocalContext.GetMe(RunManager.Instance.DebugOnlyGetState())!
+                    .Relics.OfType<BoundPhylactery>().Single());
             if (selectionScenario == "paradox")
                 await RelicCmd.Obtain<ChoicesParadox>(LocalContext.GetMe(RunManager.Instance.DebugOnlyGetState())!);
             Task roomEntry = RunManager.Instance.EnterRoomDebug(RoomType.Monster,

@@ -13,6 +13,7 @@ internal static class TurnCapture
     internal sealed record Origin(AbstractModel? Model, Creature? Dealer, bool IsDamage)
     {
         public HashSet<Creature> LethalTargets { get; } = [];
+        public HashSet<Creature> VisibleBlockTargets { get; } = [];
         public Creature? DeathTarget { get; init; }
         public IReadOnlyList<Creature>? DoomTargets { get; init; }
     }
@@ -49,6 +50,7 @@ internal static class TurnCapture
     {
         __state = Context.Value;
         Context.Value = new Origin(__5 ?? __0.LastInvolvedModel, __4, true);
+        Journal?.BeforeDamage(Context.Value);
     }
 
     private static void AutoPlay(PlayerChoiceContext __0, CardModel __1, out Origin? __state)
