@@ -1,4 +1,3 @@
-using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Players;
@@ -10,13 +9,8 @@ namespace Sts2Agent;
 
 internal static class OrbCapture
 {
-    private static ulong renderedFrames;
-    internal static ulong FrameNumber => DisplayServer.GetName() == "headless" ? Engine.GetProcessFrames() : renderedFrames;
-
     public static void Initialize()
     {
-        // Process-frame numbers can remain unchanged through the post-draw signal.
-        RenderingServer.FramePostDraw += Rendered;
         var harmony = new Harmony("sts2_agent.orb_events");
         foreach (var (method, after) in new[] {
             (nameof(NOrbManager.AddOrbAnim), nameof(Channeled)),
@@ -29,8 +23,6 @@ internal static class OrbCapture
         harmony.Patch(AccessTools.Method(typeof(OrbCmd), "Evoke"),
             prefix: new HarmonyMethod(typeof(OrbCapture), nameof(Evoking)));
     }
-
-    private static void Rendered() => renderedFrames++;
 
     private static void Before(NOrbManager __instance, out OrbJournal.Change? __state)
         => __state = NGame.IsMainThread() ? OrbJournal.Current?.Before(__instance) : null;

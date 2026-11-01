@@ -20,9 +20,9 @@ internal sealed partial class GameAdapter
         {
             await ObservationFrame();
             string? reason = stopReason();
-            if (CombatEntryCapture.Current != null && MegaCrit.Sts2.Core.Combat.CombatManager.Instance.IsStarting
-                && reason is not ("interrupted" or "manual_input_required")) reason = null;
-            if (CombatEntryCapture.Current is { Capturing: true } entering
+            if (CombatJournalScope.Current?.Pending == true
+                && reason is not ("interrupted" or "manual_input_required" or "choice_required")) reason = null;
+            if (CombatJournalScope.Current is { StartedCombat: true } entering
                 && reason is not ("interrupted" or "manual_input_required"))
                 reason = entering.StopReason(CanPlayCards());
             state = Observe();

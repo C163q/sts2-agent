@@ -27,6 +27,9 @@
     "entropic"
   ],
   "play": [
+    "handoff_play",
+    "handoff_selection",
+    "handoff_choice",
     "permanent_genetic",
     "permanent_cost",
     "permanent_enchant",
@@ -104,6 +107,7 @@
     "scroll_race"
   ],
   "turn": [
+    "handoff",
     "thieving_hopper",
     "normal",
     "wither",

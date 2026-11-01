@@ -70,6 +70,8 @@
 
 `verify_permanent_cards.py` 的 `genetic/cost/enchant` 对应 `play:permanent_genetic/permanent_cost/permanent_enchant`，验证永久变量、基础能量费用及附魔数量变化的真实 MCP 回执和直接续接。遗传算法使用正常出牌，并打开永久牌组核对成长；费用及附魔场景用测试夹具回调调用原生修改入口，不声称游戏存在对应可叠加玩法。`checks` 配合 `play:permanent_genetic`，检查预览／临时值排除、隐藏取消、身份延后、升级抑制、异常释放和共享上限。默认清单包含遗传算法成长；范围和证据见[第五阶段记录](../research/2026-11-01-permanent-card-events.md)。
 
+`verify_combat_handoff.py` 的 `play/selection/choice` 分别配合 `play:handoff_play/handoff_selection/handoff_choice`，`turn` 配合 `turn:handoff`，验证动作完成或选牌恢复后原生房间替换、新首回合日志、选择暂停与直接续接。`checks` 配合 `play:basic`，验证连续两次替换、旧订阅释放、ID 与手牌对应、同场回合不重建、隐藏标记、共享上限及异常释放。默认清单包含 `play`。夹具通过原生房间 API 构造交接，不代表某张原生卡牌具有换战斗效果；见[第七阶段记录](../research/2026-11-01-combat-handoff.md)。
+
 `verify_orb_events.py` 的 `play/checks` 均配合 `play:orbs`：前者通过真实 MCP 验证双重释放、扩槽、生成及无需额外观察的连续出牌；后者通过测试模式文件入口验证满槽自动激发、缩槽丢弃、隐藏／覆盖／离屏取消、不补发、入场连续操作、缓冲上限及作用域释放。`chain` 配合 `play:orb_chain`，通过原生 Tempest 在两槽位中生成三个球，验证连续生成及满槽激发。默认清单包含 `play`；原生边界检查会扰动隔离实例的 UI，不对外提供工具。见[第六阶段记录](../research/2026-11-01-orb-events.md)。
 
 `verify_capacity.py` 验证最大能量、蜡制遗物熔化与充能球：`resources` 配合 `play:basic`，运行仅文件可用的原生容量／熔化嵌入检查；`wax_melt` 配合 `play:wax_melt`，验证真实 MCP 出牌回执及直接结束回合；`orbs` 和 `orb_visibility` 配合 `play:orbs`，使用故障机器人验证球序、激发、增槽、生成、暗球增长及图像／标签可见性。充能球游玩及熔化回执已纳入默认清单。夹具仅通过原生命令准备场景，图像扰动及无通知重绘仅用于隔离检查。范围与证据见[第四阶段记录](../research/2026-11-01-capacity-and-orbs.md)。

@@ -10,6 +10,7 @@
 | `spikes/roundtrip/FileMailbox.cs` | 原子文件协议、请求队列、响应缓存和等待超时 |
 | `spikes/roundtrip/GameAdapter.AvailableTools.cs` | 当前交互上下文的工具列表及与调用入口共享的可用性条件 |
 | `spikes/roundtrip/GameAdapter.cs` | 主线程观察、令牌与合法性检查、动作分派和页面生命周期；测试场景准备以测试模式隔离 |
+| `spikes/roundtrip/VisibleUi.cs` | 可见控件与几何读取、共享绘制完成计数，供充能球和战场首次展示判断使用 |
 | `spikes/roundtrip/*Observation.cs`、`*Inspection.cs`、`*View.cs` | 可见数据采样、按需详情、原生页面操作 |
 | `spikes/roundtrip/GameAdapter.Navigation.cs`、`NavigationTasks.cs` | 原生节点点击、旅行边界和跨幕任务等待；地图摘要与身份并入基础观察 |
 | `spikes/roundtrip/English*.cs`、`HoverTipText.cs` | 英语资源读取与受控格式化，不切换全局语言 |
@@ -23,7 +24,7 @@
 | `spikes/roundtrip/OrbCapture.cs`、`OrbJournal.cs` | 原生充能球 UI 更新与激发入口采集，共用动作缓冲；入场延后发布、隐藏取消及槽位端点合并 |
 | `spikes/roundtrip/OrbInspection.cs` | 实际充能球 UI 队列、图像和数字过滤；基础观察、占用球详情及空槽帮助共用槽位对应关系 |
 | `spikes/roundtrip/EventInspection.cs`、`GameAdapter.Event.cs` | 通用事件的可见页面、稳定选项 ID 和原生按钮执行 |
-| `spikes/roundtrip/EventTaskTracker.cs`、`CombatEntryCapture.cs` | 事件初始化/选择/Resume 任务跟踪，以及所有战斗外游戏动作进入战斗时的日志订阅 |
+| `spikes/roundtrip/EventTaskTracker.cs`、`CombatJournalScope.cs` | 事件初始化/选择/Resume 任务跟踪；每次动作的初始战斗及后续入战日志所有权、原生重置前释放、房间任务等待与战斗间交接 |
 | `spikes/roundtrip/DivinationInspection.cs`、`DivinationTasks.cs`、`GameAdapter.Divination.cs` | 占卜可见状态与原生点击、遮罩等待、棋盘裁剪边界和临时对白来源 |
 | `spikes/roundtrip/EventConfirmation.cs`、`GameAdapter.Confirmation.cs` | 当前事件确认框的来源与可见内容、原生按钮操作和失败结算 |
 | `scripts/divination_details.py` | 占卜参数与投影、PNG 有界像素校验和独立图像载体；MCP server 封装 ImageContent |

@@ -135,12 +135,12 @@ internal static class OrbEventChecks
         events = await Capture("visible_entry_evoke", async _ =>
         {
             await OrbCmd.Channel<PlasmaOrb>(choice, player);
-            ulong createdFrame = OrbCapture.FrameNumber;
+            ulong createdFrame = VisibleUi.FrameNumber;
             var deadline = DateTime.UtcNow.AddSeconds(3);
             do { await frame(); }
             while (OrbInspection.VisibleNodes(node) == null && DateTime.UtcNow < deadline);
             var slot = OrbInspection.VisibleNodes(node)!.Single(s => s.Model is PlasmaOrb);
-            Check("visible entry has crossed an actual drawing boundary", OrbCapture.FrameNumber > createdFrame);
+            Check("visible entry has crossed an actual drawing boundary", VisibleUi.FrameNumber > createdFrame);
             Check("partly entered orb is already public before tween completion", RewardInspection.Animating(slot, "_curTween"));
             await OrbCmd.EvokeLast(choice, player);
             await Settle();

@@ -50,7 +50,7 @@ internal sealed partial class GameAdapter
         }
         if (!SamePage() || !map.IsNodeOnScreen(point))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested map node cannot be clicked now.");
-        var enteringCombat = CombatEntryCapture.Current!;
+        var enteringCombat = CombatJournalScope.Current!;
         uiGeneration++;
         point.ForceClick();
         var destination = point.Point.coord;

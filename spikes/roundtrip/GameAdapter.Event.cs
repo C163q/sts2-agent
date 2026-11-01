@@ -28,7 +28,7 @@ internal sealed partial class GameAdapter
         if (button == null || !EventInspection.Clickable(button))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested event option is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
-        var enteringCombat = CombatEntryCapture.Current!;
+        var enteringCombat = CombatJournalScope.Current!;
         uiGeneration++;
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => !ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())

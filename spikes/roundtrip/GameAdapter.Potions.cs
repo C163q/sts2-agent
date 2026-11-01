@@ -56,9 +56,7 @@ internal sealed partial class GameAdapter
         if (inCombat && !STS2RitsuLib.RitsuLibFramework.IsActive)
             return FileMailbox.Error(request.Id, "illegal_action", "RitsuLib is unavailable; no potion action was submitted.");
         var run = player.RunState;
-        var combat = inCombat ? CombatManager.Instance.DebugOnlyGetState() : null;
-        using var journal = combat == null ? null : new TurnJournal(combat, player, observation.CardId);
-        using var potionEvents = journal == null ? new PotionJournal(player) : null;
+        var journal = CombatJournalScope.Current!;
         GameAction? submitted = null;
         bool canceled = false;
         void Canceled(GameAction _) => canceled = true;
@@ -81,15 +79,15 @@ internal sealed partial class GameAdapter
             {
                 bool finished = submitted?.State is GameActionState.Finished or GameActionState.Canceled;
                 bool ready = finished && CanHandlePotions();
-                string? boundary = journal?.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()), ready, requireTurnStarted: false);
-                if (journal == null)
+                string? boundary = journal.StopReason(ready);
+                if (!inCombat)
                     boundary = !ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState()) ? "interrupted"
                         : RunUi.Transitioning() ? null
                         : CardSelection.AwaitingInput ? NonCombatBoundary()
                         : ready ? ShopInspection.Current == null ? "action_completed" : NonCombatBoundary() : null;
                 return boundary is "player_ready" or "action_completed" && canceled ? "action_canceled" : boundary;
             });
-            object transition = journal?.Result(reason) ?? potionEvents!.Result(reason);
+            object transition = journal.Result(reason);
             return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(transition) + "}");
         }
         finally

@@ -46,8 +46,7 @@ internal sealed partial class GameAdapter
             || TargetInspection.Reason(card, targets) != null || !card.CanPlayTargeting(target))
             return FileMailbox.Error(request.Id, "illegal_action", "The card or specified target cannot be played now.");
 
-        var combat = CombatManager.Instance.DebugOnlyGetState()!;
-        using var journal = new TurnJournal(combat, player, observation.CardId);
+        var journal = CombatJournalScope.Current!;
         PlayCardAction? submitted = null;
         bool canceled = false;
         void Canceled(GameAction action) => canceled = true;
@@ -71,7 +70,7 @@ internal sealed partial class GameAdapter
             var (after, reason) = await ActionObservation(() =>
             {
                 bool ready = submitted?.State is GameActionState.Finished or GameActionState.Canceled && CanPlayCards();
-                string? boundary = journal.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()), ready, requireTurnStarted: false);
+                string? boundary = journal.StopReason(ready);
                 return boundary == "player_ready" && canceled ? "action_canceled" : boundary;
             });
             return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(journal.Result(reason)) + "}");

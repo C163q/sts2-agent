@@ -326,7 +326,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     {
         if (disposed) return;
         disposed = true;
-        TurnCapture.Journal = null;
+        if (ReferenceEquals(TurnCapture.Journal, this)) TurnCapture.Journal = null;
         lifecycle?.Dispose();
         CombatManager.Instance.CombatWon -= Won;
         CombatManager.Instance.CombatEnded -= Ended;

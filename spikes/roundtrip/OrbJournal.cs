@@ -15,7 +15,7 @@ internal sealed class OrbJournal : IDisposable
         NOrb[] Entering, Dictionary<string, object?> Fields, NOrb? Channel = null)
     {
         // A newly created node can precede the first application of its From(Zero) tween.
-        public ulong CreatedFrame { get; } = OrbCapture.FrameNumber;
+        public ulong CreatedFrame { get; } = VisibleUi.FrameNumber;
     }
     public static OrbJournal? Current { get; private set; }
     private readonly CombatState combat;
@@ -126,7 +126,7 @@ internal sealed class OrbJournal : IDisposable
                 pending.Remove(change);
                 continue;
             }
-            if (!visible || OrbCapture.FrameNumber <= change.CreatedFrame) continue;
+            if (!visible || VisibleUi.FrameNumber <= change.CreatedFrame) continue;
             if (change.Channel == null && Equals(change.Fields["before"], change.Fields["after"]))
             {
                 pending.Remove(change);

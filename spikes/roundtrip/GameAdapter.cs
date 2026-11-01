@@ -72,6 +72,7 @@ internal sealed partial class GameAdapter(bool testMode)
     {
         if (!NGame.IsMainThread())
             throw new InvalidOperationException("Game access requires the main thread.");
+        CombatJournalScope.Current?.SampleVisibility();
         RunResourceJournal.Current?.SampleVisibility();
         RunInventoryJournal.Current?.SampleVisibility();
         PotionJournal.Current?.SampleVisibility();
@@ -140,7 +141,7 @@ internal sealed partial class GameAdapter(bool testMode)
         if (ending != null || epilogue != null && map == null) screen["view"] = ending != null ? "run_result" : "epilogue";
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 23, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 24, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -199,6 +200,12 @@ internal sealed partial class GameAdapter(bool testMode)
         {
             async Task Frame() { await ObservationFrame(); Observe(); }
             return Success(request.Id, JsonSerializer.Serialize(await PermanentCardChecks.Run(permanentPlayer, Frame, observation.CardId)));
+        }
+        if (request.Operation == "check_test_combat_handoff" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } handoffPlayer)
+        {
+            async Task Frame() { await ObservationFrame(); Observe(); }
+            return Success(request.Id, JsonSerializer.Serialize(await CombatHandoffChecks.Run(handoffPlayer, observation, Frame, Observe)));
         }
         if (request.Operation == "check_test_orb_events" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } orbEventPlayer)
@@ -673,16 +680,14 @@ internal sealed partial class GameAdapter(bool testMode)
         {
             Player player = LocalPlayer!;
             int turn = player.PlayerCombatState!.TurnNumber;
-            CombatState combat = CombatManager.Instance.DebugOnlyGetState()!;
             if (!STS2RitsuLib.RitsuLibFramework.IsActive)
                 return FileMailbox.Error(request.Id, "illegal_action", "RitsuLib is unavailable; no action was submitted.");
-            using var journal = new TurnJournal(combat, player, observation.CardId);
+            var journal = CombatJournalScope.Current!;
             RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(new EndPlayerTurnAction(player, turn));
             var (state, reason) = await ActionObservation(() =>
             {
-                return journal.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()),
-                    player.PlayerCombatState?.TurnNumber > turn && CanEndTurn()
-                    && RunManager.Instance.ActionQueueSet.IsEmpty);
+                return journal.StopReason(player.PlayerCombatState?.TurnNumber > turn && CanEndTurn()
+                    && RunManager.Instance.ActionQueueSet.IsEmpty, requireTurnStarted: true);
             });
             return Success(request.Id, state[..^1] + ",\"transition\":" + JsonSerializer.Serialize(journal.Result(reason)) + "}");
         }

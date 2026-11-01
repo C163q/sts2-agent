@@ -6,6 +6,11 @@ namespace Sts2Agent;
 
 internal static class VisibleUi
 {
+    private static ulong renderedFrames;
+    internal static ulong FrameNumber => DisplayServer.GetName() == "headless" ? Engine.GetProcessFrames() : renderedFrames;
+    public static void Initialize() => RenderingServer.FramePostDraw += Rendered;
+    private static void Rendered() => renderedFrames++;
+
     public static bool Shown(CanvasItem? item)
     {
         if (item == null || !GodotObject.IsInstanceValid(item) || !item.IsInsideTree()

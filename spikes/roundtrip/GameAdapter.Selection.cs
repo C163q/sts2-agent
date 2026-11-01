@@ -69,10 +69,8 @@ internal sealed partial class GameAdapter
         if (request.Operation == "select_card" ? model == null || !selection.CanSelect
             : button == null || !button.IsEnabled)
             return FileMailbox.Error(request.Id, "illegal_action", "The requested candidate or button is unavailable.");
-        var player = LocalPlayer;
-        var combat = CombatManager.Instance.DebugOnlyGetState();
-        using var journal = player != null && combat != null && CombatManager.Instance.IsInProgress
-            ? new TurnJournal(combat, player, observation.CardId) : null;
+        var journal = CombatJournalScope.Current!;
+        bool startedInCombat = journal.Capturing;
         uiGeneration++;
         if (model != null)
         {
@@ -84,8 +82,8 @@ internal sealed partial class GameAdapter
         var (after, reason) = await ActionObservation(() =>
         {
             bool ready = CanEndTurn() && RunManager.Instance.ActionQueueSet.IsEmpty;
-            string? boundary = journal?.StopReason(ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()), ready, requireTurnStarted: false);
-            if (journal == null)
+            string? boundary = journal.StopReason(ready);
+            if (!startedInCombat)
             {
                 var current = CardSelection.Current;
                 if (RewardInspection.Current != null || RestSiteInspection.Current != null || TreasureInspection.Current != null || ShopInspection.Current != null || AncientInspection.Current != null || EventInspection.Current != null) boundary = NonCombatBoundary();
@@ -94,8 +92,7 @@ internal sealed partial class GameAdapter
             }
             return boundary;
         });
-        object transition = journal?.Result(reason) ?? new { stop_reason = reason,
-            complete = reason is not ("timeout" or "interrupted"), events = Array.Empty<object>() };
+        object transition = journal.Result(reason);
         return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(transition) + "}");
     }
 }

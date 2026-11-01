@@ -35,7 +35,8 @@ internal static class PlayFixture
         var cards = new List<CardModel>();
         void Add<T>() where T : CardModel => cards.Add(combat.CreateCard<T>(player));
         if (scenario == "anger") Add<Anger>();
-        else if (scenario == "wax_melt") Add<DefendIronclad>();
+        else if (scenario is "wax_melt" or "handoff_play" or "handoff_choice") Add<DefendIronclad>();
+        else if (scenario == "handoff_selection") Add<Armaments>();
         else if (scenario == "orbs") { Add<Dualcast>(); Add<Capacitor>(); Add<Zap>(); }
         else if (scenario == "orb_chain") Add<Tempest>();
         else if (scenario == "turbo") Add<Turbo>();
@@ -119,6 +120,8 @@ internal static class PlayFixture
         }
         await CardPileCmd.AddGeneratedCardsToCombat(cards, PileType.Hand, player);
         if (scenario == "orbs") await OrbFixture.Configure(player);
+        if (scenario is "handoff_play" or "handoff_selection" or "handoff_choice") CombatHandoffFixture.Configure(player);
+        if (scenario == "handoff_choice") await RelicCmd.Obtain<ChoicesParadox>(player);
         if (scenario == "orb_chain")
         {
             OrbCmd.RemoveSlots(player, state.OrbQueue.Capacity);

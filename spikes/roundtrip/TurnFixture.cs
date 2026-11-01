@@ -15,6 +15,7 @@ internal static class TurnFixture
     {
         var choice = new ThrowingPlayerChoiceContext();
         var combat = CombatManager.Instance.DebugOnlyGetState()!;
+        if (scenario == "handoff") { CombatHandoffFixture.Configure(player, endTurn: true); return; }
         if (scenario is "normal" or "thieving_hopper") return;
         if (scenario is "wither" or "wither_death")
         {

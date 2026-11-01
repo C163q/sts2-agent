@@ -1,6 +1,6 @@
 # 动作事件记录覆盖审查
 
-本文件保留 `a06fe7b` 基线的覆盖审查；下列表格描述修复前的实现。后续已启动分阶段处理，第一阶段的 HP、最大生命和金币共用记录及各类动作接入见[实施与验证记录](2026-11-01-run-resource-events.md)。第二阶段的物品及永久牌组通知见[实施与验证记录](2026-11-01-inventory-events.md)；第三阶段的公开能量／星星和战斗外动作入战采集见[实施与验证记录](2026-11-01-combat-resource-events.md)。第四阶段补齐公开最大能量、蜡制遗物熔化，以及充能球基础观察和悬停详情，见[实施与验证记录](2026-11-01-capacity-and-orbs.md)。第五阶段接入永久基础变量、基础能量费用及附魔数值直接变化，见[实施与验证记录](2026-11-01-permanent-card-events.md)。第六阶段接入充能球生成、激发、离栏与槽位变化，见[实施与验证记录](2026-11-01-orb-events.md)。更多直接存储字段、充能球被动／数值变化与替换、以及已有战斗继续切换战斗仍待后续。
+本文件保留 `a06fe7b` 基线的覆盖审查；下列表格描述修复前的实现。后续已启动分阶段处理，第一阶段的 HP、最大生命和金币共用记录及各类动作接入见[实施与验证记录](2026-11-01-run-resource-events.md)。第二阶段的物品及永久牌组通知见[实施与验证记录](2026-11-01-inventory-events.md)；第三阶段的公开能量／星星和战斗外动作入战采集见[实施与验证记录](2026-11-01-combat-resource-events.md)。第四阶段补齐公开最大能量、蜡制遗物熔化，以及充能球基础观察和悬停详情，见[实施与验证记录](2026-11-01-capacity-and-orbs.md)。第五阶段接入永久基础变量、基础能量费用及附魔数值直接变化，见[实施与验证记录](2026-11-01-permanent-card-events.md)。第六阶段接入充能球生成、激发、离栏与槽位变化，见[实施与验证记录](2026-11-01-orb-events.md)。第七阶段补齐同次动作中已有战斗继续切换战斗的记录器交接，见[实施与验证记录](2026-11-01-combat-handoff.md)。更多直接存储字段、充能球被动／数值变化与替换仍待后续。
 
 ## 问题与基线
 
@@ -66,7 +66,7 @@ Python 的 `action_output.action_result` 保留已验证的整个 `transition`�
 
 源码入口：
 
-- [事件动作](../../spikes/roundtrip/GameAdapter.Event.cs)、[进入战斗的采集](../../spikes/roundtrip/CombatEntryCapture.cs)、[旅行](../../spikes/roundtrip/GameAdapter.Navigation.cs)。
+- [事件动作](../../spikes/roundtrip/GameAdapter.Event.cs)、[当前战斗记录作用域](../../spikes/roundtrip/CombatJournalScope.cs)（原 `CombatEntryCapture` 的替代实现）、[旅行](../../spikes/roundtrip/GameAdapter.Navigation.cs)。
 - [选牌动作](../../spikes/roundtrip/GameAdapter.Selection.cs)、[药水动作](../../spikes/roundtrip/GameAdapter.Potions.cs)、[药水记录器](../../spikes/roundtrip/PotionJournal.cs)、[战斗记录器](../../spikes/roundtrip/TurnJournal.cs)。
 - [Python 事件校验](../../scripts/transition_details.py)、[精简回执](../../scripts/action_output.py)、[动作分类](../../scripts/available_tools.py)。
 

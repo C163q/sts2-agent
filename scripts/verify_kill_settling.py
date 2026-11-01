@@ -108,9 +108,18 @@ async def verify(args):
             report.write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')
             assert external['ok'], external
             if args.scenario == 'phase':
+                # DEAD_MOVE is an empty turn; the visible Heal intent is performed next.
+                corpse = next(e for e in external['state']['enemies'] if e['id'] == victim)
+                assert corpse['hp_display'] == 'hidden' and any(i['category'] == 'heal' for i in corpse['intents']), external
+                assert not any(e['type'] in {'revived', 'combat_started'} for e in external['state']['transition']['events']), external
+                external = await asyncio.to_thread(raw.call, 'end_turn', external['state']['snapshot_id'])
+                evidence.append({'external_test_action': 'end_turn_reattach', 'response': external})
+                report.write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')
+                assert external['ok'] and external['state']['transition']['complete'], external
                 assert any(e['type'] == 'revived' and e['target']['id'] == victim
                            for e in external['state']['transition']['events']), external
                 assert any(e['id'] == victim and e['hp'] > 1 for e in external['state']['enemies']), external
+                assert not any(e['type'] == 'combat_started' for e in external['state']['transition']['events']), external
             await call('end_turn', error='stale_state')
             await call('end_turn', error='observation_required')
             assert sum(e.get('tool') == 'get_observation' for e in evidence) == 1

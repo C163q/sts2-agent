@@ -1,5 +1,12 @@
 [
   {
+    "name": "combat_handoff",
+    "scenarios": { "play": "handoff_play" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_combat_handoff.py", "args": ["--scenario", "play"] }
+    ]
+  },
+  {
     "name": "orb_event_receipts",
     "scenarios": { "play": "orbs" },
     "steps": [

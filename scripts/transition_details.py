@@ -4,6 +4,7 @@ from available_tools import INSPECTIONS, VIEWS
 
 REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "run_lost", "timeout", "interrupted", "selection_resolved", "action_canceled", "action_completed", 'manual_input_required'}
 FIELDS = {
+    'combat_started': set(),
     'orb_channeled': {'target', 'orb', 'slot_index'},
     'orb_evoked': {'target', 'orb', 'slot_index'},
     'orb_removed': {'target', 'orb', 'slot_index'},
@@ -43,6 +44,8 @@ def end_turn_details(state):
                 or event.get("sequence", 0) <= previous):
             raise ValueError("Invalid transition event.")
         previous = event["sequence"]
+        if kind == 'combat_started' and set(event) != {'sequence', 'type'}:
+            raise ValueError('Unexpected gameplay data in a combat boundary.')
         if kind in {'orb_channeled', 'orb_evoked', 'orb_removed', 'orb_slots_changed'}:
             if set(event) != {'sequence', 'type'} | FIELDS[kind] or event['target'].get('kind') != 'player':
                 raise ValueError('Invalid public orb event fields.')

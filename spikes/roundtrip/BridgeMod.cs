@@ -22,6 +22,7 @@ public static class BridgeMod
             GD.Print("[Sts2Agent] Loaded; STS2_AGENT_IPC_DIR is unset, bridge disabled.");
             return;
         }
+        VisibleUi.Initialize();
         EnglishCardText.Initialize();
         EnglishEventText.Initialize();
         TurnCapture.Initialize();
@@ -32,7 +33,7 @@ public static class BridgeMod
         CombatMotion.Initialize();
         EventConfirmation.Initialize();
         DivinationTasks.Initialize();
-        CombatEntryCapture.Initialize();
+        CombatJournalScope.Initialize();
         ShopTransactions.Initialize();
         PermanentCardCapture.Initialize();
         OrbCapture.Initialize();
