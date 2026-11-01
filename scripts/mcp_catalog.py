@@ -1,5 +1,6 @@
 from mcp.types import Tool, ToolAnnotations
 from observation_presets import OBSERVATION_SCHEMA
+from hand_presets import HAND_SCHEMA
 
 from run_ending_details import OPTION_SCHEMA as RESULT_OPTION_SCHEMA
 from map_details import MAP_SCHEMA, TRAVEL_SCHEMA
@@ -102,8 +103,10 @@ def tool_definitions(*, screenshots_enabled=False):
         Tool(name='choose_rest_option', inputSchema=REST_OPTION_SCHEMA, annotations=action, description=(
             'Choose one enabled rest-site option. Some options take effect immediately; '
             'card choices use selection tools. Smith previews require confirmation; use offered cancel buttons to go back.')),
-        Tool(name="inspect_hand", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
-            "Read descriptions and hover help for all visible hand cards.")),
+        Tool(name="inspect_hand", inputSchema=HAND_SCHEMA, annotations=read_only, description=(
+            "Read current visible hand cards, optionally by card_ids. full includes descriptions and hover help; "
+            "summary keeps identity, visible costs and markers. Unavailable IDs are grouped in errors; valid cards remain. "
+            "Markers do not guarantee a legal play.")),
         Tool(name="inspect_targets", inputSchema=TARGET_SCHEMA, annotations=read_only, description=(
             "Query exactly one hand card or potion for usability, requires_target and targeting range. "
             "Does not enter aiming or resolve randomness; targets do not predict every effect.")),

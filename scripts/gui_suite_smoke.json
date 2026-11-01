@@ -1,5 +1,12 @@
 [
   {
+    "name": "hand_presets",
+    "scenarios": { "play": "basic" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_hand_presets.py", "args": [] }
+    ]
+  },
+  {
     "name": "hopper_power_text",
     "scenarios": { "turn": "thieving_hopper" },
     "steps": [

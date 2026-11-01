@@ -1,6 +1,6 @@
 # 当前手牌详情 JSON
 
-适用于 Linux 游戏 `v0.107.1` 和 Mod `0.4.0`。文件接口 `inspect_hand` 与同名 [MCP 工具](mcp.md) 一次读取全部当前可见手牌详情，输出英语，不切换游戏语言。它不移动鼠标、不出牌、不结束回合，也不读取牌堆内容；信息范围遵循 [观察约定](../observation.md)。
+适用于 Linux 游戏 `v0.107.1` 和当前 Mod `0.34.4`。文件接口 `inspect_hand` 读取全部当前可见手牌详情；同名 [MCP 工具](mcp.md) 支持返回预设和按 ID 筛选，输出英语，不切换游戏语言。它不移动鼠标、不出牌、不结束回合，也不读取牌堆内容；信息范围遵循 [观察约定](../observation.md)。
 
 ## 读取
 
@@ -10,11 +10,45 @@
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/live/hand-inspection.json
 ```
 
-安装和启动前提见 [正常游戏加载](live-game.md)。旧进程不会热加载新 DLL；旧 Mod 不支持 `inspect_hand`，须先重启。文件调用不要求 `expected_state`，可用时出现在 `available_actions` 中；MCP 的动作令牌处理见 [调用语义](mcp.md#调用和错误语义)。诊断时可加 `--raw`，取得原始响应及采样前基础观察的 `snapshot_id`；默认玩法输出省略它。
+安装和启动前提见 [正常游戏加载](live-game.md)。旧进程不会热加载新 DLL；首次接通 Mod 读取须按安装指南重启。文件调用不要求 `expected_state`，可用时出现在 `available_actions` 中；MCP 的动作令牌处理见 [调用语义](mcp.md#调用和错误语义)。诊断时可加 `--raw`，取得原始响应及采样前基础观察的 `snapshot_id`；默认玩法输出省略它。
+
+## 参数与返回范围
+
+MCP `0.31.0` 支持以下可选参数；底层文件 `inspect_hand` 仍无参数，本次只更新 Python 输出，重连 MCP 即可使用。
+
+| 参数 | 默认值 | 含义 |
+| --- | --- | --- |
+| `preset` | `full` | `full` 保留正文、共享解释和原有字段；`summary` 仅保留身份、显示费用与标记 |
+| `card_ids` | 省略 | 非负整数卡牌 ID 数组；省略返回全部可见手牌，`[]` 返回空结果。重复 ID 去重，结果仍按当前手牌顺序排列 |
+
+调用示例：
+
+```json
+{"preset":"summary","card_ids":[1,2,3]}
+```
+
+`summary` 的每张牌保留 `id/name/type/energy_cost/unplayable_markers/outline`，以及实际显示的 `star_cost` 和已有特殊费用颜色。费用仍是显示字符串，保留 `X`、`?`；未显示耗星时省略 `star_cost`。名称保留可见升级后缀，未知身份和不可读费用继续保留原有空值，不补真实内容或假定为零。摘要省略正文、稀有度、卡池、共享提示和 `notes.card_values`；选牌查看战场等仍适用的导航说明保留。标记和描边不等于可打出判断，合法性仍由 `inspect_targets` 或动作校验确认。
+
+筛选后的 `full` 仅保留命中卡牌及其共享提示关联；空结果为 `hand: []/hover_tips: []`，不附卡牌数值说明。摘要空结果仅包含 `hand: []`，可能另有下述错误或导航说明。省略参数或显式 `preset: full` 的结果与原输出兼容。
+
+不在当前可见手牌中的 ID 按请求首次出现的顺序合并报告，其他有效卡牌正常返回：
+
+```json
+{
+  "hand": [],
+  "errors": [{"code":"cards_not_in_hand","card_ids":[2,3]}]
+}
+```
+
+不存在、已离手、不可见均采用同一错误，不透露卡牌是否位于其他牌堆。即使全部 ID 无效，也采用此结构，MCP `isError` 为 `false`；客户端必须检查 `errors`，不能仅凭 `isError` 判断所有请求 ID 均已命中。未发现无效 ID 时省略 `errors`。
+
+`card_ids` 元素须为 0 至 2147483647 的整数，布尔值、字符串和浮点数不接受；未知参数或非法 `preset` 整次返回 `invalid_request`，不请求游戏。与地图输出参数一致，这类本地参数错误保留旧动作许可。
+
+两种预设与空筛选都会读取并校验完整底层手牌后再投影，不能用筛选遮蔽格式损坏的数据；它们不改变 UI、游戏状态或原生状态指纹。成功读取刷新下一动作的许可，包括带合并错误或空结果的读取。此许可只代表当前状态已读取，不保证任何被筛出的卡牌可操作；过期状态、覆盖界面和真实动作合法性检查照常生效。底层请求失败仍返回普通顶层 `error`，不伪装成卡牌缺失。
 
 ## 格式
 
-结果包含平级的 `hand` 和 `hover_tips` 数组。手牌顺序与基础观察一致，ID 也保持一致；每张牌复用 [基础手牌字段](observation.md#手牌与身份)，新增 `description`，不再内嵌提示集合：
+`full` 结果包含平级的 `hand` 和 `hover_tips` 数组。手牌顺序与基础观察一致，ID 也保持一致；每张牌复用 [基础手牌字段](observation.md#手牌与身份)，新增 `description`，不再内嵌提示集合：
 
 | 字段 | 含义 |
 | --- | --- |
@@ -57,3 +91,5 @@ python3 scripts/verify_hand.py --ipc-dir .tmp/live/ipc --output .tmp/live/hand-i
 ```
 
 它核对详情和基础观察的 ID、完整正文、共享提示去重及所有卡牌关联、说明适用范围，以及读取前后观察令牌一致。需要测试英语作用域、缓存、关键词和动态数值时，在独立实例使用 `scripts/run_roundtrip.py --windowed --capture --check-hand`；该标志仅供仓库创建的铁甲战士测试战斗使用，不用于正式游戏。游戏读取的实施与验证见 [手牌详情实施记录](../research/2026-10-29-hand-inspection-plan.md)，输出整合见 [共享提示记录](../research/2026-10-29-shared-hand-tips.md)。
+
+预设与筛选的单元、stdio 和独立图形验证见[手牌参数验证记录](../research/2026-11-01-hand-presets.md)。

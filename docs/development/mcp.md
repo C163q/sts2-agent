@@ -51,7 +51,7 @@ flowchart LR
 | `inspect_rest_site()` | [当前休息处选项及动态悬停说明](rest-site.md) |
 | `choose_rest_option(option_id)` | 点击一个启用的休息处选项，后续选牌单独处理 |
 | `get_observation(preset?)` | 默认 `full`；`actions_only` 仅返回场景、当前查看/选择状态与工具名，两者均刷新动作令牌 |
-| `inspect_hand()` | [全部可见手牌正文及共享解释](hand-inspection.md) |
+| `inspect_hand({preset?, card_ids?})` | [手牌完整详情或摘要，可按 ID 筛选](hand-inspection.md) |
 | `inspect_targets(card_id 或 potion_slot)` | 查询[手牌](card-play.md)或[药水](potion-actions.md)可用性、是否须指定目标及范围，不进入瞄准或抽随机数 |
 | `play_card(card_id, target_id?)` | [提交一次原生手动出牌](card-play.md)，后续选牌单独操作 |
 | `inspect_ui()` | [当前战斗界面与资源帮助](ui-inspection.md) |
@@ -77,7 +77,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.34.4` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.30.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.34.4` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.31.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 

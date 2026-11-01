@@ -1018,6 +1018,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual({tool.name for tool in listed.tools}, {"inspect_run_result", "run_result_option", "get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "inspect_selection", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "end_turn", "inspect_rewards", "claim_reward", "proceed", "inspect_rest_site", "choose_rest_option", "loot_treasure", "inspect_treasure", "open_shop", "close_shop", "inspect_shop", "buy_item", "inspect_ancient", "choose_ancient_option", "advance_dialogue", "inspect_event", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation", "travel_to_node"})
                     inspection_tool = next(tool for tool in listed.tools if tool.name == "inspect_hand")
                     self.assertTrue(inspection_tool.annotations.readOnlyHint)
+                    self.assertEqual(set(inspection_tool.inputSchema["properties"]), {"preset", "card_ids"})
                     ui_tool = next(tool for tool in listed.tools if tool.name == "inspect_ui")
                     self.assertTrue(ui_tool.annotations.readOnlyHint)
                     potion_tool = next(tool for tool in listed.tools if tool.name == "inspect_potions")
@@ -1044,7 +1045,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertFalse(close_tool.annotations.readOnlyHint)
                     self.assertEqual(close_tool.inputSchema, {"type": "object", "properties": {}, "additionalProperties": False})
                     for tool in listed.tools:
-                        if tool.name not in {"get_observation", "inspect_map", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "claim_reward", "choose_rest_option", "loot_treasure", "buy_item", "choose_ancient_option", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation", "travel_to_node", "run_result_option"}:
+                        if tool.name not in {"get_observation", "inspect_hand", "inspect_map", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "claim_reward", "choose_rest_option", "loot_treasure", "buy_item", "choose_ancient_option", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation", "travel_to_node", "run_result_option"}:
                             self.assertEqual(tool.inputSchema.get("properties", {}), {})
                     missing = await session.call_tool("end_turn", {})
                     self.assertTrue(missing.isError)

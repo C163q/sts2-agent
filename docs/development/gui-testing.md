@@ -58,6 +58,8 @@
 
 `verify_power_text.py` 配合 `turn:thieving_hopper`，验证原生偷窃草蜢从计数 5 到 1 的动态说明及最终逃跑，保存首回合完整 MCP 回执 `hopper-first-end-turn.json`。计数 5、4、1 时在独立实例内切换语言并触发原生悬停，保存中英文提示截图；测试专用入口不属于公开 MCP 工具，验证后恢复原语言。此场景纳入默认冒烟集；模板范围与限制见[状态说明验证](../research/2026-11-01-power-descriptions.md)。
 
+`verify_hand_presets.py` 验证完整输出兼容、摘要字段、共享提示裁剪、重复及无效 ID、空筛选、读取前后 UI 令牌不变，以及读取后直接出牌/结束回合。`basic`、`stars`、`x_cost`、`card_names` 配合同名 `play` 场景；`selection` 配合 `play:armaments_free`，检查查看战场时保留导航说明、已离手的武装 ID 不再命中。`basic` 纳入默认集。范围和证据见[手牌参数验证记录](../research/2026-11-01-hand-presets.md)。
+
 ## 生命周期与证据
 
 套件模式通过 `STS2_AGENT_TEST_MODE=1` 和 `STS2_AGENT_TEST_SUITE=1` 双重门控，提供仅文件 IPC 可用的 `configure_test_run`、`reset_test_run`、`get_test_session`。前两项需最新状态令牌；配置仅允许没有对局的主菜单。它们不属于公开 MCP 工具，也不改变玩法 JSON 或动作许可规则。旧的单用例启动命令继续有效。

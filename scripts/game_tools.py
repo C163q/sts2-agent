@@ -7,6 +7,7 @@ import anyio
 from run_ending_details import option_arguments
 from deck_details import deck_arguments
 from inspection_details import inspection_details
+from hand_presets import hand_arguments, hand_preset
 from map_details import map_arguments, map_preset, travel_arguments
 from pile_details import pile_arguments
 from player_output import player_result
@@ -55,8 +56,12 @@ class GameTools:
     async def run_result_option(self, arguments=None):
         return await self._action('run_result_option', arguments)
 
-    async def inspect_hand(self):
-        return await self._inspect("inspect_hand")
+    async def inspect_hand(self, arguments=None):
+        try:
+            options = hand_arguments(arguments)
+        except ValueError:
+            return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
+        return hand_preset(await self._inspect('inspect_hand'), **options)
 
     async def inspect_rewards(self):
         return await self._inspect('inspect_rewards')
