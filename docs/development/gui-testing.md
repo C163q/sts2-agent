@@ -44,7 +44,9 @@
 
 `scenarios` 使用 [场景白名单](../../scripts/test_scenarios.json)中的名称，与原 `run_roundtrip.py --<名称>-scenario` 对应；`ending` 明确拒绝。参数 `--scenario` 是验证脚本选择断言分支的参数，应与对应夹具一致。每个步骤必须有独立名称；用例名不能为保留的 `game`。`args` 目前只接受空列表或 `["--scenario", "场景名"]`，报告和 IPC 路径由框架管理；不会将 `--help` 的零退出视为完成测试，成功步骤必须产生非空 JSON 证据。
 
-允许的验证器包括 `verify_action_observations.py`、`verify_kill_settling.py`、`verify_rest_site.py`、`verify_shop.py`、`verify_rewards.py`、`verify_treasure.py`，以及同局续接/保留选择的两个专用验证器。`verify_kill_settling.py --scenario energy` 配合 `play:energy_chain`，验证 `Bash → Dominate` 耗尽能量后，手牌描边完成渐隐且无需重新观察即可结束回合。`verify_selection_scene.py` 校验基础观察与选牌详情的场景一致性，场景参数为 `ancient_bundle`、`rest_smith`、`combat_discovery`、`event_deck` 或 `shop_remove`，分别配合 `ancient:bundle`、`rest:smith`、`play:discovery`、`selection:deck`、`shop:remove`。清单不接受尚未接入的脚本；不能把旧脚本简单加入清单后假定它支持复用。
+允许的验证器包括 `verify_action_observations.py`、`verify_kill_settling.py`、`verify_action_stability.py`、`verify_rest_site.py`、`verify_shop.py`、`verify_rewards.py`、`verify_treasure.py`，以及同局续接/保留选择的两个专用验证器。`verify_kill_settling.py --scenario energy` 配合 `play:energy_chain`，验证 `Bash → Dominate` 耗尽能量后，手牌描边完成渐隐且无需重新观察即可结束回合。`verify_selection_scene.py` 校验基础观察与选牌详情的场景一致性，场景参数为 `ancient_bundle`、`rest_smith`、`combat_discovery`、`event_deck` 或 `shop_remove`，分别配合 `ancient:bundle`、`rest:smith`、`play:discovery`、`selection:deck`、`shop:remove`。清单不接受尚未接入的脚本；不能把旧脚本简单加入清单后假定它支持复用。
+
+`verify_action_stability.py` 的 `--scenario` 与 `play` 场景使用同名值：`anger`、`turbo`、`blade_dance`、`pommel_strike`、`bloodletting`、`gather_light`、`preview_draw`、`preview_messy`。前六项执行原生卡牌；后两项用防御触发测试夹具预置的原生抽牌堆预览，分别覆盖普通和七张牌的散列布局。验证器在动作返回后 0、0.25、0.75、1.5、3.5 秒采样底层观察，要求令牌始终等于回执令牌，并在不刷新 MCP 许可的情况下继续出牌；同时保留外部动作导致过期的反例检查。
 
 ## 生命周期与证据
 

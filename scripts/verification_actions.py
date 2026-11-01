@@ -8,6 +8,14 @@ async def observe_after_action(call, receipt):
 
 def completed_action_snapshot(ipc, receipt):
     """Read the exact native response for stability checks without refreshing MCP permission."""
+    from player_output import player_result
+    from transition_details import end_turn_details
+
+    return player_result({'ok': True, 'state': end_turn_details(completed_action_state(ipc, receipt))})
+
+
+def completed_action_state(ipc, receipt):
+    """Recover the native state and token belonging to a compact MCP receipt."""
     import json
     from action_output import action_result
     from player_output import player_result
@@ -18,7 +26,7 @@ def completed_action_snapshot(ipc, receipt):
         if response.get('ok') and 'transition' in response.get('state', {}):
             full = player_result({'ok': True, 'state': end_turn_details(response['state'])})
             if action_result(full) == receipt:
-                return full
+                return response['state']
     raise AssertionError('No native action response matches the compact MCP receipt.')
 
 

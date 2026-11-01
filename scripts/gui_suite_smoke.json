@@ -32,6 +32,20 @@
     ]
   },
   {
+    "name": "anger",
+    "scenarios": { "play": "anger" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_action_stability.py", "args": ["--scenario", "anger"] }
+    ]
+  },
+  {
+    "name": "preview_messy",
+    "scenarios": { "play": "preview_messy" },
+    "steps": [
+      { "name": "verify", "verifier": "verify_action_stability.py", "args": ["--scenario", "preview_messy"] }
+    ]
+  },
+  {
     "name": "choice",
     "scenarios": {
       "play": "choice_chain"

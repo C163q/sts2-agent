@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Powers.Mocks;
 using MegaCrit.Sts2.Core.Nodes.Combat;
+using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 
@@ -25,7 +26,13 @@ internal static class PlayFixture
         state.Energy = scenario == "energy" ? 0 : scenario == "x_cost" ? 2 : scenario == "energy_chain" ? 3 : 20;
         var cards = new List<CardModel>();
         void Add<T>() where T : CardModel => cards.Add(combat.CreateCard<T>(player));
-        if (scenario.StartsWith("charge", StringComparison.Ordinal)) Add<Charge>();
+        if (scenario == "anger") Add<Anger>();
+        else if (scenario == "turbo") Add<Turbo>();
+        else if (scenario == "blade_dance") Add<BladeDance>();
+        else if (scenario == "pommel_strike") Add<PommelStrike>();
+        else if (scenario == "bloodletting") Add<Bloodletting>();
+        else if (scenario == "gather_light") Add<GatherLight>();
+        else if (scenario.StartsWith("charge", StringComparison.Ordinal)) Add<Charge>();
         else if (scenario == "discovery") Add<Discovery>();
         else if (scenario == "glimmer") Add<Glimmer>();
         else if (scenario is "random" or "random_empty") Add<SwordBoomerang>();
@@ -78,9 +85,35 @@ internal static class PlayFixture
         if (scenario == "stars") cards[0].SetStarCostThisCombat(2);
         await CardPileCmd.AddGeneratedCardsToCombat(cards, PileType.Hand, player);
         int drawCount = scenario.StartsWith("charge", StringComparison.Ordinal) ? int.Parse(scenario[^1..])
-            : scenario is "glimmer" or "card_logic" ? 3 : 0;
+            : scenario is "glimmer" or "card_logic" or "pommel_strike" ? 3 : 0;
         for (int i = 0; i < drawCount; i++)
-            await CardPileCmd.AddGeneratedCardToCombat(combat.CreateCard<DefendIronclad>(player), PileType.Draw, player);
+        {
+            var added = await CardPileCmd.AddGeneratedCardToCombat(combat.CreateCard<DefendIronclad>(player), PileType.Draw, player);
+            if (scenario == "pommel_strike") CardCmd.PreviewCardPileAdd(added, 0.1f);
+        }
+        if (scenario == "pommel_strike")
+        {
+            // Prepare a visible starting count through native flights, not a label/model rewrite.
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+            while (VisibleUi.Number(NCombatRoom.Instance!.Ui.DrawPile, "CountContainer/Count") != drawCount
+                && timer.Elapsed < TimeSpan.FromSeconds(10)) await Cmd.Wait(0.1f);
+            if (VisibleUi.Number(NCombatRoom.Instance!.Ui.DrawPile, "CountContainer/Count") != drawCount)
+                throw new InvalidOperationException("The fixture draw pile did not finish its native preview.");
+        }
+        if (scenario is "preview_draw" or "preview_messy")
+        {
+            int count = scenario == "preview_messy" ? 7 : 1;
+            var generated = await CardPileCmd.AddGeneratedCardsToCombat(
+                Enumerable.Range(0, count).Select(_ => combat.CreateCard<Dazed>(player)), PileType.Draw, player);
+            void PreviewOnBlock(int _, int __)
+            {
+                player.Creature.BlockChanged -= PreviewOnBlock;
+                // Exercise both native combat preview layouts before their delayed pile flights.
+                CardCmd.PreviewCardPileAdd(generated, 2.2f,
+                    count > 5 ? CardPreviewStyle.MessyLayout : CardPreviewStyle.HorizontalLayout);
+            }
+            player.Creature.BlockChanged += PreviewOnBlock;
+        }
         if (scenario is "victory" or "test_subject")
             foreach (var enemy in combat.Enemies) await CreatureCmd.SetCurrentHp(enemy, 1);
         if (scenario == "kill_chain") await CreatureCmd.SetCurrentHp(combat.Enemies.First(), 1);

@@ -20,6 +20,7 @@ SUPPORTED_VERIFIERS = {
     'verify_shop.py', 'verify_rewards.py', 'verify_treasure.py',
     'verify_suite_continuation.py', 'verify_suite_pending.py',
     'verify_selection_scene.py',
+    'verify_action_stability.py',
 }
 
 
@@ -62,6 +63,8 @@ def load_cases(path):
                 'verify_rewards.py': CATALOG['reward'], 'verify_treasure.py': CATALOG['treasure'],
                 'verify_kill_settling.py': ('card', 'potion', 'phase', 'ui', 'choice', 'energy'),
                 'verify_selection_scene.py': ('ancient_bundle', 'rest_smith', 'combat_discovery', 'event_deck', 'shop_remove'),
+                'verify_action_stability.py': ('anger', 'turbo', 'blade_dance', 'pommel_strike',
+                                              'bloodletting', 'gather_light', 'preview_draw', 'preview_messy'),
             }
             if args and (verifier not in scenario_options or len(args) != 2
                          or args[0] != '--scenario' or args[1] not in scenario_options[verifier]):

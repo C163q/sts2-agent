@@ -22,8 +22,8 @@ internal sealed partial class GameAdapter
             string? reason = stopReason();
             state = Observe();
             // Logical actions finish before independent UI motion stops changing the observation.
-            if (settling.Sample(reason, state, CardMotionPending() || CombatMotion.Pending() || RunUi.ResourceMotionPending()
-                || reason == "combat_won" && RunUi.CardPreviewsPending(), timer.Elapsed))
+            if (settling.Sample(reason, state, CardMotionPending() || RunUi.CardPreviewsPending()
+                || CombatMotion.Pending() || RunUi.ResourceMotionPending(), timer.Elapsed))
                 return (state, reason!);
         }
         return (state, "timeout");

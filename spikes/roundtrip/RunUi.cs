@@ -4,6 +4,7 @@ using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.Cards;
 using MegaCrit.Sts2.Core.Nodes.Screens;
+using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Models;
@@ -31,10 +32,17 @@ internal static class RunUi
             || VisibleUi.Descendants<MegaCrit.Sts2.Core.Nodes.Potions.NPotion>(run.GlobalUi.TopBar.PotionContainer)
                 .Any(potion => RewardInspection.Animating(potion, "_obtainedTween")));
 
-    public static bool CardPreviewsPending() => NRun.Instance is { } run
-        && new Node[] { run.GlobalUi.CardPreviewContainer, run.GlobalUi.MessyCardPreviewContainer,
-            run.GlobalUi.EventCardPreviewContainer, run.GlobalUi.GridCardPreviewContainer }
-            .Any(container => VisibleUi.Descendants<NCard>(container).Any(VisibleUi.Shown));
+    public static bool CardPreviewsPending()
+    {
+        var global = NRun.Instance?.GlobalUi;
+        var combat = NCombatRoom.Instance?.Ui;
+        Node?[] containers = [global?.CardPreviewContainer, global?.MessyCardPreviewContainer,
+            global?.EventCardPreviewContainer, global?.GridCardPreviewContainer,
+            combat?.CardPreviewContainer, combat?.MessyCardPreviewContainer];
+        // Previews spawn future pile flights, including while covered or entering the screen.
+        return containers.Any(container => container != null && GodotObject.IsInstanceValid(container)
+            && VisibleUi.Descendants<NCard>(container).Any(card => card.IsInsideTree() && !card.IsQueuedForDeletion()));
+    }
 
     public static bool OnlyRewardOverlays()
     {
