@@ -2,7 +2,7 @@
 
 适用于 Mod `0.34.1`、MCP `0.29.1`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。当前支持实际单人宝箱，点击原生按钮完成开箱和领取，不自动前进或选路。
 
-下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
+下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。MCP `0.50.3` 起，可见宝箱房的 `relic:null` 在 default 和 get_observation summary 中均保留，表示当前没有展示可领取遗物；covered 时仍省略，不推断未开箱或被覆盖的隐藏内容。
 
 ## 观察与详情
 

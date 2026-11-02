@@ -49,6 +49,8 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 当前选择页的 `selection` 候选、包内卡牌和已展开的比较均复用手牌摘要，省略正文、稀有度、卡池、空 `unplayable_markers` 和 `outline:"none"`；其他描边、非空标记及可见附魔保留。空 bundles 与空 `upgrade_previews/enchant_previews/transform_previews` 省略，cards／selected_ids／options 的空数组保留。提示、数量限制、全部已选 ID、按钮启用状态、升级模式、附魔操作说明及随机结果标记保留；比较中的未知身份、随机 after:null 不补齐。
 
+奖励、火堆和宝箱的房间主体保持与 default 一致，不省略标题、当前已显示说明、选项、空列表或按钮状态。宝箱可见时 default／summary 保留 `treasure.relic:null`；被覆盖时仍省略，完整规则见[公共空值规则](mcp.md#输出预设)。弹出的选牌使用上述共用摘要，顶栏独立精简。
+
 地图及牌组／牌堆浏览覆盖（`screen.view:map/deck/draw_pile/discard_pile/exhaust_pile`）的页面主体暂时沿用 default，由浏览摘要占位入口处理；顶栏先应用上述共用摘要。占位保留页面上下文和隐藏选择元数据，不对下层战斗再次压缩。当前基础观察仍不附浏览卡牌列表；后续核验 inspect_map、inspect_deck、inspect_pile 时再补充对应内容与摘要。MCP `0.50.2` 起统一采用此分工，见[共用顶栏记录](../research/2026-11-02-shared-top-bar-summary.md)。
 
 Mod `0.49.0` 起，已打开候选页的 full/default/summary 都提供整个原生可浏览列表，包含滚动区域外的候选，保持原生顺序及原牌 ID。读取不滚动或选择卡牌；确认预览只提供该页展示内容，眼睛与覆盖页继续隐藏选择。网格候选的已有附魔同时修复，显示计数和置灰规则与原生卡面一致。详见[选牌接口](card-selection.md)。需要更换 Mod、重启游戏并重连 MCP。

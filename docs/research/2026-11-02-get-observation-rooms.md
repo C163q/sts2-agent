@@ -1,8 +1,8 @@
 # get_observation 奖励、火堆与宝箱核验
 
-> 当前状态：07–09 组的现状核验完成，11 类夹具、37 份完整 full 样本已保存；进入 summary 设计讨论，尚未定稿或修改工具行为。其余 8 组（10–17）待选，get_observation 整体未核销。
+> 当前状态：07–09 组的现状核验完成，11 类夹具、37 份完整 full 样本已保存；summary 已定稿并完成实现：房间主体沿用 default，可见宝箱保留 relic:null。其余 8 组（10–17）待选，get_observation 整体未核销。
 
-本页现状及 JSON 对应 `8d64c2f` 的原始采样基线；奖励按视口截断的限制已由[浏览范围专项](2026-11-02-browsable-content-audit.md)修复，Mod 0.49.2 的当前 full/default/summary 样本见该记录，历史样本保留原样。07–09 组 summary 尚待设计，不把浏览范围修复当作摘要定稿。
+本页现状及 JSON 对应 `8d64c2f` 的原始采样基线；奖励按视口截断的限制已由[浏览范围专项](2026-11-02-browsable-content-audit.md)修复，Mod 0.49.2 的当前 full/default/summary 样本见该记录，历史样本保留原样。07–09 组的后续摘要定稿及 Python 投影验证见下文。
 
 总流程见[工具核验记录](2026-11-02-mcp-tool-review.md)，分组见[观察场景目录](2026-11-02-get-observation-review.md)。inspect_rewards、inspect_rest_site、inspect_treasure 仅用于核对基础观察与详情的区别，不在本轮核销。
 
@@ -83,11 +83,23 @@
 
 现行规则见[宝箱房接口](../development/treasure.md)。
 
-## 预设设计的讨论边界
+## summary 定稿与交付
 
-本轮尚未定稿新的房间 summary。当前 summary 由 default 起步：三种房间主体保持 default，顶栏独立复用 gold、potion_slots、deck_count、relic_count；选择覆盖时继续使用共用卡牌摘要。actions_only 和 top_bar 也保持各自现行契约，不由房间摘要重新定义。
+2026-11-03 确认并实现，MCP `0.50.3`；Mod 保持 `0.49.2`、schema `31`。三个房间的基础字段已经紧凑，不再删减房间主体：
 
-奖励完整可浏览列表已纳入上述专项修复；本组仍需决定房间摘要是否省略 prompt／title 等标题、是否需要整合当前可见说明。建议保留奖励 ID、按钮 enabled、互斥组与跳过语义，以及宝箱状态，避免压缩后无法判断该点什么。未展开候选、未来遗物或未显示的悬停效果不应通过 summary 补出。
+- 奖励保留标题、完整可浏览奖励列表、稳定 ID、类型、文本、enabled、互斥组及继续／跳过语义。
+- 火堆保留提示、当前实际显示的说明、选项及按钮；灰置选项、options:[] 和已使用后剩余选项均保留，不补未展开的说明。
+- 宝箱保留 chest、当前展示的遗物及继续按钮。treasure.status 为 visible 时，default／summary 显式保留已有 relic:null，表示当前没有展示可领取遗物；不能推断空箱原因或读取未来内容。covered 时仍省略空字段，不把不可观察解释为没有遗物。
+- 共用顶栏仍摘要为 gold、potion_slots、deck_count、relic_count；弹出的选择仍应用共用卡牌摘要。整份 summary 与 default 的差别继续由这些独立组件决定。
+- full、actions_only、top_bar 保持原有契约；没有新增参数。公共空值例外也适用于 inspect_treasure 的 default，但不核销该工具。原本缺失的 relic 字段不会补造。
+
+实现仅修改[公共空值入口](../../src/sts2_mcp/output/presets.py)，无需修改原生读取或添加重复的房间摘要函数。现行契约见[基础观察](../development/observation.md#mcp-输出预设)和[公共预设](../development/mcp.md#输出预设)。
+
+本次未启动游戏、编译或安装 Mod；沿用已保存的游戏实测 full 数据检查输出投影，不将其描述为新 GUI 实测。验证记录位于 `.tmp/2026-11-03-room-summaries/`：
+
+- 回归测试确认旧实现删除可见 relic:null；首次沙箱内 asyncio 检查超时，沙箱外同项测试正常失败，修复后定向测试通过。
+- 38 份既有实测 full 样本投影检查通过：37 份本页基线加 1 份浏览修复后的完整奖励样本，均确认三个房间主体在 default／summary 相同、顶栏沿用共用四字段且输入不变；包含 6 份可见 relic:null、4 份被覆盖宝箱。历史视口截断样本仅用于已有字段结构的投影验证，不代表当前奖励读取范围。
+- 自动化测试覆盖 closed/opening/open、covered、缺失字段、其他同名字段、full 不变、default 幂等、公开观察／详情调用，以及空奖励列表、火堆灰置按钮和跳过语义。完整 Python 测试 465 项通过（34.273 秒），定向测试 29 项通过；新增 4 项回归包含在完整测试中。
 
 ## full 样本与验证
 

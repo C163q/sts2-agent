@@ -37,8 +37,10 @@ def preset_schema(schema):
     return result
 
 
-def preserve_null(path):
+def preserve_null(path, parent):
     """Keep facts and comparisons intact; array elements are never removed."""
+    if path == ('treasure', 'relic') and parent.get('status') == 'visible':
+        return True
     if path[:3] == ('transition', 'events', '*'):
         return True
     return any(path[:len(prefix)] == prefix and len(path) > len(prefix)
@@ -52,7 +54,7 @@ def apply_preset(payload, preset):
     def compact(value, path=()):
         if isinstance(value, dict):
             return {key: compact(item, (*path, key)) for key, item in value.items()
-                    if item is not None or preserve_null((*path, key))}
+                    if item is not None or preserve_null((*path, key), value)}
         if isinstance(value, list):
             return [compact(item, (*path, '*')) for item in value]
         return value

@@ -79,7 +79,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.49.2` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.50.2`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.49.2` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.50.3`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -135,7 +135,7 @@ approval_mode = "approve"
 
 ## 输出预设
 
-MCP `0.50.2` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
+MCP `0.50.3` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
 
 | 预设 | 行为 |
 | --- | --- |
@@ -143,7 +143,7 @@ MCP `0.50.2` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
 | `full` | 保留本工具原有完整输出及其中的空值；动作仍返回精简回执，不附送完整观察 |
 | 专用预设 | summary 继承 default 后进一步精简；selectable、actions_only 按各工具契约返回 |
 
-过滤保留三类例外：所有数组的 `null` 元素；`transition.events` 中已有的全部空值；选牌已展开的升级、附魔、变牌比较中 before / after 两侧的全部内容与空值。后者包括随机变牌的 `after:null`，但未展开的整个 `upgrade_preview:null` 可以省略。
+过滤保留以下例外：所有数组的 `null` 元素；`transition.events` 中已有的全部空值；选牌已展开的升级、附魔、变牌比较中 before / after 两侧的全部内容与空值。后者包括随机变牌的 `after:null`，但未展开的整个 `upgrade_preview:null` 可以省略。宝箱房 `treasure.status:"visible"` 时，保留已有的 `relic:null`，明确当前没有展示可领取遗物；covered 时仍省略，不据此推断隐藏内容。
 
 `0`、`false`、空字符串、空数组、空对象均保留。数组长度、顺序和引用下标不变；过滤后为空的对象仍保留。省略不表示零、否或空集合，也不表示沿用上次值；结果不是状态增量。需要明确空值时使用 full。
 
