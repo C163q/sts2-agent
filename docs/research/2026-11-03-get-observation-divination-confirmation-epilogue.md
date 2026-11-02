@@ -1,6 +1,6 @@
 # get_observation：占卜、确认框与建筑师终章
 
-> 当前状态：13–15 组现状核验已交付，共 3 组，已完成源码核对及 5 类隔离 GUI 采样，收录 47 份完整 full、19 张同次棋盘 PNG 和 1 份已知错误响应。summary 约定已记录，讨论结束后先修复建筑师牌组覆盖校验缺陷，再实现摘要；两项均尚未实施。后续功能另列[用户待办](../development/TODO.md)，get_observation 整体不核销。总进度见[场景目录](2026-11-02-get-observation-review.md)。
+> 当前状态：13–15 组现状核验已交付，共 3 组，已完成源码核对及 5 类隔离 GUI 采样，收录 47 份完整 full、19 张同次棋盘 PNG 和 1 份已知错误响应。建筑师牌组覆盖校验已由 MCP 0.50.5 修复并验证；summary 约定已确认，新增占卜说明省略尚待实现。后续功能另列[用户待办](../development/TODO.md)，get_observation 整体不核销。总进度见[场景目录](2026-11-02-get-observation-review.md)。
 
 ## 范围与证据
 
@@ -103,24 +103,31 @@ JSON 后另有一个 `ImageContent` PNG，来自当次渲染棋盘的矩形裁�
 2. 逐句推进，当前气泡替换；角色和访问情况会改变原生台词与长度，结构相同，不穷举脚本。
 3. 尚未准备：打字、任务或入场未完成，按钮 enabled 可为 false；不提前输出完整对白。
 4. 地图覆盖：scene 仍为 epilogue，`screen.view:map`，终章内容 covered；关闭后回原气泡。
-5. 牌组覆盖：原生为 scene:epilogue、`screen.view:deck`、终章内容 covered；当前 MCP 基础观察却被校验器拒绝，见下述缺陷。关闭牌组后可恢复原气泡。
+5. 牌组覆盖：原生为 scene:epilogue、`screen.view:deck`、终章内容 covered；MCP 0.50.4 的基础观察被校验器拒绝，0.50.5 已修复，见下述记录。关闭牌组后可恢复原气泡。
 6. 最后气泡只有 proceed；完成后 `epilogue:null`，进入 `run_result`。后续结算八种 phase 属于 16 组，不在本轮展开。
 
 气泡与按钮不是可滚动列表，未发现无用的视口截断；隐藏或未完整显示的台词继续不读。
 
 ### 已确认缺陷：建筑师牌组覆盖
 
-`inspect_deck` 能成功打开牌组并返回牌组数据；其后 `get_observation` 返回 `transport_error`，不是一份成功的 full 观察。原生成功响应中的工具列表是：
+MCP 0.50.4 基线中，`inspect_deck` 能成功打开牌组并返回牌组数据；其后 `get_observation` 返回 `transport_error`，不是一份成功的 full 观察。原生成功响应中的工具列表是：
 
 ```json
 ["inspect_potions", "inspect_relics", "inspect_deck", "close_card_view", "inspect_map"]
 ```
 
-Python 的 [validate_ending](../../src/sts2_mcp/output/run_ending_details.py) 在 `epilogue.status:covered` 且 `screen.view:deck` 时仍只允许后三项，抛出 `Covered or unready ending actions.`；[GameTools](../../src/sts2_mcp/game_tools.py) 将校验错误包装为通信失败。完整数据校验先于 preset，因此不只是 full 受影响。
+Python 的 [validate_ending](../../src/sts2_mcp/output/run_ending_details.py) 在该基线的 `epilogue.status:covered` 且 `screen.view:deck` 时只允许后三项，抛出 `Covered or unready ending actions.`；[GameTools](../../src/sts2_mcp/game_tools.py) 将校验错误包装为通信失败。完整数据校验先于 preset，因此不只是 full 受影响。
 
-原生读取已经隐藏底层台词，新增两项也只是按可见顶栏提供的只读工具；这是校验契约未同步，不需要扩大原生动作权限。`close_card_view` 可以恢复正常观察。本轮不修改行为，缺陷保留待修复；建议后续同步该分支的允许工具并补回归，继续禁止覆盖时推进对话或执行底层玩法动作。
+原生读取已经隐藏底层台词，新增两项也只是按可见顶栏提供的只读工具；这是校验契约未同步，不需要扩大原生动作权限。`close_card_view` 可以恢复正常观察。MCP 0.50.5 同步该分支的允许工具并补回归，继续禁止覆盖时推进对话或执行底层玩法动作；原始错误样本不改写。
 
 原始失败证据为本地 `gui-remaining/epilogue/evidence.json` 下标 11–12；完整问题报告为 `.tmp/2026-11-03-epilogue-deck-observation-report.md`。不能将原生诊断 JSON 冒充 MCP 已成功返回的 full 样本。
+
+### 建筑师修复与验证（MCP 0.50.5）
+
+- 仅调整 Python covered/deck 分支的允许工具集合，Mod 0.49.2、schema 31 及原生 DLL 不变；不改变其他页面和原生动作许可。
+- 新增公开 GameTools 回归在旧代码下证明五种 preset 都误报 transport_error；隐藏对白、其他覆盖页和底层动作的拒绝回归保持通过。相关 28 项及全套 472 项 Python 测试通过。
+- 隔离 GUI 的既有 verify_view_availability(epilogue) 用例通过，共 56 次 MCP 调用；实际读取覆盖时提供的药水和遗物详情，核对五种观察预设，并确认覆盖时推进对话被拒绝，牌组／地图浏览与关闭可恢复。
+- [修复后的完整 full](2026-11-03-observation-special-implementation-examples/epilogue-deck.full.json) 与 `.tmp/2026-11-03-observation-special-implementation/fix-gui/epilogue_view_availability/verify/evidence.json` 下标 16 的 structuredContent 一致。证据根目录为 `.tmp/2026-11-03-observation-special-implementation/`，fix-gui/report.json 为 passed，fix-python.log 为全套结果；自有 PID 160365 已退出，未更新正式 Mod。
 
 ## 本轮样本与验证
 
@@ -208,13 +215,13 @@ Python 的 [validate_ending](../../src/sts2_mcp/output/run_ending_details.py) �
 
 ## summary 约定与实施顺序
 
-以下为本轮记录的约定，尚未实现新增省略项；先完成讨论，再修复建筑师牌组覆盖的校验缺陷，最后实现并验证摘要。共用顶栏及卡牌选择继续使用已交付的摘要，`default/full/actions_only/top_bar` 保持现有契约。
+以下约定已经确认；建筑师牌组覆盖校验修复已交付，新增占卜摘要省略项尚待实现与验证。共用顶栏及卡牌选择继续使用已交付的摘要，`default/full/actions_only/top_bar` 保持现有契约。
 
 - **事件层**：统一沿用已有的 `event.description` 省略规则，包含审判（Trial）初始、再次拒绝及取消确认后的事件正文；保留 `event.options[].description` 中的费用、效果与后果。覆盖时不补出原事件正文。该规则已经实现，本轮核对回归即可。
 - **确认框**：主体沿用 default，保留 `confirmation.description`、标题和按钮；省略普通事件叙事的规则不能按字段名递归套到确认框正文。来源不支持时仍按人工输入边界返回。
 - **建筑师**：主体沿用 default，保留当前对白、说话者、状态及按钮。
 - **占卜**：summary 仅新增省略 `divination.instructions`，保留状态、阶段、可见次数、当前工具、工具按钮文字及 enabled、当前完整对白、格子、原生前进按钮、坐标说明与同次 PNG；不改变遮挡和未知值规则。`full/default` 及 `inspect_event` 仍提供实际可见的教学说明。
 
-建筑师修复限于同步 Python 对 `epilogue.status:covered` 且 `screen.view:deck` 的工具校验：接受原生当前可读的 `inspect_potions/inspect_relics`，继续拒绝底层对话推进与玩法动作；不扩大其他页面的动作许可。需要相应回归及隔离 GUI 验证。
+已交付的建筑师修复限于同步 Python 对 `epilogue.status:covered` 且 `screen.view:deck` 的工具校验：接受原生当前可读的 `inspect_potions/inspect_relics`，继续拒绝底层对话推进与玩法动作；不扩大其他页面的动作许可。相应回归及隔离 GUI 验证见上文。
 
 占卜当前由 `inspect_event` 查看，工具表中没有独立的 `inspect_divination`；其返回仍依赖图片表达已揭开的图案。文字观察、地图和牌组／牌堆覆盖摘要、商店详情及已提出的知识库计划统一列入[用户后续待办](../development/TODO.md)，不并入本轮实现。

@@ -115,6 +115,16 @@ async def verify(args):
             assert covered['screen'] == {'status': 'covered', 'view': 'deck'}, covered
             assert not set(covered['available_actions']) & GAME_ACTIONS, covered
             assert 'close_card_view' in covered['available_actions'], covered
+            if args.scenario == 'epilogue':
+                assert {'inspect_potions', 'inspect_relics'} <= set(covered['available_actions']), covered
+                for preset in ('default', 'full', 'summary', 'actions_only', 'top_bar'):
+                    projected = await call('get_observation', {'preset': preset})
+                    assert projected['screen'] == {'status': 'covered', 'view': 'deck'}, projected
+                    assert projected['available_actions'] == covered['available_actions'], projected
+                    if preset in ('default', 'summary'):
+                        assert projected['epilogue'] == {'status': 'covered'}, projected
+                await call('advance_dialogue', error='illegal_action')
+                await call('get_observation')
             assert await call('inspect_deck') == deck
             await call('inspect_deck', {'sort_by': 'name', 'descending': True, 'view_upgrades': True})
             closed = await call('close_card_view')

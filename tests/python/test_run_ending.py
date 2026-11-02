@@ -19,6 +19,16 @@ def state(phase='outcome'):
     return raw
 
 
+def epilogue_deck_state():
+    raw = event_state()
+    raw.update(snapshot_id='epilogue-deck-1', scene='epilogue', event=None,
+               screen={'status': 'covered', 'view': 'deck'},
+               epilogue={'status': 'covered', 'dialogue': None, 'continue': None, 'proceed': None},
+               available_actions=['inspect_potions', 'inspect_relics', 'inspect_deck',
+                                  'close_card_view', 'inspect_map'])
+    return raw
+
+
 class EndingOutputTests(unittest.TestCase):
     def test_run_won_preserves_visible_story_death_and_victory_title(self):
         raw = state()
@@ -77,6 +87,25 @@ class EndingOutputTests(unittest.TestCase):
 
 
 class EndingSessionTests(unittest.IsolatedAsyncioTestCase):
+    async def test_epilogue_deck_observation_accepts_visible_inspections_in_every_preset(self):
+        from tests.python.test_events import EventClient
+        client = EventClient()
+        client.raw = epilogue_deck_state()
+        tools = GameTools(client)
+        for preset in ('default', 'full', 'summary', 'actions_only', 'top_bar'):
+            with self.subTest(preset=preset):
+                result = await tools.get_observation({'preset': preset})
+                self.assertNotIn('error', result)
+                self.assertEqual(result['screen'], {'status': 'covered', 'view': 'deck'})
+                self.assertEqual(result['available_actions'], [
+                    'inspect_potions', 'inspect_relics', 'inspect_deck', 'close_card_view', 'inspect_map'])
+                self.assertEqual(tools.snapshot_id, 'epilogue-deck-1')
+                if preset == 'full':
+                    self.assertEqual(result['epilogue'], {
+                        'status': 'covered', 'dialogue': None, 'continue': None, 'proceed': None})
+                elif preset in ('default', 'summary'):
+                    self.assertEqual(result['epilogue'], {'status': 'covered'})
+
     async def test_result_action_reuses_successful_observation_and_inspection_does_not_refresh_it(self):
         class Client:
             def __init__(self): self.calls = []; self.raw = state()
@@ -102,6 +131,33 @@ class EndingSessionTests(unittest.IsolatedAsyncioTestCase):
 
 
 class EndingBoundaryTests(unittest.TestCase):
+    def test_epilogue_deck_inspections_do_not_allow_underlying_actions(self):
+        for action in ('advance_dialogue', 'proceed', 'use_potion', 'discard_potion',
+                       'play_card', 'end_turn', 'travel_to_node', 'inspect_hand',
+                       'inspect_ui', 'inspect_combatants', 'inspect_targets', 'inspect_pile',
+                       'respond_to_confirmation'):
+            raw = epilogue_deck_state()
+            raw['available_actions'].append(action)
+            with self.subTest(action=action), self.assertRaises(ValueError):
+                observation_details(raw)
+
+    def test_epilogue_deck_inspections_do_not_reveal_dialogue_or_extend_other_views(self):
+        raw = epilogue_deck_state()
+        raw['epilogue']['dialogue'] = {'speaker': 'The Architect', 'text': 'Hidden.'}
+        with self.assertRaises(ValueError):
+            observation_details(raw)
+        for view in ('confirmation', 'draw_pile', 'run_result'):
+            raw = epilogue_deck_state()
+            raw['screen']['view'] = view
+            with self.subTest(view=view), self.assertRaises(ValueError):
+                observation_details(raw)
+        raw = state()
+        raw['run_result'].update(status='covered', title=None, texts=[], options=[])
+        raw.update(screen={'status': 'covered', 'view': 'run_result'},
+                   available_actions=['inspect_potions', 'inspect_relics'])
+        with self.assertRaises(ValueError):
+            observation_details(raw)
+
     def test_all_result_phases_and_covered_screens(self):
         from sts2_mcp.output.run_ending_details import PHASES
         for phase in PHASES:

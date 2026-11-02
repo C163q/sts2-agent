@@ -1,6 +1,6 @@
 # 终章与一局结算
 
-适用于 Mod `0.49.2`、MCP `0.50.4`、观察 schema `31`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。支持单人第三幕结束后的建筑师对话、胜负结算、必要解锁和返回主菜单。实现依据与验证范围见[源码及图形验证](../research/2026-10-31-run-ending-validation.md)。
+适用于 Mod `0.49.2`、MCP `0.50.5`、观察 schema `31`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。支持单人第三幕结束后的建筑师对话、胜负结算、必要解锁和返回主菜单。实现依据与验证范围见[源码及图形验证](../research/2026-10-31-run-ending-validation.md)。
 
 下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
 
@@ -72,4 +72,4 @@ Mod 0.49.2 起，当前原生本局详情页的滚动文字与物品不按视口
 
 Mod／MCP `0.44.0` 起，建筑师对话也可在原生按钮可用时查看牌组；覆盖期间保留 `screen.view: deck` 并隐藏底层对话，当前原生工具列表包含浏览及实际可读的药水／遗物详情。结算页的药水／遗物详情也根据实际可见、可悬停控件独立列出，不要求无关的结算文字动画完成；仍不能打开牌组或执行已结束对局的动作。实测范围见[可用工具修复记录](../research/2026-11-02-available-actions-fix.md)。
 
-MCP `0.50.4` 已确认存在建筑师牌组覆盖的观察缺陷：`inspect_deck` 可成功打开，但随后 `get_observation` 会因 Python 校验仍不接受当前可见的 `inspect_potions/inspect_relics` 而返回 `transport_error`。可用 `close_card_view` 关闭后恢复观察；此问题尚未修复，不表示原生 IPC 已断开。复现与边界见 [13–15 组核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md#已确认缺陷建筑师牌组覆盖)。
+MCP `0.50.5` 已修复建筑师牌组覆盖时的基础观察校验：接受原生当前可读的 `inspect_potions/inspect_relics`，五种观察预设均可读取覆盖页；仍隐藏底层对白并拒绝推进对话、使用药水等底层动作。`0.50.4` 的原始错误响应及修复后的实际 full 分别保留，验证范围见 [13–15 组核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md#已确认缺陷建筑师牌组覆盖)。

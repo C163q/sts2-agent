@@ -98,7 +98,8 @@ def validate_ending(result):
                 or key == 'epilogue' and (result.get('map') is not None
                     or value['status'] == 'not_ready' and set(result['available_actions']) <= EPILOGUE_TOOLS - {'advance_dialogue', 'proceed'}
                     or value['status'] == 'covered' and result['screen'] == {'status': 'covered', 'view': 'deck'}
-                        and set(result['available_actions']) <= {'inspect_deck', 'close_card_view', 'inspect_map'})):
+                        and set(result['available_actions']) <= {
+                            'inspect_deck', 'close_card_view', 'inspect_map', 'inspect_potions', 'inspect_relics'})):
             raise ValueError('Covered or unready ending actions.')
     if 'run_result_option' in result['available_actions'] and result.get('run_result') is None:
         raise ValueError('Missing result actions.')
