@@ -40,7 +40,7 @@ shop.view 表示商店内部页面阶段，screen.view 继续用于地图、牌�
 
 `inspect_shop` 必须在商品页已打开时使用：卡牌增加正文与 hover_tips，遗物、药水、未用删牌服务增加说明与 hover_tips；读取不自动开店。基础观察 full 仍只有上述商品卡牌摘要，不包含正文、费用颜色、描边、已有附魔字段；不能声称与手牌 full 或当前手牌 summary 的完整字段一致。后续如统一摘要，需要另外核对商店卡面的实际显示及可读字段。
 
-对照本轮库存截图可以确认，商品卡牌的正文直接显示在画面上，而当前基础观察 full 没有返回。这是现有数据范围与静态可见信息之间需要讨论的差异；并非需要悬停才能看到。建议后续先决定 full/default 是否补齐这些已展开正文，再决定 summary 是否保留，而不是将当前缺失当作既定摘要原则。本轮只记录，不修改行为。
+商品卡牌的正文虽然直接显示在画面上，但 get_observation 的 full/default 不提供，这是已确认的工具职责分工；正文继续通过 inspect_shop 获取，不作为观察缺口处理。inspect_shop 后续计划直接提供当前金币等购买上下文，具体参数与输出在该工具核验时设计，本轮不提前实现。
 
 商店、普通事件和先古选项是固定布局；[完整可浏览内容审查](2026-11-02-browsable-content-audit.md)已经核对这几类页面没有被遗漏的滚动列表。当前源码的 OnScreen 不能仅因名字就视为无用截断：未开商品页、遮盖、动画离场和隐藏节点仍应排除。原生布局与当前版本的实际阅读范围见该审查。
 
@@ -93,12 +93,14 @@ Trial 第二次拒绝进入 screen.view:confirmation，此时基础观察已有 
 
 现行说明见[事件接口](../development/events.md)，选牌另见[已完成的选择核验](2026-11-02-get-observation-selections.md)。
 
-## 待讨论的 summary
+## 待确认的 summary 方案
 
-本轮不新增参数、不删字段，当前 summary 继续对三个房间主体使用 default；顶栏按独立组件精简，选择页复用卡牌摘要。设计时需要分别考虑：
+当前实现尚未修改：summary 对三个房间主体使用 default，顶栏按独立组件精简，选择页复用卡牌摘要。拟定方案如下，确认后再实现：
 
-- 商店是否仅精简 card 的 rarity、visual_card_pool，以及是否需要按商品 ID／类型筛选；保留 item.id 与可执行性，不把商品身份替换成手牌身份。
-- 先古和事件的 description 本就是决策所需的已展开正文，进一步删减会损失选择后果。对话、称号、页面标题与空列表是否保留，待明确取舍。
+- 商店与先古之民主体完整沿用 default，不额外删除商品卡牌的 rarity／visual_card_pool、馈赠效果、对话、称号或选项。
+- 普通事件仅省略 event.description，即当前页面的叙事正文；保留 options[].description，因为它们说明费用、效果及锁定原因。default/full 仍返回页面正文，需要时也可通过 inspect_event 获取。
+- summary 中，options[].lethal_warning 为 false 时省略，为 true 时保留。省略表示本次没有显示原生危险红框，不是沿用上次标记；每份结果都是完整当前观察。该规则不扩展到其他 false 字段。
+- 共用顶栏、卡牌选择、覆盖页和既有预设保持各自现行规则，不新增参数；inspect_shop 的购买上下文属于后续计划。
 - covered、未开店、锁定选项、已用删牌以及不可读价格的语义不同；不能统一用一个“无内容”表示。
 - get_observation 不回放动作事件。本轮的完整 full 样本不附 transition、purchase_result 或先前奖励结果。
 

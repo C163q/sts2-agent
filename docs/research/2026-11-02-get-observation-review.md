@@ -83,7 +83,7 @@ divination, confirmation, epilogue, run_result, available_actions
 - 战斗主画面阶段已经完成，见[专项记录](2026-11-02-get-observation-combat.md)。全部选牌界面的约定设计已实现，见[选牌核验与实施](2026-11-02-get-observation-selections.md)。上表其他“待选择”不表示实现缺失，而是本轮尚未展开样例核验。
 - 选牌包含战斗、火堆、事件及先古之民等底层场景；本轮围绕 selection 及其可见上下文核验，不自动决定这些房间自身的摘要字段。
 - 奖励、火堆与宝箱的基线及完整样本见[07–09 组记录](2026-11-02-get-observation-rooms.md)，summary 已交付，定稿与验证见同页。奖励可见行限制已在[浏览范围修复](2026-11-02-browsable-content-audit.md)中取消，新增当前 full/default/summary 样本；不要将原先截断的基线文件当作当前返回。
-- 商店、先古之民与普通事件的字段、分支和 82 份完整 full 样本见[10–12 组记录](2026-11-03-get-observation-shop-ancient-event.md)；当前只完成现状核验，尚未确认这些房间的 summary。商店卡牌静态已展示正文但基础观察缺失的设计事项也在该页记录。
+- 商店、先古之民与普通事件的字段、分支和 82 份完整 full 样本见[10–12 组记录](2026-11-03-get-observation-shop-ancient-event.md)；summary 的房间主体与事件省略规则已形成待确认方案。商店卡牌正文由专门查看工具提供，这是已确认的职责分工，不作为 get_observation 的信息缺口。
 - 新的设计结论、确认范围、验证结果及后续提交持续记录于对应专项文件，并在本目录同步状态。
 
 首轮目录检查：5 份初始 JSON 与上述原始 full 调用逐对象一致，能够通过当前观察结构校验；清单名称与 43 个公开工具对应，链接与 Markdown 围栏检查通过。首轮目录整理未启动游戏；后续新增的战斗实测、完整样本及未覆盖范围见专项记录。
