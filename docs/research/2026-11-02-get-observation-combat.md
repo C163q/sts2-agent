@@ -1,6 +1,6 @@
 # get_observation：战斗主画面
 
-> 当前状态：设计讨论中，已记录第一份战斗 summary 草案与源码核对意见，尚未定稿或实现。当前范围为场景目录 01：战斗主画面及角色、卡牌、意图、顶栏的显示差异。选牌、查看战场、地图、牌组与牌堆覆盖页留在对应场景组继续核验；这些场景仍属于 get_observation 的未完成范围，工具暂不核销。
+> 当前状态：设计讨论中。战斗 summary 的生命、能量、空列表、手牌与顶栏规则已确认，遗物数量采用 relic_count，新增 top_bar 预设的要求与设计示例已记录；尚未修改实现。当前仅展开场景目录 01，其他场景仍待核验，get_observation 暂不核销。
 
 总进度见[工具清单](2026-11-02-mcp-tool-review.md)，全部场景见[场景目录](2026-11-02-get-observation-review.md)。
 
@@ -88,23 +88,23 @@
 
 本工具没有 action transition、stop_reason、独立 player_turn 字段、当前抽牌顺序、普通手牌正文或所有图标悬停正文。更详细的信息应按现有接口读取，不能在设计摘要时把这些内容当作 full 已有字段。
 
-## 战斗 summary 草案（待定稿，未实现）
+## 战斗 summary 已确认规则（未实现）
 
-以 default 的内容及空值语义为基础讨论摘要。以下为候选要求与评估，不是当前工具已有输出；其他场景的 summary 行为尚未决定。
+以 default 的内容及空值语义为基础生成摘要。以下为已确认的战斗规则，不是当前工具已有输出；其他场景的 summary 行为尚未决定。
 
-| 内容 | 草案 | 源码核对与建议 |
+| 内容 | 规则 | 源码核对及边界 |
 | --- | --- | --- |
-| 生命 | 合并 hp、max_hp、hp_display，正常如 70/80，无限为 ∞，hidden 显式 null | 合理。建议合并键名 health，玩家、敌人、友方使用同一规则；另保留 dead / unknown 的可区分表示，不能把死亡当作隐藏或补出数值 0 |
-| 能量 | 合并 energy、max_energy，如 3/3 | 合理。建议沿用 energy 键，完整可读时为分数字符串；任一数字不可读时不拼接假值，按普通不可读字段处理 |
-| 空列表 | powers、orb_slots、sovereign_blades 为 [] 时省略 | 合理。建议 powers 对玩家、敌人与友方统一处理。orb_slots:[null,null,null] 表示三个已确认空槽，数组非空，必须保留位置与数量 |
+| 生命 | 合并为 health，正常如 70/80，无限为 ∞，hidden 显式 null | 玩家、敌人、友方使用同一规则；保留 dead / unknown 的可区分表示，不能把死亡当作隐藏或补出数值 0 |
+| 能量 | 合并为 energy，如 3/3，移除独立 max_energy | 完整可读时为分数字符串；任一数字不可读时不拼接假值，按普通不可读字段处理 |
+| 空列表 | powers、orb_slots、sovereign_blades 为 [] 时省略 | powers 对玩家、敌人与友方统一处理。orb_slots:[null,null,null] 表示三个已确认空槽，数组非空，必须保留位置与数量 |
 | 手牌 | 沿用 inspect_hand.summary 的牌字段 | 直接复用共享 card_summary：id、name、type、energy_cost、可见 star_cost、特殊费用颜色、unplayable_markers、outline、可见 enchantment；移除 rarity 与 visual_card_pool，不添加正文 |
-| 顶栏 | 仅 gold、potion_slots、deck_count；relics 替换为 relics_count | 合理。计数建议定义为当前观察列表中可见遗物的数量；当前 TopBar 对 RelicNodes 先做 OnScreen 过滤，列表长度不能无条件宣称为总持有数。列表不可读时不能生成 0 |
+| 顶栏 | 仅 gold、potion_slots、deck_count、relic_count，不返回 relics | relic_count 表示当前持有遗物数量，不按图标是否位于视口内截断。统一使用单数名词，与 deck_count、draw_count 等计数字段一致。不可读时不能生成 0 |
 
 未提及的字段暂以 default 为基础保留；例如 block、stars、牌堆计数、敌人意图、友方共享格挡标记、buttons、available_actions、适用 notes。保留它们不代表后续不能继续精简，只避免在本次草案之外自行删字段。
 
-### 合并生命的建议映射
+### 合并生命的映射
 
-| 当前显示 | 建议摘要值 |
+| 当前显示 | 摘要值 |
 | --- | --- |
 | numeric，hp:70、max_hp:80 | `"health":"70/80"` |
 | infinite | `"health":"∞"` |
@@ -112,7 +112,28 @@
 | hidden | `"health":null`，作为本摘要明确保留的空值例外 |
 | unknown | `"health":"unknown"`，表示已有显示但当前无法识别其格式 |
 
-health 键名、dead / unknown 的表示、各类角色是否统一应用均为建议，待讨论定稿。格式化应使用完整验证后的显示状态，不能先丢失判断所需字段，再按默认数字拼接；显式 health:null 不应被后续普通空值过滤删除。
+格式化应使用完整验证后的显示状态，不能先丢失判断所需字段，再按默认数字拼接；显式 health:null 不应被后续普通空值过滤删除。
+
+### 遗物清单与计数口径
+
+- 取消本次涉及的遗物清单按视口位置剔除条目的条件；以原生遗物栏登记的持有条目计数，不能只对旧版 OnScreen 过滤后的数组求长度。名称采用 relic_count，不采用 relics_count，也不表示可见条目数量。
+- 原生 NRelicInventory 使用 FlowContainer 自动换行；本设计不以屏幕矩形位置作为持有遗物是否存在的依据。核对对象为游戏 v0.107.1 的 `MegaCrit.Sts2.Core.Nodes.Relics.NRelicInventory`，本地反编译证据 `.tmp/decompiled/MegaCrit.Sts2.Core.Nodes.Relics.NRelicInventory.decompiled.cs` 的 RelicNodes、Initialize、Add、Remove；当前过滤在 CombatObservation.TopBar 与 RelicInspection.VisibleHolders。
+- 保留整个顶栏 / 遗物栏不可读、显式隐藏、透明、无有效图标等真实显示状态的边界；不把不可读当作没有遗物，不补未展示的未来获取结果。列表与总数的实现须区分“持有条目数量”和“当前可展开的图标详情”，不能以悬停条目筛选替代总数。
+- 实施时核对 inspect_relics 的清单筛选，移除对应的屏幕位置限制，保持其正常可悬停等条件；计数不能依赖 inspect_relics 是否能展开某个禁用条目。其他对象的视口过滤与 transition 的实际可见事件采集不因本项改为全局跳过。
+
+### 新增 preset:top_bar（未实现）
+
+基于现有 actions_only 的 scene、screen、available_actions，以及有待处理选择时的 selection.type/status，再加入 top_bar。正确名称为 actions_only，不新增 action_only 别名。
+
+- top_bar 保留 default 中本来提供的所有顶栏字段，移除遗物明细 relics，加入 relic_count；不套用战斗 summary 对顶栏的四字段限制，也不把顶栏 hp/max_hp 改成战斗单位的 health。
+- 不附 player、enemies、allies、turn、buttons、房间正文、notes 或占卜图片；上下文范围与 actions_only 一致。有选择时只提供原有 type/status，不附候选与按钮。
+- 保留数组中的空槽；顶栏不可读时按 default 省略，不伪造空顶栏或零数量。错误返回与动作许可刷新规则沿用其他观察预设。
+- 适用于当前能够读取顶栏的场景，不改变 UI；各场景的 summary 仍单独核验。无需专用调用顺序，读取信息不足时才选择此预设或其他查看工具。
+- 预设提示词保持简洁，候选英文：`top_bar adds top-bar values and relic_count to actions_only; use inspect_relics for relic details.` 不加入固定刷新频率或必须先观察的要求。
+
+### 设计示例
+
+[战斗 summary 示例](2026-11-02-get-observation-examples/combat.summary-design.json)与[top_bar 示例](2026-11-02-get-observation-examples/combat.top-bar-design.json)由既有 combat.full.json 按以上设计转换；是可审阅的设计样例，不是当前 MCP 已实现或实测的新预设输出。样例使用同一测试画面的两件遗物、三个空药水槽，未编造当前游戏数值。
 
 ### 当前 inspect_hand.summary 的实际样式
 
@@ -155,9 +176,8 @@ health 键名、dead / unknown 的表示、各类角色是否统一应用均为�
 
 ### 待继续讨论
 
-- 确认合并生命的键名及非数字状态表示；决定是否采用当前可见遗物数定义。
 - 其他保留字段是否继续精简，以及 summary 在战斗覆盖页和其他场景中的行为。
-- 参数、默认值及组合规则尚未定稿；继续讨论后才实施。此次仅核对共享卡牌摘要、已有实测样本和当前显示读取逻辑，没有新增游戏运行或修改工具行为。
+- 实施尚未开始；上述已确认规则作为后续实现依据，不在后续对话中重复询问已确认项目。此次仅更新设计与示例，没有新增游戏运行或修改工具行为。
 
 ## 本轮验证与未覆盖项
 

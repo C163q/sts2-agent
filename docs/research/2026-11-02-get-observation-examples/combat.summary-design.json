@@ -1,0 +1,112 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "turn": 1,
+  "player": {
+    "character": "IRONCLAD",
+    "block": 0,
+    "energy": "20/4",
+    "hand": [
+      {
+        "id": 5,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1",
+        "unplayable_markers": [],
+        "outline": "cyan"
+      },
+      {
+        "id": 6,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1",
+        "unplayable_markers": [],
+        "outline": "cyan"
+      },
+      {
+        "id": 7,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1",
+        "unplayable_markers": [],
+        "outline": "cyan"
+      }
+    ],
+    "draw_count": 0,
+    "discard_count": 0,
+    "health": "80/80"
+  },
+  "enemies": [
+    {
+      "id": 1,
+      "name": "Leaf Slime (S)",
+      "block": 0,
+      "intents": [
+        {
+          "category": "attack",
+          "value": "3"
+        }
+      ],
+      "health": "15/15"
+    },
+    {
+      "id": 2,
+      "name": "Leaf Slime (M)",
+      "block": 0,
+      "intents": [
+        {
+          "category": "status",
+          "value": "2"
+        }
+      ],
+      "health": "34/34"
+    },
+    {
+      "id": 3,
+      "name": "Twig Slime (S)",
+      "block": 0,
+      "intents": [
+        {
+          "category": "attack",
+          "value": "4"
+        }
+      ],
+      "health": "10/10"
+    }
+  ],
+  "allies": [],
+  "top_bar": {
+    "gold": 99,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "deck_count": 10,
+    "relic_count": 2
+  },
+  "buttons": {
+    "end_turn": {
+      "text": "End Turn 1",
+      "enabled": true
+    }
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "notes": {
+    "enemy_attack_intents": "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
+  }
+}
