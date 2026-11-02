@@ -1,0 +1,128 @@
+{
+  "scene": "rewards",
+  "map": null,
+  "screen": {
+    "status": "covered"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 2,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      },
+      {
+        "name": "Pael's Wing",
+        "counter": 0,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": {
+    "type": "reward",
+    "status": "visible",
+    "prompt": "Choose a Card",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 0,
+        "name": "Anger",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 6 damage.\nAdd a copy of this card into your Discard Pile."
+      },
+      {
+        "id": 1,
+        "name": "Inflame",
+        "type": "Power",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 2 Strength."
+      },
+      {
+        "id": 2,
+        "name": "Shrug It Off",
+        "type": "Skill",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 8 Block.\nDraw 1 card."
+      }
+    ],
+    "options": [
+      {
+        "id": "skip",
+        "text": "Skip",
+        "enabled": true
+      },
+      {
+        "id": "alternative:1",
+        "text": "Sacrifice",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "rewards": {
+    "status": "covered",
+    "title": null,
+    "items": null,
+    "proceed": null
+  },
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "select_card",
+    "selection_option",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}

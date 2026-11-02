@@ -1,0 +1,204 @@
+{
+  "scene": "rest_site",
+  "map": null,
+  "screen": {
+    "status": "covered"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 30,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 2,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": {
+    "type": "deck_upgrade",
+    "status": "visible",
+    "prompt": "Choose a card to Upgrade.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 10,
+        "name": "Strike+",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 9 damage."
+      },
+      {
+        "id": 11,
+        "name": "Strike+",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 9 damage."
+      },
+      {
+        "id": 12,
+        "name": "Strike+",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 9 damage."
+      },
+      {
+        "id": 13,
+        "name": "Strike+",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 9 damage."
+      },
+      {
+        "id": 14,
+        "name": "Strike+",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 9 damage."
+      },
+      {
+        "id": 15,
+        "name": "Defend+",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 8 Block."
+      },
+      {
+        "id": 16,
+        "name": "Defend+",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 8 Block."
+      },
+      {
+        "id": 17,
+        "name": "Defend+",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 8 Block."
+      },
+      {
+        "id": 18,
+        "name": "Defend+",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 8 Block."
+      },
+      {
+        "id": 19,
+        "name": "Bash+",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "2",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 10 damage.\nApply 3 Vulnerable."
+      }
+    ],
+    "options": [
+      {
+        "id": "cancel",
+        "text": "Cancel",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": true,
+    "view_upgrades": true,
+    "upgrade_previews": []
+  },
+  "rewards": null,
+  "rest_site": {
+    "status": "covered",
+    "prompt": null,
+    "description": null,
+    "options": null,
+    "proceed": null
+  },
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "select_card",
+    "selection_option",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}

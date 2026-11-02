@@ -1,0 +1,161 @@
+{
+  "scene": "ancient",
+  "map": null,
+  "screen": {
+    "status": "covered"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 2,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      },
+      {
+        "name": "Tri-Boomerang",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": {
+    "type": "deck_enchant",
+    "status": "visible",
+    "prompt": "Choose 3 cards to Enchant.",
+    "min_select": 3,
+    "max_select": 3,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 60,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 61,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 62,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 63,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 64,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 65,
+        "name": "Bash",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "2",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 8 damage.\nApply 2 Vulnerable."
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "enchantment": {
+      "title": "Instinct",
+      "description": "This card's attack damage is doubled."
+    },
+    "enchant_previews": []
+  },
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": {
+    "status": "covered",
+    "name": null,
+    "epithet": null,
+    "description": null,
+    "dialogue": null,
+    "options": null,
+    "continue": null,
+    "proceed": null
+  },
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "select_card",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "scene": "combat",
+  "map": null,
+  "screen": {
+    "status": "visible"
+  },
+  "turn": 1,
+  "player": {
+    "character": "IRONCLAD",
+    "hp": 80,
+    "max_hp": 80,
+    "hp_display": "numeric",
+    "block": 5,
+    "energy": 19,
+    "max_energy": 3,
+    "stars": null,
+    "powers": [],
+    "orb_slots": [],
+    "sovereign_blades": [],
+    "hand": [
+      {
+        "id": 6,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "cyan"
+      }
+    ],
+    "draw_count": 0,
+    "discard_count": 0,
+    "exhaust_count": null
+  },
+  "enemies": [
+    {
+      "id": 1,
+      "name": "Leaf Slime (S)",
+      "hp": 15,
+      "max_hp": 15,
+      "hp_display": "numeric",
+      "block": 0,
+      "powers": [],
+      "intents": [
+        {
+          "category": "attack",
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Leaf Slime (M)",
+      "hp": 34,
+      "max_hp": 34,
+      "hp_display": "numeric",
+      "block": 0,
+      "powers": [],
+      "intents": [
+        {
+          "category": "status",
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Twig Slime (S)",
+      "hp": 10,
+      "max_hp": 10,
+      "hp_display": "numeric",
+      "block": 0,
+      "powers": [],
+      "intents": [
+        {
+          "category": "attack",
+          "value": "4"
+        }
+      ]
+    }
+  ],
+  "allies": [],
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": {
+    "end_turn": {
+      "text": "End Turn 1",
+      "enabled": false
+    }
+  },
+  "selection": {
+    "type": "hand_upgrade",
+    "status": "battlefield",
+    "prompt": null,
+    "min_select": null,
+    "max_select": null,
+    "selected_ids": null,
+    "cards": null,
+    "options": [],
+    "can_view_battlefield": true,
+    "can_view_upgrades": false,
+    "view_upgrades": null,
+    "upgrade_preview": null
+  },
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "set_selection_view"
+  ],
+  "notes": {
+    "selection": "Selection pending; return with set_selection_view(view=\"selection\") before choosing.",
+    "enemy_attack_intents": "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "scene": "event",
+  "map": null,
+  "screen": {
+    "status": "covered"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 2,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": {
+    "type": "grid",
+    "status": "visible",
+    "prompt": "Choose 2 Common Cards to Add to Your Deck.",
+    "min_select": 2,
+    "max_select": 2,
+    "selected_ids": [
+      7
+    ],
+    "cards": [
+      {
+        "id": 0,
+        "name": "Breakthrough",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Lose 1 HP.\nDeal 9 damage to ALL enemies."
+      },
+      {
+        "id": 1,
+        "name": "Havoc",
+        "type": "Skill",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Play the top card of your Draw Pile and Exhaust it."
+      },
+      {
+        "id": 2,
+        "name": "Headbutt",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 9 damage.\nPut a card from your Discard Pile on top of your Draw Pile."
+      },
+      {
+        "id": 3,
+        "name": "Thunderclap",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 4 damage and apply 1 Vulnerable to ALL enemies."
+      },
+      {
+        "id": 4,
+        "name": "Setup Strike",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 7 damage.\nGain 2 Strength this turn."
+      },
+      {
+        "id": 5,
+        "name": "Anger",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 6 damage.\nAdd a copy of this card into your Discard Pile."
+      },
+      {
+        "id": 6,
+        "name": "Shrug It Off",
+        "type": "Skill",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 8 Block.\nDraw 1 card."
+      },
+      {
+        "id": 7,
+        "name": "Tremble",
+        "type": "Skill",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "cyan",
+        "description": "Apply 3 Vulnerable.\nExhaust."
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": {
+    "status": "covered",
+    "name": null,
+    "description": null,
+    "options": null,
+    "proceed": null
+  },
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "select_card",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}

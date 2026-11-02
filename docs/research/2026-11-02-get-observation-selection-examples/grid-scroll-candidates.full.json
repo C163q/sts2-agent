@@ -1,0 +1,249 @@
+{
+  "scene": "combat",
+  "map": null,
+  "screen": {
+    "status": "covered"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": {
+    "type": "grid",
+    "status": "visible",
+    "prompt": "Choose a card to Exhaust.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 5,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 6,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 7,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 8,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 9,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 10,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 11,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 12,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 13,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 14,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 15,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none"
+      },
+      {
+        "id": 16,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none"
+      },
+      {
+        "id": 17,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none"
+      },
+      {
+        "id": 18,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none"
+      },
+      {
+        "id": 19,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none"
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": true,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "select_card",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "set_selection_view"
+  ],
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

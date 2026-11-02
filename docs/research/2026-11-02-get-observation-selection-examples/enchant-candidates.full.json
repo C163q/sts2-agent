@@ -1,0 +1,153 @@
+{
+  "scene": "event",
+  "map": null,
+  "screen": {
+    "status": "covered"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 40,
+    "max_hp": 80,
+    "gold": 1099,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": {
+    "type": "deck_enchant",
+    "status": "visible",
+    "prompt": "Choose a card to Enchant.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 53,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 54,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 55,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 56,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 57,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 58,
+        "name": "Bash",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "2",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 8 damage.\nApply 2 Vulnerable."
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "enchantment": {
+      "title": "Sharp",
+      "description": "Increases damage on this card by 2."
+    },
+    "enchant_previews": []
+  },
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": {
+    "status": "covered",
+    "name": null,
+    "description": null,
+    "options": null,
+    "proceed": null
+  },
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "select_card",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}

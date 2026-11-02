@@ -1,0 +1,198 @@
+{
+  "scene": "ancient",
+  "map": null,
+  "screen": {
+    "status": "covered"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 2,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      },
+      {
+        "name": "Pandora's Box",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": {
+    "type": "view_cards",
+    "status": "visible",
+    "prompt": null,
+    "min_select": 0,
+    "max_select": 0,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 92,
+        "name": "Anger",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 6 damage.\nAdd a copy of this card into your Discard Pile."
+      },
+      {
+        "id": 93,
+        "name": "Aggression",
+        "type": "Power",
+        "rarity": "rare",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "At the start of your turn, put a random Attack from your Discard Pile into your Hand and Upgrade it."
+      },
+      {
+        "id": 94,
+        "name": "Infernal Blade",
+        "type": "Skill",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Add a random Attack into your Hand. It's free to play this turn.\nExhaust."
+      },
+      {
+        "id": 95,
+        "name": "Iron Wave",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Gain 5 Block.\nDeal 5 damage."
+      },
+      {
+        "id": 96,
+        "name": "Spite",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 5 damage.\nIf you lost HP this turn,\nhits 2 times."
+      },
+      {
+        "id": 97,
+        "name": "Spite",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 5 damage.\nIf you lost HP this turn,\nhits 2 times."
+      },
+      {
+        "id": 98,
+        "name": "Dismantle",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 8 damage.\nIf the enemy is Vulnerable, hits twice."
+      },
+      {
+        "id": 99,
+        "name": "Stoke",
+        "type": "Skill",
+        "rarity": "rare",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Exhaust your Hand.\nAdd 1 random card into your Hand for each card Exhausted."
+      },
+      {
+        "id": 100,
+        "name": "Fight Me!",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "2",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Deal 5 damage twice.\nGain 3 Strength.\nThe enemy gains 1 Strength."
+      }
+    ],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": true,
+    "view_upgrades": false
+  },
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": {
+    "status": "covered",
+    "name": null,
+    "epithet": null,
+    "description": null,
+    "dialogue": null,
+    "options": null,
+    "continue": null,
+    "proceed": null
+  },
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "selection_option",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}
