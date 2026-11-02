@@ -98,9 +98,11 @@ internal sealed class CombatObservation
         };
     }
 
-    internal static bool CardVisible(NCard? card) => VisibleUi.Shown(card)
+    internal static bool CardVisible(NCard? card) => CardVisible(card, VisibleUi.OnScreen);
+
+    internal static bool CardVisible(NCard? card, Func<CanvasItem?, bool> readable) => VisibleUi.Shown(card)
         && new[] { "%TitleLabel", "%Portrait", "%AncientPortrait", "%Frame" }
-            .Any(path => VisibleUi.OnScreen(card!.GetNodeOrNull<Control>(path)));
+            .Any(path => readable(card!.GetNodeOrNull<Control>(path)));
 
     public object[]? Enemies()
     {

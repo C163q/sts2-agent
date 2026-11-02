@@ -34,7 +34,8 @@ internal sealed class RewardInspection
         && VisibleUi.Shown(screen);
 
     public static NRewardButton[] Buttons(NRewardsScreen screen) => VisibleUi.Descendants<NRewardButton>(screen)
-        .Where(b => GodotObject.IsInstanceValid(b) && !b.IsQueuedForDeletion() && b.Reward != null && VisibleUi.Shown(b)).ToArray();
+        .Where(b => GodotObject.IsInstanceValid(b) && !b.IsQueuedForDeletion() && b.Reward != null
+            && VisibleUi.Shown(b) && VisibleUi.Shown(b.GetNode<Control>("%Label"))).ToArray();
 
     public static bool Animating(object owner, string field) => CardSelection.Field(owner, field) is Tween tween
         && GodotObject.IsInstanceValid(tween) && tween.IsRunning();
@@ -60,7 +61,8 @@ internal sealed class RewardInspection
         if (Current is not { } screen) return null;
         if (!Exposed(screen)) return new { status = "covered", title = (string?)null, items = (object?)null, proceed = (object?)null };
         bool ready = Ready(screen);
-        var rows = Buttons(screen).Where(b => full || VisibleUi.OnScreen(b.GetNode<Control>("%Label"))).Select(b =>
+        // The current list can be scrolled; only explicit hiding excludes a reward row.
+        var rows = Buttons(screen).Select(b =>
         {
             var reward = b.Reward!;
             var item = new Dictionary<string, object?>

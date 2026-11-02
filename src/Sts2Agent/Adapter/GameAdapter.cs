@@ -291,6 +291,23 @@ internal sealed partial class GameAdapter(bool testMode)
             }));
         }
         using JsonDocument document = JsonDocument.Parse(before);
+        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
+        {
+            if (request.Operation == "inspect_test_browsing_containers")
+                return Success(request.Id, JsonSerializer.Serialize(new { containers = BrowsableContentChecks.Containers() }));
+            if (request.Operation == "prepare_test_browsable_result")
+            {
+                BrowsableContentChecks.PrepareResult(runResultInspection);
+                return Success(request.Id, Observe());
+            }
+            if (request.Operation == "prepare_test_browsable_history")
+            {
+                await BrowsableContentChecks.PrepareHistory(runResultInspection, ObservationFrame);
+                return Success(request.Id, Observe());
+            }
+            if (request.Operation == "check_test_browsable_content")
+                return Success(request.Id, JsonSerializer.Serialize(BrowsableContentChecks.Run(rewardInspection, runResultInspection, Observe)));
+        }
         if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
             && request.Operation == "check_test_top_bar")
             return Success(request.Id, JsonSerializer.Serialize(TopBarVisibilityChecks.Run(observation, Observe)));

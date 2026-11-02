@@ -2,6 +2,8 @@
 
 > 当前状态：07–09 组的现状核验完成，11 类夹具、37 份完整 full 样本已保存；进入 summary 设计讨论，尚未定稿或修改工具行为。其余 8 组（10–17）待选，get_observation 整体未核销。
 
+本页现状及 JSON 对应 `8d64c2f` 的原始采样基线；奖励按视口截断的限制已由[浏览范围专项](2026-11-02-browsable-content-audit.md)修复，Mod 0.49.2 的当前 full/default/summary 样本见该记录，历史样本保留原样。07–09 组 summary 尚待设计，不把浏览范围修复当作摘要定稿。
+
 总流程见[工具核验记录](2026-11-02-mcp-tool-review.md)，分组见[观察场景目录](2026-11-02-get-observation-review.md)。inspect_rewards、inspect_rest_site、inspect_treasure 仅用于核对基础观察与详情的区别，不在本轮核销。
 
 ## 基线与证据
@@ -85,7 +87,7 @@
 
 本轮尚未定稿新的房间 summary。当前 summary 由 default 起步：三种房间主体保持 default，顶栏独立复用 gold、potion_slots、deck_count、relic_count；选择覆盖时继续使用共用卡牌摘要。actions_only 和 top_bar 也保持各自现行契约，不由房间摘要重新定义。
 
-需要继续决定：奖励是否读取完整可浏览列表；房间摘要是否省略 prompt／title 等标题；是否需要整合当前可见说明。建议保留奖励 ID、按钮 enabled、互斥组与跳过语义，以及宝箱状态，避免压缩后无法判断该点什么。未展开候选、未来遗物或未显示的悬停效果不应通过 summary 补出。
+奖励完整可浏览列表已纳入上述专项修复；本组仍需决定房间摘要是否省略 prompt／title 等标题、是否需要整合当前可见说明。建议保留奖励 ID、按钮 enabled、互斥组与跳过语义，以及宝箱状态，避免压缩后无法判断该点什么。未展开候选、未来遗物或未显示的悬停效果不应通过 summary 补出。
 
 ## full 样本与验证
 

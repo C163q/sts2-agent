@@ -93,7 +93,7 @@ internal sealed class RunResultInspection
         && NModalContainer.Instance?.OpenModal == null && !VisibleUi.Shown(NGame.Instance?.InspectCardScreen)
         && !VisibleUi.Shown(NGame.Instance?.InspectRelicScreen);
 
-    private static bool TextReady(Node root) => VisibleUi.Descendants<RichTextLabel>(root).Where(VisibleUi.OnScreen).All(l => l.VisibleRatio >= .999f);
+    private static bool TextReady(Node root) => VisibleUi.Descendants<RichTextLabel>(root).Where(VisibleUi.Browsable).All(l => l.VisibleRatio >= .999f);
     public bool Ready(Context context) => singleplayer && Exposed(context) && TextReady(context.Root)
         && (context.Root is not NGameOverScreen over || CardSelection.Field(over, "_isAnimatingSummary") is not true
             && !RunResultMotion.Pending(over))
@@ -138,7 +138,7 @@ internal sealed class RunResultInspection
 
     public static string? Text(CanvasItem item)
     {
-        if (!VisibleUi.OnScreen(item)) return null;
+        if (!VisibleUi.Browsable(item)) return null;
         string? value = item switch { RichTextLabel rich when rich.VisibleRatio >= .999f => rich.Text,
             Label label => label.Text, _ => null };
         if (value != null && item.Name == "PlaceholderLabel")
@@ -159,7 +159,7 @@ internal sealed class RunResultInspection
         name = CardSelection.Field(badge, "_title") is LocString title ? EnglishCardText.Plain(title.GetFormattedText()) : "",
         rarity = Path.GetFileNameWithoutExtension(badge.GetNode<TextureRect>("%BadgeHolder").Texture.ResourcePath).Replace("badge_", "") });
     private static object[] Cards(Node root, bool full) => VisibleUi.Descendants<NCard>(root)
-        .Where(c => CombatObservation.CardVisible(c) && c.Visibility == ModelVisibility.Visible && c.Model != null).Select((card, index) =>
+        .Where(c => CombatObservation.CardVisible(c, VisibleUi.Browsable) && c.Visibility == ModelVisibility.Visible && c.Model != null).Select((card, index) =>
         EnglishEventText.Read(() => {
             var result = BrowsedCard.Read(card.Model!, $"card:{index}", PileType.None, upgrades: false, full: true);
             if (!full) result.Remove("hover_tips");
@@ -175,18 +175,18 @@ internal sealed class RunResultInspection
             ["status"] = !exposed ? "covered" : ready ? "visible" : "not_ready", ["phase"] = context.Phase,
             ["title"] = exposed && root is NGameOverScreen ? Text(root.GetNode<NCommonBanner>("%Banner").label) : null,
             ["texts"] = exposed ? VisibleUi.Descendants<CanvasItem>(root).Where(n => !InsideCard(n)).Select(Text).Where(t => !string.IsNullOrWhiteSpace(t)).Distinct().ToArray() : [],
-            ["score_lines"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NScoreLine>(root).Where(VisibleUi.OnScreen).Select(line => new {
+            ["score_lines"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NScoreLine>(root).Where(VisibleUi.Browsable).Select(line => new {
                 label = Text(line.GetNode<CanvasItem>("%Label")) ?? "", value = Text(line.GetNode<CanvasItem>("%Score")) ?? "" }).ToArray() : Array.Empty<object>(),
-            ["badges"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NBadge>(root).Where(VisibleUi.OnScreen).Select(Badge).ToArray() : Array.Empty<object>(),
-            ["discoveries"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NDiscoveredItem>(root).Where(VisibleUi.OnScreen).Select(item => new {
-                kind = DiscoveryKind(item), count = VisibleUi.Number(item, "%Label") ?? 0 }).ToArray() : Array.Empty<object>(),
+            ["badges"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NBadge>(root).Where(VisibleUi.Browsable).Select(Badge).ToArray() : Array.Empty<object>(),
+            ["discoveries"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NDiscoveredItem>(root).Where(VisibleUi.Browsable).Select(item => new {
+                kind = DiscoveryKind(item), count = int.TryParse(Text(item.GetNode<CanvasItem>("%Label")), out int count) ? count : 0 }).ToArray() : Array.Empty<object>(),
             ["options"] = exposed ? Options(context).Select(o => new { id = o.id, text = ButtonText(o.button), enabled = ready && Clickable(o.button) }).ToArray() : Array.Empty<object>() };
         result["cards"] = exposed ? Cards(root, full) : Array.Empty<object>();
-        result["relics"] = exposed ? VisibleUi.Descendants<NRelicBasicHolder>(root).Where(h => VisibleUi.OnScreen(h) && VisibleUi.OnScreen(h.Relic.Icon))
+        result["relics"] = exposed ? VisibleUi.Descendants<NRelicBasicHolder>(root).Where(h => VisibleUi.Browsable(h) && VisibleUi.Browsable(h.Relic.Icon))
             .Select(h => full ? (object)RelicInspection.Details(h.Relic.Model, null) : EnglishEventText.Read(() => (object)new { name = EnglishCardText.Plain(h.Relic.Model.Title.GetFormattedText()) })).ToArray() : Array.Empty<object>();
-        result["potions"] = exposed ? VisibleUi.Descendants<NPotionHolder>(root).Where(h => VisibleUi.OnScreen(h) && h.HasPotion && VisibleUi.OnScreen(h.Potion))
+        result["potions"] = exposed ? VisibleUi.Descendants<NPotionHolder>(root).Where(h => VisibleUi.Browsable(h) && h.HasPotion && VisibleUi.Browsable(h.Potion))
             .Select(h => full ? (object)PotionInspection.Details(h.Potion!.Model) : EnglishEventText.Read(() => (object)new { name = EnglishCardText.Plain(h.Potion!.Model.Title.GetFormattedText()) })).ToArray() : Array.Empty<object>();
-        if (full) result["hover_tips"] = exposed ? VisibleUi.Descendants<NClickableControl>(root).Where(c => c is not NEpochSlot && VisibleUi.OnScreen(c))
+        if (full) result["hover_tips"] = exposed ? VisibleUi.Descendants<NClickableControl>(root).Where(c => c is not NEpochSlot && VisibleUi.Browsable(c))
             .Select(control => (control, tip: CardSelection.Field(control, "_hoverTip") as IHoverTip))
             .Where(pair => pair.tip != null).Select(pair => EnglishEventText.Read(() => new {
                 source = pair.control is NBadge ? "badge:" + VisibleUi.Descendants<NBadge>(root).ToList().IndexOf((NBadge)pair.control)

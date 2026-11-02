@@ -6,6 +6,8 @@ namespace Sts2Agent;
 
 internal static class VisibleUi
 {
+    private static readonly System.Reflection.FieldInfo ScrollContent = typeof(MegaCrit.Sts2.Core.Nodes.GodotExtensions.NScrollableContainer)
+        .GetField("_content", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
     private static ulong renderedFrames;
     internal static ulong FrameNumber => DisplayServer.GetName() == "headless" ? Engine.GetProcessFrames() : renderedFrames;
     public static void Initialize() => RenderingServer.FramePostDraw += Rendered;
@@ -33,18 +35,40 @@ internal static class VisibleUi
             return false;
         if (item is not Control control)
             return item!.GetViewport().GetVisibleRect().HasPoint(item.GetGlobalTransformWithCanvas().Origin);
-        Rect2 bounds = Bounds(control);
-        bounds = bounds.Intersection(control.GetViewport().GetVisibleRect());
-        if (!bounds.HasArea())
-            return false;
+        return VisibleBounds(control).HasArea();
+    }
+
+    public static bool Browsable(CanvasItem? item)
+    {
+        if (OnScreen(item)) return true;
+        if (!Shown(item) || item is not Control control) return false;
+        for (Node? ancestor = control.GetParent(); ancestor != null; ancestor = ancestor.GetParent())
+        {
+            if (ancestor is not MegaCrit.Sts2.Core.Nodes.GodotExtensions.NScrollableContainer scroll
+                || ScrollContent.GetValue(scroll) is not Control content || !content.IsAncestorOf(control)) continue;
+            // Native scrolling moves content vertically, not into unrelated horizontal areas.
+            var window = VisibleBounds(content.GetParent<Control>());
+            var bounds = Bounds(control);
+            for (Node? parent = control.GetParent(); parent != null && parent != content; parent = parent.GetParent())
+                if (parent is Control { ClipContents: true } clip) bounds = bounds.Intersection(Bounds(clip));
+            return window.HasArea() && bounds.Intersection(Bounds(content)).HasArea()
+                && bounds.End.X > window.Position.X && bounds.Position.X < window.End.X;
+        }
+        return false;
+    }
+
+    private static Rect2 VisibleBounds(Control control)
+    {
+        Rect2 bounds = Bounds(control).Intersection(control.GetViewport().GetVisibleRect());
+        if (!bounds.HasArea()) return bounds;
         for (Node? ancestor = control.GetParent(); ancestor != null; ancestor = ancestor.GetParent())
             if (ancestor is Control { ClipContents: true } clip)
             {
                 bounds = bounds.Intersection(Bounds(clip));
                 if (!bounds.HasArea())
-                    return false;
+                    return bounds;
             }
-        return true;
+        return bounds;
     }
 
     private static Rect2 Bounds(Control control)

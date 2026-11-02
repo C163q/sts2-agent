@@ -1,0 +1,18 @@
+[
+  {
+    "name": "rewards",
+    "scenarios": {"reward": "basic"},
+    "steps": [{"name": "verify", "verifier": "verify_browsable_content.py", "args": ["--scenario", "rewards"]}]
+  },
+  {
+    "name": "history",
+    "scenarios": {"navigation": "boss3", "potion": "basic"},
+    "steps": [{"name": "verify", "verifier": "verify_browsable_content.py", "args": ["--scenario", "history"]}]
+  },
+  {"name": "event", "scenarios": {"event": "basic"}, "steps": [{"name": "verify", "verifier": "verify_browsable_content.py", "args": ["--scenario", "audit"]}]},
+  {"name": "ancient", "scenarios": {"ancient": "basic"}, "steps": [{"name": "verify", "verifier": "verify_browsable_content.py", "args": ["--scenario", "audit"]}]},
+  {"name": "shop", "scenarios": {"shop": "basic"}, "steps": [{"name": "verify", "verifier": "verify_browsable_content.py", "args": ["--scenario", "audit"]}]},
+  {"name": "rest", "scenarios": {"rest": "tent"}, "steps": [{"name": "verify", "verifier": "verify_browsable_content.py", "args": ["--scenario", "audit"]}]},
+  {"name": "treasure", "scenarios": {"treasure": "basic"}, "steps": [{"name": "verify", "verifier": "verify_browsable_content.py", "args": ["--scenario", "audit"]}]},
+  {"name": "combat", "scenarios": {"selection": "tyranny"}, "steps": [{"name": "verify", "verifier": "verify_browsable_content.py", "args": ["--scenario", "audit"]}]}
+]
