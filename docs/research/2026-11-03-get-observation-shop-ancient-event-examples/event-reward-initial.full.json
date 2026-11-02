@@ -1,0 +1,80 @@
+{
+  "scene": "event",
+  "map": null,
+  "screen": {
+    "status": "visible"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 40,
+    "max_hp": 80,
+    "gold": 1099,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": {
+    "status": "visible",
+    "name": "Brain Leech",
+    "description": "*thunk*\n\nA sharp pain is felt atop your head and a thought stabs into your mind.\n\n“SHARE KNOWLEDGE???”\n\nYou are unsure how to proceed...",
+    "options": [
+      {
+        "id": 13,
+        "title": "Share Knowledge",
+        "description": "Choose 1 of 5 random cards to add to your Deck.",
+        "enabled": true,
+        "lethal_warning": false
+      },
+      {
+        "id": 14,
+        "title": "Rip the Leech Off",
+        "description": "Lose 5 HP. Gain a Colorless card reward.",
+        "enabled": true,
+        "lethal_warning": false
+      }
+    ],
+    "proceed": null
+  },
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "choose_event_option",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ]
+}

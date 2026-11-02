@@ -1,0 +1,232 @@
+{
+  "scene": "shop",
+  "map": null,
+  "screen": {
+    "status": "visible"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 1846,
+    "floor": 2,
+    "ascension": null,
+    "deck_count": 11,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 2,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      },
+      {
+        "name": "Anchor",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": {
+    "status": "visible",
+    "view": "inventory",
+    "items": [
+      {
+        "id": 1,
+        "kind": "card",
+        "position": "character_card:1",
+        "price": 39,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Fight Me!",
+          "type": "Attack",
+          "rarity": "uncommon",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "2",
+          "star_cost": null
+        },
+        "on_sale": true
+      },
+      {
+        "id": 2,
+        "kind": "card",
+        "position": "character_card:2",
+        "price": 49,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Havoc",
+          "type": "Skill",
+          "rarity": "common",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "1",
+          "star_cost": null
+        },
+        "on_sale": false
+      },
+      {
+        "id": 3,
+        "kind": "card",
+        "position": "character_card:3",
+        "price": 49,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Tremble",
+          "type": "Skill",
+          "rarity": "common",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "1",
+          "star_cost": null
+        },
+        "on_sale": false
+      },
+      {
+        "id": 4,
+        "kind": "card",
+        "position": "character_card:4",
+        "price": 78,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Feel No Pain",
+          "type": "Power",
+          "rarity": "uncommon",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "1",
+          "star_cost": null
+        },
+        "on_sale": false
+      },
+      {
+        "id": 5,
+        "kind": "card",
+        "position": "colorless_card:0",
+        "price": 89,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Shockwave",
+          "type": "Skill",
+          "rarity": "uncommon",
+          "visual_card_pool": "colorless",
+          "energy_cost": "2",
+          "star_cost": null
+        },
+        "on_sale": false
+      },
+      {
+        "id": 6,
+        "kind": "card",
+        "position": "colorless_card:1",
+        "price": 164,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Gold Axe",
+          "type": "Attack",
+          "rarity": "rare",
+          "visual_card_pool": "colorless",
+          "energy_cost": "1",
+          "star_cost": null
+        },
+        "on_sale": false
+      },
+      {
+        "id": 8,
+        "kind": "relic",
+        "position": "relic:1",
+        "price": 158,
+        "affordable": true,
+        "enabled": true,
+        "name": "Lantern"
+      },
+      {
+        "id": 9,
+        "kind": "relic",
+        "position": "relic:2",
+        "price": 192,
+        "affordable": true,
+        "enabled": true,
+        "name": "Pen Nib"
+      },
+      {
+        "id": 10,
+        "kind": "potion",
+        "position": "potion:0",
+        "price": 72,
+        "affordable": true,
+        "enabled": true,
+        "name": "Heart of Iron"
+      },
+      {
+        "id": 11,
+        "kind": "potion",
+        "position": "potion:1",
+        "price": 51,
+        "affordable": true,
+        "enabled": true,
+        "name": "Attack Potion"
+      },
+      {
+        "id": 12,
+        "kind": "potion",
+        "position": "potion:2",
+        "price": 51,
+        "affordable": true,
+        "enabled": true,
+        "name": "Colorless Potion"
+      },
+      {
+        "id": 13,
+        "kind": "card_removal",
+        "position": "card_removal:0",
+        "price": 75,
+        "affordable": true,
+        "enabled": true,
+        "name": "Card Removal Service",
+        "used": false
+      }
+    ],
+    "open": null,
+    "back": {
+      "enabled": true
+    },
+    "proceed": null
+  },
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "buy_item",
+    "close_shop",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_shop"
+  ]
+}

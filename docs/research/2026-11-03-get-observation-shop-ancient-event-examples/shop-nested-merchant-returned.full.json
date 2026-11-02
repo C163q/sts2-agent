@@ -1,0 +1,91 @@
+{
+  "scene": "shop",
+  "map": null,
+  "screen": {
+    "status": "visible"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 1999,
+    "floor": 2,
+    "ascension": null,
+    "deck_count": 11,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 5,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      },
+      {
+        "name": "Calling Bell",
+        "counter": null,
+        "melted": null
+      },
+      {
+        "name": "Oddly Smooth Stone",
+        "counter": null,
+        "melted": null
+      },
+      {
+        "name": "Gremlin Horn",
+        "counter": null,
+        "melted": null
+      },
+      {
+        "name": "Frozen Egg",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": {
+    "status": "visible",
+    "view": "merchant",
+    "items": null,
+    "open": {
+      "enabled": true
+    },
+    "back": null,
+    "proceed": {
+      "text": "Proceed",
+      "enabled": true
+    }
+  },
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "open_shop",
+    "proceed",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map"
+  ]
+}

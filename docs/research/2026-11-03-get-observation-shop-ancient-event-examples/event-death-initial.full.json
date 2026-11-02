@@ -1,0 +1,80 @@
+{
+  "scene": "event",
+  "map": null,
+  "screen": {
+    "status": "visible"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 1,
+    "max_hp": 80,
+    "gold": 1099,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": {
+    "status": "visible",
+    "name": "Abyssal Baths",
+    "description": "You discover a secluded chamber.\n\nSteam rises from bubbling pools of hot liquid that shifts colors with hypnotic rhythm. Barnacled growths hang from the ceiling, dripping viscous fluid that hisses and writhes when it touches the surface. The air feels heavy, laden with salt and something unmistakably organic.\n\nAs you approach the edge of the largest pool, the liquid ripples. The waters bubble more intensely as if anticipating your entry.",
+    "options": [
+      {
+        "id": 8,
+        "title": "Immerse",
+        "description": "Gain 2 Max HP. Take 3 damage.",
+        "enabled": true,
+        "lethal_warning": true
+      },
+      {
+        "id": 9,
+        "title": "Abstain",
+        "description": "Heal 10 HP.",
+        "enabled": true,
+        "lethal_warning": false
+      }
+    ],
+    "proceed": null
+  },
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "choose_event_option",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ]
+}

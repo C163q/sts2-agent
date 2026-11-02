@@ -1,0 +1,80 @@
+{
+  "scene": "event",
+  "map": null,
+  "screen": {
+    "status": "visible"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 40,
+    "max_hp": 80,
+    "gold": 1099,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": {
+    "status": "visible",
+    "name": "The Trial",
+    "description": "You join a line of people entering a massive building.\n\nAs you pass under a golden archway, horns blare, confetti explodes, and streamers glide down from the ceiling!\n\n“Entrant 525, you are the DECIDER for today's Trial.”",
+    "options": [
+      {
+        "id": 20,
+        "title": "Accept",
+        "description": "Serve as today's Decider.",
+        "enabled": true,
+        "lethal_warning": false
+      },
+      {
+        "id": 21,
+        "title": "Reject",
+        "description": "You are not allowed to Reject.",
+        "enabled": true,
+        "lethal_warning": false
+      }
+    ],
+    "proceed": null
+  },
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "choose_event_option",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ]
+}

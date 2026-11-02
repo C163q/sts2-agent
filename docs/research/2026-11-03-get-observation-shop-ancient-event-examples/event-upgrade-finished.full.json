@@ -1,0 +1,68 @@
+{
+  "scene": "event",
+  "map": null,
+  "screen": {
+    "status": "visible"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 40,
+    "max_hp": 80,
+    "gold": 1099,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": {
+    "status": "visible",
+    "name": "Aroma of Chaos",
+    "description": "Resisting the temptation to give in, you climb atop a tree where the aroma doesn't reach but its effects claw at your mind.\n\nMaintaining control is difficult; you tether your thoughts to your Core Principles.\n\nPain is nothing. My enemies must die.\nPain is nothing. My enemies must die.\nPain is nothing. My enemies must die.\n\nThe aroma subsides.",
+    "options": [],
+    "proceed": {
+      "text": "Proceed",
+      "enabled": true
+    }
+  },
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "proceed",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ]
+}

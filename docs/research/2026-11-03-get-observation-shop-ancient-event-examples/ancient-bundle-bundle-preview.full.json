@@ -1,0 +1,136 @@
+{
+  "scene": "ancient",
+  "map": null,
+  "screen": {
+    "status": "covered"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 2,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      },
+      {
+        "name": "Scroll Boxes",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": {
+    "type": "bundle",
+    "status": "visible",
+    "prompt": null,
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [
+      0,
+      1,
+      2
+    ],
+    "cards": [
+      {
+        "id": 0,
+        "name": "Breakthrough",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Lose 1 HP.\nDeal 9 damage to ALL enemies."
+      },
+      {
+        "id": 1,
+        "name": "Havoc",
+        "type": "Skill",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Play the top card of your Draw Pile and Exhaust it."
+      },
+      {
+        "id": 2,
+        "name": "Feel No Pain",
+        "type": "Power",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": "Whenever a card is Exhausted, gain 3 Block."
+      }
+    ],
+    "options": [
+      {
+        "id": "cancel_preview",
+        "text": "Back",
+        "enabled": true
+      },
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "bundles": []
+  },
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": {
+    "status": "covered",
+    "name": null,
+    "epithet": null,
+    "description": null,
+    "dialogue": null,
+    "options": null,
+    "continue": null,
+    "proceed": null
+  },
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "selection_option",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}
