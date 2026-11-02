@@ -47,7 +47,9 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 - `player.hand` 复用 [inspect_hand 的摘要字段](hand-inspection.md#参数与返回范围)，移除稀有度和卡池，保留费用颜色、标记及可见附魔；空值遵循本预设的 default 规则。
 - 战斗的 `top_bar` 仅保留 `gold/potion_slots/deck_count/relic_count`。其他字段、意图、按钮、可用工具及适用 notes 保留。非战斗主体暂沿用 default，当前选择按下述规则精简。
 
-所有场景的 `selection` 候选、包内卡牌和已展开的比较均复用手牌摘要，省略正文、稀有度、卡池、空 `unplayable_markers` 和 `outline:"none"`；其他描边、非空标记及可见附魔保留。空 bundles 与空 `upgrade_previews/enchant_previews/transform_previews` 省略，cards／selected_ids／options 的空数组保留。提示、数量限制、全部已选 ID、按钮启用状态、升级模式、附魔操作说明及随机结果标记保留；比较中的未知身份、随机 after:null 不补齐。
+当前选择页的 `selection` 候选、包内卡牌和已展开的比较均复用手牌摘要，省略正文、稀有度、卡池、空 `unplayable_markers` 和 `outline:"none"`；其他描边、非空标记及可见附魔保留。空 bundles 与空 `upgrade_previews/enchant_previews/transform_previews` 省略，cards／selected_ids／options 的空数组保留。提示、数量限制、全部已选 ID、按钮启用状态、升级模式、附魔操作说明及随机结果标记保留；比较中的未知身份、随机 after:null 不补齐。
+
+地图及牌组／牌堆浏览覆盖（`screen.view:map/deck/draw_pile/discard_pile/exhaust_pile`）的 summary 暂时完整沿用 default，由独立的浏览摘要入口处理；这条规则先于战斗与选牌压缩，保留 default 的上下文、顶栏和选择元数据。当前基础观察仍不附浏览卡牌列表；后续核验 inspect_map、inspect_deck、inspect_pile 时再补充对应内容与摘要。
 
 Mod `0.49.0` 起，已打开候选页的 full/default/summary 都提供整个原生可浏览列表，包含滚动区域外的候选，保持原生顺序及原牌 ID。读取不滚动或选择卡牌；确认预览只提供该页展示内容，眼睛与覆盖页继续隐藏选择。网格候选的已有附魔同时修复，显示计数和置灰规则与原生卡面一致。详见[选牌接口](card-selection.md)。需要更换 Mod、重启游戏并重连 MCP。
 

@@ -39,6 +39,8 @@ def observation_summary(payload):
     from sts2_mcp.output.card_summary import card_summary
     from sts2_mcp.output.presets import apply_preset
     from sts2_mcp.output.selection_summary import selection_summary
+    if payload['screen'].get('view') in {'map', 'deck', 'draw_pile', 'discard_pile', 'exhaust_pile'}:
+        return browsing_summary(payload)
     result = apply_preset(payload, 'default')
     if result.get('selection') is not None:
         result['selection'] = selection_summary(result['selection'])
@@ -75,3 +77,9 @@ def observation_summary(payload):
         result['top_bar'] = {key: value for key, value in result['top_bar'].items()
                              if key in {'gold', 'potion_slots', 'deck_count', 'relic_count'}}
     return result
+
+
+def browsing_summary(payload):
+    from sts2_mcp.output.presets import apply_preset
+    # Browser content summaries will be defined during the corresponding tool reviews.
+    return apply_preset(payload, 'default')

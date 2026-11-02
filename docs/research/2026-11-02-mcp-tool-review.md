@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中。共 43 项，已核销 0 项。get_observation 的战斗及全部选牌约定范围已交付，正在核验地图与牌组／牌堆浏览覆盖（05、06 组），其余 11 组及另外 42 项待选。本轮先提供 full 样本，覆盖页顶栏及浏览内容缺口待设计定稿。
+> 当前状态：工具核验进行中。共 43 项，已核销 0 项。get_observation 的战斗及全部选牌约定范围已交付；地图与牌组／牌堆浏览覆盖（05、06 组）已接入暂用 default 的摘要占位，具体内容与顶栏缺口待对应工具核验。其余 11 组及另外 42 项待选。
 
 ## 范围与基线
 
@@ -27,7 +27,7 @@
 
 ### 基础观察与战斗详情（7 项）
 
-- [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：正在核验[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
+- [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)已交付本阶段摘要占位，内容待对应工具核验；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
 - [ ] `inspect_ui`：可见战斗 UI、资源及空充能球栏位的悬停说明。
 - [ ] `inspect_hand`：手牌详情。
 - [ ] `inspect_targets`：指定手牌或药水的可用性与目标范围。
@@ -37,8 +37,8 @@
 
 ### 卡牌浏览（3 项）
 
-- [ ] `inspect_deck`：打开并查看牌组。
-- [ ] `inspect_pile`：打开并查看抽牌堆、弃牌堆或消耗堆。
+- [ ] `inspect_deck`：打开并查看牌组。核验时同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)。
+- [ ] `inspect_pile`：打开并查看抽牌堆、弃牌堆或消耗堆。核验时同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)。
 - [ ] `close_card_view`：关闭牌组或牌堆浏览界面。
 
 ### 战斗与药水操作（4 项）
@@ -57,7 +57,7 @@
 
 ### 地图（3 项）
 
-- [ ] `inspect_map`：打开并查看地图。
+- [ ] `inspect_map`：打开并查看地图。核验时同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)。
 - [ ] `close_map`：关闭地图。
 - [ ] `travel_to_node`：前往可选节点。
 
