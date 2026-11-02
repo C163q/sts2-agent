@@ -143,7 +143,7 @@ internal sealed partial class GameAdapter(bool testMode)
             screen["view"] = ending != null ? "run_result" : "epilogue";
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 27, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 28, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -197,6 +197,12 @@ internal sealed partial class GameAdapter(bool testMode)
             if (testMode && checks != null)
                 ObservationChecks.Run(checks);
             return Success(request.Id, before);
+        }
+        if (request.Operation == "check_test_card_additions" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } additionPlayer)
+        {
+            async Task Frame() { await ObservationFrame(); Observe(); }
+            return Success(request.Id, JsonSerializer.Serialize(await CardAdditionChecks.Run(additionPlayer, Frame, observation.CardId)));
         }
         if (request.Operation == "check_test_permanent_cards" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } permanentPlayer)

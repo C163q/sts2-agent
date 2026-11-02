@@ -30,7 +30,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     private readonly HashSet<PowerModel> watchedPowers = [];
     private readonly Dictionary<CardModel, object?> autoSources = [];
     private readonly List<(DamageResult result, Dictionary<string, object?> entry)> damageResults = [];
-    private readonly HashSet<CardModel> generated = [];
+    private readonly CardAdditionJournal additions;
     private readonly HashSet<CardModel> handCards = [];
     private readonly Dictionary<CardModel, string?> knownCards = [];
     private readonly Dictionary<Creature, VisibleResourceChange> companionHealth = [];
@@ -51,6 +51,8 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         try
         {
             TurnCapture.Journal = this;
+            additions = new CardAdditionJournal(combat, player, buffer, cardId, (card, name) => knownCards[card] = name);
+            cleanup.Add(additions.Dispose);
             CombatManager.Instance.CombatWon += Won;
             CombatManager.Instance.CombatEnded += Ended;
             CombatManager.Instance.TurnStarted += Started;
@@ -83,7 +85,6 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     {
         SampleVisibility();
         foreach (var creature in combat.Creatures) RememberVisible(creature);
-        CapturePublicCards();
         bool choiceReady = CardSelection.AwaitingInput;
         return TurnBoundary.Decide(sameCombat, ended, choiceReady, playerReady && (!requireTurnStarted || SawTurnStart), won);
     }
@@ -240,21 +241,6 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         return knownCards.GetValueOrDefault(card);
     }
 
-    private void CapturePublicCards()
-    {
-        var ui = NRun.Instance;
-        if (ui == null) return;
-        foreach (var node in VisibleUi.Descendants<NCard>(ui))
-        {
-            if (node.Model is not { } card || !generated.Contains(card)
-                || node.Visibility != ModelVisibility.Visible || !CombatObservation.CardVisible(node)
-                || english.CardName(node) is not { } name) continue;
-            knownCards[card] = name;
-            Card("card_added", card);
-            generated.Remove(card);
-        }
-    }
-
     public void Damage(DamageResult result, TurnCapture.Origin origin)
     {
         var fields = new Dictionary<string, object?> { ["hp_loss"] = CombatObservation.HealthNumbersVisible(result.Receiver)
@@ -278,6 +264,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         while (historyCursor < entries.Length)
         {
             var entry = entries[historyCursor++];
+            if (entry is CardGeneratedEntry generated) additions.Generated(generated.Card);
             if (entry is CardDrawnEntry draw) Card("card_drawn", draw.Card);
             // Redirection can create a block-only result without calling LoseHpInternal.
             if (entry is DamageReceivedEntry damage && damage.Result.BlockedDamage > 0
@@ -299,6 +286,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     public void SampleVisibility()
     {
         if (disposed) return;
+        additions.SampleVisibility();
         foreach (var (creature, health) in companionHealth) health.Sample(MaximumHealthDisplay(creature));
         if (CombatObservation.Status() != "visible") { pendingCreatures.Clear(); return; }
         foreach (var pending in pendingCreatures.ToArray())
@@ -323,7 +311,11 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         var deck = PileType.Deck.GetPile(player);
         void AddedToDeck(CardModel card)
         {
-            if (RunInventoryJournal.Current == null && ReferenceEquals(card.Owner, player)) generated.Add(card);
+            if (RunInventoryJournal.Current == null)
+            {
+                additions.Generated(card);
+                additions.Added(card, PileType.Deck);
+            }
         }
         deck.CardAdded += AddedToDeck;
         cleanup.Add(() => deck.CardAdded -= AddedToDeck);
@@ -333,6 +325,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
             var pile = type.GetPile(player);
             void Added(CardModel card)
             {
+                additions.Added(card, type);
                 bool wasHand = handCards.Remove(card);
                 if (type == PileType.Hand) handCards.Add(card);
                 else if (type == PileType.Exhaust) Card("card_exhausted", card);
@@ -376,9 +369,6 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
                 break;
             case CardsFlushedEvent e when ReferenceEquals(e.CombatState, combat):
                 LifecycleEvents++;
-                break;
-            case CardGeneratedForCombatEvent e when ReferenceEquals(e.CombatState, combat):
-                generated.Add(e.Card);
                 break;
             case CreatureAddedToCombatEvent e when ReferenceEquals(e.CombatState, combat):
                 SubscribeCreatures();

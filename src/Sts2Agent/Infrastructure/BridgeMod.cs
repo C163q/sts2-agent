@@ -37,6 +37,7 @@ public static class BridgeMod
         ShopTransactions.Initialize();
         PermanentCardCapture.Initialize();
         OrbCapture.Initialize();
+        CardAdditionJournal.Initialize();
         mailbox = new FileMailbox(Path.GetFullPath(directory));
         adapter = new GameAdapter(System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_MODE") == "1");
         transport = Task.Run(() => mailbox.Run(Lifetime.Token));

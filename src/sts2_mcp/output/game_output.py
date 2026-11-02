@@ -87,7 +87,7 @@ EVENT = {
     "source": nullable(EVENT_SOURCE), "card": {"id": int, "name": TEXT},
     "hp_loss": NUMBER, "blocked": int, "before": NUMBER, "after": NUMBER,
     "name": TEXT, "autoplay": bool, "change": str, "potion": POTION_REF,
-    "relic": {"name": TEXT}, "pile": str,
+    "relic": {"name": TEXT}, "pile": TEXT,
     "orb": {"name": str}, "slot_index": int,
 }
 TRANSITION = {"stop_reason": str, "complete": bool, "events": [EVENT]}

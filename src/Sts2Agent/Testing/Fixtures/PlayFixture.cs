@@ -66,7 +66,7 @@ internal static class PlayFixture
         else if (scenario == "orbs") { Add<Dualcast>(); Add<Capacitor>(); Add<Zap>(); }
         else if (scenario == "orb_chain") Add<Tempest>();
         else if (scenario == "turbo") Add<Turbo>();
-        else if (scenario == "blade_dance") Add<BladeDance>();
+        else if (scenario is "blade_dance" or "blade_dance_full") Add<BladeDance>();
         else if (scenario == "pommel_strike") Add<PommelStrike>();
         else if (scenario == "bloodletting") Add<Bloodletting>();
         else if (scenario == "gather_light") Add<GatherLight>();
@@ -85,6 +85,8 @@ internal static class PlayFixture
         else Add<StrikeIronclad>();
         Add<DefendIronclad>();
         Add<StrikeIronclad>();
+        if (scenario == "blade_dance_full")
+            while (cards.Count < CardPile.MaxCardsInHand) Add<DefendIronclad>();
         if (scenario == "minion_card")
         {
             cards[0].UpgradeInternal(); cards[0].FinalizeUpgradeInternal();

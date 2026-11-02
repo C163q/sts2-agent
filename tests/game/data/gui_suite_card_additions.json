@@ -1,0 +1,37 @@
+[
+  {
+    "name": "discard",
+    "scenarios": {"play": "anger"},
+    "steps": [{"name": "verify", "verifier": "verify_card_additions.py", "args": ["--scenario", "discard"]}]
+  },
+  {
+    "name": "hand",
+    "scenarios": {"play": "blade_dance"},
+    "steps": [{"name": "verify", "verifier": "verify_card_additions.py", "args": ["--scenario", "hand"]}]
+  },
+  {
+    "name": "overflow",
+    "scenarios": {"play": "blade_dance_full"},
+    "steps": [{"name": "verify", "verifier": "verify_card_additions.py", "args": ["--scenario", "overflow"]}]
+  },
+  {
+    "name": "normal",
+    "scenarios": {"play": "basic"},
+    "steps": [{"name": "verify", "verifier": "verify_card_additions.py", "args": ["--scenario", "normal"]}]
+  },
+  {
+    "name": "enemy",
+    "scenarios": {"play": "basic"},
+    "steps": [{"name": "verify", "verifier": "verify_card_additions.py", "args": ["--scenario", "enemy"]}]
+  },
+  {
+    "name": "reward",
+    "scenarios": {"selection": "reward"},
+    "steps": [{"name": "verify", "verifier": "verify_card_additions.py", "args": ["--scenario", "reward"]}]
+  },
+  {
+    "name": "checks",
+    "scenarios": {"play": "basic"},
+    "steps": [{"name": "verify", "verifier": "verify_card_additions.py", "args": ["--scenario", "checks"]}]
+  }
+]

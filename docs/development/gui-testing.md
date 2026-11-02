@@ -16,6 +16,8 @@
 
 选牌升级预览的专项清单为 [gui_suite_selection_upgrades.json](../../tests/game/data/gui_suite_selection_upgrades.json)，覆盖火堆、事件、变形候选、结果页、卡牌奖励、移除与多张升级确认；通过 `--suite tests/game/data/gui_suite_selection_upgrades.json` 指定。
 
+卡牌加入去向的专项清单为 [gui_suite_card_additions.json](../../tests/game/data/gui_suite_card_additions.json)，覆盖战斗生成、满手溢出、怪物塞牌、普通移动、奖励入组及身份与方向的可见边界；通过 `--suite tests/game/data/gui_suite_card_additions.json` 指定。
+
 每个套件有独立的 IPC、日志、截图和测试存档目录。游戏资产和 Mod 来自 `.tmp/roundtrip/runtime/`，不使用 Steam、正式存档或 `.tmp/live/ipc`。同一套件内的新局共享测试进度和进程缓存，不能替代要求全新进度或全新进程的测试。
 
 ## 清单与同局步骤

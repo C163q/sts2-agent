@@ -21,7 +21,7 @@ FIELDS = {
     "died": {"target"}, "revived": {"target"}, "creature_added": {"target"},
     "card_played": {"card", "autoplay"}, "card_drawn": {"card"},
     "card_discarded": {"card"}, "card_exhausted": {"card"},
-    "card_added": {"card"},
+    "card_added": {"card", "pile"},
     "potion_used": {"potion"}, "potion_discarded": {"potion"},
     "potion_obtained": {"potion"},
     "relic_obtained": {"relic"}, "relic_removed": {"relic"}, "relic_melted": {"relic"},
@@ -72,12 +72,15 @@ def end_turn_details(state):
         if "potion" in event and (set(event["potion"]) != {"slot_index", "name"}
                                   or not 0 <= event["potion"]["slot_index"] <= 2147483647):
             raise ValueError("Invalid event potion.")
-        if 'pile' in event and (event['pile'] != 'deck' or kind not in {
-                'card_added', 'card_removed', 'card_upgraded', 'card_downgraded', 'card_enchantment_changed',
+        if kind == 'card_added':
+            if event['pile'] not in {None, 'deck', 'hand', 'draw', 'discard', 'exhaust', 'play'}:
+                raise ValueError('Invalid public card destination.')
+        elif 'pile' in event and (event['pile'] != 'deck' or kind not in {
+                'card_removed', 'card_upgraded', 'card_downgraded', 'card_enchantment_changed',
                 'card_stats_changed', 'card_energy_cost_changed'}):
             raise ValueError('Invalid permanent card scope.')
         if kind in {'card_removed', 'card_upgraded', 'card_downgraded', 'card_enchantment_changed',
-                    'card_stats_changed', 'card_energy_cost_changed'} or 'pile' in event:
+                    'card_stats_changed', 'card_energy_cost_changed'} or event.get('pile') == 'deck':
             if not event['card']['name']:
                 raise ValueError('Missing visible permanent card identity.')
         if kind in {'relic_obtained', 'relic_removed', 'relic_melted'} and (

@@ -12,6 +12,31 @@ def receipt(events):
 
 
 class InventoryEventTests(unittest.TestCase):
+    def test_added_cards_preserve_their_public_destination_in_all_action_receipts(self):
+        for pile in ('deck', 'hand', 'draw', 'discard', 'exhaust', 'play', None):
+            event = {'sequence': 1, 'type': 'card_added', 'card': {'id': 11, 'name': 'Anger'}, 'pile': pile}
+            for operation in ('play_card', 'end_turn', 'select_card', 'claim_reward', 'buy_item'):
+                raw = {**event, 'hidden_draw_position': 2}
+                with self.subTest(pile=pile, operation=operation):
+                    state = receipt([raw])
+                    if operation == 'claim_reward':
+                        state['reward_result'] = {'reward_id': 1, 'status': 'claimed'}
+                    public = player_result({'ok': True, 'state': inspection_details(operation, state)})
+                    self.assertEqual(public['transition']['events'], [event])
+
+    def test_added_cards_require_a_valid_destination_or_explicit_unknown(self):
+        event = {'sequence': 1, 'type': 'card_added', 'card': {'id': 11, 'name': 'Anger'}}
+        for invalid in (event, *({**event, 'pile': pile} for pile in ('none', 'top', '', 0, False, [], {}))):
+            with self.subTest(event=invalid), self.assertRaises(ValueError):
+                inspection_details('play_card', receipt([invalid]))
+
+    def test_unidentified_combat_cards_do_not_gain_a_name_from_the_destination(self):
+        event = {'sequence': 1, 'type': 'card_added', 'card': {'id': 11, 'name': None}, 'pile': None}
+        public = player_result({'ok': True, 'state': inspection_details('end_turn', receipt([event]))})
+        self.assertEqual(public['transition']['events'], [event])
+        with self.assertRaises(ValueError):
+            inspection_details('end_turn', receipt([{**event, 'pile': 'deck'}]))
+
     def test_inventory_events_survive_public_receipts_without_model_details(self):
         events = [
             {'sequence': 1, 'type': 'relic_obtained', 'relic': {'name': 'Whetstone'}},
@@ -48,7 +73,7 @@ class InventoryEventTests(unittest.TestCase):
             {'type': 'relic_obtained', 'relic': {'name': None}},
             {'type': 'potion_obtained', 'potion': {'slot_index': -1, 'name': 'Block Potion'}},
             {'type': 'potion_obtained', 'potion': {'slot_index': 0, 'name': None}},
-            {'type': 'card_added', 'card': {'id': 1, 'name': 'Anger'}, 'pile': 'draw'},
+            {'type': 'card_added', 'card': {'id': 1, 'name': 'Anger'}, 'pile': 'top'},
         ]
         for event in invalid:
             with self.subTest(event=event), self.assertRaises(ValueError):
