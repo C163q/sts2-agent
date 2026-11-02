@@ -136,7 +136,7 @@ class CombatProjectionTests(unittest.TestCase):
         self.assertNotIn('top_bar', result)
         self.assertNotIn('top_bar', observation_preset(value, 'top_bar'))
 
-    def test_rest_and_divination_summary_share_top_bar_and_preserve_body_and_image(self):
+    def test_rest_and_divination_summary_share_top_bar_and_preserve_other_content_and_image(self):
         for name in ('rest-site', 'divination'):
             value = sample(name)
             if name == 'divination':
@@ -144,6 +144,8 @@ class CombatProjectionTests(unittest.TestCase):
             expected = apply_preset(value, 'default')
             expected['top_bar'] = {k: v for k, v in expected['top_bar'].items()
                                    if k in {'gold', 'potion_slots', 'deck_count', 'relic_count'}}
+            if name == 'divination':
+                expected['divination'].pop('instructions', None)
             self.assertEqual(observation_preset(value, 'summary'), expected)
             result = tool_result(observation_preset(value, 'summary'))
             self.assertEqual(len(result.content), 2 if name == 'divination' else 1)
@@ -172,6 +174,44 @@ class CombatProjectionTests(unittest.TestCase):
 
 
 class ObservationToolTests(unittest.IsolatedAsyncioTestCase):
+    async def test_divination_summary_omits_teaching_but_keeps_visible_board_media_and_permission(self):
+        client = DivinationClient()
+        client.raw['divination']['dialogue'] = 'There is much to uncover...'
+        original = copy.deepcopy(client.raw)
+        tools = GameTools(client)
+        full = await tools.get_observation({'preset': 'full'})
+        summary = await tools.get_observation({'preset': 'summary'})
+        self.assertNotIn('instructions', summary['divination'])
+        self.assertEqual(summary['divination'], {
+            'status': 'visible', 'phase': 'playing', 'remaining': 3, 'tool': 'big',
+            'tools': [{'id': 'big', 'text': 'Big Divination', 'enabled': True},
+                      {'id': 'small', 'text': 'Small Divination', 'enabled': True}],
+            'dialogue': 'There is much to uncover...',
+            'grid': {'columns': 11, 'rows': 11, 'covered_rows': ['###########'] * 11,
+                     'image': {'width': 1, 'height': 1}}})
+        self.assertIn('# covered', summary['notes']['divination'])
+        self.assertEqual(summary['available_actions'], ['set_divination_tool', 'divine'])
+        response = tool_result(summary)
+        self.assertEqual([block.type for block in response.content], ['text', 'image'])
+        self.assertEqual(response.content[1].data, tool_result(full).content[1].data)
+        self.assertEqual(json.loads(response.content[0].text), response.structuredContent)
+        for result in (full, await tools.get_observation(), await tools.inspect_event()):
+            self.assertEqual(result['divination']['instructions'], {
+                'title': 'How to divine', 'description': 'Uncover the future.'})
+        self.assertEqual(client.raw, original)
+        await tools.get_observation({'preset': 'summary'})
+        self.assertEqual(tools.snapshot_id, 'sphere-1')
+        self.assertNotIn('error', await tools.set_divination_tool({'tool': 'small'}))
+
+    async def test_invalid_divination_instructions_are_rejected_before_summary_omits_them(self):
+        client = DivinationClient()
+        client.raw['divination']['instructions']['description'] = 123
+        tools = GameTools(client)
+        result = await tools.get_observation({'preset': 'summary'})
+        self.assertEqual(result['error']['code'], 'transport_error')
+        self.assertIsNone(tools.snapshot_id)
+        self.assertEqual([block.type for block in tool_result(result).content], ['text'])
+
     async def test_native_count_survives_validation_and_both_public_projections(self):
         class CountClient(Client):
             def call(self, *args, **kwargs):

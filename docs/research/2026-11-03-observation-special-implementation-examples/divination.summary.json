@@ -1,0 +1,71 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible",
+    "view": "divination"
+  },
+  "top_bar": {
+    "gold": 1009,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1
+  },
+  "event": {
+    "status": "covered"
+  },
+  "divination": {
+    "status": "visible",
+    "phase": "playing",
+    "remaining": 3,
+    "tool": "big",
+    "tools": [
+      {
+        "id": "big",
+        "text": "Big Divination",
+        "enabled": true
+      },
+      {
+        "id": "small",
+        "text": "Small Divination",
+        "enabled": true
+      }
+    ],
+    "grid": {
+      "columns": 11,
+      "rows": 11,
+      "covered_rows": [
+        "...#####...",
+        "..#######..",
+        ".#########.",
+        "###########",
+        "###########",
+        "###########",
+        "###########",
+        "###########",
+        ".#########.",
+        "..#######..",
+        "...#####..."
+      ],
+      "image": {
+        "width": 599,
+        "height": 598
+      }
+    }
+  },
+  "available_actions": [
+    "set_divination_tool",
+    "divine",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ],
+  "notes": {
+    "divination": "Board image: 11x11 cells, (0,0) top-left; x right, y down. # covered, . revealed. Choose a # cell while playing."
+  }
+}

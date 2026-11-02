@@ -1,0 +1,43 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible"
+  },
+  "top_bar": {
+    "gold": 1099,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1
+  },
+  "event": {
+    "status": "visible",
+    "name": "The Trial",
+    "options": [
+      {
+        "id": 4,
+        "title": "Accept",
+        "description": "Give in. Serve as today's Decider.",
+        "enabled": true
+      },
+      {
+        "id": 5,
+        "title": "Double Down",
+        "description": "Face lethal repercussions.",
+        "enabled": true,
+        "lethal_warning": true
+      }
+    ]
+  },
+  "available_actions": [
+    "choose_event_option",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ]
+}

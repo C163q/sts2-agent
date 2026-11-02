@@ -1,6 +1,6 @@
 # get_observation：占卜、确认框与建筑师终章
 
-> 当前状态：13–15 组现状核验已交付，共 3 组，已完成源码核对及 5 类隔离 GUI 采样，收录 47 份完整 full、19 张同次棋盘 PNG 和 1 份已知错误响应。建筑师牌组覆盖校验已由 MCP 0.50.5 修复并验证；summary 约定已确认，新增占卜说明省略尚待实现。后续功能另列[用户待办](../development/TODO.md)，get_observation 整体不核销。总进度见[场景目录](2026-11-02-get-observation-review.md)。
+> 当前状态：13–15 组现状核验已交付，共 3 组，已完成源码核对及 5 类隔离 GUI 采样，收录 47 份完整 full、19 张同次棋盘 PNG 和 1 份已知错误响应。建筑师牌组覆盖校验已由 MCP 0.50.5 修复并验证；13–15 组 summary 约定已由 MCP 0.50.6 实现并验证，3／3 组本阶段完成。后续功能另列[用户待办](../development/TODO.md)，get_observation 整体不核销。总进度见[场景目录](2026-11-02-get-observation-review.md)。
 
 ## 范围与证据
 
@@ -129,7 +129,7 @@ Python 的 [validate_ending](../../src/sts2_mcp/output/run_ending_details.py) �
 - 隔离 GUI 的既有 verify_view_availability(epilogue) 用例通过，共 56 次 MCP 调用；实际读取覆盖时提供的药水和遗物详情，核对五种观察预设，并确认覆盖时推进对话被拒绝，牌组／地图浏览与关闭可恢复。
 - [修复后的完整 full](2026-11-03-observation-special-implementation-examples/epilogue-deck.full.json) 与 `.tmp/2026-11-03-observation-special-implementation/fix-gui/epilogue_view_availability/verify/evidence.json` 下标 16 的 structuredContent 一致。证据根目录为 `.tmp/2026-11-03-observation-special-implementation/`，fix-gui/report.json 为 passed，fix-python.log 为全套结果；自有 PID 160365 已退出，未更新正式 Mod。
 
-## 本轮样本与验证
+## 基线 full 样本与验证（MCP 0.50.4）
 
 采样脚本和原始响应保存在未纳入 Git 的 `.tmp/2026-11-03-observation-special-review/`。使用已有测试夹具布置独立对局，再通过真实 stdio MCP 采集 `get_observation({"preset":"full"})`。金币、生命、奖励坐标和第三幕进度来自测试准备，不代表正常开局；只用于覆盖 UI 分支。
 
@@ -199,29 +199,45 @@ Python 的 [validate_ending](../../src/sts2_mcp/output/run_ending_details.py) �
 | 建筑师：当前气泡 1 | [epilogue-dialogue-1.full.json](2026-11-03-get-observation-divination-confirmation-epilogue-examples/epilogue-dialogue-1.full.json) | 无 | `gui-epilogue/epilogue`：19 |
 | 建筑师：终章完成后的胜利首屏 | [epilogue-outcome.full.json](2026-11-03-get-observation-divination-confirmation-epilogue-examples/epilogue-outcome.full.json) | 无 | `gui-epilogue/epilogue`：22 |
 
-牌组覆盖时没有可导出的成功 full：[实际错误响应](2026-11-03-get-observation-divination-confirmation-epilogue-examples/epilogue-deck-covered.error.json)，来源 `gui-epilogue/epilogue`：12。原生诊断响应仍留在本地证据中，不替代公开工具样本。
+MCP 0.50.4 基线采样的牌组覆盖没有可导出的成功 full：[实际错误响应](2026-11-03-get-observation-divination-confirmation-epilogue-examples/epilogue-deck-covered.error.json)，来源 `gui-epilogue/epilogue`：12。原生诊断响应仍留在本地证据中，不替代公开工具样本。
 
 ### 验证结果及未验证范围
 
 - 5 类采样分批完成：`gui-final` 的 3 次占卜、`gui-remaining` 的 6 次占卜及两类确认、`gui-epilogue` 的终章。前两份报告整体仍为 failed；最后终章采样显式预期并记录已知错误后继续，不表示牌组覆盖缺陷已修复。
 - 上述完整用例记录内共 136 次 MCP 调用、4 次原生诊断／测试调用；后者仅用于定位奖励覆盖、打开／关闭无来源弹窗以及读取失败时的原生状态，不向 LLM 发布隐藏坐标或物品模型。对局准备及清理另由测试夹具执行。
 - 47 份 full 与原始 structuredContent 逐对象一致，通过当前 observation_details 校验；19 张 PNG 与原响应图像字节一致，尺寸与 grid.image 相同。MCP 文字 JSON 与 structuredContent 在每次调用核对一致。1 份错误响应单独保存，不当作成功观察校验。
-- 所有自有 GUI 进程均已退出；Mod DLL 未变，未更新正式安装。未修改生产代码，没有重新运行整套 Python、C# 测试或构建。
+- 基线采样的所有自有 GUI 进程均已退出；Mod DLL 未变，未更新正式安装。该采样阶段仅增加文档，没有重新运行整套 Python、C# 测试或构建；后续 Python 修复与摘要的验证另见对应交付节。
 - 首次 `gui` 采样把 close_map 误当作必含 transition 的玩法动作；`gui-final` 的奖励流程又重复打开跳过后仍保留的卡牌奖励行。两次临时脚本失败均保留，后续只修正采样流程。`gui-remaining` 的终章采样则因真实校验缺陷停止，原始错误未掩盖。
 - playing、finished、地图／牌组覆盖、奖励／选牌与来源不同的确认框已实际覆盖；settling、确认框入场和建筑师 not_ready 的动画中间态仅核对源码，没有人工拼接 full 样本。建筑师只采集本次铁甲战士的原生对话，不穷举角色、访问次数或随机脚本。
 - 奖励中的金钱、药水和卡牌候选均已采集。卡牌候选的 Skip 会回奖励列表，卡牌奖励行仍可重新打开；本次再点击奖励页 Skip 才离开，不把跳过候选当作已领走奖励。
-- 其他未知模态／第三方自定义页面未实测；本轮的人工输入样本只证明同类确认窗口来源不匹配时停止自动操作。16–17 组继续待核验，summary 另行定稿。
+- 其他未知模态／第三方自定义页面未实测；本轮的人工输入样本只证明同类确认窗口来源不匹配时停止自动操作。16–17 组继续待核验；该基线采样尚未实施的 summary 已在下文单独定稿并交付。
 
+## summary 定稿与交付
 
-## summary 约定与实施顺序
+以下约定已由 MCP 0.50.6 实现；建筑师牌组覆盖校验先由 MCP 0.50.5 修复并验证。共用顶栏及卡牌选择继续使用已交付的摘要，`default/full/actions_only/top_bar` 保持现有契约。
 
-以下约定已经确认；建筑师牌组覆盖校验修复已交付，新增占卜摘要省略项尚待实现与验证。共用顶栏及卡牌选择继续使用已交付的摘要，`default/full/actions_only/top_bar` 保持现有契约。
-
-- **事件层**：统一沿用已有的 `event.description` 省略规则，包含审判（Trial）初始、再次拒绝及取消确认后的事件正文；保留 `event.options[].description` 中的费用、效果与后果。覆盖时不补出原事件正文。该规则已经实现，本轮核对回归即可。
+- **事件层**：统一沿用已有的 `event.description` 省略规则，包含审判（Trial）初始、再次拒绝及取消确认后的事件正文；保留 `event.options[].description` 中的费用、效果与后果。覆盖时不补出原事件正文。该既有规则已通过回归与审判 GUI 验证。
 - **确认框**：主体沿用 default，保留 `confirmation.description`、标题和按钮；省略普通事件叙事的规则不能按字段名递归套到确认框正文。来源不支持时仍按人工输入边界返回。
 - **建筑师**：主体沿用 default，保留当前对白、说话者、状态及按钮。
-- **占卜**：summary 仅新增省略 `divination.instructions`，保留状态、阶段、可见次数、当前工具、工具按钮文字及 enabled、当前完整对白、格子、原生前进按钮、坐标说明与同次 PNG；不改变遮挡和未知值规则。`full/default` 及 `inspect_event` 仍提供实际可见的教学说明。
+- **占卜**：summary 省略 `divination.instructions`，保留状态、阶段、可见次数、当前工具、工具按钮文字及 enabled、当前完整对白、格子、原生前进按钮、坐标说明与同次 PNG；不改变遮挡和未知值规则。`full/default` 及 `inspect_event` 仍提供实际可见的教学说明。
 
 已交付的建筑师修复限于同步 Python 对 `epilogue.status:covered` 且 `screen.view:deck` 的工具校验：接受原生当前可读的 `inspect_potions/inspect_relics`，继续拒绝底层对话推进与玩法动作；不扩大其他页面的动作许可。相应回归及隔离 GUI 验证见上文。
 
 占卜当前由 `inspect_event` 查看，工具表中没有独立的 `inspect_divination`；其返回仍依赖图片表达已揭开的图案。文字观察、地图和牌组／牌堆覆盖摘要、商店详情及已提出的知识库计划统一列入[用户后续待办](../development/TODO.md)，不并入本轮实现。
+
+### 摘要验证与示例（MCP 0.50.6）
+
+- 相关 51 项、全套 474 项 Python 测试通过；新增省略回归在旧实现中先失败，非法教学字段仍在摘要前被拒绝，不因省略而获得动作许可。独立只读代码审阅无发现。
+- 隔离 GUI 2 类用例通过，共 30 次 MCP 调用：占卜核对 default／full／summary、同次 PNG、inspect_event 教学说明及原生状态不变；审判核对初始与拒绝后 event.description 省略、选项效果保留，以及确认框 description 保留。证据为 `.tmp/2026-11-03-observation-special-implementation/summary-gui/`。
+- 原有 47 份 full 逐份通过新摘要检查；确认框和建筑师主体等于原 full 的普通空值过滤，占卜另移除教学说明。没有改写这些历史 full 或旧错误响应。
+- 当前 Mod 0.49.2、schema 31 及 DLL 不变，未安装正式 Mod；自有 PID 161764 已退出。只需重连 MCP 即可使用 Python 变更，不要求替换 Mod。
+
+| 内容 | 示例 | 来源与类型 |
+| --- | --- | --- |
+| 占卜完整返回 | [divination.full.json](2026-11-03-observation-special-implementation-examples/divination.full.json)、[同次 PNG](2026-11-03-observation-special-implementation-examples/divination.full.png) | 本轮真实 MCP full，原教学说明保留 |
+| 占卜摘要 | [divination.summary.json](2026-11-03-observation-special-implementation-examples/divination.summary.json)、[同次 PNG](2026-11-03-observation-special-implementation-examples/divination.summary.png) | 本轮真实 MCP summary，仅省略教学说明并精简共用顶栏 |
+| 审判拒绝页摘要 | [trial.summary.json](2026-11-03-observation-special-implementation-examples/trial.summary.json) | 对原 confirmation-cancel-declined.full.json 的当前摘要投影，不是新 GUI 调用 |
+| 确认框摘要 | [confirmation.summary.json](2026-11-03-observation-special-implementation-examples/confirmation.summary.json) | 对原 confirmation-cancel-confirmation.full.json 的当前摘要投影 |
+| 建筑师摘要 | [epilogue.summary.json](2026-11-03-observation-special-implementation-examples/epilogue.summary.json) | 对原 epilogue-dialogue-0.full.json 的当前摘要投影 |
+
+逐文件证据下标、PNG 映射和校验结果见本地 summary-verification.json。占卜后续文字观察仍属于[用户待办](../development/TODO.md)，届时同步 get_observation 与 inspect_event，当前继续依赖图片，不提前发布隐藏物品。

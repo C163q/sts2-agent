@@ -1,6 +1,6 @@
 # 占卜小游戏
 
-适用于 Mod `0.33.0`、MCP `0.28.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。支持单人原生 Crystal Sphere 界面，先用[事件工具](events.md)选择进入方式。
+适用于 Mod `0.49.2`、MCP `0.50.6`、原生 schema `31`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。支持单人原生 Crystal Sphere 界面，先用[事件工具](events.md)选择进入方式。
 
 下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
 
@@ -8,11 +8,13 @@
 
 | 工具 | 行为 |
 | --- | --- |
-| `get_observation()` | 当前棋盘、次数、工具和可用动作，准备动作许可 |
+| `get_observation()` | 当前棋盘、次数、工具和可用动作，刷新动作许可 |
 | `inspect_event()` | 只读当前占卜界面，与基础观察的小游戏信息相同；成功时刷新状态令牌 |
 | `set_divination_tool({"tool":"small"})` | 点击小范围工具；`big` 为大范围，不消耗次数 |
 | `divine({"x":5,"y":5})` | 点击一个仍被覆盖的格子，消耗一次次数 |
 | `proceed()` | 点击结算后实际启用的前进按钮 |
+
+占卜复用 `inspect_event` 作为专门查看入口，没有独立的 `inspect_divination`。`get_observation({"preset":"summary"})` 省略固定教学 `divination.instructions`，其余主体沿用 default，保留棋盘、图像、可见次数、工具按钮、当前完整对白及坐标说明；default/full 和 `inspect_event` 仍提供实际可见的教学说明。摘要不改变原生页面或动作许可，验证范围见 [13–15 组核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md)。
 
 占卜需要**支持图像内容的 MCP 客户端及有视觉能力的模型**。可见棋盘随完整基础观察和 `inspect_event` 详情返回独立的 `ImageContent` PNG；动作使用[精简回执](mcp.md#动作返回格式)，不附送棋盘或图像，后续按需查看；JSON 与文字内容不含 base64。图像直接裁剪游戏当前渲染画面，保留遮罩、边框和物品碎片，不从内部物品模型重绘。纯文字客户端无法获得全部可见信息。
 

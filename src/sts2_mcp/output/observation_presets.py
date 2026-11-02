@@ -2,7 +2,7 @@ OBSERVATION_SCHEMA = {
     'type': 'object',
     'properties': {'preset': {
         'type': 'string', 'enum': ['full', 'actions_only', 'summary', 'top_bar'], 'default': 'full',
-        'description': 'full keeps basic observations; summary compacts cards, combat, and top bars, omitting event narrative and false warnings; actions_only keeps context and tool names; top_bar adds values and relic_count without relic details. All refresh action permission.',
+        'description': 'full keeps basic observations; summary compacts cards, combat, and top bars, omitting event narrative, false warnings, and divination instructions; actions_only keeps context and tool names; top_bar adds values and relic_count without relic details. All refresh action permission.',
     }},
     'additionalProperties': False,
 }
@@ -56,6 +56,8 @@ def observation_summary(payload):
         for option in event.get('options', []):
             if option.get('lethal_warning') is False:
                 option.pop('lethal_warning')
+    if result.get('divination') is not None:
+        result['divination'].pop('instructions', None)
     if payload['scene'] != 'combat':
         return result
 

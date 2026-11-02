@@ -1,0 +1,31 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible",
+    "view": "confirmation"
+  },
+  "event": {
+    "status": "covered"
+  },
+  "confirmation": {
+    "status": "visible",
+    "type": "abandon_run",
+    "title": "Are you sure?",
+    "description": "Abandoning the game will result in a loss.",
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Yes",
+        "enabled": true
+      },
+      {
+        "id": "cancel",
+        "text": "No",
+        "enabled": true
+      }
+    ]
+  },
+  "available_actions": [
+    "respond_to_confirmation"
+  ]
+}

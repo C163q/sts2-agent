@@ -73,12 +73,20 @@ async def verify(args):
 
             state = await call('get_observation')
             if args.scenario == 'confirmation':
+                summary = await call('get_observation', {'preset': 'summary'})
+                assert state['event']['description'] and 'description' not in summary['event'], summary
+                assert all('description' in option for option in summary['event']['options']), summary
                 await call('choose_event_option', {'option_id': state['event']['options'][1]['id']})
                 state = await call('get_observation')
+                summary = await call('get_observation', {'preset': 'summary'})
+                assert state['event']['description'] and 'description' not in summary['event'], summary
                 option = next(o for o in state['event']['options'] if o['enabled'] and o['lethal_warning'])
                 await call('choose_event_option', {'option_id': option['id']})
                 covered = await offered('confirmation')
                 assert covered['available_actions'] == ['respond_to_confirmation'], covered
+                summary = await call('get_observation', {'preset': 'summary'})
+                assert summary['confirmation']['description'] == covered['confirmation']['description'], summary
+                assert summary['event'] == {'status': 'covered'}, summary
                 for tool in ('inspect_relics', 'inspect_potions', 'inspect_deck', 'inspect_map'):
                     await call(tool, error='illegal_action')
                 await call('get_observation')

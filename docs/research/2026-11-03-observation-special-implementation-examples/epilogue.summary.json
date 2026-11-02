@@ -1,0 +1,37 @@
+{
+  "scene": "epilogue",
+  "screen": {
+    "status": "visible",
+    "view": "epilogue"
+  },
+  "top_bar": {
+    "gold": 99,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1
+  },
+  "epilogue": {
+    "status": "visible",
+    "dialogue": {
+      "speaker": "The Architect",
+      "text": "So the arch demon’s thrall has arrived?"
+    },
+    "continue": {
+      "text": "Threaten",
+      "enabled": true
+    }
+  },
+  "available_actions": [
+    "advance_dialogue",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map"
+  ]
+}

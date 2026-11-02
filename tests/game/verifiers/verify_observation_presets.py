@@ -26,7 +26,7 @@ async def verify(args):
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             initialized = await session.initialize()
-            assert initialized.serverInfo.version == '0.50.5'
+            assert initialized.serverInfo.version == '0.50.6'
             definitions = {t.name: t for t in (await session.list_tools()).tools}
             assert len(definitions) == 42
             assert definitions['get_observation'].inputSchema['properties']['preset']['enum'] == [
@@ -99,9 +99,14 @@ async def verify(args):
                 expected = dict(state)
                 expected['top_bar'] = {k: v for k, v in state['top_bar'].items()
                                        if k in {'gold', 'potion_slots', 'deck_count', 'relic_count'}}
+                if args.scenario == 'divination':
+                    expected['divination'].pop('instructions', None)
                 assert summary == expected
                 if args.scenario == 'divination':
                     assert summary['divination']['status'] == 'visible'
+                    assert 'instructions' not in summary['divination']
+                    inspected = await call('inspect_event')
+                    assert inspected['divination']['instructions'] == full['divination']['instructions']
                     assert 'divination' not in bar
             after = await asyncio.to_thread(raw.call, 'get_state')
             # The board's visual animation changes PNG bytes without a gameplay change.

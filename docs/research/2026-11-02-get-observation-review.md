@@ -1,6 +1,6 @@
 # get_observation 场景核验与参数设计
 
-> 当前状态：战斗与全部选牌（01–04 组）的约定范围已交付；地图及牌组／牌堆浏览覆盖（05、06 组）已完成主体暂用 default、顶栏独立复用共用摘要的占位，实际内容待对应工具核验。奖励、火堆与宝箱（07–09 组）已收录 37 份基线 full 样本，其间完成[可浏览内容筛选审查与修复](2026-11-02-browsable-content-audit.md)，当前完整奖励样本见该记录，07–09 组 summary 已定稿并实现，房间主体沿用 default、可见宝箱显式保留 relic:null。[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)已有 82 份完整 full 样本，现状核验与 summary 约定范围已交付；[13–15 组占卜、确认框与建筑师终章](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 约定已确认、待实现；其余 2 组待选，get_observation 整体尚未核销。
+> 当前状态：战斗与全部选牌（01–04 组）的约定范围已交付；地图及牌组／牌堆浏览覆盖（05、06 组）已完成主体暂用 default、顶栏独立复用共用摘要的占位，实际内容待对应工具核验。奖励、火堆与宝箱（07–09 组）已收录 37 份基线 full 样本，其间完成[可浏览内容筛选审查与修复](2026-11-02-browsable-content-audit.md)，当前完整奖励样本见该记录，07–09 组 summary 已定稿并实现，房间主体沿用 default、可见宝箱显式保留 relic:null。[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)已有 82 份完整 full 样本，现状核验与 summary 约定范围已交付；[13–15 组占卜、确认框与建筑师终章](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付；其余 2 组待选，get_observation 整体尚未核销。
 
 总清单与流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
 
@@ -54,8 +54,8 @@ divination, confirmation, epilogue, run_result, available_actions
 | 10 | 商店 | `scene:shop` 与 shop；`merchant/inventory/opening/closing`，商品卡摘要、价格、售罄 / 补货、删牌选择，以及当前可见顶栏提示 | [现状与 full 样本](2026-11-03-get-observation-shop-ancient-event.md)已交付，summary 已交付 |
 | 11 | 先古之民 | `scene:ancient` 与 ancient；已显示对话、推进对话、馈赠选项、后续选择与继续。区分基础选项正文和额外悬停帮助 | [现状与 full 样本](2026-11-03-get-observation-shop-ancient-event.md)已交付，summary 已交付 |
 | 12 | 普通事件 | `scene:event` 与 event；事件正文、可选 / 锁定选项、致死警告、选择后正文与继续、后续奖励或战斗，再返回事件；覆盖时不附隐藏正文 | [初始／翻页／锁定／警告及后续交互](2026-11-03-get-observation-shop-ancient-event.md)已交付，summary 已交付 |
-| 13 | 占卜 | 底层 scene:event，`screen.view:divination`；`playing/settling/finished`，棋盘 grid、可见次数、工具、对话、继续以及独立 PNG；被覆盖时棋盘和图片不返回 | [现状核验与 full／图片已交付，summary 约定已记录、待实现](2026-11-03-get-observation-divination-confirmation-epilogue.md#13占卜) |
-| 14 | 确认框与人工输入 | Trial 弹窗使用 `screen.view:confirmation` 与 confirmation；未知确认来源可能为 confirmation:null 并附 notes.interaction；区分可操作确认框和其他未支持覆盖页 | [来源、取消／确认及人工边界已核验，summary 约定已记录、待实现](2026-11-03-get-observation-divination-confirmation-epilogue.md#14确认框与人工输入) |
+| 13 | 占卜 | 底层 scene:event，`screen.view:divination`；`playing/settling/finished`，棋盘 grid、可见次数、工具、对话、继续以及独立 PNG；被覆盖时棋盘和图片不返回 | [现状核验与 full／图片已交付，summary 已交付](2026-11-03-get-observation-divination-confirmation-epilogue.md#13占卜) |
+| 14 | 确认框与人工输入 | Trial 弹窗使用 `screen.view:confirmation` 与 confirmation；未知确认来源可能为 confirmation:null 并附 notes.interaction；区分可操作确认框和其他未支持覆盖页 | [来源、取消／确认及人工边界已核验，summary 已交付](2026-11-03-get-observation-divination-confirmation-epilogue.md#14确认框与人工输入) |
 | 15 | 建筑师终章 | `scene:epilogue`、`screen.view:epilogue`；已完整显示的气泡、推进 / 继续按钮、尚未准备或被地图 / 牌组覆盖。进入终章与已判定胜利并非同一条件 | [对话、覆盖与交接已核验，牌组覆盖校验已修复；summary 主体沿用 default](2026-11-03-get-observation-divination-confirmation-epilogue.md#15建筑师终章) |
 | 16 | 胜负结算与解锁 | `scene:run_result`；`outcome/summary/history/leaderboard/timeline/epoch/unlock/tutorial` 八种 phase，分数、徽章、发现、已显示解锁卡牌 / 遗物 / 药水与按钮随页变化 | 待选择 |
 | 17 | 主菜单、加载及未识别页面 | `scene:main_menu/loading_or_noncombat`；无战斗内容，状态可为 not_applicable、visible 等；需区分尚未加载、已退出本局和未识别页面，不能把空内容当作正常战斗 | 待选择 |
