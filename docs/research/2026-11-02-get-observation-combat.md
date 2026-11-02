@@ -1,14 +1,14 @@
 # get_observation：战斗主画面
 
-> 当前状态：设计讨论中。战斗 summary 的生命、能量、空列表、手牌与顶栏规则已确认，遗物数量采用 relic_count，新增 top_bar 预设的要求与设计示例已记录；尚未修改实现。当前仅展开场景目录 01，其他场景仍待核验，get_observation 暂不核销。
+> 当前状态：本阶段已完成。战斗 summary、通用 top_bar、原生遗物数量与清单边界均已实现并验证：Python 447 项、C# 60 项、GUI 12 场通过。其余场景摘要暂沿用 default，get_observation 整体仍不核销。无本阶段遗留问题。
 
 总进度见[工具清单](2026-11-02-mcp-tool-review.md)，全部场景见[场景目录](2026-11-02-get-observation-review.md)。
 
 ## 范围与依据
 
-调用为 `get_observation({"preset":"full"})`。当前只有 default、full、actions_only，没有 summary 或字段筛选参数。本文件区分当前 full 现状与下方待定的摘要设计。
+当前调用支持 default、full、actions_only、summary、top_bar；本阶段未增加其他筛选参数。现行字段契约见[观察预设](../development/observation.md#mcp-输出预设)，本文件保留 full 样本与本阶段实施依据。
 
-源码基线 `0b81e8b`，MCP `0.48.0`、Mod `0.47.1`、schema `29`，游戏 `v0.107.1`、RitsuLib `0.6.10`。观察组装、参数与基础预设依据见[主记录](2026-11-02-get-observation-review.md#核对基线与证据)。战斗具体来源为 [CombatObservation](../../src/Sts2Agent/Observation/CombatObservation.cs)、[OrbInspection](../../src/Sts2Agent/Observation/OrbInspection.cs)、[SovereignBladeInspection](../../src/Sts2Agent/Observation/SovereignBladeInspection.cs)、[VisibleUi](../../src/Sts2Agent/Observation/VisibleUi.cs)。
+设计时样本与源码基线 `0b81e8b`，MCP `0.48.0`、Mod `0.47.1`、schema `29`，游戏 `v0.107.1`、RitsuLib `0.6.10`。观察组装、参数与基础预设依据见[主记录](2026-11-02-get-observation-review.md#核对基线与证据)。战斗具体来源为 [CombatObservation](../../src/Sts2Agent/Observation/CombatObservation.cs)、[OrbInspection](../../src/Sts2Agent/Observation/OrbInspection.cs)、[SovereignBladeInspection](../../src/Sts2Agent/Observation/SovereignBladeInspection.cs)、[VisibleUi](../../src/Sts2Agent/Observation/VisibleUi.cs)。
 
 这些实现读取当前显示标签、图标与已识别对象身份；可见性检查以节点、透明度、视口及祖先裁剪为依据，不等于对任意像素遮挡都能准确判断。当前规则见[信息边界](../observation.md)。本轮不修改该规则或游戏行为。
 
@@ -88,9 +88,9 @@
 
 本工具没有 action transition、stop_reason、独立 player_turn 字段、当前抽牌顺序、普通手牌正文或所有图标悬停正文。更详细的信息应按现有接口读取，不能在设计摘要时把这些内容当作 full 已有字段。
 
-## 战斗 summary 已确认规则（未实现）
+## 战斗 summary 本阶段规则
 
-以 default 的内容及空值语义为基础生成摘要。以下为已确认的战斗规则，不是当前工具已有输出；其他场景的 summary 行为尚未决定。
+以 default 的内容及空值语义为基础生成摘要。以下战斗规则已接入本阶段实现；其他 scene 的 summary 暂等同于 default，后续逐场景设计。
 
 | 内容 | 规则 | 源码核对及边界 |
 | --- | --- | --- |
@@ -121,7 +121,7 @@
 - 保留整个顶栏 / 遗物栏不可读、显式隐藏、透明、无有效图标等真实显示状态的边界；不把不可读当作没有遗物，不补未展示的未来获取结果。列表与总数的实现须区分“持有条目数量”和“当前可展开的图标详情”，不能以悬停条目筛选替代总数。
 - 实施时核对 inspect_relics 的清单筛选，移除对应的屏幕位置限制，保持其正常可悬停等条件；计数不能依赖 inspect_relics 是否能展开某个禁用条目。其他对象的视口过滤与 transition 的实际可见事件采集不因本项改为全局跳过。
 
-### 新增 preset:top_bar（未实现）
+### 新增 preset:top_bar
 
 基于现有 actions_only 的 scene、screen、available_actions，以及有待处理选择时的 selection.type/status，再加入 top_bar。正确名称为 actions_only，不新增 action_only 别名。
 
@@ -129,11 +129,13 @@
 - 不附 player、enemies、allies、turn、buttons、房间正文、notes 或占卜图片；上下文范围与 actions_only 一致。有选择时只提供原有 type/status，不附候选与按钮。
 - 保留数组中的空槽；顶栏不可读时按 default 省略，不伪造空顶栏或零数量。错误返回与动作许可刷新规则沿用其他观察预设。
 - 适用于当前能够读取顶栏的场景，不改变 UI；各场景的 summary 仍单独核验。无需专用调用顺序，读取信息不足时才选择此预设或其他查看工具。
-- 预设提示词保持简洁，候选英文：`top_bar adds top-bar values and relic_count to actions_only; use inspect_relics for relic details.` 不加入固定刷新频率或必须先观察的要求。
+- 预设提示词保持简洁，设计英文：`top_bar adds top-bar values and relic_count to actions_only; use inspect_relics for relic details.` 不加入固定刷新频率或必须先观察的要求。
 
 ### 设计示例
 
 [战斗 summary 示例](2026-11-02-get-observation-examples/combat.summary-design.json)与[top_bar 示例](2026-11-02-get-observation-examples/combat.top-bar-design.json)由既有 combat.full.json 按以上设计转换；是可审阅的设计样例，不是当前 MCP 已实现或实测的新预设输出。样例使用同一测试画面的两件遗物、三个空药水槽，未编造当前游戏数值。
+
+本阶段实际 stdio MCP 样本另见[战斗 summary](2026-11-02-get-observation-examples/combat.summary.json)和[top_bar](2026-11-02-get-observation-examples/combat.top-bar.json)，分别取自本阶段 gui-green/combat/verify/evidence.json 的对应新预设调用。设计样例与真实返回分别保留，不将设计数据冒充实测。
 
 ### 当前 inspect_hand.summary 的实际样式
 
@@ -174,16 +176,32 @@
 
 附魔现状：CombatObservation.Card 只有在已识别卡牌的附魔标签与匹配图标可见时才加入 enchantment，HandInspection.Card 在这个结果上增加正文及提示。因此无可见附魔时 full 同样缺少该键；不是 full 过滤了 enchantment:null，而是原生本来未生成此字段。只有 amount 标签未显示时，附魔对象仍可存在但 amount 键不存在。当前输出 shape 的 enchantment 本身不接受 null。
 
-### 待继续讨论
+### 剩余设计范围
 
 - 其他保留字段是否继续精简，以及 summary 在战斗覆盖页和其他场景中的行为。
-- 实施尚未开始；上述已确认规则作为后续实现依据，不在后续对话中重复询问已确认项目。此次仅更新设计与示例，没有新增游戏运行或修改工具行为。
+- 本阶段只实现已确认的战斗规则与通用顶栏预设；后续继续讨论其他场景，无须重复确认已实现项目。
 
-## 本轮验证与未覆盖项
+## 设计阶段已有验证与未覆盖项
 
 - 复用 3 个既有 GUI 场景，全部通过，共 29 次真实 MCP 调用；含奥斯提动作与共享格挡、君王之剑预览与攻击、基础观察附魔与专门手牌查看的一致性检查。证据中的原生检查和前后快照另计，不混入 MCP 调用数。
 - 报告：`.tmp/2026-11-02-get-observation-combat/gui/report.json`。同一隔离进程 PID 65881 完成 3 个独立测试局并退出，报告有 shutdown_seconds；未修改正式游戏安装或存档。
 - 实测 DLL SHA-256 为 `607c3aab3c985d3a231fe17b38ada12082e615320f7c0831937523f662eca08e`，与当前构建及上一轮 full 样本所用 DLL 一致。
 - 新增的 3 份完整 JSON 逐对象等同于对应实测返回，并通过当前 observation_details 校验；既有 2 份战斗样本沿用其原始实测证据。文档链接及围栏另作检查。
 - 本轮未新采集全部意图图标、全部费用颜色、X / 星星不足、死亡 / 无限生命、所有 power 及动画中间帧；这些分支的说明来自当前源码，不能视作本轮逐个游戏实测通过。需要进一步讨论其中某个字段时，再针对性补充完整样本及 UI 证据。
-- 工具逻辑、版本、参数和持续维护的接口契约均未改变；本轮交付为战斗现状材料，等待用户提出字段或参数建议。
+- 以上为设计时的旧版证据；本阶段新增实现与验证另记于下节，不把旧结果当作新代码已通过。
+
+
+## 本阶段实现与验证
+
+- 实施基线 13f4699；MCP 0.49.0、Mod 0.48.0、schema 30。完整响应校验与许可处理仍先于输出投影；full/default 顶栏新增可空 relic_count，旧 Mod 缺字段时仍兼容，不使用明细长度补值。
+- relic_count 使用可读原生遗物栏的登记数量；基础明细与 inspect_relics 共用实际显示条目的判定，取消几何位置裁剪。详情另保留可悬停要求，计数不受禁用状态影响；屏幕外 counter/melted 不读取隐藏数值。事件 journal 的可见采集规则保持不变。
+- summary 只在 combat 合并单位生命与能量、复用手牌摘要、删除约定空列表并限制顶栏字段；覆盖状态不补出隐藏单位。其他 scene 返回 default。top_bar 保留 actions_only 上下文并附 default 顶栏，明确不返回占卜图片；summary 在非战斗仍保留原图片。
+- 新增 tests/python/test_combat_observation_presets.py、tests/game/verifiers/verify_observation_presets.py 及 12 局专项套件。原生 CapacityChecks 增加全量持有计数、屏幕外清单、禁用条目及隐藏栏断言；RelicInspectionChecks 的旧屏幕外排除预期同步为保留。
+- RED：旧 Python 投影的 12 项检查出现 5 次失败、13 个子用例错误；旧原生实现的隔离检查确认缺少数量及屏幕外剔除的 5 项预期失败，其余既有容量检查通过。证据根目录 .tmp/2026-11-02-observation-presets-implementation/。
+- 当前验证：编译零警告零错误；独立 C# 检查 60 项通过；Python 最终全套 447 项通过（34.019 秒），证据 python-final.log。正式安装未更改，完整支持需部署新版 Mod、重启游戏并重连 MCP。
+
+- GUI 12 个独立场景全部通过，共 113 次真实 MCP 调用；原生容量与遗物断言 28 项全部通过，包含屏幕外清单保留、持有总数、禁用条目与隐藏遗物栏、蜡质状态不从屏外模型补值。覆盖顶栏读取后直接出牌、火堆选择上下文、事件地图、占卜图像和空遗物数量。
+- GUI 证据分布于本阶段目录下 gui-green（前 7 场通过）、gui-remaining（4 场通过）、gui-empty（空遗物 1 场通过）；verification-summary.json 逐项映射并计数。首批在占卜处因动态 PNG 字节不同触发测试误报，原始响应只有 divination_image.png_base64 不同；仅修正测试比较逻辑状态并独立验证 PNG 签名，游戏实现未因此变更。所有自有进程已退出。
+- 本阶段 DLL SHA-256：1a01c03463397642ae2f641f7f7c280dd64cdfce18fc7cecff8c4a1b709f87eb；GUI runtime 与构建产物一致。
+- 独立只读审查未发现代码正确性问题；一处公共预设部署说明可能让人误以为新增数量也无需更新 Mod，已明确区分 Python 过滤与原生功能升级。无待处理审查问题；审查未代替上述实际验证。
+- 未新穷举全部敌人意图、全部遗物或自定义 Mod 页面；死亡 / 无限 / 不可读显示的投影由针对性 Python 用例覆盖，真实战斗侧覆盖普通单位、奥斯提、储君、充能球与附魔。未对全部结算页和多人流程新增 GUI 回归。

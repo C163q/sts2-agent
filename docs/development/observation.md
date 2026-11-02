@@ -1,6 +1,6 @@
 # 战斗观察 JSON
 
-适用于 Linux 游戏 `v0.107.1` 与 Mod `0.47.1`。底层观察结构版本为 `29`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+适用于 Linux 游戏 `v0.107.1` 与 Mod `0.48.0`。底层观察结构版本为 `30`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -37,7 +37,19 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 这是结构示例，实际列表随按钮启用、显示和交互状态变化。`scene` 仍表示底层房间或战斗；`screen.view` 标识地图、牌组、占卜、确认或结算，`selection.type/status` 区分选牌及查看战场，没有待处理选择时省略 `selection`。精简输出不附候选参数、提示、数值或占卜图像；后续需要详情时调用相应工具或再次完整观察。
 
-三种预设都会实时读取、完整校验并刷新内部动作令牌，精简模式不改变游戏 UI，也不改变后续动作的精简回执格式，见[MCP 动作返回](mcp.md#动作返回格式)。只允许可选字符串 `preset: default/full/actions_only`；非法值或额外字段返回 `invalid_request`，清除旧动作许可且不请求游戏。预设属于 MCP 输出投影，底层文件 `get_state` 仍返回完整状态。
+五种预设都会实时读取、完整校验并刷新内部动作令牌，精简模式不改变游戏 UI，也不改变后续动作的精简回执格式，见[MCP 动作返回](mcp.md#动作返回格式)。只允许可选字符串 `preset: default/full/actions_only/summary/top_bar`；非法值或额外字段返回 `invalid_request`，清除旧动作许可且不请求游戏。预设属于 MCP 输出投影，底层文件 `get_state` 仍返回完整状态。
+
+`preset:"summary"` 基于 default 精简战斗观察：
+
+- 玩家、敌人及友方的 `hp/max_hp/hp_display` 合并为 `health`：正常为 `"70/80"`，无限为 `"∞"`，死亡为 `"dead"`，无法识别显示为 `"unknown"`，隐藏时显式保留 `null`。不补隐藏生命数字，格式为 numeric 但数字不完整时也保留 `health:null`。
+- 玩家能量合并为 `energy:"3/3"`，移除 `max_energy`；数字不可完整读取时省略，不拼接猜测值。`stars` 保持原有意义。
+- `powers/orb_slots/sovereign_blades` 为 `[]` 时省略；有空槽的非空球数组保留位置及 null 元素。友方共享格挡标记保留。
+- `player.hand` 复用 [inspect_hand 的摘要字段](hand-inspection.md#参数与返回范围)，移除稀有度和卡池，保留费用颜色、标记及可见附魔；空值遵循本预设的 default 规则。
+- `top_bar` 仅保留 `gold/potion_slots/deck_count/relic_count`。其他字段、意图、按钮、可用工具及适用 notes 保留。当前仅设计战斗摘要，非战斗 scene 的 summary 等同于 default。
+
+`preset:"top_bar"` 在 actions_only 的场景、页面、选择 type/status 和工具名上增加 default 的顶栏字段，移除 `top_bar.relics` 并保留 `relic_count`。不套用 summary 的顶栏四字段限制，也不合并顶栏 hp/max_hp；不返回战斗单位、手牌、房间正文、notes 或占卜图像。遗物效果通过 `inspect_relics` 查看。顶栏不可读时省略，不伪造空顶栏。
+
+Mod `0.48.0` 在 full/default 顶栏也提供 `relic_count`，表示原生遗物栏登记的持有数量；整个遗物栏不可读时为 null。它独立于是否可悬停或位于屏幕内，不从筛选后的明细列表求长度。旧 Mod 缺少该字段时，Python 仍可读取观察，但各预设省略数量，不猜测成零或列表长度。完整支持需更换 Mod、重启游戏，并重连 MCP。样例及实际验证范围见[战斗核验记录](../research/2026-11-02-get-observation-combat.md)。
 
 `available_actions` 包含当前原生页面允许的详情和页面工具，例如 `inspect_selection`、`set_selection_view`、`close_card_view`、`close_map`，不是全部已安装工具。工具出现不意味着任意卡牌、目标、商品或选项参数都有效，也不保证调用前状态不发生变化。列表不携带参数；从完整观察或专用详情读取候选后再提交。
 
@@ -67,6 +79,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 | `top_bar.bosses` | 实际显示的首领名称数组，例如 `["Ceremonial Beast"]`；未识别的可见图标以槽内 `null` 保留 |
 | `top_bar.potion_slots` | 按位置排列；槽内 `null` 是已确认空槽，非空为含 `name` 的对象，整个字段为 `null` 是未能观察槽位 |
 | `top_bar.relics[].melted` | 与[遗物详情](relic-inspection.md#格式)相同：蜡质未熔化／已熔化分别为 `false/true`，非蜡质不适用或图标不可读时为 `null` |
+| `top_bar.relic_count` | 原生遗物栏登记的持有数量，不按视口位置或能否悬停截断；遗物栏不可读时为 null，旧 Mod 可缺少此字段 |
 | `buttons.end_turn` | 当前按钮的英语文字与启用状态 |
 | `available_actions` | 当前场景可用的查看与操作工具名，不含参数；省略 `get_observation`、截图和测试入口。具体参数、状态和原生条件仍在调用时检查 |
 | `notes` | 按结果内容附带的英语数值解读说明，无适用内容时省略；属于接口说明，不是额外采样到的游戏状态 |

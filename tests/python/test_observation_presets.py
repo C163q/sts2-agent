@@ -55,7 +55,7 @@ class ObservationPresetTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_invalid_preset_clears_permission_and_does_not_contact_game(self):
         for args in ([], '', 0, False, {'preset': None}, {'preset': True}, {'preset': []},
-                     {'preset': 'summary'}, {'preset': 'FULL'}, {'extra': 1}, {'preset': 'full', 'extra': 1}):
+                     {'preset': 'action_only'}, {'preset': 'FULL'}, {'extra': 1}, {'preset': 'full', 'extra': 1}):
             client = Client(); tools = GameTools(client)
             await tools.get_observation()
             with self.subTest(args=args):
@@ -170,7 +170,7 @@ class ObservationPresetStdioTests(unittest.IsolatedAsyncioTestCase):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
                     schema = next(t.inputSchema for t in (await session.list_tools()).tools if t.name == 'get_observation')
-                    self.assertEqual(schema['properties']['preset']['enum'], ['default', 'full', 'actions_only'])
+                    self.assertEqual(schema['properties']['preset']['enum'], ['default', 'full', 'actions_only', 'summary', 'top_bar'])
                     compact = await session.call_tool('get_observation', {'preset': 'actions_only'})
                     self.assertFalse(compact.isError)
                     self.assertEqual(set(compact.structuredContent), {'scene', 'screen', 'available_actions'})

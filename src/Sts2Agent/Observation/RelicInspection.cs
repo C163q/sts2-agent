@@ -21,14 +21,24 @@ internal static class RelicInspection
 
     public static NRelicInventoryHolder[]? VisibleHolders()
     {
+        return DisplayedHolders()?.Where(holder => holder.IsEnabled
+            && holder.MouseFilter != Control.MouseFilterEnum.Ignore).ToArray();
+    }
+
+    internal static int? HeldCount() => RunUi.TopBarReadable()
+        && VisibleUi.Shown(NRun.Instance!.GlobalUi.RelicInventory)
+        ? NRun.Instance!.GlobalUi.RelicInventory.RelicNodes.Count : null;
+
+    internal static NRelicInventoryHolder[]? DisplayedHolders()
+    {
         if (!RunUi.TopBarReadable())
             return null;
         var inventory = NRun.Instance!.GlobalUi.RelicInventory;
         if (!VisibleUi.Shown(inventory))
             return null;
-        return inventory.RelicNodes.Where(holder => VisibleUi.OnScreen(holder) && holder.IsEnabled
-            && holder.MouseFilter != Control.MouseFilterEnum.Ignore
-            && VisibleUi.OnScreen(holder.Relic) && VisibleUi.OnScreen(holder.Relic.Icon)
+        // Inventory membership is independent of flow-layout viewport positions.
+        return inventory.RelicNodes.Where(holder => VisibleUi.Shown(holder)
+            && VisibleUi.Shown(holder.Relic) && VisibleUi.Shown(holder.Relic.Icon)
             && holder.Relic.Icon.Texture != null).ToArray();
     }
 

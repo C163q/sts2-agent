@@ -52,6 +52,43 @@ internal static class CapacityChecks
         var checks = new List<object>();
         bool passed = true;
         void Check(string name, bool ok) { checks.Add(new { name, passed = ok }); passed &= ok; }
+        var countedHolder = inventory.RelicNodes.Single(holder => ReferenceEquals(holder.Relic.Model, wax));
+        int heldRelics = inventory.RelicNodes.Count;
+        bool CountMatches()
+        {
+            using var state = JsonDocument.Parse(observe());
+            return state.RootElement.GetProperty("top_bar").TryGetProperty("relic_count", out var count)
+                && count.ValueKind == JsonValueKind.Number && count.GetInt32() == heldRelics;
+        }
+        Check("relic count comes from the complete inventory", CountMatches());
+        var originalPosition = countedHolder.Position;
+        try
+        {
+            countedHolder.Position = new Vector2(-10000, -10000);
+            Check("offscreen relic remains in the basic list", JsonSerializer.SerializeToElement(
+                new CombatObservation().TopBar()).GetProperty("relics").EnumerateArray()
+                .Any(relic => relic.GetProperty("name").GetString() == "Wax Philosopher's Stone"));
+            Check("offscreen relic remains inspectable", RelicInspection.VisibleHolders()!.Contains(countedHolder));
+            Check("offscreen relic still counts", CountMatches());
+            Check("offscreen melting is not guessed", RelicInspection.Melted(countedHolder.Relic) == null);
+        }
+        finally { countedHolder.Position = originalPosition; }
+        bool holderEnabled = countedHolder.IsEnabled;
+        try
+        {
+            countedHolder.Disable();
+            Check("non-hoverable relic still counts", CountMatches());
+            Check("non-hoverable relic cannot be inspected", !RelicInspection.VisibleHolders()!.Contains(countedHolder));
+        }
+        finally { if (holderEnabled) countedHolder.Enable(); }
+        bool inventoryVisible = inventory.Visible;
+        try
+        {
+            inventory.Visible = false;
+            Check("hidden inventory count remains unknown", RelicInspection.HeldCount() == null);
+            Check("hidden inventory cannot be inspected", RelicInspection.VisibleHolders() == null);
+        }
+        finally { inventory.Visible = inventoryVisible; }
         Dictionary<string, object?>[] Events(string type) => scope.Buffer.Events.Where(e => (string)e["type"]! == type).ToArray();
         try
         {

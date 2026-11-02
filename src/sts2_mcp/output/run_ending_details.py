@@ -79,7 +79,7 @@ def validate_ending(result):
                         'selection', 'rewards', 'shop', 'treasure', 'rest_site', 'ancient', 'divination', 'confirmation', 'map')):
                     raise ValueError('Exposed underlying result contents.')
                 from sts2_mcp.output.game_output import TOP_BAR
-                if result.get('top_bar') is not None and not set(TOP_BAR) <= result['top_bar'].keys():
+                if result.get('top_bar') is not None and not (set(TOP_BAR) - {'relic_count'}) <= result['top_bar'].keys():
                     raise ValueError('Incomplete result top bar.')
                 enabled = any(o['enabled'] for o in value['options'])
                 if any(a not in {'run_result_option', 'inspect_run_result', 'inspect_potions', 'inspect_relics'} for a in result['available_actions']) \

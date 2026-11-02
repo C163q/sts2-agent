@@ -63,7 +63,8 @@ TOP_BAR = {
     "hp": NUMBER, "max_hp": NUMBER,
     "gold": NUMBER, "floor": NUMBER, "ascension": NUMBER, "deck_count": NUMBER,
     "room_icon": TEXT, "bosses": [TEXT], "potion_slots": nullable([nullable({"name": TEXT, "usable_here": bool, "bouncing": bool})]),
-    "relics": nullable([RELIC]), "map_visible": bool, "deck_visible": bool, "settings_visible": bool,
+    "relics": nullable([RELIC]), "relic_count": NUMBER,
+    "map_visible": bool, "deck_visible": bool, "settings_visible": bool,
 }
 SCREEN = {"status": str, "view": str}
 SELECTION_CARD = {**CARD, "description": TEXT}
@@ -215,6 +216,9 @@ def observation_details(state):
             or result["screen"]["status"] not in ("visible", "covered", "hidden", "not_ready", "not_applicable")):
         raise ValueError("Invalid observation structure.")
     result['available_actions'] = public_tools(result['available_actions'])
+    count = (result.get('top_bar') or {}).get('relic_count')
+    if count is not None and count < 0:
+        raise ValueError('Invalid relic count.')
     if result['player'] is not None and 'orb_slots' in result['player']:
         result['player']['orb_slots'] = orb_slots(result['player']['orb_slots'])
     if result['player'] is not None and 'sovereign_blades' in result['player']:

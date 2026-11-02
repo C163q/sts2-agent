@@ -82,7 +82,7 @@ internal static class RelicInspectionChecks
             Check("non_hoverable_holder_is_excluded", RelicInspection.VisibleHolders()!.Length == count - 1);
             counterHolder.MouseFilter = filter;
             counterHolder.Position = new Vector2(-10000, -10000);
-            Check("offscreen_relic_is_excluded", RelicInspection.VisibleHolders()!.Length == count - 1);
+            Check("offscreen_relic_is_retained", RelicInspection.VisibleHolders()!.Length == count);
             counterHolder.Position = position;
             counterHolder.Relic.Icon.SelfModulate = new Color(1, 1, 1, 0);
             Check("transparent_icon_is_excluded", RelicInspection.VisibleHolders()!.Length == count - 1);

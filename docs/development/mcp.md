@@ -52,7 +52,7 @@ flowchart LR
 | `inspect_treasure()` | 当前可见宝箱遗物及悬停说明 |
 | `inspect_rest_site()` | [当前休息处选项及动态悬停说明](rest-site.md) |
 | `choose_rest_option(option_id)` | 点击一个启用的休息处选项，后续选牌单独处理 |
-| `get_observation(preset?)` | 默认 `default`；`full` 保留空值；`actions_only` 仅返回场景、当前查看/选择状态与工具名，各预设均刷新动作令牌 |
+| `get_observation(preset?)` | 默认 `default`；`full` 保留空值；`summary` 精简战斗资源、手牌与顶栏；`actions_only` 仅返回上下文与工具名；`top_bar` 再附顶栏和遗物数量，各预设均刷新动作令牌 |
 | `inspect_hand({preset?, card_ids?})` | [手牌完整详情或摘要，可按 ID 筛选](hand-inspection.md) |
 | `inspect_targets(card_id 或 potion_slot)` | 查询[手牌](card-play.md)或[药水](potion-actions.md)可用性、是否须指定目标及范围，不进入瞄准或抽随机数 |
 | `play_card(card_id, target_id?)` | [提交一次原生手动出牌](card-play.md)，后续选牌单独操作 |
@@ -79,7 +79,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.47.1` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.48.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.48.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.49.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -135,7 +135,7 @@ approval_mode = "approve"
 
 ## 输出预设
 
-MCP `0.48.0` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
+MCP `0.49.0` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
 
 | 预设 | 行为 |
 | --- | --- |
@@ -149,7 +149,9 @@ MCP `0.48.0` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
 
 例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。已有遗物 summary 仍保留原有空值。`inspect_deck` / `inspect_pile` 的 `detail_level` 独立决定正文范围，默认仍是 summary；`preset:"full"` 不会更改它。
 
-该参数只控制 Python 公开输出，不转发给 Mod；完整响应校验、动作许可判断和原有筛选先完成，再过滤空值。部分 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。标准库文件客户端继续保留原有空值，本节预设只适用于 MCP 和 GameTools 的玩法工具调用。更新本功能只需重连 MCP，不需替换 Mod。
+`get_observation` 新增的 summary 与 top_bar 基于 default，前者另显式保留 `health:null`；非战斗 summary 暂用 default。它们不改变其他工具已有预设；完整字段规则见[观察预设](observation.md#mcp-输出预设)。
+
+该参数只控制 Python 公开输出，不转发给 Mod；完整响应校验、动作许可判断和原有筛选先完成，再过滤空值。部分 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。标准库文件客户端继续保留原有空值，本节预设只适用于 MCP 和 GameTools 的玩法工具调用。仅更新公共空值过滤只需重连 MCP；新增 relic_count 和遗物清单边界调整需 Mod 0.48.0 并重启游戏，见[观察预设](observation.md#mcp-输出预设)。
 
 ## 调用和错误语义
 
@@ -172,7 +174,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 结构化读取直接续接动作的实现与验证范围见[验证记录](../research/2026-11-01-observation-sources.md)。
 
-成功时 `structuredContent` 是玩法对象，`content` 同时提供相同对象的紧凑 JSON 文本。[占卜](divination.md)的完整观察和详情还带独立 PNG 图像内容，需要支持图像的客户端和视觉模型；图片不进入文字 JSON，也不依赖截图工具配置；`actions_only` 预设及动作回执不返回棋盘或图像。正文中的换行和空格保留；终端与证据文件使用两空格缩进。对象本身没有排版属性，客户端决定如何转换为模型输入。协议、文本、显示的区别及官方依据见 [项目审阅](../research/2026-10-29-project-review.md#mcp-json-与官方实践)。
+成功时 `structuredContent` 是玩法对象，`content` 同时提供相同对象的紧凑 JSON 文本。[占卜](divination.md)的完整观察和详情还带独立 PNG 图像内容，需要支持图像的客户端和视觉模型；图片不进入文字 JSON，也不依赖截图工具配置；`actions_only/top_bar` 预设及动作回执不返回棋盘或图像；非战斗 summary 仍保留棋盘与图像。正文中的换行和空格保留；终端与证据文件使用两空格缩进。对象本身没有排版属性，客户端决定如何转换为模型输入。协议、文本、显示的区别及官方依据见 [项目审阅](../research/2026-10-29-project-review.md#mcp-json-与官方实践)。
 
 输出递归过滤未知字段，不转发原始响应包装、状态令牌或测试入口；`available_actions` 只保留当前可用的公开查看与操作工具，省略观察、截图及测试入口并去重。MCP 对基础观察和动作结果检查全部顶层观察字段，对已提供的嵌套字段检查类型，再进行输出精简；错误结果不保存动作令牌。原始文件协议见 [原型接口](roundtrip.md#原型接口)。
 

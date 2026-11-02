@@ -1,0 +1,38 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "deck_count": 10,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  }
+}

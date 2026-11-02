@@ -1,0 +1,194 @@
+[
+  {
+    "name": "combat",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_observation_presets.py",
+        "args": [
+          "--scenario",
+          "combat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "orbs",
+    "scenarios": {
+      "play": "orbs"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_observation_presets.py",
+        "args": [
+          "--scenario",
+          "orbs"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "osty",
+    "scenarios": {
+      "play": "companions_osty"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_observation_presets.py",
+        "args": [
+          "--scenario",
+          "osty"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "blade",
+    "scenarios": {
+      "play": "companions_blade"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_observation_presets.py",
+        "args": [
+          "--scenario",
+          "blade"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "enchantments",
+    "scenarios": {
+      "play": "enchantments"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_observation_presets.py",
+        "args": [
+          "--scenario",
+          "enchantments"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "rest",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_observation_presets.py",
+        "args": [
+          "--scenario",
+          "rest"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "event",
+    "scenarios": {
+      "event": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_observation_presets.py",
+        "args": [
+          "--scenario",
+          "event"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "divination",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_observation_presets.py",
+        "args": [
+          "--scenario",
+          "divination"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "native",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_observation_presets.py",
+        "args": [
+          "--scenario",
+          "native"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "legacy_wax",
+    "scenarios": {
+      "play": "wax_melt"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_relic_presets.py",
+        "args": [
+          "--scenario",
+          "wax_melt"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "legacy_shop",
+    "scenarios": {
+      "shop": "courier"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_relic_presets.py",
+        "args": [
+          "--scenario",
+          "shop"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "empty_inventory",
+    "scenarios": {
+      "play": "companions_first"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_observation_presets.py",
+        "args": [
+          "--scenario",
+          "empty_inventory"
+        ]
+      }
+    ]
+  }
+]

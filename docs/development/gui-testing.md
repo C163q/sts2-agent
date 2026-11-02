@@ -110,3 +110,5 @@
 本次实际覆盖、阶段耗时和证据位置见[验证记录](../research/2026-11-01-gui-suite.md)。
 
 `verify_view_availability.py` 的 `event/rest/treasure/reward/shop/ancient/selection/combat/result` 分别使用 `event:basic`、`rest:basic`、`treasure:basic`、`reward:basic`、`shop:courier`、`ancient:basic`、`rest:smith`、`play:basic`、`turn:wither_death`。检查完整／仅动作观察一致、已列出的只读工具实际可调用、非战斗牌组排序和升级预览、关闭恢复及地图切换；选择和结算场景检查拒绝打开牌组；`confirmation` 配合 `event:trial` 检查弹窗覆盖和取消恢复，`epilogue` 配合 `navigation:boss3`，从奖励前进至建筑师对话后检查牌组及地图覆盖。详情不新增动作列表，证据范围见[可用工具修复记录](../research/2026-11-02-available-actions-fix.md)。
+
+`gui_suite_observation_presets.json` 复用 12 个独立测试局：10 个新观察预设场景覆盖普通战斗、球槽、奥斯提、储君、附魔、火堆选牌、事件地图、占卜、空遗物栏及原生遗物检查，另含蜡质遗物和商店筛选回归。`verify_observation_presets.py` 对照 full/default/summary/top_bar/actions_only，验证结构、实际图像、状态不变及 top_bar 后直接出牌；数量、屏幕外条目和隐藏栏检查仅在自有测试实例运行。接口见[观察预设](observation.md#mcp-输出预设)，证据见[战斗核验记录](../research/2026-11-02-get-observation-combat.md)。

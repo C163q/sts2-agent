@@ -313,13 +313,13 @@ internal sealed class CombatObservation
                 .Where(icon => icon.Name != "Outline" && VisibleUi.OnScreen(icon) && icon.Texture != null)
                 .Select(icon => BossName(icon.Texture!.ResourcePath, run)).ToArray(),
             potion_slots = PotionSlots(bar.PotionContainer),
-            relics = VisibleUi.Shown(global.RelicInventory) ? global.RelicInventory.RelicNodes
-                .Where(VisibleUi.OnScreen).Select(holder => new
+            relic_count = RelicInspection.HeldCount(),
+            relics = RelicInspection.DisplayedHolders()?.Select(holder => new
                 {
                     name = english.RelicName(holder.Relic.Model),
                     counter = VisibleUi.Number(holder, "%AmountLabel"),
                     melted = RelicInspection.Melted(holder.Relic)
-                }).ToArray() : null,
+                }).ToArray(),
             map_visible = VisibleUi.OnScreen(bar.Map), deck_visible = VisibleUi.OnScreen(bar.Deck),
             settings_visible = VisibleUi.OnScreen(bar.Pause)
         };

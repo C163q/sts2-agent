@@ -1,12 +1,12 @@
 # get_observation 场景核验与参数设计
 
-> 当前状态：设计讨论中，当前仅展开 01 战斗主画面。已整理 17 组场景目录与 full 样本；战斗摘要的生命、能量、空列表、手牌和顶栏规则已确认，并新增 top_bar 预设设计及 relic_count 口径，见专项记录。尚未实现，其余场景保留待选。暂无技术阻塞。
+> 当前状态：战斗阶段已实现并验证完成：summary、通用 top_bar 与 relic_count 已交付，验证结果见专项记录。其余 16 组场景的摘要继续逐项讨论，暂按 default 返回。get_observation 整体尚未核销，无本阶段遗留问题。
 
 总清单与流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
 
 ## 核对基线与证据
 
-- 项目基线：`09a6288`；MCP `0.48.0`、Mod `0.47.1`、原生 schema `29`。本轮首先核对仓库实现；尚未新增游戏实测或独立反编译验证。
+- 初始目录基线：`09a6288`；MCP `0.48.0`、Mod `0.47.1`、原生 schema `29`。后续战斗实现更新至 MCP 0.49.0、Mod 0.48.0、schema 30，并新增游戏实测，结果见专项记录。
 - 已有样本来自游戏 `v0.107.1` 的独立 GUI 测试实例，经真实 stdio MCP 调用获得。样本中的金币、能量、牌组与遗物可能经过测试夹具准备，数字不能视为角色正常开局配置，但返回内容确实来自当时 UI。
 - 当前接口说明：[观察 JSON](../development/observation.md)、[公共预设](../development/mcp.md#输出预设)、[可见信息边界](../observation.md)。
 - 主要实现：[GameTools.get_observation](../../src/sts2_mcp/game_tools.py)、[公共预设](../../src/sts2_mcp/output/presets.py)、[观察预设](../../src/sts2_mcp/output/observation_presets.py)、[输出结构与校验](../../src/sts2_mcp/output/game_output.py)、[玩法转换与 notes](../../src/sts2_mcp/output/player_output.py)。
@@ -14,7 +14,7 @@
 
 ## 当前调用与返回范围
 
-当前只接受可选的 `preset: default/full/actions_only`，没有其他筛选参数；尚无 `summary`。公开默认值由公共预设包装器提供，不能把内部旧版参数解析函数中的 full 默认值当作公开默认值。
+当前接受可选的 `preset: default/full/actions_only/summary/top_bar`，没有其他筛选参数。summary 仅精简战斗，其余场景暂用 default；top_bar 为 actions_only 上下文加顶栏及遗物数量，完整契约见[观察预设](../development/observation.md#mcp-输出预设)。公开默认值由公共预设包装器提供，不能把内部旧版参数解析函数中的 full 默认值当作公开默认值。
 
 ```json
 {"preset":"full"}
@@ -22,7 +22,7 @@
 
 - `full` 是完整的基础观察：保留其原有空字段，普通手牌仍不含正文或悬停解释；不会因 full 自动切换或展开 UI。
 - `default` 与 full 的内容范围一致，只按公共规则省略普通空值。
-- `actions_only` 保留 `scene/screen/available_actions`，有选择时另保留 `selection.type/status`，不含占卜图片。三者都实时读取、完整校验并刷新内部动作许可；不要求之前调用过其他观察。
+- `actions_only` 保留 `scene/screen/available_actions`，有选择时另保留 `selection.type/status`，不含占卜图片。各预设都实时读取、完整校验并刷新内部动作许可；不要求之前调用过其他观察。
 - 基础观察不返回动作 `transition`，不会回放上次动作的事件。`stop_reason` 也不属于本工具返回；本轮若讨论相关需求，须区分当前静态画面与动作结果。
 - 成功结果直接是玩法 JSON，没有 `ok/state/snapshot_id` 等通信包装。MCP 文字 JSON 与 `structuredContent` 内容相同；占卜的 PNG 另作为图像内容返回。
 
@@ -42,7 +42,7 @@ divination, confirmation, epilogue, run_result, available_actions
 
 | 编号 | 场景组 | 需要展开的分支与返回差异 | 当前样本状态 |
 | --- | --- | --- | --- |
-| 01 | 普通战斗与角色差异 | `scene:combat`；player、enemies、allies、turn、buttons；储君星星、故障机器人充能球、奥斯提与共享格挡、悬浮君王之剑、手牌附魔 / 费用颜色 / 标记、不同意图与生命显示。角色差异是数据变体，不是额外 scene | 设计讨论中，见[战斗字段、full 样本及摘要草案](2026-11-02-get-observation-combat.md) |
+| 01 | 普通战斗与角色差异 | `scene:combat`；player、enemies、allies、turn、buttons；储君星星、故障机器人充能球、奥斯提与共享格挡、悬浮君王之剑、手牌附魔 / 费用颜色 / 标记、不同意图与生命显示。角色差异是数据变体，不是额外 scene | 本阶段完成，见[战斗字段、样本及实施结果](2026-11-02-get-observation-combat.md) |
 | 02 | 普通卡牌选择 | `selection.type` 为 `hand/choose_one/grid/combat_pile/deck/reward/bundle/view_cards`；单选 / 多选、候选、已选 ID、确认 / 跳过 / 献祭 / 重掷 / 包选项，候选正文按是否实际展开决定 | 待选择 |
 | 03 | 升级、附魔与变牌选择 | `hand_upgrade/deck_upgrade/deck_enchant/deck_transform`；候选页、查看升级、选中后的前后预览、随机变牌 `after:null`、预览取消 / 确认。full 基础观察仍不等于 inspect_selection full | 待选择 |
 | 04 | 选牌时查看战场或被覆盖 | `selection.status:battlefield/covered/unsupported`；待处理选择继续存在，隐藏候选不补出，notes 指示返回方式；unsupported 作为人工输入边界单独核对 | 待选择 |
@@ -80,8 +80,8 @@ divination, confirmation, epilogue, run_result, available_actions
 
 ## 设计与后续核验
 
-- 当前选择仅展开战斗主画面，见[专项记录](2026-11-02-get-observation-combat.md)；已确认的摘要规则和 top_bar 设计作为后续实现依据，其余字段与其他场景尚待讨论。上表其他“待选择”不表示实现缺失，而是本轮尚未展开样例核验。
+- 当前选择仅展开战斗主画面，见[专项记录](2026-11-02-get-observation-combat.md)；已确认的摘要规则和 top_bar 设计作为后续实现依据，本阶段已实现，其余字段与其他场景尚待讨论。上表其他“待选择”不表示实现缺失，而是本轮尚未展开样例核验。
 - 下一步讨论战斗字段与参数；选牌、覆盖页及其他房间仍保留在对应场景组，后续按完整调用 / 返回、字段来源与实际 UI 对应关系展开。若继续穷举，则分批处理全部场景及其变体。
-- 参数与 summary 的具体字段仍待讨论；现行可见信息规则保持适用。新的设计结论、确认范围、验证结果及后续提交持续记录于本文件。
+- 战斗已确认字段见专项记录；其他场景的 summary 继续逐项讨论。新的设计结论、确认范围、验证结果及后续提交持续记录于本文件。
 
 首轮目录检查：5 份初始 JSON 与上述原始 full 调用逐对象一致，能够通过当前观察结构校验；清单名称与 43 个公开工具对应，链接与 Markdown 围栏检查通过。首轮目录整理未启动游戏；后续新增的战斗实测、完整样本及未覆盖范围见专项记录。

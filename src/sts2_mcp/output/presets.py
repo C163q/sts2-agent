@@ -8,7 +8,7 @@ from sts2_mcp.output.player_output import player_result
 
 
 SPECIAL_PRESETS = {
-    'get_observation': ('actions_only',),
+    'get_observation': ('actions_only', 'summary', 'top_bar'),
     'inspect_hand': ('summary',),
     'inspect_selection': ('summary',),
     'inspect_relics': ('summary',),
