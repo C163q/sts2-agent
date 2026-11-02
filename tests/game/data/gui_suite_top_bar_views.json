@@ -1,0 +1,105 @@
+[
+  {
+    "name": "combat",
+    "scenarios": {
+      "selection": "tyranny",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_top_bar_views.py",
+        "args": [
+          "--scenario",
+          "combat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "selection",
+    "scenarios": {
+      "selection": "tyranny",
+      "play": "discovery",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_top_bar_views.py",
+        "args": [
+          "--scenario",
+          "selection"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "event",
+    "scenarios": {
+      "event": "basic",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_top_bar_views.py",
+        "args": [
+          "--scenario",
+          "event"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "entry",
+    "scenarios": {
+      "navigation": "boss1",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_top_bar_views.py",
+        "args": [
+          "--scenario",
+          "entry"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "confirmation",
+    "scenarios": {
+      "event": "trial",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_top_bar_views.py",
+        "args": [
+          "--scenario",
+          "confirmation"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "divination",
+    "scenarios": {
+      "event": "crystal",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_top_bar_views.py",
+        "args": [
+          "--scenario",
+          "divination"
+        ]
+      }
+    ]
+  }
+]

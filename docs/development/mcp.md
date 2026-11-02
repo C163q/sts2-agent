@@ -79,7 +79,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.49.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.50.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.49.1` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.50.1`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -135,7 +135,7 @@ approval_mode = "approve"
 
 ## 输出预设
 
-MCP `0.50.0` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
+MCP `0.50.1` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
 
 | 预设 | 行为 |
 | --- | --- |
@@ -151,7 +151,7 @@ MCP `0.50.0` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
 
 `get_observation` 的 summary 与 top_bar 基于 default，前者另显式保留 `health:null`；summary 在各场景统一精简选牌，非战斗房间主体暂用 default。inspect_hand／inspect_selection／inspect_relics 的 summary 也继承普通空值过滤；比较中属于卡牌摘要的字段仍保留必要未知值。完整字段规则见[观察预设](observation.md#mcp-输出预设)。
 
-该参数只控制 Python 公开输出，不转发给 Mod；完整响应校验、动作许可判断和原有筛选先完成，再过滤空值。部分 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。标准库文件客户端继续保留原有空值，本节预设只适用于 MCP 和 GameTools 的玩法工具调用。仅更新公共空值过滤只需重连 MCP；本轮完整候选列表及网格附魔读取需 Mod 0.49.0 并重启游戏，见[观察预设](observation.md#mcp-输出预设)。
+该参数只控制 Python 公开输出，不转发给 Mod；完整响应校验、动作许可判断和原有筛选先完成，再过滤空值。部分 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。标准库文件客户端继续保留原有空值，本节预设只适用于 MCP 和 GameTools 的玩法工具调用。仅更新公共空值过滤只需重连 MCP；完整候选列表及网格附魔读取需 Mod 0.49.0，覆盖页顶栏修复需 Mod 0.49.1／MCP 0.50.1；更换 Mod 后重启游戏，见[观察预设](observation.md#mcp-输出预设)。
 
 ## 调用和错误语义
 

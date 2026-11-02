@@ -105,9 +105,11 @@ class AvailableToolOutputTests(unittest.TestCase):
         raw = observation()
         raw.update(screen={'status': 'visible', 'view': 'map'}, player=None, enemies=None, turn=None, buttons=None,
                    map={'status': 'visible', 'act': 1, 'current_node': None, 'can_travel': True,
-                        'selectable_nodes': ['map:1:1:0']}, available_actions=['inspect_map', 'close_map', 'inspect_deck', 'travel_to_node'])
+                        'selectable_nodes': ['map:1:1:0']}, available_actions=['inspect_map', 'close_map', 'inspect_deck',
+                        'inspect_potions', 'inspect_relics', 'travel_to_node'])
         self.assertEqual(observation_details(raw)['available_actions'], raw['available_actions'])
-        for tool in ('play_card', 'select_card', 'inspect_hand', 'inspect_selection'):
+        for tool in ('play_card', 'end_turn', 'select_card', 'inspect_hand', 'inspect_selection',
+                     'inspect_targets', 'use_potion', 'discard_potion'):
             broken = copy.deepcopy(raw); broken['available_actions'].append(tool)
             with self.subTest(tool=tool), self.assertRaises(ValueError): observation_details(broken)
 

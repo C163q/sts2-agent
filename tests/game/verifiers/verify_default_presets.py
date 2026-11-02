@@ -25,7 +25,7 @@ async def verify(args):
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             initialized = await session.initialize()
-            assert initialized.serverInfo.version == '0.50.0', initialized
+            assert initialized.serverInfo.version == '0.50.1', initialized
             definitions = (await session.list_tools()).tools
             assert len(definitions) == 42
             assert all(t.inputSchema['properties']['preset']['default'] == 'default' for t in definitions)

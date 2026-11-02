@@ -1,6 +1,6 @@
 # get_observation 场景核验与参数设计
 
-> 当前状态：战斗与全部选牌（01–04 组）的约定范围已交付；地图及牌组／牌堆浏览覆盖（05、06 组）已完成本阶段摘要占位，summary 暂用 default，实际内容与顶栏缺口待后续对应工具核验。其余 11 组待选，get_observation 整体尚未核销。
+> 当前状态：战斗与全部选牌（01–04 组）的约定范围已交付；地图及牌组／牌堆浏览覆盖（05、06 组）已完成本阶段摘要占位，summary 暂用 default，实际内容待后续对应工具核验，顶栏缺口已由[专项修复](2026-11-02-top-bar-visibility.md)解决。其余 11 组待选，get_observation 整体尚未核销。
 
 总清单与流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
 
@@ -47,7 +47,7 @@ divination, confirmation, epilogue, run_result, available_actions
 | 03 | 升级、附魔与变牌选择 | `hand_upgrade/deck_upgrade/deck_enchant/deck_transform`；候选页、查看升级、选中后的前后预览、随机变牌 `after:null`、预览取消 / 确认。full 基础观察仍不等于 inspect_selection full | 同上，含单／多牌预览与查看升级 |
 | 04 | 选牌时查看战场或被覆盖 | `selection.status:battlefield/covered/unsupported`；待处理选择继续存在，隐藏候选不补出，notes 指示返回方式；unsupported 作为人工输入边界单独核对 | 同上，眼睛／地图／牌组已实测；未知类型保留源码核验边界 |
 | 05 | 地图覆盖 | `screen.view:map` 与 map 摘要，包括当前节点、能否前进、可选节点；底层战斗 / 房间内容按可见规则隐藏。区分强制地图、可关闭地图、选择后查看地图及换幕过程 | 本阶段占位已实现，后续补充内容与摘要，见[地图与浏览覆盖](2026-11-02-get-observation-browsing.md) |
-| 06 | 牌组与牌堆浏览覆盖 | `screen.view:deck/draw_pile/discard_pile/exhaust_pile`；本工具不附整页卡牌列表；区分从房间、战斗、地图或待处理选牌打开，以及关闭返回路径 | 同上；summary 暂用 default，牌面、模式及顶栏缺口留待对应工具核验 |
+| 06 | 牌组与牌堆浏览覆盖 | `screen.view:deck/draw_pile/discard_pile/exhaust_pile`；本工具不附整页卡牌列表；区分从房间、战斗、地图或待处理选牌打开，以及关闭返回路径 | 同上；summary 暂用 default，牌面和模式待对应工具核验，顶栏另见专项修复 |
 | 07 | 奖励列表 | `scene:rewards` 与 rewards；奖励行、领取后、空列表、继续 / 放弃；打开卡牌奖励后与 selection 组合，不能提前返回未打开候选 | 待选择 |
 | 08 | 火堆 | `scene:rest_site` 与 rest_site；选项、灰置、画面已展开说明、操作后继续；升级选牌另见 03 | 已收录选项页 full |
 | 09 | 宝箱房 | `scene:treasure` 与 treasure；未开启、已开且遗物可见、领取后 / 空箱、继续；不返回未开箱内容 | 待选择 |

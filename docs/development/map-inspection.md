@@ -1,6 +1,6 @@
 # 当前幕地图查看
 
-文件接口仍提供无参数 `inspect_map` 和 `close_map`；MCP `0.50.0` 的 `inspect_map` 支持以下参数；`close_map` 只接受通用 preset。当前工具目录见 [MCP 指南](mcp.md)。
+文件接口仍提供无参数 `inspect_map` 和 `close_map`；MCP `0.50.1` 的 `inspect_map` 支持以下参数；`close_map` 只接受通用 preset。当前工具目录见 [MCP 指南](mcp.md)。
 
 `inspect_map` 真实打开或复用原生地图，默认返回当前幕中可通过滚动浏览的整个地图，不自动滚动，也不读取其他幕。正常一局的三幕通过从 1 开始的 `act` 区分；地图行号不是顶栏的全局楼层。页面保留到显式关闭或人手动返回。
 

@@ -90,5 +90,9 @@ internal static class RunUi
         && RunResultInspection.Exposed(new(screen, "outcome"));
 
     public static bool TopBarReadable() => VisibleUi.OnScreen(NRun.Instance?.GlobalUi.TopBar)
-        && (CombatObservation.Status() == "visible" || CardSelection.Current is { Status: "visible" } || NonCombatVisible() || ResultTopBarVisible());
+        && (CombatObservation.Status() == "visible" || CardSelection.Current is { Status: "visible" }
+            // Browsers cover the room while leaving the top bar exposed.
+            || CardView.Current != null
+            || NRun.Instance?.GlobalUi.MapScreen is { } map && MapView.Current(map)
+            || NonCombatVisible() || ResultTopBarVisible());
 }
