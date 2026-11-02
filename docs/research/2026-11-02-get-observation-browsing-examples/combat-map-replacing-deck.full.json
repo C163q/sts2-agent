@@ -1,0 +1,36 @@
+{
+  "scene": "combat",
+  "map": {
+    "status": "visible",
+    "act": 1,
+    "current_node": null,
+    "can_travel": false,
+    "selectable_nodes": []
+  },
+  "screen": {
+    "status": "visible",
+    "view": "map"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": null,
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "inspect_deck",
+    "inspect_map",
+    "close_map"
+  ]
+}

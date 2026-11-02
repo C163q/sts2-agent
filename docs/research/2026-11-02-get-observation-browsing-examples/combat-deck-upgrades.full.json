@@ -1,0 +1,31 @@
+{
+  "scene": "combat",
+  "map": null,
+  "screen": {
+    "status": "covered",
+    "view": "deck"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": null,
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "inspect_deck",
+    "inspect_pile",
+    "close_card_view",
+    "inspect_map"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "scene": "rewards",
+  "map": {
+    "status": "visible",
+    "act": 1,
+    "current_node": "map:1:1:0",
+    "can_travel": true,
+    "selectable_nodes": [
+      "map:1:2:0",
+      "map:1:2:1",
+      "map:1:2:3",
+      "map:1:2:5",
+      "map:1:2:6"
+    ]
+  },
+  "screen": {
+    "status": "visible",
+    "view": "map"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      null
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 2,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      },
+      {
+        "name": "Winged Boots",
+        "counter": 3,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": {
+    "status": "covered",
+    "title": null,
+    "items": null,
+    "proceed": null
+  },
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "travel_to_node",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "close_map"
+  ]
+}

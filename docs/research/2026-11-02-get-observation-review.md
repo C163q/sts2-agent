@@ -1,6 +1,6 @@
 # get_observation 场景核验与参数设计
 
-> 当前状态：战斗与全部选牌（01–04 组）的约定范围已交付；选牌最终覆盖 20 个 GUI 场景，实际摘要样本和验证见专项记录。其余 13 组场景待选，get_observation 整体尚未核销。本阶段无待处理问题。
+> 当前状态：战斗与全部选牌（01–04 组）的约定范围已交付；正在核验地图及牌组／牌堆浏览覆盖（05、06 组），提供 full 样本后讨论设计，生产行为尚未调整。其余 11 组待选，get_observation 整体尚未核销；覆盖页可见顶栏及浏览内容缺口见本轮专项记录。
 
 总清单与流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
 
@@ -46,8 +46,8 @@ divination, confirmation, epilogue, run_result, available_actions
 | 02 | 普通卡牌选择 | `selection.type` 为 `hand/choose_one/grid/combat_pile/deck/reward/bundle/view_cards`；单选 / 多选、候选、已选 ID、确认 / 跳过 / 献祭 / 重掷 / 包选项，候选正文按是否实际展开决定 | 本阶段完成，见[选牌专项记录](2026-11-02-get-observation-selections.md) |
 | 03 | 升级、附魔与变牌选择 | `hand_upgrade/deck_upgrade/deck_enchant/deck_transform`；候选页、查看升级、选中后的前后预览、随机变牌 `after:null`、预览取消 / 确认。full 基础观察仍不等于 inspect_selection full | 同上，含单／多牌预览与查看升级 |
 | 04 | 选牌时查看战场或被覆盖 | `selection.status:battlefield/covered/unsupported`；待处理选择继续存在，隐藏候选不补出，notes 指示返回方式；unsupported 作为人工输入边界单独核对 | 同上，眼睛／地图／牌组已实测；未知类型保留源码核验边界 |
-| 05 | 地图覆盖 | `screen.view:map` 与 map 摘要，包括当前节点、能否前进、可选节点；底层战斗 / 房间内容按可见规则隐藏。区分强制地图、可关闭地图、选择后查看地图及换幕过程 | 待选择 |
-| 06 | 牌组与牌堆浏览覆盖 | `screen.view:deck/draw_pile/discard_pile/exhaust_pile`；本工具不附整页卡牌列表；区分从房间、战斗、地图或待处理选牌打开，以及关闭返回路径 | 待选择 |
+| 05 | 地图覆盖 | `screen.view:map` 与 map 摘要，包括当前节点、能否前进、可选节点；底层战斗 / 房间内容按可见规则隐藏。区分强制地图、可关闭地图、选择后查看地图及换幕过程 | 核验与设计中，见[地图与浏览覆盖](2026-11-02-get-observation-browsing.md) |
+| 06 | 牌组与牌堆浏览覆盖 | `screen.view:deck/draw_pile/discard_pile/exhaust_pile`；本工具不附整页卡牌列表；区分从房间、战斗、地图或待处理选牌打开，以及关闭返回路径 | 同上；已识别牌面、模式和顶栏信息缺口，尚未定稿 |
 | 07 | 奖励列表 | `scene:rewards` 与 rewards；奖励行、领取后、空列表、继续 / 放弃；打开卡牌奖励后与 selection 组合，不能提前返回未打开候选 | 待选择 |
 | 08 | 火堆 | `scene:rest_site` 与 rest_site；选项、灰置、画面已展开说明、操作后继续；升级选牌另见 03 | 已收录选项页 full |
 | 09 | 宝箱房 | `scene:treasure` 与 treasure；未开启、已开且遗物可见、领取后 / 空箱、继续；不返回未开箱内容 | 待选择 |
