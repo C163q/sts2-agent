@@ -1,6 +1,6 @@
 # get_observation 选牌界面核验
 
-> 当前状态：现状核验已完成，进入摘要设计讨论。已收集 16 个场景的 39 份完整 full 实测样本，覆盖全部 12 类已支持选择及主要预览／覆盖变化；未知选择等源码分支的未实测范围见文末。选牌摘要尚未定稿，未修改工具行为。战斗主画面摘要已交付，其余房间摘要仍按总目录另行讨论。暂无需求阻塞。
+> 当前状态：摘要设计讨论中。现状核验已收集 16 个场景的 39 份 full 实测样本；已确认扩大当前候选页的列表范围，并统一卡牌摘要、去掉空资源标记，附加精简规则待定稿。新增发现完整网格详情缺少卡牌附魔，已记录为实施时的修复项。未修改工具行为，暂无需求阻塞。
 
 范围对应[场景目录](2026-11-02-get-observation-review.md)的 02、03、04 组，包括候选、已选、确认预览、查看升级、眼睛切换及覆盖页。这里的“选牌”包含 `view_cards` 结果确认页；普通牌组／牌堆浏览、商店商品卡、尚未打开的奖励行、结算解锁卡不属于待处理卡牌选择。
 
@@ -34,7 +34,7 @@
 
 ## full 的读取范围与字段
 
-调用参数统一为 `{"preset":"full"}`。以下是结构说明，完整返回样本另列；不能把 `inspect_selection` 的返回改名作为本工具示例。
+调用参数统一为 `{"preset":"full"}`。以下是基线 `e728b7e` 的现状说明；后文的新要求尚未实施。完整返回样本另列，不能把 inspect_selection 的返回改名作为本工具示例。
 
 - 公共选择字段：`type/status/prompt/min_select/max_select/selected_ids/cards/options/can_view_battlefield/can_view_upgrades/view_upgrades`。按钮保留 `id/text/enabled`，其含义以本次文字为准。
 - 基础卡牌包含 `id/name/type/rarity/visual_card_pool/energy_cost/star_cost/unplayable_markers/outline`；特殊费用颜色与实际显示的附魔按条件增加。没有可见附魔时连 full 也不生成 `enchantment` 字段。
@@ -150,15 +150,55 @@
 
 此时 `cards:[]` 并非没有需要确认的牌，而是卡牌内容位于 `upgrade_previews`。`cancel_preview` 返回候选，`confirm` 才真正提交升级；before／after 的同一个 ID 指向被选择的原牌。
 
-## 当前 summary 与待讨论范围
+## 已确认的调整范围
 
 当前 `get_observation.summary` 只精简战斗资源、普通手牌和顶栏，**尚不精简 selection 内的牌**；非战斗仍等同 default。因此同一类选择发生在战斗、火堆或事件时，当前外层摘要程度不同。该差异是本轮设计对象，尚未改动。
 
-推荐候选方案：所有 `selection` 卡牌位置统一采用 inspect_hand／inspect_selection 的手牌摘要字段，并保留选择提示、数量限制、全部已选 ID、实际按钮、升级模式、包 ID、附魔操作说明和随机变牌标记。比较中的牌也使用摘要，需要正文时调用 inspect_selection full。保持现有战斗摘要；非战斗外层的房间和顶栏字段暂保留，待相应场景核验再决定。
+- 当前已打开、处于候选页的可浏览选择，get_observation 返回整个原生候选列表，不按视口和滚动位置截断。范围调整适用于 full/default/summary；预设决定返回精简度，不决定能否读取同一列表中的候选。
+- 保留原生列表顺序、原牌 ID 与当前查看升级模式。手牌仍使用当前实际的手牌选择；确认页只读取该页展示的牌和比较，不重新带回背景网格。眼睛、地图或牌组隐藏选择时仍隐藏候选，不提前生成未出现的结果。
+- get_observation.summary 在 default 基础上，统一精简 `selection.cards`、`bundles[].cards` 和全部 before／after 卡牌，格式与 inspect_hand.summary 共用；原有战斗摘要继续适用。保留选择提示、数量限制、全部已选 ID、按钮、包 ID、升级模式、附魔操作说明与随机结果标记。
+- 共用卡牌摘要中，`unplayable_markers:[]` 省略；非空资源标记保留。字段名仍为复数 unplayable_markers，不新增别名。
+- 原始结果没有 outline 时不生成该字段；没有描边的 `outline:"none"` 是否也统一省略，见下方推荐规则。
 
-另两种取舍：保留已展开比较的正文更接近当页阅读，但与已确认的 inspect_selection.summary 规则不一致；直接裁掉房间和顶栏只留选择会更短，但会顺带决定尚未审查的非战斗外层数据。本轮建议先统一选择内容本身。
+### 现有卡牌摘要审查
 
-仍待确认：是否采用上述卡牌规则，以及是否精简 `options`、升级模式布尔字段、空候选／空预览等选择上下文。它们各自描述当前 UI 状态，不能未经决定按“空即无用”删除；本轮不新增筛选或切换参数，参数需求在样本讨论后确定。
+| 返回位置 | 当前空 unplayable_markers | 当前 outline:none | 实施范围 |
+| --- | --- | --- | --- |
+| inspect_hand.summary 的 hand | 保留 | 保留 | 共用 card_summary，统一调整 |
+| inspect_selection.summary 的候选、包和比较 | 原始有该字段时保留 | 原始有该字段时保留 | 共用 card_summary，统一调整 |
+| get_observation.summary 的 player.hand | 保留 | 保留 | 共用 card_summary，统一调整 |
+| get_observation.summary 的 selection | 当前未精简，仍沿用 default 卡牌 | 保留 | 本轮接入同一规则 |
+| inspect_deck／inspect_pile 的 detail_level:summary | 本来就没有该字段 | 本来就没有该字段 | 独立的浏览摘要，不冒充共用手牌规则；本轮不增加这些字段 |
+| inspect_relics.summary | 不涉及 | 不涉及 | 仅包含遗物，不做卡牌规则调整 |
+
+源码：[card_summary](../../src/sts2_mcp/output/card_summary.py)、[手牌](../../src/sts2_mcp/output/hand_presets.py)、[选牌](../../src/sts2_mcp/output/selection_presets.py)、[观察](../../src/sts2_mcp/output/observation_presets.py)、[浏览卡牌校验](../../src/sts2_mcp/output/deck_details.py)。当前行为已用小型调用检查复核，证据 `.tmp/2026-11-02-card-summary-audit/verification.json`；没有改生产代码或运行游戏。
+
+### 推荐的附加精简规则（待确认）
+
+1. 共用卡牌摘要省略 `outline:"none"`，保留 cyan/gold/red/other；已有描边与资源不足标记各有意义，不合并成 can_play。省略无描边或空资源标记不能解释为“可打出”。默认费用颜色本来就不输出，无须再加一套删色规则。
+2. inspect_hand／inspect_selection／inspect_relics 的 summary 也统一继承 default 的普通空值规则，减少目前手牌与遗物摘要仍保留的 null。比较子树、随机 after:null 和数组空槽等例外照常保留；明确的 0、false、X、? 不按空值删除。这是附加的预设契约调整，尚未实施。
+3. 选牌摘要可省略尚未展开的空 `upgrade_previews/enchant_previews/transform_previews` 以及空 bundles。继续保留 cards、selected_ids、options，即便是 []，以便明确表示候选、已选集合和当前按钮；整组未展开 upgrade_preview:null 已能按 default 省略。
+
+例如 [火堆样本](2026-11-02-get-observation-selection-examples/smith-selected.full.json) 的 Bash 比较牌在采用这些规则后可写成以下设计片段；这是候选摘要，不是实测的新返回：
+
+```json
+{
+  "before": {"id": 19, "name": "Bash", "type": "Attack", "energy_cost": "2"},
+  "after": {"id": 19, "name": "Bash+", "type": "Attack", "energy_cost": "2"}
+}
+```
+
+建议保留选择提示、min_select／max_select、完整 selected_ids、按钮 enabled、can_view_battlefield／can_view_upgrades／view_upgrades 和导航说明；它们用于判断当前操作与展示模式，不用 available_actions 猜测参数能力。附魔的实际数量与置灰状态仍保留。非战斗房间和顶栏的进一步摘要按各自场景核验，不顺带裁剪。
+
+### 完整候选读取的附魔缺口
+
+当前 `SelectionInspection.Read(full:true)` 的普通网格分支调用 BrowsedCard；后者只生成身份、费用与可选正文／悬停帮助，不生成卡牌 enchantment。于是 inspect_selection 的网格候选即使包含已有附魔，Python 摘要也无法保留该字段；手牌、包内容和实际节点比较使用另一读取路径，不能据此推断全部选牌都缺失。
+
+这与[选牌说明](../development/card-selection.md#mcp-输出预设)中统一保留可见附魔的预期存在差异。扩大 get_observation 候选范围时须一起修复该分支：按当前页面正常渲染会展示的卡牌身份、附魔、费用和升级模式读取，不因屏幕外没有实例化节点而丢字段，也不伪造描边／资源图标。不能直接复制原模型 Enchantment.Amount 充当 UI 显示计数，仍按实际可显示的计数／图标规则处理。
+
+本轮结论来自返回构造代码核对，尚未新增带已有附魔网格的 GUI 复现；实施验证必须覆盖带附魔的屏幕内外候选、原牌／升级模式和未知身份。详细问题记录位于本地 `.tmp/2026-11-02-card-summary-audit-report.md`；本文件保留后续修复任务，当前未修复。
+
+inspect_deck／inspect_pile 也使用 BrowsedCard，而且 Python 浏览卡牌白名单没有 enchantment；这些工具的卡面附魔另留待各自核验，不能仅修 C# 共享读取就宣称已支持。它们的 detail_level:summary 与本次共用手牌摘要仍分别维护。
 
 ## 本轮核验结果与边界
 

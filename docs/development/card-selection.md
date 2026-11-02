@@ -44,6 +44,8 @@
 
 `summary` 的每张卡牌沿用[手牌摘要字段](hand-inspection.md#参数与返回范围)：保留身份、费用、可见附魔及卡面标记，移除正文、稀有度、卡池和悬停帮助；没有星耗时不输出该项。规则统一作用于 `cards`、`bundles[].cards`，以及 `upgrade_preview`、`upgrade_previews`、`enchant_previews`、`transform_previews` 的 `before/after`；预览也不保留正文，需要时另读 `full`。
 
+当前已知缺口：普通网格候选的完整读取分支尚未输出卡牌已有的 enchantment，因而该分支的 summary 也无法保留它；手牌、包内容及节点比较不受此分支影响。已列入[候选范围与摘要调整](../research/2026-11-02-get-observation-selections.md#完整候选读取的附魔缺口)的后续修复与实测，当前尚未修复。
+
 摘要保留场景、选择类型和状态、提示、数量限制、已选 ID、按钮、包 ID、升级模式、随机变牌标记及原有空值。选择级 `selection.enchantment` 仍保留附魔操作名称与说明，它描述当前要执行的操作。不会补全未知卡牌或随机变牌结果；预设及筛选本身不改变候选范围和 UI。读取成功后可直接选择；仍先验证完整原生详情，再投影为摘要，错误不会被转为空结果。非法参数不发往游戏，也不丢弃已有动作许可。
 
 `card_ids` 同时筛选 `cards`、`bundles[].cards` 和已经展开的预览。预览按原牌 `before.id` 命中，保留整组 `before/after`，不生成尚未展开的比较或随机结果；未命中的 `upgrade_preview` 为 `null`，列表预览移除对应项。包 ID 保留，包内 `cards` 可为空；查看包内某张牌不改变整包选择方式。full 的共享提示同步裁剪卡牌关联，summary 继续不提供悬停效果。
