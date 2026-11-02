@@ -1,6 +1,6 @@
 # get_observation 场景核验与参数设计
 
-> 当前状态：战斗与全部选牌（01–04 组）的约定范围已交付；地图及牌组／牌堆浏览覆盖（05、06 组）已完成本阶段摘要占位，页面主体暂用 default、顶栏独立复用共用摘要，实际浏览内容待后续对应工具核验，顶栏缺口已由[专项修复](2026-11-02-top-bar-visibility.md)解决。其余 11 组待选，get_observation 整体尚未核销。
+> 当前状态：战斗与全部选牌（01–04 组）的约定范围已交付；地图及牌组／牌堆浏览覆盖（05、06 组）已完成页面主体暂用 default、顶栏独立复用共用摘要的占位，实际浏览内容待对应工具核验，顶栏缺口已修复。奖励、火堆与宝箱（07–09 组）已收录 37 份当前 full 实测样本，进入 summary 设计讨论；其余 8 组待选，get_observation 整体尚未核销。
 
 总清单与流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
 
@@ -48,9 +48,9 @@ divination, confirmation, epilogue, run_result, available_actions
 | 04 | 选牌时查看战场或被覆盖 | `selection.status:battlefield/covered/unsupported`；待处理选择继续存在，隐藏候选不补出，notes 指示返回方式；unsupported 作为人工输入边界单独核对 | 同上，眼睛／地图／牌组已实测；未知类型保留源码核验边界 |
 | 05 | 地图覆盖 | `screen.view:map` 与 map 摘要，包括当前节点、能否前进、可选节点；底层战斗 / 房间内容按可见规则隐藏。区分强制地图、可关闭地图、选择后查看地图及换幕过程 | 本阶段占位已实现，后续补充内容与摘要，见[地图与浏览覆盖](2026-11-02-get-observation-browsing.md) |
 | 06 | 牌组与牌堆浏览覆盖 | `screen.view:deck/draw_pile/discard_pile/exhaust_pile`；本工具不附整页卡牌列表；区分从房间、战斗、地图或待处理选牌打开，以及关闭返回路径 | 同上；页面主体暂用 default、顶栏使用共用摘要，牌面和模式待对应工具核验，顶栏另见专项修复 |
-| 07 | 奖励列表 | `scene:rewards` 与 rewards；奖励行、领取后、空列表、继续 / 放弃；打开卡牌奖励后与 selection 组合，不能提前返回未打开候选 | 待选择 |
-| 08 | 火堆 | `scene:rest_site` 与 rest_site；选项、灰置、画面已展开说明、操作后继续；升级选牌另见 03 | 已收录选项页 full |
-| 09 | 宝箱房 | `scene:treasure` 与 treasure；未开启、已开且遗物可见、领取后 / 空箱、继续；不返回未开箱内容 | 待选择 |
+| 07 | 奖励列表 | `scene:rewards` 与 rewards；奖励行、领取后、空列表、继续 / 放弃；打开卡牌奖励后与 selection 组合，不能提前返回未打开候选 | [本轮现状与 full 样本](2026-11-02-get-observation-rooms.md#07奖励列表)，summary 待定稿 |
+| 08 | 火堆 | `scene:rest_site` 与 rest_site；选项、灰置、画面已展开说明、操作后继续；升级选牌另见 03 | [普通／灰置／多次操作及后续奖励](2026-11-02-get-observation-rooms.md#08火堆)，summary 待定稿 |
+| 09 | 宝箱房 | `scene:treasure` 与 treasure；未开启、已开且遗物可见、领取后 / 空箱、继续；不返回未开箱内容 | [开箱／待领／空箱及额外奖励](2026-11-02-get-observation-rooms.md#09宝箱房)，summary 待定稿 |
 | 10 | 商店 | `scene:shop` 与 shop；`merchant/inventory/opening/closing`，商品卡摘要、价格、售罄 / 补货、删牌选择，以及当前可见顶栏提示 | 待选择 |
 | 11 | 先古之民 | `scene:ancient` 与 ancient；已显示对话、推进对话、馈赠选项、后续选择与继续。区分基础选项正文和额外悬停帮助 | 待选择 |
 | 12 | 普通事件 | `scene:event` 与 event；事件正文、可选 / 锁定选项、致死警告、选择后正文与继续、后续奖励或战斗，再返回事件；覆盖时不附隐藏正文 | 已收录选项页 full |
@@ -82,6 +82,7 @@ divination, confirmation, epilogue, run_result, available_actions
 
 - 战斗主画面阶段已经完成，见[专项记录](2026-11-02-get-observation-combat.md)。全部选牌界面的约定设计已实现，见[选牌核验与实施](2026-11-02-get-observation-selections.md)。上表其他“待选择”不表示实现缺失，而是本轮尚未展开样例核验。
 - 选牌包含战斗、火堆、事件及先古之民等底层场景；本轮围绕 selection 及其可见上下文核验，不自动决定这些房间自身的摘要字段。
+- 奖励、火堆与宝箱的现状及完整样本见[07–09 组记录](2026-11-02-get-observation-rooms.md)；本轮仅核验，summary 未定稿。奖励基础观察的可见行限制与完整选牌候选不同，需在该组设计中明确。
 - 新的设计结论、确认范围、验证结果及后续提交持续记录于对应专项文件，并在本目录同步状态。
 
 首轮目录检查：5 份初始 JSON 与上述原始 full 调用逐对象一致，能够通过当前观察结构校验；清单名称与 43 个公开工具对应，链接与 Markdown 围栏检查通过。首轮目录整理未启动游戏；后续新增的战斗实测、完整样本及未覆盖范围见专项记录。

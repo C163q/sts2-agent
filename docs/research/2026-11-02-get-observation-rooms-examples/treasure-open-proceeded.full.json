@@ -1,0 +1,78 @@
+{
+  "scene": "treasure",
+  "map": {
+    "status": "visible",
+    "act": 1,
+    "current_node": null,
+    "can_travel": true,
+    "selectable_nodes": [
+      "map:1:0:3"
+    ]
+  },
+  "screen": {
+    "status": "visible",
+    "view": "map"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 143,
+    "floor": 2,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 2,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      },
+      {
+        "name": "Anchor",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": {
+    "status": "covered",
+    "chest": null,
+    "relic": null,
+    "proceed": null
+  },
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "travel_to_node",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "close_map"
+  ]
+}

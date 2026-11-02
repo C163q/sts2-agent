@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中。共 43 项，已核销 0 项。get_observation 的战斗及全部选牌约定范围已交付；地图与牌组／牌堆浏览覆盖（05、06 组）已接入页面主体暂用 default 的摘要占位，顶栏独立复用四字段摘要，具体内容待对应工具核验；顶栏漏读已单独修复，见[修复记录](2026-11-02-top-bar-visibility.md)。其余 11 组及另外 42 项待选。
+> 当前状态：工具核验进行中。共 43 项，已核销 0 项。get_observation 的战斗及全部选牌约定范围已交付；地图与牌组／牌堆浏览覆盖（05、06 组）的页面主体暂用 default、顶栏独立复用四字段摘要，具体内容待对应工具核验，顶栏漏读已修复。[奖励、火堆与宝箱（07–09 组）](2026-11-02-get-observation-rooms.md)已收录 37 份当前 full 实测样本，进入 summary 设计讨论；其余 8 组及另外 42 项待选。
 
 ## 范围与基线
 
@@ -27,7 +27,7 @@
 
 ### 基础观察与战斗详情（7 项）
 
-- [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)已交付本阶段摘要占位，内容待对应工具核验；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
+- [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：[07–09 组奖励、火堆与宝箱](2026-11-02-get-observation-rooms.md)现状核验与 summary 设计讨论；[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)已交付本阶段摘要占位，内容待对应工具核验；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
 - [ ] `inspect_ui`：可见战斗 UI、资源及空充能球栏位的悬停说明。
 - [ ] `inspect_hand`：手牌详情。
 - [ ] `inspect_targets`：指定手牌或药水的可用性与目标范围。
