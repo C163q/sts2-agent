@@ -1,6 +1,6 @@
 # get_observation 场景核验与参数设计
 
-> 当前状态：场景核验中，当前仅展开 01 战斗主画面。已整理 17 组场景目录与 5 份初始 full 样本，本轮另补 3 份战斗实测；战斗字段说明及验证范围见下方专项记录。当前等待讨论战斗字段与参数，尚未确认新设计或修改工具行为；其余场景保留待选。暂无技术阻塞。
+> 当前状态：设计讨论中，当前仅展开 01 战斗主画面。已整理 17 组场景目录与 full 样本，并记录第一份战斗 summary 草案及源码核对意见；字段说明、草案和验证范围见下方专项记录。尚未确认新设计或修改工具行为，其余场景保留待选。暂无技术阻塞。
 
 总清单与流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
 
@@ -42,7 +42,7 @@ divination, confirmation, epilogue, run_result, available_actions
 
 | 编号 | 场景组 | 需要展开的分支与返回差异 | 当前样本状态 |
 | --- | --- | --- | --- |
-| 01 | 普通战斗与角色差异 | `scene:combat`；player、enemies、allies、turn、buttons；储君星星、故障机器人充能球、奥斯提与共享格挡、悬浮君王之剑、手牌附魔 / 费用颜色 / 标记、不同意图与生命显示。角色差异是数据变体，不是额外 scene | 已展开，见[战斗字段与 5 份 full 样本](2026-11-02-get-observation-combat.md)；待设计讨论 |
+| 01 | 普通战斗与角色差异 | `scene:combat`；player、enemies、allies、turn、buttons；储君星星、故障机器人充能球、奥斯提与共享格挡、悬浮君王之剑、手牌附魔 / 费用颜色 / 标记、不同意图与生命显示。角色差异是数据变体，不是额外 scene | 设计讨论中，见[战斗字段、full 样本及摘要草案](2026-11-02-get-observation-combat.md) |
 | 02 | 普通卡牌选择 | `selection.type` 为 `hand/choose_one/grid/combat_pile/deck/reward/bundle/view_cards`；单选 / 多选、候选、已选 ID、确认 / 跳过 / 献祭 / 重掷 / 包选项，候选正文按是否实际展开决定 | 待选择 |
 | 03 | 升级、附魔与变牌选择 | `hand_upgrade/deck_upgrade/deck_enchant/deck_transform`；候选页、查看升级、选中后的前后预览、随机变牌 `after:null`、预览取消 / 确认。full 基础观察仍不等于 inspect_selection full | 待选择 |
 | 04 | 选牌时查看战场或被覆盖 | `selection.status:battlefield/covered/unsupported`；待处理选择继续存在，隐藏候选不补出，notes 指示返回方式；unsupported 作为人工输入边界单独核对 | 待选择 |

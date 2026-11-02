@@ -1,12 +1,12 @@
 # get_observation：战斗主画面
 
-> 当前状态：展示现状，尚未形成参数或 summary 定稿。当前范围为场景目录 01：战斗主画面及角色、卡牌、意图、顶栏的显示差异。选牌、查看战场、地图、牌组与牌堆覆盖页留在对应场景组继续核验；这些场景仍属于 get_observation 的未完成范围，工具暂不核销。
+> 当前状态：设计讨论中，已记录第一份战斗 summary 草案与源码核对意见，尚未定稿或实现。当前范围为场景目录 01：战斗主画面及角色、卡牌、意图、顶栏的显示差异。选牌、查看战场、地图、牌组与牌堆覆盖页留在对应场景组继续核验；这些场景仍属于 get_observation 的未完成范围，工具暂不核销。
 
 总进度见[工具清单](2026-11-02-mcp-tool-review.md)，全部场景见[场景目录](2026-11-02-get-observation-review.md)。
 
 ## 范围与依据
 
-调用为 `get_observation({"preset":"full"})`。当前只有 default、full、actions_only，没有 summary 或字段筛选参数。本文件先解释当前 full，不提前决定摘要字段。
+调用为 `get_observation({"preset":"full"})`。当前只有 default、full、actions_only，没有 summary 或字段筛选参数。本文件区分当前 full 现状与下方待定的摘要设计。
 
 源码基线 `0b81e8b`，MCP `0.48.0`、Mod `0.47.1`、schema `29`，游戏 `v0.107.1`、RitsuLib `0.6.10`。观察组装、参数与基础预设依据见[主记录](2026-11-02-get-observation-review.md#核对基线与证据)。战斗具体来源为 [CombatObservation](../../src/Sts2Agent/Observation/CombatObservation.cs)、[OrbInspection](../../src/Sts2Agent/Observation/OrbInspection.cs)、[SovereignBladeInspection](../../src/Sts2Agent/Observation/SovereignBladeInspection.cs)、[VisibleUi](../../src/Sts2Agent/Observation/VisibleUi.cs)。
 
@@ -88,9 +88,76 @@
 
 本工具没有 action transition、stop_reason、独立 player_turn 字段、当前抽牌顺序、普通手牌正文或所有图标悬停正文。更详细的信息应按现有接口读取，不能在设计摘要时把这些内容当作 full 已有字段。
 
-## 后续讨论位置
+## 战斗 summary 草案（待定稿，未实现）
 
-下一步基于以上实际字段讨论战斗摘要和筛选参数。记录每个候选字段的保留 / 省略理由，并明确只影响战斗还是其他场景。当前未决定字段名单、参数名称、组合规则，也不默认其他场景已经核验完毕。
+以 default 的内容及空值语义为基础讨论摘要。以下为候选要求与评估，不是当前工具已有输出；其他场景的 summary 行为尚未决定。
+
+| 内容 | 草案 | 源码核对与建议 |
+| --- | --- | --- |
+| 生命 | 合并 hp、max_hp、hp_display，正常如 70/80，无限为 ∞，hidden 显式 null | 合理。建议合并键名 health，玩家、敌人、友方使用同一规则；另保留 dead / unknown 的可区分表示，不能把死亡当作隐藏或补出数值 0 |
+| 能量 | 合并 energy、max_energy，如 3/3 | 合理。建议沿用 energy 键，完整可读时为分数字符串；任一数字不可读时不拼接假值，按普通不可读字段处理 |
+| 空列表 | powers、orb_slots、sovereign_blades 为 [] 时省略 | 合理。建议 powers 对玩家、敌人与友方统一处理。orb_slots:[null,null,null] 表示三个已确认空槽，数组非空，必须保留位置与数量 |
+| 手牌 | 沿用 inspect_hand.summary 的牌字段 | 直接复用共享 card_summary：id、name、type、energy_cost、可见 star_cost、特殊费用颜色、unplayable_markers、outline、可见 enchantment；移除 rarity 与 visual_card_pool，不添加正文 |
+| 顶栏 | 仅 gold、potion_slots、deck_count；relics 替换为 relics_count | 合理。计数建议定义为当前观察列表中可见遗物的数量；当前 TopBar 对 RelicNodes 先做 OnScreen 过滤，列表长度不能无条件宣称为总持有数。列表不可读时不能生成 0 |
+
+未提及的字段暂以 default 为基础保留；例如 block、stars、牌堆计数、敌人意图、友方共享格挡标记、buttons、available_actions、适用 notes。保留它们不代表后续不能继续精简，只避免在本次草案之外自行删字段。
+
+### 合并生命的建议映射
+
+| 当前显示 | 建议摘要值 |
+| --- | --- |
+| numeric，hp:70、max_hp:80 | `"health":"70/80"` |
+| infinite | `"health":"∞"` |
+| dead | `"health":"dead"` |
+| hidden | `"health":null`，作为本摘要明确保留的空值例外 |
+| unknown | `"health":"unknown"`，表示已有显示但当前无法识别其格式 |
+
+health 键名、dead / unknown 的表示、各类角色是否统一应用均为建议，待讨论定稿。格式化应使用完整验证后的显示状态，不能先丢失判断所需字段，再按默认数字拼接；显式 health:null 不应被后续普通空值过滤删除。
+
+### 当前 inspect_hand.summary 的实际样式
+
+以下为既有真实 MCP 样本中三张牌的完整摘要片段；原始调用位于 `.tmp/2026-11-02-get-observation-combat/gui/enchantments/verify/evidence.json` 数组下标 4，参数 preset:summary。省略了该手牌列表的其他三张牌，未省略这三张牌各自的字段。
+
+```json
+{
+  "hand": [
+    {
+      "id": 5,
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1",
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "enchantment": {"name": "Sharp", "dimmed": false, "amount": 3}
+    },
+    {
+      "id": 7,
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1",
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "enchantment": {"name": "Clone", "dimmed": false}
+    },
+    {
+      "id": 8,
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1",
+      "unplayable_markers": [],
+      "outline": "cyan"
+    }
+  ]
+}
+```
+
+附魔现状：CombatObservation.Card 只有在已识别卡牌的附魔标签与匹配图标可见时才加入 enchantment，HandInspection.Card 在这个结果上增加正文及提示。因此无可见附魔时 full 同样缺少该键；不是 full 过滤了 enchantment:null，而是原生本来未生成此字段。只有 amount 标签未显示时，附魔对象仍可存在但 amount 键不存在。当前输出 shape 的 enchantment 本身不接受 null。
+
+### 待继续讨论
+
+- 确认合并生命的键名及非数字状态表示；决定是否采用当前可见遗物数定义。
+- 其他保留字段是否继续精简，以及 summary 在战斗覆盖页和其他场景中的行为。
+- 参数、默认值及组合规则尚未定稿；继续讨论后才实施。此次仅核对共享卡牌摘要、已有实测样本和当前显示读取逻辑，没有新增游戏运行或修改工具行为。
 
 ## 本轮验证与未覆盖项
 
