@@ -1,0 +1,8 @@
+{
+  "error": {
+    "code": "transport_error",
+    "message": "The local game connection failed. Check the connection before reading the current state.",
+    "recovery": "check_connection",
+    "outcome": "unknown"
+  }
+}

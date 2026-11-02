@@ -1,0 +1,114 @@
+{
+  "scene": "event",
+  "map": null,
+  "screen": {
+    "status": "visible",
+    "view": "divination"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 40,
+    "max_hp": 80,
+    "gold": 1099,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 11,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": {
+    "status": "covered",
+    "name": null,
+    "description": null,
+    "options": null,
+    "proceed": null
+  },
+  "divination": {
+    "status": "visible",
+    "phase": "playing",
+    "remaining": 6,
+    "tool": "small",
+    "tools": [
+      {
+        "id": "big",
+        "text": "Big Divination",
+        "enabled": true
+      },
+      {
+        "id": "small",
+        "text": "Small Divination",
+        "enabled": true
+      }
+    ],
+    "instructions": {
+      "title": "How to Divine",
+      "description": "Reveal your future by revealing the tiles!\n\nSelect Small Divination or Big Divination and reveal the tiles within the Crystal Sphere.\n\nOnce an item is revealed, you will receive it at the end of the session...\n\nBut beware, revealing some items may be dangerous!"
+    },
+    "dialogue": null,
+    "grid": {
+      "columns": 11,
+      "rows": 11,
+      "covered_rows": [
+        "...#####...",
+        "..#######..",
+        ".#########.",
+        "###########",
+        "###########",
+        "###########",
+        "###########",
+        "###########",
+        ".#########.",
+        "..#######..",
+        "...#####..."
+      ],
+      "image": {
+        "width": 599,
+        "height": 598
+      }
+    },
+    "proceed": null
+  },
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "set_divination_tool",
+    "divine",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ],
+  "notes": {
+    "divination": "Board image: 11x11 cells, (0,0) top-left; x right, y down. # covered, . revealed. Choose a # cell while playing."
+  }
+}

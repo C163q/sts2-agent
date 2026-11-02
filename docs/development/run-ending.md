@@ -70,4 +70,6 @@ Mod 0.49.2 起，当前原生本局详情页的滚动文字与物品不按视口
 
 建筑师使用原生战斗背景；当前可读的界面、对象、遗物、药水及地图工具会列入 `available_actions`，具体合法性仍由调用入口校验。关闭地图会恢复当前对话；不会因此提供普通出牌或结束回合。工具可用性核查见[验证记录](../research/2026-10-31-observation-presets-validation.md)。
 
-Mod／MCP `0.44.0` 起，建筑师对话也可在原生按钮可用时查看牌组；覆盖期间保留 `screen.view: deck`，隐藏底层对话并只列当前浏览工具。结算页的药水／遗物详情根据实际可见、可悬停控件独立列出，不要求无关的结算文字动画完成；仍不能打开牌组或执行已结束对局的动作。实测范围见[可用工具修复记录](../research/2026-11-02-available-actions-fix.md)。
+Mod／MCP `0.44.0` 起，建筑师对话也可在原生按钮可用时查看牌组；覆盖期间保留 `screen.view: deck` 并隐藏底层对话，当前原生工具列表包含浏览及实际可读的药水／遗物详情。结算页的药水／遗物详情也根据实际可见、可悬停控件独立列出，不要求无关的结算文字动画完成；仍不能打开牌组或执行已结束对局的动作。实测范围见[可用工具修复记录](../research/2026-11-02-available-actions-fix.md)。
+
+MCP `0.50.4` 已确认存在建筑师牌组覆盖的观察缺陷：`inspect_deck` 可成功打开，但随后 `get_observation` 会因 Python 校验仍不接受当前可见的 `inspect_potions/inspect_relics` 而返回 `transport_error`。可用 `close_card_view` 关闭后恢复观察；此问题尚未修复，不表示原生 IPC 已断开。复现与边界见 [13–15 组核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md#已确认缺陷建筑师牌组覆盖)。
