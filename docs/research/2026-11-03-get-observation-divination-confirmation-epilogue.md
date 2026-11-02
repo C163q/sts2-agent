@@ -1,6 +1,6 @@
 # get_observation：占卜、确认框与建筑师终章
 
-> 当前状态：13–15 组现状核验已交付，共 3 组，已完成源码核对及 5 类隔离 GUI 采样，收录 47 份完整 full、19 张同次棋盘 PNG 和 1 份已知错误响应。正在等待 summary 设计讨论；建筑师牌组覆盖有 1 项已定位但未修复的校验缺陷。本轮未修改工具行为，get_observation 整体不核销。总进度见[场景目录](2026-11-02-get-observation-review.md)。
+> 当前状态：13–15 组现状核验已交付，共 3 组，已完成源码核对及 5 类隔离 GUI 采样，收录 47 份完整 full、19 张同次棋盘 PNG 和 1 份已知错误响应。summary 约定已记录，讨论结束后先修复建筑师牌组覆盖校验缺陷，再实现摘要；两项均尚未实施。后续功能另列[用户待办](../development/TODO.md)，get_observation 整体不核销。总进度见[场景目录](2026-11-02-get-observation-review.md)。
 
 ## 范围与证据
 
@@ -71,6 +71,8 @@ JSON 后另有一个 `ImageContent` PNG，来自当次渲染棋盘的矩形裁�
 ### 人工输入分支
 
 已识别但不受支持的同类弹窗使用 `screen.status:covered, view:confirmation`、`confirmation:null`、空 `available_actions`，并附 `notes.interaction`。这个 null 表示没有可供工具读取／操作的受支持确认框，不能等同于“现在没有弹窗”。
+
+`confirmation-cancel-unowned.full.json` 由仅测试入口 `open_test_unowned_confirmation` 触发：先取消正常审判确认框，再由 [ConfirmationFixture.OpenUnowned](../../src/Sts2Agent/Testing/Fixtures/ConfirmationFixture.cs) 直接调用原生 `NAbandonRunConfirmPopup.Create(null)` 并加入模态容器，绕过 `Trial.DoubleDown`，因此没有登记受支持来源。这是同类窗口来源校验的隔离测试，不是审判的额外正常选项；采样后由测试入口取消。原始证据为 `gui-remaining/confirmation_cancel/evidence.json` 下标 8–15。
 
 基础观察自身不返回 `manual_input_required`。触发未知模态的玩法动作可以在其 `transition.stop_reason` 返回该值；其他未知专属覆盖页也可能停在这个动作边界，但不能据此承诺基础观察会统一将任意未知窗口命名为 confirmation。
 
@@ -204,12 +206,15 @@ Python 的 [validate_ending](../../src/sts2_mcp/output/run_ending_details.py) �
 - 其他未知模态／第三方自定义页面未实测；本轮的人工输入样本只证明同类确认窗口来源不匹配时停止自动操作。16–17 组继续待核验，summary 另行定稿。
 
 
-## summary 设计待讨论
+## summary 约定与实施顺序
 
-当前这些主体没有专用摘要，沿用 default；共用顶栏及卡牌选择继续使用已交付的摘要。`default/full` 的 UI 读取边界一致，区别仅在公共空值规则。
+以下为本轮记录的约定，尚未实现新增省略项；先完成讨论，再修复建筑师牌组覆盖的校验缺陷，最后实现并验证摘要。共用顶栏及卡牌选择继续使用已交付的摘要，`default/full/actions_only/top_bar` 保持现有契约。
 
-- **占卜**：优先保留状态、阶段、次数、当前工具、格子与图片、必要按钮；固定教学 `instructions` 是可考虑省略的重复内容。是否保留临时对白及工具文字，待查看样本后决定；不能用文本物品清单替代实际棋盘图片。
-- **确认框**：建议主体保留 default，标题、正文和按钮共同说明确认后果，不沿用普通事件省略 description 的规则。
-- **建筑师**：建议主体保留 default，当前对白就是页面主要内容；不因它也是剧情而套用普通事件的正文省略规则。
+- **事件层**：统一沿用已有的 `event.description` 省略规则，包含审判（Trial）初始、再次拒绝及取消确认后的事件正文；保留 `event.options[].description` 中的费用、效果与后果。覆盖时不补出原事件正文。该规则已经实现，本轮核对回归即可。
+- **确认框**：主体沿用 default，保留 `confirmation.description`、标题和按钮；省略普通事件叙事的规则不能按字段名递归套到确认框正文。来源不支持时仍按人工输入边界返回。
+- **建筑师**：主体沿用 default，保留当前对白、说话者、状态及按钮。
+- **占卜**：summary 仅新增省略 `divination.instructions`，保留状态、阶段、可见次数、当前工具、工具按钮文字及 enabled、当前完整对白、格子、原生前进按钮、坐标说明与同次 PNG；不改变遮挡和未知值规则。`full/default` 及 `inspect_event` 仍提供实际可见的教学说明。
 
-这些是候选判断，尚未形成实现定稿；本轮不新增参数，也不改动返回字段。
+建筑师修复限于同步 Python 对 `epilogue.status:covered` 且 `screen.view:deck` 的工具校验：接受原生当前可读的 `inspect_potions/inspect_relics`，继续拒绝底层对话推进与玩法动作；不扩大其他页面的动作许可。需要相应回归及隔离 GUI 验证。
+
+占卜当前由 `inspect_event` 查看，工具表中没有独立的 `inspect_divination`；其返回仍依赖图片表达已揭开的图案。文字观察、地图和牌组／牌堆覆盖摘要、商店详情及已提出的知识库计划统一列入[用户后续待办](../development/TODO.md)，不并入本轮实现。
