@@ -1,5 +1,6 @@
 """Verify permanent card mutations with native play and real MCP receipts."""
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 import argparse
 import asyncio
 import json
@@ -29,7 +30,7 @@ async def verify(args):
             await session.initialize()
 
             async def call(name, arguments=None):
-                reply = await session.call_tool(name, arguments or {})
+                reply = await session.call_tool(name, full_output_arguments(name, arguments or {}))
                 data = reply.structuredContent
                 record({'tool': name, 'arguments': arguments, 'result': data})
                 assert not reply.isError and 'error' not in data, data

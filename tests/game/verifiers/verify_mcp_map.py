@@ -1,4 +1,5 @@
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 from sts2_mcp.output.available_tools import GAME_ACTIONS
 import argparse
 import asyncio
@@ -36,13 +37,13 @@ async def verify(args):
                         if tool.name == 'inspect_map':
                             assert set(tool.inputSchema['properties']) == {'preset', 'max_steps'}
                         else:
-                            assert tool.inputSchema == {"type": "object", "properties": {}, "additionalProperties": False}
+                            assert set(tool.inputSchema['properties']) == {'preset'} and not tool.inputSchema['additionalProperties']
                         assert tool.annotations.readOnlyHint is False and tool.annotations.destructiveHint is False
                         assert tool.annotations.idempotentHint is False and tool.annotations.openWorldHint is False
                 evidence["tools"] = [tool.model_dump(exclude_none=True) for tool in listed.tools]
 
                 async def call(name, arguments=None, error=None):
-                    result = await session.call_tool(name, arguments or {})
+                    result = await session.call_tool(name, full_output_arguments(name, arguments or {}))
                     evidence["calls"].append({"name": name, "arguments": arguments, "result": result.model_dump(exclude_none=True)})
                     assert json.loads(result.content[0].text) == result.structuredContent
                     if error:

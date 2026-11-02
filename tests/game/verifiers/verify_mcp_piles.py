@@ -1,4 +1,5 @@
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 from sts2_mcp.output.available_tools import GAME_ACTIONS
 import argparse
 import asyncio
@@ -31,11 +32,11 @@ async def verify(args):
                              "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"}, names
             tool = next(tool for tool in listed.tools if tool.name == "inspect_pile")
             assert tool.annotations.readOnlyHint is False and tool.annotations.destructiveHint is False
-            assert set(tool.inputSchema["properties"]) == {"pile", "detail_level"} and tool.inputSchema["required"] == ["pile"]
+            assert set(tool.inputSchema["properties"]) == {"preset", "pile", "detail_level"} and tool.inputSchema["required"] == ["pile"]
             evidence["tools"] = [tool.model_dump(exclude_none=True) for tool in listed.tools]
 
             async def call(name, arguments=None):
-                result = await session.call_tool(name, arguments or {})
+                result = await session.call_tool(name, full_output_arguments(name, arguments or {}))
                 evidence["calls"].append({"name": name, "arguments": arguments, "result": result.model_dump(exclude_none=True)})
                 assert not result.isError, result
                 assert json.loads(result.content[0].text) == result.structuredContent

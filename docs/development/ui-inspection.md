@@ -29,7 +29,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_ui > .tmp/li
 - `sources` 是关联的基础观察字段路径，不重复输出字段值。同标题同正文合并，来源去重并保留首次出现顺序；同标题不同正文不合并。
 - 不附带手牌数值或敌人意图的 `notes`。没有可用提示时数组为 `[]`；不可读界面返回结构化错误，不以空集合表示读取失败。
 - 加 `--raw` 时保留 `id/ok/state` 和 `state.snapshot_id`。无须提供动作令牌，读取工具可用时列入 `available_actions`。
-- MCP 返回相同玩法格式，`structuredContent` 与 JSON 文本一致；成功查看会刷新状态令牌，完整规则见 [MCP 调用语义](mcp.md#调用和错误语义)。
+- MCP full 返回相同玩法格式；默认 default 省略普通空值，如无标题的 title，规则见[公共预设](mcp.md#输出预设)。`structuredContent` 与 JSON 文本一致；成功查看会刷新状态令牌，完整规则见 [MCP 调用语义](mcp.md#调用和错误语义)。
 
 ## 覆盖与条件
 

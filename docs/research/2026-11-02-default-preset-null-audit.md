@@ -1,6 +1,6 @@
 # default 预设与空值语义审查
 
-当前状态：输出契约审查完成；已确认覆盖全部玩法 JSON 工具，过滤例外方案待确认。尚未修改工具实现、默认值或游戏 Mod。
+当前状态：已完成。统一入口、42 个工具接入及文档同步完成；430 项 Python 检查、7 个新图形场景和 3 个旧预设图形回归通过，独立审阅已完成。原生 Mod 与 schema 不变，无待实施项。
 
 ## 范围与基线
 
@@ -24,7 +24,7 @@
 | 槽位和引用 | [CombatObservation.cs](../../src/Sts2Agent/Observation/CombatObservation.cs)、[OrbInspection.cs](../../src/Sts2Agent/Observation/OrbInspection.cs)、[player_output.py](../../src/sts2_mcp/output/player_output.py)、[combatant_details.py](../../src/sts2_mcp/output/combatant_details.py)；数组位置及共享提示的索引不能变化 |
 | 图像与最终封装 | [divination_details.py](../../src/sts2_mcp/output/divination_details.py)、[mcp_server.py](../../src/sts2_mcp/mcp_server.py)；占卜 PNG 存在 ImagePayload.image 中，复制成普通 dict 会丢图；文字 JSON 与 structuredContent 应保持一致 |
 
-## 推荐的统一规则
+## 已确认的统一规则
 
 采用递归删除对象中值为 null 的键，并集中保留以下三类例外。按结构路径判断，不在各工具中散布补回字段的代码，也不对所有同名字段一概豁免。
 
@@ -40,7 +40,7 @@
 
 ### 2. transition.events 中已有的 null 完整保留
 
-建议将事件作为一组稳定的事实记录，保护每个已验证事件及其嵌套引用，而非只保护 before / after：
+将事件作为一组稳定的事实记录，保护每个已验证事件及其嵌套引用，而非只保护 before / after：
 
 | 已存在的空值 | 需要保留的含义 |
 | --- | --- |
@@ -100,6 +100,20 @@ default 必须明确声明“省略空值不表示零、否或空集合”；它
 - 选择、药水、充能球、遗物、事件、地图、结果页使用已有可定位的实测证据与对应回归场景；实现后补足代表性实际 MCP 调用验证，不以本次静态审查替代游戏验证。
 - 当前审查不需要改变原生 schema 或 Mod 的行为。实现时按实际变更决定版本更新，不因 Python 输出投影而虚构原生协议变化。
 
-## 待确认
+## 实施决定
 
-是否采用推荐方案：default 只删除普通对象键中的 null，同时保留所有数组 null 元素、完整事件记录中的 null，以及已展开牌面比较两侧子树中的 null。其余值、既有预设与详情级别保持原有语义。
+采用方案：default 只删除普通对象键中的 null，同时保留所有数组 null 元素、完整事件记录中的 null，以及已展开牌面比较两侧子树中的 null。其余值、既有预设与详情级别保持原有语义。
+
+## 实现与验证结果
+
+- MCP 更新为 `0.48.0`；Mod 仍为 `0.47.1`、原生 schema `29`。新增 [presets.py](../../src/sts2_mcp/output/presets.py)，用装饰器统一包装 GameTools 的 42 个公开玩法方法；MCP 与直接 Python 调用使用同一输出边界。工具目录统一组合 preset schema，server 不再单独维护无参工具分派名单。
+- [专门测试](../../tests/python/test_default_presets.py)覆盖普通空值、三类例外、假值和空容器、图片载体、筛选与部分错误、完整坏响应拒绝、全部 42 个工具的参数分派及非法预设拒绝；真实 stdio 检查省略 / 显式 default / full，共 126 次成功调用。成功夹具逐一通过公开 JSON Schema 校验，另检查目标 oneOf 与排序依赖。
+- 首批测试在旧实现上失败；实施后完整 Python 检查为 **430 项通过，36.430 秒**。日志：`.tmp/2026-11-02-default-preset/python-final.log`。沙箱内异步测试挂起并达到有限超时，确认环境限制后在沙箱外运行；没有因此放宽断言。
+- 实际 GUI 新场景：战斗 `wax_melt`、充能球 `orbs`、火堆 `smith`、事件随机变牌 `transform`、占卜 `crystal`、地图与普通事件。均通过真实 stdio MCP 验证；图片在截图工具关闭时仍正确返回，数组空槽、事件 source:null 及预览 after:null 保留。
+- 旧预设 GUI 回归：遗物熔化、火堆选牌、手牌附魔，共 3 项通过；保留 full / summary 对照、下标和 ID 筛选、共享提示及直接动作检查。既有 50 个 MCP 图形验证器通过测试帮助函数显式请求 full，保留旧空值断言，没有将断言改成忽略字段。
+- 图形证据分布在 `.tmp/2026-11-02-default-preset/gui-green/` 的前 5 个成功场景，以及 `gui-remaining/` 的全部 5 个成功场景；逐项汇总为 `verification-summary.json`。前者整体报告失败，因为地图脚本错误假设首次必选地图可以关闭；修正为按 available_actions 验证正常关闭或 illegal_action，剩余场景通过，未修改原生行为。更早 `gui-first/` 因测试继承启用截图的仓库配置而误断言工具数，已改用明确关闭截图的专属配置。
+- 两轮有效图形验证分别使用自有 PID `43633`、`44769`，均按套件清理退出；原生 DLL SHA-256 均为 `607c3aab3c985d3a231fe17b38ada12082e615320f7c0831937523f662eca08e`，与已有构建产物一致。没有改动 C#，未重复构建或替换正式安装。
+- 一次只读独立审阅未发现产品逻辑问题；指出确认框成功夹具误用了 option_id。补充逐工具 schema 校验后先复现 3 项失败，再改为正确的 option，最终完整回归通过。未保留该测试缺口。
+- 各指南旧的默认 full、MCP 与文件 JSON 相同及无参工具说明已同步为新公共预设契约；普通文件客户端的空值行为保持不变。更新本次功能只需重连 MCP。
+
+验证边界：42 个工具均完成 schema、公开分派及非法预设检查；实际游戏验证覆盖上述 7 个新场景及 3 个回归，没有逐工具重跑所有房间、结算阶段、多人或第三方 Mod。完整原生读取和玩法规则仍沿用已有实现；本次验证不扩大其游戏机制覆盖声明。

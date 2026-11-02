@@ -1,4 +1,5 @@
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 from tests.game.support.verification_actions import observe_after_action
 import argparse
 import asyncio
@@ -38,7 +39,7 @@ async def verify(args):
             public = {t.name for t in (await session.list_tools()).tools} - {'get_observation', 'capture_screenshot'}
 
             async def call(name, arguments=None):
-                result = await session.call_tool(name, arguments or {})
+                result = await session.call_tool(name, full_output_arguments(name, arguments or {}))
                 data = result.structuredContent
                 evidence.append({'tool': name, 'arguments': arguments, 'result': data})
                 report.write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')

@@ -304,7 +304,7 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
     async def test_relic_inspection_shares_tips_and_supports_action(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
-            self.assertEqual(await tools.inspect_relics(), {
+            self.assertEqual(await tools.inspect_relics({"preset": "full"}), {
                 "relics": [
                     {"name": "Anchor", "counter": None, "description": "Start with 10 Block."},
                     {"name": "Pen Nib", "counter": 0, "description": "Every 10th Attack."},
@@ -363,12 +363,12 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             game.relic_payload = {"relics": []}
-            self.assertEqual(await tools.inspect_relics(), {"relics": [], "hover_tips": []})
+            self.assertEqual(await tools.inspect_relics({"preset": "full"}), {"relics": [], "hover_tips": []})
             for counter in [None, 0, -2147483648, 2147483647]:
                 game.relic_payload["relics"] = [{"name": None, "counter": counter, "description": "Text", "hover_tips": [
                     {"title": None, "description": "One"}, {"title": None, "description": "One"},
                     {"title": None, "description": "Two"}]}]
-                self.assertEqual(await tools.inspect_relics(), {
+                self.assertEqual(await tools.inspect_relics({"preset": "full"}), {
                     "relics": [{"name": None, "counter": counter, "description": "Text"}],
                     "hover_tips": [{"title": None, "description": "One", "relic_indices": [0]},
                                    {"title": None, "description": "Two", "relic_indices": [0]}],
@@ -541,20 +541,20 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             game.combatant_payload = {"scene": "combat", "player": None, "enemies": [], "hover_tips": []}
-            self.assertEqual(await tools.inspect_combatants(), game.combatant_payload)
+            self.assertEqual(await tools.inspect_combatants({"preset": "full"}), game.combatant_payload)
             for powers, intents in ((None, None), ([], [])):
                 game.combatant_payload = {
                     "scene": "combat", "player": {"powers": powers},
                     "enemies": [{"id": None, "name": None, "powers": powers, "intents": intents}], "hover_tips": [],
                 }
-                self.assertEqual(await tools.inspect_combatants(), game.combatant_payload)
+                self.assertEqual(await tools.inspect_combatants({"preset": "full"}), game.combatant_payload)
             game.combatant_payload["player"]["powers"] = [{"name": None, "amount": None}]
             game.combatant_payload["hover_tips"] = [{"title": None, "description": "Text", "sources": ["player.powers.0"]}]
-            self.assertEqual(await tools.inspect_combatants(), game.combatant_payload)
+            self.assertEqual(await tools.inspect_combatants({"preset": "full"}), game.combatant_payload)
             game.combatant_payload["player"]["powers"][0]["amount"] = -2
             game.combatant_payload["enemies"][0].update(id=4294967295, intents=[{"category": None, "value": None}])
             from sts2_mcp.roundtrip_client import ENEMY_ATTACK_INTENT_NOTE
-            self.assertEqual(await tools.inspect_combatants(), {
+            self.assertEqual(await tools.inspect_combatants({"preset": "full"}), {
                 **game.combatant_payload, "notes": {"enemy_attack_intents": ENEMY_ATTACK_INTENT_NOTE}})
 
     async def test_failed_combatant_inspection_clears_token_and_sanitizes_game_error(self):
@@ -678,7 +678,7 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             game.potion_payload["potion_slots"][0]["hover_tips"][0]["title"] = None
             game.potion_payload["slot_tip"]["title"] = None
             game.potion_payload["potion_slots"][2]["hover_tips"].append({"title": "Block", "description": "Different."})
-            result = await tools.inspect_potions()
+            result = await tools.inspect_potions({"preset": "full"})
             self.assertIsNone(result["slot_tip"]["title"])
             self.assertIsNone(result["potion_slots"][0]["name"])
             self.assertEqual(result["hover_tips"], [
@@ -688,7 +688,7 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             ])
             for slots in ([None, None], []):
                 game.potion_payload["potion_slots"] = slots
-                self.assertEqual(await tools.inspect_potions(), {
+                self.assertEqual(await tools.inspect_potions({"preset": "full"}), {
                     "slot_tip": {"title": None, "description": "Use potions during combat."},
                     "potion_slots": slots, "hover_tips": [],
                 })
@@ -803,9 +803,9 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             game.ui_payload["hover_tips"][0]["title"] = None
-            self.assertIsNone((await tools.inspect_ui())["hover_tips"][0]["title"])
+            self.assertIsNone((await tools.inspect_ui({"preset": "full"}))["hover_tips"][0]["title"])
             game.ui_payload["hover_tips"] = []
-            self.assertEqual(await tools.inspect_ui(), {"scene": "combat", "hover_tips": []})
+            self.assertEqual(await tools.inspect_ui({"preset": "full"}), {"scene": "combat", "hover_tips": []})
 
     async def test_cancelled_ui_inspection_does_not_restore_token(self):
         with FakeGame() as game:
@@ -1024,10 +1024,10 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertTrue(ui_tool.annotations.readOnlyHint)
                     potion_tool = next(tool for tool in listed.tools if tool.name == "inspect_potions")
                     self.assertTrue(potion_tool.annotations.readOnlyHint)
-                    self.assertEqual(potion_tool.inputSchema, {"type": "object", "properties": {}, "additionalProperties": False})
+                    self.assertEqual(set(potion_tool.inputSchema["properties"]), {"preset"})
                     combatant_tool = next(tool for tool in listed.tools if tool.name == "inspect_combatants")
                     self.assertTrue(combatant_tool.annotations.readOnlyHint)
-                    self.assertEqual(combatant_tool.inputSchema, {"type": "object", "properties": {}, "additionalProperties": False})
+                    self.assertEqual(set(combatant_tool.inputSchema["properties"]), {"preset"})
                     relic_tool = next(tool for tool in listed.tools if tool.name == "inspect_relics")
                     self.assertTrue(relic_tool.annotations.readOnlyHint)
                     self.assertEqual(set(relic_tool.inputSchema['properties']), {'preset', 'relic_indices'})
@@ -1035,19 +1035,19 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertFalse(deck_tool.annotations.readOnlyHint)
                     self.assertFalse(deck_tool.annotations.destructiveHint)
                     self.assertFalse(deck_tool.annotations.idempotentHint)
-                    self.assertEqual(set(deck_tool.inputSchema["properties"]), {"detail_level", "view_upgrades", "sort_by", "descending"})
+                    self.assertEqual(set(deck_tool.inputSchema["properties"]), {"preset", "detail_level", "view_upgrades", "sort_by", "descending"})
                     pile_tool = next(tool for tool in listed.tools if tool.name == "inspect_pile")
                     self.assertFalse(pile_tool.annotations.readOnlyHint)
                     self.assertFalse(pile_tool.annotations.destructiveHint)
                     self.assertFalse(pile_tool.annotations.idempotentHint)
                     self.assertEqual(pile_tool.inputSchema["required"], ["pile"])
-                    self.assertEqual(set(pile_tool.inputSchema["properties"]), {"pile", "detail_level"})
+                    self.assertEqual(set(pile_tool.inputSchema["properties"]), {"preset", "pile", "detail_level"})
                     close_tool = next(tool for tool in listed.tools if tool.name == "close_card_view")
                     self.assertFalse(close_tool.annotations.readOnlyHint)
-                    self.assertEqual(close_tool.inputSchema, {"type": "object", "properties": {}, "additionalProperties": False})
+                    self.assertEqual(set(close_tool.inputSchema["properties"]), {"preset"})
                     for tool in listed.tools:
                         if tool.name not in {"get_observation", "inspect_hand", "inspect_selection", "inspect_relics", "inspect_map", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "claim_reward", "choose_rest_option", "loot_treasure", "buy_item", "choose_ancient_option", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation", "travel_to_node", "run_result_option"}:
-                            self.assertEqual(tool.inputSchema.get("properties", {}), {})
+                            self.assertEqual(set(tool.inputSchema["properties"]), {"preset"})
                     missing = await session.call_tool("end_turn", {})
                     self.assertTrue(missing.isError)
                     self.assertEqual(missing.structuredContent["error"]["code"], "observation_required")

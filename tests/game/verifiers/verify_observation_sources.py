@@ -1,5 +1,6 @@
 """Continue native actions from inspections and view results without basic observations."""
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 import argparse
 import asyncio
 import json
@@ -24,7 +25,7 @@ async def verify(args):
             await session.initialize()
 
             async def call(name, arguments=None, error=None):
-                response = await session.call_tool(name, arguments or {})
+                response = await session.call_tool(name, full_output_arguments(name, arguments or {}))
                 data = response.structuredContent
                 evidence.append({'tool': name, 'arguments': arguments, 'result': data})
                 args.report.write_text(json.dumps(evidence, indent=2) + '\n')

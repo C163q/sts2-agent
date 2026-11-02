@@ -19,9 +19,9 @@ class DeckMcpTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(summary, {"scene": "deck", "detail_level": "summary", "view_upgrades": False,
                 "sort": {"by": "obtained", "descending": False}, "deck": [
                     {"id": "deck:0", "name": "Defend+", "type": "Skill", "rarity": "basic",
-                     "visual_card_pool": "ironclad", "energy_cost": "1", "star_cost": None},
+                     "visual_card_pool": "ironclad", "energy_cost": "1"},
                     {"id": "deck:1", "name": "Defend+", "type": "Skill", "rarity": "basic",
-                     "visual_card_pool": "ironclad", "energy_cost": "1", "star_cost": None}]})
+                     "visual_card_pool": "ironclad", "energy_cost": "1"}]})
             options = {"detail_level": "full", "view_upgrades": True, "sort_by": "cost", "descending": True}
             full = await tools.inspect_deck(options)
             self.assertEqual(full["hover_tips"], [{"title": "Block", "description": "Prevents damage.",

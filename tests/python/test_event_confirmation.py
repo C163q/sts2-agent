@@ -145,7 +145,7 @@ class ConfirmationSessionTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(cancelled.structuredContent, json.loads(cancelled.content[0].text))
                     self.assertNotIn('confirmation', cancelled.structuredContent)
                     observed = await session.call_tool('get_observation', {})
-                    self.assertIsNone(observed.structuredContent['confirmation'])
+                    self.assertNotIn('confirmation', observed.structuredContent)
 
 
 if __name__ == '__main__': unittest.main()

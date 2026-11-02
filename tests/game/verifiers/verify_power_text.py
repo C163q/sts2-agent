@@ -1,5 +1,6 @@
 """Compare live countdown tips with native UI and record a real Hopper turn."""
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 import argparse
 import asyncio
 import json
@@ -30,7 +31,7 @@ async def verify(args):
             await session.initialize()
 
             async def call(name):
-                result = await session.call_tool(name, {})
+                result = await session.call_tool(name, full_output_arguments(name, {}))
                 data = result.structuredContent
                 record({'tool': name, 'result': data})
                 assert not result.isError and data == json.loads(result.content[0].text), result

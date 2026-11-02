@@ -2,6 +2,8 @@
 
 适用于 Mod `0.34.1`、MCP server `0.29.1`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。工具点击当前原生休息处按钮，选择与实际效果由游戏执行；不自动选路。
 
+下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
+
 ## 观察与详情
 
 `get_observation()` 返回 `scene: "rest_site"` 和 `rest_site`。基础观察包含当前可见标题、选项名称与灰置状态；只有当前画面已展开的说明才放在 `description`，否则为 `null`。例如：

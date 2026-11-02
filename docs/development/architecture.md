@@ -31,6 +31,7 @@
 | `src/Sts2Agent/Actions/ActionSettling.cs`、`GameAdapter.ActionObservation.cs`、`CombatMotion.cs` | 统一动作停止原因复核、牌堆飞行、资源显示、生物死亡及有限 UI 过渡等待与观察稳定；页面查看单独处理 |
 | `src/sts2_mcp/output/transition_details.py` | 结束回合事件的结构校验与递归过滤 |
 | `src/sts2_mcp/output/inspection_details.py`、`*_details.py` | 按操作校验并投影响应；牌组、牌堆与地图等具体结构各自维护 |
+| `src/sts2_mcp/output/presets.py` | 全部玩法工具的公开输出边界、schema 组合与 default 空值保留规则；不进入原生请求或权限判断 |
 | `src/sts2_mcp/output/observation_presets.py`、`available_tools.py` | 观察预设参数与精简投影、公开工具名称和动作分类 |
 | `src/sts2_mcp/game_tools.py` | 串行游戏会话、动作令牌、检查控制权及在线程中执行文件请求 |
 | `src/sts2_mcp/output/action_output.py` | 完整校验及许可处理之后的公开动作回执投影，保留事件与必要交互提示 |
@@ -59,7 +60,7 @@ C# 项目位于 `src/Sts2Agent/`，根 `Sts2Agent.sln` 同时包含 Mod 与 `tes
 
 动作停止须覆盖会继续修改观察的整段有限流程，包括延迟启动飞牌的预览，不能只检查当时是否已有飞牌节点。`verify_action_stability.py` 通过真实 MCP 取得动作回执，在随后数秒多次读底层状态并比较令牌，再使用该 MCP 连接保存的许可继续操作；诊断读取不刷新 MCP 许可。新增异步显示链路时，应同时核对其前置阶段、可见字段及选择暂停边界。
 
-输出投影只保留声明字段，不会证明游戏侧读取是可见的；游戏采样仍需检查 UI 与生命周期。错误类型不以 0、空数组或空对象替代。MCP 基础观察要求全部顶层字段存在，嵌套对象按实际提供的字段投影和检查类型，不把它表述为完整的 JSON Schema 校验。
+输出投影只保留声明字段，不会证明游戏侧读取是可见的；游戏采样仍需检查 UI 与生命周期。错误类型不以 0、空数组或空对象替代。MCP 在 default 过滤前验证基础观察的全部顶层字段存在，嵌套对象按实际提供的字段投影和检查类型，不把它表述为完整的 JSON Schema 校验。
 
 ## 无需游戏的验证
 

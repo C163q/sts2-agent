@@ -1,4 +1,5 @@
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 from sts2_mcp.output.available_tools import GAME_ACTIONS
 import argparse
 import asyncio
@@ -55,7 +56,7 @@ async def verify(args):
             assert {tool.name for tool in listed.tools} == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "inspect_selection", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "end_turn"}
 
             async def call(name, arguments=None):
-                result = await session.call_tool(name, arguments or {})
+                result = await session.call_tool(name, full_output_arguments(name, arguments or {}))
                 record({"transport": "mcp", "operation": name, "result": result.model_dump(exclude_none=True)})
                 assert json.loads(result.content[0].text) == result.structuredContent
                 assert result.structuredContent is not None

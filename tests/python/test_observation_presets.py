@@ -17,7 +17,9 @@ class ObservationPresetTests(unittest.IsolatedAsyncioTestCase):
         tools = GameTools(Client())
         default = await tools.get_observation()
         self.assertEqual(await tools.get_observation({}), default)
-        self.assertEqual(await tools.get_observation({'preset': 'full'}), default)
+        self.assertEqual(await tools.get_observation({'preset': 'default'}), default)
+        self.assertNotIn('selection', default)
+        self.assertIsNone((await tools.get_observation({'preset': 'full'}))['selection'])
         self.assertIn('player', default)
 
     async def test_actions_only_preserves_selection_context_without_candidates_or_notes(self):
@@ -168,7 +170,7 @@ class ObservationPresetStdioTests(unittest.IsolatedAsyncioTestCase):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
                     schema = next(t.inputSchema for t in (await session.list_tools()).tools if t.name == 'get_observation')
-                    self.assertEqual(schema['properties']['preset']['enum'], ['full', 'actions_only'])
+                    self.assertEqual(schema['properties']['preset']['enum'], ['default', 'full', 'actions_only'])
                     compact = await session.call_tool('get_observation', {'preset': 'actions_only'})
                     self.assertFalse(compact.isError)
                     self.assertEqual(set(compact.structuredContent), {'scene', 'screen', 'available_actions'})

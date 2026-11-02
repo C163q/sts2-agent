@@ -1,4 +1,5 @@
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 import argparse
 import asyncio
 import json
@@ -35,7 +36,7 @@ async def verify(args):
             assert len((await session.list_tools()).tools) == 43
 
             async def call(name, arguments=None):
-                result = await session.call_tool(name, arguments or {})
+                result = await session.call_tool(name, full_output_arguments(name, arguments or {}))
                 assert json.loads(result.content[0].text) == result.structuredContent
                 data = result.structuredContent
                 assert 'png_base64' not in data and 'snapshot_id' not in data

@@ -52,7 +52,7 @@ flowchart LR
 | `inspect_treasure()` | 当前可见宝箱遗物及悬停说明 |
 | `inspect_rest_site()` | [当前休息处选项及动态悬停说明](rest-site.md) |
 | `choose_rest_option(option_id)` | 点击一个启用的休息处选项，后续选牌单独处理 |
-| `get_observation(preset?)` | 默认 `full`；`actions_only` 仅返回场景、当前查看/选择状态与工具名，两者均刷新动作令牌 |
+| `get_observation(preset?)` | 默认 `default`；`full` 保留空值；`actions_only` 仅返回场景、当前查看/选择状态与工具名，各预设均刷新动作令牌 |
 | `inspect_hand({preset?, card_ids?})` | [手牌完整详情或摘要，可按 ID 筛选](hand-inspection.md) |
 | `inspect_targets(card_id 或 potion_slot)` | 查询[手牌](card-play.md)或[药水](potion-actions.md)可用性、是否须指定目标及范围，不进入瞄准或抽随机数 |
 | `play_card(card_id, target_id?)` | [提交一次原生手动出牌](card-play.md)，后续选牌单独操作 |
@@ -75,11 +75,11 @@ flowchart LR
 | `capture_screenshot(filename?)` | 可选：[保存当前游戏视口 PNG](screenshots.md)，返回文件路径与尺寸，默认不注册 |
 | `end_turn()` | 结束一次玩家回合，返回期间事件、停止原因及当前交互状态，见 [结束回合](end-turn.md) |
 
-有参数工具的格式见各自接口说明，其余工具无参数。截图只记录当前画面，不授予动作权限；成功且状态不变时保留旧权限。基础观察、纯详情和原生页面的边界见 [可见信息约定](../observation.md)；地图选路使用 `travel_to_node`。动态工具发现的候选与版本约束见 [专项核查](../research/2026-10-29-mcp-tool-availability.md)，尚未实现。
+除截图外，全部工具均接受可选的 `preset`；上表未重复列出通用参数，特有参数见各接口说明。截图只记录当前画面，不授予动作权限；成功且状态不变时保留旧权限。基础观察、纯详情和原生页面的边界见 [可见信息约定](../observation.md)；地图选路使用 `travel_to_node`。动态工具发现的候选与版本约束见 [专项核查](../research/2026-10-29-mcp-tool-availability.md)，尚未实现。
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.47.1` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.47.1`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.47.1` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.48.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -133,6 +133,24 @@ approval_mode = "approve"
 
 其他 agent 使用相同的可执行文件、参数和 stdio 传输配置，配置文件格式由各客户端决定。服务默认等待游戏响应最多 40 秒，可通过 `--timeout` 调整；客户端工具超时应留出余量。
 
+## 输出预设
+
+MCP `0.48.0` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
+
+| 预设 | 行为 |
+| --- | --- |
+| `default`（默认） | 与本工具 full 的内容范围一致，递归删除普通对象字段中的 `null` |
+| `full` | 保留本工具原有完整输出及其中的空值；动作仍返回精简回执，不附送完整观察 |
+| 已有专用预设 | `summary`、`selectable`、`actions_only` 保持各工具既有行为，不叠加 default 的过滤 |
+
+过滤保留三类例外：所有数组的 `null` 元素；`transition.events` 中已有的全部空值；选牌已展开的升级、附魔、变牌比较中 before / after 两侧的全部内容与空值。后者包括随机变牌的 `after:null`，但未展开的整个 `upgrade_preview:null` 可以省略。
+
+`0`、`false`、空字符串、空数组、空对象均保留。数组长度、顺序和引用下标不变；过滤后为空的对象仍保留。省略不表示零、否或空集合，也不表示沿用上次值；结果不是状态增量。需要明确空值时使用 full。
+
+例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。已有遗物 summary 仍保留原有空值。`inspect_deck` / `inspect_pile` 的 `detail_level` 独立决定正文范围，默认仍是 summary；`preset:"full"` 不会更改它。
+
+该参数只控制 Python 公开输出，不转发给 Mod；完整响应校验、动作许可判断和原有筛选先完成，再过滤空值。部分 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。标准库文件客户端继续保留原有空值，本节预设只适用于 MCP 和 GameTools 的玩法工具调用。更新本功能只需重连 MCP，不需替换 Mod。
+
 ## 调用和错误语义
 
 首次往返可以让 agent 执行：
@@ -175,7 +193,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 回执不附送玩家、敌人、手牌、顶栏、候选牌、升级预览、场景正文、占卜图像或无关空字段。事件不是完整状态差量；最新能量、费用、可出牌标记等不能仅靠战报还原。普通动作可以依据已有信息续接；抽牌、随机生成、费用变化、回合切换或需要新决策信息时，按需使用 `get_observation` 或专项详情。
 
-例如 `play_card → inspect_selection → select_card → inspect_selection → selection_option` 分别读取候选与确认预览，详情同时刷新状态令牌。`get_observation` 的默认完整输出、`actions_only` 预设、纯详情和切换查看页工具的格式不受动作精简影响。底层文件 IPC 仍保留完整状态和事件，等待稳定及过期校验也使用完整状态。
+例如 `play_card → inspect_selection → select_card → inspect_selection → selection_option` 分别读取候选与确认预览，详情同时刷新状态令牌。`get_observation` 的完整内容、`actions_only` 预设、纯详情和切换查看页工具的格式不受动作精简影响。底层文件 IPC 仍保留完整状态和事件，等待稳定及过期校验也使用完整状态。
 
 业务错误为 `isError: true`，包含 `error.code/message/recovery`；执行结果未知时另带 `outcome: unknown`。内部异常写入标准错误，不交给模型；标准输出专用于 MCP 消息。
 
@@ -214,4 +232,4 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 全部工具的说明、参数提示与官方实践核查见[工具提示词审阅](../research/2026-11-01-mcp-tool-prompts.md)。维护入口和说明分层见[代码结构的变更入口](architecture.md#变更入口)。
 
-待实施的 `preset:"default"` 将统一精简玩法 JSON 中的普通空值；候选例外与输出边界见[空值语义审查](../research/2026-11-02-default-preset-null-audit.md)。当前工具的默认值尚未改变。
+统一预设的语义审查、实现与验证范围见[空值语义记录](../research/2026-11-02-default-preset-null-audit.md)。

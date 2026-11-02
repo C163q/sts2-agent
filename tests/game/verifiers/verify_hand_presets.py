@@ -1,5 +1,6 @@
 """Verify hand presets against native visible cards and real actions over stdio MCP."""
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 import argparse
 import asyncio
 import json
@@ -34,7 +35,7 @@ async def verify(args):
             assert set(tools['inspect_hand'].inputSchema['properties']) == {'preset', 'card_ids'}
 
             async def call(name, arguments=None, error=None):
-                result = await session.call_tool(name, arguments or {})
+                result = await session.call_tool(name, full_output_arguments(name, arguments or {}))
                 data = result.structuredContent
                 record({'tool': name, 'arguments': arguments, 'result': data})
                 assert data == json.loads(result.content[0].text), result

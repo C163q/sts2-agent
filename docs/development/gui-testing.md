@@ -18,6 +18,8 @@
 
 卡牌加入去向的专项清单为 [gui_suite_card_additions.json](../../tests/game/data/gui_suite_card_additions.json)，覆盖战斗生成、满手溢出、怪物塞牌、普通移动、奖励入组及身份与方向的可见边界；通过 `--suite tests/game/data/gui_suite_card_additions.json` 指定。
 
+统一 default 预设的专项清单为 [gui_suite_default_presets.json](../../tests/game/data/gui_suite_default_presets.json)，覆盖战斗、充能球、锻造、随机变牌、占卜图片、地图及事件；通过 `--suite tests/game/data/gui_suite_default_presets.json` 指定。旧有 MCP 图形验证通过 `full_output_arguments` 显式请求 full，保留原有空值断言；显式 summary 等预设及截图参数保持原样。新验证器直接检查 default，不使用该兼容帮助函数。
+
 每个套件有独立的 IPC、日志、截图和测试存档目录。游戏资产和 Mod 来自 `.tmp/roundtrip/runtime/`，不使用 Steam、正式存档或 `.tmp/live/ipc`。同一套件内的新局共享测试进度和进程缓存，不能替代要求全新进度或全新进程的测试。
 
 ## 清单与同局步骤

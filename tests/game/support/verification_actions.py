@@ -1,3 +1,10 @@
+def full_output_arguments(name, arguments=None):
+    """Pin legacy GUI checks to full output; explicit named presets still win."""
+    if name == 'capture_screenshot':
+        return arguments or {}
+    return {'preset': 'full', **(arguments or {})}
+
+
 async def observe_after_action(call, receipt):
     """Read current public details explicitly when a GUI check needs a snapshot."""
     if 'error' in receipt or 'transition' not in receipt or receipt['scene'] == 'main_menu':

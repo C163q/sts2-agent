@@ -1,4 +1,5 @@
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 from tests.game.support.verification_runtime import ensure_run, ipc_directory
 import argparse
 import asyncio
@@ -32,7 +33,7 @@ async def verify(args):
 
             async def call(name, arguments=None, *, error=None):
                 start = time.monotonic()
-                result = await session.call_tool(name, arguments or {})
+                result = await session.call_tool(name, full_output_arguments(name, arguments or {}))
                 data = result.structuredContent
                 evidence.append({'tool': name, 'arguments': arguments, 'elapsed': time.monotonic() - start, 'result': data})
                 report.write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')
@@ -40,7 +41,7 @@ async def verify(args):
                 if error:
                     assert data.get('error', {}).get('code') == error, data
                 elif result.isError:
-                    await session.call_tool('capture_screenshot', {'filename': 'failure.png'})
+                    await session.call_tool('capture_screenshot', full_output_arguments('capture_screenshot', {'filename': 'failure.png'}))
                     raise AssertionError(data)
                 return data
 

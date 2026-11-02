@@ -2,6 +2,8 @@
 
 适用于 Mod `0.34.3`、MCP server `0.30.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。本接口逐项操作原生奖励界面；地图选路另用 `travel_to_node`。地图查看继续使用 `inspect_map` / `close_map`，卡牌奖励继续使用[选牌工具](card-selection.md)。
 
+下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
+
 ## 观察与详情
 
 `get_observation` 在奖励阶段返回 `scene: "rewards"` 和 `rewards`。这也覆盖奖励领完后只剩前进按钮的页面。被地图、选牌或其他页面覆盖时，`rewards.status` 为 `covered`，标题、条目和按钮均为 `null`，不能领取隐藏奖励。

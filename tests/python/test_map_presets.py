@@ -91,7 +91,7 @@ class MapPresetTests(unittest.IsolatedAsyncioTestCase):
             game.map_payload.update(current_node=None, visited_path=[])
             tools = GameTools(Client(game.directory))
             first = await tools.inspect_map({'max_steps': 1})
-            self.assertIsNone(first['current_node'])
+            self.assertNotIn('current_node', first)
             self.assertFalse(first['can_travel'])
             self.assertEqual(first['nodes'], [{'id': 'map:1:0:3', 'row': 0, 'column': 3,
                                                'type': 'ancient', 'name': 'Neow', 'next': []}])
@@ -140,7 +140,7 @@ class MapPresetTests(unittest.IsolatedAsyncioTestCase):
                               {'max_steps': '1'}, {'max_steps': None}, {'preset': 'selectable', 'max_steps': -1},
                               {'filter_next': 1}, [], False):
                 self.assertEqual((await tools.inspect_map(arguments))['error']['code'], 'invalid_request')
-            for arguments in ({'preset': 'full'}, {'preset': 'selectable'}, {'max_steps': 0}):
+            for arguments in ({'preset': None}, {'preset': 'selectable'}, {'max_steps': 0}):
                 self.assertEqual((await tools.close_map(arguments))['error']['code'], 'invalid_request')
             self.assertEqual([r['operation'] for r in game.operations], ['get_state'])
             self.assertNotIn('error', await tools.end_turn())

@@ -1,6 +1,6 @@
 # 结束回合与期间事件
 
-适用于 Mod／MCP `0.47.1`、schema `29`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10` 的 `0.107.1` 兼容运行时。MCP 调用仍为无参数的 `end_turn()`；文件协议为 `end_turn`，需要最新观察令牌。
+适用于 Mod `0.47.1`／MCP `0.48.0`、schema `29`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10` 的 `0.107.1` 兼容运行时。MCP `end_turn()` 接受可选的[通用 preset](mcp.md#输出预设)，默认 default，事件内空值完整保留；文件协议为 `end_turn`，需要最新观察令牌。
 
 ## 执行与停止边界
 

@@ -1,5 +1,6 @@
 """Continue the existing run through MCP, without fixture edits or a restart."""
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 import argparse
 import asyncio
 import json
@@ -20,7 +21,7 @@ async def verify(args):
         async with ClientSession(read, write) as session:
             await session.initialize()
             async def call(name):
-                result = await session.call_tool(name, {})
+                result = await session.call_tool(name, full_output_arguments(name, {}))
                 data = result.structuredContent
                 evidence.append({'tool': name, 'result': data})
                 args.report.write_text(json.dumps(evidence, indent=2) + '\n')

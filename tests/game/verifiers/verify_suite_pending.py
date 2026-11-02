@@ -1,5 +1,6 @@
 """Leave a supported native selection open to exercise run cleanup."""
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 import argparse
 import asyncio
 import json
@@ -17,7 +18,7 @@ async def verify(args):
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
-            result = await session.call_tool('get_observation', {})
+            result = await session.call_tool('get_observation', full_output_arguments('get_observation', {}))
             data = result.structuredContent
             args.report.write_text(json.dumps(data, indent=2) + '\n')
             assert data == json.loads(result.content[0].text) and not result.isError, data

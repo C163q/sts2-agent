@@ -6,7 +6,7 @@
 
 `get_observation`、动作回执和 `inspect_selection` 中的 `scene` 均表示同一个底层房间或战斗，不随选牌类型改变。例如涅奥牌包选择仍为 `scene:"ancient"`，火堆锻造仍为 `scene:"rest_site"`；当前选择由 `selection.type/status` 表达。`inspect_selection` 默认只扩展当前选择的详情；显式 `view_upgrades` 可切换当前页的升级复选框，不打开其他页面。[一致性验证记录](../research/2026-11-01-selection-scene.md)包含底层场景的验证范围。
 
-`get_observation` 的 `selection` 在没有选择时为 `null`；有选择时包含：
+底层文件及 MCP full 的 `selection` 在没有选择时为 `null`；有选择时包含：
 
 | 字段 | 含义 |
 | --- | --- |
@@ -28,11 +28,13 @@
 
 ## MCP 输出预设
 
-`inspect_selection` 接受以下可选参数。省略或传 `{}` 保持完整详情及当前 UI 模式。`preset` 和 `card_ids` 在 Python 投影，底层文件协议只接受可选的 `view_upgrades`；本次升级预览及观察修复需同时更新 DLL／清单和 Python，完整重启游戏并重连 MCP。
+默认空值过滤见[公共规则](mcp.md#输出预设)：已展开比较的 before / after 两侧完整保留；未展开或被筛选掉的整个 `upgrade_preview:null` 可以省略。下文原有空值说明适用于 full 与 summary。
+
+`inspect_selection` 接受以下可选参数。省略或传 `{}` 保持完整详情及当前 UI 模式，使用 default 省略普通空值。`preset` 和 `card_ids` 在 Python 投影，底层文件协议只接受可选的 `view_upgrades`；本次升级预览及观察修复需同时更新 DLL／清单和 Python，完整重启游戏并重连 MCP。
 
 | 参数 | 默认值 | 含义 |
 | --- | --- | --- |
-| `preset` | `full` | `full` 保留正文与悬停帮助；`summary` 使用手牌摘要字段 |
+| `preset` | `default` | `default` 保留完整内容并省略普通空值；`full` 保留原有空值；`summary` 使用手牌摘要字段 |
 | `card_ids` | 省略 | MCP `0.42.0` 起支持当前选择中的非负整数卡牌 ID 数组；省略返回全部，`[]` 不返回卡牌详情，重复 ID 去重，结果保持原生顺序 |
 | `view_upgrades` | 省略 | 可选布尔值，真实点击原生复选框；`true` 查看升级、`false` 恢复原牌，省略保留当前模式 |
 

@@ -34,16 +34,16 @@ class SelectionClient(ActionClient):
 
 
 class SelectionPresetTests(unittest.IsolatedAsyncioTestCase):
-    async def test_default_and_explicit_full_keep_existing_output_and_source(self):
+    async def test_explicit_full_keep_existing_output_and_source(self):
         client = SelectionClient()
         original = copy.deepcopy(client.choice)
         expected = player_result({'ok': True, 'state': {'scene': 'combat', 'selection': original}},
                                  operation='inspect_selection')
         tools = GameTools(client)
-        for args in (None, {}, {'preset': 'full'}):
+        for args in ({'preset': 'full'},):
             self.assertEqual(await tools.inspect_selection(args), expected)
         self.assertEqual(client.choice, original)
-        self.assertEqual(client.calls, [('inspect_selection', None, None)] * 3)
+        self.assertEqual(client.calls, [('inspect_selection', None, None)] * 1)
 
     async def test_summary_preserves_selection_context_and_exact_hand_summary_cards(self):
         client = SelectionClient()

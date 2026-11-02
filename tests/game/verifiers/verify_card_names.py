@@ -1,4 +1,5 @@
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 import argparse
 import asyncio
 import json
@@ -33,7 +34,7 @@ async def verify(args):
             await session.initialize()
 
             async def call(name, arguments=None):
-                response = await session.call_tool(name, arguments or {})
+                response = await session.call_tool(name, full_output_arguments(name, arguments or {}))
                 data = response.structuredContent
                 assert data == json.loads(response.content[0].text)
                 evidence.append({'tool': name, 'arguments': arguments, 'result': data})

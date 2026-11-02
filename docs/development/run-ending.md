@@ -2,6 +2,8 @@
 
 适用于 Mod `0.34.1`、MCP `0.29.1`、观察 schema `16`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。支持单人第三幕结束后的建筑师对话、胜负结算、必要解锁和返回主菜单。实现依据与验证范围见[源码及图形验证](../research/2026-10-31-run-ending-validation.md)。
 
+下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
+
 ## 工具与流程
 
 | 工具 | 操作 |
@@ -14,7 +16,7 @@
 
 第三幕最后 Boss 的奖励页 `proceed` 返回 `scene: "epilogue"`。依次操作观察提供的 `advance_dialogue` 或 `proceed`，不会跳过台词。结算使用 `scene: "run_result"`，按 `options` 继续、解锁、确认或返回。`main_menu` 按钮的文字有时是 Unlock，点击后先进入时间线；只有 `scene: "main_menu"`、结算字段为空时才真正回到菜单。工具不新开一局。
 
-成功动作使用现有 `transition`：`action_completed/complete=true` 表示下一页已就绪，可按许可规则继续；当前页内容和按钮通过观察或 `inspect_run_result` 按需读取。Mod／MCP `0.45.0`、schema `26` 起，首次进入已就绪的胜利结算页返回 `run_won/complete=true`，失败结算页返回 `run_lost/complete=true`，依据与原生横幅相同的胜负判据。刚进入建筑师对话仍为 `action_completed`；结算后翻页、解锁和返回菜单同样为 `action_completed`，不重复报告胜负。终局回执不保留连续动作许可，需通过观察或详情取得当前结算操作。成功详情也刷新状态令牌；失败、超时或人工改动后重新读取当前状态。工具只接受 `option_id`，不接受额外参数；按钮、页面身份和状态令牌在游戏线程再次核对。工具将时间线绑定到本次结算的原生菜单栈；人工返回菜单同样结束关联。工具入口不用于操作平常打开的时间线或其他主菜单页面。
+成功动作使用现有 `transition`：`action_completed/complete=true` 表示下一页已就绪，可按许可规则继续；当前页内容和按钮通过观察或 `inspect_run_result` 按需读取。Mod／MCP `0.45.0`、schema `26` 起，首次进入已就绪的胜利结算页返回 `run_won/complete=true`，失败结算页返回 `run_lost/complete=true`，依据与原生横幅相同的胜负判据。刚进入建筑师对话仍为 `action_completed`；结算后翻页、解锁和返回菜单同样为 `action_completed`，不重复报告胜负。终局回执不保留连续动作许可，需通过观察或详情取得当前结算操作。成功详情也刷新状态令牌；失败、超时或人工改动后重新读取当前状态。MCP 工具除通用 `preset` 外只接受 `option_id`，底层文件操作不接受额外参数；按钮、页面身份和状态令牌在游戏线程再次核对。工具将时间线绑定到本次结算的原生菜单栈；人工返回菜单同样结束关联。工具入口不用于操作平常打开的时间线或其他主菜单页面。
 
 ## 建筑师观察
 

@@ -25,7 +25,8 @@ class MapStdioTests(unittest.IsolatedAsyncioTestCase):
                     for tool in listed.tools:
                         if tool.name in {"inspect_map", "close_map"}:
                             if tool.name == 'close_map':
-                                self.assertEqual(tool.inputSchema, {"type": "object", "properties": {}, "additionalProperties": False})
+                                self.assertEqual(set(tool.inputSchema["properties"]), {"preset"})
+                                self.assertFalse(tool.inputSchema["additionalProperties"])
                             else:
                                 self.assertEqual(set(tool.inputSchema['properties']), {'preset', 'max_steps'})
                             self.assertFalse(tool.annotations.readOnlyHint)

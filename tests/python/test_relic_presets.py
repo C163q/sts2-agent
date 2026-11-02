@@ -34,15 +34,15 @@ class RelicClient(ActionClient):
 
 
 class RelicPresetTests(unittest.IsolatedAsyncioTestCase):
-    async def test_default_and_explicit_full_preserve_existing_output(self):
+    async def test_explicit_full_preserve_existing_output(self):
         client = RelicClient()
         original = copy.deepcopy(client.relics)
         expected = player_result({'ok': True, 'state': {'relics': original}}, operation='inspect_relics')
         tools = GameTools(client)
-        for args in (None, {}, {'preset': 'full'}):
+        for args in ({'preset': 'full'},):
             self.assertEqual(await tools.inspect_relics(args), expected)
         self.assertEqual(client.relics, original)
-        self.assertEqual(client.calls, [('inspect_relics', None, None)] * 3)
+        self.assertEqual(client.calls, [('inspect_relics', None, None)] * 1)
 
     async def test_summary_keeps_only_basic_fields_including_zero_unknown_and_melted(self):
         client = RelicClient()

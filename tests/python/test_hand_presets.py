@@ -53,12 +53,12 @@ class HandClient(ActionClient):
 
 
 class HandPresetTests(unittest.IsolatedAsyncioTestCase):
-    async def test_default_full_is_compatible_and_does_not_modify_response(self):
+    async def test_explicit_full_is_compatible_and_does_not_modify_response(self):
         client = HandClient()
         original = copy.deepcopy(client.hand)
         tools = GameTools(client)
         expected = player_result({'ok': True, 'state': {'hand': original}}, operation='inspect_hand')
-        for args in (None, {}, {'preset': 'full'}):
+        for args in ({'preset': 'full'},):
             self.assertEqual(await tools.inspect_hand(args), expected)
         self.assertEqual(client.hand, original)
         self.assertTrue(all(c == ('inspect_hand', None, None) for c in client.calls))

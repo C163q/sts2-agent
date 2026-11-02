@@ -2,6 +2,8 @@
 
 适用于 Mod `0.33.0`、MCP `0.28.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。支持单人原生 Crystal Sphere 界面，先用[事件工具](events.md)选择进入方式。
 
+下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
+
 ## 工具与图像
 
 | 工具 | 行为 |

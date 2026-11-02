@@ -1,4 +1,5 @@
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 from sts2_mcp.output.available_tools import GAME_ACTIONS
 import argparse
 import asyncio
@@ -34,10 +35,10 @@ async def verify(args):
                 tool = next(tool for tool in listed.tools if tool.name == name)
                 assert tool.annotations.readOnlyHint is False and tool.annotations.destructiveHint is False
             schema = next(tool for tool in listed.tools if tool.name == "inspect_deck").inputSchema
-            assert set(schema["properties"]) == {"detail_level", "view_upgrades", "sort_by", "descending"}, schema
+            assert set(schema["properties"]) == {"preset", "detail_level", "view_upgrades", "sort_by", "descending"}, schema
 
             async def call(name, arguments=None):
-                result = await session.call_tool(name, arguments or {})
+                result = await session.call_tool(name, full_output_arguments(name, arguments or {}))
                 evidence["calls"].append({"name": name, "arguments": arguments, "result": result.model_dump(exclude_none=True)})
                 assert not result.isError, result
                 assert json.loads(result.content[0].text) == result.structuredContent

@@ -1,0 +1,114 @@
+[
+  {
+    "name": "combat",
+    "scenarios": {
+      "play": "wax_melt"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_default_presets.py",
+        "args": [
+          "--scenario",
+          "combat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "orbs",
+    "scenarios": {
+      "play": "orbs"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_default_presets.py",
+        "args": [
+          "--scenario",
+          "orbs"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "smith",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_default_presets.py",
+        "args": [
+          "--scenario",
+          "smith"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "transform",
+    "scenarios": {
+      "event": "transform"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_default_presets.py",
+        "args": [
+          "--scenario",
+          "transform"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "divination",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_default_presets.py",
+        "args": [
+          "--scenario",
+          "divination"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "map",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_default_presets.py",
+        "args": [
+          "--scenario",
+          "map"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "event",
+    "scenarios": {
+      "event": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_default_presets.py",
+        "args": [
+          "--scenario",
+          "event"
+        ]
+      }
+    ]
+  }
+]

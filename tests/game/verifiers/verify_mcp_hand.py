@@ -1,4 +1,5 @@
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 import argparse
 import asyncio
 import json
@@ -29,7 +30,7 @@ async def verify(args):
             assert {tool.name for tool in listed.tools} == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"}
 
             async def call(name):
-                result = await session.call_tool(name, {})
+                result = await session.call_tool(name, full_output_arguments(name, {}))
                 evidence["calls"].append({"name": name, "result": result.model_dump(exclude_none=True)})
                 assert not result.isError, result
                 assert json.loads(result.content[0].text) == result.structuredContent

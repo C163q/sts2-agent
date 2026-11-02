@@ -1,5 +1,6 @@
 """Verify relic summaries, original-index filters and action continuation over real MCP."""
 from scripts._bootstrap import ROOT
+from tests.game.support.verification_actions import full_output_arguments
 import argparse
 import asyncio
 import json
@@ -32,7 +33,7 @@ async def verify(args):
             assert set(listed['inspect_relics'].inputSchema['properties']) == {'preset', 'relic_indices'}
 
             async def call(name, arguments=None):
-                reply = await session.call_tool(name, arguments or {})
+                reply = await session.call_tool(name, full_output_arguments(name, arguments or {}))
                 data = reply.structuredContent
                 record({'tool': name, 'arguments': arguments, 'result': data})
                 assert not reply.isError and 'error' not in data, data

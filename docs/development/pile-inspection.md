@@ -1,6 +1,6 @@
 # 战斗牌堆查看
 
-Mod `0.34.1` 的文件操作与 MCP server `0.29.1` 的 `inspect_pile` 一起支持抽牌堆、弃牌堆、消耗牌堆。调用真实使用原生入口，默认返回整个可浏览列表的摘要，也支持完整正文和共享悬停解释。页面没有升级或排序控件，接口不提供对应参数。适用游戏为 Linux `v0.107.1`。
+Mod `0.34.1` 的文件操作与 MCP server `0.48.0` 的 `inspect_pile` 一起支持抽牌堆、弃牌堆、消耗牌堆。调用真实使用原生入口，默认返回整个可浏览列表的摘要，也支持完整正文和共享悬停解释。页面没有升级或排序控件，接口不提供对应参数。适用游戏为 Linux `v0.107.1`。
 
 ## 调用与页面行为
 
@@ -19,7 +19,7 @@ close_card_view()
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_pile --pile draw --detail-level full
 ```
 
-`pile` 必填，只接受 `draw/discard/exhaust`；`detail_level` 可省略，默认 `summary`，另可选 `full`。未知参数、重复 JSON 字段、错误类型及非法枚举在 UI 操作之前拒绝。文件请求的参数放在 `arguments` 对象，`expected_state` 不需要。
+MCP 另接受[通用 preset](mcp.md#输出预设)，默认省略普通空值，例如不可用时省略 cards；显式 full 保留 cards:null。`pile` 必填，只接受 `draw/discard/exhaust`；`detail_level` 可省略，默认 `summary`，另可选 `full`。未知参数、重复 JSON 字段、错误类型及非法枚举在 UI 操作之前拒绝。文件请求的参数放在 `arguments` 对象，`expected_state` 不需要。
 
 非空牌堆实际打开原生页面，返回后保持打开；重复查看同一堆复用页面，信息档位每次独立选择。不同卡牌页共用一层：战斗牌堆按钮在其他卡牌页打开时被原生屏幕上下文禁用，所以跨页先通过原生返回按钮关闭当前页，复核当前状态，再点击目标牌堆。查看牌组也可以替换当前牌堆页。
 
@@ -76,7 +76,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_pile --pile 
 
 费用、正文、升级后已有数值、战斗临时修改、附魔和关键词使用实际牌堆上下文，不套用手牌瞄准预览。实现读取完整网格列表并使用隔离克隆格式化；线程局部作用域只为当前克隆保留原牌堆上下文，不把克隆放入真实牌堆，不修改持有卡牌。
 
-文件默认 JSON 与 MCP 一致，均去掉传输控制信息并共享提示。文件客户端加 `--raw` 才保留状态令牌等原始信息及每张牌的解释列表。
+文件默认 JSON 与 MCP full 一致，均去掉传输控制信息并共享提示。文件客户端加 `--raw` 才保留状态令牌等原始信息及每张牌的解释列表。
 
 ## 生命周期与验证
 

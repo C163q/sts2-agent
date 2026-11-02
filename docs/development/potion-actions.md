@@ -2,6 +2,8 @@
 
 适用于 Mod `0.33.0`、MCP server `0.28.0`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。使用及丢弃均提交原生动作；游戏负责扣除药水、效果、记录和触发。依据见 [源码核对](../research/2026-10-30-potion-actions.md)。
 
+下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
+
 ## 查询与定位
 
 `inspect_targets({"potion_slot": 0})` 查询从左到右、从 0 开始的药水槽位，与基础观察 `top_bar.potion_slots` 及药水详情的下标一致。空槽保留位置；没有药水的槽位不能查询目标或执行动作。该工具仍支持 [手牌的 `card_id`](card-play.md)，两个定位参数只能提供一个。

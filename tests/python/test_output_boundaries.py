@@ -128,11 +128,11 @@ class ObservationValidationTests(unittest.IsolatedAsyncioTestCase):
         state = {**observation(), "screen": {"status": "covered", "view": "map"},
                  "player": None, "enemies": None, "top_bar": None, "buttons": None,
                  "turn": None, "available_actions": []}
-        result = await GameTools(ReplyClient(state)).get_observation()
+        result = await GameTools(ReplyClient(state)).get_observation({"preset": "full"})
         self.assertIsNone(result["player"])
         self.assertIsNone(result["enemies"])
         self.assertEqual(result["available_actions"], [])
-        visible = await GameTools(ReplyClient(observation())).get_observation()
+        visible = await GameTools(ReplyClient(observation())).get_observation({"preset": "full"})
         self.assertEqual(visible["top_bar"]["relics"][0]["counter"], 0)
 
 

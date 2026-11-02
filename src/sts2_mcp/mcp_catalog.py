@@ -1,4 +1,5 @@
 from mcp.types import Tool, ToolAnnotations
+from sts2_mcp.output.presets import preset_schema
 from sts2_mcp.output.observation_presets import OBSERVATION_SCHEMA
 from sts2_mcp.output.hand_presets import HAND_SCHEMA
 from sts2_mcp.output.selection_presets import SELECTION_SCHEMA
@@ -24,6 +25,9 @@ from sts2_mcp.output.divination_details import TOOL_SCHEMA, DIVINE_SCHEMA
 
 SERVER_INSTRUCTIONS = (
     "Control a local Slay the Spire 2 game; output is English. "
+    "Output preset defaults to default: full content with ordinary null object fields omitted. "
+    "Array positions, event nulls and card comparison sides remain; omission never means zero, false, empty or unchanged. "
+    "Use full to preserve all existing nulls; other named presets retain their own behavior. "
     "Call tools sequentially and decide after each result. "
     "available_actions lists currently offered tool names; arguments and state are checked at call time. "
     "Use IDs from current observations or inspections. "
@@ -130,7 +134,7 @@ def tool_definitions(*, screenshots_enabled=False):
             "Read visible combatant powers, enemy intent explanations, occupied orb help and floating Sovereign Blade previews. "
             "Unavailable while aiming or playing a card.")),
         Tool(name="inspect_relics", inputSchema=RELIC_SCHEMA, annotations=read_only, description=(
-            "Read visible, hoverable owned relics. Full descriptions and hover help by default; "
+            "Read visible, hoverable owned relics. Descriptions and hover help by default; "
             "summary keeps basic fields. relic_indices filters by positions in the current unfiltered inspection.")),
         Tool(name="inspect_deck", inputSchema=DECK_SCHEMA, annotations=view, description=(
             "Open/reuse the native full-deck page when its entry is available and read the entire browsable deck. "
@@ -151,7 +155,7 @@ def tool_definitions(*, screenshots_enabled=False):
             "Cannot close through card pages or force a mandatory map closed.")),
         Tool(name="inspect_selection", inputSchema=SELECTION_SCHEMA, annotations=view, description=(
             "Read all browsable candidates, offered buttons and visible previews of the current card selection. "
-            "Full card details by default; summary compacts every card, including bundles and previews. "
+            "Card descriptions and hover help by default; summary compacts every card, including bundles and previews. "
             "card_ids filters returned card details only; instructions and buttons remain. "
             "view_upgrades toggles an available native checkbox and keeps that UI state; unsupported screens return current data plus errors. "
             "Unavailable while the selection is hidden; never selects or confirms a card.")),
@@ -174,4 +178,7 @@ def tool_definitions(*, screenshots_enabled=False):
         definitions.append(Tool(name="capture_screenshot", inputSchema=SCREENSHOT_SCHEMA, annotations=view, description=(
             "Save the current game viewport as PNG in the configured directory; return its path and dimensions. "
             "Does not change the UI or prepare an action.")))
+    for tool in definitions:
+        if tool.name != 'capture_screenshot':
+            tool.inputSchema = preset_schema(tool.inputSchema)
     return definitions
