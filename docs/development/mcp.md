@@ -68,7 +68,7 @@ flowchart LR
 | `inspect_map(preset?, max_steps?)` | [打开或复用当前幕地图](map-inspection.md)，可返回全图、前瞻子图或实际可选节点详情 |
 | `travel_to_node(node_id)` | [按当前候选选路](map-inspection.md#地图选路)，离开房间并放弃未领取奖励；飞鞋由原生流程处理 |
 | `close_map()` | 通过可用的原生返回入口关闭地图，不穿透卡牌页 |
-| `inspect_selection(preset?, card_ids?)` | [整个可浏览候选及详情](card-selection.md#mcp-输出预设)，默认完整，摘要与 ID 筛选统一作用于候选、包内与预览卡牌 |
+| `inspect_selection(preset?, card_ids?, view_upgrades?)` | [整个可浏览候选及详情](card-selection.md#mcp-输出预设)，默认完整，摘要与 ID 筛选统一作用于候选、包内与预览卡牌，可显式切换原生升级复选框 |
 | `select_card(card_id)` | 点击一张候选，保留原生多选和确认流程 |
 | `selection_option(option_id)` | 点击选择页面列出的启用按钮 |
 | `set_selection_view(view)` | 点击原生眼睛，切换选牌与战场查看 |
@@ -79,7 +79,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.45.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.45.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.46.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.46.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 

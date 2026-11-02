@@ -1,0 +1,114 @@
+[
+  {
+    "name": "smith",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_upgrades.py",
+        "args": [
+          "--scenario",
+          "smith"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "event_upgrade",
+    "scenarios": {
+      "event": "upgrade"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_upgrades.py",
+        "args": [
+          "--scenario",
+          "event_upgrade"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ancient_transform",
+    "scenarios": {
+      "ancient": "transform"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_upgrades.py",
+        "args": [
+          "--scenario",
+          "ancient_transform"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ancient_pandora",
+    "scenarios": {
+      "ancient": "pandora"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_upgrades.py",
+        "args": [
+          "--scenario",
+          "ancient_pandora"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "reward",
+    "scenarios": {
+      "selection": "reward"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_upgrades.py",
+        "args": [
+          "--scenario",
+          "reward"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "deck",
+    "scenarios": {
+      "selection": "deck"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_upgrades.py",
+        "args": [
+          "--scenario",
+          "deck"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "multi_upgrade",
+    "scenarios": {
+      "selection": "upgrade_multi"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_upgrades.py",
+        "args": [
+          "--scenario",
+          "multi_upgrade"
+        ]
+      }
+    ]
+  }
+]

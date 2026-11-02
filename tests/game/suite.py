@@ -16,6 +16,7 @@ from sts2_mcp.roundtrip_client import Client
 
 CATALOG = json.loads((ROOT / 'tests/game/data/test_scenarios.json').read_text())
 SUPPORTED_VERIFIERS = {
+    'verify_selection_upgrades.py',
     'verify_view_availability.py',
     'verify_relic_presets.py',
     'verify_companions.py',
@@ -106,6 +107,7 @@ def load_cases(path):
                 'verify_selection_presets.py': ('discovery', 'hand_upgrade', 'smith', 'ancient_multi',
                     'ancient_transform', 'ancient_bundle', 'ancient_pandora', 'paels_wing', 'driftwood',
                     'grid', 'combat_pile', 'deck', 'hand'),
+                'verify_selection_upgrades.py': ('smith', 'event_upgrade', 'ancient_transform', 'ancient_pandora', 'reward', 'deck', 'multi_upgrade'),
             }
             if args and (verifier not in scenario_options or len(args) != 2
                          or args[0] != '--scenario' or args[1] not in scenario_options[verifier]):

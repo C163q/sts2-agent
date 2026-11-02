@@ -20,13 +20,25 @@ internal sealed class SelectionInspection(CombatObservation observation)
                 cards = EnglishCardText.Read(() => selection.Cards.Select(model =>
                 {
                     // Display context can differ from the owning pile; keep both for native previews.
-                    var card = BrowsedCard.Read(model, "selection", selection.DisplayingPile, false, true, preservePile: true);
+                    var card = BrowsedCard.Read(model, "selection", selection.DisplayingPile,
+                        selection.ViewUpgrades == true, true, preservePile: true);
                     card["id"] = observation.CardId(model);
                     return card;
                 }).ToArray());
             else
                 cards = selection.Holders.Where(holder => CombatObservation.CardVisible(holder.CardNode))
-                    .Select(holder => Card(holder.CardNode!, full, selection.Kind is not ("hand" or "hand_upgrade"))).ToArray();
+                    .Select(holder =>
+                    {
+                        var card = Card(holder.CardNode!, full, selection.Kind is not ("hand" or "hand_upgrade"));
+                        // The displayed model may be an upgrade clone; selection still targets the original.
+                        if (selection.Grid != null && !selection.InPreview)
+                            card["id"] = observation.CardId(holder.CardModel!);
+                        if (selection.ViewUpgrades == true && holder.IsShowingUpgradedCard
+                            && VisibleUi.Text(holder.CardNode!, "%DescriptionLabel") != null)
+                            card["description"] = EnglishCardText.Read(() => EnglishCardText.Plain(
+                                holder.CardNode!.Model!.GetDescriptionForUpgradePreview()));
+                        return card;
+                    }).ToArray();
         }
         var result = new Dictionary<string, object?>
         {
@@ -35,7 +47,8 @@ internal sealed class SelectionInspection(CombatObservation observation)
             ["selected_ids"] = visible ? selection.Selected.Select(observation.CardId).ToArray() : null,
             ["cards"] = cards, ["options"] = selection.Options().Select(option => new
                 { option.id, option.text, enabled = option.button.IsEnabled }).ToArray(),
-            ["can_view_battlefield"] = selection.CanPeek
+            ["can_view_battlefield"] = selection.CanPeek,
+            ["can_view_upgrades"] = selection.CanViewUpgrades, ["view_upgrades"] = selection.ViewUpgrades
         };
         if (selection.Kind == "hand_upgrade")
         {

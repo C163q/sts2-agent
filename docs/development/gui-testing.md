@@ -14,6 +14,8 @@
 
 `--output` 必须尚不存在。默认清单是 [gui_suite_smoke.json](../../tests/game/data/gui_suite_smoke.json)：跨幕进入先古之民后的状态稳定、对话和选牌，详情或页面操作后直接行动，连续动作与同局续接、连续选牌、未结束选牌的清理、锻造、商店、奖励，以及附加奖励宝箱后接普通宝箱。最后两例检查测试补丁是否跨局残留。失败立即停止后续步骤和用例，保留证据，再关闭本次拥有的游戏进程；不会在失败现场自动重试动作。
 
+选牌升级预览的专项清单为 [gui_suite_selection_upgrades.json](../../tests/game/data/gui_suite_selection_upgrades.json)，覆盖火堆、事件、变形候选、结果页、卡牌奖励、移除与多张升级确认；通过 `--suite tests/game/data/gui_suite_selection_upgrades.json` 指定。
+
 每个套件有独立的 IPC、日志、截图和测试存档目录。游戏资产和 Mod 来自 `.tmp/roundtrip/runtime/`，不使用 Steam、正式存档或 `.tmp/live/ipc`。同一套件内的新局共享测试进度和进程缓存，不能替代要求全新进度或全新进程的测试。
 
 ## 清单与同局步骤

@@ -149,11 +149,12 @@ def tool_definitions(*, screenshots_enabled=False):
         Tool(name="close_map", inputSchema=NO_ARGUMENTS, annotations=view, description=(
             "Close the exposed map using its enabled native back button; return a basic observation. "
             "Cannot close through card pages or force a mandatory map closed.")),
-        Tool(name="inspect_selection", inputSchema=SELECTION_SCHEMA, annotations=read_only, description=(
+        Tool(name="inspect_selection", inputSchema=SELECTION_SCHEMA, annotations=view, description=(
             "Read all browsable candidates, offered buttons and visible previews of the current card selection. "
             "Full card details by default; summary compacts every card, including bundles and previews. "
             "card_ids filters returned card details only; instructions and buttons remain. "
-            "Unavailable while the selection is hidden; does not switch views.")),
+            "view_upgrades toggles an available native checkbox and keeps that UI state; unsupported screens return current data plus errors. "
+            "Unavailable while the selection is hidden; never selects or confirms a card.")),
         Tool(name="select_card", inputSchema=CARD_SCHEMA, annotations=action, description=(
             "Click one current selection candidate. Multi-select clicks toggle that card; "
             "single-choice screens may immediately submit. Use enabled selection.options to confirm when required. "

@@ -96,6 +96,7 @@
     "choice_chain"
   ],
   "selection": [
+    "upgrade_multi",
     "potion",
     "potion_skip",
     "combat_entry",

@@ -162,7 +162,7 @@ class SelectionBoundaryTests(unittest.TestCase):
         self.assertIn("select_card", definitions)
         self.assertTrue(definitions["select_card"].annotations.destructiveHint)
         self.assertFalse(definitions["set_selection_view"].annotations.destructiveHint)
-        self.assertTrue(definitions["inspect_selection"].annotations.readOnlyHint)
+        self.assertFalse(definitions["inspect_selection"].annotations.readOnlyHint)
 
 
 class Client:

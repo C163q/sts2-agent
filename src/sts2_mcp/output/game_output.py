@@ -74,7 +74,8 @@ SELECTION = {
     "selected_ids": nullable([int]), "cards": nullable([SELECTION_CARD]),
     "options": [SELECTION_OPTION], "can_view_battlefield": bool,
 }
-SELECTION_OUTPUT = {**SELECTION, "enchantment": nullable({"title": str, "description": str}), "enchant_previews": [UPGRADE_PREVIEW],
+SELECTION_OUTPUT = {**SELECTION, 'can_view_upgrades': bool, 'view_upgrades': nullable(bool),
+                    "enchantment": nullable({"title": str, "description": str}), "enchant_previews": [UPGRADE_PREVIEW],
                     "transform_previews": [{"before": SELECTION_CARD, "after": nullable(SELECTION_CARD), "random": bool}],
                     "bundles": [{"id": str, "cards": [SELECTION_CARD]}], "upgrade_preview": nullable(UPGRADE_PREVIEW), "upgrade_previews": [UPGRADE_PREVIEW]}
 EVENT_ENTITY = {"id": int, "kind": str, "name": TEXT}
@@ -158,7 +159,8 @@ GAMEPLAY = {
 def gameplay_fields(state, *, operation=None):
     shape = GAMEPLAY
     if operation == "inspect_selection":
-        shape = {**GAMEPLAY, "selection": {**SELECTION_OUTPUT, "cards": [HAND_CARD], "bundles": [{"id": str, "cards": [HAND_CARD]}]}}
+        shape = {**GAMEPLAY, 'errors': [{'code': str}],
+                 "selection": {**SELECTION_OUTPUT, "cards": [HAND_CARD], "bundles": [{"id": str, "cards": [HAND_CARD]}]}}
     if (state.get('rewards') or {}).get('items') and 'hover_tips' in state['rewards']['items'][0]:
         shape = {**shape, 'rewards': {**REWARDS, 'items': [{**REWARD_ITEM, 'hover_tips': [TIP]}]}}
     if (state.get('rest_site') or {}).get('options') and 'description' in state['rest_site']['options'][0]:
@@ -298,6 +300,14 @@ def selection_details(value):
             {"choose_one", "reward", "grid", "combat_pile", "deck", "deck_upgrade", "deck_enchant", "deck_transform", "bundle", "view_cards", "hand", "hand_upgrade", "unsupported"}
             or result["status"] not in {"visible", "battlefield", "covered", "unsupported"}):
         raise ValueError("Invalid card selection.")
+    upgrade_fields = {'can_view_upgrades', 'view_upgrades'}
+    if upgrade_fields & result.keys():
+        if (not upgrade_fields <= result.keys()
+                or result['status'] != 'visible' and (result['can_view_upgrades'] or result['view_upgrades'] is not None)
+                or result['status'] == 'visible' and result['view_upgrades'] is None
+                or (result['can_view_upgrades'] or result['view_upgrades'] is True)
+                    and result['type'] not in {'deck_upgrade', 'deck_transform', 'view_cards'}):
+            raise ValueError('Invalid selection upgrade view.')
     preview = result.get("upgrade_preview")
     if result["type"] == "hand_upgrade":
         if "upgrade_preview" not in result:

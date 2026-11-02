@@ -23,7 +23,8 @@ internal sealed class CardSelection(Control owner, string kind, object key)
     public string Kind { get; } = kind;
     public object Key { get; } = key;
     public bool Supported => Kind != "unsupported";
-    public NCardGrid? Grid => Owner is NCardGridSelectionScreen || Kind == "view_cards" ? Owner.GetNodeOrNull<NCardGrid>("%CardGrid") : null;
+    public NCardGrid? Grid => Kind == "view_cards" ? Owner.GetNodeOrNull<NCardGrid>("CardGrid")
+        : Owner is NCardGridSelectionScreen ? Owner.GetNodeOrNull<NCardGrid>("%CardGrid") : null;
     public NPeekButton? Eye => Owner is NPlayerHand hand ? hand.PeekButton : Owner.GetNodeOrNull<NPeekButton>("%PeekButton");
     public bool Peeking => Eye?.IsPeeking == true;
     public static bool AwaitingInput => Current is { Status: "visible" or "unsupported" } selection
@@ -32,7 +33,8 @@ internal sealed class CardSelection(Control owner, string kind, object key)
         && (selection.Kind is not ("reward" or "choose_one") || (selection.Holders.Length == 0 || selection.CanSelect)
             && !RewardInspection.Animating(selection.Owner, "_cardTween")
             && !RewardInspection.Animating(selection.Owner, "_buttonTween"));
-    public PileType DisplayingPile => Kind == "combat_pile" && Field(Owner, "_pile") is CardPile pile ? pile.Type : PileType.None;
+    public PileType DisplayingPile => Kind == "view_cards" ? PileType.Deck
+        : Kind == "combat_pile" && Field(Owner, "_pile") is CardPile pile ? pile.Type : PileType.None;
     public CardSelectorPrefs Prefs => Field(Owner, "_prefs") is CardSelectorPrefs prefs ? prefs : default;
     public CardModel[] Selected => Kind == "bundle" ? (Field(Owner, "_selectedBundle") as NCardBundle)?.Bundle.ToArray() ?? [] : (Field(Owner, "_selectedCards") as IEnumerable<CardModel>)?.ToArray() ?? [];
 
@@ -94,6 +96,10 @@ internal sealed class CardSelection(Control owner, string kind, object key)
 
     public string Status => !Exposed ? "covered" : !Supported ? "unsupported" : Peeking ? "battlefield" : "visible";
     public bool CanPeek => Supported && Exposed && Eye is { IsEnabled: true } && VisibleUi.OnScreen(Eye);
+    public NTickbox? UpgradeToggle => Owner.GetNodeOrNull<NTickbox>("%Upgrades");
+    public bool CanViewUpgrades => Supported && Status == "visible" && !InPreview
+        && Grid is { IsAnimatingOut: false } && UpgradeToggle is { IsEnabled: true } toggle && VisibleUi.OnScreen(toggle);
+    public bool? ViewUpgrades => Status == "visible" ? Grid?.IsShowingUpgrades ?? false : null;
 
     public bool InPreview => Kind == "deck" && VisibleUi.Shown(Owner.GetNodeOrNull<Control>("%PreviewContainer"))
         || DeckUpgradeSelection.Preview(this) != null || DeckEnchantSelection.Preview(this) != null || TransformSelection.Preview(this) != null

@@ -98,7 +98,7 @@ python3 -m tests.python.test_prepare_roundtrip
 | `close_card_view` | 无须动作令牌；显式关闭当前原生卡牌查看页，返回基础观察；保留下层地图，不关闭其他页面或自动授权战斗动作 |
 | `close_deck` | 仅为旧文件客户端兼容保留，只关闭牌组；MCP 使用通用 `close_card_view` |
 | `start_test_combat` | 仅测试模式且无进行中的对局时，在主菜单创建临时对局并用游戏开发入口进入指定战斗；该操作不是正常游玩的动作 |
-| `inspect_selection` | 文件协议无参数；当前原生选择的全部可浏览候选与详情，MCP 另支持完整/摘要预设；见 [选牌接口](card-selection.md) |
+| `inspect_selection` | 当前原生选择的全部可浏览候选与详情，可选 `--view-upgrades`／`--no-view-upgrades`；MCP 另支持完整/摘要预设与 ID 筛选；见 [选牌接口](card-selection.md) |
 | `select_card`、`selection_option` | 需最新状态令牌，参数分别为 `card_id`、`option_id`，提交一次原生选择输入 |
 | `set_selection_view` | 参数 `view` 为 `battlefield` 或 `selection`，显式点击眼睛 |
 | `end_turn` | 单人战斗、玩家可行动阶段且非暂停状态下，提交 `EndPlayerTurnAction`，返回期间事件，到下一可行动回合、已识别的选择或战斗结束时停止；见 [结束回合](end-turn.md) |

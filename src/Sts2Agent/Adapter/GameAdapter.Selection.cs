@@ -22,6 +22,16 @@ internal sealed partial class GameAdapter
     {
         string? value = null;
         int cardId = -1;
+        bool? viewUpgrades = null;
+        if (request.Operation == "inspect_selection" && request.Arguments is { } inspectionArgs
+            && inspectionArgs.EnumerateObject().Any())
+        {
+            if (inspectionArgs.EnumerateObject().Count() != 1
+                || !inspectionArgs.TryGetProperty("view_upgrades", out var flag)
+                || flag.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected an optional boolean view_upgrades.");
+            viewUpgrades = flag.GetBoolean();
+        }
         if (request.Operation != "inspect_selection")
         {
             string field = request.Operation == "select_card" ? "card_id"
@@ -41,8 +51,24 @@ internal sealed partial class GameAdapter
         {
             if (selection.Status != "visible")
                 return FileMailbox.Error(request.Id, "illegal_action", "Return to the selection before reading its candidates.");
-            return Success(request.Id, JsonSerializer.Serialize(new { snapshot_id = before.GetProperty("snapshot_id").GetString(),
-                scene = before.GetProperty("scene").GetString(), selection = new SelectionInspection(observation).Read(selection, full: true) }));
+            bool unavailable = viewUpgrades.HasValue && !selection.CanViewUpgrades;
+            string? snapshot = before.GetProperty("snapshot_id").GetString();
+            if (viewUpgrades.HasValue && !unavailable && selection.ViewUpgrades != viewUpgrades)
+            {
+                uiGeneration++;
+                selection.UpgradeToggle!.ForceClick();
+                string viewed = await SettledObservation();
+                if (!SelectionActions.Same(selection) || selection.Status != "visible" || selection.InPreview
+                    || selection.ViewUpgrades != viewUpgrades)
+                    return FileMailbox.Error(request.Id, "illegal_action", "The selection changed while switching upgrade previews.");
+                using var current = JsonDocument.Parse(viewed);
+                snapshot = current.RootElement.GetProperty("snapshot_id").GetString();
+            }
+            var result = new Dictionary<string, object?> {
+                ["snapshot_id"] = snapshot, ["scene"] = before.GetProperty("scene").GetString(),
+                ["selection"] = new SelectionInspection(observation).Read(selection, full: true) };
+            if (unavailable) result["errors"] = new[] { new { code = "upgrade_view_unavailable" } };
+            return Success(request.Id, JsonSerializer.Serialize(result));
         }
         if (request.Operation == "set_selection_view")
         {

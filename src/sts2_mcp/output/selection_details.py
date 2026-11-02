@@ -46,4 +46,10 @@ def inspect_selection_details(state):
         selection['bundles'] = project(raw['bundles'], [{'id': str, 'cards': [HAND_CARD]}])
         if any(not {'description', 'hover_tips'} <= c.keys() for b in selection['bundles'] for c in b['cards']):
             raise ValueError('Incomplete bundle details.')
-    return {"scene": state["scene"], "selection": selection}
+    result = {"scene": state["scene"], "selection": selection}
+    if 'errors' in state:
+        if (not isinstance(state['errors'], list) or state['errors'] != [{'code': 'upgrade_view_unavailable'}]
+                or selection.get('can_view_upgrades') is not False):
+            raise ValueError('Invalid selection upgrade warning.')
+        result['errors'] = [{'code': 'upgrade_view_unavailable'}]
+    return result

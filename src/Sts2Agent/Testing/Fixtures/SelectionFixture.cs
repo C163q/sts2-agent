@@ -61,6 +61,11 @@ internal static class SelectionFixture
             await RunManager.Instance.EnterRoomDebug(RoomType.Event, model: ModelDb.Event<BrainLeech>(), showTransition: false);
             Pending = ChooseThenFight(player);
         }
+        else if (scenario == "upgrade_multi")
+        {
+            await RunManager.Instance.EnterRoomDebug(RoomType.Event, model: ModelDb.Event<BrainLeech>(), showTransition: false);
+            Pending = UpgradeMultiple(player);
+        }
         else if (scenario == "deck")
         {
             await RunManager.Instance.EnterRoomDebug(RoomType.Event, model: ModelDb.Event<BrainLeech>(), showTransition: false);
@@ -94,6 +99,13 @@ internal static class SelectionFixture
         CardModel[] cards = [player.RunState.CreateCard<DefendIronclad>(player), player.RunState.CreateCard<StrikeIronclad>(player)];
         await CardSelectCmd.FromChooseACardScreen(new BlockingPlayerChoiceContext(), cards, player);
         await RunManager.Instance.EnterRoomDebug(RoomType.Monster, model: ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
+    }
+
+    private static async Task UpgradeMultiple(Player player)
+    {
+        var cards = await CardSelectCmd.FromDeckForUpgrade(player,
+            new CardSelectorPrefs(CardSelectorPrefs.UpgradeSelectionPrompt, 2));
+        foreach (var card in cards) CardCmd.Upgrade(card);
     }
 
     private static async Task Choose(Player player, int count, bool upgradeAfter = false)

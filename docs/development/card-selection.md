@@ -1,10 +1,10 @@
 # 选牌与查看战场
 
-适用于 Mod `0.43.0`、MCP server `0.42.0`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
+适用于 Mod／MCP `0.46.0`、schema `27`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
 
 ## 观察与信息范围
 
-`get_observation`、动作回执和 `inspect_selection` 中的 `scene` 均表示同一个底层房间或战斗，不随选牌类型改变。例如涅奥牌包选择仍为 `scene:"ancient"`，火堆锻造仍为 `scene:"rest_site"`；当前选择由 `selection.type/status` 表达。`inspect_selection` 只扩展当前选择的详情，不切换页面；[一致性验证记录](../research/2026-11-01-selection-scene.md)包含适用版本与覆盖范围。
+`get_observation`、动作回执和 `inspect_selection` 中的 `scene` 均表示同一个底层房间或战斗，不随选牌类型改变。例如涅奥牌包选择仍为 `scene:"ancient"`，火堆锻造仍为 `scene:"rest_site"`；当前选择由 `selection.type/status` 表达。`inspect_selection` 默认只扩展当前选择的详情；显式 `view_upgrades` 可切换当前页的升级复选框，不打开其他页面。[一致性验证记录](../research/2026-11-01-selection-scene.md)包含底层场景的验证范围。
 
 `get_observation` 的 `selection` 在没有选择时为 `null`；有选择时包含：
 
@@ -17,29 +17,32 @@
 | `selected_ids` | 当前已选项目；隐藏时为 `null` |
 | `options` | 当前显示的按钮及 `id`、英语 `text`、`enabled`；未启用不能点击 |
 | `can_view_battlefield` | 原生眼睛当前可用，可显式切换视图 |
+| `can_view_upgrades` | 当前页的原生升级复选框可见、启用且未被确认预览覆盖 |
+| `view_upgrades` | 候选列表当前实际的升级预览状态；选择隐藏时为 `null`，没有该模式时为 `false` |
 | `upgrade_previews` | 仅 `deck_upgrade` 提供；已经显示的单牌或多牌升级比较，未进入预览或隐藏时为空列表 |
 | `upgrade_preview` | 仅 `hand_upgrade` 提供；已显示的升级前后牌面 `before`、`after`，未选择或隐藏时为 `null` |
 
-`cards` 在查看战场、被覆盖或未支持时为 `null`，与没有候选的空列表不同。网格可能滚动，基础观察不补齐屏幕外候选；`inspect_selection()` 默认显式读取整个可浏览候选列表、正文及共享 `hover_tips`，不会展开尚未生成的结果，也不会切换视图。共享解释通过整数 `card_ids` 引用候选。手牌选择沿用战斗手牌 ID。
+`cards` 在查看战场、被覆盖或未支持时为 `null`，与没有候选的空列表不同。网格可能滚动，基础观察不补齐屏幕外候选；`inspect_selection()` 默认显式读取整个可浏览候选列表、正文及共享 `hover_tips`，不会展开尚未生成的结果。省略 `view_upgrades` 时不改变 UI。共享解释通过整数 `card_ids` 引用候选。手牌选择沿用战斗手牌 ID，升级预览的克隆仍使用原牌 ID。
 
 基础观察和查看结果按情境附简短 `notes.selection`：选择遮挡时提示用眼睛查看战场；查看战场时提醒仍有选择待完成，须返回选择界面；牌组、牌堆或地图覆盖选择时提醒先关闭当前查看页。这些说明不重复候选正文或按钮列表。
 
 ## MCP 输出预设
 
-`inspect_selection` 接受以下可选参数。省略或传 `{}` 保持完整详情。底层文件协议仍无参数；预设和筛选只需更新 Python 脚本并重连 MCP，不需要替换 DLL。
+`inspect_selection` 接受以下可选参数。省略或传 `{}` 保持完整详情及当前 UI 模式。`preset` 和 `card_ids` 在 Python 投影，底层文件协议只接受可选的 `view_upgrades`；本次升级预览及观察修复需同时更新 DLL／清单和 Python，完整重启游戏并重连 MCP。
 
 | 参数 | 默认值 | 含义 |
 | --- | --- | --- |
 | `preset` | `full` | `full` 保留正文与悬停帮助；`summary` 使用手牌摘要字段 |
 | `card_ids` | 省略 | MCP `0.42.0` 起支持当前选择中的非负整数卡牌 ID 数组；省略返回全部，`[]` 不返回卡牌详情，重复 ID 去重，结果保持原生顺序 |
+| `view_upgrades` | 省略 | 可选布尔值，真实点击原生复选框；`true` 查看升级、`false` 恢复原牌，省略保留当前模式 |
 
 ```json
-{"preset": "summary", "card_ids": [1, 2, 3]}
+{"preset": "summary", "card_ids": [1, 2, 3], "view_upgrades": true}
 ```
 
 `summary` 的每张卡牌沿用[手牌摘要字段](hand-inspection.md#参数与返回范围)：保留身份、费用、可见附魔及卡面标记，移除正文、稀有度、卡池和悬停帮助；没有星耗时不输出该项。规则统一作用于 `cards`、`bundles[].cards`，以及 `upgrade_preview`、`upgrade_previews`、`enchant_previews`、`transform_previews` 的 `before/after`；预览也不保留正文，需要时另读 `full`。
 
-摘要保留场景、选择类型和状态、提示、数量限制、已选 ID、按钮、包 ID、随机变牌标记及原有空值。选择级 `selection.enchantment` 仍保留附魔操作名称与说明，它描述当前要执行的操作。不会补全未知卡牌或随机变牌结果，也不影响候选范围和 UI。读取成功后可直接选择；仍先验证完整原生详情，再投影为摘要，错误不会被转为空结果。非法参数不发往游戏，也不丢弃已有动作许可。
+摘要保留场景、选择类型和状态、提示、数量限制、已选 ID、按钮、包 ID、升级模式、随机变牌标记及原有空值。选择级 `selection.enchantment` 仍保留附魔操作名称与说明，它描述当前要执行的操作。不会补全未知卡牌或随机变牌结果；预设及筛选本身不改变候选范围和 UI。读取成功后可直接选择；仍先验证完整原生详情，再投影为摘要，错误不会被转为空结果。非法参数不发往游戏，也不丢弃已有动作许可。
 
 `card_ids` 同时筛选 `cards`、`bundles[].cards` 和已经展开的预览。预览按原牌 `before.id` 命中，保留整组 `before/after`，不生成尚未展开的比较或随机结果；未命中的 `upgrade_preview` 为 `null`，列表预览移除对应项。包 ID 保留，包内 `cards` 可为空；查看包内某张牌不改变整包选择方式。full 的共享提示同步裁剪卡牌关联，summary 继续不提供悬停效果。
 
@@ -52,6 +55,16 @@
 ```
 
 此时 MCP `isError` 为 `false`，客户端须检查 `errors`；没有无效 ID 时省略它。参数校验与 `inspect_hand` 相同：ID 为 0 至 2147483647 的整数，不接受布尔值、浮点数、字符串或 `null`。空筛选和混合错误仍验证完整底层详情并刷新动作许可；原生读取失败保持顶层 `error`，不转换为卡牌缺失。测试范围见[筛选实现记录](../research/2026-11-02-selection-filters.md)。
+
+## 候选升级预览
+
+火堆及事件等牌组升级选择 `deck_upgrade`、牌组变形选择 `deck_transform`，以及潘多拉魔盒等结果页 `view_cards` 提供原生升级复选框。以当前 `can_view_upgrades` 为准；控制器模式隐藏的控件、确认预览背后的控件都不能强行点击。其他选择页没有该开关，例如卡牌奖励、普通移除和附魔；手牌升级已有的选中前后比较保持原有行为。
+
+显式传入 `view_upgrades` 后，等待 UI 稳定再返回新状态和令牌，页面保留本次模式。`cards` 的名称、费用、正文与当前普通／升级牌面一致；仅预览可升级卡牌，原本不能升级的牌保持原样。ID 仍指向原牌，不能将预览克隆当成额外候选。不会实际升级、选择或确认卡牌，也不会改变当前选中项。既有 `upgrade_previews` 和随机变牌比较独立保留，不因候选升级模式而生成未来结果。
+
+当前没有可操作的升级复选框时，保留当前数据并附 `errors:[{"code":"upgrade_view_unavailable"}]`，MCP `isError:false`。若同时有筛选错误，两项依次合并；仍按本次 `preset`、`card_ids` 返回有效数据。不传该参数不会产生此错误。选择已被隐藏或切换时仍返回顶层 `illegal_action`，不返回隐藏候选。
+
+标准库客户端可使用 `inspect_selection --view-upgrades` 或 `--no-view-upgrades`。实现依据和验证范围见[选牌升级预览记录](../research/2026-11-02-selection-upgrades.md)。
 
 ## 操作
 

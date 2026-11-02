@@ -14,6 +14,8 @@ SELECTION_SCHEMA = {
         'card_ids': {'type': 'array', 'items': {
             **CARD_ID, 'description': 'A current selection card ID from candidates, bundle contents or a visible preview; previews use the original card ID.'},
                      'description': 'Optional current selection card IDs, including bundle contents and visible previews. Omit for all; [] returns no card details. Duplicates are ignored; native order remains. Previews use the original card ID. Unavailable IDs are grouped in errors[].card_ids alongside valid results.'},
+        'view_upgrades': {'type': 'boolean',
+                          'description': 'Toggle the native upgrade-preview checkbox when available; omit to keep its current state. Leaves the UI in that state. Unsupported screens return current cards plus errors[].code=upgrade_view_unavailable.'},
     },
     'additionalProperties': False,
 }
@@ -22,7 +24,7 @@ SELECTION_SCHEMA = {
 def selection_inspection_arguments(arguments):
     if arguments is None:
         arguments = {}
-    if not isinstance(arguments, dict) or set(arguments) - {'preset', 'card_ids'}:
+    if not isinstance(arguments, dict) or set(arguments) - {'preset', 'card_ids', 'view_upgrades'}:
         raise ValueError('Invalid selection inspection arguments.')
     preset = arguments.get('preset', 'full')
     if not isinstance(preset, str) or preset not in ('full', 'summary'):
@@ -31,7 +33,12 @@ def selection_inspection_arguments(arguments):
     if 'card_ids' in arguments and (not isinstance(card_ids, list) or any(
             type(card_id) is not int or not 0 <= card_id <= 2147483647 for card_id in card_ids)):
         raise ValueError('Invalid selection card IDs.')
-    return {'preset': preset, 'card_ids': None if card_ids is None else list(dict.fromkeys(card_ids))}
+    if 'view_upgrades' in arguments and type(arguments['view_upgrades']) is not bool:
+        raise ValueError('Invalid selection upgrade option.')
+    result = {'preset': preset, 'card_ids': None if card_ids is None else list(dict.fromkeys(card_ids))}
+    if 'view_upgrades' in arguments:
+        result['view_upgrades'] = arguments['view_upgrades']
+    return result
 
 
 def selection_preset(payload, preset, card_ids=None):
@@ -74,5 +81,5 @@ def selection_preset(payload, preset, card_ids=None):
                                 for tip in payload['hover_tips'] if any(i in selected for i in tip['card_ids'])]
     missing = [card_id for card_id in card_ids or [] if card_id not in known]
     if missing:
-        result['errors'] = [{'code': 'cards_not_in_selection', 'card_ids': missing}]
+        result['errors'] = [*result.get('errors', []), {'code': 'cards_not_in_selection', 'card_ids': missing}]
     return result
