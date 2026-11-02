@@ -68,7 +68,7 @@ internal sealed partial class GameAdapter
         else button.ForceClick();
         var (after, reason) = await ActionObservation(() => NModalContainer.Instance?.OpenModal != null ? "manual_input_required"
             : returningToMenu && NGame.Instance?.MainMenu is { } targetMenu && !targetMenu.SubmenuStack.SubmenusOpen
-                && !RunUi.Transitioning() ? "action_completed" : NonCombatBoundary(includeRunLoss: false));
+                && !RunUi.Transitioning() ? "action_completed" : NonCombatBoundary(includeRunOutcome: false));
         if (NGame.Instance?.MainMenu is { } menu && !menu.SubmenuStack.SubmenusOpen && !RunUi.Transitioning())
             runResultInspection.Finished();
         return TransitionSuccess(request.Id, after, reason);

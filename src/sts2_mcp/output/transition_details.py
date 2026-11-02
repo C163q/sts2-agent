@@ -2,7 +2,7 @@ from sts2_mcp.output.game_output import TRANSITION, observation_details, project
 from sts2_mcp.output.available_tools import INSPECTIONS, VIEWS
 
 
-REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "run_lost", "timeout", "interrupted", "selection_resolved", "action_canceled", "action_completed", 'manual_input_required'}
+REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "run_won", "run_lost", "timeout", "interrupted", "selection_resolved", "action_canceled", "action_completed", 'manual_input_required'}
 FIELDS = {
     'combat_started': set(),
     'orb_channeled': {'target', 'orb', 'slot_index'},

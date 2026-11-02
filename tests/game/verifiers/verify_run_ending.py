@@ -10,6 +10,8 @@ from pathlib import Path
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from sts2_mcp.roundtrip_client import Client
+from tests.game.support.verification_runtime import ipc_directory
+from tests.game.support.verification_actions import completed_action_state
 
 
 async def verify(args):
@@ -17,7 +19,7 @@ async def verify(args):
     report = args.report.resolve()
     if report.exists(): raise RuntimeError('Use a fresh evidence path.')
     report.parent.mkdir(parents=True, exist_ok=True)
-    raw = Client(root / '.tmp/roundtrip/ipc', timeout=70)
+    raw = Client(ipc_directory(), timeout=70)
     initial = await asyncio.to_thread(raw.call, 'get_state')
     until = time.monotonic() + 30
     while initial['state']['scene'] != 'main_menu' and time.monotonic() < until:
@@ -29,7 +31,7 @@ async def verify(args):
     config.write_text(json.dumps({'screenshots': {'enabled': True, 'directory': str(report.parent / report.stem)}}))
     evidence = []
     params = StdioServerParameters(command=str(root / '.tmp/mcp-venv/bin/python'), args=[
-        str(root / 'scripts/mcp_server.py'), '--ipc-dir', str(root / '.tmp/roundtrip/ipc'), '--config', str(config)])
+        str(root / 'scripts/mcp_server.py'), '--ipc-dir', str(raw.directory), '--config', str(config)])
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
@@ -66,7 +68,19 @@ async def verify(args):
                         assert data['epilogue']['dialogue'] != previous, data
                     else:
                         assert set(data['available_actions']) & GAME_ACTIONS == {'proceed'}, data
-                        data = await observe_after_action(call, await call('proceed')); complete(data)
+                        receipt = await call('proceed')
+                        assert receipt['transition']['stop_reason'] == 'run_won', receipt
+                        assert receipt['transition']['complete'], receipt
+                        native = completed_action_state(raw.directory, receipt)
+                        assert native['run_result']['status'] == 'visible', native
+                        assert native['run_result']['phase'] == 'outcome', native
+                        assert '?' in native['run_result']['title'], native
+                        assert any(event['type'] == 'hp_changed' and event['target']['kind'] == 'player'
+                                   and event['before'] > 0 and event['after'] == 0
+                                   for event in receipt['transition']['events']), receipt
+                        assert receipt['available_actions'] == [], receipt
+                        await call('run_result_option', {'option_id': 'continue'}, error='observation_required')
+                        data = await observe_after_action(call, receipt)
                         break
                 else: raise AssertionError('Dialogue failed to terminate.')
             elif args.scenario == 'event_death':

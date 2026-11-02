@@ -69,7 +69,7 @@
 | `choice_required` | 使用现有 `inspect_selection`、`select_card`、`selection_option` 处理选择 |
 | `player_ready` | 已进入战斗且玩家可以行动，继续使用战斗工具 |
 | `combat_won` / `combat_lost` | 事件引入的战斗已由原生流程确认胜负 |
-| `run_lost` | 原生 `RunManager.OnEnded(false)` 确认战斗外整局失败；不以短暂零血判死 |
+| `run_lost` | 战斗外整局失败；结算显示后以原生结算胜负为准，不以短暂零血或剧情死亡回调判死，见[终章结算](run-ending.md) |
 | `manual_input_required` | 当前专属界面尚未支持，停止自动操作 |
 | `timeout` / `interrupted` | 结果不完整；重新观察，禁止自动重发动作 |
 

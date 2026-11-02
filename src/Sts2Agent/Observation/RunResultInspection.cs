@@ -14,6 +14,7 @@ using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Screens.RunHistoryScreen;
 using MegaCrit.Sts2.Core.Nodes.Screens.Timeline;
 using MegaCrit.Sts2.Core.Nodes.Screens.Timeline.UnlockScreens;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace Sts2Agent;
 
@@ -100,6 +101,11 @@ internal sealed class RunResultInspection
             .Any(field => RewardInspection.Animating(context.Root, field))
         && (context.Root is not NTimelineScreen timeline || timeline.GetNodeOrNull<Control>("%InputBlocker") is not { Visible: true })
         && Options(context).Any(o => Clickable(o.button));
+
+    // Use the same result as the native banner; victory also kills the player during the epilogue.
+    public static string? Outcome(Context context) => context.Root is NGameOverScreen over
+        && CardSelection.Field(over, "_history") is RunHistory history
+            ? history.Win ? "run_won" : "run_lost" : null;
 
     public static bool Clickable(NClickableControl button) => (button is NEpochSlot ? VisibleUi.Shown(button) : VisibleUi.OnScreen(button)) && button.IsEnabled
         && !RewardInspection.Animating(button, "_tween") && !RewardInspection.Animating(button, "_buttonTween");

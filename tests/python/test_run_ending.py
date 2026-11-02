@@ -3,6 +3,8 @@ import unittest
 
 from sts2_mcp.output.game_output import observation_details
 from sts2_mcp.output.inspection_details import inspection_details
+from sts2_mcp.output.transition_details import end_turn_details
+from sts2_mcp.output.action_output import action_result
 from sts2_mcp.game_tools import GameTools
 from tests.python.test_events import state as event_state
 
@@ -18,6 +20,23 @@ def state(phase='outcome'):
 
 
 class EndingOutputTests(unittest.TestCase):
+    def test_run_won_preserves_visible_story_death_and_victory_title(self):
+        raw = state()
+        raw['run_result']['title'] = 'Victory...?'
+        death = {'sequence': 1, 'type': 'hp_changed',
+                 'target': {'id': 0, 'kind': 'player', 'name': 'The Ironclad'},
+                 'before': 25, 'after': 0}
+        raw['transition'] = {'stop_reason': 'run_won', 'complete': True, 'events': [death]}
+        result = end_turn_details(raw)
+        self.assertEqual(result['run_result']['title'], 'Victory...?')
+        self.assertEqual(result['transition'], raw['transition'])
+        self.assertEqual(result['available_actions'], [])
+        receipt = action_result(result)
+        self.assertEqual(receipt['transition'], raw['transition'])
+        self.assertNotIn('run_result', receipt)
+        raw['transition']['stop_reason'] = 'run_won?'
+        with self.assertRaises(ValueError): end_turn_details(raw)
+
     def test_result_filters_private_history_and_preserves_visible_victory_question(self):
         raw = state(); raw['run_result'].update(future_score=123, saved_seed='SECRET')
         result = observation_details(raw)

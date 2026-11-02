@@ -15,10 +15,11 @@ internal sealed partial class GameAdapter
 {
     private readonly RewardInspection rewardInspection = new();
 
-    private string? NonCombatBoundary(bool includeRunLoss = true)
+    private string? NonCombatBoundary(bool includeRunOutcome = true)
     {
         if (runResultInspection.Current is { } result)
-            return runResultInspection.Ready(result) ? includeRunLoss && EventTaskTracker.RunLost ? "run_lost" : "action_completed" : null;
+            return runResultInspection.Ready(result)
+                ? includeRunOutcome ? RunResultInspection.Outcome(result) : "action_completed" : null;
         if (runResultInspection.ReturningToMenu && NGame.Instance?.MainMenu is { } menu
             && !menu.SubmenuStack.SubmenusOpen && VisibleUi.Shown(menu) && !RunUi.Transitioning()) return "action_completed";
         if (EpilogueInspection.Current is { } epilogue) return EpilogueInspection.Ready(epilogue) ? "action_completed" : null;
@@ -52,7 +53,7 @@ internal sealed partial class GameAdapter
             || currentEvent != null && EventInspection.Ready(currentEvent)
             || mapReady && (treasure == null || !RelicObtainTracker.Pending) && !ShopInspection.Busy && !AncientInspection.Busy && !EventTaskTracker.Pending;
         var boundary = RewardBoundary.Decide(RunUi.Transitioning(), manual, CardSelection.AwaitingInput, ready,
-            runLost: includeRunLoss && !CombatManager.Instance.IsInProgress && EventTaskTracker.RunLost);
+            runLost: includeRunOutcome && !CombatManager.Instance.IsInProgress && EventTaskTracker.RunLost);
         return boundary ?? (CanPlayCards() ? "player_ready" : null);
     }
 
