@@ -7,6 +7,9 @@ namespace Sts2Agent;
 
 internal sealed class SelectionInspection(CombatObservation observation)
 {
+    private static readonly System.Reflection.MethodInfo CardVisibility = HarmonyLib.AccessTools.Method(
+        typeof(NCardGrid), "GetCardVisibility");
+
     public object? Read(CardSelection? selection, bool full = false)
     {
         if (selection == null) return null;
@@ -16,12 +19,36 @@ internal sealed class SelectionInspection(CombatObservation observation)
         object? cards = null;
         if (visible)
         {
-            if (full && selection.Grid != null && !selection.InPreview)
+            if (selection.Grid != null && !selection.InPreview)
                 cards = EnglishCardText.Read(() => selection.Cards.Select(model =>
                 {
-                    // Display context can differ from the owning pile; keep both for native previews.
-                    var card = BrowsedCard.Read(model, "selection", selection.DisplayingPile,
-                        selection.ViewUpgrades == true, true, preservePile: true);
+                    var node = selection.Grid.GetCardHolder(model)?.CardNode;
+                    Dictionary<string, object?> card;
+                    bool identified = CardVisibility.Invoke(selection.Grid, [model]) is ModelVisibility.Visible
+                        && (node == null || node.Visibility == ModelVisibility.Visible);
+                    if (!identified)
+                    {
+                        if (node is { Visibility: not ModelVisibility.Visible } && CombatObservation.CardVisible(node))
+                            card = Card(node, full, expanded: true);
+                        else
+                        {
+                            card = new() { ["name"] = null, ["description"] = null };
+                            if (full) card["hover_tips"] = null;
+                        }
+                    }
+                    else
+                    {
+                        // Every browsable card uses the same panel data, including partly clipped rows.
+                        card = BrowsedCard.Read(model, "selection", selection.DisplayingPile,
+                            selection.ViewUpgrades == true, true, preservePile: true, appearance: true);
+                        if (!full) card.Remove("hover_tips");
+                        if (CombatObservation.CardVisible(node))
+                        {
+                            var displayed = observation.Card(node!);
+                            card["outline"] = displayed["outline"];
+                            card["unplayable_markers"] = displayed["unplayable_markers"];
+                        }
+                    }
                     card["id"] = observation.CardId(model);
                     return card;
                 }).ToArray());
@@ -30,10 +57,8 @@ internal sealed class SelectionInspection(CombatObservation observation)
                     .Select(holder =>
                     {
                         var card = Card(holder.CardNode!, full, selection.Kind is not ("hand" or "hand_upgrade"));
-                        // The displayed model may be an upgrade clone; selection still targets the original.
-                        if (selection.Grid != null && !selection.InPreview)
-                            card["id"] = observation.CardId(holder.CardModel!);
                         if (selection.ViewUpgrades == true && holder.IsShowingUpgradedCard
+                            && holder.CardNode!.Visibility == ModelVisibility.Visible
                             && VisibleUi.Text(holder.CardNode!, "%DescriptionLabel") != null)
                             card["description"] = EnglishCardText.Read(() => EnglishCardText.Plain(
                                 holder.CardNode!.Model!.GetDescriptionForUpgradePreview()));
@@ -99,7 +124,7 @@ internal sealed class SelectionInspection(CombatObservation observation)
                     : Card(pair.before, full, expanded: true);
                 var after = Card(pair.after, full, expanded: true);
                 before["id"] = after["id"] = observation.CardId(pair.original);
-                if (VisibleUi.Text(pair.after, "%DescriptionLabel") != null)
+                if (pair.after.Visibility == ModelVisibility.Visible && VisibleUi.Text(pair.after, "%DescriptionLabel") != null)
                     after["description"] = EnglishCardText.Read(() => EnglishCardText.Plain(pair.after.Model!.GetDescriptionForUpgradePreview()));
                 return (object)new { before, after };
             }).ToArray();

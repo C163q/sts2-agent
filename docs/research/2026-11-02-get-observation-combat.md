@@ -1,6 +1,6 @@
 # get_observation：战斗主画面
 
-> 当前状态：本阶段已完成。战斗 summary、通用 top_bar、原生遗物数量与清单边界均已实现并验证：Python 447 项、C# 60 项、GUI 12 场通过。其余场景摘要暂沿用 default，get_observation 整体仍不核销。无本阶段遗留问题。
+> 当前状态：本阶段已完成。战斗 summary、通用 top_bar、原生遗物数量与清单边界均已实现并验证：Python 447 项、C# 60 项、GUI 12 场通过。其余场景摘要暂沿用 default，get_observation 整体仍不核销。无本阶段遗留问题。 本文件保留 MCP 0.49.0／Mod 0.48.0 的阶段依据；后续共享卡牌摘要规则调整见[选牌实施记录](2026-11-02-get-observation-selections.md)。
 
 总进度见[工具清单](2026-11-02-mcp-tool-review.md)，全部场景见[场景目录](2026-11-02-get-observation-review.md)。
 
@@ -137,7 +137,7 @@
 
 本阶段实际 stdio MCP 样本另见[战斗 summary](2026-11-02-get-observation-examples/combat.summary.json)和[top_bar](2026-11-02-get-observation-examples/combat.top-bar.json)，分别取自本阶段 gui-green/combat/verify/evidence.json 的对应新预设调用。设计样例与真实返回分别保留，不将设计数据冒充实测。
 
-### 当前 inspect_hand.summary 的实际样式
+### 本阶段 inspect_hand.summary 的实际样式（MCP 0.49.0）
 
 以下为既有真实 MCP 样本中三张牌的完整摘要片段；原始调用位于 `.tmp/2026-11-02-get-observation-combat/gui/enchantments/verify/evidence.json` 数组下标 4，参数 preset:summary。省略了该手牌列表的其他三张牌，未省略这三张牌各自的字段。
 

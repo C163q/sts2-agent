@@ -48,9 +48,9 @@ class RelicPresetTests(unittest.IsolatedAsyncioTestCase):
         client = RelicClient()
         client.relics[0].update(hidden_counter=12, future='secret')
         self.assertEqual(await GameTools(client).inspect_relics({'preset': 'summary'}), {'relics': [
-            {'name': 'Anchor', 'counter': None, 'melted': False},
-            {'name': 'Pen Nib', 'counter': 0, 'melted': None},
-            {'name': 'Anchor', 'counter': None, 'melted': True},
+            {'name': 'Anchor', 'melted': False},
+            {'name': 'Pen Nib', 'counter': 0},
+            {'name': 'Anchor', 'melted': True},
         ]})
 
     async def test_filter_uses_original_positions_preserves_order_and_remaps_tip_links(self):
@@ -98,7 +98,7 @@ class RelicPresetTests(unittest.IsolatedAsyncioTestCase):
         for relic in client.relics:
             del relic['melted']
         result = await GameTools(client).inspect_relics({'preset': 'summary'})
-        self.assertTrue(all(set(r) == {'name', 'counter'} for r in result['relics']))
+        self.assertEqual(result['relics'], [{'name': 'Anchor'}, {'name': 'Pen Nib', 'counter': 0}, {'name': 'Anchor'}])
 
     async def test_invalid_arguments_do_not_read_or_clear_existing_permission(self):
         client = RelicClient()

@@ -1,0 +1,92 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "covered"
+  },
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 2,
+    "deck_count": 10,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood"
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "selection": {
+    "type": "deck_upgrade",
+    "status": "visible",
+    "prompt": "Choose 2 cards to Upgrade.",
+    "min_select": 2,
+    "max_select": 2,
+    "selected_ids": [
+      0,
+      1
+    ],
+    "cards": [],
+    "options": [
+      {
+        "id": "cancel_preview",
+        "text": "Back",
+        "enabled": true
+      },
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": true,
+    "upgrade_previews": [
+      {
+        "before": {
+          "name": null,
+          "id": 0
+        },
+        "after": {
+          "id": 0,
+          "name": "Strike+",
+          "type": "Attack",
+          "energy_cost": "1"
+        }
+      },
+      {
+        "before": {
+          "name": null,
+          "id": 1
+        },
+        "after": {
+          "id": 1,
+          "name": "Strike+",
+          "type": "Attack",
+          "energy_cost": "1"
+        }
+      }
+    ]
+  },
+  "event": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "selection_option",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}

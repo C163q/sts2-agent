@@ -1,0 +1,81 @@
+{
+  "scene": "rest_site",
+  "screen": {
+    "status": "covered"
+  },
+  "top_bar": {
+    "hp": 30,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 2,
+    "deck_count": 10,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood"
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "selection": {
+    "type": "deck_upgrade",
+    "status": "visible",
+    "prompt": "Choose a card to Upgrade.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [
+      19
+    ],
+    "cards": [],
+    "options": [
+      {
+        "id": "cancel_preview",
+        "text": "Back",
+        "enabled": true
+      },
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "upgrade_previews": [
+      {
+        "before": {
+          "id": 19,
+          "name": "Bash",
+          "type": "Attack",
+          "energy_cost": "2"
+        },
+        "after": {
+          "id": 19,
+          "name": "Bash+",
+          "type": "Attack",
+          "energy_cost": "2"
+        }
+      }
+    ]
+  },
+  "rest_site": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "selection_option",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}

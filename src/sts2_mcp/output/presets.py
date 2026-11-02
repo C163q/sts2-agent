@@ -87,7 +87,9 @@ def output_preset(handler):
             return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
         else:
             payload = await handler(self)
-        return apply_preset(payload, preset)
+        compact_summary = preset == 'summary' and operation in {
+            'inspect_hand', 'inspect_selection', 'inspect_relics'}
+        return apply_preset(payload, 'default' if compact_summary else preset)
 
     wrapped.supports_output_presets = True
     return wrapped

@@ -23,7 +23,7 @@ internal static class SelectionActions
             && selection.Selected.SequenceEqual(selected) && selection.Limits == limits
             && selection.Prefs.RequireManualConfirmation == confirmation;
         NCardHolder? holder = selection.Holders.FirstOrDefault(holder => ReferenceEquals(holder.CardModel, model));
-        if (selection.Grid is { } grid && (holder == null || !VisibleUi.OnScreen(holder)))
+        if (selection.Grid is { } grid && (holder == null || !CardSelection.Clickable(holder)))
         {
             // Follow the native grid layout, then let its virtualized rows catch up before clicking.
             int index = Array.IndexOf(selection.Cards, model);
@@ -33,10 +33,12 @@ internal static class SelectionActions
             grid.SetScrollPosition(-index / columns * (size.Y + padding));
             for (int i = 0; i < 10; i++)
             {
+                // SetScrollPosition jumps directly and bypasses the native drag-update allocation.
+                HarmonyLib.AccessTools.Method(grid.GetType(), "AllocateCardHolders").Invoke(grid, null);
                 await frame();
                 if (!Unchanged()) throw new InvalidOperationException("The selection changed while scrolling.");
                 holder = grid.GetCardHolder(model);
-                if (holder != null && VisibleUi.OnScreen(holder)) break;
+                if (holder != null && CardSelection.Clickable(holder)) break;
             }
         }
         if (!Unchanged() || !selection.CanSelect || holder == null || !CardSelection.Clickable(holder))

@@ -25,7 +25,7 @@ async def verify(args):
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             initialized = await session.initialize()
-            assert initialized.serverInfo.version == '0.49.0', initialized
+            assert initialized.serverInfo.version == '0.50.0', initialized
             definitions = (await session.list_tools()).tools
             assert len(definitions) == 42
             assert all(t.inputSchema['properties']['preset']['default'] == 'default' for t in definitions)
@@ -74,7 +74,7 @@ async def verify(args):
                             if b['name'] == 'Burning Blood']
                 assert ordinary, relic_full
                 for compact, complete, brief in ordinary:
-                    assert 'melted' not in compact and complete['melted'] is None and brief['melted'] is None
+                    assert 'melted' not in compact and complete['melted'] is None and 'melted' not in brief
                 defend = next(c for c in hand['hand'] if c['name'] == 'Defend')
                 receipt = await call('play_card', {'card_id': defend['id']})
                 assert receipt['transition']['complete'] and 'player' not in receipt

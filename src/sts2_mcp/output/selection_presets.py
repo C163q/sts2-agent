@@ -1,9 +1,6 @@
 """Project validated selection details without changing native input or state."""
-from sts2_mcp.output.card_summary import card_summary
 from sts2_mcp.output.card_play_details import CARD_ID
-
-
-PREVIEW_LISTS = ('upgrade_previews', 'enchant_previews', 'transform_previews')
+from sts2_mcp.output.selection_summary import PREVIEW_LISTS, selection_summary
 
 
 SELECTION_SCHEMA = {
@@ -54,27 +51,22 @@ def selection_preset(payload, preset, card_ids=None):
     selected = known if card_ids is None else set(card_ids)
 
     def cards(items):
-        return [card_summary(card) if preset == 'summary' else card for card in items if card['id'] in selected]
+        return [card for card in items if card['id'] in selected]
 
     choice['cards'] = cards(choice['cards'])
     if 'bundles' in choice:
         choice['bundles'] = [{**bundle, 'cards': cards(bundle['cards'])}
                              for bundle in choice['bundles']]
 
-    def preview(pair):
-        if preset == 'full':
-            return pair
-        return {**pair, **{side: None if pair[side] is None else card_summary(pair[side])
-                          for side in ('before', 'after')}}
-
     if choice.get('upgrade_preview') is not None:
         pair = choice['upgrade_preview']
-        choice['upgrade_preview'] = preview(pair) if pair['before']['id'] in selected else None
+        choice['upgrade_preview'] = pair if pair['before']['id'] in selected else None
     for field in PREVIEW_LISTS:
         if field in choice:
-            choice[field] = [preview(pair) for pair in choice[field] if pair['before']['id'] in selected]
+            choice[field] = [pair for pair in choice[field] if pair['before']['id'] in selected]
     result = {**payload, 'selection': choice}
     if preset == 'summary':
+        result['selection'] = selection_summary(choice)
         result.pop('hover_tips', None)
     else:
         result['hover_tips'] = [{**tip, 'card_ids': [i for i in tip['card_ids'] if i in selected]}

@@ -116,6 +116,11 @@ async def verify(args):
                         assert len(preview['selection']['upgrade_previews']) == 2, preview
                         assert all(pair['before']['name'] is None
                                    for pair in preview['selection']['upgrade_previews']), preview
+                        observed_summary = await call('get_observation', {'preset': 'summary'})
+                        assert observed_summary['selection']['cards'] == []
+                        assert len(observed_summary['selection']['upgrade_previews']) == 2
+                        assert all(pair['before']['name'] is None and 'description' not in pair['after']
+                                   for pair in observed_summary['selection']['upgrade_previews'])
                     await call('capture_screenshot', {'filename': 'selected-preview.png'})
                     await call('selection_option', {'option_id': 'cancel_preview'})
                     retained = await call('inspect_selection')

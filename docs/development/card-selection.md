@@ -1,6 +1,6 @@
 # 选牌与查看战场
 
-适用于 Mod／MCP `0.46.0`、schema `27`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
+适用于 Mod `0.49.0`／MCP `0.50.0`、schema `31`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
 
 ## 观察与信息范围
 
@@ -13,7 +13,7 @@
 | `type` | `choose_one`、`reward`、`grid`、`combat_pile`、`deck`、`hand`、`hand_upgrade`、`deck_upgrade`、`deck_enchant`、`deck_transform`、`bundle`、`view_cards` 或 `unsupported` |
 | `status` | `visible` 为选牌页面；`battlefield` 为点击眼睛后查看战场；`covered` 为被其他页面覆盖；`unsupported` 为尚未接通的选择类型 |
 | `prompt`、`min_select`、`max_select` | 当前选择提示与数量范围；隐藏时为 `null` |
-| `cards` | 当前画面可见候选，包含稳定整数 `id`；已经展开显示的牌面可附正文，手牌摘要不自动展开正文 |
+| `cards` | 当前候选页的完整可浏览列表，包含稳定整数 `id`；已经展开显示的牌面可附正文，手牌摘要不自动展开正文 |
 | `selected_ids` | 当前已选项目；隐藏时为 `null` |
 | `options` | 当前显示的按钮及 `id`、英语 `text`、`enabled`；未启用不能点击 |
 | `can_view_battlefield` | 原生眼睛当前可用，可显式切换视图 |
@@ -22,13 +22,13 @@
 | `upgrade_previews` | 仅 `deck_upgrade` 提供；已经显示的单牌或多牌升级比较，未进入预览或隐藏时为空列表 |
 | `upgrade_preview` | 仅 `hand_upgrade` 提供；已显示的升级前后牌面 `before`、`after`，未选择或隐藏时为 `null` |
 
-`cards` 在查看战场、被覆盖或未支持时为 `null`，与没有候选的空列表不同。网格可能滚动，基础观察不补齐屏幕外候选；`inspect_selection()` 默认显式读取整个可浏览候选列表、正文及共享 `hover_tips`，不会展开尚未生成的结果。省略 `view_upgrades` 时不改变 UI。共享解释通过整数 `card_ids` 引用候选。手牌选择沿用战斗手牌 ID，升级预览的克隆仍使用原牌 ID。
+`cards` 在查看战场、被覆盖或未支持时为 `null`，与没有候选的空列表不同。网格候选按原生列表顺序完整返回，不按滚动位置截断；基础观察保留已展开牌面，`inspect_selection()` 默认显式读取整个可浏览候选列表、正文及共享 `hover_tips`，不会展开尚未生成的结果。省略 `view_upgrades` 时不改变 UI。共享解释通过整数 `card_ids` 引用候选。手牌选择沿用战斗手牌 ID，升级预览的克隆仍使用原牌 ID。
 
 基础观察和查看结果按情境附简短 `notes.selection`：选择遮挡时提示用眼睛查看战场；查看战场时提醒仍有选择待完成，须返回选择界面；牌组、牌堆或地图覆盖选择时提醒先关闭当前查看页。这些说明不重复候选正文或按钮列表。
 
 ## MCP 输出预设
 
-默认空值过滤见[公共规则](mcp.md#输出预设)：已展开比较的 before / after 两侧完整保留；未展开或被筛选掉的整个 `upgrade_preview:null` 可以省略。下文原有空值说明适用于 full 与 summary。
+默认空值过滤见[公共规则](mcp.md#输出预设)：已展开比较的 before / after 两侧完整保留；未展开或被筛选掉的整个 `upgrade_preview:null` 可以省略。下文原有空值说明适用于 full；summary 继承 default 的普通空值过滤。
 
 `inspect_selection` 接受以下可选参数。省略或传 `{}` 保持完整详情及当前 UI 模式，使用 default 省略普通空值。`preset` 和 `card_ids` 在 Python 投影，底层文件协议只接受可选的 `view_upgrades`；本次升级预览及观察修复需同时更新 DLL／清单和 Python，完整重启游戏并重连 MCP。
 
@@ -42,13 +42,13 @@
 {"preset": "summary", "card_ids": [1, 2, 3], "view_upgrades": true}
 ```
 
-`summary` 的每张卡牌沿用[手牌摘要字段](hand-inspection.md#参数与返回范围)：保留身份、费用、可见附魔及卡面标记，移除正文、稀有度、卡池和悬停帮助；没有星耗时不输出该项。规则统一作用于 `cards`、`bundles[].cards`，以及 `upgrade_preview`、`upgrade_previews`、`enchant_previews`、`transform_previews` 的 `before/after`；预览也不保留正文，需要时另读 `full`。
+`summary` 的每张卡牌沿用[手牌摘要字段](hand-inspection.md#参数与返回范围)：保留身份、费用、可见附魔及卡面标记，移除正文、稀有度、卡池和悬停帮助；没有星耗时不输出该项。规则统一作用于 `cards`、`bundles[].cards`，以及 `upgrade_preview`、`upgrade_previews`、`enchant_previews`、`transform_previews` 的 `before/after`；预览也不保留正文，需要时另读 `full`。空 bundles、upgrade_previews、enchant_previews、transform_previews 省略；cards、selected_ids、options 即使为空也保留。
 
-当前已知缺口：普通网格候选的完整读取分支尚未输出卡牌已有的 enchantment，因而该分支的 summary 也无法保留它；手牌、包内容及节点比较不受此分支影响。已列入[候选范围与摘要调整](../research/2026-11-02-get-observation-selections.md#完整候选读取的附魔缺口)的后续修复与实测，当前尚未修复。
+Mod `0.49.0` 已修复普通网格候选缺少已有附魔的读取分支；屏幕外候选也按原生卡面显示规则保留附魔名称、实际可显示计数与置灰状态。
 
-摘要保留场景、选择类型和状态、提示、数量限制、已选 ID、按钮、包 ID、升级模式、随机变牌标记及原有空值。选择级 `selection.enchantment` 仍保留附魔操作名称与说明，它描述当前要执行的操作。不会补全未知卡牌或随机变牌结果；预设及筛选本身不改变候选范围和 UI。读取成功后可直接选择；仍先验证完整原生详情，再投影为摘要，错误不会被转为空结果。非法参数不发往游戏，也不丢弃已有动作许可。
+摘要保留场景、选择类型和状态、提示、数量限制、已选 ID、按钮、包 ID、升级模式、随机变牌标记；空值按 default 规则处理。选择级 `selection.enchantment` 仍保留附魔操作名称与说明，它描述当前要执行的操作。不会补全未知卡牌或随机变牌结果；预设及筛选本身不改变候选范围和 UI。读取成功后可直接选择；仍先验证完整原生详情，再投影为摘要，错误不会被转为空结果。非法参数不发往游戏，也不丢弃已有动作许可。
 
-`card_ids` 同时筛选 `cards`、`bundles[].cards` 和已经展开的预览。预览按原牌 `before.id` 命中，保留整组 `before/after`，不生成尚未展开的比较或随机结果；未命中的 `upgrade_preview` 为 `null`，列表预览移除对应项。包 ID 保留，包内 `cards` 可为空；查看包内某张牌不改变整包选择方式。full 的共享提示同步裁剪卡牌关联，summary 继续不提供悬停效果。
+`card_ids` 同时筛选 `cards`、`bundles[].cards` 和已经展开的预览。预览按原牌 `before.id` 命中，保留整组 `before/after`，不生成尚未展开的比较或随机结果；未命中的 `upgrade_preview` 在 full 中为 `null`，default／summary 省略；列表预览移除对应项，summary 下为空时省略字段。包 ID 保留，包内 `cards` 可为空；查看包内某张牌不改变整包选择方式。full 的共享提示同步裁剪卡牌关联，summary 继续不提供悬停效果。
 
 筛选仅限制返回的卡牌详情，提示、数量限制、**全部** `selected_ids`、按钮和选择级附魔说明保持完整；因此过滤结果中的空列表或 `null` 不表示原生页面没有候选或预览。结果确认页的牌也可筛选，但不会因此变成可点击候选。ID 仅在本次可浏览详情及已展开预览中匹配，不查询其他牌堆或隐藏页面。
 

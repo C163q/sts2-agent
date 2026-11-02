@@ -206,14 +206,14 @@ class DefaultToolTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(full['hand'][0]['star_cost'])
         self.assertTrue(all(args is None for op, token, args in client.calls if op == 'inspect_hand'))
 
-    async def test_relic_summary_keeps_old_nulls_while_default_omits_them(self):
+    async def test_relic_summary_and_default_omit_ordinary_nulls(self):
         tools = GameTools(RelicClient())
         default = await tools.inspect_relics({'relic_indices': [1]})
         full = await tools.inspect_relics({'preset': 'full', 'relic_indices': [1]})
         summary = await tools.inspect_relics({'preset': 'summary', 'relic_indices': [1]})
         self.assertNotIn('melted', default['relics'][0])
         self.assertIsNone(full['relics'][0]['melted'])
-        self.assertIsNone(summary['relics'][0]['melted'])
+        self.assertNotIn('melted', summary['relics'][0])
         self.assertEqual(default['relics'][0]['counter'], 0)
 
     async def test_selection_preserves_random_comparison_and_partial_errors(self):

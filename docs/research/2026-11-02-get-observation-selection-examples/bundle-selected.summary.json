@@ -1,0 +1,88 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "covered"
+  },
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "deck_count": 10,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 2,
+    "relics": [
+      {
+        "name": "Burning Blood"
+      },
+      {
+        "name": "Scroll Boxes"
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "selection": {
+    "type": "bundle",
+    "status": "visible",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [
+      11,
+      12,
+      13
+    ],
+    "cards": [
+      {
+        "id": 11,
+        "name": "Breakthrough",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 12,
+        "name": "Havoc",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 13,
+        "name": "Feel No Pain",
+        "type": "Power",
+        "energy_cost": "1"
+      }
+    ],
+    "options": [
+      {
+        "id": "cancel_preview",
+        "text": "Back",
+        "enabled": true
+      },
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "ancient": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "selection_option",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}

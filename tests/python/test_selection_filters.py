@@ -90,7 +90,10 @@ class SelectionFilterTests(unittest.IsolatedAsyncioTestCase):
                     else:
                         self.assertEqual(preview['after']['name'], 'Defend++')
                     empty = await tools.inspect_selection({'preset': preset, 'card_ids': []})
-                    self.assertEqual(empty['selection'][field], None if kind == 'hand_upgrade' else [])
+                    if preset == 'summary':
+                        self.assertNotIn(field, empty['selection'])
+                    else:
+                        self.assertEqual(empty['selection'][field], None if kind == 'hand_upgrade' else [])
                     self.assertEqual(empty['selection']['selected_ids'], [9])
                     self.assertEqual(client.choice, original)
 

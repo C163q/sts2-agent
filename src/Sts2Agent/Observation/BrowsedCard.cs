@@ -1,5 +1,6 @@
 using System.Globalization;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Enchantments;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
 
@@ -18,7 +19,7 @@ internal static class BrowsedCard
     }
 
     public static Dictionary<string, object?> Read(CardModel original, string id, PileType pile, bool upgrades, bool full,
-        bool preservePile = false)
+        bool preservePile = false, bool appearance = false)
     {
         // Native grid previews also upgrade a clone; never recalculate or upgrade the owned card.
         var model = (CardModel)original.MutableClone();
@@ -29,13 +30,13 @@ internal static class BrowsedCard
             // Combat formatting and costs consult CardModel.Pile; the detached clone must retain that context.
             contextualClone = pile.IsCombatPile() || preservePile ? model : null;
             contextualPile = contextualClone == null ? null : original.Pile;
-            return ReadClone(model, id, pile, upgrades, full, contextualClone != null ? original.CurrentTarget : null);
+            return ReadClone(model, id, pile, upgrades, full, contextualClone != null ? original.CurrentTarget : null, appearance);
         }
         finally { contextualClone = previousClone; contextualPile = previousPile; }
     }
 
     private static Dictionary<string, object?> ReadClone(CardModel model, string id, PileType pile, bool upgrades, bool full,
-        MegaCrit.Sts2.Core.Entities.Creatures.Creature? target)
+        MegaCrit.Sts2.Core.Entities.Creatures.Creature? target, bool appearance)
     {
         bool preview = upgrades && model.IsUpgradable;
         if (preview) model.UpgradeInternal();
@@ -56,6 +57,24 @@ internal static class BrowsedCard
             ["energy_cost"] = model.EnergyCost.CostsX ? "X" : energy < 0 ? null : energy.ToString(CultureInfo.InvariantCulture),
             ["star_cost"] = model.HasStarCostX ? "X" : stars < 0 ? null : stars.ToString(CultureInfo.InvariantCulture)
         };
+        if (appearance)
+        {
+            // Match NCard's normal grid rendering; these are display properties, not internal stacks.
+            if (model.Enchantment is { } enchantment && enchantment.Icon != null)
+            {
+                var visible = new Dictionary<string, object?>
+                {
+                    ["name"] = EnglishCardText.Plain(enchantment.Title.GetFormattedText()),
+                    ["dimmed"] = enchantment.Status == EnchantmentStatus.Disabled
+                };
+                if (enchantment.ShowAmount) visible["amount"] = enchantment.DisplayAmount;
+                result["enchantment"] = visible;
+            }
+            if (energy >= 0 && !model.EnergyCost.CostsX && model.EnergyCost.WasJustUpgraded)
+                result["energy_cost_color"] = "green";
+            if (stars >= 0 && !model.HasStarCostX && model.WasStarCostJustUpgraded)
+                result["star_cost_color"] = "green";
+        }
         if (full)
         {
             result["description"] = EnglishCardText.Plain(preview

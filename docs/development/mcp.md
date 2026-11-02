@@ -79,7 +79,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.48.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.49.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要 Python 3.10 或以上版本、Mod `0.49.0` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.50.0`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -135,23 +135,23 @@ approval_mode = "approve"
 
 ## 输出预设
 
-MCP `0.49.0` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
+MCP `0.50.0` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
 
 | 预设 | 行为 |
 | --- | --- |
 | `default`（默认） | 与本工具 full 的内容范围一致，递归删除普通对象字段中的 `null` |
 | `full` | 保留本工具原有完整输出及其中的空值；动作仍返回精简回执，不附送完整观察 |
-| 已有专用预设 | `summary`、`selectable`、`actions_only` 保持各工具既有行为，不叠加 default 的过滤 |
+| 专用预设 | summary 继承 default 后进一步精简；selectable、actions_only 按各工具契约返回 |
 
 过滤保留三类例外：所有数组的 `null` 元素；`transition.events` 中已有的全部空值；选牌已展开的升级、附魔、变牌比较中 before / after 两侧的全部内容与空值。后者包括随机变牌的 `after:null`，但未展开的整个 `upgrade_preview:null` 可以省略。
 
 `0`、`false`、空字符串、空数组、空对象均保留。数组长度、顺序和引用下标不变；过滤后为空的对象仍保留。省略不表示零、否或空集合，也不表示沿用上次值；结果不是状态增量。需要明确空值时使用 full。
 
-例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。已有遗物 summary 仍保留原有空值。`inspect_deck` / `inspect_pile` 的 `detail_level` 独立决定正文范围，默认仍是 summary；`preset:"full"` 不会更改它。
+例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。遗物 summary 同样省略普通空值。`inspect_deck` / `inspect_pile` 的 `detail_level` 独立决定正文范围，默认仍是 summary；`preset:"full"` 不会更改它。
 
-`get_observation` 新增的 summary 与 top_bar 基于 default，前者另显式保留 `health:null`；非战斗 summary 暂用 default。它们不改变其他工具已有预设；完整字段规则见[观察预设](observation.md#mcp-输出预设)。
+`get_observation` 的 summary 与 top_bar 基于 default，前者另显式保留 `health:null`；summary 在各场景统一精简选牌，非战斗房间主体暂用 default。inspect_hand／inspect_selection／inspect_relics 的 summary 也继承普通空值过滤；比较中属于卡牌摘要的字段仍保留必要未知值。完整字段规则见[观察预设](observation.md#mcp-输出预设)。
 
-该参数只控制 Python 公开输出，不转发给 Mod；完整响应校验、动作许可判断和原有筛选先完成，再过滤空值。部分 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。标准库文件客户端继续保留原有空值，本节预设只适用于 MCP 和 GameTools 的玩法工具调用。仅更新公共空值过滤只需重连 MCP；新增 relic_count 和遗物清单边界调整需 Mod 0.48.0 并重启游戏，见[观察预设](observation.md#mcp-输出预设)。
+该参数只控制 Python 公开输出，不转发给 Mod；完整响应校验、动作许可判断和原有筛选先完成，再过滤空值。部分 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。标准库文件客户端继续保留原有空值，本节预设只适用于 MCP 和 GameTools 的玩法工具调用。仅更新公共空值过滤只需重连 MCP；本轮完整候选列表及网格附魔读取需 Mod 0.49.0 并重启游戏，见[观察预设](observation.md#mcp-输出预设)。
 
 ## 调用和错误语义
 

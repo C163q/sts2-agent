@@ -33,6 +33,11 @@ class CombatProjectionTests(unittest.TestCase):
                 value = sample()
                 original = copy.deepcopy(value)
                 expected = json.loads((EXAMPLES / filename).read_text())
+                if preset == 'summary':
+                    for card in expected['player']['hand']:
+                        card.pop('unplayable_markers', None)
+                        if card.get('outline') == 'none':
+                            card.pop('outline')
                 self.assertEqual(observation_preset(value, preset), expected)
                 self.assertEqual(value, original)
 
@@ -96,7 +101,7 @@ class CombatProjectionTests(unittest.TestCase):
         self.assertEqual(result['enemies'][0]['powers'][0]['amount'], 0)
         self.assertNotIn('powers', result['enemies'][1])
         self.assertEqual(result['allies'], [])
-        self.assertEqual(result['player']['hand'][0]['unplayable_markers'], [])
+        self.assertNotIn('unplayable_markers', result['player']['hand'][0])
 
     def test_unreadable_relic_count_never_falls_back_to_filtered_list_length(self):
         for preset in ('summary', 'top_bar'):

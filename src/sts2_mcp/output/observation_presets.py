@@ -2,7 +2,7 @@ OBSERVATION_SCHEMA = {
     'type': 'object',
     'properties': {'preset': {
         'type': 'string', 'enum': ['full', 'actions_only', 'summary', 'top_bar'], 'default': 'full',
-        'description': 'full keeps basic observations; summary compacts combat resources and cards (default elsewhere); actions_only keeps context and tool names; top_bar adds top-bar values and relic_count, without relic details. All refresh action permission.',
+        'description': 'full keeps basic observations; summary compacts combat and selection cards; actions_only keeps context and tool names; top_bar adds top-bar values and relic_count, without relic details. All refresh action permission.',
     }},
     'additionalProperties': False,
 }
@@ -23,7 +23,7 @@ def observation_preset(payload, preset):
     if preset == 'full' or 'error' in payload:
         return payload
     if preset == 'summary':
-        return combat_summary(payload)
+        return observation_summary(payload)
     result = {key: payload[key] for key in ('scene', 'screen', 'available_actions')}
     if payload.get('selection') is not None:
         result['selection'] = {key: payload['selection'][key] for key in ('type', 'status')}
@@ -35,10 +35,13 @@ def observation_preset(payload, preset):
     return result
 
 
-def combat_summary(payload):
+def observation_summary(payload):
     from sts2_mcp.output.card_summary import card_summary
     from sts2_mcp.output.presets import apply_preset
+    from sts2_mcp.output.selection_summary import selection_summary
     result = apply_preset(payload, 'default')
+    if result.get('selection') is not None:
+        result['selection'] = selection_summary(result['selection'])
     if payload['scene'] != 'combat':
         return result
 

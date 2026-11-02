@@ -68,13 +68,12 @@ class HandPresetTests(unittest.IsolatedAsyncioTestCase):
         result = await tools.inspect_hand({'preset': 'summary'})
         self.assertEqual(result, {'hand': [
             {'id': 9, 'name': 'Defend+', 'type': 'Skill', 'energy_cost': '0', 'energy_cost_color': 'green',
-             'unplayable_markers': [], 'outline': 'cyan'},
+             'outline': 'cyan'},
             {'id': 2, 'name': 'Defend', 'type': 'Skill', 'energy_cost': '1',
-             'unplayable_markers': ['energy'], 'outline': 'none'},
+             'unplayable_markers': ['energy']},
             {'id': 4, 'name': 'Star Card', 'type': 'Attack', 'energy_cost': 'X', 'star_cost': '?',
              'star_cost_color': 'red', 'unplayable_markers': ['star'], 'outline': 'red'},
-            {'id': 7, 'name': 'Unknown', 'type': None, 'energy_cost': None,
-             'unplayable_markers': [], 'outline': 'none'},
+            {'id': 7, 'name': 'Unknown'},
         ]})
 
     async def test_filter_preserves_hand_order_deduplicates_and_clips_shared_tip_links(self):

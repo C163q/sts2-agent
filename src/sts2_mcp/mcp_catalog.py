@@ -89,7 +89,7 @@ def tool_definitions(*, screenshots_enabled=False):
 
         Tool(name="get_observation", inputSchema=OBSERVATION_SCHEMA, annotations=read_only, description=(
             "Read an overview of the current visible screen. Includes available inspection/action names, excluding this tool and screenshots. "
-            "summary compacts combat; top_bar adds top-bar values without relic details. "
+            "Exposed selections include all browsable candidates. summary compacts combat and selection cards; top_bar adds top-bar values without relic details. "
             "Use inspect_relics for relic details. Ordinary hand effects and hover help require dedicated inspections.")),
         Tool(name='inspect_rewards', inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             'Read the current browsable reward rows and their hover help. Does not reveal unopened card reward candidates.')),

@@ -16,6 +16,7 @@ from sts2_mcp.roundtrip_client import Client
 
 CATALOG = json.loads((ROOT / 'tests/game/data/test_scenarios.json').read_text())
 SUPPORTED_VERIFIERS = {
+    'verify_selection_observations.py',
     'verify_observation_presets.py',
     'verify_default_presets.py',
     'verify_card_additions.py',
@@ -82,6 +83,7 @@ def load_cases(path):
             if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
+                'verify_selection_observations.py': ('grid', 'upgrades'),
                 'verify_observation_presets.py': ('combat', 'orbs', 'osty', 'blade', 'enchantments', 'rest', 'event', 'divination', 'native', 'empty_inventory'),
                 'verify_default_presets.py': ('combat', 'orbs', 'smith', 'transform', 'divination', 'map', 'event'),
                 'verify_card_additions.py': ('hand', 'overflow', 'discard', 'normal', 'enemy', 'reward', 'checks'),
@@ -111,7 +113,7 @@ def load_cases(path):
                 'verify_reward_alternatives.py': ('paels_wing', 'driftwood'),
                 'verify_hand_presets.py': ('basic', 'stars', 'x_cost', 'card_names', 'selection', 'enchantments'),
                 'verify_selection_presets.py': ('discovery', 'hand_upgrade', 'smith', 'ancient_multi',
-                    'ancient_transform', 'ancient_bundle', 'ancient_pandora', 'paels_wing', 'driftwood',
+                    'ancient_transform', 'ancient_bundle', 'ancient_pandora', 'event_enchant', 'paels_wing', 'driftwood',
                     'grid', 'combat_pile', 'deck', 'hand'),
                 'verify_selection_upgrades.py': ('smith', 'event_upgrade', 'ancient_transform', 'ancient_pandora', 'reward', 'deck', 'multi_upgrade'),
             }

@@ -1,0 +1,322 @@
+[
+  {
+    "name": "complete_grid",
+    "scenarios": {
+      "selection": "grid_enchantments"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_observations.py",
+        "args": [
+          "--scenario",
+          "grid"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "complete_upgrades",
+    "scenarios": {
+      "selection": "upgrade_enchantments"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_observations.py",
+        "args": [
+          "--scenario",
+          "upgrades"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "choose_one",
+    "scenarios": {
+      "play": "discovery"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "discovery"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hand",
+    "scenarios": {
+      "selection": "retain_one"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "hand"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hand_upgrade",
+    "scenarios": {
+      "play": "armaments"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "hand_upgrade"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "grid",
+    "scenarios": {
+      "selection": "grid_two"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "grid"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "combat_pile",
+    "scenarios": {
+      "selection": "combat_pile"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "combat_pile"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "deck",
+    "scenarios": {
+      "selection": "deck"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "deck"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "smith",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "smith"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "enchant_single",
+    "scenarios": {
+      "event": "enchant"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "event_enchant"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "enchant_multi",
+    "scenarios": {
+      "ancient": "multi"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "ancient_multi"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "transform",
+    "scenarios": {
+      "ancient": "transform"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "ancient_transform"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "bundle",
+    "scenarios": {
+      "ancient": "bundle"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "ancient_bundle"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "view_cards",
+    "scenarios": {
+      "ancient": "pandora"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "ancient_pandora"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "paels_wing",
+    "scenarios": {
+      "reward": "paels_wing"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "paels_wing"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "driftwood",
+    "scenarios": {
+      "reward": "driftwood"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "driftwood"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "multi_upgrade",
+    "scenarios": {
+      "selection": "upgrade_multi"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_upgrades.py",
+        "args": [
+          "--scenario",
+          "multi_upgrade"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hand_enchantments",
+    "scenarios": {
+      "play": "enchantments"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_hand_presets.py",
+        "args": [
+          "--scenario",
+          "enchantments"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hand_stars",
+    "scenarios": {
+      "play": "stars"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_hand_presets.py",
+        "args": [
+          "--scenario",
+          "stars"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "relics",
+    "scenarios": {
+      "play": "wax_melt"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_relic_presets.py",
+        "args": [
+          "--scenario",
+          "wax_melt"
+        ]
+      }
+    ]
+  }
+]

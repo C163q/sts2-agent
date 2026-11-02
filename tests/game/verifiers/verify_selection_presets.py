@@ -15,22 +15,27 @@ from sts2_mcp.roundtrip_client import Client
 from tests.game.support.verification_runtime import ensure_run, ipc_directory
 
 
-def compare_summary(full, summary):
+def compare_summary(full, summary, path=()):
     if isinstance(full, dict):
-        if type(full.get('id')) is int and 'name' in full:
-            allowed = {'id', 'name', 'type', 'energy_cost', 'star_cost', 'energy_cost_color',
-                       'star_cost_color', 'unplayable_markers', 'outline', 'enchantment'}
-            assert set(summary) == (set(full) & allowed) - ({'star_cost'} if full.get('star_cost') is None else set())
-            assert summary['id'] == full['id'] and summary['name'] == full['name']
-            assert all(value == full[key] for key, value in summary.items()), (full, summary)
-        else:
-            assert set(summary) == set(full) - {'hover_tips'}, (full, summary)
-            for key in summary:
-                compare_summary(full[key], summary[key])
+        assert set(summary) <= set(full), (full, summary)
+        card = type(full.get('id')) is int and 'name' in full
+        allowed = {'id', 'name', 'type', 'energy_cost', 'star_cost', 'energy_cost_color',
+                   'star_cost_color', 'unplayable_markers', 'outline', 'enchantment'}
+        comparison = 'before' in path or 'after' in path
+        for key, value in full.items():
+            omitted = (card and key not in allowed or key == 'hover_tips'
+                       or value is None and not (comparison or key in {'before', 'after'} and {'before', 'after'} <= full.keys())
+                       or card and key == 'star_cost' and value is None
+                       or card and key == 'outline' and value == 'none'
+                       or card and key == 'unplayable_markers' and value == []
+                       or key in {'bundles', 'upgrade_previews', 'enchant_previews', 'transform_previews'} and value == [])
+            assert (key not in summary) == omitted, (path, key, full, summary)
+            if key in summary:
+                compare_summary(value, summary[key], (*path, key))
     elif isinstance(full, list):
         assert len(full) == len(summary), (full, summary)
         for before, after in zip(full, summary):
-            compare_summary(before, after)
+            compare_summary(before, after, (*path, '*'))
     else:
         assert full == summary, (full, summary)
 
@@ -57,10 +62,10 @@ def compare_filter(source, result, requested):
                                          for b in before.get('bundles', [])]
     if 'upgrade_preview' in before:
         pair = before['upgrade_preview']
-        assert after['upgrade_preview'] == (pair if pair and pair['before']['id'] in selected else None)
+        assert after.get('upgrade_preview') == (pair if pair and pair['before']['id'] in selected else None)
     for field in ('upgrade_previews', 'enchant_previews', 'transform_previews'):
         if field in before:
-            assert after[field] == [p for p in before[field] if p['before']['id'] in selected]
+            assert after.get(field, []) == [p for p in before[field] if p['before']['id'] in selected]
     known = {c['id'] for cards in card_lists(before) for c in cards}
     missing = list(dict.fromkeys(i for i in requested if i not in known))
     assert result.get('errors') == ([{'code': 'cards_not_in_selection', 'card_ids': missing}] if missing else None)
@@ -107,6 +112,8 @@ async def verify(args):
                 assert full == await call('inspect_selection', {'preset': 'full'})
                 summary = await call('inspect_selection', {'preset': 'summary'})
                 compare_summary(full, summary)
+                observed = await call('get_observation', {'preset': 'summary'})
+                assert observed['selection'] == summary['selection'], (observed, summary)
                 ids = list(dict.fromkeys(c['id'] for cards in card_lists(full['selection']) for c in cards))
                 missing = max(ids, default=0) + 100000
                 requested = [ids[-1], ids[0], ids[0], missing, missing] if ids else [missing]
@@ -135,6 +142,9 @@ async def verify(args):
                 name = 'Discovery' if args.scenario == 'discovery' else 'Armaments'
                 card = next(c for c in state['player']['hand'] if c['name'] == name)
                 await call('play_card', {'card_id': card['id']})
+            elif args.scenario == 'event_enchant':
+                option = next(o for o in state['event']['options'] if o['enabled'])
+                await call('choose_event_option', {'option_id': option['id']})
             elif args.scenario == 'smith':
                 await call('choose_rest_option', {'option_id': 'SMITH'})
             elif args.scenario in ('paels_wing', 'driftwood'):
@@ -146,7 +156,7 @@ async def verify(args):
 
             choice = await presets('candidates')
             expected = {'discovery': 'choose_one', 'hand_upgrade': 'hand_upgrade', 'smith': 'deck_upgrade',
-                        'ancient_multi': 'deck_enchant', 'ancient_transform': 'deck_transform',
+                        'ancient_multi': 'deck_enchant', 'event_enchant': 'deck_enchant', 'ancient_transform': 'deck_transform',
                         'ancient_bundle': 'bundle', 'ancient_pandora': 'view_cards',
                         'paels_wing': 'reward', 'driftwood': 'reward', 'grid': 'grid',
                         'combat_pile': 'combat_pile', 'deck': 'deck', 'hand': 'hand'}[args.scenario]
@@ -174,10 +184,10 @@ async def verify(args):
             elif expected == 'bundle':
                 result = await call('selection_option', {'option_id': choice['bundles'][0]['id']})
                 choice = await presets('bundle-preview')
-                assert choice['cards'] and not choice['bundles'], choice
+                assert choice['cards'] and 'bundles' not in choice, choice
                 result = await call('selection_option', {'option_id': 'confirm'})
             else:
-                count = 3 if expected == 'deck_enchant' else 1
+                count = max(1, choice['min_select'])
                 cards = choice['cards'][-count:]
                 assert len(cards) == count, choice
                 for card in cards:

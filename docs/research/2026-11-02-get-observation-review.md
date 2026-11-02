@@ -1,6 +1,6 @@
 # get_observation 场景核验与参数设计
 
-> 当前状态：战斗阶段已交付；选牌（02、03、04 组）已收集 39 份 full 样本，已确认返回整个当前候选列表、统一卡牌摘要并省略空资源标记，附加精简待定稿。完整网格读取缺少已有附魔已列入修复范围，见选牌专项记录。其他 13 组场景待展开，get_observation 整体尚未核销，暂无需求阻塞。
+> 当前状态：战斗与全部选牌（01–04 组）的约定范围已交付；选牌最终覆盖 20 个 GUI 场景，实际摘要样本和验证见专项记录。其余 13 组场景待选，get_observation 整体尚未核销。本阶段无待处理问题。
 
 总清单与流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
 
@@ -14,7 +14,7 @@
 
 ## 当前调用与返回范围
 
-当前接受可选的 `preset: default/full/actions_only/summary/top_bar`，没有其他筛选参数。summary 仅精简战斗，其余场景暂用 default；top_bar 为 actions_only 上下文加顶栏及遗物数量，完整契约见[观察预设](../development/observation.md#mcp-输出预设)。公开默认值由公共预设包装器提供，不能把内部旧版参数解析函数中的 full 默认值当作公开默认值。
+当前接受可选的 `preset: default/full/actions_only/summary/top_bar`，没有其他筛选参数。summary 精简战斗与当前选牌，其余非战斗主体暂用 default；top_bar 为 actions_only 上下文加顶栏及遗物数量，完整契约见[观察预设](../development/observation.md#mcp-输出预设)。公开默认值由公共预设包装器提供，不能把内部旧版参数解析函数中的 full 默认值当作公开默认值。
 
 ```json
 {"preset":"full"}
@@ -43,7 +43,7 @@ divination, confirmation, epilogue, run_result, available_actions
 | 编号 | 场景组 | 需要展开的分支与返回差异 | 当前样本状态 |
 | --- | --- | --- | --- |
 | 01 | 普通战斗与角色差异 | `scene:combat`；player、enemies、allies、turn、buttons；储君星星、故障机器人充能球、奥斯提与共享格挡、悬浮君王之剑、手牌附魔 / 费用颜色 / 标记、不同意图与生命显示。角色差异是数据变体，不是额外 scene | 本阶段完成，见[战斗字段、样本及实施结果](2026-11-02-get-observation-combat.md) |
-| 02 | 普通卡牌选择 | `selection.type` 为 `hand/choose_one/grid/combat_pile/deck/reward/bundle/view_cards`；单选 / 多选、候选、已选 ID、确认 / 跳过 / 献祭 / 重掷 / 包选项，候选正文按是否实际展开决定 | full 样本已收录，摘要讨论中，见[选牌专项记录](2026-11-02-get-observation-selections.md) |
+| 02 | 普通卡牌选择 | `selection.type` 为 `hand/choose_one/grid/combat_pile/deck/reward/bundle/view_cards`；单选 / 多选、候选、已选 ID、确认 / 跳过 / 献祭 / 重掷 / 包选项，候选正文按是否实际展开决定 | 本阶段完成，见[选牌专项记录](2026-11-02-get-observation-selections.md) |
 | 03 | 升级、附魔与变牌选择 | `hand_upgrade/deck_upgrade/deck_enchant/deck_transform`；候选页、查看升级、选中后的前后预览、随机变牌 `after:null`、预览取消 / 确认。full 基础观察仍不等于 inspect_selection full | 同上，含单／多牌预览与查看升级 |
 | 04 | 选牌时查看战场或被覆盖 | `selection.status:battlefield/covered/unsupported`；待处理选择继续存在，隐藏候选不补出，notes 指示返回方式；unsupported 作为人工输入边界单独核对 | 同上，眼睛／地图／牌组已实测；未知类型保留源码核验边界 |
 | 05 | 地图覆盖 | `screen.view:map` 与 map 摘要，包括当前节点、能否前进、可选节点；底层战斗 / 房间内容按可见规则隐藏。区分强制地图、可关闭地图、选择后查看地图及换幕过程 | 待选择 |
@@ -80,7 +80,7 @@ divination, confirmation, epilogue, run_result, available_actions
 
 ## 设计与后续核验
 
-- 战斗主画面阶段已经完成，见[专项记录](2026-11-02-get-observation-combat.md)。目前选择全部选牌界面，见[选牌核验](2026-11-02-get-observation-selections.md)；先展示现状，再确认摘要。上表其他“待选择”不表示实现缺失，而是本轮尚未展开样例核验。
+- 战斗主画面阶段已经完成，见[专项记录](2026-11-02-get-observation-combat.md)。全部选牌界面的约定设计已实现，见[选牌核验与实施](2026-11-02-get-observation-selections.md)。上表其他“待选择”不表示实现缺失，而是本轮尚未展开样例核验。
 - 选牌包含战斗、火堆、事件及先古之民等底层场景；本轮围绕 selection 及其可见上下文核验，不自动决定这些房间自身的摘要字段。
 - 新的设计结论、确认范围、验证结果及后续提交持续记录于对应专项文件，并在本目录同步状态。
 

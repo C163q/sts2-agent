@@ -1,12 +1,12 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中。共 43 项，已核销 0 项。get_observation 的战斗摘要、通用顶栏预设及遗物数量调整已交付；全部选牌界面已收录 39 份 full 实测样本，摘要设计讨论中。其余场景及另外 42 项待选。暂无需求阻塞。
+> 当前状态：工具核验进行中。共 43 项，已核销 0 项。get_observation 的战斗及全部选牌约定范围已交付，其他 13 组场景及另外 42 项待选。本阶段无待处理问题。
 
 ## 范围与基线
 
 - 核对基线：提交 `ef9f34e`，MCP `0.48.0`；工具名称与数量依据 [mcp_catalog.py](../../src/sts2_mcp/mcp_catalog.py)。后续以每项核验时的实现为准，工具增删时同步本清单及总数。
 - 逐项检查工具的适用场景、返回内容、参数及预设，目标是符合玩家实际可从 UI 获得的信息，并让 LLM 聚焦所关心的内容。遵循[可见信息边界](../observation.md)。
-- 42 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括手牌、选牌、遗物的 `summary`、地图的 `selectable` 和基础观察的 `actions_only`。牌组与牌堆另有独立的 `detail_level`。既有能力也须重新核验，不因此直接核销。
+- 42 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括手牌、选牌、遗物的 `summary`、地图的 `selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆另有独立的 `detail_level`。既有能力也须重新核验，不因此直接核销。
 - `capture_screenshot` 按配置启用，不支持 preset；核验其现有参数与返回。统一预设的现行契约见 [MCP 输出预设](../development/mcp.md#输出预设)。
 
 ## 逐项工作流程
@@ -27,7 +27,7 @@
 
 ### 基础观察与战斗详情（7 项）
 
-- [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：分步核验，战斗部分已完成，当前进行[全部选牌界面核验](2026-11-02-get-observation-selections.md)；已有[战斗主画面与实施结果](2026-11-02-get-observation-combat.md)，完整[场景目录](2026-11-02-get-observation-review.md)。
+- [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：分步核验，战斗部分已完成，选牌部分也已完成，见[全部选牌界面核验](2026-11-02-get-observation-selections.md)；已有[战斗主画面与实施结果](2026-11-02-get-observation-combat.md)，完整[场景目录](2026-11-02-get-observation-review.md)。
 - [ ] `inspect_ui`：可见战斗 UI、资源及空充能球栏位的悬停说明。
 - [ ] `inspect_hand`：手牌详情。
 - [ ] `inspect_targets`：指定手牌或药水的可用性与目标范围。

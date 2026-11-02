@@ -9,6 +9,8 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Events;
+using MegaCrit.Sts2.Core.Models.Enchantments;
+using MegaCrit.Sts2.Core.Entities.Enchantments;
 using MegaCrit.Sts2.Core.Models.Monsters;
 using MegaCrit.Sts2.Core.Models.Potions;
 using MegaCrit.Sts2.Core.Models.Relics;
@@ -84,6 +86,44 @@ internal static class SelectionFixture
             await PowerCmd.Apply<CorruptionPower>(new ThrowingPlayerChoiceContext(), player.Creature, 1, player.Creature, null);
             Pending = CardSelectCmd.FromCombatPile(new BlockingPlayerChoiceContext(), PileType.Draw.GetPile(player), player,
                 new CardSelectorPrefs(CardSelectorPrefs.ExhaustSelectionPrompt, 1), card => card.Type == CardType.Skill);
+        }
+        else if (scenario == "upgrade_enchantments")
+        {
+            await RunManager.Instance.EnterRoomDebug(RoomType.Event, model: ModelDb.Event<BrainLeech>(), showTransition: false);
+            while (player.Deck.Cards.Count < 40)
+                await CardPileCmd.Add(player.Deck.Cards.Count == 39 ? player.RunState.CreateCard<BodySlam>(player)
+                    : player.Deck.Cards.Count % 2 == 0 ? (CardModel)player.RunState.CreateCard<StrikeIronclad>(player)
+                    : player.RunState.CreateCard<DefendIronclad>(player), PileType.Deck, skipVisuals: true);
+            player.Deck.InvokeCardAddFinished();
+            var attacks = player.Deck.Cards.Where(card => card is StrikeIronclad).ToArray();
+            var skills = player.Deck.Cards.Where(card => card is DefendIronclad).ToArray();
+            foreach (int offset in new[] { 0, attacks.Length - 2 })
+            {
+                CardCmd.Enchant<Sharp>(attacks[offset], 3);
+                CardCmd.Enchant<Clone>(attacks[offset + 1], 7);
+            }
+            foreach (int offset in new[] { 0, skills.Length - 2 })
+            {
+                CardCmd.Enchant<Swift>(skills[offset], 2)!.Status = EnchantmentStatus.Disabled;
+                CardCmd.Enchant<Spiral>(skills[offset + 1], 1);
+            }
+            Pending = CardSelectCmd.FromDeckForUpgrade(player,
+                new CardSelectorPrefs(CardSelectorPrefs.UpgradeSelectionPrompt, 1) { Cancelable = true });
+        }
+        else if (scenario == "grid_enchantments")
+        {
+            var cards = Enumerable.Range(0, 40).Select(i => i % 2 == 0
+                ? (CardModel)player.RunState.CreateCard<StrikeIronclad>(player)
+                : player.RunState.CreateCard<DefendIronclad>(player)).ToArray();
+            foreach (int offset in new[] { 0, 36 })
+            {
+                CardCmd.Enchant<Sharp>(cards[offset], 3);
+                CardCmd.Enchant<Swift>(cards[offset + 1], 2)!.Status = EnchantmentStatus.Disabled;
+                CardCmd.Enchant<Clone>(cards[offset + 2], 7);
+                CardCmd.Enchant<Spiral>(cards[offset + 3], 1);
+            }
+            Pending = CardSelectCmd.FromSimpleGrid(new BlockingPlayerChoiceContext(), cards, player,
+                new CardSelectorPrefs(CardSelectorPrefs.ExhaustSelectionPrompt, 2));
         }
         else if (scenario is "grid_scroll" or "scroll_race")
         {

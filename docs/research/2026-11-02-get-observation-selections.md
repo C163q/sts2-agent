@@ -1,6 +1,6 @@
 # get_observation 选牌界面核验
 
-> 当前状态：摘要设计讨论中。现状核验已收集 16 个场景的 39 份 full 实测样本；已确认扩大当前候选页的列表范围，并统一卡牌摘要、去掉空资源标记，附加精简规则待定稿。新增发现完整网格详情缺少卡牌附魔，已记录为实施时的修复项。未修改工具行为，暂无需求阻塞。
+> 当前状态：实施与验证中。完整候选、共用卡牌摘要、网格已有附魔及滚动节点刷新已实现，正在执行隔离 GUI 回归；原有 39 份 full 文件保留为 e728b7e 的历史基线。其他房间摘要仍待各自核验，get_observation 整体尚未核销。
 
 范围对应[场景目录](2026-11-02-get-observation-review.md)的 02、03、04 组，包括候选、已选、确认预览、查看升级、眼睛切换及覆盖页。这里的“选牌”包含 `view_cards` 结果确认页；普通牌组／牌堆浏览、商店商品卡、尚未打开的奖励行、结算解锁卡不属于待处理卡牌选择。
 
@@ -34,7 +34,7 @@
 
 ## full 的读取范围与字段
 
-调用参数统一为 `{"preset":"full"}`。以下是基线 `e728b7e` 的现状说明；后文的新要求尚未实施。完整返回样本另列，不能把 inspect_selection 的返回改名作为本工具示例。
+调用参数统一为 `{"preset":"full"}`。以下保留基线 `e728b7e` 的设计依据；实施后的当前契约见开发指南及文末实施结果。完整返回样本另列，不能把 inspect_selection 的返回改名作为本工具示例。
 
 - 公共选择字段：`type/status/prompt/min_select/max_select/selected_ids/cards/options/can_view_battlefield/can_view_upgrades/view_upgrades`。按钮保留 `id/text/enabled`，其含义以本次文字为准。
 - 基础卡牌包含 `id/name/type/rarity/visual_card_pool/energy_cost/star_cost/unplayable_markers/outline`；特殊费用颜色与实际显示的附魔按条件增加。没有可见附魔时连 full 也不生成 `enchantment` 字段。
@@ -53,11 +53,11 @@
 3. **卡牌附魔与本次操作**：`cards[].enchantment` 是卡牌上已显示的附魔；`selection.enchantment` 是这次准备施加的附魔名称与说明。多牌附魔确认页按原生展示原牌，不替玩家预先计算附魔后数值。
 4. **看不到与没有结果**：多牌升级／附魔的 before 可能保留 ID 而牌名未知；随机变牌 after 为 null。它们都不能当作空对象删除，更不能从牌组数据或动画补全。
 5. **操作 ID 与升级克隆**：查看升级后，卡名／费用／正文可能变化，但候选 ID 仍指向原牌。比较两侧的相同 ID 表示同一张牌，不是重复候选。
-6. **数量限制与滚动**：数量上限不等于屏幕当前可见候选总数；selected_ids 也不应随候选裁剪。本轮 40 张牌的网格中，基础观察实际只返回 15 张可见牌，inspect_selection 则读取全部 40 张。眼睛和覆盖页只改变可见信息，不能偷偷取消待处理选择。
+6. **数量限制与滚动**：数量上限不等于屏幕当前可见候选总数；selected_ids 也不应随候选裁剪。实施前的 40 张牌样本中，基础观察只返回 15 张可见牌，inspect_selection 则读取全部 40 张。眼睛和覆盖页只改变可见信息，不能偷偷取消待处理选择。
 
 ## 完整 full 返回样本
 
-下列文件均为本轮真实 stdio MCP 的 `get_observation({"preset":"full"})` 返回，保留整个玩法 JSON、所有原有空值、完整数组和 notes，未改名、补字段或截断。每个样本对应一张隔离游戏截图，截图及完整调用序列留在本地证据目录。这里只保存 JSON；这些选择页没有额外 MCP 图像内容。
+下列文件均为设计阶段真实 stdio MCP 的 `get_observation({"preset":"full"})` 返回，保留整个玩法 JSON、所有原有空值、完整数组和 notes，未改名、补字段或截断。每个样本对应一张隔离游戏截图，截图及完整调用序列留在本地证据目录。这里只保存 JSON；这些选择页没有额外 MCP 图像内容。
 
 | 场景 | 底层 scene／选择类型 | 完整 JSON（括号为证据数组下标） |
 | --- | --- | --- |
@@ -152,31 +152,31 @@
 
 ## 已确认的调整范围
 
-当前 `get_observation.summary` 只精简战斗资源、普通手牌和顶栏，**尚不精简 selection 内的牌**；非战斗仍等同 default。因此同一类选择发生在战斗、火堆或事件时，当前外层摘要程度不同。该差异是本轮设计对象，尚未改动。
+实施前 get_observation.summary 只精简战斗资源、普通手牌和顶栏，selection 内的牌保持 default；本轮将各底层场景的选牌接入同一规则。
 
 - 当前已打开、处于候选页的可浏览选择，get_observation 返回整个原生候选列表，不按视口和滚动位置截断。范围调整适用于 full/default/summary；预设决定返回精简度，不决定能否读取同一列表中的候选。
 - 保留原生列表顺序、原牌 ID 与当前查看升级模式。手牌仍使用当前实际的手牌选择；确认页只读取该页展示的牌和比较，不重新带回背景网格。眼睛、地图或牌组隐藏选择时仍隐藏候选，不提前生成未出现的结果。
 - get_observation.summary 在 default 基础上，统一精简 `selection.cards`、`bundles[].cards` 和全部 before／after 卡牌，格式与 inspect_hand.summary 共用；原有战斗摘要继续适用。保留选择提示、数量限制、全部已选 ID、按钮、包 ID、升级模式、附魔操作说明与随机结果标记。
 - 共用卡牌摘要中，`unplayable_markers:[]` 省略；非空资源标记保留。字段名仍为复数 unplayable_markers，不新增别名。
-- 原始结果没有 outline 时不生成该字段；没有描边的 `outline:"none"` 是否也统一省略，见下方推荐规则。
+- 原始结果没有 outline 时不生成该字段；没有描边的 `outline:"none"` 也统一省略，规则见下。
 
-### 现有卡牌摘要审查
+### 实施前卡牌摘要审查（e728b7e）
 
 | 返回位置 | 当前空 unplayable_markers | 当前 outline:none | 实施范围 |
 | --- | --- | --- | --- |
 | inspect_hand.summary 的 hand | 保留 | 保留 | 共用 card_summary，统一调整 |
 | inspect_selection.summary 的候选、包和比较 | 原始有该字段时保留 | 原始有该字段时保留 | 共用 card_summary，统一调整 |
 | get_observation.summary 的 player.hand | 保留 | 保留 | 共用 card_summary，统一调整 |
-| get_observation.summary 的 selection | 当前未精简，仍沿用 default 卡牌 | 保留 | 本轮接入同一规则 |
+| get_observation.summary 的 selection | 当时未精简，仍沿用 default 卡牌 | 保留 | 本轮接入同一规则 |
 | inspect_deck／inspect_pile 的 detail_level:summary | 本来就没有该字段 | 本来就没有该字段 | 独立的浏览摘要，不冒充共用手牌规则；本轮不增加这些字段 |
 | inspect_relics.summary | 不涉及 | 不涉及 | 仅包含遗物，不做卡牌规则调整 |
 
 源码：[card_summary](../../src/sts2_mcp/output/card_summary.py)、[手牌](../../src/sts2_mcp/output/hand_presets.py)、[选牌](../../src/sts2_mcp/output/selection_presets.py)、[观察](../../src/sts2_mcp/output/observation_presets.py)、[浏览卡牌校验](../../src/sts2_mcp/output/deck_details.py)。当前行为已用小型调用检查复核，证据 `.tmp/2026-11-02-card-summary-audit/verification.json`；没有改生产代码或运行游戏。
 
-### 推荐的附加精简规则（待确认）
+### 已确认的附加精简规则
 
 1. 共用卡牌摘要省略 `outline:"none"`，保留 cyan/gold/red/other；已有描边与资源不足标记各有意义，不合并成 can_play。省略无描边或空资源标记不能解释为“可打出”。默认费用颜色本来就不输出，无须再加一套删色规则。
-2. inspect_hand／inspect_selection／inspect_relics 的 summary 也统一继承 default 的普通空值规则，减少目前手牌与遗物摘要仍保留的 null。比较子树、随机 after:null 和数组空槽等例外照常保留；明确的 0、false、X、? 不按空值删除。这是附加的预设契约调整，尚未实施。
+2. inspect_hand／inspect_selection／inspect_relics 的 summary 也统一继承 default 的普通空值规则，减少目前手牌与遗物摘要仍保留的 null。比较子树、随机 after:null 和数组空槽等例外照常保留；明确的 0、false、X、? 不按空值删除。该规则与共用卡牌摘要同时实施。
 3. 选牌摘要可省略尚未展开的空 `upgrade_previews/enchant_previews/transform_previews` 以及空 bundles。继续保留 cards、selected_ids、options，即便是 []，以便明确表示候选、已选集合和当前按钮；整组未展开 upgrade_preview:null 已能按 default 省略。
 
 例如 [火堆样本](2026-11-02-get-observation-selection-examples/smith-selected.full.json) 的 Bash 比较牌在采用这些规则后可写成以下设计片段；这是候选摘要，不是实测的新返回：
@@ -192,20 +192,55 @@
 
 ### 完整候选读取的附魔缺口
 
-当前 `SelectionInspection.Read(full:true)` 的普通网格分支调用 BrowsedCard；后者只生成身份、费用与可选正文／悬停帮助，不生成卡牌 enchantment。于是 inspect_selection 的网格候选即使包含已有附魔，Python 摘要也无法保留该字段；手牌、包内容和实际节点比较使用另一读取路径，不能据此推断全部选牌都缺失。
+基线 `SelectionInspection.Read(full:true)` 的普通网格分支调用 BrowsedCard；原先后者只生成身份、费用与可选正文／悬停帮助，不生成卡牌 enchantment。于是 inspect_selection 的网格候选即使包含已有附魔，Python 摘要也无法保留该字段；手牌、包内容和实际节点比较使用另一读取路径，不能据此推断全部选牌都缺失。
 
 这与[选牌说明](../development/card-selection.md#mcp-输出预设)中统一保留可见附魔的预期存在差异。扩大 get_observation 候选范围时须一起修复该分支：按当前页面正常渲染会展示的卡牌身份、附魔、费用和升级模式读取，不因屏幕外没有实例化节点而丢字段，也不伪造描边／资源图标。不能直接复制原模型 Enchantment.Amount 充当 UI 显示计数，仍按实际可显示的计数／图标规则处理。
 
-本轮结论来自返回构造代码核对，尚未新增带已有附魔网格的 GUI 复现；实施验证必须覆盖带附魔的屏幕内外候选、原牌／升级模式和未知身份。详细问题记录位于本地 `.tmp/2026-11-02-card-summary-audit-report.md`；本文件保留后续修复任务，当前未修复。
+该缺口已用带已有附魔的 40 张网格 GUI 复现；本轮实现扩展普通候选读取，并验证屏幕内外候选、原牌／升级模式和未知身份。详细问题记录位于本地 `.tmp/2026-11-02-card-summary-audit-report.md`；本文件保留后续修复任务，本轮修复与最终证据见实施结果。
 
 inspect_deck／inspect_pile 也使用 BrowsedCard，而且 Python 浏览卡牌白名单没有 enchantment；这些工具的卡面附魔另留待各自核验，不能仅修 C# 共享读取就宣称已支持。它们的 detail_level:summary 与本次共用手牌摘要仍分别维护。
 
-## 本轮核验结果与边界
+## 设计阶段核验结果与边界（实施前）
 
 - 16 个场景分别完成采样与局清理，共 177 次真实 MCP 调用；39 份入库样本逐对象等于原始返回，通过当前观察结构校验，并确认覆盖全部 12 种受支持 selection.type。工具文字 JSON 与 structuredContent 一致。样本不是手写模拟数据。
 - 对照截图检查了火堆升级、单／多牌附魔、随机变牌等预览；比较保留原牌 ID，未知侧不补全。地图／牌组覆盖、眼睛隐藏候选以及返回后保留待选状态均有实测样本。
 - 采样分批完成：`gui-complete` 前 13 项成功；第 14 项在已采到奖励后，直接清理未完成的原生奖励父任务超时，因此该次总报告为 failed，不作为整轮通过报告。`gui-remaining` 按现有奖励测试的正常领取／推进流程完成余下 3 项，报告 passed。两批自有游戏进程均已退出，第一轮错误尝试也已退出。
 - 初次 `gui-samples` 记录了采样脚本错误尝试关闭强制地图的失败；当时 available_actions 没有 close_map，工具正确拒绝。后续调整采样顺序，未修改地图行为。失败日志与原始证据一并保留。
 - 源码已核对但本轮没有对应 GUI 样本：unsupported 未知类型、变牌结果明确已知的 `after` 分支、控制器隐藏升级复选框、所有事件／卡牌名称与各种数量偏好的组合。已有样本用于结构讨论，不把“全部类型”解释为穷举全部玩法内容与状态组合。
-- 本轮只新增核验文档与完整 JSON 示例，不修改生产代码、参数或摘要，不构建／安装新 Mod，也未重跑与本次文档无关的单元测试。正式游戏与个人存档未改动。
-- 本地汇总：`.tmp/2026-11-02-observation-selections-review/verification.json`；全部样本对应见同目录 `samples-manifest.json`。下一步根据这些现状样本确认 summary 字段及可能需要的参数，再进入实现。
+- 设计阶段仅新增核验文档与完整 JSON 示例，不修改生产代码、参数或摘要，不构建／安装新 Mod，也未重跑与本次文档无关的单元测试。正式游戏与个人存档未改动。
+- 本地汇总：`.tmp/2026-11-02-observation-selections-review/verification.json`；全部样本对应见同目录 `samples-manifest.json`。后续定稿规则与实施结果见对应章节。
+
+## 实施结果
+
+本轮版本为 MCP `0.50.0`、Mod `0.49.0`、schema `31`。已实现上述定稿范围，原有 39 份 full 文件保留为设计阶段的原始数据；当前行为以[观察预设](../development/observation.md#mcp-输出预设)、[选牌](../development/card-selection.md)和[手牌摘要](../development/hand-inspection.md#参数与返回范围)为准。get_observation 的其他 13 组场景仍按总目录继续核验。
+
+原生候选读取统一采用当前列表、升级模式和等价的克隆牌面数据；已存在的可见节点仅补实际描边和资源标记，部分裁切不再丢费用或附魔。附魔使用 NCard 的 ShowAmount／DisplayAmount／Status 显示规则；不显示数字的 Clone、Spiral 不提供内部 Amount。先核对 grid 与节点的身份状态，未知／锁定牌不会被真实升级描述覆盖。确认比较和覆盖页仍按其本身的显示边界读取。
+
+GUI 同时发现并修复原有的反向滚动问题：NCardGrid.SetScrollPosition 直接设置位置与目标，跳过拖动更新中的虚拟行分配；定位后复用原生 AllocateCardHolders，并等待目标完整可点击后发出原生点击信号。滚动期间仍验证选择实例、候选、已选集合与数量限制。
+
+Python 使用共享 selection_summary 处理候选、包与比较，并统一调整 card_summary。只有 get_observation 之外的三个专用 summary 在包装层再执行 default 过滤，避免删除 get_observation 已格式化的 health:null。完整响应校验、筛选与动作许可处理仍先于摘要。
+
+独立只读审阅提出两项 Important：部分裁切候选的费用丢失、升级模式未知牌描述覆盖。新增失败检查已在旧实现中复现，再以同一轮修复解决；普通、升级模式及确认比较页的未知身份和部分裁切检查已通过。无待处理的审阅 Minor。记录位于 `.tmp/2026-11-02-selection-observation-implementation/review.md`。
+
+最终验证：
+
+- 构建 0 警告、0 错误；C# 独立检查 60 项通过，Python 全套 456 项通过。
+- 20 个 GUI 场景通过，共 407 次真实 MCP 调用；普通／升级／确认预览中的未知身份、部分裁切、原牌与 UI 不变等原生检查 38 项通过。覆盖全部 12 类已支持选择及献祭、重掷、附魔、手牌标记和遗物摘要回归。
+- 最终通过分两批：gui-suite-final 前 11 项通过，在随机变牌处由验证器错误要求删除 after:null 而中止；修正该断言后，gui-suite-remaining 的余下 9 项通过，两批使用相同 DLL。此前 gui-suite-green 的 grid 场景把需选 2 张的夹具按 1 张测试，已改用真实 min_select；这些测试错误没有改变产品契约。
+- 两个审阅问题的 RED 位于 gui-review-red，GREEN 在最终两个完整列表场景中；原始旧行为失败、滚动问题和测试错误的日志均保留。全部自有游戏进程已关闭，未将某个失败总报告写成整轮通过。
+- 汇总及每例映射：`.tmp/2026-11-02-selection-observation-implementation/verification-summary.json`；GUI 主目录同名，完整检查日志见同目录 python-final.log、csharp-final.log、build-reviewed.log。测试 DLL SHA-256 为 `99b600f3bbfa5c96845e5c1e9233390d54453ca877363f71b2e2db1fcf307885`。
+- 40 候选检查记录的 get_observation 最大端到端耗时分别约 0.63／0.38 秒，包含 stdio／IPC；不将它们当成纯游戏线程耗时或帧性能基准。
+- 未验证所有自定义 Mod 页面、所有事件／数量偏好组合及控制器模式；已知目标变牌的 after 分支保留单元覆盖，本轮 GUI 使用随机变牌。不扩大牌组／牌堆工具的字段范围，已有附魔仍待它们各自核验。
+
+当前实际 summary 样本如下，均为未筛选的 get_observation 返回，没有改写数值或省略其余对象：
+
+| 场景 | 完整 JSON | 证据下标 |
+| --- | --- | --- |
+| 火堆选中后确认升级 | [smith-selected.summary.json](2026-11-02-get-observation-selection-examples/smith-selected.summary.json) | gui-suite-final/smith/verify/evidence.json 的 17 |
+| 单牌附魔比较 | [enchant-selected.summary.json](2026-11-02-get-observation-selection-examples/enchant-selected.summary.json) | gui-suite-final/enchant_single/verify/evidence.json 的 17 |
+| 多牌升级，原牌身份不可读 | [upgrade-multi-selected.summary.json](2026-11-02-get-observation-selection-examples/upgrade-multi-selected.summary.json) | gui-suite-remaining/multi_upgrade/verify/evidence.json 的 14 |
+| 随机变牌，after:null | [transform-selected.summary.json](2026-11-02-get-observation-selection-examples/transform-selected.summary.json) | gui-suite-remaining/transform/verify/evidence.json 的 18 |
+| 牌包候选 | [bundle-candidates.summary.json](2026-11-02-get-observation-selection-examples/bundle-candidates.summary.json) | gui-suite-remaining/bundle/verify/evidence.json 的 6 |
+| 牌包确认 | [bundle-selected.summary.json](2026-11-02-get-observation-selection-examples/bundle-selected.summary.json) | gui-suite-remaining/bundle/verify/evidence.json 的 17 |
+
+本轮未更新正式游戏中的 Mod，需替换 Mod 后重启游戏，并重连 MCP 才能使用完整能力。

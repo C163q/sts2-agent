@@ -51,14 +51,13 @@ class SelectionPresetTests(unittest.IsolatedAsyncioTestCase):
         result = await GameTools(client).inspect_selection({'preset': 'summary'})
         self.assertEqual(result['selection']['cards'], [
             {'id': 9, 'name': 'Defend+', 'type': 'Skill', 'energy_cost': '0', 'energy_cost_color': 'green',
-             'unplayable_markers': [], 'outline': 'cyan',
+             'outline': 'cyan',
              'enchantment': {'name': 'Sharp', 'amount': 3, 'dimmed': False}},
             {'id': 2, 'name': 'Defend', 'type': 'Skill', 'energy_cost': '1',
-             'unplayable_markers': ['energy'], 'outline': 'none'},
+             'unplayable_markers': ['energy']},
             {'id': 4, 'name': 'Star Card', 'type': 'Attack', 'energy_cost': 'X', 'star_cost': '?',
              'star_cost_color': 'red', 'unplayable_markers': ['star'], 'outline': 'red'},
-            {'id': 7, 'name': 'Unknown', 'type': None, 'energy_cost': None,
-             'unplayable_markers': [], 'outline': 'none'},
+            {'id': 7, 'name': 'Unknown'},
         ])
         self.assertEqual({k: v for k, v in result['selection'].items() if k != 'cards'},
                          {k: v for k, v in client.choice.items() if k != 'cards'})

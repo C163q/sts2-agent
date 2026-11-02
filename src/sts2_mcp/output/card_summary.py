@@ -6,4 +6,6 @@ SUMMARY_FIELDS = frozenset({'id', 'name', 'type', 'energy_cost', 'star_cost',
 
 def card_summary(card):
     return {key: value for key, value in card.items() if key in SUMMARY_FIELDS
-            and not (key == 'star_cost' and value is None)}
+            and not (key == 'star_cost' and value is None)
+            and not (key == 'outline' and value == 'none')
+            and not (key == 'unplayable_markers' and value == [])}

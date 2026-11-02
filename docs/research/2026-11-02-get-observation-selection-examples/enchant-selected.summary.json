@@ -1,0 +1,90 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "covered"
+  },
+  "top_bar": {
+    "hp": 40,
+    "max_hp": 80,
+    "gold": 1099,
+    "floor": 1,
+    "deck_count": 10,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood"
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "selection": {
+    "type": "deck_enchant",
+    "status": "visible",
+    "prompt": "Choose a card to Enchant.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [
+      26
+    ],
+    "cards": [],
+    "options": [
+      {
+        "id": "cancel_preview",
+        "text": "Back",
+        "enabled": true
+      },
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "enchantment": {
+      "title": "Sharp",
+      "description": "Increases damage on this card by 2."
+    },
+    "enchant_previews": [
+      {
+        "before": {
+          "id": 26,
+          "name": "Bash",
+          "type": "Attack",
+          "energy_cost": "2"
+        },
+        "after": {
+          "id": 26,
+          "name": "Bash",
+          "type": "Attack",
+          "energy_cost": "2",
+          "enchantment": {
+            "name": "Sharp",
+            "dimmed": false,
+            "amount": 2
+          }
+        }
+      }
+    ]
+  },
+  "event": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "selection_option",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}

@@ -97,6 +97,8 @@
     "choice_chain"
   ],
   "selection": [
+    "upgrade_enchantments",
+    "grid_enchantments",
     "upgrade_multi",
     "potion",
     "potion_skip",

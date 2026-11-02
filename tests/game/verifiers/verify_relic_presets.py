@@ -47,7 +47,7 @@ async def verify(args):
                 assert full == await call('inspect_relics', {'preset': 'full'})
                 summary = await call('inspect_relics', {'preset': 'summary'})
                 basic = [{k: v for k, v in r.items() if k in {'name', 'counter', 'melted'}} for r in full['relics']]
-                assert summary == {'relics': basic}, summary
+                assert summary == {'relics': [{k: v for k, v in r.items() if v is not None} for r in basic]}, summary
                 assert basic == observed['top_bar']['relics'], (basic, observed['top_bar']['relics'])
                 assert len(basic) >= 2, 'Fixture must exercise multiple relic positions.'
                 ordinary = [r for r in basic if r['name'] in {'Burning Blood', 'Anchor', 'Lantern', 'Pen Nib'}]

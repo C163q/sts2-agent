@@ -1,6 +1,6 @@
 # 战斗观察 JSON
 
-适用于 Linux 游戏 `v0.107.1` 与 Mod `0.48.0`。底层观察结构版本为 `30`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+适用于 Linux 游戏 `v0.107.1` 与 Mod `0.49.0`。底层观察结构版本为 `31`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -24,7 +24,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 ## MCP 输出预设
 
-`get_observation()` 等同于 `get_observation({"preset":"default"})`，保留完整基础观察的内容范围并省略普通空值；`preset:"full"` 保留原有空值。两者都不自动展开卡牌正文或悬停详情，统一规则见[MCP 输出预设](mcp.md#输出预设)。`get_observation({"preset":"actions_only"})` 仅返回以下上下文及工具名，例为战斗中的手牌选择：
+`get_observation()` 等同于 `get_observation({"preset":"default"})`，保留完整基础观察的内容范围并省略普通空值；`preset:"full"` 保留原有空值。普通手牌仍不附正文或悬停详情，选牌可浏览面板按下述范围读取；统一规则见[MCP 输出预设](mcp.md#输出预设)。`get_observation({"preset":"actions_only"})` 仅返回以下上下文及工具名，例为战斗中的手牌选择：
 
 ```json
 {
@@ -39,13 +39,17 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 五种预设都会实时读取、完整校验并刷新内部动作令牌，精简模式不改变游戏 UI，也不改变后续动作的精简回执格式，见[MCP 动作返回](mcp.md#动作返回格式)。只允许可选字符串 `preset: default/full/actions_only/summary/top_bar`；非法值或额外字段返回 `invalid_request`，清除旧动作许可且不请求游戏。预设属于 MCP 输出投影，底层文件 `get_state` 仍返回完整状态。
 
-`preset:"summary"` 基于 default 精简战斗观察：
+`preset:"summary"` 基于 default 精简战斗观察及各场景的当前卡牌选择：
 
 - 玩家、敌人及友方的 `hp/max_hp/hp_display` 合并为 `health`：正常为 `"70/80"`，无限为 `"∞"`，死亡为 `"dead"`，无法识别显示为 `"unknown"`，隐藏时显式保留 `null`。不补隐藏生命数字，格式为 numeric 但数字不完整时也保留 `health:null`。
 - 玩家能量合并为 `energy:"3/3"`，移除 `max_energy`；数字不可完整读取时省略，不拼接猜测值。`stars` 保持原有意义。
 - `powers/orb_slots/sovereign_blades` 为 `[]` 时省略；有空槽的非空球数组保留位置及 null 元素。友方共享格挡标记保留。
 - `player.hand` 复用 [inspect_hand 的摘要字段](hand-inspection.md#参数与返回范围)，移除稀有度和卡池，保留费用颜色、标记及可见附魔；空值遵循本预设的 default 规则。
-- `top_bar` 仅保留 `gold/potion_slots/deck_count/relic_count`。其他字段、意图、按钮、可用工具及适用 notes 保留。当前仅设计战斗摘要，非战斗 scene 的 summary 等同于 default。
+- 战斗的 `top_bar` 仅保留 `gold/potion_slots/deck_count/relic_count`。其他字段、意图、按钮、可用工具及适用 notes 保留。非战斗主体暂沿用 default，当前选择按下述规则精简。
+
+所有场景的 `selection` 候选、包内卡牌和已展开的比较均复用手牌摘要，省略正文、稀有度、卡池、空 `unplayable_markers` 和 `outline:"none"`；其他描边、非空标记及可见附魔保留。空 bundles 与空 `upgrade_previews/enchant_previews/transform_previews` 省略，cards／selected_ids／options 的空数组保留。提示、数量限制、全部已选 ID、按钮启用状态、升级模式、附魔操作说明及随机结果标记保留；比较中的未知身份、随机 after:null 不补齐。
+
+Mod `0.49.0` 起，已打开候选页的 full/default/summary 都提供整个原生可浏览列表，包含滚动区域外的候选，保持原生顺序及原牌 ID。读取不滚动或选择卡牌；确认预览只提供该页展示内容，眼睛与覆盖页继续隐藏选择。网格候选的已有附魔同时修复，显示计数和置灰规则与原生卡面一致。详见[选牌接口](card-selection.md)。需要更换 Mod、重启游戏并重连 MCP。
 
 `preset:"top_bar"` 在 actions_only 的场景、页面、选择 type/status 和工具名上增加 default 的顶栏字段，移除 `top_bar.relics` 并保留 `relic_count`。不套用 summary 的顶栏四字段限制，也不合并顶栏 hp/max_hp；不返回战斗单位、手牌、房间正文、notes 或占卜图像。遗物效果通过 `inspect_relics` 查看。顶栏不可读时省略，不伪造空顶栏。
 

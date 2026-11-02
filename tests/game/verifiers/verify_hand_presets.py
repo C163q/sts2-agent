@@ -76,14 +76,15 @@ async def verify(args):
             for brief, card in zip(summary['hand'], full['hand'], strict=True):
                 assert set(brief) <= allowed
                 assert all(brief[key] == card[key] for key in brief)
-                assert {'id', 'name', 'type', 'energy_cost', 'unplayable_markers', 'outline'} <= brief.keys()
+                assert {'id', 'name', 'type', 'energy_cost'} <= brief.keys()
+                assert brief.get('unplayable_markers') != [] and brief.get('outline') != 'none'
                 assert ('star_cost' in brief) == (card['star_cost'] is not None), brief
                 if args.scenario == 'enchantments':
                     basic = next(c for c in observed['player']['hand'] if c['id'] == brief['id'])
                     assert brief.get('enchantment') == card.get('enchantment') == basic.get('enchantment')
             if args.scenario == 'stars':
                 assert any(card.get('star_cost') == '2' and card.get('star_cost_color') == 'red'
-                           and card['outline'] == 'none' for card in summary['hand']), summary
+                           and 'outline' not in card for card in summary['hand']), summary
             elif args.scenario == 'x_cost':
                 assert any(card['name'] == 'Whirlwind' and card['energy_cost'] == 'X' for card in summary['hand']), summary
             elif args.scenario == 'card_names':
