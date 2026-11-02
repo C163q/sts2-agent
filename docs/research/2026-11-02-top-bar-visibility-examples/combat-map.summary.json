@@ -1,0 +1,36 @@
+{
+  "scene": "combat",
+  "map": {
+    "status": "visible",
+    "act": 1,
+    "can_travel": false,
+    "selectable_nodes": []
+  },
+  "screen": {
+    "status": "visible",
+    "view": "map"
+  },
+  "top_bar": {
+    "gold": 99,
+    "deck_count": 10,
+    "potion_slots": [
+      {
+        "name": "Fire Potion"
+      },
+      {
+        "name": "Block Potion"
+      },
+      {
+        "name": "Fairy in a Bottle"
+      }
+    ],
+    "relic_count": 1
+  },
+  "available_actions": [
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "close_map"
+  ]
+}

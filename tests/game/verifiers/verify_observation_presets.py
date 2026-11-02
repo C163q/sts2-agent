@@ -26,7 +26,7 @@ async def verify(args):
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             initialized = await session.initialize()
-            assert initialized.serverInfo.version == '0.50.1'
+            assert initialized.serverInfo.version == '0.50.2'
             definitions = {t.name: t for t in (await session.list_tools()).tools}
             assert len(definitions) == 42
             assert definitions['get_observation'].inputSchema['properties']['preset']['enum'] == [
@@ -96,7 +96,10 @@ async def verify(args):
                     assert full['top_bar']['relics'] == []
                     assert summary['top_bar']['relic_count'] == bar['top_bar']['relic_count'] == 0
             else:
-                assert summary == state
+                expected = dict(state)
+                expected['top_bar'] = {k: v for k, v in state['top_bar'].items()
+                                       if k in {'gold', 'potion_slots', 'deck_count', 'relic_count'}}
+                assert summary == expected
                 if args.scenario == 'divination':
                     assert summary['divination']['status'] == 'visible'
                     assert 'divination' not in bar

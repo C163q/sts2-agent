@@ -2,7 +2,7 @@ OBSERVATION_SCHEMA = {
     'type': 'object',
     'properties': {'preset': {
         'type': 'string', 'enum': ['full', 'actions_only', 'summary', 'top_bar'], 'default': 'full',
-        'description': 'full keeps basic observations; summary compacts combat and selection cards; actions_only keeps context and tool names; top_bar adds top-bar values and relic_count, without relic details. All refresh action permission.',
+        'description': 'full keeps basic observations; summary compacts top bars, combat, and selection cards; actions_only keeps context and tool names; top_bar adds top-bar values and relic_count, without relic details. All refresh action permission.',
     }},
     'additionalProperties': False,
 }
@@ -39,9 +39,12 @@ def observation_summary(payload):
     from sts2_mcp.output.card_summary import card_summary
     from sts2_mcp.output.presets import apply_preset
     from sts2_mcp.output.selection_summary import selection_summary
-    if payload['screen'].get('view') in {'map', 'deck', 'draw_pile', 'discard_pile', 'exhaust_pile'}:
-        return browsing_summary(payload)
+    from sts2_mcp.output.top_bar_summary import top_bar_summary
     result = apply_preset(payload, 'default')
+    if result.get('top_bar') is not None:
+        result['top_bar'] = top_bar_summary(result['top_bar'])
+    if payload['screen'].get('view') in {'map', 'deck', 'draw_pile', 'discard_pile', 'exhaust_pile'}:
+        return browsing_summary(result)
     if result.get('selection') is not None:
         result['selection'] = selection_summary(result['selection'])
     if payload['scene'] != 'combat':
@@ -73,13 +76,9 @@ def observation_summary(payload):
     for key in ('enemies', 'allies'):
         for compact, original in zip(result.get(key) or [], payload.get(key) or [], strict=True):
             unit_summary(compact, original)
-    if result.get('top_bar') is not None:
-        result['top_bar'] = {key: value for key, value in result['top_bar'].items()
-                             if key in {'gold', 'potion_slots', 'deck_count', 'relic_count'}}
     return result
 
 
 def browsing_summary(payload):
-    from sts2_mcp.output.presets import apply_preset
-    # Browser content summaries will be defined during the corresponding tool reviews.
-    return apply_preset(payload, 'default')
+    # Page content stays at default; shared components are summarized before dispatch.
+    return payload

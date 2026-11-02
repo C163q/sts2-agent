@@ -60,7 +60,10 @@ async def verify(args):
                 assert full['player'] is None and full['enemies'] is None
                 before = await asyncio.to_thread(raw.call, 'get_state')
                 compact = await call('get_observation', {'preset': 'summary'})
-                assert compact == apply_preset(full, 'default'), label
+                expected = apply_preset(full, 'default')
+                expected['top_bar'] = {k: v for k, v in expected['top_bar'].items()
+                                       if k in {'gold', 'potion_slots', 'deck_count', 'relic_count'}}
+                assert compact == expected, label
                 top = await call('get_observation', {'preset': 'top_bar'})
                 assert top['top_bar'] == {k: v for k, v in apply_preset(full, 'default')['top_bar'].items() if k != 'relics'}
                 actions = await call('get_observation', {'preset': 'actions_only'})

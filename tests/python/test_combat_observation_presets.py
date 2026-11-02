@@ -136,12 +136,15 @@ class CombatProjectionTests(unittest.TestCase):
         self.assertNotIn('top_bar', result)
         self.assertNotIn('top_bar', observation_preset(value, 'top_bar'))
 
-    def test_noncombat_summary_uses_default_and_preserves_divination_image(self):
+    def test_noncombat_summary_shares_top_bar_and_preserves_body_and_divination_image(self):
         for name in ('rest-site', 'event', 'divination'):
             value = sample(name)
             if name == 'divination':
                 value = ImagePayload(value, 'aW1hZ2U=')
-            self.assertEqual(observation_preset(value, 'summary'), apply_preset(value, 'default'))
+            expected = apply_preset(value, 'default')
+            expected['top_bar'] = {k: v for k, v in expected['top_bar'].items()
+                                   if k in {'gold', 'potion_slots', 'deck_count', 'relic_count'}}
+            self.assertEqual(observation_preset(value, 'summary'), expected)
             result = tool_result(observation_preset(value, 'summary'))
             self.assertEqual(len(result.content), 2 if name == 'divination' else 1)
             if name == 'divination':

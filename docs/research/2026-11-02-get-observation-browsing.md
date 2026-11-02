@@ -1,6 +1,6 @@
 # get_observation 地图与牌组／牌堆浏览覆盖核验
 
-> 当前状态：本阶段约定的摘要占位已实现。对应总目录 05、06 组；5 类场景的 24 份完整 full 样本已保存，浏览覆盖的 summary 暂时完整沿用 default。当前页内容及实际摘要字段留待 inspect_map／inspect_deck／inspect_pile 核验，顶栏漏读已由[专项修复](2026-11-02-top-bar-visibility.md)解决；其余 11 组待选，get_observation 整体未核销。
+> 当前状态：本阶段约定的摘要占位已实现。对应总目录 05、06 组；5 类场景的 24 份完整 full 样本已保存，浏览覆盖的页面主体暂用 default，顶栏已独立复用四字段摘要。当前页内容及实际摘要字段留待 inspect_map／inspect_deck／inspect_pile 核验，顶栏漏读已由[专项修复](2026-11-02-top-bar-visibility.md)解决；其余 11 组待选，get_observation 整体未核销。
 
 总流程见[工具核验记录](2026-11-02-mcp-tool-review.md)，分组见[观察场景目录](2026-11-02-get-observation-review.md)。本轮查看的是 get_observation，不核销 inspect_map、inspect_deck 或 inspect_pile；后者仅用于打开原生页面和核对数据来源。
 
@@ -126,15 +126,15 @@ Mod 0.49.0 的采样基线对顶栏读取有场景差异：本轮所有牌组／
 
 ## 本阶段定稿与后续接入
 
-- get_observation.summary 按当前 screen.view 识别 map、deck、draw_pile、discard_pile、exhaust_pile；统一进入 browsing_summary，暂时直接执行公共 default 过滤。覆盖页优先于底层战斗和选择摘要，不能因为 scene:combat 再精简顶栏或选择元数据。
+- get_observation.summary 先统一执行 default 和共用顶栏摘要，再按 screen.view 分派 map、deck、draw_pile、discard_pile、exhaust_pile。browsing_summary 只让页面主体暂用 default，隐藏选择元数据不再按下层战斗压缩。顶栏契约见[观察预设](../development/observation.md#mcp-输出预设)，修订依据见[共用顶栏记录](2026-11-02-shared-top-bar-summary.md)。
 - 本阶段不增加输出占位字段，也不补当前缺少的卡牌列表、节点类型、升级模式或排序。full/default/actions_only/top_bar 保持原有规则。
 - 后续核验 inspect_map、inspect_deck、inspect_pile 时，一并决定对应已打开页面在基础观察中的内容，以及此入口的实际摘要；这几项工具尚未核销。
 - 顶栏漏读及相关查看工具可用性单独修复，见[专项记录](2026-11-02-top-bar-visibility.md)；不等待浏览内容设计。只读可见数据与允许交互分别核实，下层动作仍受覆盖限制。
 - 后续读取卡牌时须复核现有 deck:／pile: ID、未知牌、升级预览、已有附魔及费用颜色；抽牌堆保持原生浏览排序，不输出真实抽取顺序。牌组／牌堆已有附魔的缺口仍待对应工具处理，见[选牌实施边界](2026-11-02-get-observation-selections.md#实施结果)。
 
-## 摘要占位实施
+## 初次摘要占位实施（34598f4）
 
-实现只修改 Python 的观察投影，未改游戏 API、Mod 或原生读取。三个回归用例覆盖现有样本、不同底层场景中可见顶栏的 default 等价性，以及隐藏选择的元数据与空预览列表；先验证旧规则下后两类失败，再接入占位。此处的可见顶栏样本是投影测试输入，不属于原生顶栏修复验证；后续修复结果见独立专项记录。
+本段记录初次占位的验证基线；整份 default 占位包含顶栏的范围过大，已由后续[共用顶栏修复](2026-11-02-shared-top-bar-summary.md)调整。初次实现只修改 Python 的观察投影，未改游戏 API、Mod 或原生读取。三个回归用例覆盖现有样本、不同底层场景中可见顶栏的 default 等价性，以及隐藏选择的元数据与空预览列表；先验证旧规则下后两类失败，再接入占位。此处的可见顶栏样本是投影测试输入，不属于原生顶栏修复验证；后续修复结果见独立专项记录。
 
 Python 全套 459 项通过（37.479 秒），其中新增 3 项回归；24 份原始样本中的 19 份浏览覆盖响应均与 default 投影一致，输入对象保持原样。文档链接、JSON 围栏和 diff 检查通过。仅涉及 Python 输出分派，未重跑 GUI 或原生构建，也未修复原生读取缺口；前一阶段 GUI 样本用于本次投影回归。版本与原生 schema 不变，现行契约见[观察预设](../development/observation.md#mcp-输出预设)。
 
