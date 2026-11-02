@@ -26,7 +26,7 @@ async def verify(args):
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             initialized = await session.initialize()
-            assert initialized.serverInfo.version == '0.50.3'
+            assert initialized.serverInfo.version == '0.50.4'
             definitions = {t.name: t for t in (await session.list_tools()).tools}
             assert len(definitions) == 42
             assert definitions['get_observation'].inputSchema['properties']['preset']['enum'] == [

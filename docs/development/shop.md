@@ -1,6 +1,6 @@
 # 商店
 
-适用于 Mod `0.34.1`、MCP `0.29.1`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。当前支持实际单人，正常商店和假商人使用同一组工具；工具操作原生界面，不直接改金币或发放商品。
+适用于 Mod `0.49.2`、MCP `0.50.4`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。当前支持实际单人，正常商店和假商人使用同一组工具；工具操作原生界面，不直接改金币或发放商品。
 
 下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
 
@@ -42,6 +42,8 @@
   "available_actions": ["buy_item", "close_shop", "inspect_potions", "inspect_relics", "inspect_map", "inspect_shop"]
 }
 ```
+
+get_observation 的 summary 使用[共用卡牌摘要规则](observation.md#mcp-输出预设)精简商品卡牌，商品 ID 与购买字段保持在外层。full/default 继续提供稀有度与卡池，均不附送正文；完整效果由 inspect_shop 提供。
 
 `items` 的示例只保留一项，不代表完整库存。`kind` 为 `card`、`relic`、`potion` 或 `card_removal`；`position` 表示原生布局中的类别和从 0 开始的槽位。正常布局通常有 5 张角色牌、2 张无色牌、3 个遗物、3 瓶药水及删牌服务，但接口按真实界面读取，不固定数量。
 

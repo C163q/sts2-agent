@@ -1,6 +1,6 @@
 # 终章与一局结算
 
-适用于 Mod `0.49.2`、MCP `0.50.3`、观察 schema `31`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。支持单人第三幕结束后的建筑师对话、胜负结算、必要解锁和返回主菜单。实现依据与验证范围见[源码及图形验证](../research/2026-10-31-run-ending-validation.md)。
+适用于 Mod `0.49.2`、MCP `0.50.4`、观察 schema `31`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。支持单人第三幕结束后的建筑师对话、胜负结算、必要解锁和返回主菜单。实现依据与验证范围见[源码及图形验证](../research/2026-10-31-run-ending-validation.md)。
 
 下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
 

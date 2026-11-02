@@ -20,7 +20,7 @@
 
 已接通[先古之民房间](docs/development/ancients.md)：逐句对话、选择遗物、后续选牌与前进。支持[通用问号事件](docs/development/events.md)的正文与选项、致死红框、后续选牌/奖励、战斗及返回事件；[占卜](docs/development/divination.md)支持棋盘图像、大小工具与逐格揭开。[Trial 确认弹窗](docs/development/events.md#事件确认弹窗)支持明确确认或取消；未知弹窗仍停在人工输入边界。
 
-MCP `0.50.3` 默认提供 42 个工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。玩法工具默认保留完整内容并省略普通空值，显式 `preset:"full"` 保留原有空值；规则见[MCP 输出预设](docs/development/mcp.md#输出预设)。基础观察支持[默认、完整、战斗及选牌摘要、顶栏或仅工具预设](docs/development/observation.md#mcp-输出预设)，按当前页面列出可用查看与操作工具，不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
+MCP `0.50.4` 默认提供 42 个工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。玩法工具默认保留完整内容并省略普通空值，显式 `preset:"full"` 保留原有空值；规则见[MCP 输出预设](docs/development/mcp.md#输出预设)。基础观察支持[默认、完整、摘要、顶栏或仅工具预设](docs/development/observation.md#mcp-输出预设)，按当前页面列出可用查看与操作工具，不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
 
 ## 开发与运行入口
 

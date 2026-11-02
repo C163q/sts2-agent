@@ -1,8 +1,10 @@
 # 先古之民
 
-适用于 Mod `0.34.2`、MCP `0.29.1`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。支持实际单人的常规先古之民房间，使用原生对话及事件选项流程；不自动选择遗物或前往地图节点。终章建筑师使用[终章接口](run-ending.md)，与常规先古之民共用 `advance_dialogue`。普通问号事件使用[通用事件工具](events.md)。
+适用于 Mod `0.49.2`、MCP `0.50.4`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。支持实际单人的常规先古之民房间，使用原生对话及事件选项流程；不自动选择遗物或前往地图节点。终章建筑师使用[终章接口](run-ending.md)，与常规先古之民共用 `advance_dialogue`。普通问号事件使用[通用事件工具](events.md)。
 
 下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
+
+get_observation 的 summary 保留与 default 相同的先古主体，共用顶栏及选牌仍按[观察预设](observation.md#mcp-输出预设)独立精简。
 
 ## 工具与观察
 

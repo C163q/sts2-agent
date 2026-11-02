@@ -1,0 +1,48 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible"
+  },
+  "top_bar": {
+    "gold": 1099,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1
+  },
+  "event": {
+    "status": "visible",
+    "name": "Self-Help Book",
+    "options": [
+      {
+        "id": 5,
+        "title": "Read the Back",
+        "description": "Choose an Attack to Enchant with Sharp 2.",
+        "enabled": true
+      },
+      {
+        "id": 6,
+        "title": "Read a Random Passage",
+        "description": "Choose a Skill to Enchant with Nimble 2.",
+        "enabled": true
+      },
+      {
+        "id": 7,
+        "title": "Locked",
+        "description": "You don't have any Powers that can be Enchanted.",
+        "enabled": false
+      }
+    ]
+  },
+  "available_actions": [
+    "choose_event_option",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ]
+}

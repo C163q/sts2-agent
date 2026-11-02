@@ -1,6 +1,6 @@
 # get_observation 场景核验与参数设计
 
-> 当前状态：战斗与全部选牌（01–04 组）的约定范围已交付；地图及牌组／牌堆浏览覆盖（05、06 组）已完成主体暂用 default、顶栏独立复用共用摘要的占位，实际内容待对应工具核验。奖励、火堆与宝箱（07–09 组）已收录 37 份基线 full 样本，其间完成[可浏览内容筛选审查与修复](2026-11-02-browsable-content-audit.md)，当前完整奖励样本见该记录，07–09 组 summary 已定稿并实现，房间主体沿用 default、可见宝箱显式保留 relic:null。[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)已有 82 份完整 full 样本，现状核验完成、summary 待讨论；其余 5 组待选，get_observation 整体尚未核销。
+> 当前状态：战斗与全部选牌（01–04 组）的约定范围已交付；地图及牌组／牌堆浏览覆盖（05、06 组）已完成主体暂用 default、顶栏独立复用共用摘要的占位，实际内容待对应工具核验。奖励、火堆与宝箱（07–09 组）已收录 37 份基线 full 样本，其间完成[可浏览内容筛选审查与修复](2026-11-02-browsable-content-audit.md)，当前完整奖励样本见该记录，07–09 组 summary 已定稿并实现，房间主体沿用 default、可见宝箱显式保留 relic:null。[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)已有 82 份完整 full 样本，现状核验与 summary 约定范围已交付；其余 5 组待选，get_observation 整体尚未核销。
 
 总清单与流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
 
@@ -14,7 +14,7 @@
 
 ## 当前调用与返回范围
 
-当前接受可选的 `preset: default/full/actions_only/summary/top_bar`，没有其他筛选参数。summary 精简战斗与当前选牌，其余非战斗主体暂用 default；top_bar 为 actions_only 上下文加顶栏及遗物数量，完整契约见[观察预设](../development/observation.md#mcp-输出预设)。公开默认值由公共预设包装器提供，不能把内部旧版参数解析函数中的 full 默认值当作公开默认值。
+当前接受可选的 `preset: default/full/actions_only/summary/top_bar`，没有其他筛选参数。summary 精简战斗、当前选牌、商店卡牌和普通事件，其余主体暂用 default；top_bar 为 actions_only 上下文加顶栏及遗物数量，完整契约见[观察预设](../development/observation.md#mcp-输出预设)。公开默认值由公共预设包装器提供，不能把内部旧版参数解析函数中的 full 默认值当作公开默认值。
 
 ```json
 {"preset":"full"}
@@ -51,9 +51,9 @@ divination, confirmation, epilogue, run_result, available_actions
 | 07 | 奖励列表 | `scene:rewards` 与 rewards；奖励行、领取后、空列表、继续 / 放弃；打开卡牌奖励后与 selection 组合，不能提前返回未打开候选 | [本轮现状与 full 样本](2026-11-02-get-observation-rooms.md#07奖励列表)，summary 已交付，房间主体沿用 default |
 | 08 | 火堆 | `scene:rest_site` 与 rest_site；选项、灰置、画面已展开说明、操作后继续；升级选牌另见 03 | [普通／灰置／多次操作及后续奖励](2026-11-02-get-observation-rooms.md#08火堆)，summary 已交付，房间主体沿用 default |
 | 09 | 宝箱房 | `scene:treasure` 与 treasure；未开启、已开且遗物可见、领取后 / 空箱、继续；不返回未开箱内容 | [开箱／待领／空箱及额外奖励](2026-11-02-get-observation-rooms.md#09宝箱房)，summary 已交付，房间主体沿用 default |
-| 10 | 商店 | `scene:shop` 与 shop；`merchant/inventory/opening/closing`，商品卡摘要、价格、售罄 / 补货、删牌选择，以及当前可见顶栏提示 | [现状与 full 样本](2026-11-03-get-observation-shop-ancient-event.md)已交付，summary 待讨论 |
-| 11 | 先古之民 | `scene:ancient` 与 ancient；已显示对话、推进对话、馈赠选项、后续选择与继续。区分基础选项正文和额外悬停帮助 | [现状与 full 样本](2026-11-03-get-observation-shop-ancient-event.md)已交付，summary 待讨论 |
-| 12 | 普通事件 | `scene:event` 与 event；事件正文、可选 / 锁定选项、致死警告、选择后正文与继续、后续奖励或战斗，再返回事件；覆盖时不附隐藏正文 | [初始／翻页／锁定／警告及后续交互](2026-11-03-get-observation-shop-ancient-event.md)已交付，summary 待讨论 |
+| 10 | 商店 | `scene:shop` 与 shop；`merchant/inventory/opening/closing`，商品卡摘要、价格、售罄 / 补货、删牌选择，以及当前可见顶栏提示 | [现状与 full 样本](2026-11-03-get-observation-shop-ancient-event.md)已交付，summary 已交付 |
+| 11 | 先古之民 | `scene:ancient` 与 ancient；已显示对话、推进对话、馈赠选项、后续选择与继续。区分基础选项正文和额外悬停帮助 | [现状与 full 样本](2026-11-03-get-observation-shop-ancient-event.md)已交付，summary 已交付 |
+| 12 | 普通事件 | `scene:event` 与 event；事件正文、可选 / 锁定选项、致死警告、选择后正文与继续、后续奖励或战斗，再返回事件；覆盖时不附隐藏正文 | [初始／翻页／锁定／警告及后续交互](2026-11-03-get-observation-shop-ancient-event.md)已交付，summary 已交付 |
 | 13 | 占卜 | 底层 scene:event，`screen.view:divination`；`playing/settling/finished`，棋盘 grid、可见次数、工具、对话、继续以及独立 PNG；被覆盖时棋盘和图片不返回 | 已收录 playing full JSON；原样本另有 1 张图 |
 | 14 | 确认框与人工输入 | Trial 弹窗使用 `screen.view:confirmation` 与 confirmation；未知确认来源可能为 confirmation:null 并附 notes.interaction；区分可操作确认框和其他未支持覆盖页 | 待选择 |
 | 15 | 建筑师终章 | `scene:epilogue`、`screen.view:epilogue`；已完整显示的气泡、推进 / 继续按钮、尚未准备或被地图 / 牌组覆盖。进入终章与已判定胜利并非同一条件 | 待选择 |
@@ -83,7 +83,7 @@ divination, confirmation, epilogue, run_result, available_actions
 - 战斗主画面阶段已经完成，见[专项记录](2026-11-02-get-observation-combat.md)。全部选牌界面的约定设计已实现，见[选牌核验与实施](2026-11-02-get-observation-selections.md)。上表其他“待选择”不表示实现缺失，而是本轮尚未展开样例核验。
 - 选牌包含战斗、火堆、事件及先古之民等底层场景；本轮围绕 selection 及其可见上下文核验，不自动决定这些房间自身的摘要字段。
 - 奖励、火堆与宝箱的基线及完整样本见[07–09 组记录](2026-11-02-get-observation-rooms.md)，summary 已交付，定稿与验证见同页。奖励可见行限制已在[浏览范围修复](2026-11-02-browsable-content-audit.md)中取消，新增当前 full/default/summary 样本；不要将原先截断的基线文件当作当前返回。
-- 商店、先古之民与普通事件的字段、分支和 82 份完整 full 样本见[10–12 组记录](2026-11-03-get-observation-shop-ancient-event.md)；summary 的房间主体与事件省略规则已形成待确认方案。商店卡牌正文由专门查看工具提供，这是已确认的职责分工，不作为 get_observation 的信息缺口。
+- 商店、先古之民与普通事件的字段、分支和 82 份完整 full 样本见[10–12 组记录](2026-11-03-get-observation-shop-ancient-event.md)；summary 已实现共用商品卡牌摘要、保留先古主体、事件页面正文与 false 警告省略。商店卡牌正文由专门查看工具提供，这是已确认的职责分工，不作为 get_observation 的信息缺口。
 - 新的设计结论、确认范围、验证结果及后续提交持续记录于对应专项文件，并在本目录同步状态。
 
 首轮目录检查：5 份初始 JSON 与上述原始 full 调用逐对象一致，能够通过当前观察结构校验；清单名称与 43 个公开工具对应，链接与 Markdown 围栏检查通过。首轮目录整理未启动游戏；后续新增的战斗实测、完整样本及未覆盖范围见专项记录。

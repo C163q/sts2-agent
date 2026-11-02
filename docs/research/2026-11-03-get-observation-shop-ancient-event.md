@@ -1,8 +1,8 @@
 # get_observation 商店、先古之民与普通事件核验
 
-> 当前状态：10–12 组现状核验完成，16 类夹具的 82 份完整 full 样本已保存；进入 summary 设计讨论，尚未定稿或修改工具行为。其余 5 组（13–17）待选，get_observation 整体未核销。
+> 当前状态：10–12 组现状核验完成，16 类夹具的 82 份完整 full 样本已保存；summary 的约定范围已定稿并实现，新增 5 份由既有 full 投影的摘要示例。其余 5 组（13–17）待选，get_observation 整体未核销。
 
-总流程见[工具清单](2026-11-02-mcp-tool-review.md)，分组见[观察场景目录](2026-11-02-get-observation-review.md)。本轮只展示 10–12 组的现状和完整 `preset:"full"`，不提前修改工具参数或 summary；inspect_shop、inspect_ancient、inspect_event 用于核对基础观察与详情的区别，不在本轮核销。13 组占卜、14 组确认框及 01–04 组选择／战斗沿用各自核验范围。
+总流程见[工具清单](2026-11-02-mcp-tool-review.md)，分组见[观察场景目录](2026-11-02-get-observation-review.md)。本页保留 10–12 组现状核验的完整 `preset:"full"` 样本，并记录随后完成的 summary 设计与验证；inspect_shop、inspect_ancient、inspect_event 用于核对基础观察与详情的区别，不在本轮核销。13 组占卜、14 组确认框及 01–04 组选择／战斗沿用各自核验范围。
 
 ## 基线与证据
 
@@ -66,7 +66,7 @@ continue.text:null 表示原生没有显示推进按钮文字，不等于该入�
 
 馈赠可能立即修改生命或遗物，也可能进入卡牌包、移除／附魔／变牌及结果确认，或者嵌套奖励。这些页面使用已有 selection/rewards 契约，先古之民页面为 covered；不能提前展示结果或自动选取。完成后重新读取原生对话／说明和 proceed，不假定必定恢复相同字段值。
 
-`inspect_ancient` 主要增加各选项的额外 hover_tips，不推进对话；选项的 title、description 本就属于静态可见正文。当前 summary 仍沿用 default 的房间主体，顶栏和选牌使用共用摘要，尚未在本轮定稿先古内容的删减。
+`inspect_ancient` 主要增加各选项的额外 hover_tips，不推进对话；选项的 title、description 本就属于静态可见正文。当前 summary 仍沿用 default 的房间主体，顶栏和选牌使用共用摘要，先古之民主体不再额外删减。
 
 现行操作说明见[先古之民接口](../development/ancients.md)。
 
@@ -93,16 +93,32 @@ Trial 第二次拒绝进入 screen.view:confirmation，此时基础观察已有 
 
 现行说明见[事件接口](../development/events.md)，选牌另见[已完成的选择核验](2026-11-02-get-observation-selections.md)。
 
-## 待确认的 summary 方案
+## summary 定稿与交付
 
-当前实现尚未修改：summary 对三个房间主体使用 default，顶栏按独立组件精简，选择页复用卡牌摘要。拟定方案如下，确认后再实现：
+MCP `0.50.4` 已实现以下规则；Mod 保持 `0.49.2`、schema `31`。full/default 的原生内容范围不变，不新增参数：
 
-- 商店与先古之民主体完整沿用 default，不额外删除商品卡牌的 rarity／visual_card_pool、馈赠效果、对话、称号或选项。
-- 普通事件仅省略 event.description，即当前页面的叙事正文；保留 options[].description，因为它们说明费用、效果及锁定原因。default/full 仍返回页面正文，需要时也可通过 inspect_event 获取。
-- summary 中，options[].lethal_warning 为 false 时省略，为 true 时保留。省略表示本次没有显示原生危险红框，不是沿用上次标记；每份结果都是完整当前观察。该规则不扩展到其他 false 字段。
-- 共用顶栏、卡牌选择、覆盖页和既有预设保持各自现行规则，不新增参数；inspect_shop 的购买上下文属于后续计划。
-- covered、未开店、锁定选项、已用删牌以及不可读价格的语义不同；不能统一用一个“无内容”表示。
-- get_observation 不回放动作事件。本轮的完整 full 样本不附 transition、purchase_result 或先前奖励结果。
+- 商店商品卡牌复用与手牌、选牌相同的 card_summary，省略 rarity／visual_card_pool，保留已有名称、类型及费用；商品 ID 仍在 items[].id，card 内不额外生成 ID。当前原生读取没有提供附魔、费用颜色、描边或不可打出标记，本次投影不伪造这些字段。商店其余商品与操作字段沿用 default。
+- 先古之民主体完整沿用 default，保留馈赠效果、对话、称号、选项和按钮。
+- 普通事件仅省略 event.description，即当前页面叙事正文；保留 options[].description，因为它们说明费用、效果及锁定原因。default/full 和 inspect_event 仍返回页面正文。
+- 事件选项 lethal_warning 为 false 时省略，为 true 时保留；其他 false 字段不变。省略表示本次没有显示原生危险红框，不沿用上次标记；每份结果都是完整当前观察。
+- 共用顶栏、卡牌选择、覆盖页和既有预设保持现行规则。inspect_shop 的金币等购买上下文仍属于后续计划，不在本次实现。
+
+实现入口见[观察投影](../../src/sts2_mcp/output/observation_presets.py)与[共用卡牌摘要](../../src/sts2_mcp/output/card_summary.py)，现行契约见[观察预设](../development/observation.md#mcp-输出预设)。完整响应校验及动作许可先于摘要，不能靠省略字段掩盖错误数据。
+
+本次只修改 Python 投影，未新增 GUI 采样、C# 构建或正式 Mod 安装。`.tmp/2026-11-03-room-summary-implementation/` 保存验证证据：
+
+- 新测试先确认旧实现保留事件正文／false 警告及商品卡牌稀有度／卡池，按预期失败；修复后定向 54 项通过，完整 Python 469 项通过（34.272 秒）。
+- 82 份既有实测 full 的新投影检查通过：商店共 88 条卡牌记录按共用规则精简；事件共省略 19 条 false 警告、保留 3 条 true 警告；先古主体、其他商品字段、其他 false、输入对象与 full 均未变化。统计是样本内记录数，包含同一对象在多张画面的重复出现。
+- 公开 GameTools 测试覆盖商品身份、零价格、星星费用 0、锁定项及效果说明、摘要后直接选择、检查前拒绝非法警告类型、空选项与覆盖状态。先前把所有普通事件 summary 视为完整 default 主体的旧测试已按定稿调整。
+- 下面五份 summary 来自本页保留的游戏实测 full，使用当前公开投影生成并校验文字 JSON 与 structuredContent 一致；它们不是新的游戏实测调用。来源及导出记录见本地 sample-exports.json，原始 full 不改写。
+
+| 摘要内容 | summary JSON | 来源 full |
+| --- | --- | --- |
+| 商店库存 | [shop-inventory.summary.json](2026-11-03-room-summary-examples/shop-inventory.summary.json) | [shop-basic-inventory.full.json](2026-11-03-get-observation-shop-ancient-event-examples/shop-basic-inventory.full.json) |
+| 无送货员购买卡牌后 | [shop-after-card.summary.json](2026-11-03-room-summary-examples/shop-after-card.summary.json) | [shop-basic-after-card.full.json](2026-11-03-get-observation-shop-ancient-event-examples/shop-basic-after-card.full.json) |
+| 先古馈赠 | [ancient-choices.summary.json](2026-11-03-room-summary-examples/ancient-choices.summary.json) | [ancient-dialogue-dialogue-2.full.json](2026-11-03-get-observation-shop-ancient-event-examples/ancient-dialogue-dialogue-2.full.json) |
+| 事件与锁定项 | [event-locked.summary.json](2026-11-03-room-summary-examples/event-locked.summary.json) | [event-locked-initial.full.json](2026-11-03-get-observation-shop-ancient-event-examples/event-locked-initial.full.json) |
+| 事件危险红框 | [event-warning.summary.json](2026-11-03-room-summary-examples/event-warning.summary.json) | [event-death-initial.full.json](2026-11-03-get-observation-shop-ancient-event-examples/event-death-initial.full.json) |
 
 ## 完整 full 样本
 
@@ -219,4 +235,4 @@ Trial 第二次拒绝进入 screen.view:confirmation，此时基础观察已有 
 - 普通事件示例覆盖通用字段及不同后续交互，不穷举目标版本全部事件、文本和随机分支。致死警告页仅采样，没有执行致死动作；确认框仅取消，未结束测试对局。建筑师、未知专属布局和第三方事件另行处理。
 - full 不自动读取悬停内容或未来选项。卡牌奖励必须先打开候选，宝箱必须先显示遗物，未展开内容不由本轮样本补齐。新摘要设计还须遵循[可见信息边界](../observation.md)。
 - 采样脚本的两次失败均保留：首批在先古之民关闭牌组后误选 disabled 选项；第二批在初始只读过渡页错误断言已可选择。修正仅针对脚本按已有 available_actions 有界等待，不改变生产代码、不自动重发失败动作。详情见本地 `.tmp/2026-11-03-observation-interactions-review-report.md`。
-- 没有修改生产代码、参数或预设，没有重新运行 Python／C# 全套测试、构建或正式安装。下一步依据这些 full 样本讨论 10–12 组 summary 及必要的信息补齐，确认后才实现；13–17 组继续待选，get_observation 整体不核销。
+- full 现状采样阶段没有修改生产代码，后续 summary 的 Python 改动与验证见上文。此次未修改原生读取或正式安装；13–17 组继续待选，get_observation 整体不核销。

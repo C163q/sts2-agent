@@ -136,8 +136,8 @@ class CombatProjectionTests(unittest.TestCase):
         self.assertNotIn('top_bar', result)
         self.assertNotIn('top_bar', observation_preset(value, 'top_bar'))
 
-    def test_noncombat_summary_shares_top_bar_and_preserves_body_and_divination_image(self):
-        for name in ('rest-site', 'event', 'divination'):
+    def test_rest_and_divination_summary_share_top_bar_and_preserve_body_and_image(self):
+        for name in ('rest-site', 'divination'):
             value = sample(name)
             if name == 'divination':
                 value = ImagePayload(value, 'aW1hZ2U=')
