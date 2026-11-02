@@ -14,9 +14,9 @@ internal static class RelicInspection
     internal static bool? Melted(NRelic relic)
     {
         var icon = relic.Icon;
-        if (!VisibleUi.OnScreen(icon) || icon.Texture == null || icon.Material is not ShaderMaterial shader) return null;
-        return shader.GetShaderParameter("is_wax").AsSingle() > 0
-            && icon.SelfModulate.IsEqualApprox(Colors.DarkRed);
+        if (!VisibleUi.OnScreen(icon) || icon.Texture == null || icon.Material is not ShaderMaterial shader
+            || shader.GetShaderParameter("is_wax").AsSingle() <= 0) return null;
+        return icon.SelfModulate.IsEqualApprox(Colors.DarkRed);
     }
 
     public static NRelicInventoryHolder[]? VisibleHolders()

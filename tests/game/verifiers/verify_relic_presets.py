@@ -49,6 +49,8 @@ async def verify(args):
                 assert summary == {'relics': basic}, summary
                 assert basic == observed['top_bar']['relics'], (basic, observed['top_bar']['relics'])
                 assert len(basic) >= 2, 'Fixture must exercise multiple relic positions.'
+                ordinary = [r for r in basic if r['name'] in {'Burning Blood', 'Anchor', 'Lantern', 'Pen Nib'}]
+                assert ordinary and all(r['melted'] is None for r in ordinary), ordinary
                 missing = len(basic) + 1000
                 requested = [len(basic) - 1, 0, len(basic) - 1, missing, missing]
                 for preset, source in (('full', full), ('summary', summary)):

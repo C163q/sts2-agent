@@ -90,9 +90,12 @@ internal static class CapacityChecks
             added.Add(lantern);
             await RelicCmd.Obtain(lantern, player);
             await Settle();
+            var ordinaryHolder = inventory.RelicNodes.Single(h => ReferenceEquals(h.Relic.Model, lantern));
+            Check("ordinary relic melting is not applicable", RelicInspection.Melted(ordinaryHolder.Relic) == null);
             lantern.Status = RelicStatus.Disabled;
             await frame();
-            Check("ordinary disabled relic is not melted", Events("relic_melted").Length == 1);
+            Check("ordinary disabled relic melting stays not applicable", Events("relic_melted").Length == 1
+                && RelicInspection.Melted(ordinaryHolder.Relic) == null);
             inventory.Hide();
             await frame();
             var hiddenWax = ModelDb.Relic<Lantern>().ToMutable();
