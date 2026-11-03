@@ -40,6 +40,16 @@
 
 不依赖 BaseLib 或 Godot 编辑器。仓库不包含游戏程序集、资源、第三方库二进制、存档或密钥。升级游戏或依赖前须重新核对受影响的 API 和行为；其他游戏版本、多人及声音不属于已验证范围。
 
+## 安装与使用
+
+1. 按[构建指南](docs/development/roundtrip.md#前提与构建)编译 Mod；正常使用无须准备独立测试实例。
+2. 退出游戏，按[安装说明](docs/development/live-game.md#安装文件)复制产物，启用 Mod 和依赖并重启。
+3. 按[启动配置](docs/development/live-game.md#steam-启动配置)设置 `STS2_AGENT_IPC_DIR`。
+4. 按[MCP 接入](docs/development/mcp.md#安装与游戏前提)安装依赖并配置客户端，`--ipc-dir` 须与游戏侧一致。
+5. 启动游戏，成功读取观察后按当前工具及候选逐步操作；成功详情及满足条件的动作结果可直接续接，见[MCP 调用规则](docs/development/mcp.md#调用和错误语义)。
+
+列出 MCP 工具只说明 Python 服务已启动；新请求成功取得观察才说明游戏内接口能够响应。更新与排错见[正常游戏指南](docs/development/live-game.md#更新与排错)。
+
 ## 开发与运行入口
 
 - [图形测试套件](docs/development/gui-testing.md)：复用游戏进程执行多局，支持显式同局连续步骤。
@@ -62,16 +72,6 @@ cp .env.example .env
 ```sh
 . ./.env
 ```
-
-## 正常游戏使用顺序
-
-1. 按[构建指南](docs/development/roundtrip.md#前提与构建)编译 Mod；正常使用无须准备独立测试实例。
-2. 退出游戏，按[安装说明](docs/development/live-game.md#安装文件)复制产物，启用 Mod 和依赖并重启。
-3. 按[启动配置](docs/development/live-game.md#steam-启动配置)设置 `STS2_AGENT_IPC_DIR`。
-4. 按[MCP 接入](docs/development/mcp.md#安装与游戏前提)安装依赖并配置客户端，`--ipc-dir` 须与游戏侧一致。
-5. 启动游戏，成功读取观察后按当前工具及候选逐步操作；成功详情及满足条件的动作结果可直接续接，见[MCP 调用规则](docs/development/mcp.md#调用和错误语义)。
-
-列出 MCP 工具只说明 Python 服务已启动；新请求成功取得观察才说明游戏内接口能够响应。更新与排错见[正常游戏指南](docs/development/live-game.md#更新与排错)。
 
 ## 后续计划
 
