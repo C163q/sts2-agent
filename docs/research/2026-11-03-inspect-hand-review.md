@@ -1,6 +1,6 @@
 # inspect_hand 场景与现有预设核验
 
-> 当前状态：现状核验与完整样本已交付，进入设计讨论。已完成 11 个隔离测试局及菜单读取，导出 26 份真实返回和 1 份明确标注的控制输入示例。HAND-01 的具体外观仍待 GUI 核验；参数、summary 调整与修复尚未定稿。本轮未修改玩法行为，不核销工具；暂无采样阻塞。完整清单及流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
+> 当前状态：设计讨论中。现状核验已完成 11 个隔离测试局及菜单读取，导出 26 份真实返回和 1 份明确标注的控制输入示例。已补充 Affliction 源码与资源核对、五种共享卡牌模式及手牌资源字段的候选契约；HAND-01 的实际画面读取仍待 GUI 验证，共用入口迁移范围尚未定稿。尚未修改玩法行为，不核销工具；暂无调研阻塞。完整清单及流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
 
 ## 优先关注的问题
 
@@ -120,3 +120,86 @@
 优先讨论 HAND-01 的实际 UI 范围和共享字段，再决定是否需要调整摘要。可选方向有：维持现状并在需要时读取 full；在共享摘要中补充经 UI 核实的 Affliction 身份；或为手牌另做更细分的输出参数。建议第二种，能让其他共用卡牌摘要同时受益，避免多套字段逐渐分歧。是否显示计数、没有专用外观时如何处理，仍须逐类核对，不在本轮直接定稿。
 
 本轮不修改用户维护的 TODO.md；本项未修复问题在本报告跟进。
+
+## 共享卡牌输出与手牌资源的候选契约
+
+本节记录后续设计讨论，**尚未实现或整体定稿**；上面的现状与原始样本保持不变。
+
+### Affliction 与附魔空值
+
+源码与资源已确认：`ChainsOfBindingPower`（魂缚锁链）施加 `Bound`（魂缚），`SmoggyPower`（烟雾弥漫）施加 `Smog`（烟雾）。`CardModel.Affliction` 是单个可空对象，独立于同样可空的 Enchantment。七种内置 Affliction 都有对应覆盖场景，场景节点中没有 Label 或 RichTextLabel 计数；不能直接转发模型 Amount。
+
+本轮补充证据在 `.tmp/2026-11-03-card-presentation-design/`：目标程序集的两个 Power 反编译、资源只读探针 `resources.gd` 与输出 `resources.json`。资源来自 `res://localization/{zhs,eng}/{powers,afflictions}.json` 的对应 title 条目，以及 `res://scenes/cards/overlays/afflictions/{bound,entangled,galvanized,hexed,ringing,smog,tainted}.tscn`。探针在隔离数据目录的无界面进程中读取并实例化场景，没有进入对局；它确认资源及节点结构，不能替代实际手牌外观采样验证。无界面音频和 Sentry 初始化日志未影响资源输出，不据此宣称实战 UI 已验证。
+
+候选规则：
+
+- 统一使用单数 `affliction`，full 的无可读效果值为 null，不使用空数组。有实际可识别覆盖外观时为 `{"name":"Bound"}`；summary 只保留其身份，效果文字仍由 full 的正文／悬停解释提供。
+- full 与 observation_full 的卡牌均显式生成 `enchantment:null` 和 `affliction:null`；未知牌或不可识别效果不补真实身份。default、observation_default 和 summary 的普通卡牌省略空值。
+- 不新增 Affliction 的 amount 或 dimmed：当前资源没有对应计数，Affliction 也没有附魔式 Disabled 显示契约。Enchantment 继续保留原有可见计数与置灰规则。
+- 附魔与 Affliction 可同时存在，分别返回；不能二选一覆盖。
+- 比较预览和 transition 中的 null 仍遵循既有特殊规则：例如去掉附着效果时，before/after 的差异不能被普通卡牌压缩丢失。共用格式化应保留上下文，再由统一空值入口决定例外，不能在单牌函数中提前递归删 null。
+
+### 共用模式及分层
+
+建议采纳五种**内部卡牌模式**，不为每个工具新增 observation_full 等公开 preset 参数。工具的 preset 与内部卡牌模式分开映射，场景继续决定允许取得哪些事实。
+
+| 内部模式 | 内容与职责 |
+| --- | --- |
+| `summary` | 现有共享摘要字段，加经 UI 核实的 affliction；省略普通 null、空禁用标记和无描边。既有比较例外在外层统一处理 |
+| `full` | 允许专门查看的完整卡面身份、外观、正文和悬停解释，保留 null；实际费用和正文仍使用当前页面与目标上下文 |
+| `observation_full` | 当前基础画面允许自动提供的卡牌事实，保留 null；半隐藏手牌无正文，展开的选牌及结算卡可有正文；不自动附送悬停解释 |
+| `default` | full 内容经统一 default 空值规则处理 |
+| `observation_default` | observation_full 内容经同一 default 空值规则处理 |
+
+游戏端共用可见牌面读取入口，保留实际 NCard 与可滚动网格的上下文克隆两种数据来源；MCP 端共用卡牌结构和字段投影入口。卡牌格式化不能自己决定某张牌是否已揭示、打开新页面、刷新持有卡牌数值，或把手牌费用应用到牌组／升级预览。summary 同样只压缩已允许提供的内容。
+
+需要合并的重复逻辑包括 CombatObservation.Card、HandInspection.Card、SelectionInspection.Card、BrowsedCard.Read 的牌面字段及正文处理，以及 Python 的 CARD/HAND_CARD/BROWSED_CARD/SHOP_CARD 和 card_summary。已有的手牌枚举重复也纳入同一局部重构；不把工具动作、候选排序、地图或页面合法性搬进卡牌格式化。
+
+### 接入场景及需保留的区别
+
+| 调用位置 | 五种模式的适配与额外上下文 |
+| --- | --- |
+| inspect_hand | 直接使用 full/default/summary；ID 为当前手牌整数，保持原顺序 |
+| get_observation、动作回执中的手牌 | 使用 observation_full/observation_default/summary，保持半隐藏手牌信息边界 |
+| get_observation 中的候选、卡包、升级／附魔／变牌比较、结算卡 | 也可共用入口；当前已展开的正文在 observation 模式中保留。before/after、random、bundle ID、选中状态等由选择容器处理 |
+| inspect_selection、inspect_run_result 中的完整牌面 | 使用 full/default，已有 summary 的位置使用共享 summary；不因共用入口给 inspect_run_result 自动新增公开 summary |
+| inspect_deck、inspect_pile | 有独立 detail_level，其现有 summary 保留稀有度／卡池，且缺少共享摘要的若干外观字段，与这里的 summary 不同。可复用基础读取，但公开 detail_level 的最终映射留待对应工具核验，不能悄悄替换已有语义 |
+| 商店卡牌 | 卡面可复用，购买 ID 位于外层商品项，不能为 card 内造手牌 ID；价格、折扣、可买状态留在商品容器。基础观察继续按已确认约定不附正文，inspect_shop 的专门查看可有正文 |
+| 事件、先古之民、奖励的选牌 | 已打开的真实候选走上述选择模式；尚未展开的选项提及或奖励名称只作为引用，不自动扩成牌面 |
+
+以下内容不属于五种完整牌面类别，保留轻量表示：
+
+- inspect_targets 的 card、transition 事件中的 card、基础观察的悬浮君王之剑等 `id/name` 引用。共用身份提取即可，不能借改造附送费用或正文。
+- CardHoverTip 已转成的 `title/description` 文本预览：没有本次可操作卡牌 ID，也不是候选，不改成完整牌面对象。
+- 顶层共享 hover_tips、notes、错误、排序、筛选与选择元数据。各工具保留现有容器结构及关联方式；手牌的共享 card_ids 可以是整数，浏览卡牌是字符串 ID，商店则保留自己的商品关联，不能强行混用。
+
+### inspect_hand 的资源信息
+
+建议采用额外的顶层 energy、max_energy、stars，与 hand 筛选独立：即使 card_ids 为空或全部无效，成功读取仍返回当前可读资源。参数错误或底层非法读取继续只返回 error。
+
+full 中 energy/max_energy 为可空整数，stars 为可空整数。default 仅省略不可读空值；summary 与 get_observation.summary 一致，将成对可读能量合为字符串 energy，例如 `3/3`，并省略 max_energy；stars 可见时保留整数，包括 0。部分能量不可读时沿用现行 summary 行为省略能量，不从模型补值。
+
+游戏端提取共用战斗资源采样，MCP 端提取共用资源摘要逻辑，避免两处分别读取／拼接。资源来自当前显示的能量计和星星计，不依赖整个 player 对象或角色身体是否可读，也不因职业身份推断星星为 0。
+
+建议的成功结果骨架如下；这是设计示例，不是实测返回：
+
+```json
+{
+  "energy": 3,
+  "max_energy": 3,
+  "stars": null,
+  "hand": [],
+  "hover_tips": []
+}
+```
+
+对应 summary：
+
+```json
+{
+  "energy": "3/3",
+  "hand": []
+}
+```
+
+以上共享入口、特殊调用位置的适配范围及资源字段仍待本项定稿；本节记录不构成已经执行的迁移。

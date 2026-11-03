@@ -31,7 +31,7 @@
 
 - [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：[07–09 组奖励、火堆与宝箱](2026-11-02-get-observation-rooms.md)现状核验和 summary 已交付，[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)现状核验及 summary 已交付，[13–15 组](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状及完整 full 已交付，summary 已交付；[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)已交付本阶段摘要占位，内容待对应工具核验；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
 - [x] `inspect_ui`：可见顶栏、战斗 UI、资源及空充能球槽帮助。阶段：[修复与核验完成](2026-11-03-inspect-ui-review.md)，[统一上下文、summary、sources 筛选及验证](2026-11-03-ui-context-implementation.md)已交付；部分条件变体保留源码／历史核对边界。
-- [ ] `inspect_hand`：手牌详情。阶段：[现状与完整 full 样本核验完成，设计讨论中](2026-11-03-inspect-hand-review.md)；已有 default/full/summary 与 card_ids，Affliction 外观缺口及共享采样重构建议见报告开头，尚未定稿或修改行为。
+- [ ] `inspect_hand`：手牌详情。阶段：[现状与完整 full 样本核验完成，设计讨论中](2026-11-03-inspect-hand-review.md)；已有 default/full/summary 与 card_ids。[共享卡牌模式、Affliction／附魔空值及手牌资源候选契约](2026-11-03-inspect-hand-review.md#共享卡牌输出与手牌资源的候选契约)已记录，尚未定稿或修改行为。
 - [ ] `inspect_targets`：指定手牌或药水的可用性与目标范围。
 - [ ] `inspect_combatants`：战斗角色、能力、意图、充能球等详情。
 - [ ] `inspect_potions`：药水详情。
