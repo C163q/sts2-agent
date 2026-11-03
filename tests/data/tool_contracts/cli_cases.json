@@ -1,0 +1,676 @@
+[
+  {
+    "tool": "inspect_run_result",
+    "state": "run_result",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_run_result"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-58"
+  },
+  {
+    "tool": "run_result_option",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "run_result_option",
+      "--option-id",
+      "continue"
+    ],
+    "native_arguments": {
+      "option_id": "continue"
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "travel_to_node",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "travel_to_node",
+      "--node-id",
+      "map:1:1:2"
+    ],
+    "native_arguments": {
+      "node_id": "map:1:1:2"
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "respond_to_confirmation",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "respond_to_confirmation",
+      "--option",
+      "cancel"
+    ],
+    "native_arguments": {
+      "option": "cancel"
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "set_divination_tool",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "set_divination_tool",
+      "--tool",
+      "small"
+    ],
+    "native_arguments": {
+      "tool": "small"
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "divine",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "divine",
+      "--x",
+      "0",
+      "--y",
+      "0"
+    ],
+    "native_arguments": {
+      "x": 0,
+      "y": 0
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "inspect_event",
+    "state": "event",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_event"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-60"
+  },
+  {
+    "tool": "choose_event_option",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "choose_event_option",
+      "--option-id",
+      "0"
+    ],
+    "native_arguments": {
+      "option_id": 0
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "inspect_ancient",
+    "state": "ancient",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_ancient"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-61"
+  },
+  {
+    "tool": "choose_ancient_option",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "choose_ancient_option",
+      "--option-id",
+      "0"
+    ],
+    "native_arguments": {
+      "option_id": 0
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "advance_dialogue",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "advance_dialogue"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "open_shop",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "open_shop"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "close_shop",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "close_shop"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "inspect_shop",
+    "state": "shop",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_shop"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-62"
+  },
+  {
+    "tool": "buy_item",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "buy_item",
+      "--item-id",
+      "0"
+    ],
+    "native_arguments": {
+      "item_id": 0
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "get_observation",
+    "state": "observation",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "get_state"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "inspect_rewards",
+    "state": "rewards",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_rewards"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-63"
+  },
+  {
+    "tool": "claim_reward",
+    "state": "reward_action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "claim_reward",
+      "--reward-id",
+      "12"
+    ],
+    "native_arguments": {
+      "reward_id": 12
+    },
+    "expected_ref": "result-64"
+  },
+  {
+    "tool": "proceed",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "proceed"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "loot_treasure",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "loot_treasure"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "inspect_treasure",
+    "state": "treasure",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_treasure"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-65"
+  },
+  {
+    "tool": "inspect_rest_site",
+    "state": "rest_site",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_rest_site"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-66"
+  },
+  {
+    "tool": "choose_rest_option",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "choose_rest_option",
+      "--option-id",
+      "rest"
+    ],
+    "native_arguments": {
+      "option_id": "rest"
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "inspect_hand",
+    "state": "hand",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_hand"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-24"
+  },
+  {
+    "tool": "inspect_targets",
+    "state": "targets",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_targets",
+      "--card-id",
+      "7"
+    ],
+    "native_arguments": {
+      "card_id": 7
+    },
+    "expected_ref": "result-28"
+  },
+  {
+    "tool": "play_card",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "play_card",
+      "--card-id",
+      "5"
+    ],
+    "native_arguments": {
+      "card_id": 5
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "inspect_ui",
+    "state": "ui",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_ui"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-30"
+  },
+  {
+    "tool": "inspect_potions",
+    "state": "potions",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_potions"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-33"
+  },
+  {
+    "tool": "use_potion",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "use_potion",
+      "--potion-slot",
+      "0"
+    ],
+    "native_arguments": {
+      "potion_slot": 0
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "discard_potion",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "discard_potion",
+      "--potion-slot",
+      "0"
+    ],
+    "native_arguments": {
+      "potion_slot": 0
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "inspect_combatants",
+    "state": "combatants",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_combatants"
+    ],
+    "native_arguments": {
+      "level": "full"
+    },
+    "expected_ref": "result-34"
+  },
+  {
+    "tool": "inspect_combatants",
+    "state": "combatants",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_combatants",
+      "--preset",
+      "default"
+    ],
+    "native_arguments": {
+      "level": "full"
+    },
+    "expected_ref": "result-34"
+  },
+  {
+    "tool": "inspect_combatants",
+    "state": "combatants",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_combatants",
+      "--preset",
+      "full"
+    ],
+    "native_arguments": {
+      "level": "full"
+    },
+    "expected_ref": "result-34"
+  },
+  {
+    "tool": "inspect_combatants",
+    "state": "combatants",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_combatants",
+      "--preset",
+      "summary"
+    ],
+    "native_arguments": {
+      "level": "summary"
+    },
+    "expected_ref": "result-35"
+  },
+  {
+    "tool": "inspect_relics",
+    "state": "relics",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_relics"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-38"
+  },
+  {
+    "tool": "inspect_deck",
+    "state": "deck",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_deck"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-40"
+  },
+  {
+    "tool": "inspect_deck",
+    "state": "deck",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_deck",
+      "--preset",
+      "default"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-40"
+  },
+  {
+    "tool": "inspect_deck",
+    "state": "deck",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_deck",
+      "--preset",
+      "full"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-41"
+  },
+  {
+    "tool": "inspect_deck",
+    "state": "deck",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_deck",
+      "--preset",
+      "summary"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-42"
+  },
+  {
+    "tool": "inspect_pile",
+    "state": "pile",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_pile",
+      "--pile",
+      "discard"
+    ],
+    "native_arguments": {
+      "pile": "discard"
+    },
+    "expected_ref": "result-43"
+  },
+  {
+    "tool": "inspect_pile",
+    "state": "pile",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_pile",
+      "--pile",
+      "discard",
+      "--preset",
+      "default"
+    ],
+    "native_arguments": {
+      "pile": "discard"
+    },
+    "expected_ref": "result-43"
+  },
+  {
+    "tool": "inspect_pile",
+    "state": "pile",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_pile",
+      "--pile",
+      "discard",
+      "--preset",
+      "full"
+    ],
+    "native_arguments": {
+      "pile": "discard"
+    },
+    "expected_ref": "result-44"
+  },
+  {
+    "tool": "inspect_pile",
+    "state": "pile",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_pile",
+      "--pile",
+      "discard",
+      "--preset",
+      "summary"
+    ],
+    "native_arguments": {
+      "pile": "discard"
+    },
+    "expected_ref": "result-45"
+  },
+  {
+    "tool": "close_card_view",
+    "state": "observation",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "close_card_view"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "inspect_map",
+    "state": "map",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_map"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-46"
+  },
+  {
+    "tool": "close_map",
+    "state": "observation",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "close_map"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "inspect_selection",
+    "state": "selection",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "inspect_selection"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-49"
+  },
+  {
+    "tool": "select_card",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "select_card",
+      "--card-id",
+      "5"
+    ],
+    "native_arguments": {
+      "card_id": 5
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "selection_option",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "selection_option",
+      "--option-id",
+      "skip"
+    ],
+    "native_arguments": {
+      "option_id": "skip"
+    },
+    "expected_ref": "result-59"
+  },
+  {
+    "tool": "set_selection_view",
+    "state": "observation",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "set_selection_view",
+      "--view",
+      "selection"
+    ],
+    "native_arguments": {
+      "view": "selection"
+    },
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "end_turn",
+    "state": "action",
+    "argv": [
+      "--ipc-dir",
+      "/tmp/sts2-contract-cli",
+      "end_turn"
+    ],
+    "native_arguments": null,
+    "expected_ref": "result-59"
+  }
+]

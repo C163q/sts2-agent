@@ -1,0 +1,1059 @@
+{
+  "observation": {
+    "snapshot_id": "fixture-state",
+    "scene": "combat",
+    "screen": {
+      "status": "visible"
+    },
+    "turn": 1,
+    "player": {
+      "hp": 80,
+      "hand": [
+        {
+          "id": 0,
+          "name": "Strike"
+        }
+      ]
+    },
+    "enemies": [
+      {
+        "id": 1,
+        "name": "Slime",
+        "intents": []
+      }
+    ],
+    "top_bar": {
+      "potion_slots": [
+        null,
+        {
+          "name": "Block Potion"
+        }
+      ],
+      "relics": [
+        {
+          "name": "Anchor",
+          "counter": 0
+        }
+      ]
+    },
+    "buttons": {
+      "end_turn": {
+        "text": "End Turn 1",
+        "enabled": true
+      }
+    },
+    "available_actions": [
+      "end_turn"
+    ]
+  },
+  "action": {
+    "snapshot_id": "fixture-state",
+    "scene": "combat",
+    "screen": {
+      "status": "visible"
+    },
+    "turn": 1,
+    "player": {
+      "hp": 80,
+      "hand": [
+        {
+          "id": 0,
+          "name": "Strike"
+        }
+      ]
+    },
+    "enemies": [
+      {
+        "id": 1,
+        "name": "Slime",
+        "intents": []
+      }
+    ],
+    "top_bar": {
+      "potion_slots": [
+        null,
+        {
+          "name": "Block Potion"
+        }
+      ],
+      "relics": [
+        {
+          "name": "Anchor",
+          "counter": 0
+        }
+      ]
+    },
+    "buttons": {
+      "end_turn": {
+        "text": "End Turn 1",
+        "enabled": true
+      }
+    },
+    "available_actions": [
+      "end_turn"
+    ],
+    "transition": {
+      "stop_reason": "player_ready",
+      "complete": true,
+      "events": [
+        {
+          "sequence": 1,
+          "type": "card_added",
+          "card": {
+            "id": 9,
+            "name": "Dazed"
+          },
+          "pile": "discard"
+        },
+        {
+          "sequence": 2,
+          "type": "stars_changed",
+          "target": {
+            "id": 0,
+            "kind": "player",
+            "name": "The Regent"
+          },
+          "before": null,
+          "after": 1
+        }
+      ]
+    }
+  },
+  "hand": {
+    "energy": 2,
+    "max_energy": 3,
+    "stars": null,
+    "hand": [
+      {
+        "id": 9,
+        "name": "Defend+",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "energy_cost_color": "green",
+        "unplayable_markers": [],
+        "outline": "cyan",
+        "description": "Gain 8 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Until next turn, prevents damage."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [
+          "energy"
+        ],
+        "outline": "none",
+        "description": "Gain 5 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Until next turn, prevents damage."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Star Card",
+        "type": "Attack",
+        "rarity": "rare",
+        "visual_card_pool": "regent",
+        "energy_cost": "X",
+        "star_cost": "?",
+        "star_cost_color": "red",
+        "unplayable_markers": [
+          "star"
+        ],
+        "outline": "red",
+        "description": "An effect.",
+        "hover_tips": [
+          {
+            "title": "Star",
+            "description": "A visible resource."
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Unknown",
+        "type": null,
+        "rarity": null,
+        "visual_card_pool": null,
+        "energy_cost": null,
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "description": null,
+        "hover_tips": null
+      }
+    ],
+    "snapshot_id": "fixture-state"
+  },
+  "targets": {
+    "snapshot_id": "fixture-state",
+    "card": {
+      "id": 7,
+      "name": "Strike"
+    },
+    "playable": true,
+    "target_type": "any_enemy",
+    "requires_target": true,
+    "targets": [
+      {
+        "id": 3,
+        "kind": "enemy",
+        "name": "Slime"
+      }
+    ],
+    "reason": null
+  },
+  "selection": {
+    "scene": "combat",
+    "screen": {
+      "status": "covered"
+    },
+    "selection": {
+      "type": "choose_one",
+      "status": "visible",
+      "prompt": "Choose a Card",
+      "min_select": 1,
+      "max_select": 1,
+      "selected_ids": [],
+      "cards": [
+        {
+          "id": 5,
+          "name": "Defend",
+          "description": "Gain 5 Block.",
+          "type": "Skill",
+          "rarity": "basic",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "1",
+          "star_cost": null,
+          "hover_tips": [
+            {
+              "title": "Block",
+              "description": "Prevents damage."
+            }
+          ]
+        }
+      ],
+      "options": [
+        {
+          "id": "skip",
+          "text": "Skip",
+          "enabled": true
+        }
+      ],
+      "can_view_battlefield": true
+    },
+    "snapshot_id": "fixture-state"
+  },
+  "rewards": {
+    "snapshot_id": "fixture-state",
+    "scene": "rewards",
+    "screen": {
+      "status": "visible"
+    },
+    "turn": null,
+    "player": null,
+    "enemies": null,
+    "top_bar": {
+      "potion_slots": [
+        null,
+        {
+          "name": "Block Potion"
+        }
+      ],
+      "relics": [
+        {
+          "name": "Anchor",
+          "counter": 0
+        }
+      ]
+    },
+    "buttons": null,
+    "available_actions": [
+      "claim_reward",
+      "proceed"
+    ],
+    "rewards": {
+      "status": "visible",
+      "title": "Loot!",
+      "items": [
+        {
+          "id": 12,
+          "type": "gold",
+          "text": "17 Gold",
+          "enabled": true,
+          "linked_group": null,
+          "hover_tips": []
+        },
+        {
+          "id": 14,
+          "type": "card",
+          "text": "Add a card to your deck.",
+          "enabled": true,
+          "linked_group": null,
+          "hover_tips": []
+        }
+      ],
+      "proceed": {
+        "text": "Skip",
+        "enabled": true,
+        "skips_remaining": true
+      }
+    },
+    "selection": null
+  },
+  "rest_site": {
+    "snapshot_id": "fixture-state",
+    "scene": "rest_site",
+    "screen": {
+      "status": "visible"
+    },
+    "turn": null,
+    "player": null,
+    "enemies": null,
+    "top_bar": {
+      "potion_slots": [
+        null,
+        {
+          "name": "Block Potion"
+        }
+      ],
+      "relics": [
+        {
+          "name": "Anchor",
+          "counter": 0
+        }
+      ]
+    },
+    "buttons": null,
+    "available_actions": [
+      "choose_rest_option"
+    ],
+    "selection": null,
+    "rewards": null,
+    "rest_site": {
+      "status": "visible",
+      "prompt": "What would you like to do?",
+      "description": null,
+      "options": [
+        {
+          "id": "HEAL",
+          "text": "Rest",
+          "enabled": true,
+          "description": "Rest option help."
+        },
+        {
+          "id": "SMITH",
+          "text": "Smith",
+          "enabled": false,
+          "description": "Rest option help."
+        }
+      ],
+      "proceed": null
+    }
+  },
+  "treasure": {
+    "snapshot_id": "fixture-state",
+    "scene": "treasure",
+    "screen": {
+      "status": "visible"
+    },
+    "turn": null,
+    "player": null,
+    "enemies": null,
+    "top_bar": {
+      "potion_slots": [
+        null,
+        {
+          "name": "Block Potion"
+        }
+      ],
+      "relics": [
+        {
+          "name": "Anchor",
+          "counter": 0
+        }
+      ]
+    },
+    "buttons": null,
+    "available_actions": [
+      "loot_treasure"
+    ],
+    "selection": null,
+    "rewards": null,
+    "rest_site": null,
+    "treasure": {
+      "status": "visible",
+      "chest": "closed",
+      "relic": null,
+      "proceed": null
+    }
+  },
+  "shop": {
+    "snapshot_id": "fixture-state",
+    "scene": "shop",
+    "screen": {
+      "status": "visible"
+    },
+    "turn": null,
+    "player": null,
+    "enemies": null,
+    "top_bar": {
+      "potion_slots": [
+        null,
+        {
+          "name": "Block Potion"
+        }
+      ],
+      "relics": [
+        {
+          "name": "Anchor",
+          "counter": 0
+        }
+      ]
+    },
+    "buttons": null,
+    "available_actions": [
+      "buy_item",
+      "close_shop"
+    ],
+    "selection": null,
+    "rewards": null,
+    "rest_site": null,
+    "treasure": null,
+    "shop": {
+      "status": "visible",
+      "view": "inventory",
+      "items": [
+        {
+          "id": 0,
+          "kind": "card",
+          "position": "character_card:0",
+          "price": 50,
+          "affordable": true,
+          "enabled": true,
+          "on_sale": false,
+          "card": {
+            "name": "Strike+",
+            "type": "Attack",
+            "rarity": "basic",
+            "visual_card_pool": "Ironclad",
+            "energy_cost": "1",
+            "star_cost": "0",
+            "description": "Deal 6 damage.",
+            "hover_tips": []
+          },
+          "secret": "hidden"
+        }
+      ],
+      "open": null,
+      "back": {
+        "enabled": true
+      },
+      "proceed": null
+    }
+  },
+  "ancient": {
+    "snapshot_id": "fixture-state",
+    "scene": "ancient",
+    "screen": {
+      "status": "visible"
+    },
+    "turn": null,
+    "player": null,
+    "enemies": null,
+    "top_bar": {
+      "potion_slots": [
+        null,
+        {
+          "name": "Block Potion"
+        }
+      ],
+      "relics": [
+        {
+          "name": "Anchor",
+          "counter": 0
+        }
+      ]
+    },
+    "buttons": null,
+    "available_actions": [
+      "choose_ancient_option"
+    ],
+    "selection": null,
+    "ancient": {
+      "status": "visible",
+      "name": "Neow",
+      "epithet": null,
+      "description": null,
+      "dialogue": [
+        {
+          "speaker": "Neow",
+          "text": "Awaken."
+        }
+      ],
+      "options": [
+        {
+          "id": 0,
+          "title": "New Leaf",
+          "description": "Transform 1 card.",
+          "enabled": true,
+          "hover_tips": [],
+          "seed": 123
+        }
+      ],
+      "continue": null,
+      "proceed": null
+    }
+  },
+  "event": {
+    "snapshot_id": "fixture-state",
+    "scene": "event",
+    "screen": {
+      "status": "visible"
+    },
+    "turn": null,
+    "player": null,
+    "enemies": null,
+    "top_bar": {
+      "potion_slots": [
+        null,
+        {
+          "name": "Block Potion"
+        }
+      ],
+      "relics": [
+        {
+          "name": "Anchor",
+          "counter": 0
+        }
+      ]
+    },
+    "buttons": null,
+    "available_actions": [
+      "choose_event_option"
+    ],
+    "selection": null,
+    "event": {
+      "status": "visible",
+      "name": "Abyssal Baths",
+      "description": "The water is warm.",
+      "options": [
+        {
+          "id": 0,
+          "title": "Immerse",
+          "description": "Lose 3 HP.",
+          "enabled": true,
+          "lethal_warning": true,
+          "rng": 42,
+          "hover_tips": []
+        }
+      ],
+      "proceed": null
+    }
+  },
+  "run_result": {
+    "snapshot_id": "fixture-state",
+    "scene": "run_result",
+    "screen": {
+      "status": "visible",
+      "view": "run_result"
+    },
+    "turn": null,
+    "player": null,
+    "enemies": null,
+    "top_bar": null,
+    "buttons": null,
+    "available_actions": [
+      "run_result_option"
+    ],
+    "selection": null,
+    "event": null,
+    "run_result": {
+      "status": "visible",
+      "phase": "outcome",
+      "title": "Victory?",
+      "texts": [
+        "Your damage: 100"
+      ],
+      "score_lines": [],
+      "badges": [],
+      "discoveries": [],
+      "cards": [],
+      "relics": [],
+      "potions": [],
+      "options": [
+        {
+          "id": "continue",
+          "text": "Continue",
+          "enabled": true
+        }
+      ],
+      "hover_tips": []
+    }
+  },
+  "ui": {
+    "scene": "combat",
+    "screen": {
+      "status": "visible"
+    },
+    "hover_tips": [
+      {
+        "title": "Energy",
+        "description": "Your current <Energy> count.",
+        "sources": [
+          "player.energy",
+          "player.max_energy"
+        ]
+      }
+    ],
+    "snapshot_id": "fixture-state"
+  },
+  "potions": {
+    "slot_tip": {
+      "title": "Potion Slot",
+      "description": "Use potions during combat."
+    },
+    "potion_slots": [
+      {
+        "name": "Block Potion",
+        "description": "Gain 12 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Prevents damage."
+          }
+        ]
+      },
+      null,
+      {
+        "name": "Block Potion",
+        "description": "Gain 12 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Prevents damage."
+          }
+        ]
+      }
+    ],
+    "snapshot_id": "fixture-state"
+  },
+  "relics": {
+    "relics": [
+      {
+        "name": "Anchor",
+        "counter": null,
+        "description": "Start with 10 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Prevents damage."
+          }
+        ]
+      },
+      {
+        "name": "Pen Nib",
+        "counter": 0,
+        "description": "Every 10th Attack.",
+        "hover_tips": []
+      },
+      {
+        "name": "Anchor",
+        "counter": null,
+        "description": "Start with 10 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Prevents damage."
+          }
+        ]
+      }
+    ],
+    "snapshot_id": "fixture-state"
+  },
+  "combatants": {
+    "scene": "combat",
+    "screen": {
+      "status": "visible"
+    },
+    "player": {
+      "powers": [
+        {
+          "name": "Vulnerable",
+          "amount": 2
+        }
+      ]
+    },
+    "enemies": [
+      {
+        "id": 7,
+        "name": "Twig Slime (M)",
+        "powers": [
+          {
+            "name": "Vulnerable",
+            "amount": 2
+          }
+        ],
+        "intents": [
+          {
+            "category": "attack",
+            "value": "11"
+          }
+        ]
+      }
+    ],
+    "hover_tips": [
+      {
+        "title": "Vulnerable",
+        "description": "Receive 50% more damage for 2 turns.",
+        "sources": [
+          "player.powers.0",
+          "enemies.0.powers.0"
+        ]
+      },
+      {
+        "title": "Aggressive",
+        "description": "This enemy intends to Attack for 11 damage.",
+        "sources": [
+          "enemies.0.intents.0"
+        ]
+      }
+    ],
+    "snapshot_id": "fixture-state"
+  },
+  "deck": {
+    "scene": "combat",
+    "screen": {
+      "status": "covered",
+      "view": "deck"
+    },
+    "view_upgrades": false,
+    "sort": {
+      "by": "obtained",
+      "descending": false
+    },
+    "deck": [
+      {
+        "id": "deck:0",
+        "name": "Defend+",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "description": "Gain 8 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Prevents damage."
+          }
+        ]
+      },
+      {
+        "id": "deck:1",
+        "name": "Defend+",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "description": "Gain 8 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Prevents damage."
+          }
+        ]
+      }
+    ],
+    "snapshot_id": "fixture-state"
+  },
+  "pile": {
+    "scene": "combat",
+    "screen": {
+      "status": "covered",
+      "view": "discard_pile"
+    },
+    "pile": "discard",
+    "status": "opened",
+    "message": "Discard pile.",
+    "cards": [
+      {
+        "id": "pile:0",
+        "name": "Defend+",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "description": "Gain 8 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Prevents damage."
+          }
+        ]
+      }
+    ],
+    "snapshot_id": "fixture-state"
+  },
+  "map": {
+    "scene": "combat",
+    "screen": {
+      "status": "visible",
+      "view": "map"
+    },
+    "act": 1,
+    "current_node": "map:1:1:2",
+    "visited_path": [
+      "map:1:0:3",
+      "map:1:1:2"
+    ],
+    "can_travel": false,
+    "selectable_nodes": [],
+    "nodes": [
+      {
+        "id": "map:1:0:3",
+        "row": 0,
+        "column": 3,
+        "type": "ancient",
+        "name": "Neow",
+        "next": [
+          "map:1:1:2"
+        ]
+      },
+      {
+        "id": "map:1:1:2",
+        "row": 1,
+        "column": 2,
+        "type": "monster",
+        "next": [
+          "map:1:2:1"
+        ]
+      },
+      {
+        "id": "map:1:2:1",
+        "row": 2,
+        "column": 1,
+        "type": "unknown",
+        "next": [
+          "map:1:3:3"
+        ]
+      },
+      {
+        "id": "map:1:2:5",
+        "row": 2,
+        "column": 5,
+        "type": "rest_site",
+        "next": [
+          "map:1:3:3"
+        ]
+      },
+      {
+        "id": "map:1:3:3",
+        "row": 3,
+        "column": 3,
+        "type": "boss",
+        "name": "Ceremonial Beast",
+        "next": [
+          "map:1:4:3"
+        ]
+      },
+      {
+        "id": "map:1:4:3",
+        "row": 4,
+        "column": 3,
+        "type": "boss",
+        "name": "The Kin",
+        "next": []
+      }
+    ],
+    "snapshot_id": "fixture-state"
+  },
+  "divination": {
+    "snapshot_id": "fixture-state",
+    "scene": "event",
+    "screen": {
+      "status": "visible",
+      "view": "divination"
+    },
+    "turn": null,
+    "player": null,
+    "enemies": null,
+    "top_bar": {
+      "potion_slots": [
+        null,
+        {
+          "name": "Block Potion"
+        }
+      ],
+      "relics": [
+        {
+          "name": "Anchor",
+          "counter": 0
+        }
+      ]
+    },
+    "buttons": null,
+    "available_actions": [
+      "set_divination_tool",
+      "divine"
+    ],
+    "selection": null,
+    "event": {
+      "status": "covered",
+      "name": null,
+      "description": null,
+      "options": null,
+      "proceed": null
+    },
+    "divination": {
+      "status": "visible",
+      "phase": "playing",
+      "remaining": 3,
+      "tool": "big",
+      "tools": [
+        {
+          "id": "big",
+          "text": "Big Divination",
+          "enabled": true
+        },
+        {
+          "id": "small",
+          "text": "Small Divination",
+          "enabled": true
+        }
+      ],
+      "instructions": {
+        "title": "How to divine",
+        "description": "Uncover the future."
+      },
+      "dialogue": null,
+      "grid": {
+        "columns": 11,
+        "rows": 11,
+        "covered_rows": [
+          "###########",
+          "###########",
+          "###########",
+          "###########",
+          "###########",
+          "###########",
+          "###########",
+          "###########",
+          "###########",
+          "###########",
+          "###########"
+        ],
+        "image": {
+          "width": 1,
+          "height": 1
+        },
+        "hidden_items": [
+          "Secret"
+        ]
+      },
+      "proceed": null,
+      "rng": "Secret"
+    },
+    "divination_image": {
+      "snapshot_id": "fixture-1",
+      "width": 1,
+      "height": 1,
+      "png_base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==",
+      "private": "never expose"
+    }
+  },
+  "reward_action": {
+    "snapshot_id": "fixture-state",
+    "scene": "combat",
+    "screen": {
+      "status": "visible"
+    },
+    "turn": 1,
+    "player": {
+      "hp": 80,
+      "hand": [
+        {
+          "id": 0,
+          "name": "Strike"
+        }
+      ]
+    },
+    "enemies": [
+      {
+        "id": 1,
+        "name": "Slime",
+        "intents": []
+      }
+    ],
+    "top_bar": {
+      "potion_slots": [
+        null,
+        {
+          "name": "Block Potion"
+        }
+      ],
+      "relics": [
+        {
+          "name": "Anchor",
+          "counter": 0
+        }
+      ]
+    },
+    "buttons": {
+      "end_turn": {
+        "text": "End Turn 1",
+        "enabled": true
+      }
+    },
+    "available_actions": [
+      "end_turn"
+    ],
+    "transition": {
+      "stop_reason": "player_ready",
+      "complete": true,
+      "events": [
+        {
+          "sequence": 1,
+          "type": "card_added",
+          "card": {
+            "id": 9,
+            "name": "Dazed"
+          },
+          "pile": "discard"
+        },
+        {
+          "sequence": 2,
+          "type": "stars_changed",
+          "target": {
+            "id": 0,
+            "kind": "player",
+            "name": "The Regent"
+          },
+          "before": null,
+          "after": 1
+        }
+      ]
+    },
+    "reward_result": {
+      "reward_id": 12,
+      "status": "claimed"
+    }
+  }
+}

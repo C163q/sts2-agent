@@ -1,0 +1,3473 @@
+[
+  {
+    "tool": "inspect_run_result",
+    "state": "run_result",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_run_result",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-0"
+  },
+  {
+    "tool": "inspect_run_result",
+    "state": "run_result",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_run_result",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-0"
+  },
+  {
+    "tool": "inspect_run_result",
+    "state": "run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_run_result",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-0"
+  },
+  {
+    "tool": "inspect_run_result",
+    "state": "run_result",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_run_result",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "inspect_run_result",
+    "state": "run_result",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "run_result_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "continue"
+    },
+    "native_calls": [
+      {
+        "operation": "run_result_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": "continue"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "run_result_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "continue",
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "run_result_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": "continue"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "run_result_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "continue",
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "run_result_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": "continue"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "run_result_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "continue"
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "run_result_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": "continue"
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "run_result_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "continue",
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "travel_to_node",
+    "state": "action",
+    "arguments": {
+      "node_id": "map:1:1:2"
+    },
+    "native_calls": [
+      {
+        "operation": "travel_to_node",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "node_id": "map:1:1:2"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "travel_to_node",
+    "state": "action",
+    "arguments": {
+      "node_id": "map:1:1:2",
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "travel_to_node",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "node_id": "map:1:1:2"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "travel_to_node",
+    "state": "action",
+    "arguments": {
+      "node_id": "map:1:1:2",
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "travel_to_node",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "node_id": "map:1:1:2"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "travel_to_node",
+    "state": "action",
+    "arguments": {
+      "node_id": "map:1:1:2"
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "travel_to_node",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "node_id": "map:1:1:2"
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "travel_to_node",
+    "state": "action",
+    "arguments": {
+      "node_id": "map:1:1:2",
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "respond_to_confirmation",
+    "state": "action",
+    "arguments": {
+      "option": "cancel"
+    },
+    "native_calls": [
+      {
+        "operation": "respond_to_confirmation",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option": "cancel"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "respond_to_confirmation",
+    "state": "action",
+    "arguments": {
+      "option": "cancel",
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "respond_to_confirmation",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option": "cancel"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "respond_to_confirmation",
+    "state": "action",
+    "arguments": {
+      "option": "cancel",
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "respond_to_confirmation",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option": "cancel"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "respond_to_confirmation",
+    "state": "action",
+    "arguments": {
+      "option": "cancel"
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "respond_to_confirmation",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option": "cancel"
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "respond_to_confirmation",
+    "state": "action",
+    "arguments": {
+      "option": "cancel",
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "set_divination_tool",
+    "state": "action",
+    "arguments": {
+      "tool": "small"
+    },
+    "native_calls": [
+      {
+        "operation": "set_divination_tool",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "tool": "small"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "set_divination_tool",
+    "state": "action",
+    "arguments": {
+      "tool": "small",
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "set_divination_tool",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "tool": "small"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "set_divination_tool",
+    "state": "action",
+    "arguments": {
+      "tool": "small",
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "set_divination_tool",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "tool": "small"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "set_divination_tool",
+    "state": "action",
+    "arguments": {
+      "tool": "small"
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "set_divination_tool",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "tool": "small"
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "set_divination_tool",
+    "state": "action",
+    "arguments": {
+      "tool": "small",
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "divine",
+    "state": "action",
+    "arguments": {
+      "x": 0,
+      "y": 0
+    },
+    "native_calls": [
+      {
+        "operation": "divine",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "divine",
+    "state": "action",
+    "arguments": {
+      "x": 0,
+      "y": 0,
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "divine",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "divine",
+    "state": "action",
+    "arguments": {
+      "x": 0,
+      "y": 0,
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "divine",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "divine",
+    "state": "action",
+    "arguments": {
+      "x": 0,
+      "y": 0
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "divine",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "divine",
+    "state": "action",
+    "arguments": {
+      "x": 0,
+      "y": 0,
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "inspect_event",
+    "state": "event",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_event",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-4"
+  },
+  {
+    "tool": "inspect_event",
+    "state": "event",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_event",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-4"
+  },
+  {
+    "tool": "inspect_event",
+    "state": "event",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_event",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-5"
+  },
+  {
+    "tool": "inspect_event",
+    "state": "event",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_event",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "inspect_event",
+    "state": "event",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "choose_event_option",
+    "state": "action",
+    "arguments": {
+      "option_id": 0
+    },
+    "native_calls": [
+      {
+        "operation": "choose_event_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "choose_event_option",
+    "state": "action",
+    "arguments": {
+      "option_id": 0,
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "choose_event_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "choose_event_option",
+    "state": "action",
+    "arguments": {
+      "option_id": 0,
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "choose_event_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "choose_event_option",
+    "state": "action",
+    "arguments": {
+      "option_id": 0
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "choose_event_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": 0
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "choose_event_option",
+    "state": "action",
+    "arguments": {
+      "option_id": 0,
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "inspect_ancient",
+    "state": "ancient",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_ancient",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-6"
+  },
+  {
+    "tool": "inspect_ancient",
+    "state": "ancient",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_ancient",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-6"
+  },
+  {
+    "tool": "inspect_ancient",
+    "state": "ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_ancient",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-7"
+  },
+  {
+    "tool": "inspect_ancient",
+    "state": "ancient",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_ancient",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "inspect_ancient",
+    "state": "ancient",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "choose_ancient_option",
+    "state": "action",
+    "arguments": {
+      "option_id": 0
+    },
+    "native_calls": [
+      {
+        "operation": "choose_ancient_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "choose_ancient_option",
+    "state": "action",
+    "arguments": {
+      "option_id": 0,
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "choose_ancient_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "choose_ancient_option",
+    "state": "action",
+    "arguments": {
+      "option_id": 0,
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "choose_ancient_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "choose_ancient_option",
+    "state": "action",
+    "arguments": {
+      "option_id": 0
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "choose_ancient_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": 0
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "choose_ancient_option",
+    "state": "action",
+    "arguments": {
+      "option_id": 0,
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "advance_dialogue",
+    "state": "action",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "advance_dialogue",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "advance_dialogue",
+    "state": "action",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "advance_dialogue",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "advance_dialogue",
+    "state": "action",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "advance_dialogue",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "advance_dialogue",
+    "state": "action",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "advance_dialogue",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "advance_dialogue",
+    "state": "action",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "open_shop",
+    "state": "action",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "open_shop",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "open_shop",
+    "state": "action",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "open_shop",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "open_shop",
+    "state": "action",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "open_shop",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "open_shop",
+    "state": "action",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "open_shop",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "open_shop",
+    "state": "action",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "close_shop",
+    "state": "action",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "close_shop",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "close_shop",
+    "state": "action",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "close_shop",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "close_shop",
+    "state": "action",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "close_shop",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "close_shop",
+    "state": "action",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "close_shop",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "close_shop",
+    "state": "action",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "inspect_shop",
+    "state": "shop",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_shop",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-8"
+  },
+  {
+    "tool": "inspect_shop",
+    "state": "shop",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_shop",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-8"
+  },
+  {
+    "tool": "inspect_shop",
+    "state": "shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_shop",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-9"
+  },
+  {
+    "tool": "inspect_shop",
+    "state": "shop",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_shop",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "inspect_shop",
+    "state": "shop",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "buy_item",
+    "state": "action",
+    "arguments": {
+      "item_id": 0
+    },
+    "native_calls": [
+      {
+        "operation": "buy_item",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "item_id": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "buy_item",
+    "state": "action",
+    "arguments": {
+      "item_id": 0,
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "buy_item",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "item_id": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "buy_item",
+    "state": "action",
+    "arguments": {
+      "item_id": 0,
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "buy_item",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "item_id": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "buy_item",
+    "state": "action",
+    "arguments": {
+      "item_id": 0
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "buy_item",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "item_id": 0
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "buy_item",
+    "state": "action",
+    "arguments": {
+      "item_id": 0,
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "get_observation",
+    "state": "observation",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "get_state",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "get_observation",
+    "state": "observation",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "get_state",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "get_observation",
+    "state": "observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "get_state",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "get_observation",
+    "state": "observation",
+    "arguments": {
+      "preset": "actions_only"
+    },
+    "native_calls": [
+      {
+        "operation": "get_state",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-11"
+  },
+  {
+    "tool": "get_observation",
+    "state": "observation",
+    "arguments": {
+      "preset": "summary"
+    },
+    "native_calls": [
+      {
+        "operation": "get_state",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-12"
+  },
+  {
+    "tool": "get_observation",
+    "state": "observation",
+    "arguments": {
+      "preset": "top_bar"
+    },
+    "native_calls": [
+      {
+        "operation": "get_state",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-13"
+  },
+  {
+    "tool": "get_observation",
+    "state": "observation",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "get_state",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-14"
+  },
+  {
+    "tool": "get_observation",
+    "state": "observation",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-15"
+  },
+  {
+    "tool": "inspect_rewards",
+    "state": "rewards",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_rewards",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-16"
+  },
+  {
+    "tool": "inspect_rewards",
+    "state": "rewards",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_rewards",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-16"
+  },
+  {
+    "tool": "inspect_rewards",
+    "state": "rewards",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_rewards",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-17"
+  },
+  {
+    "tool": "inspect_rewards",
+    "state": "rewards",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_rewards",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "inspect_rewards",
+    "state": "rewards",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "claim_reward",
+    "state": "reward_action",
+    "arguments": {
+      "reward_id": 12
+    },
+    "native_calls": [
+      {
+        "operation": "claim_reward",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "reward_id": 12
+        }
+      }
+    ],
+    "expected_ref": "result-18"
+  },
+  {
+    "tool": "claim_reward",
+    "state": "reward_action",
+    "arguments": {
+      "reward_id": 12,
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "claim_reward",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "reward_id": 12
+        }
+      }
+    ],
+    "expected_ref": "result-18"
+  },
+  {
+    "tool": "claim_reward",
+    "state": "reward_action",
+    "arguments": {
+      "reward_id": 12,
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "claim_reward",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "reward_id": 12
+        }
+      }
+    ],
+    "expected_ref": "result-18"
+  },
+  {
+    "tool": "claim_reward",
+    "state": "reward_action",
+    "arguments": {
+      "reward_id": 12
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "claim_reward",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "reward_id": 12
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "claim_reward",
+    "state": "reward_action",
+    "arguments": {
+      "reward_id": 12,
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "proceed",
+    "state": "action",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "proceed",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "proceed",
+    "state": "action",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "proceed",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "proceed",
+    "state": "action",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "proceed",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "proceed",
+    "state": "action",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "proceed",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "proceed",
+    "state": "action",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "loot_treasure",
+    "state": "action",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "loot_treasure",
+        "expected_state": "fixture-state",
+        "arguments": {}
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "loot_treasure",
+    "state": "action",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "loot_treasure",
+        "expected_state": "fixture-state",
+        "arguments": {}
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "loot_treasure",
+    "state": "action",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "loot_treasure",
+        "expected_state": "fixture-state",
+        "arguments": {}
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "loot_treasure",
+    "state": "action",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "loot_treasure",
+        "expected_state": "fixture-state",
+        "arguments": {}
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "loot_treasure",
+    "state": "action",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "inspect_treasure",
+    "state": "treasure",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_treasure",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-19"
+  },
+  {
+    "tool": "inspect_treasure",
+    "state": "treasure",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_treasure",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-19"
+  },
+  {
+    "tool": "inspect_treasure",
+    "state": "treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_treasure",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-20"
+  },
+  {
+    "tool": "inspect_treasure",
+    "state": "treasure",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_treasure",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "inspect_treasure",
+    "state": "treasure",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "inspect_rest_site",
+    "state": "rest_site",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_rest_site",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-21"
+  },
+  {
+    "tool": "inspect_rest_site",
+    "state": "rest_site",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_rest_site",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-21"
+  },
+  {
+    "tool": "inspect_rest_site",
+    "state": "rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_rest_site",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-22"
+  },
+  {
+    "tool": "inspect_rest_site",
+    "state": "rest_site",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_rest_site",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "inspect_rest_site",
+    "state": "rest_site",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "choose_rest_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "rest"
+    },
+    "native_calls": [
+      {
+        "operation": "choose_rest_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": "rest"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "choose_rest_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "rest",
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "choose_rest_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": "rest"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "choose_rest_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "rest",
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "choose_rest_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": "rest"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "choose_rest_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "rest"
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "choose_rest_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": "rest"
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "choose_rest_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "rest",
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "inspect_hand",
+    "state": "hand",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_hand",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-23"
+  },
+  {
+    "tool": "inspect_hand",
+    "state": "hand",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_hand",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-23"
+  },
+  {
+    "tool": "inspect_hand",
+    "state": "hand",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_hand",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-24"
+  },
+  {
+    "tool": "inspect_hand",
+    "state": "hand",
+    "arguments": {
+      "preset": "summary"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_hand",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-25"
+  },
+  {
+    "tool": "inspect_hand",
+    "state": "hand",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_hand",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-14"
+  },
+  {
+    "tool": "inspect_hand",
+    "state": "hand",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-26"
+  },
+  {
+    "tool": "inspect_targets",
+    "state": "targets",
+    "arguments": {
+      "card_id": 7
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_targets",
+        "expected_state": null,
+        "arguments": {
+          "card_id": 7
+        }
+      }
+    ],
+    "expected_ref": "result-27"
+  },
+  {
+    "tool": "inspect_targets",
+    "state": "targets",
+    "arguments": {
+      "card_id": 7,
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_targets",
+        "expected_state": null,
+        "arguments": {
+          "card_id": 7
+        }
+      }
+    ],
+    "expected_ref": "result-27"
+  },
+  {
+    "tool": "inspect_targets",
+    "state": "targets",
+    "arguments": {
+      "card_id": 7,
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_targets",
+        "expected_state": null,
+        "arguments": {
+          "card_id": 7
+        }
+      }
+    ],
+    "expected_ref": "result-28"
+  },
+  {
+    "tool": "inspect_targets",
+    "state": "targets",
+    "arguments": {
+      "card_id": 7
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_targets",
+        "expected_state": null,
+        "arguments": {
+          "card_id": 7
+        }
+      }
+    ],
+    "expected_ref": "result-14"
+  },
+  {
+    "tool": "inspect_targets",
+    "state": "targets",
+    "arguments": {
+      "card_id": 7,
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-29"
+  },
+  {
+    "tool": "play_card",
+    "state": "action",
+    "arguments": {
+      "card_id": 5
+    },
+    "native_calls": [
+      {
+        "operation": "play_card",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "card_id": 5
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "play_card",
+    "state": "action",
+    "arguments": {
+      "card_id": 5,
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "play_card",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "card_id": 5
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "play_card",
+    "state": "action",
+    "arguments": {
+      "card_id": 5,
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "play_card",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "card_id": 5
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "play_card",
+    "state": "action",
+    "arguments": {
+      "card_id": 5
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "play_card",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "card_id": 5
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "play_card",
+    "state": "action",
+    "arguments": {
+      "card_id": 5,
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "inspect_ui",
+    "state": "ui",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_ui",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-30"
+  },
+  {
+    "tool": "inspect_ui",
+    "state": "ui",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_ui",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-30"
+  },
+  {
+    "tool": "inspect_ui",
+    "state": "ui",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_ui",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-30"
+  },
+  {
+    "tool": "inspect_ui",
+    "state": "ui",
+    "arguments": {
+      "preset": "summary"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_ui",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-31"
+  },
+  {
+    "tool": "inspect_ui",
+    "state": "ui",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_ui",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-14"
+  },
+  {
+    "tool": "inspect_ui",
+    "state": "ui",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-32"
+  },
+  {
+    "tool": "inspect_potions",
+    "state": "potions",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_potions",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-33"
+  },
+  {
+    "tool": "inspect_potions",
+    "state": "potions",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_potions",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-33"
+  },
+  {
+    "tool": "inspect_potions",
+    "state": "potions",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_potions",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-33"
+  },
+  {
+    "tool": "inspect_potions",
+    "state": "potions",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_potions",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "inspect_potions",
+    "state": "potions",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "use_potion",
+    "state": "action",
+    "arguments": {
+      "potion_slot": 0
+    },
+    "native_calls": [
+      {
+        "operation": "use_potion",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "potion_slot": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "use_potion",
+    "state": "action",
+    "arguments": {
+      "potion_slot": 0,
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "use_potion",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "potion_slot": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "use_potion",
+    "state": "action",
+    "arguments": {
+      "potion_slot": 0,
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "use_potion",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "potion_slot": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "use_potion",
+    "state": "action",
+    "arguments": {
+      "potion_slot": 0
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "use_potion",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "potion_slot": 0
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "use_potion",
+    "state": "action",
+    "arguments": {
+      "potion_slot": 0,
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "discard_potion",
+    "state": "action",
+    "arguments": {
+      "potion_slot": 0
+    },
+    "native_calls": [
+      {
+        "operation": "discard_potion",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "potion_slot": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "discard_potion",
+    "state": "action",
+    "arguments": {
+      "potion_slot": 0,
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "discard_potion",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "potion_slot": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "discard_potion",
+    "state": "action",
+    "arguments": {
+      "potion_slot": 0,
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "discard_potion",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "potion_slot": 0
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "discard_potion",
+    "state": "action",
+    "arguments": {
+      "potion_slot": 0
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "discard_potion",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "potion_slot": 0
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "discard_potion",
+    "state": "action",
+    "arguments": {
+      "potion_slot": 0,
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "inspect_combatants",
+    "state": "combatants",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_combatants",
+        "expected_state": null,
+        "arguments": {
+          "level": "full"
+        }
+      }
+    ],
+    "expected_ref": "result-34"
+  },
+  {
+    "tool": "inspect_combatants",
+    "state": "combatants",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_combatants",
+        "expected_state": null,
+        "arguments": {
+          "level": "full"
+        }
+      }
+    ],
+    "expected_ref": "result-34"
+  },
+  {
+    "tool": "inspect_combatants",
+    "state": "combatants",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_combatants",
+        "expected_state": null,
+        "arguments": {
+          "level": "full"
+        }
+      }
+    ],
+    "expected_ref": "result-34"
+  },
+  {
+    "tool": "inspect_combatants",
+    "state": "combatants",
+    "arguments": {
+      "preset": "summary"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_combatants",
+        "expected_state": null,
+        "arguments": {
+          "level": "summary"
+        }
+      }
+    ],
+    "expected_ref": "result-35"
+  },
+  {
+    "tool": "inspect_combatants",
+    "state": "combatants",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_combatants",
+        "expected_state": null,
+        "arguments": {
+          "level": "full"
+        }
+      }
+    ],
+    "expected_ref": "result-14"
+  },
+  {
+    "tool": "inspect_combatants",
+    "state": "combatants",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-36"
+  },
+  {
+    "tool": "inspect_relics",
+    "state": "relics",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_relics",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-37"
+  },
+  {
+    "tool": "inspect_relics",
+    "state": "relics",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_relics",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-37"
+  },
+  {
+    "tool": "inspect_relics",
+    "state": "relics",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_relics",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-38"
+  },
+  {
+    "tool": "inspect_relics",
+    "state": "relics",
+    "arguments": {
+      "preset": "summary"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_relics",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-39"
+  },
+  {
+    "tool": "inspect_relics",
+    "state": "relics",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_relics",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "inspect_relics",
+    "state": "relics",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "inspect_deck",
+    "state": "deck",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_deck",
+        "expected_state": null,
+        "arguments": {}
+      }
+    ],
+    "expected_ref": "result-40"
+  },
+  {
+    "tool": "inspect_deck",
+    "state": "deck",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_deck",
+        "expected_state": null,
+        "arguments": {}
+      }
+    ],
+    "expected_ref": "result-40"
+  },
+  {
+    "tool": "inspect_deck",
+    "state": "deck",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_deck",
+        "expected_state": null,
+        "arguments": {}
+      }
+    ],
+    "expected_ref": "result-41"
+  },
+  {
+    "tool": "inspect_deck",
+    "state": "deck",
+    "arguments": {
+      "preset": "summary"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_deck",
+        "expected_state": null,
+        "arguments": {}
+      }
+    ],
+    "expected_ref": "result-42"
+  },
+  {
+    "tool": "inspect_deck",
+    "state": "deck",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_deck",
+        "expected_state": null,
+        "arguments": {}
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "inspect_deck",
+    "state": "deck",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "inspect_pile",
+    "state": "pile",
+    "arguments": {
+      "pile": "discard"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_pile",
+        "expected_state": null,
+        "arguments": {
+          "pile": "discard"
+        }
+      }
+    ],
+    "expected_ref": "result-43"
+  },
+  {
+    "tool": "inspect_pile",
+    "state": "pile",
+    "arguments": {
+      "pile": "discard",
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_pile",
+        "expected_state": null,
+        "arguments": {
+          "pile": "discard"
+        }
+      }
+    ],
+    "expected_ref": "result-43"
+  },
+  {
+    "tool": "inspect_pile",
+    "state": "pile",
+    "arguments": {
+      "pile": "discard",
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_pile",
+        "expected_state": null,
+        "arguments": {
+          "pile": "discard"
+        }
+      }
+    ],
+    "expected_ref": "result-44"
+  },
+  {
+    "tool": "inspect_pile",
+    "state": "pile",
+    "arguments": {
+      "pile": "discard",
+      "preset": "summary"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_pile",
+        "expected_state": null,
+        "arguments": {
+          "pile": "discard"
+        }
+      }
+    ],
+    "expected_ref": "result-45"
+  },
+  {
+    "tool": "inspect_pile",
+    "state": "pile",
+    "arguments": {
+      "pile": "discard"
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_pile",
+        "expected_state": null,
+        "arguments": {
+          "pile": "discard"
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "inspect_pile",
+    "state": "pile",
+    "arguments": {
+      "pile": "discard",
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "close_card_view",
+    "state": "observation",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "close_card_view",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "close_card_view",
+    "state": "observation",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "close_card_view",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "close_card_view",
+    "state": "observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "close_card_view",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "close_card_view",
+    "state": "observation",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "close_card_view",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "close_card_view",
+    "state": "observation",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "inspect_map",
+    "state": "map",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_map",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-46"
+  },
+  {
+    "tool": "inspect_map",
+    "state": "map",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_map",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-46"
+  },
+  {
+    "tool": "inspect_map",
+    "state": "map",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_map",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-46"
+  },
+  {
+    "tool": "inspect_map",
+    "state": "map",
+    "arguments": {
+      "preset": "selectable"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_map",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-47"
+  },
+  {
+    "tool": "inspect_map",
+    "state": "map",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_map",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "inspect_map",
+    "state": "map",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "close_map",
+    "state": "observation",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "close_map",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "close_map",
+    "state": "observation",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "close_map",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "close_map",
+    "state": "observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "close_map",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "close_map",
+    "state": "observation",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "close_map",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "close_map",
+    "state": "observation",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "inspect_selection",
+    "state": "selection",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "inspect_selection",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-48"
+  },
+  {
+    "tool": "inspect_selection",
+    "state": "selection",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_selection",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-48"
+  },
+  {
+    "tool": "inspect_selection",
+    "state": "selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_selection",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-49"
+  },
+  {
+    "tool": "inspect_selection",
+    "state": "selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_selection",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-50"
+  },
+  {
+    "tool": "inspect_selection",
+    "state": "selection",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_selection",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "inspect_selection",
+    "state": "selection",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "select_card",
+    "state": "action",
+    "arguments": {
+      "card_id": 5
+    },
+    "native_calls": [
+      {
+        "operation": "select_card",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "card_id": 5
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "select_card",
+    "state": "action",
+    "arguments": {
+      "card_id": 5,
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "select_card",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "card_id": 5
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "select_card",
+    "state": "action",
+    "arguments": {
+      "card_id": 5,
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "select_card",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "card_id": 5
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "select_card",
+    "state": "action",
+    "arguments": {
+      "card_id": 5
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "select_card",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "card_id": 5
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "select_card",
+    "state": "action",
+    "arguments": {
+      "card_id": 5,
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "selection_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "skip"
+    },
+    "native_calls": [
+      {
+        "operation": "selection_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": "skip"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "selection_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "skip",
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "selection_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": "skip"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "selection_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "skip",
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "selection_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": "skip"
+        }
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "selection_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "skip"
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "selection_option",
+        "expected_state": "fixture-state",
+        "arguments": {
+          "option_id": "skip"
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "selection_option",
+    "state": "action",
+    "arguments": {
+      "option_id": "skip",
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "set_selection_view",
+    "state": "observation",
+    "arguments": {
+      "view": "selection"
+    },
+    "native_calls": [
+      {
+        "operation": "set_selection_view",
+        "expected_state": null,
+        "arguments": {
+          "view": "selection"
+        }
+      }
+    ],
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "set_selection_view",
+    "state": "observation",
+    "arguments": {
+      "view": "selection",
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "set_selection_view",
+        "expected_state": null,
+        "arguments": {
+          "view": "selection"
+        }
+      }
+    ],
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "set_selection_view",
+    "state": "observation",
+    "arguments": {
+      "view": "selection",
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "set_selection_view",
+        "expected_state": null,
+        "arguments": {
+          "view": "selection"
+        }
+      }
+    ],
+    "expected_ref": "result-10"
+  },
+  {
+    "tool": "set_selection_view",
+    "state": "observation",
+    "arguments": {
+      "view": "selection"
+    },
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "set_selection_view",
+        "expected_state": null,
+        "arguments": {
+          "view": "selection"
+        }
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "set_selection_view",
+    "state": "observation",
+    "arguments": {
+      "view": "selection",
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "end_turn",
+    "state": "action",
+    "arguments": {},
+    "native_calls": [
+      {
+        "operation": "end_turn",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "end_turn",
+    "state": "action",
+    "arguments": {
+      "preset": "default"
+    },
+    "native_calls": [
+      {
+        "operation": "end_turn",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "end_turn",
+    "state": "action",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "end_turn",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-3"
+  },
+  {
+    "tool": "end_turn",
+    "state": "action",
+    "arguments": {},
+    "error": {
+      "code": "illegal_action",
+      "message": "private diagnostics"
+    },
+    "native_calls": [
+      {
+        "operation": "end_turn",
+        "expected_state": "fixture-state",
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-1"
+  },
+  {
+    "tool": "end_turn",
+    "state": "action",
+    "arguments": {
+      "unknown_field": true
+    },
+    "native_calls": [],
+    "expected_ref": "result-2"
+  },
+  {
+    "tool": "get_observation",
+    "state": "divination",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "get_state",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==",
+    "expected_ref": "result-51"
+  },
+  {
+    "tool": "get_observation",
+    "state": "divination",
+    "arguments": {
+      "preset": "summary"
+    },
+    "native_calls": [
+      {
+        "operation": "get_state",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==",
+    "expected_ref": "result-52"
+  },
+  {
+    "tool": "get_observation",
+    "state": "divination",
+    "arguments": {
+      "preset": "actions_only"
+    },
+    "native_calls": [
+      {
+        "operation": "get_state",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-53"
+  },
+  {
+    "tool": "inspect_event",
+    "state": "divination",
+    "arguments": {
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_event",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==",
+    "expected_ref": "result-54"
+  },
+  {
+    "tool": "inspect_hand",
+    "state": "hand",
+    "arguments": {
+      "card_ids": [],
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_hand",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-55"
+  },
+  {
+    "tool": "inspect_relics",
+    "state": "relics",
+    "arguments": {
+      "relic_indices": [
+        2,
+        80
+      ],
+      "preset": "full"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_relics",
+        "expected_state": null,
+        "arguments": null
+      }
+    ],
+    "expected_ref": "result-56"
+  },
+  {
+    "tool": "inspect_combatants",
+    "state": "combatants",
+    "arguments": {
+      "sources": [],
+      "preset": "summary"
+    },
+    "native_calls": [
+      {
+        "operation": "inspect_combatants",
+        "expected_state": null,
+        "arguments": {
+          "level": "summary"
+        }
+      }
+    ],
+    "expected_ref": "result-57"
+  }
+]
