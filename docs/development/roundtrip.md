@@ -1,14 +1,14 @@
 # 最小流程验证指南
 
-适用于 `src/Sts2Agent/` 中的 Linux 验证原型。已验证的游戏基线为 `v0.107.1`，验证内容是读取状态、通过正常动作队列结束回合、读回下一回合状态。本文说明底层文件协议；agent 接入使用 [本地 MCP server](mcp.md)，当前不是完整的自动游玩工具。
+适用于 `src/Sts2Agent/` 中的 Linux 验证原型。版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。本指南的最小验证内容是读取状态、通过正常动作队列结束回合、读回下一回合状态。本文说明底层文件协议；agent 接入使用 [本地 MCP server](mcp.md)，当前工具能力见[项目 README](../../README.md#当前能力)。
 
 ## 前提与构建
 
 - 自行安装 Linux 版《杀戮尖塔 2》，按 [README 配置路径](../../README.md#开发与运行入口)，在当前终端加载 `.env`。游戏路径通过 `Sts2Dir` 和 `--game-dir` 传入。
-- 安装 .NET 9 SDK；本次使用 `9.0.122`，仓库的 `global.json` 允许同系列更高功能带。需要 .NET 9 引用包，单独安装运行时不足以编译。
+- 按 [global.json](../../global.json) 安装兼容 SDK，需要对应的 .NET 引用包，单独安装运行时不足以编译。
 - 安装 Python 3；本文原有文件客户端和验证脚本只使用标准库，MCP 服务的额外依赖见接入指南。
-- `RitsuLibDir` 可直接指向 Steam 创意工坊安装的兼容 RitsuLib `0.6.10` 完整目录，无须重新下载或修改该安装。也可从 [RitsuLib 0.6.10 官方发布](https://github.com/BAKAOLC/STS2-RitsuLib/releases/tag/v0.6.10) 下载 `STS2.RitsuLib.Compat.0.107.1.0.6.10.github.zip` 并解压。目录须直接包含 `RitsuLib.References.props`、`mod_manifest.json`、根 DLL、`assets.zip`、`shared/` 和 `compat/0.107.1/`，不能只复制根 DLL。发布包 SHA-256：`3c7dafb8a8d36d66891abd6c601aec6f43de9890693d1b583e67e2c6d71ebfb5`。
-- 构建引用上述本地库与游戏自带程序集，不下载 NuGet 包，原型目录的 NuGet 配置不启用远程源。
+- `RitsuLibDir` 指向兼容 RitsuLib 的完整目录，可直接使用 Steam 创意工坊安装。手工获取时按[README 中的发布包说明](../../README.md#当前版本与前提)下载并解压；目录须直接包含 `RitsuLib.References.props`、`mod_manifest.json`、根 DLL、`assets.zip`、`shared/` 和匹配的 `compat/` 子目录，不能只复制根 DLL。
+- 构建引用上述本地库与游戏自带程序集，不下载 NuGet 包；[NuGet.Config](../../src/Sts2Agent/NuGet.Config)不启用远程源。
 
 在仓库根目录执行：
 
@@ -60,48 +60,18 @@ python3 -m tests.python.test_prepare_roundtrip
 
 `STS2_AGENT_IPC_DIR` 指定文件通信目录；未设置时，Mod 仅报告加载成功，不启用工具接口。准备脚本与启动脚本面向独立验证实例，启动脚本会设置该变量并启用 `STS2_AGENT_TEST_MODE=1`。
 
-| 操作 | 适用条件与结果 |
+公开玩法工具目录及每项参数见[MCP 工具范围](mcp.md#工具范围)和对应接口指南。文件操作通常同名，但有以下差异：
+
+| 范围 | 文件接口 |
 | --- | --- |
-| `inspect_run_result` | 只读当前结算页及悬停详情，见[终章接口](run-ending.md) |
-| `run_result_option` | 参数 `option_id`，需要 `expected_state`；点击当前结算按钮、解锁条目或确认 |
-| `inspect_ancient` | 只读当前先古之民选项及悬停解释 |
-| `choose_ancient_option` | 带 `expected_state` 和非负整数 `option_id`，点击一个启用的先古选项 |
-| `advance_dialogue` | 带 `expected_state`，点击原生对话继续区域一次 |
-| `inspect_rewards` | 只读当前可浏览奖励及悬停说明 |
-| `claim_reward` | 带 `reward_id` 和 `expected_state`，点击一项奖励 |
-| `proceed` | 带 `expected_state`，点击奖励页或宝箱房跳过/前进、休息处、已完成事件、先古之民或关闭商品页后的商店前进 |
-| `open_shop` / `close_shop` | 带 `expected_state`，点击商人或返回按钮 |
-| `inspect_shop` | 只读当前已打开商品页的全部详情 |
-| `buy_item` | 带 `expected_state`，参数 `item_id` 为非负整数，购买一个当前商品 |
-| `inspect_treasure` | 只读暴露的宝箱房和可见遗物悬停说明 |
-| `loot_treasure` | 带 `expected_state`，可选布尔 `open_only`；默认开箱并领取，不前进 |
-| `inspect_rest_site` | 只读当前休息处选项及动态说明 |
-| `choose_rest_option` | 带 `option_id` 和 `expected_state`，点击一个启用的休息处选项 |
-| `inspect_event` | 只读当前可见事件及原生悬停解释，不推进页面或 RNG |
-| `set_divination_tool` / `divine` | 占卜大小工具切换与格子点击，需要 `expected_state`；参数及图像格式见[占卜接口](divination.md) |
-| `choose_event_option` | 参数为整数 `option_id`，需要 `expected_state`，点击一个当前启用选项，见[事件接口](events.md) |
-| `respond_to_confirmation` | 参数 `option` 为 `confirm` 或 `cancel`，需要 `expected_state`；只操作[当前 Trial 事件确认框](events.md#事件确认弹窗) |
-| `get_state` | 读取主菜单、战斗、[奖励](rewards.md)、[休息处](rest-site.md)、[宝箱房](treasure.md)、[商店](shop.md)、[先古之民](ancients.md)或[通用事件](events.md)状态及 `available_actions`；未识别场景归为 `unrecognized` |
-| `inspect_hand` | 只读、无须动作令牌；一次读取全部当前可见手牌的英语正文和悬停解释，格式见 [手牌详情](hand-inspection.md) |
-| `inspect_targets` | 参数 `card_id` 或 `potion_slot` 二选一，只读查询可见手牌或药水的可用性与目标范围，见 [出牌](card-play.md) 和 [药水](potion-actions.md) |
-| `play_card` | 需最新令牌，参数 `card_id` 与必要的 `target_id`；提交一次原生手动出牌，后续选择单独操作 |
-| `use_potion`、`discard_potion` | 需最新令牌，槽位参数 `potion_slot`；使用时仅按查询要求提供 `target_id`，返回事件并停在交互边界 |
-| `inspect_ui` | 只读、无须动作令牌；读取当前可见战斗入口与资源图标的英语提示，排除药水、遗物、powers 和敌人意图解释，格式见 [界面说明](ui-inspection.md) |
-| `inspect_potions` | 只读、无须动作令牌；读取药水正文和共享解释，保留空槽位置，通用槽位说明只出现一次，格式见 [药水详情](potion-inspection.md) |
-| `inspect_combatants` | 只读、无须动作令牌；合并查看当前双方 powers 与敌人意图的英语悬停解释，格式见 [战斗对象详情](combatant-inspection.md) |
-| `inspect_relics` | 只读、无须动作令牌；读取当前可见遗物的正文、屏幕计数与共享附带解释，格式见 [遗物详情](relic-inspection.md) |
-| `inspect_deck` | 无须动作令牌；真实打开牌组页并保留，返回全牌组，支持信息档位、升级预览和排序，格式见 [牌组查看](deck-inspection.md) |
-| `inspect_pile` | 无须动作令牌；实际点击并查看抽牌、弃牌或消耗堆，支持摘要/完整；区分空堆与隐藏入口，见 [战斗牌堆查看](pile-inspection.md) |
-| `inspect_map` | 无须动作令牌；文件协议无参数，MCP 支持 `preset/max_steps` 输出筛选；真实打开/复用整个当前幕地图，返回节点连线和当前原生可选节点，见 [地图查看](map-inspection.md) |
-| `travel_to_node` | 参数 `node_id`，需要 `expected_state`；点击当前地图允许的节点，放弃未领取奖励并进入下一房间，见[地图选路](map-inspection.md#地图选路) |
-| `close_map` | 无参数，无须动作令牌；仅在原生返回按钮可用且地图未被覆盖时关闭，不穿透卡牌页 |
-| `close_card_view` | 无须动作令牌；显式关闭当前原生卡牌查看页，返回基础观察；保留下层地图，不关闭其他页面或自动授权战斗动作 |
-| `close_deck` | 仅为旧文件客户端兼容保留，只关闭牌组；MCP 使用通用 `close_card_view` |
-| `start_test_combat` | 仅测试模式且无进行中的对局时，在主菜单创建临时对局并用游戏开发入口进入指定战斗；该操作不是正常游玩的动作 |
-| `inspect_selection` | 当前原生选择的全部可浏览候选与详情，可选 `--view-upgrades`／`--no-view-upgrades`；MCP 另支持完整/摘要预设与 ID 筛选；见 [选牌接口](card-selection.md) |
-| `select_card`、`selection_option` | 需最新状态令牌，参数分别为 `card_id`、`option_id`，提交一次原生选择输入 |
-| `set_selection_view` | 参数 `view` 为 `battlefield` 或 `selection`，显式点击眼睛 |
-| `end_turn` | 单人战斗、玩家可行动阶段且非暂停状态下，提交 `EndPlayerTurnAction`，返回期间事件，到下一可行动回合、已识别的选择或战斗结束时停止；见 [结束回合](end-turn.md) |
+| 基础观察 | 使用 `get_state`，对应 MCP 的 `get_observation` |
+| 游戏动作 | 调用方自行保存最新 `state.snapshot_id`，以 `expected_state` 提交；MCP 会话内部管理令牌 |
+| 详情及浏览页面 | 无须 `expected_state`，仍检查当前场景、遮挡、参数及原生合法性 |
+| 输出预设及筛选 | 不接受 MCP 的 `preset`、`card_ids`、`relic_indices` 或地图 `max_steps`；文件客户端保留完整空值 |
+| 原生参数 | `inspect_deck/inspect_pile` 的 `detail_level`、牌组排序／升级模式，以及 `inspect_selection.view_upgrades` 仍按各工具定义传入 `arguments` |
+| 兼容操作 | `close_deck` 仅关闭牌组，不注册为 MCP；公开工具使用 `close_card_view` |
+| 截图 | 文件 `capture_screenshot` 返回图像载荷；可选 MCP 工具负责文件名和存盘，见[截图接口](screenshots.md)；普通 CLI 不公开此操作 |
+| 测试入口 | `start_test_combat` 仅测试模式、主菜单且无进行中对局可用，需要令牌；不是公开玩法工具。套件专用入口见[图形测试](gui-testing.md#生命周期与证据) |
 
 请求写入 `requests/<id>.json`，其中 `id` 是不带连字符的 UUID；先写临时文件再原子重命名为 `.json`。请求体包含 `id`、`operation`；动作另带 `expected_state`，有参数操作的选项放在 `arguments` 对象中。响应写入 `responses/<id>.json`，成功包含 `ok: true` 和 `state`，失败包含 `ok: false` 和 `error.code`、`error.message`。
 
@@ -115,7 +85,7 @@ python3 -m tests.python.test_prepare_roundtrip
 
 底层动作流程已在独立实例中实测；无头启动存在 FMOD 音频初始化、音频资源及虚拟渲染器警告，不覆盖声音。图形观察的验证范围另见战斗观察说明，不能将无头验证描述为没有运行警告。
 
-原型已扩展可见战斗观察，字段与验证方式见 [战斗观察 JSON](observation.md)，范围按 [可见信息边界](../observation.md) 维护；未展开的手牌效果由专门查看调用提供。动作支持结束回合、出牌、使用/丢弃药水和已接通的选牌；stdio MCP 的当前工具范围见 [接入指南](mcp.md)。地图推进、多玩家、断线恢复和异常退出恢复尚未覆盖。通信目录假设仅由可信的本地程序访问，不作为远程服务。
+原型已扩展可见战斗观察，字段与验证方式见 [游戏基础观察 JSON](observation.md)，范围按 [可见信息边界](../observation.md) 维护；未展开的手牌效果由专门查看调用提供。动作支持结束回合、出牌、使用/丢弃药水和已接通的选牌；stdio MCP 的当前工具范围见 [接入指南](mcp.md)。支持地图选路和跨幕，具体范围见[地图接口](map-inspection.md)；多玩家、断线恢复和异常退出恢复尚未覆盖。通信目录假设仅由可信的本地程序访问，不作为远程服务。
 
 API 核对依据与实测结果见 [验证记录](../research/2026-10-28-roundtrip-validation.md)。
 

@@ -1,6 +1,8 @@
 # 牌组查看与关闭
 
-文件操作及 [MCP 工具](mcp.md) `inspect_deck`、`close_card_view` 适用于 Linux 游戏 `v0.107.1`、Mod `0.44.0`。查看时真实打开原生牌组页，一次返回整个可浏览牌组，包括滚动区域外的卡牌；结果返回后页面保持打开，直到显式关闭或人手动返回。MCP full 返回相同玩法 JSON，默认 default 省略普通空值；当前服务版本为 `0.50.8`。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
+
+文件操作及 [MCP 工具](mcp.md) `inspect_deck` 真实打开原生牌组页，一次返回整个可浏览牌组，包括滚动区域外的卡牌；页面保留至显式调用 `close_card_view` 或人手动返回。MCP full 返回相同玩法 JSON，默认 default 省略普通空值。
 
 牌组、抽牌堆、弃牌堆和消耗牌堆共用单一卡牌查看层，打开其中一种会替换当前卡牌页；地图是独立界面。支持单人可行动战斗及原生牌组按钮可用的非战斗页面，包括事件、先古之民、火堆、宝箱、奖励和商店；也可从地图或战斗牌堆页打开，并复用当前未被覆盖的牌组页。三类牌堆通过 [战斗牌堆查看](pile-inspection.md) 访问，保留原生空堆反馈，仍使用同一个关闭工具。打开与关闭沿用原生暂停/恢复行为；地图上打开牌组时，关闭卡牌页仍保留地图，不自动再关闭地图。这些操作会改变 UI，不是完全无界面副作用的读取。不会出牌、升级实际卡牌、推进回合或自动关闭其他页面。
 
@@ -12,7 +14,7 @@
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_deck
 ```
 
-detail_level 默认只返回摘要，与[通用 preset](mcp.md#输出预设)独立；需要保留空值时传 `preset:"full"`。查看完整正文与原生升级预览：
+detail_level 默认只返回摘要，与[MCP 通用 preset](mcp.md#输出预设)独立；文件客户端保留原有空值，MCP 需要保留空值时传 `preset:"full"`。查看完整正文与原生升级预览：
 
 ```sh
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_deck --detail-level full --view-upgrades
@@ -45,7 +47,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_card_view
 
 省略升级或排序参数时，沿用当前页面；新页面采用原生默认的获得顺序升序和不查看升级。指定主排序时保留原生其他排序优先级。名称排序使用游戏当前语言，因此中文界面中的“拼音顺序”不保证对应英语输出的字母顺序。费用排序沿用原生基础卡排序，升级预览降低费用后，显示的预览费用不保证仍按数值排序。
 
-未知字段、错误类型、非法枚举、重复字段或只给排序方向，均返回 `invalid_request`，在打开或修改页面之前拒绝。`close_card_view` 及其他既有操作不接受非空参数。首次打开须满足当前原生按钮可见且启用，以及受支持页面的遮挡规则；卡牌瞄准/打出、选牌页、模态弹窗、其他详情或过渡期间不可打开。结算页不属于可打开牌组的对局页面；升级控件隐藏或禁用时不能强行切换。
+未知字段、错误类型、非法枚举、重复字段或只给排序方向，均返回 `invalid_request`，在打开或修改页面之前拒绝。文件 `close_card_view` 不接受参数；同名 MCP 工具只接受通用 preset。首次打开须满足当前原生按钮可见且启用，以及受支持页面的遮挡规则；卡牌瞄准/打出、选牌页、模态弹窗、其他详情或过渡期间不可打开。结算页不属于可打开牌组的对局页面；升级控件隐藏或禁用时不能强行切换。
 
 ## 返回格式
 
@@ -70,9 +72,9 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_card_view
 
 非战斗查看及可用工具一致性的实现与验证范围见[修复记录](../research/2026-11-02-available-actions-fix.md)。
 
-操作发生在游戏线程，等待页面及帧绘制采用异步流程。等待期间页面被关闭、覆盖或替换会返回 `illegal_action`，不重开页面、不撤销人的操作，也不自动关闭新页面。基础 `get_state` 在牌组覆盖时仍保守返回 `screen.status: covered`，不自动附送整牌组；手牌和战斗对象详情仍沿用遮挡拒绝规则，Mod 0.49.1 起实际可见顶栏及可悬停的药水／遗物可只读查看，见[观察边界](observation.md#mcp-输出预设)。
+操作发生在游戏线程，等待页面及帧绘制采用异步流程。等待期间页面被关闭、覆盖或替换会返回 `illegal_action`，不重开页面、不撤销人的操作，也不自动关闭新页面。基础 `get_state` 在牌组覆盖时仍保守返回 `screen.status: covered`，不自动附送整牌组；手牌和战斗对象详情仍沿用遮挡拒绝规则，实际可见顶栏及可悬停的药水／遗物可只读查看，见[观察边界](observation.md#mcp-输出预设)。
 
-Mod 0.10.0 在 `screen.view` 标记 `deck/draw_pile/discard_pile/exhaust_pile/map` 等受支持查看页。只关闭最上面的卡牌页：战斗叠地图叠牌组时，返回地图；地图单独打开时调用通用关闭会拒绝。当前版本原生容器关闭会调用 `Unpause`，即使地图仍打开；本项目不增加自定义暂停计数，地图仍按遮挡页面处理，不能据此执行战斗动作。
+基础观察在 `screen.view` 标记 `deck/draw_pile/discard_pile/exhaust_pile/map` 等受支持查看页。只关闭最上面的卡牌页：战斗叠地图叠牌组时，返回地图；地图单独打开时调用通用关闭会拒绝。当前版本原生容器关闭会调用 `Unpause`，即使地图仍打开；本项目不增加自定义暂停计数，地图仍按遮挡页面处理，不能据此执行战斗动作。
 
 旧文件操作 `close_deck` 仅为兼容保留，仍只关闭牌组，不注册为 MCP 工具。
 
@@ -86,10 +88,4 @@ python3 -m tests.game.verifiers.verify_deck --ipc-dir .tmp/live/ipc --output-dir
 
 独立测试实例使用 `scripts/run_roundtrip.py --windowed --capture --check-deck`，完整参数检查另加 `verify_deck.py --exercise-options`，该参数仅接受仓库的独立 IPC 目录。测试入口准备 28 张牌，包括重复卡、已升级卡和不能升级的诅咒，并补齐原生加牌完成通知。不要为正式游戏设置测试标志。来源、结果与未验证范围见 [设计](../research/2026-10-29-deck-view-design.md) 和 [实施记录](../research/2026-10-29-deck-view-plan.md)。
 
-已通过 73 项 Python 回归；独立中文实例的 12 项牌组不变式和 5 项生命周期检查均通过，原有观察与五类详情全部回归通过。摘要、完整和升级样本位于 `.tmp/roundtrip/deck/`；读取了全部 28 张牌，正文及费用的升级预览正确，显式关闭后玩法数值不变且旧令牌被拒绝。
-
-正式游戏重启后也已完成 12 张牌的摘要、完整和升级预览采样。完整模式有 6 条共享解释；Strike、Defend 和 Bash 正确显示升级预览，不能升级的 Ascender's Bane 及已升级的 True Grit+ 保持原样。页面显式关闭后恢复战斗，前后玩法观察相同、控制令牌不同，未推进回合。JSON 和完整响应证据位于 `.tmp/live/deck/`，与独立样本分开保存。
-
-通用关闭新增的 7 项独立原生检查已通过，涵盖三类牌堆、地图单独不关闭、地图上打开牌组及返回地图。新版真实 MCP 在独立实例完成 28 张牌浏览，Python 全套 84 项通过。Mod 0.10.0 的正式 MCP 采样也已通过：12 张牌，连续查看、升级及显式通用关闭均正常，前后玩法观察一致，样本位于 `.tmp/live/mcp-deck/`。实施证据见 [MCP 接入记录](../research/2026-10-29-mcp-deck-inspection.md)。
-
-Mod 0.11.0 增加 [战斗牌堆查看](pile-inspection.md) 后，既有牌组真实 stdio MCP 已在独立实例回归通过：28 张牌、摘要/完整/升级、重复查看和通用关闭均正常，样本位于 `.tmp/roundtrip/mcp-deck-0.11/`。
+历史独立及正式游戏采样、检查数量和限制见[牌组实施记录](../research/2026-10-29-deck-view-plan.md)及[MCP 接入记录](../research/2026-10-29-mcp-deck-inspection.md)。这些证据对应各自基线，不表示当前版本已重新运行同一套检查。

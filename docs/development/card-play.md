@@ -1,6 +1,8 @@
 # 出牌与目标查询
 
-适用于 Mod `0.34.1`、MCP server `0.29.1`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。提供原生单人战斗中的一次手动出牌及只读目标查询；目标判定依据见 [源码调研](../research/2026-10-30-card-play-targeting.md)。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
+
+提供原生单人战斗中的一次手动出牌及只读目标查询；目标判定依据见 [源码调研](../research/2026-10-30-card-play-targeting.md)。
 
 下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
 

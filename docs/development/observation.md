@@ -1,6 +1,6 @@
-# 战斗观察 JSON
+# 游戏基础观察 JSON
 
-适用于 Linux 游戏 `v0.107.1` 与 Mod `0.49.3`。底层观察结构版本为 `32`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+输出语言为英语，游戏本身可以继续使用中文。底层结构版本及兼容基线统一见[项目 README](../../README.md#当前版本与前提)。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -18,7 +18,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state > .tmp/liv
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 ```
 
-`--raw` 保留原始文件协议：成功为 `id/ok/state`，`state` 内保留 `snapshot_id/schema_version/language/session/combat_generation/ui_generation/selection_generation/potion_generation/reward_generation/rest_site_generation/treasure_generation/shop_generation/ancient_generation/event_generation/confirmation_generation/map_generation`；失败为 `id/ok/error`。Python 的 `Client.call()` 同样返回原始响应，`player_result(response, operation="get_state")` 产生面向 LLM 的结果，不改写原响应；转换选牌详情时传 `operation="inspect_selection"`，保留全文并合并共享解释。外部客户端必须自行保存最近的原始令牌，动作仍带 `expected_state` 校验；省略 LLM 可见令牌不等于绕过校验。[本地 MCP](mcp.md) 复用同一玩法输出转换。
+`--raw` 保留原始文件协议：成功为 `id/ok/state`，`state` 内保留 `snapshot_id/schema_version/language/session` 及战斗、界面、选择、物品、房间、结算等代际字段；失败为 `id/ok/error`。Python 的 `Client.call()` 同样返回原始响应，`player_result(response, operation="get_state")` 产生面向 LLM 的结果，不改写原响应；转换选牌详情时传 `operation="inspect_selection"`，保留全文并合并共享解释。外部客户端必须自行保存最近的原始令牌，动作仍带 `expected_state` 校验；省略 LLM 可见令牌不等于绕过校验。[本地 MCP](mcp.md) 复用同一玩法输出转换。
 
 玩法输出按声明的结构递归投影，未知嵌套字段不会转发；基础观察的 `player.hand` 不包含正文或悬停解释。已提供字段须符合对应类型，布尔值不能代替数字。MCP 对基础观察和动作结果另检查全部顶层观察字段，格式错误返回 `transport_error`，不保留动作令牌。这个检查不证明游戏采样本身符合可见信息边界；Mod 的显示过滤仍是读取依据。
 
@@ -35,7 +35,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 }
 ```
 
-这是结构示例，实际列表随按钮启用、显示和交互状态变化。`scene` 仍表示底层房间或战斗；`screen.view` 标识地图、牌组、占卜、确认或结算，`selection.type/status` 区分选牌及查看战场，没有待处理选择时省略 `selection`。精简输出不附候选参数、提示、数值或占卜图像；后续需要详情时调用相应工具或再次完整观察。
+这是结构示例，工具名仅用于说明字段形态；实际列表随按钮、持有物及交互状态变化，以当前完整返回为准。`scene` 仍表示底层房间或战斗；`screen.view` 标识地图、牌组／牌堆、占卜、确认、建筑师或结算，`selection.type/status` 区分选牌及查看战场，没有待处理选择时省略 `selection`。精简输出不附候选参数、提示、数值或占卜图像；后续需要详情时调用相应工具或再次完整观察。
 
 五种预设都会实时读取、完整校验并刷新内部动作令牌，精简模式不改变游戏 UI，也不改变后续动作的精简回执格式，见[MCP 动作返回](mcp.md#动作返回格式)。只允许可选字符串 `preset: default/full/actions_only/summary/top_bar`；非法值或额外字段返回 `invalid_request`，清除旧动作许可且不请求游戏。预设属于 MCP 输出投影，底层文件 `get_state` 仍返回完整状态。
 
@@ -51,25 +51,25 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 奖励、火堆和宝箱的房间主体保持与 default 一致，不省略标题、当前已显示说明、选项、空列表或按钮状态。宝箱可见时 default／summary 保留 `treasure.relic:null`；被覆盖时仍省略，完整规则见[公共空值规则](mcp.md#输出预设)。弹出的选牌使用上述共用摘要，顶栏独立精简。
 
-商店的商品卡牌复用共用卡牌摘要：保留已有的名称、类型和费用，省略 rarity／visual_card_pool；商品 ID 保持在 items[].id，card 内不额外生成 ID。价格、affordable、enabled、on_sale、position、已用删牌项等商品信息仍沿用 default。当前商店原生读取未提供附魔、费用颜色、描边或不可打出标记，本次摘要不补造这些字段；卡牌正文继续通过 inspect_shop 查看。先古之民主体保持 default。
+商店的商品卡牌复用共用卡牌摘要：保留已有的名称、类型和费用，省略 rarity／visual_card_pool；商品 ID 保持在 items[].id，card 内不额外生成 ID。价格、affordable、enabled、on_sale、position、已用删牌项等商品信息仍沿用 default。当前商店原生读取未提供附魔、费用颜色、描边或不可打出标记，摘要不补造这些字段；卡牌正文继续通过 inspect_shop 查看。先古之民主体保持 default。
 
-普通事件 summary 省略 event.description，即当前页面叙事正文；options[].description 仍保留，用于展示效果、费用及锁定原因。选项 lethal_warning:false 时省略，true 时保留；其他 false 不受影响。省略表示本次没有显示原生危险红框，不沿用上次警告。default/full 和 inspect_event 仍保留页面正文与完整警告字段。MCP `0.50.4` 起支持，示例与验证范围见[10–12 组记录](../research/2026-11-03-get-observation-shop-ancient-event.md)。
+普通事件 summary 省略 event.description，即当前页面叙事正文；options[].description 仍保留，用于展示效果、费用及锁定原因。选项 lethal_warning:false 时省略，true 时保留；其他 false 不受影响。省略表示本次没有显示原生危险红框，不沿用上次警告。default/full 和 inspect_event 仍保留页面正文与完整警告字段。示例与验证范围见[10–12 组记录](../research/2026-11-03-get-observation-shop-ancient-event.md)。
 
-审判（Trial）的 event.description 同样省略；确认框的 confirmation.description 保留，不能按字段名递归删掉后果说明。建筑师 epilogue 主体沿用 default。占卜 summary 从 MCP `0.50.6` 起另省略 divination.instructions，其余可见主体、工具按钮、当前完整对白、坐标 notes 和同次棋盘 PNG 保留；default/full 及 inspect_event 的说明不变。13–15 组完整规则、示例和验证见[专项核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md)。
+审判（Trial）的 event.description 同样省略；确认框的 confirmation.description 保留，不能按字段名递归删掉后果说明。建筑师 epilogue 主体沿用 default。占卜 summary 另省略 divination.instructions，其余可见主体、工具按钮、当前完整对白、坐标 notes 和同次棋盘 PNG 保留；default/full 及 inspect_event 的说明不变。13–15 组完整规则、示例和验证见[专项核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md)。
 
-地图及牌组／牌堆浏览覆盖（`screen.view:map/deck/draw_pile/discard_pile/exhaust_pile`）的页面主体暂时沿用 default，由浏览摘要占位入口处理；顶栏先应用上述共用摘要。占位保留页面上下文和隐藏选择元数据，不对下层战斗再次压缩。当前基础观察仍不附浏览卡牌列表；后续核验 inspect_map、inspect_deck、inspect_pile 时再补充对应内容与摘要。MCP `0.50.2` 起统一采用此分工，见[共用顶栏记录](../research/2026-11-02-shared-top-bar-summary.md)。
+地图及牌组／牌堆浏览覆盖（`screen.view:map/deck/draw_pile/discard_pile/exhaust_pile`）的页面主体暂时沿用 default，由浏览摘要占位入口处理；顶栏先应用上述共用摘要。占位保留页面上下文和隐藏选择元数据，不对下层战斗再次压缩。当前基础观察仍不附浏览卡牌列表；后续核验 inspect_map、inspect_deck、inspect_pile 时再补充对应内容与摘要。分工依据见[共用顶栏记录](../research/2026-11-02-shared-top-bar-summary.md)。
 
-结算的 `run_result` 主体沿用 default，保留完整的当前页 texts、分数、徽章、发现、options 及空列表；MCP `0.50.8` 起，已显示的 cards 复用卡牌摘要，保留字符串 card:N ID、名称、类型和费用等字段，省略正文、稀有度及卡池。需要正文或悬停说明时调用 inspect_run_result。full/default 和详情工具的信息范围不变。主菜单与 unrecognized 主体沿用 default；共用顶栏规则独立适用。约定及验证见[结算观察实施记录](../research/2026-11-03-result-observation-implementation.md)。
+结算的 `run_result` 主体沿用 default，保留完整的当前页 texts、分数、徽章、发现、options 及空列表；已显示的 cards 复用卡牌摘要，保留字符串 card:N ID、名称、类型和费用等字段，省略正文、稀有度及卡池。需要正文或悬停说明时调用 inspect_run_result。full/default 和详情工具的信息范围不变。主菜单与 unrecognized 主体沿用 default；共用顶栏规则独立适用。约定及验证见[结算观察实施记录](../research/2026-11-03-result-observation-implementation.md)。
 
-Mod `0.49.0` 起，已打开候选页的 full/default/summary 都提供整个原生可浏览列表，包含滚动区域外的候选，保持原生顺序及原牌 ID。读取不滚动或选择卡牌；确认预览只提供该页展示内容，眼睛与覆盖页继续隐藏选择。网格候选的已有附魔同时修复，显示计数和置灰规则与原生卡面一致。详见[选牌接口](card-selection.md)。需要更换 Mod、重启游戏并重连 MCP。
+已打开候选页的 full/default/summary 都提供整个原生可浏览列表，包含滚动区域外的候选，保持原生顺序及原牌 ID。读取不滚动或选择卡牌；确认预览只提供该页展示内容，眼睛与覆盖页继续隐藏选择。卡面附魔按实际显示规则读取，字段及界面操作见[选牌接口](card-selection.md)。
 
 `preset:"top_bar"` 在 actions_only 的场景、页面、选择 type/status 和工具名上增加 default 的顶栏字段，移除 `top_bar.relics` 并保留 `relic_count`。不套用 summary 的顶栏四字段限制，也不合并顶栏 hp/max_hp；不返回战斗单位、手牌、房间正文、notes 或占卜图像。遗物效果通过 `inspect_relics` 查看。顶栏不可读时省略，不伪造空顶栏。
 
-Mod `0.48.0` 在 full/default 顶栏也提供 `relic_count`，表示原生遗物栏登记的持有数量；整个遗物栏不可读时为 null。它独立于是否可悬停或位于屏幕内，不从筛选后的明细列表求长度。旧 Mod 缺少该字段时，Python 仍可读取观察，但各预设省略数量，不猜测成零或列表长度。完整支持需更换 Mod、重启游戏，并重连 MCP。样例及实际验证范围见[战斗核验记录](../research/2026-11-02-get-observation-combat.md)。
+full/default 顶栏提供 `relic_count`，表示原生遗物栏登记的持有数量；整个遗物栏不可读时为 null。它独立于是否可悬停或位于屏幕内，不从筛选后的明细列表求长度。旧 Mod 缺少该字段时，各预设省略数量，不猜测成零或列表长度；更新排错见[正常游戏指南](live-game.md#更新与排错)。样例与验证范围见[战斗核验记录](../research/2026-11-02-get-observation-combat.md)。
 
 `available_actions` 包含当前原生页面允许的详情和页面工具，例如 `inspect_selection`、`set_selection_view`、`close_card_view`、`close_map`，不是全部已安装工具。工具出现不意味着任意卡牌、目标、商品或选项参数都有效，也不保证调用前状态不发生变化。列表不携带参数；从完整观察或专用详情读取候选后再提交。
 
-Mod `0.49.1` 起，当前暴露的地图、牌组及抽牌／弃牌／消耗堆浏览页保留实际可见顶栏。`screen.status:covered` 表示下层战斗／房间被覆盖，不会单独使顶栏不可读；顶栏本身隐藏、透明、位于视口外，或受不支持的弹窗／详情／过渡遮挡时仍不读取。单个数字隐藏时不从模型补齐。可悬停的药水和遗物可通过相应 inspect 工具查看，下层战斗和药水动作仍按原有条件限制。需同时更新 MCP 至 `0.50.1`，以接受战斗地图的只读药水查看项；验证见[顶栏修复记录](../research/2026-11-02-top-bar-visibility.md)。
+当前暴露的地图、牌组及抽牌／弃牌／消耗堆浏览页保留实际可见顶栏。`screen.status:covered` 表示下层战斗／房间被覆盖，不会单独使顶栏不可读；顶栏本身隐藏、透明、位于视口外，或受不支持的弹窗／详情／过渡遮挡时仍不读取。单个数字隐藏时不从模型补齐。可悬停的药水和遗物可通过相应 inspect 工具查看，下层战斗和药水动作仍按原有条件限制；验证见[顶栏修复记录](../research/2026-11-02-top-bar-visibility.md)。
 
 ## 玩法字段
 
@@ -77,7 +77,7 @@ Mod `0.49.1` 起，当前暴露的地图、牌组及抽牌／弃牌／消耗堆�
 
 | 字段 | 内容 |
 | --- | --- |
-| `screen.view` | 可识别的当前查看页：`deck/draw_pile/discard_pile/exhaust_pile/map`，或占卜 `divination`、确认框 `confirmation`（Trial 支持操作，未知来源仍为人工输入）；仅在实际显示时出现 |
+| `screen.view` | 可识别的当前查看页：`deck/draw_pile/discard_pile/exhaust_pile/map`，或占卜 `divination`、确认框 `confirmation`（Trial 支持操作，未知来源仍为人工输入）、建筑师 `epilogue` 及结算 `run_result`；仅在实际显示时出现 |
 | `confirmation` | 当前受支持的原生确认框：类型、标题、正文及两个按钮；没有时为 null，详见[事件接口](events.md#事件确认弹窗) |
 | `scene`、`screen.status` | 当前场景，以及 `visible/covered/hidden/not_ready/not_applicable` |
 | `turn` | 当前结束回合按钮显示的回合号；未显示数字时为空 |
@@ -104,9 +104,9 @@ Mod `0.49.1` 起，当前暴露的地图、牌组及抽牌／弃牌／消耗堆�
 
 战斗外在 [药水工具支持的页面](potion-actions.md#场景与停止边界) 也提供可见顶栏；搜刮页使用 `scene: "rewards"` 和独立的[奖励结构](rewards.md)，休息处、宝箱房、商店、先古之民和[通用事件](events.md)分别使用 `rest_site`、`treasure`、`shop`、`ancient`、`event`；[终章与结算](run-ending.md)使用 `epilogue` 与 `run_result`；未匹配已支持场景的页面使用 `unrecognized`，也可能处于加载过渡；不将商店等已识别非战斗场景归入该类。战斗外的 `player/enemies/turn/buttons` 为空；事件被覆盖时不附送其下方的正文和选项。
 
-Mod `0.49.3`／MCP `0.50.7`、schema `32` 起，兜底名称由 `loading_or_noncombat` 改为 `unrecognized`。该值本身不判断加载是否完成；仍结合 screen、实际内容和 available_actions 判断。MCP 校验使用新标识，更新时应同时更换 Mod 并重启游戏、更新 Python 并重连客户端。
+旧兜底标识 `loading_or_noncombat` 已替换为 `unrecognized`，当前 MCP 校验不接受旧名称。该值本身不判断加载是否完成，须结合 screen、实际内容和 available_actions 判断；更新时应配套更换 Mod 和 Python，见[更新说明](live-game.md#更新与排错)。
 
-Mod 0.49.2 起，奖励列表及已打开本局详情的滚动内容完整读取，不按视口截断；适用边界统一见[可浏览列表](../observation.md#可浏览列表)。这不改变地图／牌组／牌堆主体的摘要占位，也不自动展开悬停、隐藏页面或未来内容。
+奖励列表及已打开本局详情的滚动内容完整读取，不按视口截断；适用边界统一见[可浏览列表](../observation.md#可浏览列表)。这不改变地图／牌组／牌堆主体的摘要占位，也不自动展开悬停、隐藏页面或未来内容。
 
 数字来自可见标签，金币动画期间也按标签返回。`null` 不等于 0，表示未显示、尚未准备或不能可靠识别；可见空容器使用 `[]`。正常生命条没有格挡图标时才归一化为 `block: 0`。死亡文字与无限图标分别映射为 `dead`、`infinite`，不从隐藏生命模型补数字。
 
@@ -162,7 +162,7 @@ Mod 0.49.2 起，奖励列表及已打开本局详情的滚动内容完整读取
 
 ## 失败结果
 
-默认失败结果为 `{"error":{"code":"stale_state","message":"...","recovery":"get_state"}}`，没有 `ok`。`message` 使用英语，提供可指导下一步的提示，内部异常路径和堆栈留在原始诊断响应或游戏日志中。
+文件客户端的默认失败结果为 `{"error":{"code":"stale_state","message":"...","recovery":"get_state"}}`，没有 `ok`。`message` 使用英语，提供可指导下一步的提示，内部异常路径和堆栈留在原始诊断响应或游戏日志中。
 
 | 错误 | 建议处理 |
 | --- | --- |
@@ -171,7 +171,7 @@ Mod 0.49.2 起，奖励列表及已打开本局详情的滚动内容完整读取
 | `timeout`、`game_error` | 标记 `outcome: unknown`，重新观察，不自动重试动作 |
 | `transport_error` | 标记结果未知，`recovery: check_connection`，先检查连接 |
 
-成功请求不自动重试动作。客户端等待超时也输出结构化错误；默认输出不会把原始异常信息直接交给 LLM。失败时命令仍以非零退出码结束。
+MCP 的恢复入口名为 get_observation，错误及权限语义统一见[MCP 指南](mcp.md#调用和错误语义)。客户端不自动重试动作。客户端等待超时也输出结构化错误；默认输出不会把原始异常信息直接交给 LLM。失败时命令仍以非零退出码结束。
 
 ## 采样与验证
 
@@ -193,11 +193,11 @@ python3 scripts/run_roundtrip.py --windowed --capture --check-observation
 python3 -m tests.game.verifiers.verify_roundtrip --ipc-dir .tmp/roundtrip/ipc --report .tmp/roundtrip/player-format-roundtrip.json --observation-output .tmp/player-observation-v3.json
 ```
 
-独立测试入口创建铁甲战士临时战斗并关闭该测试存档的教学。截图和布局、临时 UI 扰动检查仅由测试标志启用；正常游戏不启用测试环境变量。当前调整及验证记录见 [实施说明](../research/2026-10-29-player-observation-plan.md)，上一版图形验证见 [历史记录](../research/2026-10-29-visible-combat-validation.md)。
+独立测试入口创建铁甲战士临时战斗并关闭该测试存档的教学。截图和布局、临时 UI 扰动检查仅由测试标志启用；正常游戏不启用测试环境变量。基础采样的历史验证见 [实施说明](../research/2026-10-29-player-observation-plan.md)，更早的图形验证见 [历史记录](../research/2026-10-29-visible-combat-validation.md)。
 
 ## 选择状态
 
-新增可空 `selection` 字段，供基础观察识别选牌、查看战场和覆盖状态。格式、工具与简短提示见 [选牌与查看战场](card-selection.md)。选择遮挡战场时不补出隐藏战斗数据；显式眼睛切换后复用正常可见性规则。底层新增不含玩法信息的 `selection_generation`，参与动作令牌。
+基础观察通过可空 `selection` 字段识别选牌、查看战场和覆盖状态。格式、工具与简短提示见 [选牌与查看战场](card-selection.md)。选择遮挡战场时不补出隐藏战斗数据；显式眼睛切换后复用正常可见性规则。底层 `selection_generation` 不含玩法信息，但参与动作令牌。
 
 休息处基础观察的 `rest_site`、遮挡和选项规则见[休息处接口](rest-site.md)。锻造使用 `deck_upgrade` 选牌及实际显示的 `upgrade_previews`。
 
@@ -213,4 +213,4 @@ python3 -m tests.game.verifiers.verify_roundtrip --ipc-dir .tmp/roundtrip/ipc --
 
 地图展开时返回 `map` 候选摘要及 `travel_to_node` 动作；整幕节点和连线仍由 `inspect_map` 提供，见[地图接口](map-inspection.md#地图选路)。
 
-本次工具可用性、预设与图形回归范围见[核查记录](../research/2026-10-31-observation-presets-validation.md)。
+各场景工具可用性与早期预设验证见[核查记录](../research/2026-10-31-observation-presets-validation.md)；当前各场景 summary 的设计与实施证据见[逐项核验记录](../research/2026-11-02-get-observation-review.md)。

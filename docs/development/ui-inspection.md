@@ -1,6 +1,8 @@
 # 当前界面悬停说明 JSON
 
-文件操作 `inspect_ui` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.39.0`，只读返回当前无遮挡战斗画面上可见入口、资源图标和空充能球槽的英语悬停说明。不触发鼠标悬停、不打开窗口、不切换游戏语言。工具分工见 [范围核查](../research/2026-10-29-ui-hover-tip-audit.md)。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
+
+文件操作 `inspect_ui` 与同名 [MCP 工具](mcp.md)只读返回当前无遮挡战斗画面上可见入口、资源图标和空充能球槽的英语悬停说明。不触发鼠标悬停、不打开窗口、不切换游戏语言。工具分工见 [范围核查](../research/2026-10-29-ui-hover-tip-audit.md)。
 
 ## 读取与格式
 
@@ -39,7 +41,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_ui > .tmp/li
 
 药水、遗物、powers 和敌人当前意图解释均不包含；powers 与当前意图通过 [战斗对象详情](combatant-inspection.md) 一起查看，药水与遗物分别使用 [药水详情](potion-inspection.md) 和 [遗物详情](relic-inspection.md)。手牌效果使用 `inspect_hand`。地图、牌组、牌堆这里只返回入口说明，不返回具体内容或抽牌顺序；不添加游戏中不存在的格挡悬停说明。
 
-地图等非战斗场景、菜单覆盖和过渡期间返回 `illegal_action`。基础观察未来扩展场景时，再扩展对应提示。其他版本和其他 Mod 新增的图标或自定义提示没有自动兼容保证。
+地图、普通非战斗房间、菜单覆盖和过渡期间返回 `illegal_action`。原生可查看的战斗背景（例如[建筑师](run-ending.md)）也可提供当前可见提示，不要求战斗仍在进行；当前可用性以观察的 `available_actions` 为准。其他版本和其他 Mod 新增的图标或自定义提示没有自动兼容保证。
 
 ## 验证
 
@@ -49,6 +51,4 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_ui > .tmp/li
 python3 -m tests.game.verifiers.verify_ui --ipc-dir .tmp/live/ipc --output .tmp/live/ui-inspection.json --report .tmp/live/ui-inspection-check.json
 ```
 
-脚本检查 `get_state → inspect_ui → get_state` 的令牌一致、提示结构和去重、来源字段存在及查看边界。独立测试实例可用 `scripts/run_roundtrip.py --windowed --capture --check-ui` 启用额外的游戏内可见性、英语文本和缓存检查；该标志不用于正式游戏。已完成中文独立实例及正式进阶 6 缩小甲虫战斗的只读验证，分别取得 11、13 条提示。双首领、可见星星、可见消耗牌堆等场景尚未验证，详细证据见 [实施记录](../research/2026-10-29-ui-inspection-plan.md)。
-
-原生可查看的战斗背景（例如[建筑师](run-ending.md)）同样可提供当前可见详情；这不表示战斗正在进行，也不提供出牌权限。当前是否可调用以基础观察的 `available_actions` 为准。
+脚本检查 `get_state → inspect_ui → get_state` 的令牌一致、提示结构和去重、来源字段存在及查看边界。独立测试实例可用 `scripts/run_roundtrip.py --windowed --capture --check-ui` 启用额外的游戏内可见性、英语文本和缓存检查；该标志不用于正式游戏。早期独立／正式战斗的样本及当时未覆盖场景见[实施记录](../research/2026-10-29-ui-inspection-plan.md)，后续充能球范围见[球槽核对](../research/2026-11-01-capacity-and-orbs.md)。历史记录中的未测项不能直接视为当前全部验证范围。

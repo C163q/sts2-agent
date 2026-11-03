@@ -36,7 +36,7 @@ flowchart LR
 | `run_result_option(option_id)` | 点击当前结算按钮或待揭示解锁条目，逐页操作至主菜单 |
 | `respond_to_confirmation(option)` | 明确确认或取消[当前 Trial 事件确认框](events.md#事件确认弹窗)，确认会结束本局 |
 | `set_divination_tool(tool)` | [占卜](divination.md)切换大小工具，不消耗次数 |
-| `divine(x,y)` | 点击仍覆盖的占卜格子，返回实际棋盘图像 |
+| `divine(x,y)` | 点击仍覆盖的占卜格子；棋盘及图像按需观察 |
 | `inspect_event()` | [当前通用事件](events.md)正文、选项及悬停解释，或占卜棋盘及图像 |
 | `choose_event_option(option_id)` | 点击一个启用的事件选项，保留原生后续流程与致死警告 |
 | `inspect_ancient()` | [当前先古之民](ancients.md)的选项及悬停解释 |
@@ -79,7 +79,7 @@ flowchart LR
 
 ## 安装与游戏前提
 
-需要 Python 3.10 或以上版本、Mod `0.49.3` 及其 RitsuLib 依赖，以及支持 stdio MCP 的客户端。MCP server 当前为 `0.50.8`，游戏动作返回精简回执；动作的停止边界与 `complete` 含义见[动作观察说明](end-turn.md#动作完成与画面稳定)。Mod 与外部脚本须匹配；更新 DLL 后完整重启游戏，更新 MCP 脚本后重连客户端。已验证环境使用 Python `3.14.8`、官方 Python SDK `mcp==1.26.0` 和游戏 `v0.107.1`。标准库文件客户端不需要 MCP SDK。
+需要支持 stdio MCP 的客户端，并安装[当前基线](../../README.md#当前版本与前提)中的 Mod、依赖与 Python。安装、更新及两端版本排错见[正常游戏指南](live-game.md#更新与排错)。MCP 的 Python 依赖由 [requirements-mcp.txt](../../requirements-mcp.txt)定义；标准库文件客户端不需要 MCP SDK。
 
 在仓库根目录创建虚拟环境并安装依赖：
 
@@ -111,7 +111,7 @@ codex mcp add sts2 -- "$PWD/.tmp/mcp-venv/bin/python" "$PWD/scripts/mcp_server.p
 codex mcp list
 ```
 
-重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供上方[工具范围](#工具范围)中的完整目录，默认 42 项；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，此前核对本机 CLI 0.165.0 的命令帮助。
+重新启动或重新加载客户端的 MCP 连接后，确认 `sts2` 提供上方[工具范围](#工具范围)中的完整目录，默认 42 项；此前手动禁用的连接需先重新启用，更新脚本不会自动启用。CLI 可用 `/mcp` 查看连接；具体入口和配置方式以 [Codex 官方说明](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) 为准，历史核对环境见[首次接入记录](../research/2026-10-29-mcp-plan.md)。
 
 对应的 TOML 配置示例为：
 
@@ -129,13 +129,13 @@ tool_timeout_sec = 60
 approval_mode = "approve"
 ```
 
-该设置只预先批准这个工具，不改变其他工具或沙箱策略。配置字段见 [官方配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)。本次真实 Codex 验证使用临时覆盖，不在用户配置中持久保存动作授权。
+该设置只预先批准这个工具，不改变其他工具或沙箱策略。配置字段见 [官方配置参考](https://learn.chatgpt.com/docs/config-file/config-reference)。历史 Codex 验证的授权方式及环境见[首次接入记录](../research/2026-10-29-mcp-plan.md)。
 
 其他 agent 使用相同的可执行文件、参数和 stdio 传输配置，配置文件格式由各客户端决定。服务默认等待游戏响应最多 40 秒，可通过 `--timeout` 调整；客户端工具超时应留出余量。
 
 ## 输出预设
 
-MCP `0.50.8` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
+全部 42 个玩法 JSON 工具接受可选的 `preset`：
 
 | 预设 | 行为 |
 | --- | --- |
@@ -149,9 +149,9 @@ MCP `0.50.8` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
 
 例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。遗物 summary 同样省略普通空值。`inspect_deck` / `inspect_pile` 的 `detail_level` 独立决定正文范围，默认仍是 summary；`preset:"full"` 不会更改它。
 
-`get_observation` 的 summary 与 top_bar 基于 default，前者另显式保留 `health:null`；summary 在各场景统一精简选牌，另精简商店卡牌、普通事件并省略占卜教学说明，其他非战斗主体暂用 default。inspect_hand／inspect_selection／inspect_relics 的 summary 也继承普通空值过滤；比较中属于卡牌摘要的字段仍保留必要未知值。完整字段规则见[观察预设](observation.md#mcp-输出预设)。
+各工具专用预设的完整字段规则由对应接口维护：`get_observation` 的 summary／top_bar 见[观察预设](observation.md#mcp-输出预设)，手牌、选牌和遗物摘要见各工具说明。不要把 default 保留空数组的公共规则套用到明确精简空列表的专用 summary。
 
-该参数只控制 Python 公开输出，不转发给 Mod；完整响应校验、动作许可判断和原有筛选先完成，再过滤空值。部分 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。标准库文件客户端继续保留原有空值，本节预设只适用于 MCP 和 GameTools 的玩法工具调用。仅更新公共空值过滤只需重连 MCP；完整候选列表及网格附魔读取需 Mod 0.49.0，覆盖页顶栏修复需 Mod 0.49.1／MCP 0.50.1；更换 Mod 后重启游戏，见[观察预设](observation.md#mcp-输出预设)。
+该参数只控制 Python 公开输出，不转发给 Mod；完整响应校验、动作许可判断和原有筛选先完成，再过滤空值。部分成功的 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。标准库文件客户端继续保留原有空值，本节预设只适用于 MCP 和 GameTools 的玩法调用；`detail_level` 等原生参数仍独立生效。
 
 ## 调用和错误语义
 
@@ -168,13 +168,15 @@ MCP `0.50.8` 的全部 42 个玩法 JSON 工具接受可选的 `preset`：
 
 例如 `get_observation → play_card → play_card → end_turn`，或 `use_potion → inspect_selection → select_card`，中间无需为了取得许可再次读取相同观察。每一步都根据上一返回结果重新决策，按需查询卡牌或目标；不得把同一观察复用成预先排队的一组动作。服务拒绝用请求排队后才产生的新观察授权该请求；同一连接的操作仍串行执行。
 
-Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其他客户端使状态改变时返回 `stale_state`，不自动刷新或重试。失败、非法参数、坏响应、超时、取消、不完整结果、无可执行动作、未支持选择及胜负停止均不续接动作许可，须先重新读取当前状态再决定。取消不能撤回已提交给游戏的操作。状态令牌留在 MCP 内部，不增加模型参数，也不回放未收到的动作结果。
+Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其他客户端使状态改变时返回 `stale_state`，不自动刷新或重试。动作失败、坏响应、超时、取消、不完整结果、无可执行动作、未支持选择及胜负停止均不续接动作许可，须先重新读取当前状态再决定。取消不能撤回已提交给游戏的操作。状态令牌留在 MCP 内部，不增加模型参数，也不回放未收到的动作结果。
+
+本地参数错误按工具入口处理：动作参数、get_observation、inspect_targets 及 set_selection_view 的非法参数会清除许可；手牌／选牌／遗物筛选、地图／牌组／牌堆查看参数和 close_map 的发送前校验失败保留原许可。无参数详情及 close_card_view 的多余参数也在公共包装层拒绝并保留原许可。这里描述现有实现，不能概括为所有 invalid_request 都有相同副作用；错误后重新读取仍是统一恢复方式。
 
 专项详情会使用本次成功读取的新令牌，不要求它与旧令牌相同。页面操作先清除旧令牌，完整校验成功响应后保存新令牌；空牌堆或入口不可用的成功结果也按返回时的实际状态刷新。失败、格式错误或取消不保存新令牌。截图只在状态未变时保留已有令牌，不提供新令牌。`close_card_view` 可保留下层地图，须继续 `close_map` 才能回到战斗。这些页面操作有 UI 副作用，客户端按自己的策略处理授权。
 
 结构化读取直接续接动作的实现与验证范围见[验证记录](../research/2026-11-01-observation-sources.md)。
 
-成功时 `structuredContent` 是玩法对象，`content` 同时提供相同对象的紧凑 JSON 文本。[占卜](divination.md)的完整观察和详情还带独立 PNG 图像内容，需要支持图像的客户端和视觉模型；图片不进入文字 JSON，也不依赖截图工具配置；`actions_only/top_bar` 预设及动作回执不返回棋盘或图像；非战斗 summary 仍保留棋盘与图像。正文中的换行和空格保留；终端与证据文件使用两空格缩进。对象本身没有排版属性，客户端决定如何转换为模型输入。协议、文本、显示的区别及官方依据见 [项目审阅](../research/2026-10-29-project-review.md#mcp-json-与官方实践)。
+成功时 `structuredContent` 是玩法对象，`content` 同时提供相同对象的紧凑 JSON 文本。[占卜](divination.md)的完整观察和详情还带独立 PNG 图像内容，需要支持图像的客户端和视觉模型；图片不进入文字 JSON，也不依赖截图工具配置；`actions_only/top_bar` 预设及动作回执不返回棋盘或图像；summary 仍保留棋盘与图像。正文中的换行和空格保留；终端与证据文件使用两空格缩进。对象本身没有排版属性，客户端决定如何转换为模型输入。协议、文本、显示的区别及官方依据见 [项目审阅](../research/2026-10-29-project-review.md#mcp-json-与官方实践)。
 
 输出递归过滤未知字段，不转发原始响应包装、状态令牌或测试入口；`available_actions` 只保留当前可用的公开查看与操作工具，省略观察、截图及测试入口并去重。MCP 对基础观察和动作结果检查全部顶层观察字段，对已提供的嵌套字段检查类型，再进行输出精简；错误结果不保存动作令牌。原始文件协议见 [原型接口](roundtrip.md#原型接口)。
 
@@ -230,7 +232,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 已有独立游戏与正式游戏的只读采样，及真实 Codex 模型结束一次回合的验证。历史环境、样本和未覆盖项见 [首次 MCP 往返](../research/2026-10-29-mcp-plan.md)、[牌组](../research/2026-10-29-mcp-deck-inspection.md)、[牌堆](../research/2026-10-29-pile-inspection.md) 和 [地图](../research/2026-10-29-mcp-map-inspection.md) 等阶段性记录。
 
-历史外部层兼容重构的检查、样本回放与当时未重新执行的游戏内验证范围见[项目审阅](../research/2026-10-29-project-review.md)。当前只提供 stdio，其他客户端、HTTP 服务及完整自动游玩尚未实测或实现。
+历史外部层兼容重构的检查、样本回放与当时未重新执行的游戏内验证范围见[项目审阅](../research/2026-10-29-project-review.md)。当前只提供 stdio，未实现 HTTP 服务；客户端及场景的实际覆盖以对应验证记录为准。
 
 全部工具的说明、参数提示与官方实践核查见[工具提示词审阅](../research/2026-11-01-mcp-tool-prompts.md)。维护入口和说明分层见[代码结构的变更入口](architecture.md#变更入口)。
 

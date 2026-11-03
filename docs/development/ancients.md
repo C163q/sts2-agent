@@ -1,6 +1,8 @@
 # 先古之民
 
-适用于 Mod `0.49.3`、MCP `0.50.8`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。支持实际单人的常规先古之民房间，使用原生对话及事件选项流程；不自动选择遗物或前往地图节点。终章建筑师使用[终章接口](run-ending.md)，与常规先古之民共用 `advance_dialogue`。普通问号事件使用[通用事件工具](events.md)。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
+
+支持实际单人的常规先古之民房间，使用原生对话及事件选项流程；不自动选择遗物或前往地图节点。终章建筑师使用[终章接口](run-ending.md)，与常规先古之民共用 `advance_dialogue`。普通问号事件使用[通用事件工具](events.md)。
 
 下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
 
@@ -45,8 +47,7 @@ get_observation 的 summary 保留与 default 相同的先古主体，共用顶�
     ],
     "continue": null,
     "proceed": null
-  },
-  "available_actions": ["choose_ancient_option", "inspect_potions", "inspect_relics", "inspect_map", "inspect_ancient"]
+  }
 }
 ```
 
@@ -84,4 +85,4 @@ python3 scripts/run_roundtrip.py --windowed --ancient-scenario shrymp
 .tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_ancients --scenario shrymp --report .tmp/ancient-check/shrymp.json
 ```
 
-报告及截图路径必须全新；测试会真实选择遗物、选牌并进入隔离战斗，不得指向正式对局。源码依据、验证记录及限制见[本次核对](../research/2026-10-31-ancients.md)。
+报告及截图路径必须全新；测试会真实选择遗物、选牌并进入隔离战斗，不得指向正式对局。源码依据、验证记录及限制见[源码与验证记录](../research/2026-10-31-ancients.md)。

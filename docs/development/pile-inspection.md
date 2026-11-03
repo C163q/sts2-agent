@@ -1,6 +1,8 @@
 # 战斗牌堆查看
 
-Mod `0.34.1` 的文件操作与 MCP server `0.50.8` 的 `inspect_pile` 一起支持抽牌堆、弃牌堆、消耗牌堆。调用真实使用原生入口，默认返回整个可浏览列表的摘要，也支持完整正文和共享悬停解释。页面没有升级或排序控件，接口不提供对应参数。适用游戏为 Linux `v0.107.1`。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
+
+文件操作及 MCP 工具 `inspect_pile` 支持抽牌堆、弃牌堆、消耗牌堆。调用真实使用原生入口，默认返回整个可浏览列表的摘要，也支持完整正文和共享悬停解释。页面没有升级或排序控件，接口不提供对应参数。
 
 ## 调用与页面行为
 
@@ -70,7 +72,7 @@ MCP 另接受[通用 preset](mcp.md#输出预设)，默认省略普通空值，�
 
 `screen` 是操作后的实际页面状态；非空抽牌堆为 `{"status":"covered","view":"draw_pile"}`，另两堆对应 `discard_pile/exhaust_pile`。`message` 在已打开时是页面底部原生帮助，在空堆时是角色气泡的英语文字，在入口不可用时说明原因。
 
-Mod 0.49.1 起，浏览覆盖不再使实际可见的顶栏整体隐藏；相应药水／遗物可只读查看，战斗动作仍受覆盖限制。规则见[基础观察](observation.md#mcp-输出预设)。
+浏览覆盖不再使实际可见的顶栏整体隐藏；相应药水／遗物可只读查看，战斗动作仍受覆盖限制。规则见[基础观察](observation.md#mcp-输出预设)。
 
 卡牌摘要包含 `id/name/type/rarity/visual_card_pool/energy_cost/star_cost`，语义与 [牌组字段](deck-inspection.md) 一致。`full` 为每张牌增加 `description`，并把附带解释在根级 `hover_tips` 按完整标题和正文去重，以 `card_ids` 关联；可读空列表的完整模式保留 `hover_tips: []`，不可用时不返回解释字段。所有文字使用英语，不切换游戏语言；不附送手牌、敌人意图、动作列表或数值 notes。
 
@@ -98,4 +100,4 @@ python3 -m tests.game.verifiers.verify_piles --ipc-dir .tmp/live/ipc --output-di
 
 独立实例用 `run_roundtrip.py --windowed --capture --check-piles` 开启原生测试场景，再运行 `verify_piles.py --ipc-dir .tmp/roundtrip/ipc --output-dir .tmp/roundtrip/piles --exercise-cases`。原生检查覆盖空堆、隐藏入口、非空消耗、整堆及顺序、原卡/RNG/语言不变、跨页替换、同页复用、地图遮挡和异步期间人的操作。测试场景仅允许独立目录，不能在 Steam 正式游戏设置测试标志。
 
-当前实现与验证进度、原生 API 依据及样本位置见 [本次实施记录](../research/2026-10-29-pile-inspection.md)。正式 Mod 0.11.0 已在重启后验证：抽牌堆 7 张、空弃牌堆和隐藏消耗入口均与文件 JSON 一致，完整抽牌堆有 6 条共享解释；查看前后玩法观察相同，未推进回合。正式样本位于 `.tmp/live/mcp-piles/`；非空弃牌/消耗与空抽牌堆由独立夹具覆盖。
+源码依据及历史独立／正式游戏采样见[牌堆实施记录](../research/2026-10-29-pile-inspection.md)，后续可用性范围见[工具可用性修复](../research/2026-11-02-available-actions-fix.md)。历史样本及检查数量不代表本次重新验证。

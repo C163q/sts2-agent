@@ -1,6 +1,8 @@
 # 选牌与查看战场
 
-适用于 Mod `0.49.3`／MCP `0.50.8`、schema `32`、Linux 游戏 `v0.107.1` 与 RitsuLib `0.6.10`。[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
+
+[搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。
 
 ## 观察与信息范围
 
@@ -30,12 +32,12 @@
 
 默认空值过滤见[公共规则](mcp.md#输出预设)：已展开比较的 before / after 两侧完整保留；未展开或被筛选掉的整个 `upgrade_preview:null` 可以省略。下文原有空值说明适用于 full；summary 继承 default 的普通空值过滤。
 
-`inspect_selection` 接受以下可选参数。省略或传 `{}` 保持完整详情及当前 UI 模式，使用 default 省略普通空值。`preset` 和 `card_ids` 在 Python 投影，底层文件协议只接受可选的 `view_upgrades`；本次升级预览及观察修复需同时更新 DLL／清单和 Python，完整重启游戏并重连 MCP。
+`inspect_selection` 接受以下可选参数。省略或传 `{}` 保持完整详情及当前 UI 模式，使用 default 省略普通空值。`preset` 和 `card_ids` 在 Python 投影，底层文件协议只接受可选的 `view_upgrades`；更新要求见[正常游戏指南](live-game.md#更新与排错)。
 
 | 参数 | 默认值 | 含义 |
 | --- | --- | --- |
 | `preset` | `default` | `default` 保留完整内容并省略普通空值；`full` 保留原有空值；`summary` 使用手牌摘要字段 |
-| `card_ids` | 省略 | MCP `0.42.0` 起支持当前选择中的非负整数卡牌 ID 数组；省略返回全部，`[]` 不返回卡牌详情，重复 ID 去重，结果保持原生顺序 |
+| `card_ids` | 省略 | 当前选择中的非负整数卡牌 ID 数组；省略返回全部，`[]` 不返回卡牌详情，重复 ID 去重，结果保持原生顺序 |
 | `view_upgrades` | 省略 | 可选布尔值，真实点击原生复选框；`true` 查看升级、`false` 恢复原牌，省略保留当前模式 |
 
 ```json
@@ -44,7 +46,7 @@
 
 `summary` 的每张卡牌沿用[手牌摘要字段](hand-inspection.md#参数与返回范围)：保留身份、费用、可见附魔及卡面标记，移除正文、稀有度、卡池和悬停帮助；没有星耗时不输出该项。规则统一作用于 `cards`、`bundles[].cards`，以及 `upgrade_preview`、`upgrade_previews`、`enchant_previews`、`transform_previews` 的 `before/after`；预览也不保留正文，需要时另读 `full`。空 bundles、upgrade_previews、enchant_previews、transform_previews 省略；cards、selected_ids、options 即使为空也保留。
 
-Mod `0.49.0` 已修复普通网格候选缺少已有附魔的读取分支；屏幕外候选也按原生卡面显示规则保留附魔名称、实际可显示计数与置灰状态。
+候选的已有附魔遵循[统一卡面字段](observation.md#手牌与身份)；屏幕外候选按原生卡面显示规则保留附魔名称、实际可显示计数与置灰状态。
 
 摘要保留场景、选择类型和状态、提示、数量限制、已选 ID、按钮、包 ID、升级模式、随机变牌标记；空值按 default 规则处理。选择级 `selection.enchantment` 仍保留附魔操作名称与说明，它描述当前要执行的操作。不会补全未知卡牌或随机变牌结果；预设及筛选本身不改变候选范围和 UI。读取成功后可直接选择；仍先验证完整原生详情，再投影为摘要，错误不会被转为空结果。非法参数不发往游戏，也不丢弃已有动作许可。
 

@@ -6,7 +6,7 @@
 
 ## 当前能力
 
-当前为 Linux 游戏 `v0.107.1` 的验证原型：Mod `0.49.3` 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。已有真实游戏及 Codex 模型的观察、结束回合和读回验证；已接通单人地图选路，完整自动通关仍待验证。
+当前为 Linux 单人游戏的验证原型：游戏内 Mod 通过本地文件 IPC 与 Python stdio MCP server 通信，模型调用由外部 agent 客户端负责。支持逐步游玩、地图选路和终局结算；各项真实游戏验证及未覆盖范围见对应接口文档，不能据此推断所有卡牌、事件分支和遗物组合均已验证。
 
 | 能力 | 接口与说明 |
 | --- | --- |
@@ -20,7 +20,25 @@
 
 已接通[先古之民房间](docs/development/ancients.md)：逐句对话、选择遗物、后续选牌与前进。支持[通用问号事件](docs/development/events.md)的正文与选项、致死红框、后续选牌/奖励、战斗及返回事件；[占卜](docs/development/divination.md)支持棋盘图像、大小工具与逐格揭开。[Trial 确认弹窗](docs/development/events.md#事件确认弹窗)支持明确确认或取消；未知弹窗仍停在人工输入边界。
 
-MCP `0.50.8` 默认提供 42 个工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)，完整目录及调用语义见 [MCP 接入](docs/development/mcp.md)。玩法工具默认保留完整内容并省略普通空值，显式 `preset:"full"` 保留原有空值；规则见[MCP 输出预设](docs/development/mcp.md#输出预设)。基础观察支持[默认、完整、摘要、顶栏或仅工具预设](docs/development/observation.md#mcp-输出预设)，按当前页面列出可用查看与操作工具，不自动展开详情；隐藏对象、牌堆中的未来抽取顺序和未发生的随机结果不对模型开放，规则见 [可见信息边界](docs/observation.md)。
+默认提供 42 个 MCP 工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)。完整目录、输出预设和调用语义见 [MCP 接入](docs/development/mcp.md)；各工具与场景说明见[开发文档索引](docs/development/README.md)。
+
+## 当前版本与前提
+
+本表统一维护当前代码版本与已核对的兼容基线，不表示本机游戏已安装或正在运行这些版本。
+
+| 项目 | 当前版本或要求 | 核对入口 |
+| --- | --- | --- |
+| 游戏 | Linux `v0.107.1`，release 分支，构建 `59260271` | [目标程序集核对与验证](docs/research/2026-11-03-result-observation-implementation.md) |
+| Mod | `0.49.3` | [Mod 清单](src/Sts2Agent/Sts2Agent.json) |
+| MCP server | `0.50.8` | [服务入口](src/sts2_mcp/mcp_server.py) |
+| 底层观察 schema | `32` | [观察序列化](src/Sts2Agent/Adapter/GameAdapter.cs) |
+| RitsuLib | `0.6.10`，须使用游戏 `0.107.1` 兼容运行时 | [获取与构建](docs/development/roundtrip.md#前提与构建) |
+| .NET | 9 SDK；版本选择见 [global.json](global.json) | [构建指南](docs/development/roundtrip.md#前提与构建) |
+| Python | 3.10 或以上；MCP 另需安装依赖 | [requirements-mcp.txt](requirements-mcp.txt) |
+
+手工获取 RitsuLib 时，使用[作者发布的兼容包](https://github.com/BAKAOLC/STS2-RitsuLib/releases/tag/v0.6.10) `STS2.RitsuLib.Compat.0.107.1.0.6.10.github.zip`，完整解压后作为 `RitsuLibDir`。已核对的发布包 SHA-256 为 `3c7dafb8a8d36d66891abd6c601aec6f43de9890693d1b583e67e2c6d71ebfb5`；已有创意工坊管理的兼容安装可直接使用。
+
+不依赖 BaseLib 或 Godot 编辑器。仓库不包含游戏程序集、资源、第三方库二进制、存档或密钥。升级游戏或依赖前须重新核对受影响的 API 和行为；其他游戏版本、多人及声音不属于已验证范围。
 
 ## 开发与运行入口
 
@@ -29,6 +47,7 @@ MCP `0.50.8` 默认提供 42 个工具，可通过启动配置增加[截图存�
 - [正常游戏加载与读取](docs/development/live-game.md)：安装 Mod、配置游戏启动和读取正式战斗。
 - [本地 MCP 接入](docs/development/mcp.md)：依赖安装、Codex 配置、工具与错误恢复。
 - [代码结构与验证](docs/development/architecture.md)：模块职责、修改入口和无需游戏的检查。
+- [开发文档索引](docs/development/README.md)：所有现行接口与测试说明。
 
 生产源码位于 `src/Sts2Agent/`（C# Mod）和 `src/sts2_mcp/`（Python）；测试位于 `tests/`，`scripts/` 仅保留常用启动入口。C# 项目与纯检查项目可通过根 [Sts2Agent.sln](Sts2Agent.sln) 一起查看。
 
@@ -38,7 +57,7 @@ MCP `0.50.8` 默认提供 42 个工具，可通过启动配置增加[截图存�
 cp .env.example .env
 ```
 
-根据机器环境编辑 `.env`，将 `Sts2Dir` 填为游戏安装目录的绝对路径，`RitsuLibDir` 填为完整 RitsuLib `0.6.10`、游戏 `0.107.1` 兼容运行时的解压目录；获取方式见 [构建指南](docs/development/roundtrip.md#前提与构建)。`.env` 不纳入 Git，也不会自动读取；在执行构建、准备或安装命令的终端中先运行：
+根据机器环境编辑 `.env`，将 `Sts2Dir` 填为游戏安装目录的绝对路径，`RitsuLibDir` 填为完整兼容运行时的目录；获取方式见 [构建指南](docs/development/roundtrip.md#前提与构建)。`.env` 不纳入 Git，也不会自动读取；在执行构建、准备或安装命令的终端中先运行：
 
 ```sh
 . ./.env
@@ -46,46 +65,20 @@ cp .env.example .env
 
 ## 正常游戏使用顺序
 
-以下命令从仓库根目录执行；先完成上述路径配置并加载 `.env`。
+1. 按[构建指南](docs/development/roundtrip.md#前提与构建)编译 Mod；正常使用无须准备独立测试实例。
+2. 退出游戏，按[安装说明](docs/development/live-game.md#安装文件)复制产物，启用 Mod 和依赖并重启。
+3. 按[启动配置](docs/development/live-game.md#steam-启动配置)设置 `STS2_AGENT_IPC_DIR`。
+4. 按[MCP 接入](docs/development/mcp.md#安装与游戏前提)安装依赖并配置客户端，`--ipc-dir` 须与游戏侧一致。
+5. 启动游戏，成功读取观察后按当前工具及候选逐步操作；成功详情及满足条件的动作结果可直接续接，见[MCP 调用规则](docs/development/mcp.md#调用和错误语义)。
 
-1. **编译 Mod**：
-
-   ```sh
-   dotnet build src/Sts2Agent/Sts2Agent.csproj -p:Sts2Dir="${Sts2Dir:?请先配置并加载 .env}" -p:RitsuLibDir="${RitsuLibDir:?请先配置并加载 .env}"
-   ```
-
-   产物位于 `src/Sts2Agent/bin/Debug/net9.0/`。依赖获取和构建前提见[构建指南](docs/development/roundtrip.md#前提与构建)；正常使用不需要运行独立实例的准备脚本。
-2. **安装并启用**：退出游戏，将产物中的 `Sts2Agent.dll` 和 `Sts2Agent.json` 复制到 `<游戏安装目录>/mods/Sts2Agent/`，在游戏 Mod 界面启用后按提示重启。已有 Steam 创意工坊管理的兼容 RitsuLib 时保留该安装，不再复制另一套；文件及加载步骤见[安装说明](docs/development/live-game.md#安装文件)。
-3. **配置游戏通信目录**：在 Steam 启动选项中设置 `STS2_AGENT_IPC_DIR`，例如：
-
-   ```text
-   env STS2_AGENT_IPC_DIR="/absolute/path/to/sts2_agent/.tmp/live/ipc" %command%
-   ```
-
-   将示例路径替换为实际路径，已有启动选项须保留；设置后完整重启游戏，详见[启动配置](docs/development/live-game.md#steam-启动配置)。
-4. **接入 LLM 客户端**：按[MCP 接入](docs/development/mcp.md#安装与游戏前提)安装 Python 依赖，将 `scripts/mcp_server.py --ipc-dir <相同通信目录>` 配置为客户端的 stdio MCP 服务。脚本应使用已安装依赖的 Python 解释器启动；Codex 等客户端的完整参数示例见该指南。截图工具按[启动配置](docs/development/screenshots.md#启动配置)单独启用。
-5. **验证并游玩**：启动游戏后可用 `get_observation` 读取画面总览，成功读取才说明游戏内接口能够响应。正常使用自行进入对局与战斗；LLM 根据当前观察按需查看详情、目标或选牌，满足续接条件的成功动作结果可直接用于下一动作；动作返回精简回执，当前数值及候选按需查看；成功详情及页面操作也可直接支持下一动作；失败后重新读取当前状态，详见[MCP 调用规则](docs/development/mcp.md#调用和错误语义)。更新 DLL 后须完整重启游戏，更新 MCP 脚本或配置后须重连 MCP。
-
-MCP 不扫描游戏进程，也不负责启动游戏。客户端与 Mod 通过配置好的同一目录交换请求和响应；列出工具只说明 MCP 服务已启动，不能证明游戏已运行或 Mod 已连通。交互过程及超时含义见[通信方式](docs/development/mcp.md#通信方式与连接状态)。
-
-仓库不包含游戏程序集、资源、第三方库二进制、存档或密钥。当前依赖 [RitsuLib](https://github.com/BAKAOLC/STS2-RitsuLib) `0.6.10` 的 `0.107.1` 兼容运行时，不依赖 BaseLib 或 Godot 编辑器。升级游戏或依赖前须重新核对 API 和兼容性。声音、其他游戏版本及完整游玩尚未验证。
+列出 MCP 工具只说明 Python 服务已启动；新请求成功取得观察才说明游戏内接口能够响应。更新与排错见[正常游戏指南](docs/development/live-game.md#更新与排错)。
 
 ## 后续计划
 
 用户指定留待后续处理的事项统一见[用户后续待办](docs/development/TODO.md)；Agent 不自行追加事项或自动启动清单中的工作。
 
-计划增加[游玩知识库](docs/research/2026-11-01-knowledge-base-plan.md)，向 LLM 提供官方术语和必要的开局知识；目前仅记录方向，尚未实现。
-
 ## 协作与证据
 
 - [协作约定](AGENTS.md)、[文档规范](docs/documentation.md)、[Codex 环境约定](docs/ai/codex.md)、[Cursor 模型选择](docs/ai/cursor-model-selection.md)。
-- [问号房与事件调研](docs/research/2026-10-31-events.md)：57个注册事件、战斗往返、致死红框、占卜与确认弹窗；当前已实现范围见[事件接口](docs/development/events.md)。
-- [通用事件验证](docs/research/2026-10-31-events-validation.md)：33个事件场景用例、相邻回归、英文来源修复及未覆盖范围。
-- [项目审阅与重构](docs/research/2026-10-29-project-review.md)：输出边界、提示词、JSON 格式、官方实践及验证范围。
-- [结束回合事件与交互边界调研](docs/research/2026-10-29-end-turn-events.md)：战斗历史、RitsuLib 与选择暂停的设计依据；实际行为见 [接口说明](docs/development/end-turn.md)。
-- [选牌与查看战场验证](docs/research/2026-10-30-card-selection-validation.md)：候选、确认、跳过、第一回合遗物、信息边界及审阅修复。
-- [出牌接入验证](docs/research/2026-10-30-card-play-validation.md)：原生提交、目标范围、随机数不变性、后续选择及胜负边界。
-- [药水接入验证](docs/research/2026-10-30-potion-actions-validation.md)：战斗外使用、原生丢弃、目标查询、后续选牌及真实 MCP。
-- [出牌与目标选择调研](docs/research/2026-10-30-card-play-targeting.md)：原生提交、目标合法性、后续选牌与接口设计依据。
-- [结束回合接入验证](docs/research/2026-10-29-end-turn-validation.md)：复杂机制、图形界面、真实 MCP 往返和未覆盖范围。
-- [最小往返验证](docs/research/2026-10-28-roundtrip-validation.md)、[基础画面核对](docs/research/2026-10-29-battle-observation-audit.md)、[地图 MCP 验证](docs/research/2026-10-29-mcp-map-inspection.md)：阶段性证据，当前接口以开发指南为准。
+- 各接口文档链接对应的源码核对、验证报告和样本；带日期的记录保留当时基线。
+- [工具核验清单及流程](docs/research/2026-11-02-mcp-tool-review.md)记录本轮逐项设计进度，当前行为以开发文档为准。

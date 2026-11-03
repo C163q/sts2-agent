@@ -1,6 +1,8 @@
 # 战后搜刮与前进
 
-适用于 Mod `0.49.3`、MCP server `0.50.8`、Linux 游戏 `v0.107.1` 和 RitsuLib `0.6.10`。本接口逐项操作原生奖励界面；地图选路另用 `travel_to_node`。地图查看继续使用 `inspect_map` / `close_map`，卡牌奖励继续使用[选牌工具](card-selection.md)。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
+
+本接口逐项操作原生奖励界面；地图选路另用 `travel_to_node`。地图查看继续使用 `inspect_map` / `close_map`，卡牌奖励继续使用[选牌工具](card-selection.md)。
 
 下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
 
@@ -22,12 +24,11 @@
       {"id": 5, "type": "card", "text": "Add a card to your deck.", "enabled": true, "linked_group": null}
     ],
     "proceed": {"text": "Skip", "enabled": true, "skips_remaining": true}
-  },
-  "available_actions": ["claim_reward", "proceed", "inspect_potions", "inspect_map", "inspect_rewards"]
+  }
 }
 ```
 
-这是节选；完整观察还包含可见顶栏、选择状态等公共字段，并可能提供药水动作。Mod 0.49.2 起，基础观察与 `inspect_rewards()` 都返回当前整张可浏览奖励列表，不按滚动位置截断；隐藏的标签仍不读取。`inspect_rewards()` 每行另附 `hover_tips`，不会提前查看尚未打开的卡牌奖励候选，也不会生成或重抽奖励。两种读取都不改变顺序或滚动位置；领取画外条目时仍先滚动到原生可点击位置。
+这是节选；完整观察还包含可见顶栏、选择状态等公共字段，并可能提供药水动作。基础观察与 `inspect_rewards()` 都返回当前整张可浏览奖励列表，不按滚动位置截断；隐藏的标签仍不读取。`inspect_rewards()` 每行另附 `hover_tips`，不会提前查看尚未打开的卡牌奖励候选，也不会生成或重抽奖励。两种读取都不改变顺序或滚动位置；领取画外条目时仍先滚动到原生可点击位置。
 
 | 字段 | 含义 |
 | --- | --- |
@@ -83,4 +84,4 @@ python3 scripts/run_roundtrip.py --windowed --reward-scenario basic
 .tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_rewards --scenario basic --report .tmp/rewards-check/basic.json
 ```
 
-只允许新建的隔离实例；报告及截图目录须全新。该检查会实际领取奖励、跳过卡牌、打开地图和前进。其他场景参数与验证范围见[本次调研记录](../research/2026-10-31-rewards.md)。
+只允许新建的隔离实例；报告及截图目录须全新。该检查会实际领取奖励、跳过卡牌、打开地图和前进。其他场景参数与验证范围见[调研记录](../research/2026-10-31-rewards.md)。

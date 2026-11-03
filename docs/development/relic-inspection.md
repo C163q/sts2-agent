@@ -1,8 +1,10 @@
 # 遗物详情 JSON
 
-文件操作 `inspect_relics` 与同名 [MCP 工具](mcp.md) 适用于 Linux 游戏 `v0.107.1`、Mod `0.49.3`、schema `32`。一次只读查看当前遗物栏中可见、可悬停的遗物，以英语返回原生正文和附带解释。支持无遮挡战斗及原生可查看的战斗背景（例如[建筑师](run-ending.md)），以及可读顶部栏的非战斗页面，包括事件、先古之民、火堆、宝箱、奖励、商店、选牌和地图；结算中仍须遗物栏实际可见且可悬停，可用于查看已持有的添水等遗物说明。MCP full 与文件客户端返回相同的玩法 JSON；默认使用[default 预设](mcp.md#输出预设)省略普通空值。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
 
-Mod 0.49.1 起，地图覆盖战斗及牌组／三类牌堆浏览时也可查看仍然可悬停的遗物；顶栏和交互边界见[基础观察](observation.md#mcp-输出预设)。
+文件操作 `inspect_relics` 与同名 [MCP 工具](mcp.md)用于一次只读查看当前遗物栏中可见、可悬停的遗物，以英语返回原生正文和附带解释。支持无遮挡战斗及原生可查看的战斗背景（例如[建筑师](run-ending.md)），以及可读顶部栏的非战斗页面，包括事件、先古之民、火堆、宝箱、奖励、商店、选牌和地图；结算中仍须遗物栏实际可见且可悬停，可用于查看已持有的添水等遗物说明。MCP full 与文件客户端返回相同的玩法 JSON；默认使用[default 预设](mcp.md#输出预设)省略普通空值。
+
+地图覆盖战斗及牌组／三类牌堆浏览时也可查看仍然可悬停的遗物；顶栏和交互边界见[基础观察](observation.md#mcp-输出预设)。
 
 ## 读取
 
@@ -16,7 +18,7 @@ MCP 调用 `inspect_relics()` 默认返回完整详情，也可传入以下预�
 
 ## MCP 参数
 
-MCP `0.43.0` 起支持以下可选参数。只修改 Python 输出，更新后重连 MCP，无须替换 Mod。
+以下参数只控制 Python 输出，不扩大游戏端的读取范围。
 
 | 参数 | 默认值 | 含义 |
 | --- | --- | --- |
@@ -77,8 +79,4 @@ python3 -m tests.game.verifiers.verify_relics --ipc-dir .tmp/live/ipc --output .
 
 脚本检查重复读取一致、前后基础观察令牌不变、名称和计数与基础观察按顺序对应、共享解释去重及下标有效。令牌只覆盖已导出的基础观察，不是全部游戏内部状态的版本。
 
-独立中文实例使用 `scripts/run_roundtrip.py --windowed --capture --check-relics`；在原有测试入口通过 `RelicCmd.Obtain` 准备 Anchor、Lantern 和 Pen Nib，加上初始 Burning Blood。不要为正式游戏设置测试标志。已完成独立游戏的 24 项检查及只读 JSON 导出，得到 4 个遗物、2 条共享解释；原有观察、手牌、界面、药水和战斗对象检查均通过，Python 全套 62 项通过。样本位于 `.tmp/roundtrip/relic-inspection.json`，证据及未验证范围见 [实施记录](../research/2026-10-29-relic-inspection-plan.md)。多人、非战斗界面、其他 Mod 改写悬停、全部遗物和全部特殊状态尚未穷举验证。
-
-正式游戏重启后已完成只读采样：返回 Burning Blood 和可见计数为 2 的 Silver Crucible，均有英语正文，没有原生附带解释，因此 `hover_tips: []`。重复详情及前后基础观察令牌一致，未执行游戏动作。JSON 位于 `.tmp/live/relic-inspection.json`，证据位于 `.tmp/live/relic-inspection-check.json`；正式与独立样本分别保存。
-
-正式游戏另完成 MCP server 0.6.0 的真实 stdio 只读采样，取得相同的两个遗物和可见计数；与文件 JSON 一致，重复读取及前后状态不变。JSON 为 `.tmp/live/mcp-relic-inspection.json`，协议证据为 `.tmp/live/mcp-relic-evidence.json`，验证范围见 [MCP 实施记录](../research/2026-10-29-mcp-relic-inspection.md)。
+独立中文实例可使用 `scripts/run_roundtrip.py --windowed --capture --check-relics` 准备原生遗物获取及读取检查，不能为正式游戏设置测试标志。历史样本和检查数量见[遗物实施记录](../research/2026-10-29-relic-inspection-plan.md)及[MCP 实施记录](../research/2026-10-29-mcp-relic-inspection.md)，后续预设、熔化及非战斗范围见上文专项记录；全部遗物、第三方悬停和多人尚未穷举验证。
