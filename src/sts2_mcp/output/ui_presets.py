@@ -10,14 +10,14 @@ UI_SCHEMA = {'type': 'object', 'properties': {
 def ui_arguments(arguments):
     if arguments is None: arguments = {}
     if not isinstance(arguments, dict) or set(arguments) - {'preset', 'sources'}:
-        raise ValueError('Invalid UI inspection arguments.')
+        raise ValueError('inspect_ui accepts only preset and sources.')
     preset = arguments.get('preset', 'full')
     if not isinstance(preset, str) or preset not in ('full', 'summary'):
         raise ValueError('Invalid UI preset.')
     sources = arguments.get('sources')
     if 'sources' in arguments and (not isinstance(sources, list) or any(
             not isinstance(source, str) or not source for source in sources)):
-        raise ValueError('Invalid UI source paths.')
+        raise ValueError('sources must be an array of non-empty source paths from inspect_ui.')
     return {'preset': preset, 'sources': None if sources is None else list(dict.fromkeys(sources))}
 
 

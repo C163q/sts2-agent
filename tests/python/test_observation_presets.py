@@ -53,7 +53,7 @@ class ObservationPresetTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await tools.end_turn())['error']['code'], 'stale_state')
         self.assertIsNone(tools.snapshot_id)
 
-    async def test_invalid_preset_clears_permission_and_does_not_contact_game(self):
+    async def test_invalid_preset_preserves_permission_and_does_not_contact_game(self):
         for args in ([], '', 0, False, {'preset': None}, {'preset': True}, {'preset': []},
                      {'preset': 'action_only'}, {'preset': 'FULL'}, {'extra': 1}, {'preset': 'full', 'extra': 1}):
             client = Client(); tools = GameTools(client)
@@ -62,7 +62,7 @@ class ObservationPresetTests(unittest.IsolatedAsyncioTestCase):
                 result = await tools.get_observation(args)
                 self.assertEqual(result['error']['code'], 'invalid_request')
                 self.assertEqual(len(client.calls), 1)
-                self.assertIsNone(tools.snapshot_id)
+                self.assertEqual(tools.snapshot_id, 'state-1')
 
     async def test_action_result_with_only_inspections_does_not_continue_action_permission(self):
         client = Client(); tools = GameTools(client)

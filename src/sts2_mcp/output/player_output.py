@@ -1,4 +1,5 @@
 from sts2_mcp.output.game_output import gameplay_fields
+from sts2_mcp.output.error_output import error_result
 
 
 ENEMY_ATTACK_INTENT_NOTE = "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
@@ -80,22 +81,4 @@ def player_result(response, *, operation=None):
         if notes:
             result["notes"] = notes
         return result
-    code = response["error"]["code"]
-    messages = {
-        "stale_state": ("The observation is outdated. Read the current state before choosing an action.", "get_state"),
-        "illegal_action": ("The requested action is unavailable. Read the current state and choose a legal action.", "get_state"),
-        "invalid_request": ("The request arguments are invalid. Correct them before submitting again.", "correct_request"),
-        "expired_request": ("The request expired before execution. Read the current state before choosing an action.", "get_state"),
-        "timeout": ("The request timed out; execution outcome is unknown. Read the current state and do not retry the action automatically.", "get_state"),
-        "game_error": ("The game could not complete the request; execution outcome is unknown. Read the current state and do not retry the action automatically.", "get_state"),
-        "transport_error": ("The local game connection failed. Check the connection before reading the current state.", "check_connection"),
-        "screenshot_unavailable": ("The game viewport cannot be captured. Use a running graphical game instance.", "check_game_window"),
-        "file_exists": ("That screenshot filename already exists. Choose another filename; existing files are never overwritten.", "change_filename"),
-        "screenshot_save_failed": ("The screenshot could not be saved. Check the configured directory, permissions and free space.", "check_screenshot_directory"),
-    }
-    message, recovery = messages.get(code, (
-        "The request failed; execution outcome is unknown. Read the current state and do not retry the action automatically.", "get_state"))
-    error = {"code": code, "message": message, "recovery": recovery}
-    if code not in {"stale_state", "illegal_action", "invalid_request", "expired_request", "screenshot_unavailable", "file_exists", "screenshot_save_failed"}:
-        error["outcome"] = "unknown"
-    return {"error": error}
+    return error_result(response['error'])

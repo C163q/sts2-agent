@@ -19,7 +19,8 @@ def potion_arguments(operation, arguments):
     allowed = {"potion_slot", "target_id"} if operation == "use_potion" else {"potion_slot"}
     if (not isinstance(arguments, dict) or "potion_slot" not in arguments or not set(arguments) <= allowed
             or type(arguments["potion_slot"]) is not int or not 0 <= arguments["potion_slot"] <= 2147483647):
-        raise ValueError("Invalid potion arguments.")
+        raise ValueError('potion_slot must be an integer slot index from 0 to 2147483647; '
+                         'only use_potion accepts an optional target_id.')
     if "target_id" in arguments:
         target = arguments["target_id"]
         if not (type(target) is int and 0 <= target <= 4294967295 or type(target) is str and target == "merchant"):

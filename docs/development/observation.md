@@ -50,7 +50,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 这是结构示例，工具名仅用于说明字段形态；实际列表随按钮、持有物及交互状态变化，以当前完整返回为准。`scene` 仍表示底层房间或战斗；`screen.view` 标识地图、牌组／牌堆、占卜、确认、建筑师或结算，`selection.type/status` 区分选牌及查看战场，没有待处理选择时省略 `selection`。精简输出不附候选参数、提示、数值或占卜图像；后续需要详情时调用相应工具或再次完整观察。
 
-五种预设都会实时读取、完整校验并刷新内部动作令牌，精简模式不改变游戏 UI，也不改变后续动作的精简回执格式，见[MCP 动作返回](mcp.md#动作返回格式)。只允许可选字符串 `preset: default/full/actions_only/summary/top_bar`；非法值或额外字段返回 `invalid_request`，清除旧动作许可且不请求游戏。预设属于 MCP 输出投影，底层文件 `get_state` 仍返回完整状态。
+五种预设都会实时读取、完整校验并刷新内部动作令牌，精简模式不改变游戏 UI，也不改变后续动作的精简回执格式，见[MCP 动作返回](mcp.md#动作返回格式)。只允许可选字符串 `preset: default/full/actions_only/summary/top_bar`；非法值或额外字段返回 `invalid_request`，保留已有许可且不请求游戏。读取被明确拒绝与结果未知的处理分别遵循[MCP 错误语义](mcp.md#调用和错误语义)。预设属于 MCP 输出投影，底层文件 `get_state` 仍返回完整状态。
 
 `preset:"summary"` 基于 default 分别处理共用顶栏、战斗观察、当前卡牌选择、结算卡牌、商店卡牌、普通事件和占卜教学说明；共用部分先于场景分派执行：
 

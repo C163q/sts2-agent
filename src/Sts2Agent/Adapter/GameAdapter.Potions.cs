@@ -29,7 +29,7 @@ internal sealed partial class GameAdapter
             || suppliedSlot.ValueKind != JsonValueKind.Number || !suppliedSlot.TryGetInt32(out int slot) || slot < 0
             || arguments.Value.EnumerateObject().Any(p => p.Name != "potion_slot" && (!use || p.Name != "target_id"))
             || arguments.Value.EnumerateObject().Select(p => p.Name).Distinct().Count() != arguments.Value.EnumerateObject().Count())
-            return FileMailbox.Error(request.Id, "invalid_request", "Invalid potion arguments.");
+            return FileMailbox.Error(request.Id, "invalid_request", "Invalid potion arguments.", publicMessage: query);
         bool suppliedTarget = arguments.Value.TryGetProperty("target_id", out var targetId);
         uint creatureId = 0;
         bool merchant = suppliedTarget && targetId.ValueKind == JsonValueKind.String && targetId.GetString() == "merchant";
@@ -37,13 +37,13 @@ internal sealed partial class GameAdapter
             return FileMailbox.Error(request.Id, "invalid_request", "Invalid potion target.");
         if (!query && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read current state before using or discarding a potion.");
-        if (!CanHandlePotions()) return FileMailbox.Error(request.Id, "illegal_action", "Potion actions are unavailable in this screen.");
+        if (!CanHandlePotions()) return FileMailbox.Error(request.Id, "illegal_action", "Potion actions are unavailable in this screen.", publicMessage: query);
         NPotionHolder? holder = PotionActions.Find(slot);
         var potion = holder?.Potion?.Model;
         var player = LocalPlayer!;
         if (potion == null || potion.Owner != player || player.GetPotionSlotIndex(potion) != slot
             || PotionActions.Type(potion) == null)
-            return FileMailbox.Error(request.Id, "illegal_action", "No supported visible potion occupies that slot.");
+            return FileMailbox.Error(request.Id, "illegal_action", "No supported visible potion occupies that slot.", publicMessage: query);
         if (query) return Success(request.Id, JsonSerializer.Serialize(PotionActions.Read(potion, slot, before.GetProperty("snapshot_id").GetString()!)));
         var target = suppliedTarget && !merchant ? PotionActions.Targets(potion).FirstOrDefault(c => c.CombatId == creatureId) : null;
         if (!PotionActions.Discardable(potion) || use && (PotionActions.Reason(potion) != null

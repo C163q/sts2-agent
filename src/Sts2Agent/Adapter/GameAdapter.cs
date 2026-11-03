@@ -584,7 +584,7 @@ internal sealed partial class GameAdapter(bool testMode)
         if (request.Operation == "inspect_ui")
         {
             if (!UiInspection.CanRead())
-                return FileMailbox.Error(request.Id, "illegal_action", "UI details are unavailable in the current screen.");
+                return FileMailbox.Error(request.Id, "illegal_action", "UI details are unavailable in the current screen.", publicMessage: true);
             string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_UI_CHECKS");
             if (testMode && checks != null)
                 UiInspectionChecks.Run(checks);
@@ -594,7 +594,7 @@ internal sealed partial class GameAdapter(bool testMode)
         {
             var hand = NCombatRoom.Instance?.Ui.Hand;
             if (hand == null || !CanInspectHand())
-                return FileMailbox.Error(request.Id, "illegal_action", "Hand details are unavailable in the current screen.");
+                return FileMailbox.Error(request.Id, "illegal_action", "Hand details are unavailable in the current screen.", publicMessage: true);
             string? handChecks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_HAND_CHECKS");
             if (testMode && handChecks != null)
                 HandInspectionChecks.Run(handChecks);

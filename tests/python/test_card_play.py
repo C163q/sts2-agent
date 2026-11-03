@@ -116,7 +116,7 @@ class CardPlayPermissionTests(unittest.IsolatedAsyncioTestCase):
         release.set()
         await observation
         self.assertEqual((await invalid)['error']['code'], 'invalid_request')
-        self.assertIsNone(tools.snapshot_id)
+        self.assertEqual(tools.snapshot_id, 'fixture-1')
 
     async def test_query_provides_state_for_subsequent_play(self):
         client = Client()

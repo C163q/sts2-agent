@@ -12,7 +12,7 @@ def preset_arguments(arguments):
     if arguments is None:
         return 'full'
     if not isinstance(arguments, dict) or set(arguments) - {'preset'}:
-        raise ValueError('Invalid observation arguments.')
+        raise ValueError('get_observation accepts only the optional preset field.')
     preset = arguments.get('preset', 'full')
     if not isinstance(preset, str) or preset not in ('full', 'actions_only', 'summary', 'top_bar'):
         raise ValueError('Invalid observation preset.')

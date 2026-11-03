@@ -82,6 +82,11 @@ internal sealed class FileMailbox(string directory)
         }
     }
 
-    public static string Error(string id, string code, string message) =>
-        JsonSerializer.Serialize(new { id, ok = false, error = new { code, message } });
+    public static string Error(string id, string code, string message, bool publicMessage = false) =>
+        publicMessage
+            ? JsonSerializer.Serialize(new { id, ok = false, error = new { code, message, public_message = message } })
+            : JsonSerializer.Serialize(new { id, ok = false, error = new { code, message } });
+
+    public static string RejectedBeforeSubmission(string id, string code, string message) =>
+        JsonSerializer.Serialize(new { id, ok = false, error = new { code, message, public_message = message, action_submitted = false } });
 }

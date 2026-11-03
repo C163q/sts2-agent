@@ -20,14 +20,14 @@ def hand_arguments(arguments):
     if arguments is None:
         arguments = {}
     if not isinstance(arguments, dict) or set(arguments) - {'preset', 'card_ids'}:
-        raise ValueError('Invalid hand arguments.')
+        raise ValueError('inspect_hand accepts only preset and card_ids.')
     preset = arguments.get('preset', 'full')
     if not isinstance(preset, str) or preset not in ('full', 'summary'):
         raise ValueError('Invalid hand preset.')
     card_ids = arguments.get('card_ids')
     if 'card_ids' in arguments and (not isinstance(card_ids, list) or any(
             type(card_id) is not int or not 0 <= card_id <= 2147483647 for card_id in card_ids)):
-        raise ValueError('Invalid hand card IDs.')
+        raise ValueError('card_ids must be an array of integer hand IDs from 0 to 2147483647.')
     return {'preset': preset, 'card_ids': None if card_ids is None else list(dict.fromkeys(card_ids))}
 
 

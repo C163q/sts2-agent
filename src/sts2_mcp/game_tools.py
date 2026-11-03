@@ -16,6 +16,7 @@ from sts2_mcp.output.relic_presets import relic_arguments, relic_preset
 from sts2_mcp.output.map_details import map_arguments, map_preset, travel_arguments
 from sts2_mcp.output.pile_details import pile_arguments
 from sts2_mcp.output.player_output import player_result
+from sts2_mcp.output.error_output import invalid_request, retained_rejection
 from sts2_mcp.output.selection_details import selection_arguments
 from sts2_mcp.output.selection_presets import selection_inspection_arguments, selection_preset
 from sts2_mcp.output.card_play_details import card_play_arguments
@@ -35,6 +36,9 @@ from sts2_mcp.output.action_output import action_result
 
 
 class GameTools:
+    PURE_READS = {'get_state', 'inspect_targets', 'inspect_ui', 'inspect_hand'}
+    READ_REJECTIONS = {'invalid_request', 'illegal_action', 'expired_request'}
+
     def __init__(self, client, controller=None, screenshot_directory=None):
         self.client = client
         self.controller = controller
@@ -44,18 +48,11 @@ class GameTools:
 
     @output_preset
     async def get_observation(self, arguments=None):
-        async with self.lock:
-            self.snapshot_id = None
-            try:
-                preset = preset_arguments(arguments)
-            except ValueError:
-                return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
-            if error := self._acquire_controller():
-                return error
-            payload, snapshot_id = await self._request("get_state")
-            await anyio.lowlevel.checkpoint_if_cancelled()
-            self.snapshot_id = snapshot_id
-            return observation_preset(payload, preset)
+        try:
+            preset = preset_arguments(arguments)
+        except ValueError as error:
+            return invalid_request(str(error))
+        return observation_preset(await self._inspect('get_state'), preset)
 
     @output_preset
     async def inspect_run_result(self):
@@ -69,8 +66,8 @@ class GameTools:
     async def inspect_hand(self, arguments=None):
         try:
             options = hand_arguments(arguments)
-        except ValueError:
-            return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
+        except ValueError as error:
+            return invalid_request(str(error))
         return hand_preset(await self._inspect('inspect_hand'), **options)
 
     @output_preset
@@ -196,8 +193,8 @@ class GameTools:
     async def inspect_ui(self, arguments=None):
         try:
             options = ui_arguments(arguments)
-        except ValueError:
-            return player_result({"ok": False, "error": {"code": "invalid_request"}})
+        except ValueError as error:
+            return invalid_request(str(error))
         return ui_preset(await self._inspect("inspect_ui"), **options)
 
     @output_preset
@@ -273,7 +270,13 @@ class GameTools:
 
     async def _inspect(self, operation, arguments=None):
         async with self.lock:
-            previous, self.snapshot_id = self.snapshot_id, None
+            previous = self.snapshot_id
+            if operation == 'inspect_targets':
+                try:
+                    arguments = card_play_arguments(operation, arguments)
+                except ValueError as error:
+                    return invalid_request(str(error))
+            self.snapshot_id = None
             if operation == "capture_screenshot":
                 try:
                     if self.screenshots is None:
@@ -281,15 +284,14 @@ class GameTools:
                     arguments = screenshot_arguments(arguments)
                 except ValueError:
                     return player_result({"ok": False, "error": {"code": "invalid_request"}})
-            if operation == "inspect_targets":
-                try:
-                    arguments = card_play_arguments(operation, arguments)
-                except ValueError:
-                    return player_result({"ok": False, "error": {"code": "invalid_request"}})
             if error := self._acquire_controller():
                 return error
             payload, snapshot_id = await self._request(operation, arguments=arguments)
             await anyio.lowlevel.checkpoint_if_cancelled()
+            if (operation in self.PURE_READS and previous is not None
+                    and payload.get('error', {}).get('code') in self.READ_REJECTIONS):
+                self.snapshot_id = previous
+                return retained_rejection(payload)
             if operation != "capture_screenshot" or previous == snapshot_id:
                 self.snapshot_id = snapshot_id
             return payload
@@ -410,6 +412,9 @@ class GameTools:
             snapshot_id, self.snapshot_id = self.snapshot_id, None
             payload, following = await self._request(operation, snapshot_id, arguments)
             await anyio.lowlevel.checkpoint_if_cancelled()
+            if 'error' in payload and following == snapshot_id:
+                self.snapshot_id = snapshot_id
+                return retained_rejection(payload)
             transition = payload.get("transition", {})
             reason = transition.get("stop_reason")
             selection = payload.get("selection")
@@ -441,6 +446,16 @@ class GameTools:
             else:
                 if not isinstance(response["error"]["code"], str):
                     raise ValueError("Invalid game error.")
+                for field in ('message', 'public_message'):
+                    if field in response['error'] and not isinstance(response['error'][field], str):
+                        raise ValueError('Invalid game error message.')
+                if ('action_submitted' in response['error']
+                        and type(response['error']['action_submitted']) is not bool):
+                    raise ValueError('Invalid action submission status.')
+                if (operation == 'play_card' and expected_state is not None
+                        and response['error']['code'] in {'invalid_request', 'illegal_action'}
+                        and response['error'].get('action_submitted') is False):
+                    snapshot_id = expected_state
             payload = player_result(response, operation=operation)
             if response['ok']:
                 payload = attach_divination_image(payload, state)

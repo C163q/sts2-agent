@@ -5,6 +5,7 @@ from inspect import signature
 
 from sts2_mcp.output.divination_details import ImagePayload
 from sts2_mcp.output.player_output import player_result
+from sts2_mcp.output.error_output import invalid_request
 
 
 SPECIAL_PRESETS = {
@@ -77,10 +78,12 @@ def output_preset(handler):
         valid = valid and isinstance(preset, str) and preset in (
             'default', 'full', *SPECIAL_PRESETS.get(operation, ()))
         if not valid:
-            # Let the original validator preserve this operation's permission policy.
-            if accepts_arguments:
+            if operation not in {'get_observation', 'inspect_targets', 'inspect_ui', 'inspect_hand'} and accepts_arguments:
                 return await handler(self, arguments)
-            return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
+            if not isinstance(arguments, dict):
+                return invalid_request('Tool arguments must be a JSON object.')
+            allowed = ', '.join(('default', 'full', *SPECIAL_PRESETS.get(operation, ())))
+            return invalid_request(f'preset must be one of: {allowed}.')
         native = dict(arguments or {})
         if operation in SPECIAL_PRESETS:
             native['preset'] = 'full' if preset == 'default' else preset

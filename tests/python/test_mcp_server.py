@@ -778,16 +778,16 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual((await tools.inspect_ui())["error"]["code"], "transport_error")
                 self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
 
-    async def test_failed_ui_inspection_clears_token_and_sanitizes_game_error(self):
+    async def test_rejected_ui_inspection_preserves_token_and_sanitizes_private_message(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             game.ui_error = True
             result = await tools.inspect_ui()
             self.assertEqual(result["error"]["code"], "illegal_action")
-            self.assertEqual(result["error"]["recovery"], "get_observation")
+            self.assertEqual(result["error"]["recovery"], "choose_legal_action")
             self.assertNotIn("/private", result["error"]["message"])
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertNotIn('error', await tools.end_turn())
 
     async def test_ui_inspection_only_forwards_ui_fields(self):
         with FakeGame() as game:

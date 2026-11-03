@@ -38,7 +38,8 @@ SERVER_INSTRUCTIONS = (
     "Successful observations, inspections and view changes refresh the state used to validate the next action; screenshots do not. "
     "No extra get_observation is needed when a result already provides the information needed to act. "
     "Close covering views before acting on the underlying screen. "
-    "After errors, timeouts or incomplete transitions, check current state with get_observation or a relevant inspection before deciding; "
+    "Follow error.recovery; choose_legal_action permits deciding from existing information, with inspections as needed. "
+    "After stale observations, timeouts or incomplete transitions, check current state before deciding; "
     "never automatically retry an action with unknown outcome."
 )
 NO_ARGUMENTS = {"type": "object", "properties": {}, "additionalProperties": False}

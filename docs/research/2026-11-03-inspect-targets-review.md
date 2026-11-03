@@ -1,17 +1,17 @@
 # inspect_targets 场景与现有参数核验
 
-> 当前状态：现状核对与首批完整 full 示例已交付，进入设计讨论，尚未定稿或修改工具行为，工具未核销。手牌与药水的常用成功、不可用及错误分支已整理；AnyPlayer／AllAllies／Osty 卡牌分支尚无本轮实际调用样本，真正多人及第三方目标规则不属于已验证能力。本轮没有启动游戏，暂无阻塞。
+> 当前状态：本轮核验、定稿与修复完成，inspect_targets 已核销。维持 default/full，不增加 summary，不改变原生目标范围；TARGET-01／02 及已审阅四工具的同类路径已按[实施记录](2026-11-03-inspection-error-recovery.md)修复并验证。下方原 full 样本保留历史核验基线；AnyPlayer／AllAllies／Osty 卡牌分支仅源码核对，没有新增实际调用样本，真正多人及第三方目标规则仍不属于已验证范围。暂无阻塞。
 
 ## 优先关注的问题
 
 | 编号 | 优先级与状态 | 影响及证据 | 处理范围 |
 | --- | --- | --- | --- |
-| TARGET-01 | 中；跨工具共用问题，已留待后续处理 | 原生会区分“当前不能正常出牌”“没有该手牌”“槽位为空”等错误，但 Python `player_result` 按错误码重建通用 message，丢弃原生具体说明。因此不同失败在 MCP 中可能完全相同。成功查询里的 `reason` 是另一条路径，会保留 | 属于用户已登记的[错误原因与恢复提示](../development/TODO.md#当前工具审阅结束后处理)，不在本轮提前修改错误协议 |
-| TARGET-02 | 中；跨工具共用行为，已留待后续处理 | `_inspect` 在查询及参数校验前清除动作许可，成功校验完整响应后才恢复；查询失败也会使后续动作要求重新读取。仅靠输出 preset 不能改变此行为 | 与用户已登记的[工具报错后的观察前置要求](../development/TODO.md#当前工具审阅结束后处理)一起审查，不在本轮重做许可策略 |
+| TARGET-01 | 中；本轮范围已修复 | 原生具体拒绝说明原先被 Python 模板覆盖；现在只公开 Mod 显式许可的 public_message，并补充四工具的参数说明，异常与控制字段仍隔离 | [实施与验证](2026-11-03-inspection-error-recovery.md)；其他工具的逐项错误审阅仍留在用户 TODO |
+| TARGET-02 | 中；本轮范围已修复 | 查询原先在参数校验前清除许可；现四个读取工具的参数错误及明确拒绝保留已有许可。play_card 明确未提交的前置拒绝也可直接续接，未知结果仍清除 | 同一实施记录；不自动观察、重试，不由错误生成新许可，不放宽原生 stale_state 校验 |
 
-以上是本工具关联的共用问题，不是本轮新复现的游玩故障。目前没有发现新的、独立于这两项的目标判定错误；静态核对和现有测试不能证明任意动画时刻或全部卡牌组合均正确。
+以上共用问题已有 Python 回归与两组隔离游戏证据。目前没有发现独立于这两项的目标判定错误；静态核对和现有测试不能证明任意动画时刻或全部卡牌组合均正确。
 
-另有两项容易误读、但符合当前设计的语义：费用不足时 `targets` 仍可非空；自身、群体与随机牌的 `targets` 表示指示范围，不等于可传入的目标参数。须结合 `playable/usable` 与 `requires_target` 判断。
+目标范围沿用原生 UI：费用不足时 `targets` 仍可非空；自身、群体与随机牌的 `targets` 表示指示范围，不等于可传入的目标参数。结合 `playable/usable` 与 `requires_target` 判断，保留这些语义。
 
 ## 核对基线与证据
 
@@ -122,7 +122,7 @@ Does not enter aiming or resolve randomness; targets do not predict every effect
 | 成功传输但目标 JSON 不符合协议 | transport_error，禁止把部分未经校验的内容当作成功结果 |
 | 游戏未连接、超时、控制器被另一连接占用 | 沿用 MCP 共用连接与错误语义，不是目标查询专属返回结构 |
 
-错误示例按当前公开错误映射整理，**不是本轮实际触发**：[非法参数](2026-11-03-inspect-targets-examples/error-invalid-request.full.json)、[不可操作或找不到对象](2026-11-03-inspect-targets-examples/error-illegal-action.full.json)、[连接或响应协议错误](2026-11-03-inspect-targets-examples/error-transport.full.json)。`full/default` 均不裁剪错误。
+以下错误示例保留**原核验基线**的公开映射，不是本轮游戏触发：[非法参数](2026-11-03-inspect-targets-examples/error-invalid-request.full.json)、[不可操作或找不到对象](2026-11-03-inspect-targets-examples/error-illegal-action.full.json)、[连接或响应协议错误](2026-11-03-inspect-targets-examples/error-transport.full.json)。本次修复后的真实错误见[实施记录](2026-11-03-inspection-error-recovery.md#真实-mcp-错误示例)。`full/default` 均不裁剪错误。
 
 ## full、default 与字段含义
 
@@ -154,22 +154,16 @@ Does not enter aiming or resolve randomness; targets do not predict every effect
 - `discardable` 仅药水存在，独立于 usable；自动药水和战斗外战斗药水均说明该字段不能由 usable 推断。
 - 生物可见性仍检查实际节点及屏幕范围，这是非滚动战场的对象边界；不属于已取消的可浏览列表视口筛选。不补未入场、隐藏或被覆盖的目标。
 
-## 参数与摘要候选，尚未定稿
+## 参数与输出定稿
 
-当前 default 已经很短，主要字段都直接帮助判断下一步动作，暂未发现值得增加筛选参数或压缩结构的依据。
-
-| 方案 | 取舍 |
-| --- | --- |
-| 保持 default/full，不增加 summary | 最小接口；当前 default 就是紧凑目标查询，推荐优先考虑 |
-| summary 完全沿用 default | 若希望查看工具的调用方式统一，可以作为别名；不删除真假值、空范围、目标类型或失败原因，行为需确认后实现 |
-| summary 删除名称或 target_type，或新增批量查询 | 会降低定位与目标语义的可读性，或扩展为批量可用性检查；尚无已确认需求，不建议仅为精简而做 |
+维持现有 card_id／potion_slot 互斥定位与 default/full，不增加 summary、批量或目标筛选参数。当前 default 已足够精简；身份、真假值、空范围、目标类型与 reason 都保留，各自承担不同的 UI 或操作含义。本轮只修复上述错误输出与恢复路径。
 
 如果未来改动目标读取，可将手牌与药水重复的生物引用、名称、可见性组装做小范围复用；不应合并两者的目标合法性与 Self 规范化。原生 CardModel 与 PotionModel 已明确注明它们的 Self 参数不同；现在也没有因此重构执行流程的必要。
 
 ## 验证与剩余范围
 
-- 运行 `timeout 60s .tmp/mcp-venv/bin/python -m unittest tests.python.test_card_play tests.python.test_potion_actions tests.python.test_default_presets`：38 项通过，覆盖定位互斥、类型与 ID、公开返回校验、full/default 和许可行为；测试中的预期非法响应日志不表示测试失败。
+- 原基线运行 `timeout 60s .tmp/mcp-venv/bin/python -m unittest tests.python.test_card_play tests.python.test_potion_actions tests.python.test_default_presets`：38 项通过，覆盖定位互斥、类型与 ID、公开返回校验、full/default 和许可行为；测试中的预期非法响应日志不表示测试失败。
 - 24 个历史原生目标响应均通过当前 schema、目标校验、公开投影及结果一致性检查；另提供 3 个当前错误映射示例。
 - 核对主记录链接、样本 manifest 和 JSON 内容，执行 `git diff --check`。没有变更运行代码，不要求重新构建 Mod。
-- 本轮没有新增 GUI 实测、RNG 无副作用实验或动画竞态测试；不得以 Python 测试替代这些验证。AnyPlayer／AllAllies／Osty 卡牌分支、真正多人、第三方类型、全部药水自定义条件及任意 Mod 图层仍不是本轮实测结论。
-- 下一步是讨论是否保持当前参数与结构、是否需要 summary 别名，以及是否选择展开尚无样本的分支。共用错误恢复与错误详情问题留在用户指定的后续范围；本工具继续保持未核销。
+- 未新增 RNG 无副作用实验或动画竞态测试；不得以 Python 测试替代这些验证。错误修复的两组 GUI 实测另见实施记录；AnyPlayer／AllAllies／Osty 卡牌分支、真正多人、第三方类型、全部药水自定义条件及任意 Mod 图层仍不是本轮实测结论。
+- 后续已完成错误修复、四工具回查及两组隔离游戏验证，结果、代码变更和未验证范围以[实施记录](2026-11-03-inspection-error-recovery.md)为准。原始 38 项及历史样本校验不代替该记录的本次验证；未取样类型保持上文源码核对边界。本工具按已确认范围核销，其他工具的错误审阅继续留在用户 TODO。

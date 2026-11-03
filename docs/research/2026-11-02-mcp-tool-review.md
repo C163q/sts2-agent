@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 43 项，已核销 2 项。get_observation 的 17 个场景组均已有核验记录：01–04、07–15 组约定 summary 已交付；05、06 组覆盖页主体暂用 default、顶栏共用摘要已交付，实际内容待对应工具核验；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状和完整 full 已交付；[文字修复、unrecognized 改名及 summary](2026-11-03-result-observation-implementation.md)已交付。该工具整体未核销；[inspect_ui](2026-11-03-inspect-ui-review.md) 的正确性修复、场景统一、summary 与 sources 筛选已交付并核销。[inspect_hand](2026-11-03-inspect-hand-review.md) 的 Affliction、空值、共用牌面及资源字段已交付并核销；[实施记录](2026-11-03-card-format-implementation.md)同时完成牌组／牌堆 preset 迁移，未替代其他工具的完整核验。[inspect_targets](2026-11-03-inspect-targets-review.md) 已交付现状核对和首批完整 full 示例，进入设计讨论，三个卡牌支持分支尚无实际调用样本。其余 39 项尚未进入完整逐项核验。
+> 当前状态：工具核验进行中，共 43 项，已核销 3 项：inspect_ui、inspect_hand、inspect_targets。get_observation 的 17 个场景组已有核验记录，地图及牌组／牌堆覆盖的主体与摘要仍待对应工具核验，整体未核销。inspect_targets 维持 default/full；[错误说明、已有许可保留及四工具复查](2026-11-03-inspection-error-recovery.md)已交付。未新增 GUI 样本的卡牌目标类型保留源码核对边界，其他工具的完整错误审阅仍留待用户 TODO；另 39 项尚待逐项核验。暂无阻塞。
 
 ## 范围与基线
 
@@ -32,7 +32,7 @@
 - [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：[07–09 组奖励、火堆与宝箱](2026-11-02-get-observation-rooms.md)现状核验和 summary 已交付，[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)现状核验及 summary 已交付，[13–15 组](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状及完整 full 已交付，summary 已交付；[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)已交付本阶段摘要占位，内容待对应工具核验；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
 - [x] `inspect_ui`：可见顶栏、战斗 UI、资源及空充能球槽帮助。阶段：[修复与核验完成](2026-11-03-inspect-ui-review.md)，[统一上下文、summary、sources 筛选及验证](2026-11-03-ui-context-implementation.md)已交付；部分条件变体保留源码／历史核对边界。
 - [x] `inspect_hand`：手牌详情。阶段：[核验及定稿](2026-11-03-inspect-hand-review.md)、[覆盖清单](2026-11-03-card-format-coverage.md)和[实现／验证](2026-11-03-card-format-implementation.md)已完成；新增可见 Affliction、统一附魔空值、资源计数及共用卡牌格式。
-- [ ] `inspect_targets`：指定手牌或药水的可用性与目标范围。阶段：[现状与首批 full 示例](2026-11-03-inspect-targets-review.md)已交付，进入设计讨论；AnyPlayer／AllAllies／Osty 卡牌分支尚无实际调用样本，共用错误恢复与错误详情留待用户指定的后续范围。
+- [x] `inspect_targets`：指定手牌或药水的可用性与目标范围。阶段：[核验及输出定稿](2026-11-03-inspect-targets-review.md)、[错误修复与验证](2026-11-03-inspection-error-recovery.md)完成；维持 default/full，不新增 summary，不改原生指示范围。AnyPlayer／AllAllies／Osty 卡牌分支保留源码核对边界，未新增实际调用样本。
 - [ ] `inspect_combatants`：战斗角色、能力、意图、充能球等详情。
 - [ ] `inspect_potions`：药水详情。
 - [ ] `inspect_relics`：已拥有遗物的详情。

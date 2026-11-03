@@ -23,6 +23,7 @@
 | 专项 | 清单 |
 | --- | --- |
 | 卡牌 Affliction、附魔、手牌 HUD 与浏览预设 | [card_formats](../../tests/game/data/gui_suite_card_formats.json) |
+| 查看错误说明、已有许可保留及零能量出牌拒绝后结束回合 | [inspection_errors](../../tests/game/data/gui_suite_inspection_errors.json) |
 | 跨场景上下文、顶栏帮助、UI 来源筛选与摘要 | [ui_context](../../tests/game/data/gui_suite_ui_context.json) |
 | 候选升级模式与不支持反馈 | [selection_upgrades](../../tests/game/data/gui_suite_selection_upgrades.json) |
 | 生成牌、奖励牌及公开加入去向 | [card_additions](../../tests/game/data/gui_suite_card_additions.json) |

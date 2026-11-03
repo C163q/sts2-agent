@@ -16,7 +16,7 @@
 | [roundtrip_client.py](../../src/sts2_mcp/roundtrip_client.py) | 标准库文件客户端与 CLI；默认玩法输出，`--raw` 保留诊断协议 |
 | [game_tools.py](../../src/sts2_mcp/game_tools.py)、[controller_lease.py](../../src/sts2_mcp/controller_lease.py) | 串行游戏会话、动作令牌、每个 IPC 目录的进程控制锁；文件请求在线程中等待 |
 | [mcp_catalog.py](../../src/sts2_mcp/mcp_catalog.py)、[mcp_server.py](../../src/sts2_mcp/mcp_server.py) | 工具描述与参数 schema、stdio 分派及结果封装 |
-| [output/](../../src/sts2_mcp/output/) | `scene_context` 统一校验场景上下文，`game_output/inspection_details/*_details` 校验并过滤已声明字段；`player_output` 整合共享解释与错误；`presets` 统一空值规则，`card_format` 统一牌面内容模式，`resource_summary` 共用资源摘要；`observation_presets/selection_summary/top_bar_summary` 提供容器摘要，`action_output` 精简动作回执 |
+| [output/](../../src/sts2_mcp/output/) | `scene_context` 统一校验场景上下文，`game_output/inspection_details/*_details` 校验并过滤已声明字段；`player_output` 整合共享解释，`error_output` 管理公开错误与恢复提示；`presets` 统一空值规则，`card_format` 统一牌面内容模式，`resource_summary` 共用资源摘要；`observation_presets/selection_summary/top_bar_summary` 提供容器摘要，`action_output` 精简动作回执 |
 | [mcp_config.py](../../src/sts2_mcp/mcp_config.py)、[screenshot_tool.py](../../src/sts2_mcp/screenshot_tool.py) | 截图配置、PNG 校验和独占文件保存；占卜图像另由 `output/divination_details.py` 校验 |
 | [scripts/](../../scripts/) | 常用 CLI、运行时准备／启动及 `_bootstrap.py` 源码路径引导 |
 | [tests/python/](../../tests/python/)、[tests/csharp/](../../tests/csharp/) | 无需游戏的自动检查；C# 纯检查不依赖游戏程序集 |

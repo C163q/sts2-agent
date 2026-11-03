@@ -1,0 +1,12 @@
+[
+  {
+    "name": "energy",
+    "scenarios": {"play": "energy"},
+    "steps": [{"name": "verify", "verifier": "verify_inspection_errors.py", "args": ["--scenario", "energy"]}]
+  },
+  {
+    "name": "basic",
+    "scenarios": {"play": "basic"},
+    "steps": [{"name": "verify", "verifier": "verify_inspection_errors.py", "args": ["--scenario", "basic"]}]
+  }
+]
