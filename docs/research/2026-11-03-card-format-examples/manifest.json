@@ -1,0 +1,59 @@
+{
+  "baseline": "4fa3a9f",
+  "mod_sha256": "eedee2ff5b7ba98325f8b42bf03fe19767094ba8fa0b807864820ee59ca80e30",
+  "examples": [
+    {
+      "file": "blade-observation.full.json",
+      "source": ".tmp/2026-11-03-card-format-coverage/blade-gui/blade/verify/evidence.json",
+      "evidence_index": 0,
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "kind": "live_stdio_mcp"
+    },
+    {
+      "file": "blade-combatants.full.json",
+      "source": ".tmp/2026-11-03-card-format-coverage/blade-gui/blade/verify/evidence.json",
+      "evidence_index": 1,
+      "tool": "inspect_combatants",
+      "arguments": {
+        "preset": "full"
+      },
+      "kind": "live_stdio_mcp"
+    },
+    {
+      "file": "blade-forged-combatants.full.json",
+      "source": ".tmp/2026-11-03-card-format-coverage/blade-gui/blade/verify/evidence.json",
+      "evidence_index": 4,
+      "tool": "inspect_combatants",
+      "arguments": {
+        "preset": "full"
+      },
+      "kind": "live_stdio_mcp"
+    },
+    {
+      "file": "blade-play.full.json",
+      "source": ".tmp/2026-11-03-card-format-coverage/blade-gui/blade/verify/evidence.json",
+      "evidence_index": 5,
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 1
+      },
+      "kind": "live_stdio_mcp"
+    },
+    {
+      "file": "target-reference.full.json",
+      "source": ".tmp/2026-11-03-inspect-hand-review/sampling-complete/evidence.json",
+      "evidence_index": 19,
+      "tool": "inspect_targets",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "kind": "previous_live_stdio_mcp"
+    }
+  ]
+}

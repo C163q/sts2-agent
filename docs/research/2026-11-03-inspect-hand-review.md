@@ -1,6 +1,6 @@
 # inspect_hand 场景与现有预设核验
 
-> 当前状态：设计讨论中。现状核验已完成 11 个隔离测试局及菜单读取，导出 26 份真实返回和 1 份明确标注的控制输入示例。已补充 Affliction 源码与资源核对、共享卡牌模式、兼容迁移及手牌资源的候选契约；后续实施优先处理 Affliction 和小范围重构。HAND-01 的实际画面读取仍待 GUI 验证，共用入口迁移尚未实施。尚未修改玩法行为，不核销工具；暂无调研阻塞。完整清单及流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
+> 当前状态：设计范围已确认，字段例外清单已交付，待实施。现状核验已完成 11 个隔离测试局及菜单读取，导出 26 份真实返回和 1 份控制输入示例；新增一局当前版本悬浮剑实测。已确认 face 不含正文、展开牌 full/default 补悬停解释、牌组／牌堆改用 preset；[完整接入与例外清单](2026-11-03-card-format-coverage.md)已交付。实施优先处理 Affliction 和相关小范围重构，HAND-01 尚待实际画面读取验证。尚未修改玩法行为，不核销工具；暂无调研阻塞。完整流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
 
 ## 优先关注的问题
 
@@ -115,15 +115,11 @@
 
 ## 设计讨论入口
 
-现有 summary 已与基础观察及其他卡牌摘要复用，现有 card_ids 也已满足按当前 ID 聚焦。建议以保持这些参数和结构为起点；没有必要为完成核验重复新增同类预设或筛选。
-
-优先讨论 HAND-01 的实际 UI 范围和共享字段，再决定是否需要调整摘要。可选方向有：维持现状并在需要时读取 full；在共享摘要中补充经 UI 核实的 Affliction 身份；或为手牌另做更细分的输出参数。建议第二种，能让其他共用卡牌摘要同时受益，避免多套字段逐渐分歧。是否显示计数、没有专用外观时如何处理，仍须逐类核对，不在本轮直接定稿。
-
-本轮不修改用户维护的 TODO.md；本项未修复问题在本报告跟进。
+已确认保留现有卡牌摘要及 card_ids 筛选，补充 Affliction 和附魔空值一致性。共用格式覆盖、牌组／牌堆 preset 迁移及所有非牌面字段的明确归属见[字段清点](2026-11-03-card-format-coverage.md)。本轮不修改用户维护的 TODO.md，也不提前核销其他工具。
 
 ## 共享卡牌输出与手牌资源的候选契约
 
-本节记录后续设计讨论，**尚未实现或整体定稿**；上面的现状与原始样本保持不变。
+本节记录本项已确认的设计规则与实施范围，**尚未实现**；上面的现状与原始样本保持不变。非牌面字段的逐项核验另见[覆盖清单](2026-11-03-card-format-coverage.md)。
 
 ### Affliction 与附魔空值
 
@@ -141,85 +137,29 @@
 
 ### 共用模式及分层
 
-建议使用五种**内部卡牌模式**，不为每个工具新增 face_full 等公开 preset 参数。工具的 preset 与内部卡牌模式分开映射，场景继续决定允许取得哪些事实。模式由 summary／face／详情三种内容范围和保留／过滤 null 两种策略组合；不要求每种来源生成字段齐全且完全相同的对象。
+统一为以下五种内部卡牌模式，不增加新的公开 face 预设：
 
 | 内部模式 | 内容与职责 |
 | --- | --- |
-| `summary` | 现有共享摘要字段，加经 UI 核实的 affliction；省略普通 null、空禁用标记和无描边。既有比较例外在外层统一处理 |
-| `full` | 允许专门查看的完整卡面身份、外观、正文和悬停解释，保留 null；实际费用和正文仍使用当前页面与目标上下文 |
-| `face_full` | 来源已提供的卡牌身份、外观及允许提供的正文，保留 null；半隐藏手牌无正文，展开的选牌及结算卡可有正文，不附送悬停解释。模式本身不决定正文是否可读 |
-| `default` | full 内容经统一 default 空值规则处理 |
-| `face_default` | face_full 内容经同一 default 空值规则处理 |
+| `summary` | 现有共享卡牌摘要，加经 UI 核实的 Affliction；不返回正文／解释 |
+| `face_full` | 身份、费用和可读外观，保留 null；固定不返回 description 和 hover_tips |
+| `face_default` | face_full 经统一 default 空值规则处理 |
+| `full` | 完整牌面及允许查看的悬停解释，保留 null |
+| `default` | full 经统一 default 空值规则处理 |
 
-游戏端共用可见牌面读取入口，保留实际 NCard 与可滚动网格的上下文克隆两种数据来源；MCP 端共用卡牌结构和字段投影入口。卡牌格式化不能自己决定某张牌是否已揭示、打开新页面、刷新持有卡牌数值，或把手牌费用应用到牌组／升级预览。summary 同样只压缩已允许提供的内容。
+基础观察的半隐藏手牌与商店商品用 face；展开候选、比较和结算牌用 full/default，并按已确认要求增加此前没有的悬停解释。summary 继续共用，不增加“有正文但无解释”的临时模式。get_observation 和 inspect_selection 均已有公开 full/default/summary；inspect_run_result 仍只有 full/default，其卡牌接入对应内部模式，不提前新增该工具参数。
 
-需要合并的重复逻辑包括 CombatObservation.Card、HandInspection.Card、SelectionInspection.Card、BrowsedCard.Read 的牌面字段及正文处理，以及 Python 的 CARD/HAND_CARD/BROWSED_CARD/SHOP_CARD 和 card_summary。已有的手牌枚举重复也纳入同一局部重构；不把工具动作、候选排序、地图或页面合法性搬进卡牌格式化。
+游戏端共用读取与字段装配，保留实际 NCard 和原生网格上下文克隆两种采样来源；Python 共用结构、字段投影及空值入口。读取仍遵守未知、隐藏、覆盖、目标、牌堆与升级预览边界。各工具保留 ID、顺序、选择容器和提示关联；比较两侧不能因同一原牌 ID 而被错误合并。
 
-### 接入场景及需保留的区别
-
-| 调用位置 | 五种模式的适配与额外上下文 |
-| --- | --- |
-| inspect_hand | 直接使用 full/default/summary；ID 为当前手牌整数，保持原顺序 |
-| get_observation、动作回执中的手牌 | 使用 face_full/face_default/summary，保持半隐藏手牌信息边界 |
-| get_observation 中的候选、卡包、升级／附魔／变牌比较、结算卡 | 也可共用入口；当前已展开的正文在 face 模式中保留。before/after、random、bundle ID、选中状态等由选择容器处理 |
-| inspect_selection、inspect_run_result 中的完整牌面 | 使用 full/default，已有 summary 的位置使用共享 summary；不因共用入口给 inspect_run_result 自动新增公开 summary |
-| inspect_deck、inspect_pile | 有独立 detail_level，其现有 summary 保留稀有度／卡池，且缺少共享摘要的若干外观字段，与这里的 summary 不同。可复用基础读取，但公开 detail_level 的最终映射留待对应工具核验，不能悄悄替换已有语义 |
-| 商店卡牌 | 卡面可复用，购买 ID 位于外层商品项，不能为 card 内造手牌 ID；价格、折扣、可买状态留在商品容器。基础观察继续按已确认约定不附正文，inspect_shop 的专门查看可有正文 |
-| 事件、先古之民、奖励的选牌 | 已打开的真实候选走上述选择模式；尚未展开的选项提及或奖励名称只作为引用，不自动扩成牌面 |
-
-以下内容不属于五种完整牌面类别，保留轻量表示：
-
-- inspect_targets 的 card、transition 事件中的 card、基础观察的悬浮君王之剑等 `id/name` 引用。共用身份提取即可，不能借改造附送费用或正文。
-- CardHoverTip 已转成的 `title/description` 文本预览：没有本次可操作卡牌 ID，也不是候选，不改成完整牌面对象。
-- 顶层共享 hover_tips、notes、错误、排序、筛选与选择元数据。各工具保留现有容器结构及关联方式；手牌的共享 card_ids 可以是整数，浏览卡牌是字符串 ID，商店则保留自己的商品关联，不能强行混用。
+所有标准牌面接入点及不属于牌面预设的引用／提示／元数据已完整列于[覆盖清单](2026-11-03-card-format-coverage.md#全部标准牌面入口)，包括悬浮剑和其他例外的真实 JSON。不能仅改字段白名单而漏掉原生采样、比较解释或最后投影。
 
 ### 兼容迁移与旧牌组／牌堆摘要
 
-就当前标准牌面字段而言，上述模式可以无损覆盖现有情况；条件是统一允许的字段及投影逻辑，同时保留来源已采集的字段集合与上下文。**五种模式不是五套必须补齐字段的固定对象**。格式化只处理传入的已允许事实，不新增正文、不把缺失外观补成无效果、不改写 ID 类型、不重新计算当前牌值；已明确提出的 Affliction 新增和附魔 null 规范化作为功能变化单独处理。
+当前旧 detail_level:summary 只返回 id/name/type/rarity/visual_card_pool/energy_cost/star_cost；full 在此基础上增加正文与解释，两个层级都没有完整的结构化外观。现状来源仍是[浏览校验](../../src/sts2_mcp/output/deck_details.py)及此前保存的真实样本。
 
-当前各路径可作如下兼容映射：
+已确认这轮移除 inspect_deck/inspect_pile 的 detail_level，改用 preset:full/default/summary，默认 default，并直接接入共用卡牌格式；原生公开字段、CLI、schema、校验、共享提示合并、测试和文档一并清理，不再为保留旧七字段摘要维护临时格式。详细参数及行为变化见[迁移范围](2026-11-03-card-format-coverage.md#牌组牌堆参数迁移范围)。
 
-| 现有卡牌路径 | 内部模式 | 必须保留的现状 |
-| --- | --- | --- |
-| 基础观察中的手牌 | face_full／face_default | 不生成正文；保留当前费用与外观 |
-| 基础观察中的选牌、比较、结算牌 | face_full／face_default | 已采集的正文继续存在；缺失或 null 正文保留各自含义 |
-| 专门手牌、选牌、结算卡详情 | full／default | 保留已允许的正文、悬停解释与各自关联方式 |
-| 商店基础卡牌／详情 | face_full／face_default 或 full／default | 沿用原有六个基础字段及详情正文／提示，不增加卡内 ID；不附送原本被排除的外观 |
-| 牌组／牌堆旧 detail_level:summary | face_full／face_default | 保留旧七字段，既不删除稀有度／卡池，也不借重构新增外观 |
-| 牌组／牌堆旧 detail_level:full | full／default | 保留旧七字段加正文和解释；不借重构给它们新增独立 summary 预设 |
-| 现有真正使用共用卡牌摘要的路径 | summary | 保留既有摘要白名单与空标记／无描边省略规则 |
-
-牌组／牌堆的公开 `detail_level` 与通用 `preset` 是两个独立参数。源码的 `browsed_cards` 在 summary 下严格保留：
-
-```text
-id, name, type, rarity, visual_card_pool, energy_cost, star_cost
-```
-
-以下是当前基线实际 `inspect_deck({"preset":"full"})` 返回中，一张牌的完整对象；detail_level 省略时为 summary：
-
-```json
-{
-  "id": "deck:0",
-  "name": "Strike",
-  "type": "Attack",
-  "rarity": "basic",
-  "visual_card_pool": "ironclad",
-  "energy_cost": "1",
-  "star_cost": null
-}
-```
-
-样本依据为 `.tmp/2026-11-03-ui-context-implementation/gui-final/combat/verify/evidence.json` 下标 25；该次原生 DLL 与本次代码基线相同，当前源码再次核对一致，不表示本轮重新启动了游戏。preset:default 仅使这个对象省略 star_cost:null，detail_level:full 则另增 description 和悬停解释。牌堆使用同样的七字段规则，ID 前缀为 pile:。
-
-与 inspect_hand.summary 的差别不是只差正文：旧浏览 summary 保留 rarity 和 visual_card_pool，而手牌 summary 会省略；旧浏览 summary 还没有独立的 enchantment、费用颜色、禁用标记和描边。当前浏览 full 也只在旧七字段上增加正文／解释，附魔效果可存在于文字中，并不因此拥有结构化 enchantment。不能把旧 detail_level:summary 直接改成 card_summary，否则会同时删旧字段和增新字段。
-
-迁移难点主要在采样，字段投影相对容易：Python 已有 CARD/HAND_CARD 的字段复用和集中 card_summary；原生侧却分别读取屏幕节点的现成动态值，以及按原生浏览规则格式化的隔离克隆。保留两种来源与牌堆／升级／目标上下文，让它们共用字段装配即可，不强行合并成重算所有卡牌的单一路径。
-
-后续实施顺序已明确为：
-
-1. 优先补 Affliction 的实际外观读取、空值语义和完整／摘要输出；结合已提出的附魔 null 规则验证。先完成相关真实 UI 和隐藏／未知边界验证。
-2. 同阶段做直接相关的小范围重构：共用手牌枚举，以及卡牌附魔／Affliction 外观读取和字段装配。标准是复用读取规则，不扩大其他工具的信息范围。
-3. 再逐步迁移其余卡牌输出与 inspect_hand 资源字段；每次用现有完整返回对照，除已明确批准的功能差异外保留字段、缺失／null、ID、正文、提示和容器语义。牌组／牌堆公开摘要的重新设计仍在对应工具核验时进行。
+统一入口仍保留各场景的身份与数值上下文；Affliction、新空值规则、展开牌新增解释及浏览摘要变化是明确要求的功能调整，不能再承诺所有旧输出逐字段不变。后续实施优先完成 Affliction 和直接相关的小范围重构，再统一其余卡牌输出、迁移浏览参数并接入手牌资源。
 
 ### inspect_hand 的资源信息
 
@@ -250,4 +190,4 @@ full 中 energy/max_energy 为可空整数，stars 为可空整数。default 仅
 }
 ```
 
-以上共享入口、特殊调用位置的适配范围及资源字段仍待本项定稿；本节记录不构成已经执行的迁移。
+上述规则尚未实施；具体非牌面字段和真实示例以[覆盖清单](2026-11-03-card-format-coverage.md)为依据，不能把设计记录当作已交付行为。

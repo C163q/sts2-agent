@@ -1,0 +1,184 @@
+{
+  "scene": "combat",
+  "map": null,
+  "screen": {
+    "status": "visible"
+  },
+  "turn": 1,
+  "player": {
+    "character": "REGENT",
+    "hp": 75,
+    "max_hp": 75,
+    "hp_display": "numeric",
+    "block": 0,
+    "energy": 20,
+    "max_energy": 3,
+    "stars": 3,
+    "powers": [],
+    "orb_slots": [],
+    "sovereign_blades": [
+      {
+        "id": 5,
+        "name": "Sovereign Blade"
+      }
+    ],
+    "hand": [
+      {
+        "id": 5,
+        "name": "Sovereign Blade",
+        "type": "Attack",
+        "rarity": "token",
+        "visual_card_pool": "token",
+        "energy_cost": "2",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "cyan"
+      },
+      {
+        "id": 6,
+        "name": "Wrought in War",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "regent",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "cyan"
+      },
+      {
+        "id": 7,
+        "name": "Refine Blade",
+        "type": "Skill",
+        "rarity": "common",
+        "visual_card_pool": "regent",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "cyan"
+      },
+      {
+        "id": 8,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "regent",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "cyan"
+      }
+    ],
+    "draw_count": 0,
+    "discard_count": 0,
+    "exhaust_count": null
+  },
+  "enemies": [
+    {
+      "id": 1,
+      "name": "Leaf Slime (S)",
+      "hp": 300,
+      "max_hp": 300,
+      "hp_display": "numeric",
+      "block": 0,
+      "powers": [],
+      "intents": [
+        {
+          "category": "attack",
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Leaf Slime (M)",
+      "hp": 300,
+      "max_hp": 300,
+      "hp_display": "numeric",
+      "block": 0,
+      "powers": [],
+      "intents": [
+        {
+          "category": "status",
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Twig Slime (S)",
+      "hp": 300,
+      "max_hp": 300,
+      "hp_display": "numeric",
+      "block": 0,
+      "powers": [],
+      "intents": [
+        {
+          "category": "attack",
+          "value": "4"
+        }
+      ]
+    }
+  ],
+  "allies": [],
+  "top_bar": {
+    "hp": 75,
+    "max_hp": 75,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Divine Right",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": {
+    "end_turn": {
+      "text": "End Turn 1",
+      "enabled": true
+    }
+  },
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "notes": {
+    "enemy_attack_intents": "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
+  }
+}
