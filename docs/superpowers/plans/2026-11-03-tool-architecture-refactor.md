@@ -1,6 +1,6 @@
 # 工具共用契约与执行链路重构计划
 
-> 当前状态：第 1–4 阶段完成并验证，整体完成 4／7。第 5–7 阶段尚未开始，当前没有正在执行的步骤，暂无阻塞。第 1–2 阶段见[既有记录](../../research/2026-11-04-refactor-stages-1-2.md)，第 3–4 阶段见[本轮实施记录](../../research/2026-11-04-refactor-stages-3-4.md)。
+> 当前状态：第 1–4 阶段完成，整体完成 4／7；第 5 阶段实施中，已验证测试分派迁移，正在处理原生快照、生产路由与响应。暂无阻塞。阶段记录见[第 1–2 阶段](../../research/2026-11-04-refactor-stages-1-2.md)、[第 3–4 阶段](../../research/2026-11-04-refactor-stages-3-4.md)与[第 5 阶段](../../research/2026-11-04-refactor-stage-5.md)。
 >
 > 执行方式：按阶段实施与验证，每阶段独立提交；使用 `superpowers:executing-plans`。后续发现无法确认的语义差异时先询问，不把整理结构当作改变行为的授权。
 
@@ -113,7 +113,7 @@
 
 **接口：** `ObservationSnapshot` 携带一次 Capture 的完整状态、scene/screen、令牌及原生身份上下文；`ResponseBuilder` 接收该快照、工具结果和明确 transition／媒体需求。没有 UI 改动的详情复用本次快照；页面操作完成后再捕获一次，不用详情内容重新发明 scene。
 
-- [ ] 先迁出测试请求，逐条件保留 testMode、suite／scenario 双重限制；测试操作不得进入 MCP catalog 或 available_actions。运行纯检查与测试分派回归后单独提交。
+- [x] 先迁出测试请求，逐条件保留 testMode、suite／scenario 双重限制；测试操作不得进入 MCP catalog 或 available_actions。运行纯检查与测试分派回归后单独提交。
 - [ ] 迁移同步 Capture 与代际维护，保留现有哈希输入及占卜 dialogue 特例，不在此次搬迁中重新定义令牌有效性；比较移动前后相同输入的状态与令牌行为。
 - [ ] 路由显式保留 proceed／inspect_event 等按当前页面决定去向的优先级；AvailableTools 与处理器共用条件，但工具被列出不代表任意参数都可执行。单人条件移出宝箱模块放到共用运行上下文。
 - [ ] hand、targets、potions、relics 全部经统一响应构造，补同次 scene/screen；地图下的详情、眼睛切回战场、建筑师背景和结算顶栏逐项对比 get_observation。

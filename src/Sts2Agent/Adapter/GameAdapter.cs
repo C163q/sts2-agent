@@ -176,18 +176,7 @@ internal sealed partial class GameAdapter(bool testMode)
 
     private async Task<string> ExecuteCore(Request request)
     {
-        if (request.Operation is "configure_test_run" or "reset_test_run" or "get_test_session")
-            return await TestRunRequest(request);
-        if (request.Operation == "set_test_combatant_hover" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
-        {
-            if (request.Arguments is not { } testArguments
-                || testArguments.EnumerateObject().Count() != 1
-                || !testArguments.TryGetProperty("enabled", out var enabled)
-                || enabled.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
-                return FileMailbox.Error(request.Id, "invalid_request", "Expected the test enabled flag.");
-            return Success(request.Id, JsonSerializer.Serialize(CombatantHoverChecks.SetEnabled(enabled.GetBoolean())));
-        }
+        if (await TestRequestBeforeCapture(request) is { } early) return early;
         string before = Observe();
         if (request.Operation is not ("inspect_combatants" or "inspect_deck" or "inspect_pile" or "inspect_selection" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
@@ -202,91 +191,6 @@ internal sealed partial class GameAdapter(bool testMode)
                 ObservationChecks.Run(checks);
             return Success(request.Id, before);
         }
-        if (request.Operation == "check_test_run_result_text" && testMode
-            && (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
-                || testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") != null))
-            return Success(request.Id, JsonSerializer.Serialize(RunResultTextChecks.Read(runResultInspection)));
-        if (request.Operation == "check_test_card_additions" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } additionPlayer)
-        {
-            async Task Frame() { await ObservationFrame(); Observe(); }
-            return Success(request.Id, JsonSerializer.Serialize(await CardAdditionChecks.Run(additionPlayer, Frame, observation.CardId)));
-        }
-        if (request.Operation == "check_test_permanent_cards" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } permanentPlayer)
-        {
-            async Task Frame() { await ObservationFrame(); Observe(); }
-            return Success(request.Id, JsonSerializer.Serialize(await PermanentCardChecks.Run(permanentPlayer, Frame, observation.CardId)));
-        }
-        if (request.Operation == "check_test_combat_handoff" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } handoffPlayer)
-        {
-            async Task Frame() { await ObservationFrame(); Observe(); }
-            return Success(request.Id, JsonSerializer.Serialize(await CombatHandoffChecks.Run(handoffPlayer, observation, Frame, Observe)));
-        }
-        if (request.Operation == "check_test_death_notifications" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } deathPlayer)
-            return Success(request.Id, JsonSerializer.Serialize(await DeathNotificationChecks.Run(deathPlayer, observation.CardId)));
-        if (request.Operation == "check_test_orb_events" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } orbEventPlayer)
-        {
-            async Task Frame() { await ObservationFrame(); Observe(); }
-            return Success(request.Id, JsonSerializer.Serialize(await OrbEventChecks.Run(orbEventPlayer, Frame, observation.CardId)));
-        }
-        if (request.Operation == "check_test_companions" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } companionPlayer)
-        {
-            async Task Frame() { await ObservationFrame(); Observe(); }
-            return Success(request.Id, JsonSerializer.Serialize(await CompanionChecks.Run(companionPlayer, Frame, observation.CardId, Observe)));
-        }
-        if (request.Operation == "check_test_blades" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } bladePlayer)
-        {
-            async Task Frame() { await ObservationFrame(); Observe(); }
-            return Success(request.Id, JsonSerializer.Serialize(await SovereignBladeChecks.Run(bladePlayer, Frame, observation.CardId, Observe)));
-        }
-        if (request.Operation == "check_test_orb_visibility" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } orbPlayer)
-        {
-            async Task Frame() { await ObservationFrame(); Observe(); }
-            return Success(request.Id, JsonSerializer.Serialize(await OrbVisibilityChecks.Run(orbPlayer, Frame, Observe)));
-        }
-        if (request.Operation == "check_test_capacity" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } capacityPlayer)
-        {
-            async Task Frame() { await ObservationFrame(); Observe(); }
-            return Success(request.Id, JsonSerializer.Serialize(await CapacityChecks.Run(capacityPlayer, Frame, observation.CardId, Observe)));
-        }
-        if (request.Operation is "check_test_combat_resources" or "check_test_star_reveal" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } combatResourcePlayer)
-        {
-            async Task Frame() { await ObservationFrame(); Observe(); }
-            var checks = request.Operation == "check_test_star_reveal"
-                ? await CombatResourceChecks.FirstReveal(combatResourcePlayer, Frame, observation.CardId)
-                : await CombatResourceChecks.Run(combatResourcePlayer, Frame, observation.CardId);
-            return Success(request.Id, JsonSerializer.Serialize(checks));
-        }
-        if (request.Operation == "check_test_inventory" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } inventoryPlayer)
-            return Success(request.Id, JsonSerializer.Serialize(await RunInventoryChecks.Run(inventoryPlayer, ObservationFrame, observation.CardId)));
-        if (request.Operation == "check_test_resources" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } resourcePlayer)
-            return Success(request.Id, JsonSerializer.Serialize(await RunResourceChecks.Run(resourcePlayer, ObservationFrame)));
-        if (request.Operation == "check_test_resource_masks" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
-            && testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO") == "deck" && LocalPlayer is { } maskedPlayer)
-            return Success(request.Id, JsonSerializer.Serialize(await RunResourceChecks.Covered(maskedPlayer, ObservationFrame)));
-        if (testMode && testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") != null
-            && request.Operation is "external_back_test_result" or "reopen_test_timeline" or "close_test_timeline")
-        {
-            if (request.Operation == "reopen_test_timeline")
-                NGame.Instance!.MainMenu!.SubmenuStack.PushSubmenuType<MegaCrit.Sts2.Core.Nodes.Screens.Timeline.NTimelineScreen>();
-            else if (request.Operation == "external_back_test_result")
-                NGame.Instance!.MainMenu!.SubmenuStack.Peek()!.GetNode<NButton>("BackButton").ForceClick();
-            else NGame.Instance!.MainMenu!.SubmenuStack.Peek()!.GetNode<NButton>("BackButton").ForceClick();
-            for (int i = 0; i < 100; i++) await ObservationFrame();
-            return Success(request.Id, await SettledObservation());
-        }
         if (request.Operation == "capture_screenshot")
         {
             if (ViewportCapture.Read() is not { } capture)
@@ -299,134 +203,9 @@ internal sealed partial class GameAdapter(bool testMode)
             }));
         }
         using JsonDocument document = JsonDocument.Parse(before);
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
-        {
-            if (request.Operation == "inspect_test_browsing_containers")
-                return Success(request.Id, JsonSerializer.Serialize(new { containers = BrowsableContentChecks.Containers() }));
-            if (request.Operation == "prepare_test_browsable_result")
-            {
-                BrowsableContentChecks.PrepareResult(runResultInspection);
-                return Success(request.Id, Observe());
-            }
-            if (request.Operation == "prepare_test_browsable_history")
-            {
-                await BrowsableContentChecks.PrepareHistory(runResultInspection, ObservationFrame);
-                return Success(request.Id, Observe());
-            }
-            if (request.Operation == "check_test_browsable_content")
-                return Success(request.Id, JsonSerializer.Serialize(BrowsableContentChecks.Run(rewardInspection, runResultInspection, Observe)));
-        }
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
-            && request.Operation == "check_test_top_bar")
-            return Success(request.Id, JsonSerializer.Serialize(TopBarVisibilityChecks.Run(observation, Observe)));
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
-            && testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO") is "grid_enchantments" or "upgrade_enchantments"
-            && request.Operation == "check_test_selection_observation")
-            return Success(request.Id, JsonSerializer.Serialize(SelectionObservationChecks.Run(observation, Observe)));
-        if (testMode && testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") == "afflictions"
-            && request.Operation == "check_test_afflictions")
-            return Success(request.Id, JsonSerializer.Serialize(AfflictionObservationChecks.Run(observation, Observe)));
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
-            && request.Operation == "check_test_hand_resources" && LocalPlayer is { } handResourcePlayer)
-            return Success(request.Id, JsonSerializer.Serialize(await HandResourceChecks.Run(this, handResourcePlayer)));
-        if (testMode && testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") == "enchantments"
-            && request.Operation == "check_test_enchantments")
-            return Success(request.Id, JsonSerializer.Serialize(EnchantmentObservationChecks.Run()));
-        if (testMode && testSettings.Get("STS2_AGENT_TEST_TURN_SCENARIO") == "thieving_hopper"
-            && request.Operation == "capture_test_power_tips")
-            return Success(request.Id, JsonSerializer.Serialize(await PowerTextChecks.CaptureHopper(ObservationFrame)));
-        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
-            && request.Operation == "capture_test_gas_bomb_intent")
-            return Success(request.Id, JsonSerializer.Serialize(await IntentTextChecks.CaptureGasBomb(ObservationFrame)));
+        if (await TestRequestAfterCapture(request, document.RootElement) is { } testResponse) return testResponse;
         if (request.Operation == "respond_to_confirmation")
             return await ConfirmationRequest(request, document.RootElement);
-        if (testMode && testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") != null && LocalPlayer != null)
-        {
-            if (testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") == "trial")
-            {
-                if (request.Operation == "check_test_confirmation")
-                    return Success(request.Id, JsonSerializer.Serialize(ConfirmationFixture.Read()));
-                if (request.Operation is "open_test_unowned_confirmation" or "cancel_test_confirmation" or "reopen_test_confirmation")
-                {
-                    if (request.Operation == "open_test_unowned_confirmation") ConfirmationFixture.OpenUnowned();
-                    else if (request.Operation == "cancel_test_confirmation") ConfirmationFixture.Cancel();
-                    else ConfirmationFixture.Reopen();
-                    await WaitUntil(() => !EventConfirmation.BackdropAnimating
-                        && (EventConfirmation.Current is not { } popup || EventConfirmation.Ready(popup)));
-                    return Success(request.Id, await SettledObservation());
-                }
-            }
-            if (request.Operation == "check_test_divination" && DivinationInspection.Current != null)
-                return Success(request.Id, JsonSerializer.Serialize(DivinationFixture.Read(LocalPlayer)));
-            if (request.Operation == "check_test_event") return Success(request.Id, JsonSerializer.Serialize(EventFixture.Read(LocalPlayer)));
-            if (request.Operation == "check_test_event_english") return Success(request.Id, JsonSerializer.Serialize(EventTextChecks.Run(
-                testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") == "tea")));
-            if (request.Operation == "prepare_test_event_victory")
-            {
-                await EventFixture.PrepareVictory(LocalPlayer);
-                return Success(request.Id, await SettledObservation());
-            }
-        }
-        if (testMode && testSettings.Get("STS2_AGENT_TEST_ANCIENT_SCENARIO") is { } ancientScenario && LocalPlayer != null)
-        {
-            if (request.Operation == "check_test_ancient") return Success(request.Id, JsonSerializer.Serialize(AncientFixture.Read(LocalPlayer)));
-            if (request.Operation == "start_test_ancient_combat")
-            {
-                await AncientFixture.EnterCombat(ancientScenario, LocalPlayer, ObservationFrame);
-                return Success(request.Id, await SettledObservation());
-            }
-        }
-        if (testMode && testSettings.Get("STS2_AGENT_TEST_NAVIGATION_SCENARIO") != null && LocalPlayer != null)
-        {
-            if (request.Operation == "check_test_navigation")
-                return Success(request.Id, JsonSerializer.Serialize(NavigationFixture.Read(LocalPlayer)));
-            if (request.Operation == "finish_test_navigation_boss")
-            {
-                await NavigationFixture.FinishBoss(ObservationFrame);
-                return Success(request.Id, await SettledObservation());
-            }
-            if (request.Operation is "set_test_navigation_drawing" or "clear_test_navigation_drawing")
-            {
-                NRun.Instance!.GlobalUi.MapScreen.Drawings.SetDrawingModeLocal(request.Operation.StartsWith("set_")
-                    ? MegaCrit.Sts2.Core.Nodes.Screens.Map.DrawingMode.Drawing : MegaCrit.Sts2.Core.Nodes.Screens.Map.DrawingMode.None);
-                return Success(request.Id, Observe());
-            }
-            if (request.Operation == "scroll_test_navigation")
-            {
-                using var scroll = new InputEventPanGesture { Delta = new Vector2(0, -30) };
-                NRun.Instance!.GlobalUi.MapScreen.Call("ProcessScrollEvent", scroll);
-                for (int i = 0; i < 30; i++) await ObservationFrame();
-                return Success(request.Id, Observe());
-            }
-        }
-        if (testMode && testSettings.Get("STS2_AGENT_TEST_SHOP_SCENARIO") == "targeting"
-            && request.Operation == "cancel_test_shop_targeting")
-        {
-            await ShopFixture.CancelTargeting();
-            return Success(request.Id, Observe());
-        }
-        if (testMode && testSettings.Get("STS2_AGENT_TEST_SHOP_SCENARIO") != null
-            && request.Operation == "check_test_shop" && LocalPlayer != null)
-            return Success(request.Id, JsonSerializer.Serialize(ShopFixture.Read(LocalPlayer)));
-        if (testMode && testSettings.Get("STS2_AGENT_TEST_TREASURE_SCENARIO") != null
-            && request.Operation == "check_test_treasure" && LocalPlayer != null)
-            return Success(request.Id, JsonSerializer.Serialize(TreasureFixture.Read(LocalPlayer)));
-        if (testMode && testSettings.Get("STS2_AGENT_TEST_REST_SCENARIO") != null
-            && request.Operation == "check_test_rest_site" && LocalPlayer != null)
-            return Success(request.Id, JsonSerializer.Serialize(RestSiteFixture.Read(LocalPlayer)));
-        if (testMode && testSettings.Get("STS2_AGENT_TEST_REWARD_SCENARIO") != null
-            && request.Operation == "check_test_rewards" && LocalPlayer != null)
-            return Success(request.Id, JsonSerializer.Serialize(RewardFixture.Read(LocalPlayer)));
-        if (testMode && testSettings.Get("STS2_AGENT_TEST_POTION_SCENARIO") != null && LocalPlayer != null)
-        {
-            if (request.Operation == "check_test_potion_state")
-                return Success(request.Id, JsonSerializer.Serialize(PotionFixture.Read(LocalPlayer)));
-            if (request.Operation == "replace_test_potion")
-            {
-                await PotionFixture.Replace(LocalPlayer);
-                return Success(request.Id, Observe());
-            }
-        }
         if (request.Operation is "inspect_run_result" or "run_result_option") return await RunResultRequest(request, document.RootElement);
         if (request.Operation is "advance_dialogue" or "proceed" && EpilogueInspection.Current != null)
             return await EpilogueRequest(request, document.RootElement);
@@ -454,28 +233,10 @@ internal sealed partial class GameAdapter(bool testMode)
             return await RestSiteRequest(request, document.RootElement);
         if (request.Operation is "inspect_rewards" or "claim_reward" or "proceed")
             return await RewardRequest(request, document.RootElement);
-        if (request.Operation == "check_test_play_state" && testMode
-            && testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") != null && LocalPlayer != null)
-            return Success(request.Id, JsonSerializer.Serialize(PlayFixture.Read(LocalPlayer)));
         if (request.Operation is "inspect_targets" or "play_card")
             return await CardPlayRequest(request, document.RootElement);
-        if (request.Operation == "check_test_selection_race" && testMode
-            && testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO") == "scroll_race")
-            return Success(request.Id, JsonSerializer.Serialize(await SelectionFixture.CheckScrollRace(ObservationFrame)));
         if (request.Operation is "inspect_selection" or "set_selection_view" or "select_card" or "selection_option")
             return await SelectionRequest(request, document.RootElement);
-        if (request.Operation == "check_test_deck_lifecycle" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS") is { } deckChecks)
-            return Success(request.Id, JsonSerializer.Serialize(await DeckInspectionChecks.Lifecycle(this, deckChecks)));
-        if (request.Operation == "check_test_card_views" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS") is { } cardChecks)
-            return Success(request.Id, JsonSerializer.Serialize(await DeckInspectionChecks.CardViews(this, cardChecks)));
-        if (request.Operation == "check_test_piles" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_PILE_CHECKS") is { } pileChecks)
-            return Success(request.Id, JsonSerializer.Serialize(await PileInspectionChecks.Run(this, pileChecks)));
-        if (request.Operation == "check_test_map" && testMode
-            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_MAP_CHECKS") is { } mapChecks)
-            return Success(request.Id, JsonSerializer.Serialize(await MapInspectionChecks.Run(this, mapChecks)));
         if (request.Operation == "inspect_deck")
         {
             DeckOptions options;
@@ -613,129 +374,8 @@ internal sealed partial class GameAdapter(bool testMode)
                 .Any(action => action.GetString() == request.Operation))
             return FileMailbox.Error(request.Id, "illegal_action", "Action is not available in this state.");
 
-        if (request.Operation == "start_test_combat")
-        {
-            // Fixture setup is explicitly gated and is not a gameplay tool.
-            SaveManager.Instance.SetFtuesEnabled(false);
-            NGame game = NGame.Instance!;
-            await game.StartNewSingleplayerRun(testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") switch
-                {
-                    "companions_osty" or "companions_first" => ModelDb.Character<Necrobinder>(),
-                    "companions_blade" => ModelDb.Character<Regent>(),
-                    "orbs" or "orb_chain" => ModelDb.Character<Defect>(),
-                    _ => ModelDb.Character<Ironclad>()
-                },
-                testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") != null,
-                ModelDb.ActsByIndex.Select(acts => acts[0]).ToArray(),
-                Array.Empty<ModifierModel>(), "STS2AGENTROUNDTRIP", GameMode.Standard);
-            string? turnScenario = testSettings.Get("STS2_AGENT_TEST_TURN_SCENARIO");
-            string? selectionScenario = testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO");
-            string? playScenario = testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO");
-            if (playScenario == "companions_first")
-                await RelicCmd.Remove(LocalContext.GetMe(RunManager.Instance.DebugOnlyGetState())!
-                    .Relics.OfType<BoundPhylactery>().Single());
-            if (selectionScenario == "paradox")
-                await RelicCmd.Obtain<ChoicesParadox>(LocalContext.GetMe(RunManager.Instance.DebugOnlyGetState())!);
-            Task roomEntry = RunManager.Instance.EnterRoomDebug(RoomType.Monster,
-                model: selectionScenario == "knowledge" ? ModelDb.Encounter<KnowledgeDemonBoss>().ToMutable()
-                    : playScenario is "test_subject" or "no_target" or "random_empty" ? ModelDb.Encounter<TestSubjectBoss>().ToMutable()
-                    : turnScenario == "revive" ? ModelDb.Encounter<DecimillipedeElite>().ToMutable()
-                    : turnScenario == "thieving_hopper" ? ModelDb.Encounter<ThievingHopperWeak>().ToMutable()
-                    : playScenario?.StartsWith("minion_", StringComparison.Ordinal) == true ? ModelDb.Encounter<TheObscuraNormal>().ToMutable()
-                    : playScenario?.StartsWith("fog_", StringComparison.Ordinal) == true ? ModelDb.Encounter<LivingFogNormal>().ToMutable()
-                    : ModelDb.Encounter<SlimesWeak>().ToMutable(), showTransition: false);
-            if (selectionScenario == "paradox")
-            {
-                SelectionFixture.Pending = roomEntry;
-                await WaitUntil(() => roomEntry.IsFaulted || CardSelection.Current is { Status: "visible" });
-                if (roomEntry.IsFaulted) await roomEntry;
-            }
-            else
-            {
-                await roomEntry;
-                await WaitUntil(() => CanEndTurn());
-            }
-            if (selectionScenario != null)
-            {
-                // Debug entry bypasses map travel's normal disable step.
-                RunManager.Instance.DebugOnlyGetState()!.ActFloor = 1;
-                NRun.Instance!.GlobalUi.MapScreen.SetTravelEnabled(false);
-                await SelectionFixture.Configure(selectionScenario, LocalPlayer!);
-                if (selectionScenario is not ("tyranny" or "retain_zero" or "retain_one" or "retain_death" or "retain_victory"))
-                {
-                    await WaitUntil(() => SelectionFixture.Pending?.IsFaulted == true || CardSelection.Current is { Status: "visible" });
-                    if (SelectionFixture.Pending?.IsFaulted == true) await SelectionFixture.Pending;
-                }
-            }
-            if (turnScenario != null) await TurnFixture.Configure(turnScenario, LocalPlayer!);
-            if (playScenario != null) await PlayFixture.Configure(playScenario, LocalPlayer!);
-            if (testSettings.Get("STS2_AGENT_TEST_POTION_SCENARIO") is { } potionScenario)
-                await PotionFixture.Configure(potionScenario, LocalPlayer!);
-            if (testSettings.Get("STS2_AGENT_TEST_REWARD_SCENARIO") is { } rewardScenario)
-                await RewardFixture.Configure(rewardScenario, LocalPlayer!, ObservationFrame);
-            if (testSettings.Get("STS2_AGENT_TEST_SHOP_SCENARIO") is { } shopScenario)
-                await ShopFixture.Configure(shopScenario, LocalPlayer!, ObservationFrame);
-            if (testSettings.Get("STS2_AGENT_TEST_TREASURE_SCENARIO") is { } treasureScenario)
-                await TreasureFixture.Configure(treasureScenario, LocalPlayer!, ObservationFrame);
-            if (testSettings.Get("STS2_AGENT_TEST_REST_SCENARIO") is { } restScenario)
-                await RestSiteFixture.Configure(restScenario, LocalPlayer!, ObservationFrame);
-            if (testSettings.Get("STS2_AGENT_TEST_ANCIENT_SCENARIO") is { } ancientScenarioName)
-                await AncientFixture.Configure(ancientScenarioName, LocalPlayer!, ObservationFrame);
-            if (testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") is { } eventScenarioName)
-                await EventFixture.Configure(eventScenarioName, LocalPlayer!, ObservationFrame);
-            if (testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") is { } endingScenario)
-                await EndingFixture.Configure(endingScenario, LocalPlayer!, ObservationFrame);
-            if (testSettings.Get("STS2_AGENT_TEST_NAVIGATION_SCENARIO") is { } navigationScenario)
-                await NavigationFixture.Configure(navigationScenario, LocalPlayer!, ObservationFrame);
-            // Debug room entry bypasses the normal map-travel disabling step.
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_MAP_CHECKS") != null)
-            {
-                var run = RunManager.Instance.DebugOnlyGetState()!;
-                run.AddVisitedMapCoord(run.Map.StartingMapPoint.coord);
-                run.ActFloor = 1;
-                NRun.Instance!.GlobalUi.MapScreen.InitMarker(run.Map.StartingMapPoint.coord);
-                NRun.Instance!.GlobalUi.MapScreen.SetTravelEnabled(false);
-            }
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS") != null)
-            {
-                var player = LocalPlayer!;
-                for (int index = 0; index < 16; index++)
-                    await CardPileCmd.Add(player.RunState.CreateCard<BodySlam>(player), PileType.Deck, skipVisuals: true);
-                await CardPileCmd.Add(player.RunState.CreateCard<AscendersBane>(player), PileType.Deck, skipVisuals: true);
-                var upgraded = player.RunState.CreateCard<BodySlam>(player);
-                upgraded.UpgradeInternal();
-                upgraded.FinalizeUpgradeInternal();
-                await CardPileCmd.Add(upgraded, PileType.Deck, skipVisuals: true);
-                // Fixture additions have no acquisition animation to emit the completion event.
-                PileType.Deck.GetPile(player).InvokeCardAddFinished();
-                await WaitUntil(() => VisibleUi.Number(NRun.Instance!.GlobalUi.TopBar.Deck, "DeckCardCount")
-                    == PileType.Deck.GetPile(player).Cards.Count);
-            }
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_RELIC_CHECKS") != null)
-            {
-                await RelicCmd.Obtain<Anchor>(LocalPlayer!);
-                await RelicCmd.Obtain<Lantern>(LocalPlayer!);
-                await RelicCmd.Obtain<PenNib>(LocalPlayer!);
-            }
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_POTION_CHECKS") != null)
-            {
-                await PotionCmd.TryToProcure<SkillPotion>(LocalPlayer!);
-                await PotionCmd.TryToProcure<BlockPotion>(LocalPlayer!);
-                await PotionCmd.TryToProcure<BlockPotion>(LocalPlayer!);
-            }
-            if (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_COMBATANT_CHECKS") != null)
-            {
-                var player = LocalPlayer!.Creature;
-                var enemies = CombatManager.Instance.DebugOnlyGetState()!.Enemies.ToArray();
-                var choices = new ThrowingPlayerChoiceContext();
-                await PowerCmd.Apply<StrengthPower>(choices, player, 2, player, null);
-                await PowerCmd.Apply<VulnerablePower>(choices, player, 2, player, null);
-                await PowerCmd.Apply<VulnerablePower>(choices, enemies, 2, player, null);
-                await PowerCmd.Apply<ShrinkPower>(choices, player, -1, enemies[0], null);
-                await PowerCmd.Apply<EscapeArtistPower>(choices, enemies[0], 5, enemies[0], null);
-            }
-        }
-        else if (request.Operation == "end_turn")
+
+        if (request.Operation == "end_turn")
         {
             Player player = LocalPlayer!;
             int turn = player.PlayerCombatState!.TurnNumber;

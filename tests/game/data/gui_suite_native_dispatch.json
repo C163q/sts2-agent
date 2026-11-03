@@ -1,0 +1,3 @@
+[
+  {"name":"dispatch_gates","scenarios":{},"steps":[{"name":"gates","verifier":"verify_native_dispatch.py","args":[]}]}
+]
