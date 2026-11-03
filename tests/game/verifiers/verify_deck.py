@@ -36,7 +36,7 @@ def main():
             assert not response["ok"] and response["error"]["code"] == "invalid_request", response
         assert call("get_state") == before, "Invalid options changed the observation."
     summary = call("inspect_deck")
-    assert summary["scene"] == "deck" and summary["detail_level"] == "summary", summary
+    assert summary["scene"] == before["scene"] and summary["detail_level"] == "summary", summary
     assert not summary["view_upgrades"] and summary["sort"] == {"by": "obtained", "descending": False}, summary
     basic_fields = {"id", "name", "type", "rarity", "visual_card_pool", "energy_cost", "star_cost"}
     assert all(set(card) == basic_fields for card in summary["deck"]), summary
@@ -47,7 +47,7 @@ def main():
     covered = call("get_state")
     assert covered["screen"]["status"] == "covered" and "close_card_view" in covered["available_actions"] and not set(covered["available_actions"]) & GAME_ACTIONS, covered
     if args.exercise_options:
-        for operation in ["inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics"]:
+        for operation in ["inspect_hand", "inspect_combatants"]:
             rejected = client.call(operation)
             evidence["calls"].append({"operation": operation, "response": rejected})
             assert not rejected["ok"] and rejected["error"]["code"] == "illegal_action", rejected

@@ -128,22 +128,14 @@ internal sealed partial class GameAdapter(bool testMode)
             lastSelection = selection?.Key;
             selectionGeneration++;
         }
-        string scene = ending != null ? "run_result" : epilogue != null ? "epilogue" : CombatManager.Instance.IsInProgress ? "combat"
-            : RewardInspection.Current != null ? "rewards"
-            : RestSiteInspection.Current != null ? "rest_site"
-            : TreasureInspection.Current != null ? "treasure"
-            : AncientInspection.Current != null ? "ancient"
-            : ShopInspection.Current != null ? "shop"
-            : EventInspection.Current != null ? "event"
-            : NGame.Instance?.MainMenu != null ? "main_menu" : "unrecognized";
-        var (actions, visibility) = AvailableTools(scene, map, epilogue, ending, selection);
+        string scene = ObservationContext.Scene(ending, epilogue);
+        var actions = AvailableTools(scene, map, epilogue, ending, selection);
+        string visibility = ObservationContext.Visibility(scene, map, epilogue, ending);
         if (ending != null) selection = null;
-        var screen = CardView.Screen(visibility);
-        if (ending != null || epilogue != null && map == null && CardView.Current == null)
-            screen["view"] = ending != null ? "run_result" : "epilogue";
+        var screen = ObservationContext.Screen(scene, visibility, map != null);
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 32, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 33, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -563,11 +555,10 @@ internal sealed partial class GameAdapter(bool testMode)
             if (testMode && checks != null)
                 CombatantInspectionChecks.Run(checks, inspectedPlayer);
             var inspection = CombatantInspection.Read(inspectedPlayer, observation.CardId);
-            return Success(request.Id, JsonSerializer.Serialize(new
+            return InspectionSuccess(request.Id, document.RootElement, new
             {
-                snapshot_id = document.RootElement.GetProperty("snapshot_id").GetString(),
-                inspection.scene, inspection.player, inspection.enemies, inspection.allies, inspection.hover_tips
-            }));
+                inspection.player, inspection.enemies, inspection.allies, inspection.hover_tips
+            });
         }
         if (request.Operation == "inspect_potions")
         {
@@ -586,16 +577,12 @@ internal sealed partial class GameAdapter(bool testMode)
         }
         if (request.Operation == "inspect_ui")
         {
-            if (CombatObservation.Status() != "visible")
+            if (!UiInspection.CanRead())
                 return FileMailbox.Error(request.Id, "illegal_action", "UI details are unavailable in the current screen.");
             string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_UI_CHECKS");
             if (testMode && checks != null)
                 UiInspectionChecks.Run(checks);
-            return Success(request.Id, JsonSerializer.Serialize(new
-            {
-                snapshot_id = document.RootElement.GetProperty("snapshot_id").GetString(),
-                scene = "combat", hover_tips = UiInspection.Read()
-            }));
+            return InspectionSuccess(request.Id, document.RootElement, new { hover_tips = UiInspection.Read() });
         }
         if (request.Operation == "inspect_hand")
         {
@@ -790,8 +777,8 @@ internal sealed partial class GameAdapter(bool testMode)
             if (!SamePage() || !MapView.Ready(map))
                 return FileMailbox.Error(request.Id, "illegal_action", "The map changed while reading.");
             using var snapshot = JsonDocument.Parse(Observe());
-            return Success(request.Id, JsonSerializer.Serialize(MapInspection.Read(map, run,
-                snapshot.RootElement.GetProperty("snapshot_id").GetString()!)));
+            return InspectionSuccess(request.Id, snapshot.RootElement, MapInspection.Read(map, run,
+                snapshot.RootElement.GetProperty("snapshot_id").GetString()!));
         }
         finally
         {
@@ -837,7 +824,7 @@ internal sealed partial class GameAdapter(bool testMode)
         string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS");
         if (testMode && checks != null)
             DeckInspectionChecks.Run(checks, screen, player, deckInspection, inspection, options.DetailLevel);
-        return Success(request.Id, JsonSerializer.Serialize(inspection));
+        return InspectionSuccess(request.Id, snapshot.RootElement, inspection);
     }
 
     private async Task<string> InspectPile(Request request, PileOptions options)
@@ -869,10 +856,10 @@ internal sealed partial class GameAdapter(bool testMode)
             {
                 using var snapshot = JsonDocument.Parse(Observe());
                 bool visible = VisibleUi.OnScreen(button);
-                return Success(request.Id, JsonSerializer.Serialize(PileInspection.Result(options, "unavailable",
+                return InspectionSuccess(request.Id, snapshot.RootElement, PileInspection.Result(options, "unavailable",
                     snapshot.RootElement.GetProperty("snapshot_id").GetString()!, visible
                         ? "The pile button is disabled." : "The pile button is not visible.", null,
-                    visible ? "entry_disabled" : "entry_not_visible")));
+                    visible ? "entry_disabled" : "entry_not_visible"));
             }
             var emptyTip = PileInspection.EmptyTip(button);
             if (VisibleUi.Number(button, "CountContainer/Count") == 0 && emptyTip == null)
@@ -887,9 +874,9 @@ internal sealed partial class GameAdapter(bool testMode)
                     || CombatObservation.Status() != "visible" || VisibleUi.Number(button, "CountContainer/Count") != 0 || emptyTip == null)
                     return FileMailbox.Error(request.Id, "illegal_action", "The pile screen did not open or the screen changed.");
                 using var snapshot = JsonDocument.Parse(Observe());
-                return Success(request.Id, JsonSerializer.Serialize(PileInspection.Result(options, "empty",
+                return InspectionSuccess(request.Id, snapshot.RootElement, PileInspection.Result(options, "empty",
                     snapshot.RootElement.GetProperty("snapshot_id").GetString()!,
-                    EnglishCardText.Read(() => EnglishCardText.Plain(emptyTip.GetFormattedText())), Array.Empty<object>())));
+                    EnglishCardText.Read(() => EnglishCardText.Plain(emptyTip.GetFormattedText())), Array.Empty<object>()));
             }
         }
         await ObservationFrame();
@@ -900,7 +887,7 @@ internal sealed partial class GameAdapter(bool testMode)
             return FileMailbox.Error(request.Id, "illegal_action", "The pile screen changed while reading.");
         using var observed = JsonDocument.Parse(Observe());
         var inspection = pileInspection.Read(screen, options, observed.RootElement.GetProperty("snapshot_id").GetString()!);
-        return Success(request.Id, JsonSerializer.Serialize(inspection));
+        return InspectionSuccess(request.Id, observed.RootElement, inspection);
     }
 
     private async Task<string> SettledObservation()

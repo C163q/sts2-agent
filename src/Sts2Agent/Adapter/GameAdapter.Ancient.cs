@@ -23,8 +23,7 @@ internal sealed partial class GameAdapter
         if (context == null || !AncientInspection.Exposed(context) || !TreasureInspection.Singleplayer
             || !inspect && !AncientInspection.Ready(context))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player ancient.");
-        if (inspect) return Success(request.Id, JsonSerializer.Serialize(new {
-            snapshot_id = before.GetProperty("snapshot_id").GetString(), scene = "ancient", ancient = ancientInspection.Read(full: true) }));
+        if (inspect) return InspectionSuccess(request.Id, before, new { ancient = ancientInspection.Read(full: true) });
         NClickableControl? button = request.Operation == "advance_dialogue" ? AncientInspection.Continue(context)
             : request.Operation == "proceed" ? AncientInspection.Proceed(context) : ancientInspection.Find(context, optionId);
         if (button?.IsEnabled != true || button is MegaCrit.Sts2.Core.Nodes.Events.NEventOptionButton option

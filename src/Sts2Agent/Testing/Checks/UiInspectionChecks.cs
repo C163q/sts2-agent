@@ -37,7 +37,7 @@ internal static class UiInspectionChecks
             && tip.sources.Distinct().Count() == tip.sources.Length));
         Check("shared_tips_are_unique", tips.Select(tip => (tip.title, tip.description)).Distinct().Count() == tips.Length);
         Check("portrait_tip_respects_show_tip", bar.PortraitTip.ShowTip
-            || !tips.Any(tip => tip.sources.Contains("player.character")));
+            || !tips.Any(tip => tip.sources.Contains("top_bar.ascension")));
         Check("hidden_stars_are_excluded", VisibleUi.Descendants<NStarCounter>(room.Ui).Any(VisibleUi.OnScreen)
             || !tips.Any(tip => tip.sources.Contains("player.stars")));
         var player = LocalContext.GetMe(RunManager.Instance.DebugOnlyGetState()!)!;

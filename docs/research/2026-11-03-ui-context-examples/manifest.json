@@ -1,0 +1,115 @@
+[
+  {
+    "file": "event.full.json",
+    "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/event/verify/evidence.json",
+    "entry_index": 1,
+    "arguments": {
+      "preset": "full"
+    },
+    "provenance": "real_mcp_full_response"
+  },
+  {
+    "file": "event.summary.json",
+    "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/event/verify/evidence.json",
+    "entry_index": 2,
+    "arguments": {
+      "preset": "summary"
+    },
+    "provenance": "real_mcp_full_response"
+  },
+  {
+    "file": "event-filtered.full.json",
+    "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/event/verify/evidence.json",
+    "entry_index": 5,
+    "arguments": {
+      "preset": "full",
+      "sources": [
+        "top_bar.hp",
+        "missing.ui",
+        "top_bar.hp"
+      ]
+    },
+    "provenance": "real_mcp_full_response"
+  },
+  {
+    "file": "event-deck.full.json",
+    "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/event/verify/evidence.json",
+    "entry_index": 14,
+    "arguments": {
+      "preset": "full"
+    },
+    "provenance": "real_mcp_full_response"
+  },
+  {
+    "file": "combat-discard.full.json",
+    "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/combat/verify/evidence.json",
+    "entry_index": 16,
+    "arguments": {
+      "preset": "full"
+    },
+    "provenance": "real_mcp_full_response"
+  },
+  {
+    "file": "selection.full.json",
+    "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/selection/verify/evidence.json",
+    "entry_index": 14,
+    "arguments": {
+      "preset": "full"
+    },
+    "provenance": "real_mcp_full_response"
+  },
+  {
+    "file": "battlefield.full.json",
+    "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/selection/verify/evidence.json",
+    "entry_index": 25,
+    "arguments": {
+      "preset": "full"
+    },
+    "provenance": "real_mcp_full_response"
+  },
+  {
+    "file": "confirmation-error.full.json",
+    "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/confirmation/verify/evidence.json",
+    "entry_index": 17,
+    "arguments": {
+      "preset": "full"
+    },
+    "provenance": "real_mcp_full_response"
+  },
+  {
+    "file": "divination.full.json",
+    "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/divination/verify/evidence.json",
+    "entry_index": 14,
+    "arguments": {
+      "preset": "full"
+    },
+    "provenance": "real_mcp_full_response"
+  },
+  {
+    "file": "epilogue.full.json",
+    "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+    "entry_index": 14,
+    "arguments": {
+      "preset": "full"
+    },
+    "provenance": "real_mcp_full_response"
+  },
+  {
+    "file": "epilogue-deck.full.json",
+    "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+    "entry_index": 26,
+    "arguments": {
+      "preset": "full"
+    },
+    "provenance": "real_mcp_full_response"
+  },
+  {
+    "file": "result.full.json",
+    "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+    "entry_index": 53,
+    "arguments": {
+      "preset": "full"
+    },
+    "provenance": "real_mcp_full_response"
+  }
+]

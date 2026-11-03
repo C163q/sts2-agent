@@ -1,0 +1,23 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible"
+  },
+  "hover_tips": [
+    {
+      "title": "Hit Points (HP)",
+      "description": "If you run out of HP, you die.",
+      "sources": [
+        "top_bar.hp"
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": "ui_sources_unavailable",
+      "sources": [
+        "missing.ui"
+      ]
+    }
+  ]
+}

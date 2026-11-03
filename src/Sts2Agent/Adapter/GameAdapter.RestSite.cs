@@ -19,10 +19,8 @@ internal sealed partial class GameAdapter
         var room = RestSiteInspection.Current;
         if (room == null || !RestSiteInspection.Ready(room) || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available local rest site.");
-        if (inspect) return Success(request.Id, JsonSerializer.Serialize(new
-        {
-            snapshot_id = before.GetProperty("snapshot_id").GetString(), scene = "rest_site", rest_site = RestSiteInspection.Read(full: true)
-        }));
+        if (inspect) return InspectionSuccess(request.Id, before, new { rest_site = RestSiteInspection.Read(full: true)
+        });
         var option = RestSiteInspection.Buttons(room).FirstOrDefault(b => b.Option.OptionId == optionId);
         NButton? button = request.Operation == "proceed" ? RestSiteInspection.Proceed(room) : option;
         if (button?.IsEnabled != true || request.Operation == "choose_rest_option"

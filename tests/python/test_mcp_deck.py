@@ -16,7 +16,7 @@ class DeckMcpTests(unittest.IsolatedAsyncioTestCase):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             summary = await tools.inspect_deck()
-            self.assertEqual(summary, {"scene": "deck", "detail_level": "summary", "view_upgrades": False,
+            self.assertEqual(summary, {"scene": "combat", "screen": {"status": "covered", "view": "deck"}, "detail_level": "summary", "view_upgrades": False,
                 "sort": {"by": "obtained", "descending": False}, "deck": [
                     {"id": "deck:0", "name": "Defend+", "type": "Skill", "rarity": "basic",
                      "visual_card_pool": "ironclad", "energy_cost": "1"},
@@ -75,7 +75,7 @@ class DeckMcpTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_malformed_deck_fields_clear_permission(self):
         missing = object()
-        cases = [(("scene",), "combat"), (("detail_level",), "full"), (("view_upgrades",), 1),
+        cases = [(("scene",), "deck"), (("detail_level",), "full"), (("view_upgrades",), 1),
                  (("sort",), None), (("sort",), {"by": "bad", "descending": False}),
                  (("sort",), {"by": "cost", "descending": 0}), (("sort",), {}),
                  (("deck",), None), (("deck",), [None]), (("deck", 0, "id"), missing),

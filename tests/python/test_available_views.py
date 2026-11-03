@@ -21,7 +21,9 @@ class AvailableViewTests(unittest.TestCase):
         raw['epilogue'].update(status='covered')
         raw['epilogue']['continue'] = None
         self.assertEqual(observation_details(raw)['screen'], raw['screen'])
-        for action in ('advance_dialogue', 'proceed', 'inspect_ui', 'play_card'):
+        raw['available_actions'].append('inspect_ui')
+        self.assertIn('inspect_ui', observation_details(raw)['available_actions'])
+        for action in ('advance_dialogue', 'proceed', 'play_card'):
             broken = copy.deepcopy(raw)
             broken['available_actions'].append(action)
             with self.subTest(action=action), self.assertRaises(ValueError):

@@ -25,7 +25,7 @@ internal sealed class CombatantInspection
     internal sealed record AllyText(uint? id, string? name, PowerText[]? powers);
     internal sealed record EnemyText(uint? id, string? name, PowerText[]? powers, object[]? intents);
     internal sealed record SharedTip(string? title, string description, string[] sources);
-    internal sealed record Result(string scene, PlayerText? player, EnemyText[] enemies, AllyText[] allies, SharedTip[] hover_tips);
+    internal sealed record Result(PlayerText? player, EnemyText[] enemies, AllyText[] allies, SharedTip[] hover_tips);
 
     public static Result Read(Player player, Func<CardModel, int> cardId) =>
         EnglishCardText.Read(() => new CombatantInspection().ReadAll(player, cardId));
@@ -43,7 +43,7 @@ internal sealed class CombatantInspection
         var allies = CombatObservation.AllyNodes().Select((node, index) => new AllyText(
             node.Entity.CombatId, EnglishCardText.Plain(node.Entity.Monster!.Title.GetFormattedText()),
             Powers(node, $"allies.{index}"))).ToArray();
-        return new Result("combat", playerText, enemies, allies,
+        return new Result(playerText, enemies, allies,
             tips.Select(pair => new SharedTip(pair.Key.title, pair.Key.description, pair.Value.ToArray())).ToArray());
     }
 

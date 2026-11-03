@@ -41,8 +41,6 @@ internal static class MapInspection
         return new()
         {
             ["snapshot_id"] = snapshotId,
-            ["scene"] = "map",
-            ["screen"] = new { status = "visible", view = "map" },
             ["act"] = run.CurrentActIndex + 1,
             ["current_node"] = run.CurrentMapCoord is { } current && coordinates.Contains(current) ? Id(current) : null,
             ["visited_path"] = run.VisitedMapCoords.Where(coordinates.Contains).Select(Id).ToArray(),

@@ -26,7 +26,7 @@ class MapPresetTests(unittest.IsolatedAsyncioTestCase):
             tools = GameTools(Client(game.directory))
             result = await tools.inspect_map({'preset': 'selectable'})
             self.assertEqual(result, {
-                'scene': 'map', 'screen': {'status': 'visible', 'view': 'map'}, 'act': 1,
+                'scene': 'combat', 'screen': {'status': 'visible', 'view': 'map'}, 'act': 1,
                 'current_node': 'map:1:1:2', 'can_travel': True,
                 'selectable_nodes': ['map:1:2:1', 'map:1:2:5'], 'preset': 'selectable',
                 'nodes': [

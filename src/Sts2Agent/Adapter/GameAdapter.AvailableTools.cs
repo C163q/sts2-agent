@@ -56,7 +56,7 @@ internal sealed partial class GameAdapter
         });
     }
 
-    private (List<string> actions, string visibility) AvailableTools(string scene, object? map,
+    private List<string> AvailableTools(string scene, object? map,
         EpilogueInspection.Context? epilogue, RunResultInspection.Context? ending, CardSelection? selection)
     {
         List<string> actions = [];
@@ -65,24 +65,15 @@ internal sealed partial class GameAdapter
         if (CanPlayCards() && STS2RitsuLib.RitsuLibFramework.IsActive) actions.Add("play_card");
         if (testMode && scene == "main_menu" && !RunManager.Instance.IsInProgress)
             actions.Add("start_test_combat");
-        string visibility = scene == "combat" ? CombatObservation.Status() : "not_applicable";
-        if (scene == "combat" && visibility != "visible")
+        if (scene == "combat" && CombatObservation.Status() != "visible")
             actions.Clear();
         if (selection is { Status: "visible" } && RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
         {
             if (selection.CanSelect) actions.Add("select_card");
             if (selection.Options().Any(option => option.button.IsEnabled)) actions.Add("selection_option");
         }
-        if (scene == "unrecognized" && RunUi.NonCombatVisible()) visibility = "visible";
-        if (scene == "rewards") visibility = RewardInspection.Exposed(RewardInspection.Current!) ? "visible" : "covered";
-        if (scene == "rest_site") visibility = RestSiteInspection.Exposed(RestSiteInspection.Current!) ? "visible" : "covered";
-        if (scene == "treasure") visibility = TreasureInspection.Exposed(TreasureInspection.Current!) ? "visible" : "covered";
-        if (scene == "shop") visibility = ShopInspection.Exposed(ShopInspection.Current!) ? "visible" : "covered";
-        if (scene == "ancient") visibility = AncientInspection.Exposed(AncientInspection.Current!) ? "visible" : "covered";
-        if (scene == "event") visibility = EventInspection.Exposed(EventInspection.Current!) ? "visible" : "covered";
         if (DivinationInspection.Current is { } divination && DivinationInspection.Exposed(divination))
         {
-            visibility = "visible";
             if (DivinationInspection.Playing(divination)) { actions.Add("set_divination_tool"); actions.Add("divine"); }
             else if (DivinationInspection.Ready(divination) && DivinationInspection.Proceed(divination)?.IsEnabled == true) actions.Add("proceed");
         }
@@ -133,39 +124,36 @@ internal sealed partial class GameAdapter
         }
         if (EventConfirmation.Current is { } dialog && EventConfirmation.Exposed(dialog))
         {
-            visibility = "visible";
             actions.Clear();
             if (EventConfirmation.Ready(dialog)) actions.Add("respond_to_confirmation");
         }
         if (map != null)
         {
-            visibility = "visible";
             actions.Clear();
             if (MapInspection.Choices(NRun.Instance!.GlobalUi.MapScreen).Length > 0) actions.Add("travel_to_node");
         }
         if (epilogue != null && map == null)
         {
-            visibility = EpilogueInspection.Exposed(epilogue) ? "visible" : "covered";
             actions.Clear();
             if (EpilogueInspection.Ready(epilogue) && EpilogueInspection.Button(epilogue) is { } epilogueButton)
                 actions.Add(EpilogueInspection.IsProceed(epilogueButton) ? "proceed" : "advance_dialogue");
         }
         if (ending != null)
         {
-            visibility = RunResultInspection.Exposed(ending) ? "visible" : "covered";
             actions.Clear();
             if (runResultInspection.Ready(ending)) actions.Add("run_result_option");
         }
 
         if (ending != null)
         {
+            if (UiInspection.CanRead()) actions.Add("inspect_ui");
             if (runResultInspection.Ready(ending))
             {
                 actions.Add("inspect_run_result");
             }
             if (PotionInspection.VisibleHolders() != null) actions.Add("inspect_potions");
             if (RelicInspection.VisibleHolders() != null) actions.Add("inspect_relics");
-            return (actions.Distinct().ToList(), visibility);
+            return actions.Distinct().ToList();
         }
         if ((!CombatManager.Instance.IsInProgress || STS2RitsuLib.RitsuLibFramework.IsActive)
             && CanHandlePotions() && PotionInspection.VisibleHolders() is { } holders)
@@ -175,7 +163,7 @@ internal sealed partial class GameAdapter
             if (visiblePotions.Any(PotionActions.Discardable)) actions.Add("discard_potion");
         }
         if (CanInspectHand()) actions.Add("inspect_hand");
-        if (CombatObservation.Status() == "visible") actions.Add("inspect_ui");
+        if (UiInspection.CanRead()) actions.Add("inspect_ui");
         if (CanInspectCombatants()) actions.Add("inspect_combatants");
         if (PotionInspection.VisibleHolders() != null) actions.Add("inspect_potions");
         if (RelicInspection.VisibleHolders() != null) actions.Add("inspect_relics");
@@ -205,6 +193,6 @@ internal sealed partial class GameAdapter
         if (DivinationInspection.Current is { } board ? DivinationInspection.Ready(board)
             : EventInspection.Current is { } eventPage && EventInspection.Exposed(eventPage) && TreasureInspection.Singleplayer)
             actions.Add("inspect_event");
-        return (actions.Distinct().ToList(), visibility);
+        return actions.Distinct().ToList();
     }
 }

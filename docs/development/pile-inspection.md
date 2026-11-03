@@ -27,6 +27,8 @@ MCP 另接受[通用 preset](mcp.md#输出预设)，默认省略普通空值，�
 
 只允许单人可行动战斗或当前受支持的卡牌查看页；地图、卡牌详情、选择页、其他覆盖层、瞄准/出牌及过渡期间不可穿透读取或点击。地图和卡牌页独立，但地图挡住战斗牌堆入口时，本调用返回 `illegal_action`。关闭沿用 [`close_card_view`](deck-inspection.md)，不会顺带关闭地图。
 
+scene/screen 遵循[统一上下文](observation.md#场景上下文)；打开页使用 screen.view 的 draw_pile/discard_pile/exhaust_pile，scene 保留当前战斗场景。
+
 ## 三种结果
 
 | `status` | 行为与 `cards` |
@@ -43,7 +45,7 @@ MCP 另接受[通用 preset](mcp.md#输出预设)，默认省略普通空值，�
 
 ```json
 {
-  "scene": "card_pile",
+  "scene": "combat",
   "pile": "discard",
   "detail_level": "summary",
   "status": "empty",
@@ -57,7 +59,7 @@ MCP 另接受[通用 preset](mcp.md#输出预设)，默认省略普通空值，�
 
 ```json
 {
-  "scene": "card_pile",
+  "scene": "combat",
   "pile": "exhaust",
   "detail_level": "summary",
   "status": "unavailable",

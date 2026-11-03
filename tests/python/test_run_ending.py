@@ -134,7 +134,7 @@ class EndingBoundaryTests(unittest.TestCase):
     def test_epilogue_deck_inspections_do_not_allow_underlying_actions(self):
         for action in ('advance_dialogue', 'proceed', 'use_potion', 'discard_potion',
                        'play_card', 'end_turn', 'travel_to_node', 'inspect_hand',
-                       'inspect_ui', 'inspect_combatants', 'inspect_targets', 'inspect_pile',
+                       'inspect_combatants', 'inspect_targets', 'inspect_pile',
                        'respond_to_confirmation'):
             raw = epilogue_deck_state()
             raw['available_actions'].append(action)
@@ -227,3 +227,24 @@ class EndingStdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertNotIn('run_result', result.structuredContent)
                     details = await session.call_tool('inspect_run_result', {})
                     self.assertEqual(details.structuredContent['run_result']['phase'], 'summary')
+
+
+class EndingUiHelpTests(unittest.TestCase):
+    def test_epilogue_deck_keeps_visible_top_bar_help_available(self):
+        raw = epilogue_deck_state()
+        raw['available_actions'].append('inspect_ui')
+        self.assertIn('inspect_ui', observation_details(raw)['available_actions'])
+
+    def test_unready_result_can_expose_top_bar_help_without_result_actions(self):
+        from sts2_mcp.output.game_output import TOP_BAR
+        raw = state()
+        raw['run_result'].update(status='not_ready', title=None, texts=[], options=[])
+        raw['top_bar'] = {key: None for key in TOP_BAR}
+        raw['top_bar'].update(bosses=[], map_visible=False, deck_visible=False, settings_visible=False)
+        raw['available_actions'] = ['inspect_ui']
+        self.assertEqual(observation_details(raw)['available_actions'], ['inspect_ui'])
+
+    def test_result_without_visible_top_bar_rejects_ui_help(self):
+        raw = state()
+        raw['available_actions'] = ['inspect_ui']
+        with self.assertRaises(ValueError): observation_details(raw)

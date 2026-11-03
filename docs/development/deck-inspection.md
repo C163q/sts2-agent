@@ -53,7 +53,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_card_view
 
 | 字段 | 内容 |
 | --- | --- |
-| `scene` | `deck` |
+| `scene/screen` | 与当前基础观察相同的[场景上下文](observation.md#场景上下文)，页面为 screen.view:deck |
 | `detail_level` | 本次 `summary` 或 `full` |
 | `view_upgrades` | 页面当前实际的升级预览状态 |
 | `sort.by/descending` | 页面当前实际的主排序及方向 |

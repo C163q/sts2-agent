@@ -9,6 +9,7 @@ from sts2_mcp.output.player_output import player_result
 
 SPECIAL_PRESETS = {
     'get_observation': ('actions_only', 'summary', 'top_bar'),
+    'inspect_ui': ('summary',),
     'inspect_hand': ('summary',),
     'inspect_selection': ('summary',),
     'inspect_relics': ('summary',),
@@ -90,7 +91,7 @@ def output_preset(handler):
         else:
             payload = await handler(self)
         compact_summary = preset == 'summary' and operation in {
-            'inspect_hand', 'inspect_selection', 'inspect_relics'}
+            'inspect_ui', 'inspect_hand', 'inspect_selection', 'inspect_relics'}
         return apply_preset(payload, 'default' if compact_summary else preset)
 
     wrapped.supports_output_presets = True

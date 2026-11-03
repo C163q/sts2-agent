@@ -30,7 +30,7 @@ class Client:
         if operation == 'inspect_selection':
             choice = selection()
             choice['cards'][0]['hover_tips'] = []
-            return {'ok': True, 'state': {'snapshot_id': self.token, 'scene': 'combat', 'selection': choice}}
+            return {'ok': True, 'state': {'snapshot_id': self.token, 'scene': 'combat', 'screen': {'status': 'visible'}, 'selection': choice}}
         if operation != 'get_state':
             if self.reply_error:
                 if isinstance(self.reply_error, Exception):

@@ -95,7 +95,7 @@ def main():
         call("inspect_combatants")
         call("inspect_ui")
         deck = call("inspect_deck", {"detail_level": "summary"})
-        assert deck["scene"] == "deck", deck
+        assert deck["scene"] == observed["scene"], deck
         covered = call("get_state")
         assert covered["selection"]["status"] == "covered" and covered["selection"]["cards"] is None, covered
         assert not call("set_selection_view", {"view": "selection"}, success=False)["ok"]

@@ -16,7 +16,7 @@ SERVER = (ROOT / "scripts/mcp_server.py")
 
 
 def map_payload():
-    return {"scene": "map", "screen": {"status": "visible", "view": "map"}, "act": 1,
+    return {"scene": "combat", "screen": {"status": "visible", "view": "map"}, "act": 1,
             "current_node": "map:1:1:2", "visited_path": ["map:1:0:3", "map:1:1:2"],
             "can_travel": False, "selectable_nodes": [], "nodes": [
                 {"id": "map:1:0:3", "row": 0, "column": 3, "type": "ancient", "name": "Neow", "next": ["map:1:1:2"]},
@@ -46,7 +46,7 @@ class FakeGame:
         self.malformed_hand = False
         self.malformed_hand_item = False
         self.hand_extra_state = False
-        self.ui_payload = {"scene": "combat", "hover_tips": [{
+        self.ui_payload = {"scene": "combat", "screen": {"status": "visible"}, "hover_tips": [{
             "title": "Energy", "description": "Your current <Energy> count.",
             "sources": ["player.energy", "player.max_energy"],
         }]}
@@ -64,7 +64,7 @@ class FakeGame:
         self.potion_error = False
         self.drop_potion_response = False
         self.combatant_payload = {
-            "scene": "combat", "player": {"powers": [{"name": "Vulnerable", "amount": 2}]},
+            "scene": "combat", "screen": {"status": "visible"}, "player": {"powers": [{"name": "Vulnerable", "amount": 2}]},
             "enemies": [{"id": 7, "name": "Twig Slime (M)",
                          "powers": [{"name": "Vulnerable", "amount": 2}],
                          "intents": [{"category": "attack", "value": "11"}]}],
@@ -207,7 +207,7 @@ class FakeGame:
                     self.deck_upgrades = arguments.get("view_upgrades", self.deck_upgrades)
                     if "sort_by" in arguments:
                         self.deck_sort = {"by": arguments["sort_by"], "descending": arguments.get("descending", False)}
-                    response["state"] = {"snapshot_id": self.token(), "scene": "deck",
+                    response["state"] = {"snapshot_id": self.token(), "scene": "combat", "screen": {"status": "covered", "view": "deck"},
                         "detail_level": arguments.get("detail_level", "summary"), "view_upgrades": self.deck_upgrades,
                         "sort": self.deck_sort.copy(), **self.deck_payload}
                     if self.deck_error:
@@ -220,7 +220,7 @@ class FakeGame:
                     if self.pile_open != pile: self.ui_generation += 1
                     self.deck_open = False
                     self.pile_open = pile
-                    response["state"] = {"snapshot_id": self.token(), "scene": "card_pile", "pile": pile,
+                    response["state"] = {"snapshot_id": self.token(), "scene": "combat", "pile": pile,
                         "detail_level": arguments.get("detail_level", "summary"), "status": "opened",
                         "screen": {"status": "covered", "view": pile + "_pile"}, "message": "Native pile information.",
                         "cards": [{"id": "pile:0", "name": "Defend", "type": "Skill", "rarity": "basic",
@@ -440,7 +440,7 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             self.assertEqual(await tools.inspect_combatants(), {
-                "scene": "combat", "player": {"powers": [{"name": "Vulnerable", "amount": 2}]},
+                "scene": "combat", "screen": {"status": "visible"}, "player": {"powers": [{"name": "Vulnerable", "amount": 2}]},
                 "enemies": [{"id": 7, "name": "Twig Slime (M)",
                              "powers": [{"name": "Vulnerable", "amount": 2}],
                              "intents": [{"category": "attack", "value": "11"}]}],
@@ -477,7 +477,7 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
     async def test_combatant_inspection_rejects_malformed_data_or_sources_and_clears_token(self):
         missing = object()
         cases = [
-            (("scene",), missing), (("scene",), "main_menu"), (("player",), missing), (("player",), []),
+            (("scene",), missing), (("scene",), "invalid_scene"), (("player",), missing), (("player",), []),
             (("player", "powers"), missing), (("player", "powers"), {}),
             (("player", "powers"), [None]), (("player", "powers", 0, "name"), missing),
             (("player", "powers", 0, "name"), 1), (("player", "powers", 0, "amount"), missing),
@@ -540,11 +540,11 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
     async def test_combatant_inspection_preserves_unknown_and_empty_containers_without_notes(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
-            game.combatant_payload = {"scene": "combat", "player": None, "enemies": [], "hover_tips": []}
+            game.combatant_payload = {"scene": "combat", "screen": {"status": "visible"}, "player": None, "enemies": [], "hover_tips": []}
             self.assertEqual(await tools.inspect_combatants({"preset": "full"}), game.combatant_payload)
             for powers, intents in ((None, None), ([], [])):
                 game.combatant_payload = {
-                    "scene": "combat", "player": {"powers": powers},
+                    "scene": "combat", "screen": {"status": "visible"}, "player": {"powers": powers},
                     "enemies": [{"id": None, "name": None, "powers": powers, "intents": intents}], "hover_tips": [],
                 }
                 self.assertEqual(await tools.inspect_combatants({"preset": "full"}), game.combatant_payload)
@@ -763,7 +763,7 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_ui_inspection_rejects_malformed_details_and_clears_token(self):
         cases = [
-            {"scene": "main_menu"}, {"hover_tips": None}, {"hover_tips": [None]},
+            {"scene": "invalid_scene"}, {"hover_tips": None}, {"hover_tips": [None]},
             {"hover_tips": [{"title": 3, "description": "Text", "sources": ["player.energy"]}]},
             {"hover_tips": [{"title": "Energy", "description": None, "sources": ["player.energy"]}]},
             {"hover_tips": [{"title": "Energy", "description": "Text", "sources": "player.energy"}]},
@@ -805,7 +805,7 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             game.ui_payload["hover_tips"][0]["title"] = None
             self.assertIsNone((await tools.inspect_ui({"preset": "full"}))["hover_tips"][0]["title"])
             game.ui_payload["hover_tips"] = []
-            self.assertEqual(await tools.inspect_ui({"preset": "full"}), {"scene": "combat", "hover_tips": []})
+            self.assertEqual(await tools.inspect_ui({"preset": "full"}), {"scene": "combat", "screen": {"status": "visible"}, "hover_tips": []})
 
     async def test_cancelled_ui_inspection_does_not_restore_token(self):
         with FakeGame() as game:
@@ -1046,7 +1046,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertFalse(close_tool.annotations.readOnlyHint)
                     self.assertEqual(set(close_tool.inputSchema["properties"]), {"preset"})
                     for tool in listed.tools:
-                        if tool.name not in {"get_observation", "inspect_hand", "inspect_selection", "inspect_relics", "inspect_map", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "claim_reward", "choose_rest_option", "loot_treasure", "buy_item", "choose_ancient_option", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation", "travel_to_node", "run_result_option"}:
+                        if tool.name not in {"inspect_ui", "get_observation", "inspect_hand", "inspect_selection", "inspect_relics", "inspect_map", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "claim_reward", "choose_rest_option", "loot_treasure", "buy_item", "choose_ancient_option", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation", "travel_to_node", "run_result_option"}:
                             self.assertEqual(set(tool.inputSchema["properties"]), {"preset"})
                     missing = await session.call_tool("end_turn", {})
                     self.assertTrue(missing.isError)
@@ -1075,7 +1075,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(invalid_potions.structuredContent["error"]["code"], "invalid_request")
                     combatants = await session.call_tool("inspect_combatants", {})
                     self.assertFalse(combatants.isError)
-                    self.assertEqual(set(combatants.structuredContent), {"scene", "player", "enemies", "hover_tips", "notes"})
+                    self.assertEqual(set(combatants.structuredContent), {"scene", "screen", "player", "enemies", "hover_tips", "notes"})
                     self.assertEqual(combatants.structuredContent["enemies"][0]["intents"][0]["value"], "11")
                     self.assertEqual(json.loads(combatants.content[0].text), combatants.structuredContent)
                     relics = await session.call_tool("inspect_relics", {})

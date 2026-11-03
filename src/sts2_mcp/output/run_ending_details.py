@@ -72,6 +72,8 @@ def validate_ending(result):
         result[key] = epilogue_details(result[key]) if key == 'epilogue' else result_details(result[key])
         value = result[key]
         if result['scene'] != key: raise ValueError('Ending scene mismatch.')
+        if key == 'run_result' and 'inspect_ui' in result['available_actions'] and result.get('top_bar') is None:
+            raise ValueError('Result UI help has no exposed top bar.')
         if value['status'] == 'visible':
             if result['screen'] != {'status': 'visible', 'view': key}: raise ValueError('Ending screen mismatch.')
             if key == 'run_result':
@@ -82,7 +84,7 @@ def validate_ending(result):
                 if result.get('top_bar') is not None and not (set(TOP_BAR) - {'relic_count'}) <= result['top_bar'].keys():
                     raise ValueError('Incomplete result top bar.')
                 enabled = any(o['enabled'] for o in value['options'])
-                if any(a not in {'run_result_option', 'inspect_run_result', 'inspect_potions', 'inspect_relics'} for a in result['available_actions']) \
+                if any(a not in {'run_result_option', 'inspect_run_result', 'inspect_potions', 'inspect_relics', 'inspect_ui'} for a in result['available_actions']) \
                         or 'run_result_option' in result['available_actions'] and not enabled:
                     raise ValueError('Unavailable result action.')
             else:
@@ -94,12 +96,12 @@ def validate_ending(result):
         elif result['available_actions'] and not (
                 key == 'run_result' and value['status'] == 'not_ready'
                     and result['screen'] == {'status': 'visible', 'view': 'run_result'}
-                    and set(result['available_actions']) <= {'inspect_potions', 'inspect_relics'}
+                    and set(result['available_actions']) <= {'inspect_potions', 'inspect_relics', 'inspect_ui'}
                 or key == 'epilogue' and (result.get('map') is not None
                     or value['status'] == 'not_ready' and set(result['available_actions']) <= EPILOGUE_TOOLS - {'advance_dialogue', 'proceed'}
                     or value['status'] == 'covered' and result['screen'] == {'status': 'covered', 'view': 'deck'}
                         and set(result['available_actions']) <= {
-                            'inspect_deck', 'close_card_view', 'inspect_map', 'inspect_potions', 'inspect_relics'})):
+                            'inspect_deck', 'close_card_view', 'inspect_map', 'inspect_potions', 'inspect_relics', 'inspect_ui'})):
             raise ValueError('Covered or unready ending actions.')
     if 'run_result_option' in result['available_actions'] and result.get('run_result') is None:
         raise ValueError('Missing result actions.')

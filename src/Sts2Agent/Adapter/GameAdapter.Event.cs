@@ -22,8 +22,7 @@ internal sealed partial class GameAdapter
         if (context == null || !EventInspection.Exposed(context) || !TreasureInspection.Singleplayer
             || !inspect && !EventInspection.Ready(context))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player event.");
-        if (inspect) return Success(request.Id, JsonSerializer.Serialize(new {
-            snapshot_id = before.GetProperty("snapshot_id").GetString(), scene = "event", @event = eventInspection.Read(full: true) }));
+        if (inspect) return InspectionSuccess(request.Id, before, new { @event = eventInspection.Read(full: true) });
         var button = request.Operation == "proceed" ? EventInspection.Proceed(context) : eventInspection.Find(context, optionId);
         if (button == null || !EventInspection.Clickable(button))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested event option is unavailable.");

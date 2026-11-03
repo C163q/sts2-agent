@@ -1,3 +1,4 @@
+from sts2_mcp.output.scene_context import scene_context
 from sts2_mcp.output.deck_details import browsed_cards
 
 
@@ -23,9 +24,10 @@ def pile_arguments(arguments):
 
 
 def pile_details(state, pile, level):
+    context = scene_context(state)
     status = state["status"]
     screen = state["screen"]
-    if (state["scene"] != "card_pile" or state["pile"] != pile or state["detail_level"] != level
+    if (state["pile"] != pile or state["detail_level"] != level
             or status not in ("opened", "empty", "unavailable") or not isinstance(screen, dict)
             or not isinstance(screen["status"], str) or not isinstance(state["message"], str)):
         raise ValueError("Invalid pile details.")
@@ -34,7 +36,7 @@ def pile_details(state, pile, level):
         if not isinstance(screen["view"], str):
             raise ValueError("Invalid pile screen view.")
         view["view"] = screen["view"]
-    result = {"scene": "card_pile", "pile": pile, "detail_level": level, "status": status,
+    result = {**context, "pile": pile, "detail_level": level, "status": status,
               "screen": view, "message": state["message"]}
     if status == "unavailable":
         if state["cards"] is not None or state["reason"] not in ("entry_not_visible", "entry_disabled"):

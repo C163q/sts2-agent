@@ -8,7 +8,7 @@ from tests.python.test_output_boundaries import observation
 
 
 def details():
-    return {'scene': 'combat', 'player': {'powers': [], 'sovereign_blades': [{'id': 7, 'name': 'Sovereign Blade'}]},
+    return {'scene': 'combat', 'screen': {'status': 'visible'}, 'player': {'powers': [], 'sovereign_blades': [{'id': 7, 'name': 'Sovereign Blade'}]},
             'allies': [{'id': 4, 'name': 'Osty', 'powers': [{'name': 'Die For You', 'amount': None}]}],
             'enemies': [], 'hover_tips': [
                 {'title': 'Die For You', 'description': 'Absorb attack damage.', 'sources': ['allies.0.powers.0']},

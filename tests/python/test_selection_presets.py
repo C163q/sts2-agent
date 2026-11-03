@@ -29,15 +29,14 @@ class SelectionClient(ActionClient):
         self.calls.append((operation, expected_state, arguments))
         if self.error:
             return {'ok': False, 'error': {'code': self.error}}
-        return {'ok': True, 'state': {'snapshot_id': self.token, 'scene': 'combat',
-                                     'selection': copy.deepcopy(self.choice)}}
+        return {'ok': True, 'state': {'snapshot_id': self.token, 'scene': 'combat', 'screen': {'status': 'visible'}, 'selection': copy.deepcopy(self.choice)}}
 
 
 class SelectionPresetTests(unittest.IsolatedAsyncioTestCase):
     async def test_explicit_full_keep_existing_output_and_source(self):
         client = SelectionClient()
         original = copy.deepcopy(client.choice)
-        expected = player_result({'ok': True, 'state': {'scene': 'combat', 'selection': original}},
+        expected = player_result({'ok': True, 'state': {'scene': 'combat', 'screen': {'status': 'visible'}, 'selection': original}},
                                  operation='inspect_selection')
         tools = GameTools(client)
         for args in ({'preset': 'full'},):

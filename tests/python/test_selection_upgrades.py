@@ -33,7 +33,7 @@ class UpgradeClient(SelectionClient):
         if self.choice['view_upgrades']:
             card.update(name='Defend+', description='Gain 8 Block.')
         self.choice['cards'] = [card]
-        result = {'snapshot_id': 'after-view', 'scene': 'rest_site',
+        result = {'snapshot_id': 'after-view', 'scene': 'rest_site', 'screen': {'status': 'visible'},
                   'selection': copy.deepcopy(self.choice)}
         if warnings:
             result['errors'] = warnings

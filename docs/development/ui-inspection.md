@@ -2,53 +2,73 @@
 
 版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
 
-文件操作 `inspect_ui` 与同名 [MCP 工具](mcp.md)只读返回当前无遮挡战斗画面上可见入口、资源图标和空充能球槽的英语悬停说明。不触发鼠标悬停、不打开窗口、不切换游戏语言。工具分工见 [范围核查](../research/2026-10-29-ui-hover-tip-audit.md)。
+文件操作 `inspect_ui` 与同名 [MCP 工具](mcp.md)只读返回当前可见顶栏、战斗通用入口、资源图标和空充能球槽的英语悬停说明。不移动鼠标、不打开窗口、不切换游戏语言。手牌、药水、遗物、能力、意图与已有球的效果使用各自的专门查看工具。
 
-## 读取与格式
+## 调用与参数
 
-按 [正常游戏加载](live-game.md) 构建、安装并重启游戏，进入无遮挡的战斗后执行：
+按[正常游戏加载](live-game.md)构建、安装并重启游戏后，文件客户端无额外参数：
 
 ```sh
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_ui > .tmp/live/ui-inspection.json
 ```
 
-结果包含 `scene` 和共享提示数组 `hover_tips`。以下是独立中文游戏实例中实际读取的一条提示；它不是用户当前战斗的完整采样：
+MCP 支持以下调用：
+
+```text
+inspect_ui(preset="summary")
+inspect_ui(sources=["top_bar.hp", "top_bar.gold"])
+inspect_ui(preset="full", sources=["player.energy"])
+```
+
+| 参数 | 行为 |
+| --- | --- |
+| `preset` | 默认 `default`，按[公共预设](mcp.md#输出预设)省略普通空值；`full` 保留空值；`summary` 在 default 基础上省略每条提示的 `description`，保留标题、来源和上下文 |
+| `sources` | 按提示来源路径精确匹配。省略表示全部，`[]` 表示不返回提示；重复值去重，提示与来源保持原生顺序。共享提示只保留匹配的来源；不会将 `top_bar` 当作路径前缀 |
+
+未匹配来源集中返回 `errors:[{"code":"ui_sources_unavailable","sources":[...]}]`，其余匹配提示仍正常返回；可能是来源拼写错误，也可能是当前页面没有该入口或不允许悬停。未知参数、非法预设、非字符串或空字符串来源等返回 `invalid_request`。
+
+summary 可先列出可查询来源，再用 default 加 sources 读取所需正文。完整原生响应先校验，再筛选和摘要；筛选不会掩盖未选中数据的格式错误，也不会改变原生状态令牌。
+
+## 返回格式
+
+成功结果包含 `scene`、`screen`、`hover_tips`，场景与页面遵循[统一上下文](observation.md#场景上下文)，与同一画面的基础观察一致。选牌切回战场时另有 `notes.selection`，提示返回选择界面完成选牌。以下仅为单条帮助的结构片段，完整实测示例见[本轮核验与修复记录](../research/2026-11-03-inspect-ui-review.md#修复后示例与验证入口)：
 
 ```json
 {
-  "scene": "combat",
+  "scene": "event",
+  "screen": {"status": "visible"},
   "hover_tips": [
     {
-      "title": "Energy",
-      "description": "Your current Energy ( <Energy>) count. Cards require <Energy> to play, indicated in the top left corner.",
-      "sources": ["player.energy", "player.max_energy"]
+      "title": "Hit Points (HP)",
+      "description": "If you run out of HP, you die.",
+      "sources": ["top_bar.hp", "top_bar.max_hp"]
     }
   ]
 }
 ```
 
-- `title` 和 `description` 来自游戏的悬停提示文本，移除颜色和字体标记，保留换行、实际快捷键和资源图标占位符，例如 `<Energy>`、`<Star>`。无标题时 `title` 为 `null`。
-- `sources` 是关联的基础观察字段路径，不重复输出字段值。同标题同正文合并，来源去重并保留首次出现顺序；同标题不同正文不合并。
-- 不附带手牌数值或敌人意图的 `notes`。没有可用提示时数组为 `[]`；不可读界面返回结构化错误，不以空集合表示读取失败。
-- 加 `--raw` 时保留 `id/ok/state` 和 `state.snapshot_id`。无须提供动作令牌，读取工具可用时列入 `available_actions`。
-- MCP full 返回相同玩法格式；默认 default 省略普通空值，如无标题的 title，规则见[公共预设](mcp.md#输出预设)。`structuredContent` 与 JSON 文本一致；成功查看会刷新状态令牌，完整规则见 [MCP 调用语义](mcp.md#调用和错误语义)。
+- 标题与正文来自原生悬停帮助，移除颜色、字体标记，保留换行、实际快捷键及 `<Energy>/<Star>` 图标占位符。full 保留 `title:null`，default/summary 省略无标题字段。
+- sources 关联完整基础观察中的字段，不重复字段值；不随观察摘要合并生命／能量字段而改名。顶栏 HP 使用 `top_bar.hp/top_bar.max_hp`，头像与进阶帮助使用 `top_bar.ascension`；战斗资源如 `player.energy` 沿用对应来源。
+- 同标题同正文合并，来源去重；同标题不同正文分别保留。空球槽来源如 `player.orb_slots.4`，下标从 0 起，对应完整可读栏位；多个空槽的共同帮助只输出一次。
+- 无可用提示或 sources 筛选为空时保留 `hover_tips:[]`；不可读页面返回结构化错误，不用空数组表示失败。不包含资源当前值、动作 transition 或 available_actions；可用操作由 get_observation 提供。
+- MCP 的 JSON 文本与 structuredContent 一致。成功查看刷新内部许可；本地参数拒绝保留已有许可，实际读取失败清除许可。完整规则见 [MCP 调用语义](mcp.md#调用和错误语义)。文件客户端 `--raw` 另保留通信包装与 snapshot_id。
 
-## 覆盖与条件
+## 可见范围
 
-当前包含头像及进阶、顶栏生命、金币、房间类型、楼层、首领、地图入口、主牌组入口、设置入口、能量、星星、抽牌/弃牌/消耗牌堆入口和结束回合。按当前节点可见性、视口和裁剪筛选，隐藏入口不补齐。禁用入口遵循游戏的 `AllowFocusWhileDisabled` 规则；禁用且不允许聚焦时不提供提示。头像须满足游戏 `ShowTip` 条件；牌堆须已绑定；结束回合的提示遵循玩家当前是否准备结束回合的条件。
+顶栏与战斗区域独立判断。事件、火堆、商店、奖励、先古之民、宝箱、地图／牌组／牌堆覆盖、选牌页、建筑师及结算中，只要顶栏按原生 UI 仍可见可读，就提供对应帮助；不会因此穿透读取被遮住的战斗资源。主菜单、模态遮挡和过渡等没有可读区域的情况返回 illegal_action，可用性以 get_observation.available_actions 为准。
 
-空充能球槽使用原生通用帮助，同文合并，`sources` 如 `player.orb_slots.4`，下标对应[基础观察](observation.md#玩法字段)的槽位。只有完整栏位可读且对应空槽可悬停时提供；已生成球的效果通过 [inspect_combatants](combatant-inspection.md) 查看，不在这里重复。
+顶栏包括可悬停的头像／进阶、生命、金币、当前房间、楼层、可见首领、地图、牌组与设置入口。头像遵循原生 ShowTip，不补出隐藏首领。战斗区域包括能量、星星、抽牌／弃牌／消耗堆入口、结束回合与空充能球槽；牌堆须已绑定，结束回合遵循玩家准备状态，完整球栏及空槽须可读可悬停。
 
-药水、遗物、powers 和敌人当前意图解释均不包含；powers 与当前意图通过 [战斗对象详情](combatant-inspection.md) 一起查看，药水与遗物分别使用 [药水详情](potion-inspection.md) 和 [遗物详情](relic-inspection.md)。手牌效果使用 `inspect_hand`。地图、牌组、牌堆这里只返回入口说明，不返回具体内容或抽牌顺序；不添加游戏中不存在的格挡悬停说明。
-
-地图、普通非战斗房间、菜单覆盖和过渡期间返回 `illegal_action`。原生可查看的战斗背景（例如[建筑师](run-ending.md)）也可提供当前可见提示，不要求战斗仍在进行；当前可用性以观察的 `available_actions` 为准。其他版本和其他 Mod 新增的图标或自定义提示没有自动兼容保证。
+固定入口仍按可见性、视口与裁剪筛选；禁用控件按原生 AllowFocusWhileDisabled 决定是否能提供帮助。这些入口不属于可滚动候选列表，不补齐隐藏图标。地图、牌组与牌堆只提供入口帮助，不读取其中内容或顺序；不添加原生没有的格挡帮助。
 
 ## 验证
 
-下面的脚本只读取当前游戏，不执行动作；运行期间应避免手动改变场景：
+当前完整跨场景回归为 [gui_suite_ui_context.json](../../tests/game/data/gui_suite_ui_context.json)，通过[图形测试套件](gui-testing.md)执行；通关终章通过独立实例的 verify_ui_context.py --scenario ending 验证，不放入复用套件。
+
+只读脚本可核对当前游戏；运行期间避免手动改变场景：
 
 ```sh
 python3 -m tests.game.verifiers.verify_ui --ipc-dir .tmp/live/ipc --output .tmp/live/ui-inspection.json --report .tmp/live/ui-inspection-check.json
 ```
 
-脚本检查 `get_state → inspect_ui → get_state` 的令牌一致、提示结构和去重、来源字段存在及查看边界。独立测试实例可用 `scripts/run_roundtrip.py --windowed --capture --check-ui` 启用额外的游戏内可见性、英语文本和缓存检查；该标志不用于正式游戏。早期独立／正式战斗的样本及当时未覆盖场景见[实施记录](../research/2026-10-29-ui-inspection-plan.md)，后续充能球范围见[球槽核对](../research/2026-11-01-capacity-and-orbs.md)。历史记录中的未测项不能直接视为当前全部验证范围。
+独立实例的 `run_roundtrip.py --windowed --capture --check-ui` 另检查原生可见性、英语文本和缓存不变；不用于正式游戏。早期实现见[实施记录](../research/2026-10-29-ui-inspection-plan.md)，充能球边界见[球槽核对](../research/2026-11-01-capacity-and-orbs.md)。历史未测项不直接代表当前验证范围。

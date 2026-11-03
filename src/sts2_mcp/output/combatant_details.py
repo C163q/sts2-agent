@@ -1,3 +1,4 @@
+from sts2_mcp.output.scene_context import scene_context
 import re
 from sts2_mcp.output.game_output import blade_refs, orb_slots, validate_identities
 
@@ -66,7 +67,8 @@ def validate_source(source, player, enemies, allies):
 
 
 def combatant_details(state):
-    if state["scene"] != "combat" or not isinstance(state["enemies"], list):
+    context = scene_context(state)
+    if not isinstance(state["enemies"], list):
         raise ValueError("Invalid combatant details.")
     player = None if state["player"] is None else {"powers": powers(state["player"]["powers"])}
     if player is not None and 'orb_slots' in state['player']:
@@ -102,7 +104,7 @@ def combatant_details(state):
         for source in sources:
             validate_source(source, player, enemies, allies)
         tips.append({"title": title, "description": description, "sources": list(sources)})
-    result = {"scene": "combat", "player": player, "enemies": enemies, "hover_tips": tips}
+    result = {**context, "player": player, "enemies": enemies, "hover_tips": tips}
     if 'allies' in state:
         result['allies'] = allies
     return result

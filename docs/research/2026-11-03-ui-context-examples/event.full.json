@@ -1,0 +1,59 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible"
+  },
+  "hover_tips": [
+    {
+      "title": "Hit Points (HP)",
+      "description": "If you run out of HP, you die.",
+      "sources": [
+        "top_bar.hp",
+        "top_bar.max_hp"
+      ]
+    },
+    {
+      "title": "Gold",
+      "description": "How much Gold you have. Gold is the currency within the Spire.",
+      "sources": [
+        "top_bar.gold"
+      ]
+    },
+    {
+      "title": "Floor",
+      "description": "How far up you have climbed.",
+      "sources": [
+        "top_bar.floor"
+      ]
+    },
+    {
+      "title": "Vantom",
+      "description": "At the end of the act, you will fight Vantom.",
+      "sources": [
+        "top_bar.bosses"
+      ]
+    },
+    {
+      "title": "Map (M)",
+      "description": "View this current Act's map.",
+      "sources": [
+        "top_bar.map_visible"
+      ]
+    },
+    {
+      "title": "Deck (D)",
+      "description": "View all of the cards in your deck.",
+      "sources": [
+        "top_bar.deck_visible",
+        "top_bar.deck_count"
+      ]
+    },
+    {
+      "title": "Settings (ESC)",
+      "description": "Opens the game menu.\n\nChange or update your graphics, audio, and gameplay preferences here.",
+      "sources": [
+        "top_bar.settings_visible"
+      ]
+    }
+  ]
+}

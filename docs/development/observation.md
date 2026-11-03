@@ -22,6 +22,19 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 玩法输出按声明的结构递归投影，未知嵌套字段不会转发；基础观察的 `player.hand` 不包含正文或悬停解释。已提供字段须符合对应类型，布尔值不能代替数字。MCP 对基础观察和动作结果另检查全部顶层观察字段，格式错误返回 `transport_error`，不保留动作令牌。这个检查不证明游戏采样本身符合可见信息边界；Mod 的显示过滤仍是读取依据。
 
+## 场景上下文
+
+基础观察、动作回执和所有已返回 scene 的详情工具，使用同一含义与判定入口：
+
+- `scene` 表示当前战斗、房间或结算场景，取值为 `combat/rewards/rest_site/treasure/shop/ancient/event/epilogue/run_result/main_menu/unrecognized`。不能根据工具名称或读到战斗背景就改为 combat。
+- `screen.status` 表示该场景的可见／覆盖状态，取值为 `visible/covered/hidden/not_ready/not_applicable`；`screen.view` 在识别到覆盖或专项页面时提供。没有已识别查看页时省略 view。
+- `view` 包括 `map/deck/draw_pile/discard_pile/exhaust_pile/divination/confirmation/epilogue/run_result`。地图、牌组和牌堆不会将 scene 改为页面类型；牌堆本次请求是否打开页面另看其 status。
+- 详情读取使用其状态令牌对应的快照上下文；会打开或修改页面的工具，使用修改后的快照。因此，同一画面的 scene/screen 与 get_observation 一致；不因 summary 或筛选改变。
+
+例如在事件中打开牌组，get_observation 与 inspect_deck 都返回 `scene:event`、`screen:{status:covered,view:deck}`；建筑师的 inspect_ui/inspect_combatants 返回 `scene:epilogue`。空牌堆没有打开页面，仍返回实际战斗画面的 screen，而非伪造一个牌堆页。
+
+原生 [ObservationContext](../../src/Sts2Agent/Observation/ObservationContext.cs) 负责场景、遮挡与页面判定，详情响应由共用入口复制对应快照的上下文；[Python 场景校验](../../src/sts2_mcp/output/scene_context.py)统一检查与投影。未返回 scene 的专门工具不因本次统一而新增整个观察；可用操作仍由 get_observation 提供。
+
 ## MCP 输出预设
 
 `get_observation()` 等同于 `get_observation({"preset":"default"})`，保留完整基础观察的内容范围并省略普通空值；`preset:"full"` 保留原有空值。普通手牌仍不附正文或悬停详情，选牌可浏览面板按下述范围读取；统一规则见[MCP 输出预设](mcp.md#输出预设)。`get_observation({"preset":"actions_only"})` 仅返回以下上下文及工具名，例为战斗中的手牌选择：

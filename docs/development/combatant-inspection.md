@@ -1,6 +1,6 @@
 # 战斗对象与充能球详情
 
-版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。scene/screen 遵循[统一上下文](observation.md#场景上下文)，可见建筑师背景使用 epilogue，不以所读对象来自战斗 UI 为由改写 scene。
 
 文件操作 `inspect_combatants` 与同名 [MCP 工具](mcp.md)用于一次只读查看玩家、可见敌人和友方召唤物的 powers、敌人当前意图、玩家已生成充能球及悬浮君王之剑的原生英语说明。不触发实际鼠标悬停，不改变目标、语言或游戏流程。MCP full 与文件客户端返回相同的玩法 JSON，默认 default 省略普通空值；规则见[公共预设](mcp.md#输出预设)。
 
@@ -18,7 +18,7 @@ MCP 调用 `inspect_combatants()` 除通用 preset 外无其他参数，成功�
 
 | 字段 | 内容 |
 | --- | --- |
-| `scene` | 当前固定为 `combat` |
+| `scene/screen` | 与当前基础观察一致的[场景上下文](observation.md#场景上下文)，例如建筑师为 epilogue |
 | `player.powers[]` | 玩家当前可读的 power 名称和可见计数 `name/amount` |
 | `player.orb_slots` | 与[基础观察](observation.md#玩法字段)相同的球槽顺序、空值和显示数字；不把悬停才出现的数字填入该摘要 |
 | `player.sovereign_blades[]` | 当前可见悬浮剑的绑定卡牌 `id/name`，与基础观察和手牌 ID 一致；按稳定 ID 排列 |

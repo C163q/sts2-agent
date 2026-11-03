@@ -44,8 +44,7 @@ internal sealed partial class GameAdapter
         var context = runResultInspection.Current;
         if (context == null || !RunResultInspection.Exposed(context) || !runResultInspection.Ready(context))
             return FileMailbox.Error(request.Id, "illegal_action", "The run result is unavailable.");
-        if (inspect) return Success(request.Id, JsonSerializer.Serialize(new {
-            snapshot_id = before.GetProperty("snapshot_id").GetString(), scene = "run_result", run_result = runResultInspection.Read(full: true) }));
+        if (inspect) return InspectionSuccess(request.Id, before, new { run_result = runResultInspection.Read(full: true) });
         var button = runResultInspection.Options(context).FirstOrDefault(o => o.id == id).button;
         if (button == null || !RunResultInspection.Clickable(button))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested result button is unavailable.");

@@ -1,3 +1,4 @@
+from sts2_mcp.output.scene_context import scene_context
 import re
 
 from sts2_mcp.output.deck_details import closed_card_view
@@ -98,9 +99,10 @@ def identifiers(values, known):
 
 
 def map_details(state):
-    screen = state["screen"]
+    context = scene_context(state)
+    screen = context["screen"]
     act = state["act"]
-    if (state["scene"] != "map" or not isinstance(screen, dict)
+    if (not isinstance(screen, dict)
             or screen.get("status") != "visible" or screen.get("view") != "map"
             or type(act) is not int or act < 1 or type(state["can_travel"]) is not bool
             or not isinstance(state["nodes"], list) or not state["nodes"]):
@@ -137,7 +139,7 @@ def map_details(state):
     choices = identifiers(state["selectable_nodes"], known)
     if state["can_travel"] != bool(choices):
         raise ValueError("Invalid map travel availability.")
-    return {"scene": "map", "screen": {"status": "visible", "view": "map"}, "act": act,
+    return {**context, "act": act,
             "current_node": current, "visited_path": visited, "can_travel": state["can_travel"],
             "selectable_nodes": choices, "nodes": nodes}
 

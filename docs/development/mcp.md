@@ -56,7 +56,7 @@ flowchart LR
 | `inspect_hand({preset?, card_ids?})` | [手牌完整详情或摘要，可按 ID 筛选](hand-inspection.md) |
 | `inspect_targets(card_id 或 potion_slot)` | 查询[手牌](card-play.md)或[药水](potion-actions.md)可用性、是否须指定目标及范围，不进入瞄准或抽随机数 |
 | `play_card(card_id, target_id?)` | [提交一次原生手动出牌](card-play.md)，后续选牌单独操作 |
-| `inspect_ui()` | [当前战斗界面与资源帮助](ui-inspection.md) |
+| `inspect_ui(preset?, sources?)` | [可见顶栏与战斗通用悬停帮助](ui-inspection.md)，summary 省略正文，sources 精确筛选来源 |
 | `inspect_potions()` | [药水正文、空槽位置和共享解释](potion-inspection.md) |
 | `use_potion(potion_slot, target_id?)` | [使用药水](potion-actions.md)，遇到后续选择立即返回 |
 | `discard_potion(potion_slot)` | 原生丢弃，遵守禁止移除药水的限制 |
@@ -133,6 +133,8 @@ approval_mode = "approve"
 
 其他 agent 使用相同的可执行文件、参数和 stdio 传输配置，配置文件格式由各客户端决定。服务默认等待游戏响应最多 40 秒，可通过 `--timeout` 调整；客户端工具超时应留出余量。
 
+场景与覆盖页面统一遵循[观察上下文](observation.md#场景上下文)；工具类型不改写 scene。
+
 ## 输出预设
 
 全部 42 个玩法 JSON 工具接受可选的 `preset`：
@@ -149,7 +151,7 @@ approval_mode = "approve"
 
 例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。遗物 summary 同样省略普通空值。`inspect_deck` / `inspect_pile` 的 `detail_level` 独立决定正文范围，默认仍是 summary；`preset:"full"` 不会更改它。
 
-各工具专用预设的完整字段规则由对应接口维护：`get_observation` 的 summary／top_bar 见[观察预设](observation.md#mcp-输出预设)，手牌、选牌和遗物摘要见各工具说明。不要把 default 保留空数组的公共规则套用到明确精简空列表的专用 summary。
+各工具专用预设的完整字段规则由对应接口维护：`get_observation` 的 summary／top_bar 见[观察预设](observation.md#mcp-输出预设)，UI 帮助、手牌、选牌和遗物摘要见各工具说明。不要把 default 保留空数组的公共规则套用到明确精简空列表的专用 summary。
 
 该参数只控制 Python 公开输出，不转发给 Mod；完整响应校验、动作许可判断和原有筛选先完成，再过滤空值。部分成功的 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。标准库文件客户端继续保留原有空值，本节预设只适用于 MCP 和 GameTools 的玩法调用；`detail_level` 等原生参数仍独立生效。
 

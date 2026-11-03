@@ -20,7 +20,7 @@ internal sealed class DeckInspection
         bool upgrades = DeckView.Grid(screen).IsShowingUpgrades;
         return EnglishCardText.Read(() => new
         {
-            snapshot_id = snapshotId, scene = "deck", detail_level = detailLevel,
+            snapshot_id = snapshotId, detail_level = detailLevel,
             view_upgrades = upgrades, sort = DeckView.Sorting(screen),
             deck = DeckView.Cards(screen).Select(card => BrowsedCard.Read(card, "deck:" + ids.Get(card),
                 PileType.Deck, upgrades, detailLevel == "full")).ToArray()

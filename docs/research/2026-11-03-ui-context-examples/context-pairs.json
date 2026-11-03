@@ -1,0 +1,890 @@
+{
+  "provenance": "explicit_context_projection",
+  "pairs": [
+    {
+      "tool": "inspect_ancient",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "ancient",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/ancient/verify/evidence.json",
+      "inspection_entry_index": 11,
+      "observation_entry_index": 12
+    },
+    {
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "ancient",
+        "screen": {
+          "status": "covered",
+          "view": "deck"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/ancient/verify/evidence.json",
+      "inspection_entry_index": 14,
+      "observation_entry_index": 15
+    },
+    {
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "ancient",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/ancient/verify/evidence.json",
+      "inspection_entry_index": 24,
+      "observation_entry_index": 25
+    },
+    {
+      "tool": "inspect_map",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "ancient",
+        "screen": {
+          "status": "visible",
+          "view": "map"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/ancient/verify/evidence.json",
+      "inspection_entry_index": 26,
+      "observation_entry_index": 27
+    },
+    {
+      "tool": "inspect_combatants",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/combat/verify/evidence.json",
+      "inspection_entry_index": 8,
+      "observation_entry_index": 9
+    },
+    {
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/combat/verify/evidence.json",
+      "inspection_entry_index": 11,
+      "observation_entry_index": 12
+    },
+    {
+      "tool": "inspect_pile",
+      "arguments": {
+        "preset": "full",
+        "pile": "discard",
+        "detail_level": "full"
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "covered",
+          "view": "discard_pile"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/combat/verify/evidence.json",
+      "inspection_entry_index": 13,
+      "observation_entry_index": 14
+    },
+    {
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/combat/verify/evidence.json",
+      "inspection_entry_index": 23,
+      "observation_entry_index": 24
+    },
+    {
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "covered",
+          "view": "deck"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/combat/verify/evidence.json",
+      "inspection_entry_index": 25,
+      "observation_entry_index": 26
+    },
+    {
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/combat/verify/evidence.json",
+      "inspection_entry_index": 35,
+      "observation_entry_index": 36
+    },
+    {
+      "tool": "inspect_map",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "visible",
+          "view": "map"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/combat/verify/evidence.json",
+      "inspection_entry_index": 37,
+      "observation_entry_index": 38
+    },
+    {
+      "tool": "inspect_event",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "event",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/confirmation/verify/evidence.json",
+      "inspection_entry_index": 8,
+      "observation_entry_index": 9
+    },
+    {
+      "tool": "choose_event_option",
+      "arguments": {
+        "preset": "full",
+        "option_id": 3
+      },
+      "context": {
+        "scene": "event",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/confirmation/verify/evidence.json",
+      "inspection_entry_index": 11,
+      "observation_entry_index": 12
+    },
+    {
+      "tool": "choose_event_option",
+      "arguments": {
+        "preset": "full",
+        "option_id": 5
+      },
+      "context": {
+        "scene": "event",
+        "screen": {
+          "status": "visible",
+          "view": "confirmation"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/confirmation/verify/evidence.json",
+      "inspection_entry_index": 14,
+      "observation_entry_index": 15
+    },
+    {
+      "tool": "respond_to_confirmation",
+      "arguments": {
+        "preset": "full",
+        "option": "cancel"
+      },
+      "context": {
+        "scene": "event",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/confirmation/verify/evidence.json",
+      "inspection_entry_index": 20,
+      "observation_entry_index": 21
+    },
+    {
+      "tool": "inspect_event",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "event",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/divination/verify/evidence.json",
+      "inspection_entry_index": 8,
+      "observation_entry_index": 9
+    },
+    {
+      "tool": "choose_event_option",
+      "arguments": {
+        "preset": "full",
+        "option_id": 6
+      },
+      "context": {
+        "scene": "event",
+        "screen": {
+          "status": "visible",
+          "view": "divination"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/divination/verify/evidence.json",
+      "inspection_entry_index": 11,
+      "observation_entry_index": 12
+    },
+    {
+      "tool": "inspect_event",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "event",
+        "screen": {
+          "status": "visible",
+          "view": "divination"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/divination/verify/evidence.json",
+      "inspection_entry_index": 21,
+      "observation_entry_index": 22
+    },
+    {
+      "tool": "inspect_event",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "event",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/event/verify/evidence.json",
+      "inspection_entry_index": 8,
+      "observation_entry_index": 9
+    },
+    {
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "event",
+        "screen": {
+          "status": "covered",
+          "view": "deck"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/event/verify/evidence.json",
+      "inspection_entry_index": 11,
+      "observation_entry_index": 12
+    },
+    {
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "event",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/event/verify/evidence.json",
+      "inspection_entry_index": 21,
+      "observation_entry_index": 22
+    },
+    {
+      "tool": "inspect_map",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "event",
+        "screen": {
+          "status": "visible",
+          "view": "map"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/event/verify/evidence.json",
+      "inspection_entry_index": 23,
+      "observation_entry_index": 24
+    },
+    {
+      "tool": "inspect_combatants",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/orbs/verify/evidence.json",
+      "inspection_entry_index": 8,
+      "observation_entry_index": 9
+    },
+    {
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "covered",
+          "view": "deck"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/orbs/verify/evidence.json",
+      "inspection_entry_index": 11,
+      "observation_entry_index": 12
+    },
+    {
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/orbs/verify/evidence.json",
+      "inspection_entry_index": 21,
+      "observation_entry_index": 22
+    },
+    {
+      "tool": "inspect_map",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "visible",
+          "view": "map"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/orbs/verify/evidence.json",
+      "inspection_entry_index": 23,
+      "observation_entry_index": 24
+    },
+    {
+      "tool": "inspect_rest_site",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "rest_site",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/rest/verify/evidence.json",
+      "inspection_entry_index": 8,
+      "observation_entry_index": 9
+    },
+    {
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "rest_site",
+        "screen": {
+          "status": "covered",
+          "view": "deck"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/rest/verify/evidence.json",
+      "inspection_entry_index": 11,
+      "observation_entry_index": 12
+    },
+    {
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "rest_site",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/rest/verify/evidence.json",
+      "inspection_entry_index": 21,
+      "observation_entry_index": 22
+    },
+    {
+      "tool": "inspect_map",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "rest_site",
+        "screen": {
+          "status": "visible",
+          "view": "map"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/rest/verify/evidence.json",
+      "inspection_entry_index": 23,
+      "observation_entry_index": 24
+    },
+    {
+      "tool": "inspect_rewards",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "rewards",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/rewards/verify/evidence.json",
+      "inspection_entry_index": 8,
+      "observation_entry_index": 9
+    },
+    {
+      "tool": "proceed",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "rewards",
+        "screen": {
+          "status": "visible",
+          "view": "map"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/rewards/verify/evidence.json",
+      "inspection_entry_index": 11,
+      "observation_entry_index": 12
+    },
+    {
+      "tool": "inspect_combatants",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/selection/verify/evidence.json",
+      "inspection_entry_index": 8,
+      "observation_entry_index": 9
+    },
+    {
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "covered"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/selection/verify/evidence.json",
+      "inspection_entry_index": 11,
+      "observation_entry_index": 12
+    },
+    {
+      "tool": "inspect_selection",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "covered"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/selection/verify/evidence.json",
+      "inspection_entry_index": 21,
+      "observation_entry_index": 22
+    },
+    {
+      "tool": "set_selection_view",
+      "arguments": {
+        "preset": "full",
+        "view": "battlefield"
+      },
+      "context": {
+        "scene": "combat",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/selection/verify/evidence.json",
+      "inspection_entry_index": 23,
+      "observation_entry_index": 24
+    },
+    {
+      "tool": "open_shop",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "shop",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/shop/verify/evidence.json",
+      "inspection_entry_index": 9,
+      "observation_entry_index": 10
+    },
+    {
+      "tool": "inspect_shop",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "shop",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/shop/verify/evidence.json",
+      "inspection_entry_index": 19,
+      "observation_entry_index": 20
+    },
+    {
+      "tool": "inspect_treasure",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "treasure",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/treasure/verify/evidence.json",
+      "inspection_entry_index": 8,
+      "observation_entry_index": 9
+    },
+    {
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "treasure",
+        "screen": {
+          "status": "covered",
+          "view": "deck"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/treasure/verify/evidence.json",
+      "inspection_entry_index": 11,
+      "observation_entry_index": 12
+    },
+    {
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "treasure",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/treasure/verify/evidence.json",
+      "inspection_entry_index": 21,
+      "observation_entry_index": 22
+    },
+    {
+      "tool": "inspect_map",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "treasure",
+        "screen": {
+          "status": "visible",
+          "view": "map"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/gui-final/treasure/verify/evidence.json",
+      "inspection_entry_index": 23,
+      "observation_entry_index": 24
+    },
+    {
+      "tool": "inspect_rewards",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "rewards",
+        "screen": {
+          "status": "visible"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+      "inspection_entry_index": 8,
+      "observation_entry_index": 9
+    },
+    {
+      "tool": "proceed",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "epilogue",
+        "screen": {
+          "status": "visible",
+          "view": "epilogue"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+      "inspection_entry_index": 11,
+      "observation_entry_index": 12
+    },
+    {
+      "tool": "inspect_combatants",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "epilogue",
+        "screen": {
+          "status": "visible",
+          "view": "epilogue"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+      "inspection_entry_index": 21,
+      "observation_entry_index": 22
+    },
+    {
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "epilogue",
+        "screen": {
+          "status": "covered",
+          "view": "deck"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+      "inspection_entry_index": 23,
+      "observation_entry_index": 24
+    },
+    {
+      "tool": "inspect_map",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "epilogue",
+        "screen": {
+          "status": "visible",
+          "view": "map"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+      "inspection_entry_index": 34,
+      "observation_entry_index": 35
+    },
+    {
+      "tool": "close_map",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "epilogue",
+        "screen": {
+          "status": "visible",
+          "view": "epilogue"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+      "inspection_entry_index": 44,
+      "observation_entry_index": 45
+    },
+    {
+      "tool": "advance_dialogue",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "epilogue",
+        "screen": {
+          "status": "visible",
+          "view": "epilogue"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+      "inspection_entry_index": 47,
+      "observation_entry_index": 48
+    },
+    {
+      "tool": "proceed",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "run_result",
+        "screen": {
+          "status": "visible",
+          "view": "run_result"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+      "inspection_entry_index": 50,
+      "observation_entry_index": 51
+    },
+    {
+      "tool": "inspect_run_result",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "run_result",
+        "screen": {
+          "status": "visible",
+          "view": "run_result"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+      "inspection_entry_index": 60,
+      "observation_entry_index": 61
+    },
+    {
+      "tool": "run_result_option",
+      "arguments": {
+        "preset": "full",
+        "option_id": "continue"
+      },
+      "context": {
+        "scene": "run_result",
+        "screen": {
+          "status": "visible",
+          "view": "run_result"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+      "inspection_entry_index": 63,
+      "observation_entry_index": 64
+    },
+    {
+      "tool": "inspect_run_result",
+      "arguments": {
+        "preset": "full"
+      },
+      "context": {
+        "scene": "run_result",
+        "screen": {
+          "status": "visible",
+          "view": "run_result"
+        }
+      },
+      "matches_observation": true,
+      "source": ".tmp/2026-11-03-ui-context-implementation/ending-final/evidence.json",
+      "inspection_entry_index": 73,
+      "observation_entry_index": 74
+    }
+  ]
+}

@@ -10,6 +10,7 @@ from sts2_mcp.output.run_ending_details import option_arguments
 from sts2_mcp.output.deck_details import deck_arguments
 from sts2_mcp.output.inspection_details import inspection_details
 from sts2_mcp.output.hand_presets import hand_arguments, hand_preset
+from sts2_mcp.output.ui_presets import ui_arguments, ui_preset
 from sts2_mcp.output.relic_presets import relic_arguments, relic_preset
 from sts2_mcp.output.map_details import map_arguments, map_preset, travel_arguments
 from sts2_mcp.output.pile_details import pile_arguments
@@ -191,8 +192,12 @@ class GameTools:
         return await self._action(operation, arguments, validate_selection=True)
 
     @output_preset
-    async def inspect_ui(self):
-        return await self._inspect("inspect_ui")
+    async def inspect_ui(self, arguments=None):
+        try:
+            options = ui_arguments(arguments)
+        except ValueError:
+            return player_result({"ok": False, "error": {"code": "invalid_request"}})
+        return ui_preset(await self._inspect("inspect_ui"), **options)
 
     @output_preset
     async def inspect_potions(self):

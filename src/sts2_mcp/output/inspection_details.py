@@ -1,3 +1,4 @@
+from sts2_mcp.output.scene_context import scene_context
 from sts2_mcp.output.combatant_details import combatant_details
 from sts2_mcp.output.deck_details import closed_card_view, deck_details
 from sts2_mcp.output.game_output import hand_details, observation_details
@@ -42,8 +43,9 @@ def potion_details(state):
 
 
 def ui_details(state):
+    context = scene_context(state)
     tips = state.get("hover_tips")
-    if state.get("scene") != "combat" or not isinstance(tips, list):
+    if not isinstance(tips, list):
         raise ValueError("Invalid UI details.")
     for tip in tips:
         if (not isinstance(tip, dict)
@@ -52,7 +54,7 @@ def ui_details(state):
                 or not isinstance(tip.get("sources"), list) or not tip["sources"]
                 or any(not isinstance(source, str) or not source for source in tip["sources"])):
             raise ValueError("Invalid UI hover tip.")
-    return {"scene": state["scene"], "hover_tips": [
+    return {**context, "hover_tips": [
         {key: tip[key] for key in ("title", "description", "sources")} for tip in tips]}
 
 
@@ -116,6 +118,8 @@ def _read_details(operation, state, arguments=None):
 
 def inspection_details(operation, state, arguments=None):
     result = _read_details(operation, state, arguments)
+    if "scene" in result:
+        result.update(scene_context(state))
     if "selection_view" in state:
         if state["selection_view"] not in {"visible", "battlefield", "covered", "unsupported"}:
             raise ValueError("Invalid pending selection view.")

@@ -1,3 +1,4 @@
+from sts2_mcp.output.ui_presets import UI_SCHEMA
 from mcp.types import Tool, ToolAnnotations
 from sts2_mcp.output.presets import preset_schema
 from sts2_mcp.output.observation_presets import OBSERVATION_SCHEMA
@@ -120,8 +121,8 @@ def tool_definitions(*, screenshots_enabled=False):
         Tool(name="play_card", inputSchema=PLAY_SCHEMA, annotations=action, description=(
             "Play one current hand card. Use inspect_targets when target requirements are unknown. "
             "Stops at choices; continue with selection tools.")),
-        Tool(name="inspect_ui", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
-            "Read hover help for visible combat UI, resources and empty orb slots. Use inspect_combatants for occupied orbs; "
+        Tool(name="inspect_ui", inputSchema=UI_SCHEMA, annotations=read_only, description=(
+            "Read help for exposed top-bar and combat UI. summary lists titles and sources; sources selects descriptions. Use inspect_combatants for occupied orbs; "
             "use dedicated inspections for cards, potions and relics.")),
         Tool(name="inspect_potions", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
             "Read visible potion descriptions and hover help. potion_slots preserves belt positions, with null for empty slots.")),

@@ -10,7 +10,7 @@ from tests.python.test_resource_events import resource
 
 class CapacityObservationTests(unittest.TestCase):
     def test_combatant_orb_tips_reference_only_occupied_public_slots(self):
-        state = {'scene': 'combat', 'player': {'powers': [], 'orb_slots': [
+        state = {'scene': 'combat', 'screen': {'status': 'visible'}, 'player': {'powers': [], 'orb_slots': [
             {'name': 'Lightning', 'passive': 3, 'evoke': None}, None]}, 'enemies': [],
             'hover_tips': [{'title': 'Lightning', 'description': 'Passive: deal 3 damage. Evoke: deal 8 damage.',
                             'sources': ['player.orb_slots.0']}]}

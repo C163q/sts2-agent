@@ -40,9 +40,9 @@ internal sealed class PileInspection
     {
         var result = new Dictionary<string, object?>
         {
-            ["snapshot_id"] = snapshotId, ["scene"] = "card_pile", ["pile"] = options.Pile,
+            ["snapshot_id"] = snapshotId, ["pile"] = options.Pile,
             ["detail_level"] = options.DetailLevel, ["status"] = status,
-            ["screen"] = CardView.Screen(CombatObservation.Status()), ["message"] = message, ["cards"] = cards
+            ["message"] = message, ["cards"] = cards
         };
         if (reason != null) result["reason"] = reason;
         return result;

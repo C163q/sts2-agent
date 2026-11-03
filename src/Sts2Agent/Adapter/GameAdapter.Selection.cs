@@ -52,6 +52,7 @@ internal sealed partial class GameAdapter
             if (selection.Status != "visible")
                 return FileMailbox.Error(request.Id, "illegal_action", "Return to the selection before reading its candidates.");
             bool unavailable = viewUpgrades.HasValue && !selection.CanViewUpgrades;
+            JsonElement context = before.Clone();
             string? snapshot = before.GetProperty("snapshot_id").GetString();
             if (viewUpgrades.HasValue && !unavailable && selection.ViewUpgrades != viewUpgrades)
             {
@@ -63,12 +64,13 @@ internal sealed partial class GameAdapter
                     return FileMailbox.Error(request.Id, "illegal_action", "The selection changed while switching upgrade previews.");
                 using var current = JsonDocument.Parse(viewed);
                 snapshot = current.RootElement.GetProperty("snapshot_id").GetString();
+                context = current.RootElement.Clone();
             }
             var result = new Dictionary<string, object?> {
-                ["snapshot_id"] = snapshot, ["scene"] = before.GetProperty("scene").GetString(),
+                ["snapshot_id"] = snapshot,
                 ["selection"] = new SelectionInspection(observation).Read(selection, full: true) };
             if (unavailable) result["errors"] = new[] { new { code = "upgrade_view_unavailable" } };
-            return Success(request.Id, JsonSerializer.Serialize(result));
+            return InspectionSuccess(request.Id, context, result);
         }
         if (request.Operation == "set_selection_view")
         {

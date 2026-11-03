@@ -9,7 +9,7 @@ from tests.python.test_mcp_server import FakeGame
 
 
 def opened(pile="draw", level="summary"):
-    return {"scene": "card_pile", "pile": pile, "detail_level": level, "status": "opened",
+    return {"scene": "combat", "pile": pile, "detail_level": level, "status": "opened",
             "screen": {"status": "covered", "view": pile + "_pile"}, "message": "Native pile information.",
             "cards": [{"id": "pile:0", "name": "Defend", "type": "Skill", "rarity": "basic",
                        "visual_card_pool": "ironclad", "energy_cost": "1", "star_cost": None,
@@ -60,7 +60,7 @@ class PileMcpTests(unittest.IsolatedAsyncioTestCase):
         for status, pile, cards, screen in (("empty", "discard", [], {"status": "visible"}),
                                            ("unavailable", "exhaust", None, {"status": "covered", "view": "deck"})):
             with self.subTest(status=status), FakeGame() as game:
-                game.pile_payload = {"scene": "card_pile", "pile": pile, "detail_level": "full",
+                game.pile_payload = {"scene": "combat", "pile": pile, "detail_level": "full",
                     "status": status, "screen": screen, "message": "An English explanation.", "cards": cards}
                 if status == "unavailable": game.pile_payload["reason"] = "entry_not_visible"
                 game.deck_open = status == "unavailable"
@@ -81,7 +81,7 @@ class PileMcpTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_malformed_payloads_fail_closed(self):
         from sts2_mcp.mcp_server import GameTools
-        changes = [{"scene": "combat"}, {"pile": "discard"}, {"detail_level": "full"}, {"status": "unknown"},
+        changes = [{"scene": "card_pile"}, {"pile": "discard"}, {"detail_level": "full"}, {"status": "unknown"},
                    {"screen": {}}, {"screen": {"status": "covered", "view": "deck"}}, {"cards": None},
                    {"cards": []}, {"message": None}, {"status": "empty"},
                    {"status": "unavailable", "reason": "entry_not_visible"}]

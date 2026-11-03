@@ -1,6 +1,6 @@
 # 当前幕地图查看
 
-版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。scene/screen 遵循[统一上下文](observation.md#场景上下文)，展开地图时仅 screen.view 为 map，scene 保留当前房间或战斗场景。
 
 文件接口仍提供无参数 `inspect_map` 和 `close_map`；MCP 的 `inspect_map` 支持以下参数；`close_map` 只接受通用 preset。当前工具目录见 [MCP 指南](mcp.md)。
 
@@ -46,7 +46,7 @@
 
 ```json
 {
-  "scene": "map",
+  "scene": "combat",
   "screen": {"status": "visible", "view": "map"},
   "act": 1,
   "current_node": "map:1:1:2",

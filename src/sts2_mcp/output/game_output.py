@@ -128,8 +128,8 @@ OBSERVATION = {
     "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
     "available_actions": [str],
 }
-OBSERVATION_SCENES = frozenset(('combat', 'main_menu', 'unrecognized', 'rewards', 'rest_site',
-                              'treasure', 'shop', 'ancient', 'event', 'epilogue', 'run_result'))
+from sts2_mcp.output.scene_context import SCENES as OBSERVATION_SCENES, scene_context
+
 from sts2_mcp.output.map_details import MAP_SUMMARY
 
 
@@ -215,6 +215,7 @@ def observation_details(state):
             or result["scene"] not in OBSERVATION_SCENES
             or result["screen"]["status"] not in ("visible", "covered", "hidden", "not_ready", "not_applicable")):
         raise ValueError("Invalid observation structure.")
+    result.update(scene_context(state))
     result['available_actions'] = public_tools(result['available_actions'])
     count = (result.get('top_bar') or {}).get('relic_count')
     if count is not None and count < 0:
@@ -231,7 +232,7 @@ def observation_details(state):
     if result.get('map') is not None:
         from sts2_mcp.output.map_details import map_summary
         result['map'] = map_summary(result['map'])
-        map_tools = {'travel_to_node', 'inspect_map', 'close_map', 'inspect_deck', 'inspect_relics', 'inspect_potions'}
+        map_tools = {'travel_to_node', 'inspect_map', 'close_map', 'inspect_deck', 'inspect_relics', 'inspect_potions', 'inspect_ui'}
         if result['scene'] != 'combat':
             map_tools |= {'inspect_targets', 'use_potion', 'discard_potion'}
         if (result['screen'] != {'status': 'visible', 'view': 'map'}

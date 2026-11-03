@@ -1,3 +1,4 @@
+from sts2_mcp.output.scene_context import scene_context
 import re
 
 
@@ -35,13 +36,14 @@ def deck_arguments(arguments):
 
 
 def deck_details(state, level):
+    context = scene_context(state)
     sort = state["sort"]
-    if (state["scene"] != "deck" or state["detail_level"] != level
+    if (context["screen"].get("view") != "deck" or state["detail_level"] != level
             or type(state["view_upgrades"]) is not bool or not isinstance(sort, dict)
             or sort["by"] not in SORT_KEYS or type(sort["descending"]) is not bool
             or not isinstance(state["deck"], list)):
         raise ValueError("Invalid deck details.")
-    return {"scene": "deck", "detail_level": level, "view_upgrades": state["view_upgrades"],
+    return {**context, "detail_level": level, "view_upgrades": state["view_upgrades"],
             "sort": {"by": sort["by"], "descending": sort["descending"]},
             "deck": browsed_cards(state["deck"], level, "deck")}
 
@@ -76,7 +78,7 @@ def browsed_cards(items, level, prefix):
 
 
 def closed_card_view(state):
-    result = {key: state[key] for key in ("scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions")}
+    result = {**scene_context(state), **{key: state[key] for key in ("turn", "player", "enemies", "top_bar", "buttons", "available_actions")}}
     if (not isinstance(result["scene"], str) or not isinstance(result["screen"], dict)
             or not isinstance(result["screen"]["status"], str) or not isinstance(result["available_actions"], list)
             or any(not isinstance(action, str) for action in result["available_actions"])):

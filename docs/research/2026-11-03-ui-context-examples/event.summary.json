@@ -1,0 +1,52 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible"
+  },
+  "hover_tips": [
+    {
+      "title": "Hit Points (HP)",
+      "sources": [
+        "top_bar.hp",
+        "top_bar.max_hp"
+      ]
+    },
+    {
+      "title": "Gold",
+      "sources": [
+        "top_bar.gold"
+      ]
+    },
+    {
+      "title": "Floor",
+      "sources": [
+        "top_bar.floor"
+      ]
+    },
+    {
+      "title": "Vantom",
+      "sources": [
+        "top_bar.bosses"
+      ]
+    },
+    {
+      "title": "Map (M)",
+      "sources": [
+        "top_bar.map_visible"
+      ]
+    },
+    {
+      "title": "Deck (D)",
+      "sources": [
+        "top_bar.deck_visible",
+        "top_bar.deck_count"
+      ]
+    },
+    {
+      "title": "Settings (ESC)",
+      "sources": [
+        "top_bar.settings_visible"
+      ]
+    }
+  ]
+}

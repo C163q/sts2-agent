@@ -28,10 +28,8 @@ internal sealed partial class GameAdapter
         {
             if (!context.Inventory.IsOpen || ShopInspection.Animating(context))
                 return FileMailbox.Error(request.Id, "illegal_action", "Open the shop before inspecting its items.");
-            return Success(request.Id, JsonSerializer.Serialize(new
-            {
-                snapshot_id = before.GetProperty("snapshot_id").GetString(), scene = "shop", shop = shopInspection.Read(full: true)
-            }));
+            return InspectionSuccess(request.Id, before, new { shop = shopInspection.Read(full: true)
+            });
         }
         var run = RunManager.Instance.DebugOnlyGetState();
         Task? submitted = null;

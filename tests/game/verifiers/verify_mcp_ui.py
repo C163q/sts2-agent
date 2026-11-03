@@ -32,7 +32,7 @@ async def verify(args):
             assert {tool.name for tool in listed.tools} == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"}
             tool = next(tool for tool in listed.tools if tool.name == "inspect_ui")
             assert tool.annotations.readOnlyHint is True
-            assert set(tool.inputSchema['properties']) == {'preset'} and not tool.inputSchema['additionalProperties']
+            assert set(tool.inputSchema['properties']) == {'preset', 'sources'} and not tool.inputSchema['additionalProperties']
 
             async def call(name):
                 result = await session.call_tool(name, full_output_arguments(name, {}))
@@ -46,7 +46,7 @@ async def verify(args):
             repeated = await call("inspect_ui")
             assert inspected == repeated == player_result(reference), "UI changed or MCP output differs from file inspection."
             assert observed["scene"] == "combat"
-            assert set(inspected) == {"scene", "hover_tips"} and inspected["scene"] == "combat", inspected
+            assert set(inspected) == {"scene", "screen", "hover_tips"} and inspected["scene"] == "combat", inspected
             for tip in inspected["hover_tips"]:
                 assert set(tip) == {"title", "description", "sources"}, tip
                 for source in tip["sources"]:
