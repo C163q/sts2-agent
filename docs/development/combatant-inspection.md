@@ -40,7 +40,7 @@ MCP 调用 `inspect_combatants()` 除通用 preset 外无其他参数，成功�
 
 ## 读取边界
 
-支持无遮挡战场，包括原生可查看的建筑师战斗背景；瞄准或打出卡牌期间，原生界面会抑制战斗对象悬停说明，因此整次读取返回 `illegal_action`。敌人身份与顺序复用基础观察的可见节点筛选；power 必须有可见图标、模型允许展示且能接收鼠标悬停；意图必须有可见的 holder 和图标且能接收悬停。不枚举隐藏 powers，不读 `Monster.NextMove` 或后续招式，不增加格挡说明。`HasIntentTip: false` 的意图不构造说明。
+支持无遮挡战场，包括原生可查看的建筑师战斗背景；手牌处于拖动、瞄准或打出卡牌流程（`InCardPlay`）时，原生界面会抑制战斗对象悬停说明，因此整次读取返回 `illegal_action`。该门控不等同于拒绝所有全局瞄准模式。敌人身份与顺序复用基础观察的可见节点筛选；power 必须有可见图标、模型允许展示且能接收鼠标悬停；意图必须有可见的 holder 和图标且能接收悬停。不枚举隐藏 powers，不读 `Monster.NextMove` 或后续招式，不增加格挡说明。`HasIntentTip: false` 的意图不构造说明。
 
 奥斯提按真实阵营进入 `allies`，不占用敌人下标。君王之剑的说明来自可见 `NSovereignBladeVfx.Card` 的原生卡牌预览，按原生 `PileType.Deck` 格式化；不返回独立铸造计数、所在牌堆或隐藏卡牌信息。剑可见但 hitbox 不可悬停、攻击动画进行中或被隐藏时不提供正文；多把剑分别绑定卡牌 ID，相同提示仍可共享多个来源。核对与验证见[记录](../research/2026-11-02-companions.md)。
 
@@ -52,13 +52,7 @@ power 主说明使用当前实例 `HoverTips` 的动态正文，而非静态通�
 
 ## 验证
 
-运行期间避免手动改变游戏：
-
-```sh
-python3 -m tests.game.verifiers.verify_combatants --ipc-dir .tmp/live/ipc --output .tmp/live/combatant-inspection.json --report .tmp/live/combatant-inspection-check.json
-```
-
-该脚本重复读取并核对前后状态令牌一致、敌人 ID 和基础字段对应、共享说明去重、来源路径可解析及数值 note 的范围。详情仅保留可悬停图标，核对时按顺序匹配基础观察的子序列。
+`verify_combatants.py` 与 `verify_mcp_combatants.py` 的结构断言尚未适配 screen、友方、悬浮剑及当前工具清单，暂不能作为当前版本通过验证的入口；问题、采样与范围见[本轮核验](../research/2026-11-03-inspect-combatants-review.md)。修复须保留其重复读取、前后状态令牌一致、敌人 ID 与基础字段对应、共享说明去重、来源路径和数值 note 检查；详情仅保留可悬停图标，应按顺序匹配基础观察的子序列。
 
 独立中文实例可用 `scripts/run_roundtrip.py --windowed --capture --check-combatants`。此标志仅在原有测试入口创建战斗时，通过 `PowerCmd.Apply` 给测试玩家准备 Strength、Vulnerable、怪物施加的永久 Shrink，给测试敌人准备 Vulnerable 与计数 5 的 Escape Artist，并检查动态说明、共享提示及可见性；另用控制变量对照原生英文与中文环境下英语作用域的状态说明模板。模板对照不代表全部状态的生命周期均已实机验证。不要为正式游戏设置测试标志。实施依据、验证结果和未验证范围见 [实施记录](../research/2026-10-29-combatant-inspection-plan.md)。
 

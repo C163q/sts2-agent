@@ -1,0 +1,67 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "player": {
+    "powers": [],
+    "orb_slots": [],
+    "sovereign_blades": []
+  },
+  "enemies": [
+    {
+      "id": 1,
+      "name": "Thieving Hopper",
+      "powers": [
+        {
+          "name": "Escape Artist",
+          "amount": 4
+        },
+        {
+          "name": "Swipe",
+          "amount": null
+        }
+      ],
+      "intents": [
+        {
+          "category": "buff",
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "hover_tips": [
+    {
+      "title": "Escape Artist",
+      "description": "Tries to escape the combat after 4 turns.",
+      "sources": [
+        "enemies.0.powers.0"
+      ]
+    },
+    {
+      "title": "Swipe",
+      "description": "Upon killing this enemy, the stolen card is returned.",
+      "sources": [
+        "enemies.0.powers.1"
+      ]
+    },
+    {
+      "title": "Bash",
+      "description": "Deal 8 damage.\nApply 2 Vulnerable.",
+      "sources": [
+        "enemies.0.powers.1"
+      ]
+    },
+    {
+      "title": "Empower",
+      "description": "This enemy intends to use a Buff.",
+      "sources": [
+        "enemies.0.intents.0"
+      ]
+    }
+  ],
+  "allies": [],
+  "notes": {
+    "enemy_attack_intents": "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
+  }
+}

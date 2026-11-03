@@ -1,0 +1,125 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "player": {
+    "powers": [],
+    "orb_slots": [
+      {
+        "name": "Lightning",
+        "passive": 3,
+        "evoke": null
+      },
+      {
+        "name": "Frost",
+        "passive": 2,
+        "evoke": null
+      },
+      {
+        "name": "Dark",
+        "passive": 6,
+        "evoke": 6
+      },
+      {
+        "name": "Plasma",
+        "passive": null,
+        "evoke": null
+      },
+      null,
+      null,
+      null
+    ],
+    "sovereign_blades": []
+  },
+  "enemies": [
+    {
+      "id": 1,
+      "name": "Leaf Slime (S)",
+      "powers": [],
+      "intents": [
+        {
+          "category": "attack",
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Leaf Slime (M)",
+      "powers": [],
+      "intents": [
+        {
+          "category": "status",
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Twig Slime (S)",
+      "powers": [],
+      "intents": [
+        {
+          "category": "attack",
+          "value": "4"
+        }
+      ]
+    }
+  ],
+  "hover_tips": [
+    {
+      "title": "Lightning",
+      "description": "Passive: At the end of turn, deal 3 damage to a random enemy.\nEvoke: Deal 8 damage to a random enemy.",
+      "sources": [
+        "player.orb_slots.0"
+      ]
+    },
+    {
+      "title": "Frost",
+      "description": "Passive: At the end of turn, gain 2 Block.\nEvoke: Gain 5 Block.",
+      "sources": [
+        "player.orb_slots.1"
+      ]
+    },
+    {
+      "title": "Dark",
+      "description": "Passive: At the end of turn, increase this Orb's damage by 6.\nEvoke: Deal 6 damage to the enemy with the lowest HP.",
+      "sources": [
+        "player.orb_slots.2"
+      ]
+    },
+    {
+      "title": "Plasma",
+      "description": "Passive: At the start of turn,\ngain <Energy>.\nEvoke: Gain <Energy> <Energy>.\nPlasma is unaffected by Focus.",
+      "sources": [
+        "player.orb_slots.3"
+      ]
+    },
+    {
+      "title": "Aggressive",
+      "description": "This enemy intends to Attack for 3 damage.",
+      "sources": [
+        "enemies.0.intents.0"
+      ]
+    },
+    {
+      "title": "Strategic",
+      "description": "This enemy intends to give you 2 Status cards.",
+      "sources": [
+        "enemies.1.intents.0"
+      ]
+    },
+    {
+      "title": "Aggressive",
+      "description": "This enemy intends to Attack for 4 damage.",
+      "sources": [
+        "enemies.2.intents.0"
+      ]
+    }
+  ],
+  "allies": [],
+  "notes": {
+    "enemy_attack_intents": "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
+  }
+}

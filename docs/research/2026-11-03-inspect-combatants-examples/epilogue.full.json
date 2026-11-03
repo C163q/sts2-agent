@@ -1,0 +1,22 @@
+{
+  "scene": "epilogue",
+  "screen": {
+    "status": "visible",
+    "view": "epilogue"
+  },
+  "player": {
+    "powers": null,
+    "orb_slots": [],
+    "sovereign_blades": []
+  },
+  "enemies": [
+    {
+      "id": 1,
+      "name": "The Architect",
+      "powers": null,
+      "intents": null
+    }
+  ],
+  "hover_tips": [],
+  "allies": []
+}

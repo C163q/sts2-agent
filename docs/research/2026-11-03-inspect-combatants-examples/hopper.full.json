@@ -1,0 +1,60 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "player": {
+    "powers": [],
+    "orb_slots": [],
+    "sovereign_blades": []
+  },
+  "enemies": [
+    {
+      "id": 1,
+      "name": "Thieving Hopper",
+      "powers": [
+        {
+          "name": "Escape Artist",
+          "amount": 5
+        }
+      ],
+      "intents": [
+        {
+          "category": "attack",
+          "value": "17"
+        },
+        {
+          "category": "card_debuff",
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "hover_tips": [
+    {
+      "title": "Escape Artist",
+      "description": "Tries to escape the combat after 5 turns.",
+      "sources": [
+        "enemies.0.powers.0"
+      ]
+    },
+    {
+      "title": "Aggressive",
+      "description": "This enemy intends to Attack for 17 damage.",
+      "sources": [
+        "enemies.0.intents.0"
+      ]
+    },
+    {
+      "title": "Malicious",
+      "description": "This enemy intends to apply Afflictions on your cards.",
+      "sources": [
+        "enemies.0.intents.1"
+      ]
+    }
+  ],
+  "allies": [],
+  "notes": {
+    "enemy_attack_intents": "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
+  }
+}

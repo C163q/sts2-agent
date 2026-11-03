@@ -1,0 +1,218 @@
+{
+  "baseline": "fb4749d",
+  "kind": "current_isolated_mcp_samples",
+  "note": "本轮隔离中文游戏的完整公开响应；原样保留返回字段，非手写机制模拟。",
+  "examples": [
+    {
+      "file": "combat.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/basic/evidence.json",
+      "record_index": 1,
+      "label": "initial",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "orbs.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/orbs/evidence.json",
+      "record_index": 1,
+      "label": "initial",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "orbs-expanded.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/orbs/evidence.json",
+      "record_index": 8,
+      "label": "after-capacitor",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "orbs-channelled.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/orbs/evidence.json",
+      "record_index": 15,
+      "label": "after-zap",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "osty.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/osty/evidence.json",
+      "record_index": 1,
+      "label": "initial",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "blade.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/blade/evidence.json",
+      "record_index": 1,
+      "label": "initial",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "blade-forged.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/blade/evidence.json",
+      "record_index": 10,
+      "label": "forged",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "hopper.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/hopper/evidence.json",
+      "record_index": 1,
+      "label": "initial",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "hopper-after-steal.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/hopper/evidence.json",
+      "record_index": 8,
+      "label": "after-steal",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "pending-selection-battlefield.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/selection/evidence.json",
+      "record_index": 12,
+      "label": "battlefield",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "error-main-menu.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/menu/evidence.json",
+      "record_index": 1,
+      "label": "main-menu",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "error-event.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/event/evidence.json",
+      "record_index": 1,
+      "label": "initial",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "error-selection.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/selection/evidence.json",
+      "record_index": 8,
+      "label": "selection",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "error-deck.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/basic/evidence.json",
+      "record_index": 9,
+      "label": "deck-covered",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "error-pile.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/basic/evidence.json",
+      "record_index": 14,
+      "label": "pile-covered",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "error-map.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/basic/evidence.json",
+      "record_index": 19,
+      "label": "map-covered",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "error-unsupported-summary.full.json",
+      "arguments": {
+        "preset": "summary"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/menu/evidence.json",
+      "record_index": 3,
+      "label": "unsupported-summary",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "error-unknown-argument.full.json",
+      "arguments": {
+        "preset": "full",
+        "enemy_id": 1
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/menu/evidence.json",
+      "record_index": 4,
+      "label": "unknown-argument",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "orbs.default.json",
+      "arguments": {
+        "preset": "default"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/orbs/evidence.json",
+      "record_index": 2,
+      "label": "initial-default",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "pending-selection-battlefield.default.json",
+      "arguments": {
+        "preset": "default"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/gui-3/selection/evidence.json",
+      "record_index": 13,
+      "label": "battlefield-default",
+      "kind": "current_isolated_mcp_sample"
+    },
+    {
+      "file": "epilogue.full.json",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-03-inspect-combatants-review/ending-gui/ending/evidence.json",
+      "record_index": 10,
+      "label": "epilogue",
+      "kind": "current_isolated_mcp_sample"
+    }
+  ]
+}
