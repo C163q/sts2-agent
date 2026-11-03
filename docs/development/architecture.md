@@ -14,9 +14,9 @@
 | [Localization/](../../src/Sts2Agent/Localization/) | 独立英语读取和格式化、共享悬停解释；事件及结算文本保留原生来源，不切换全局语言或重新生成随机文本 |
 | [Testing/](../../src/Sts2Agent/Testing/) | 隔离夹具、原生检查及测试生命周期；随 Mod 编译，仅在相应测试门控开启时调用 |
 | [roundtrip_client.py](../../src/sts2_mcp/roundtrip_client.py) | 标准库文件客户端与 CLI；默认玩法输出，`--raw` 保留诊断协议 |
-| [game_tools.py](../../src/sts2_mcp/game_tools.py)、[controller_lease.py](../../src/sts2_mcp/controller_lease.py) | 串行游戏会话、动作令牌、每个 IPC 目录的进程控制锁；文件请求在线程中等待 |
+| [game_tools.py](../../src/sts2_mcp/game_tools.py)、[game_session.py](../../src/sts2_mcp/game_session.py)、[controller_lease.py](../../src/sts2_mcp/controller_lease.py) | 串行游戏会话、动作令牌、每个 IPC 目录的进程控制锁；文件请求在线程中等待 |
 | [tool_registry.py](../../src/sts2_mcp/tool_registry.py)、[request_arguments.py](../../src/sts2_mcp/request_arguments.py)、[mcp_catalog.py](../../src/sts2_mcp/mcp_catalog.py)、[mcp_server.py](../../src/sts2_mcp/mcp_server.py) | ToolSpec 单一登记、公共参数规范化、工具描述与 schema、stdio 分派及结果封装 |
-| [output/](../../src/sts2_mcp/output/) | `contracts/` 定义纯字段结构，`*_details` 校验领域数据，`inspection_details` 按原生操作分派，`response_pipeline.decode_success` 统一生产成功解码；`public_output` 整合共享解释与 notes，`game_output/player_output` 保留直接调用兼容；`error_output` 管理公开错误，`null_fields` 维护空值规则，`presets` 包装公开预设，`card_format` 统一牌面内容模式，`resource_summary` 共用资源摘要；`observation_presets/selection_summary/top_bar_summary` 提供容器摘要，`action_output` 精简动作回执 |
+| [output/](../../src/sts2_mcp/output/) | `contracts/` 定义纯字段结构，`*_details` 校验领域数据，`inspection_details` 按原生操作分派，`response_pipeline.decode_success` 统一生产成功解码；`public_output` 整合共享解释与 notes，`game_output/player_output` 保留直接调用兼容；`error_output` 管理公开错误，`null_fields` 维护空值规则，`presets` 保留空值过滤兼容导入，`card_format` 统一牌面内容模式，`resource_summary` 共用资源摘要；`observation_presets/selection_summary/top_bar_summary` 提供容器摘要，`action_output` 精简动作回执 |
 | [mcp_config.py](../../src/sts2_mcp/mcp_config.py)、[screenshot_tool.py](../../src/sts2_mcp/screenshot_tool.py) | 截图配置和独占文件保存；`output/media.py` 提供媒体承载及 PNG 格式校验，占卜另校验图像像素及棋盘一致性 |
 | [scripts/](../../scripts/) | 常用 CLI、运行时准备／启动及 `_bootstrap.py` 源码路径引导 |
 | [tests/python/](../../tests/python/)、[tests/csharp/](../../tests/csharp/) | 无需游戏的自动检查；C# 纯检查不依赖游戏程序集 |
@@ -32,7 +32,7 @@ C# 使用根 [Sts2Agent.sln](../../Sts2Agent.sln)，包含 Mod 和纯检查项�
 
 1. 核对目标游戏 API、当前 UI 和[可见信息边界](../observation.md)，确认调用的是原生动作或实际可读内容。
 2. 在对应 `Observation/Actions/Events` 实现采样、流程或记录，通过 `Adapter` 接入游戏线程、状态校验和生命周期。事件效果复用原生同步器、选牌、奖励与战斗，不逐事件重写规则。
-3. 外部层补齐响应校验、字段投影、参数 schema 和公共工具分类；会话令牌在 `GameTools` 处理。工具提示只保留用途和独特限制，字段契约放在对应开发指南，公共规则见[MCP 接入](mcp.md)。
+3. 外部层补齐响应校验、字段投影、参数 schema 和公共工具分类；会话许可在 `GameSession` 处理。工具提示只保留用途和独特限制，字段契约放在对应开发指南，公共规则见[MCP 接入](mcp.md)。
 4. 同步验证与文档，检查是否存在职责混杂或逻辑重复；重构需求按[协作约定](../../AGENTS.md)报告。
 
 基础观察与详情、动作许可和最终公开投影按此顺序处理；不能靠 summary 或空值过滤掩盖坏响应。当前校验不是通用 JSON Schema 验证：基础观察要求全部顶层字段，嵌套对象按已提供字段投影和检查类型。
@@ -89,3 +89,10 @@ Mod 构建需要自行安装游戏程序集，见[构建前提](roundtrip.md#前
 `request_arguments.normalize_request` 先检查公共类型、范围、枚举、必填与跨字段条件，再调用领域解析器；输出原生参数、投影参数及独立执行类别，不通过 handler 签名或 readOnlyHint 猜测行为。普通 inspect_selection 为读取，显式 view_upgrades 为页面操作；set_divination_tool 虽使用页面 annotation，仍需动作许可并记录 transition。媒体需求先在内部表达，原生请求接入仍待后续阶段。
 
 `output/filtering.py` 共用可选筛选校验、位置选择与悬停关联裁剪；精确 UI 路径、战斗对象前缀、卡牌身份及遗物位置仍保持各自含义。公共筛选省略／null 表示全部，[] 表示空集合；遗物提示和结果映射均引用未筛选列表。完整解码先于筛选、摘要与最终 null 过滤。
+
+
+## 会话与执行证据
+
+GameTools 仅负责公开入口、参数拒绝与规范化请求；GameSession.execute 统一控制锁、串行请求、成功校验、媒体、投影和许可更新，transport Client 仍独立等待文件。PermissionState 的令牌／代次在请求开始时捕获，动作不能借用排队后产生的许可；取消撤销许可并阻止在途结果重新授权。
+
+GameResponse 在内部保存成功、已提交、未知或“未提交且 UI 未变”的证据。登记表仅为已核实的 play_card 前置拒绝声明后者，不从 illegal_action 或 readOnlyHint 推测。所有成功投影完成后才发布许可，错误保留／失效规则统一见[MCP 调用语义](mcp.md#调用和错误语义)。原生新增证据与占卜媒体请求选项尚待后续原生阶段，本层不以假数据补齐。

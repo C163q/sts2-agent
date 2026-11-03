@@ -1,0 +1,187 @@
+"""Permission matrices exercise every registered tool through its public handler."""
+import asyncio
+import json
+import unittest
+
+from sts2_mcp.game_tools import GameTools
+from sts2_mcp.tool_registry import TOOLS
+from tests.python.test_tool_contracts import DATA, ContractReply
+
+
+def requests():
+    cases = json.loads((DATA / 'cases.json').read_text())
+    return {case['tool']: case for case in cases if case['arguments'].get('preset') == 'full'
+            and not case.get('error') and 'unknown_field' not in case['arguments']}
+
+
+class SessionPolicyTests(unittest.IsolatedAsyncioTestCase):
+    async def test_local_rejections_preserve_existing_permission_for_every_tool(self):
+        for name, spec in TOOLS.items():
+            with self.subTest(tool=name):
+                client = ContractReply({})
+                tools = GameTools(client)
+                tools.snapshot_id = 'existing'
+                result = await getattr(tools, name)({'unknown_field': True})
+                self.assertEqual(result['error']['code'], 'invalid_request')
+                self.assertIn('unknown_field', result['error']['message'])
+                self.assertEqual(result['error']['recovery'], 'correct_request')
+                self.assertEqual(client.calls, [])
+                self.assertEqual(tools.snapshot_id, 'existing')
+
+    async def test_all_pure_reads_preserve_existing_permission_on_definite_rejection(self):
+        cases = requests()
+        for name, spec in TOOLS.items():
+            if spec.effect != 'read': continue
+            for code in ('invalid_request', 'illegal_action', 'expired_request'):
+                with self.subTest(tool=name, code=code):
+                    client = ContractReply({}, {'code': code})
+                    tools = GameTools(client); tools.snapshot_id = 'existing'
+                    result = await getattr(tools, name)(cases[name]['arguments'])
+                    self.assertEqual(tools.snapshot_id, 'existing')
+                    self.assertEqual(result['error']['recovery'],
+                                     'correct_request' if code == 'invalid_request' else 'choose_legal_action')
+                    self.assertEqual(len(client.calls), 1)
+                    self.assertIsNone(client.calls[0]['expected_state'])
+
+    async def test_first_read_rejection_never_creates_permission(self):
+        for name, spec in TOOLS.items():
+            if spec.effect != 'read': continue
+            with self.subTest(tool=name):
+                client = ContractReply({}, {'code': 'illegal_action'})
+                tools = GameTools(client)
+                result = await getattr(tools, name)(requests()[name]['arguments'])
+                self.assertIsNone(tools.snapshot_id)
+                self.assertEqual(result['error']['recovery'], 'get_observation')
+
+    async def test_view_changes_never_infer_unchanged_ui_from_rejection_code(self):
+        cases = requests()
+        variants = [(name, case['arguments']) for name, case in cases.items() if TOOLS[name].effect == 'view']
+        variants.append(('inspect_selection', {'view_upgrades': False}))
+        for name, arguments in variants:
+            with self.subTest(tool=name):
+                client = ContractReply({}, {'code': 'illegal_action', 'action_submitted': False})
+                tools = GameTools(client); tools.snapshot_id = 'existing'
+                result = await getattr(tools, name)(arguments)
+                self.assertEqual(result['error']['code'], 'illegal_action')
+                self.assertIsNone(tools.snapshot_id)
+                self.assertEqual(result['error']['recovery'], 'get_observation')
+
+    async def test_all_tools_clear_permission_on_uncertain_or_bad_native_response(self):
+        cases = requests()
+        for name, case in cases.items():
+            for response in [None, {'code': 'stale_state'}, {'code': 'timeout'}, {'code': 'unknown'}]:
+                with self.subTest(tool=name, response=response):
+                    client = ContractReply({}, response)
+                    tools = GameTools(client); tools.snapshot_id = 'existing'
+                    result = await getattr(tools, name)(case['arguments'])
+                    self.assertIn('error', result)
+                    self.assertIsNone(tools.snapshot_id)
+
+    async def test_action_media_failure_never_claims_unsubmitted_or_preserves_permission(self):
+        for submitted in (None, True, False):
+            error = {'code': 'screenshot_unavailable'}
+            if submitted is not None: error['action_submitted'] = submitted
+            client = ContractReply({}, error)
+            tools = GameTools(client); tools.snapshot_id = 'existing'
+            result = await tools.divine({'x': 1, 'y': 2})
+            self.assertEqual(result['error']['outcome'], 'unknown')
+            self.assertEqual(result['error']['recovery'], 'get_observation')
+            self.assertNotIn('no action', result['error']['message'])
+            self.assertIsNone(tools.snapshot_id)
+            self.assertEqual(len(client.calls), 1)
+
+    async def test_queued_action_cannot_borrow_a_new_generation_with_identical_token(self):
+        case = requests()['get_observation']
+        state = json.loads((DATA / 'states.json').read_text())[case['state']]
+        state['snapshot_id'] = 'same-token'
+        tools = GameTools(ContractReply(state)); tools.snapshot_id = 'same-token'
+        async with tools.lock:
+            read = asyncio.create_task(tools.get_observation())
+            await asyncio.sleep(0)
+            action = asyncio.create_task(tools.end_turn())
+            await asyncio.sleep(0)
+        self.assertNotIn('error', await read)
+        result = await action
+        self.assertEqual(result['error']['code'], 'observation_required')
+        self.assertEqual([call['operation'] for call in tools.client.calls], ['get_state'])
+
+    async def test_cancelled_queued_request_revokes_permission(self):
+        tools = GameTools(ContractReply({})); tools.snapshot_id = 'existing'
+        async with tools.lock:
+            read = asyncio.create_task(tools.inspect_rewards())
+            await asyncio.sleep(0)
+            read.cancel()
+            with self.assertRaises(asyncio.CancelledError): await read
+        self.assertIsNone(tools.snapshot_id)
+
+    async def test_controller_rejection_clears_all_gameplay_permissions_without_io(self):
+        class Busy:
+            def acquire(self): raise BlockingIOError('private lock info')
+        for name, case in requests().items():
+            with self.subTest(tool=name):
+                client = ContractReply({})
+                tools = GameTools(client, controller=Busy()); tools.snapshot_id = 'existing'
+                result = await getattr(tools, name)(case['arguments'])
+                self.assertEqual(result['error']['code'], 'controller_busy')
+                self.assertNotIn('private', result['error']['message'])
+                self.assertIsNone(tools.snapshot_id)
+                self.assertEqual(client.calls, [])
+
+    async def test_cancelling_queued_read_prevents_inflight_read_regrant(self):
+        import threading
+        started, release = threading.Event(), threading.Event()
+        case = requests()['get_observation']
+        state = json.loads((DATA / 'states.json').read_text())[case['state']]
+        class Blocking(ContractReply):
+            def call(self, *args, **kwargs):
+                started.set()
+                if not release.wait(3): raise TimeoutError('Test did not release request')
+                return super().call(*args, **kwargs)
+        tools = GameTools(Blocking(state)); tools.snapshot_id = 'existing'
+        read = asyncio.create_task(tools.get_observation())
+        try:
+            self.assertTrue(await asyncio.to_thread(started.wait, 2))
+            queued = asyncio.create_task(tools.inspect_rewards())
+            await asyncio.sleep(0)
+            queued.cancel()
+            with self.assertRaises(asyncio.CancelledError): await queued
+        finally:
+            release.set()
+            await read
+        self.assertIsNone(tools.snapshot_id)
+        self.assertEqual([call['operation'] for call in tools.client.calls], ['get_state'])
+
+
+class FileMediaErrorTests(unittest.TestCase):
+    def test_nonraw_file_action_media_error_reports_unknown_outcome(self):
+        import contextlib
+        import io
+        from unittest.mock import patch
+        from sts2_mcp import roundtrip_client
+        output = io.StringIO()
+        raw = {'ok': False, 'error': {'code': 'screenshot_unavailable',
+                                    'action_submitted': True, 'message': '/private/diagnostic'}}
+        with patch('sys.argv', ['roundtrip_client.py', '--ipc-dir', '/tmp/unused', 'divine', '--x', '1', '--y', '2']), \
+                patch.object(roundtrip_client.Client, 'call', return_value=raw), contextlib.redirect_stdout(output):
+            with self.assertRaises(SystemExit): roundtrip_client.main()
+        error = json.loads(output.getvalue())['error']
+        self.assertEqual(error['outcome'], 'unknown')
+        self.assertEqual(error['recovery'], 'get_state')
+        self.assertNotIn('private', error['message'])
+        self.assertNotIn('action_submitted', error)
+
+    def test_file_upgrade_view_media_error_uses_dynamic_effect_without_claiming_natural_trigger(self):
+        import contextlib
+        import io
+        from unittest.mock import patch
+        from sts2_mcp import roundtrip_client
+        for flags, unknown in [([], False), (['--view-upgrades'], True), (['--no-view-upgrades'], True)]:
+            with self.subTest(flags=flags):
+                output = io.StringIO()
+                raw = {'ok': False, 'error': {'code': 'screenshot_unavailable'}}
+                with patch('sys.argv', ['roundtrip_client.py', '--ipc-dir', '/tmp/unused', 'inspect_selection', *flags]), \
+                        patch.object(roundtrip_client.Client, 'call', return_value=raw), contextlib.redirect_stdout(output):
+                    with self.assertRaises(SystemExit): roundtrip_client.main()
+                error = json.loads(output.getvalue())['error']
+                self.assertEqual(error.get('outcome'), 'unknown' if unknown else None)
+                self.assertEqual(error['recovery'], 'get_state' if unknown else 'check_game_window')

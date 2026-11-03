@@ -40,17 +40,13 @@ class BoundaryProbe(GameTools):
     def __init__(self):
         super().__init__(None)
         self.calls = []
+        self.session.execute = self.response
 
-    async def response(self, operation, *args, **kwargs):
-        self.calls.append((operation, args, kwargs))
-        for value in (*args, *kwargs.values()):
-            assert not isinstance(value, dict) or 'preset' not in value, value
-        return copy.deepcopy(self.payload)
+    async def response(self, request):
+        self.calls.append((request.operation, request.native_arguments))
+        assert not isinstance(request.native_arguments, dict) or 'preset' not in request.native_arguments
+        return request.project(copy.deepcopy(self.payload))
 
-    _inspect = _change_view = _action = response
-
-    async def _request(self, *args, **kwargs):
-        return await self.response(*args, **kwargs), 'probe-state'
 
 
 class DefaultProjectionTests(unittest.TestCase):
@@ -263,7 +259,7 @@ class DefaultToolTests(unittest.IsolatedAsyncioTestCase):
         count = len(client.calls)
         self.assertEqual((await tools.end_turn({'preset': 'summary'}))['error']['code'], 'invalid_request')
         self.assertEqual(len(client.calls), count)
-        self.assertIsNone(tools.snapshot_id)
+        self.assertEqual(tools.snapshot_id, 'state-3')
 
 
 class DefaultStdioTests(unittest.IsolatedAsyncioTestCase):

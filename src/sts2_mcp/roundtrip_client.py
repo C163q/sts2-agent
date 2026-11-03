@@ -117,7 +117,7 @@ def main():
         else:
             payload = result if args.raw else (
                 decode_success(args.operation, result['state'], arguments, include_observation=True)
-                if result['ok'] else player_result(result, operation=args.operation))
+                if result['ok'] else player_result(result, operation=args.operation, arguments=arguments))
     except (OSError, RuntimeError, ValueError, KeyError, TypeError) as error:
         local_combatant_error = args.operation == 'inspect_combatants' and not request_sent and isinstance(error, ValueError)
         code = 'invalid_request' if local_combatant_error else 'timeout' if isinstance(error, TimeoutError) else 'transport_error'

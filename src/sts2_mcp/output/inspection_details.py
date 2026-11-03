@@ -12,9 +12,10 @@ READERS = {'start_test_combat': observation_details, 'close_deck': closed_card_v
 def _read_details(operation, state, arguments=None):
     if operation in READERS:
         return READERS[operation](state)
-    read = binding(NATIVE_TOOLS[operation].reader)
-    if operation == 'inspect_targets': return read(state, arguments)
-    if operation == 'inspect_pile': return read(state, arguments['pile'])
+    spec = NATIVE_TOOLS[operation]
+    read = binding(spec.reader)
+    if spec.reader_argument == 'request': return read(state, arguments)
+    if spec.reader_argument is not None: return read(state, arguments[spec.reader_argument])
     return read(state)
 
 

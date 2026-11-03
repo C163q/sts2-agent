@@ -75,13 +75,13 @@ class TreasureSessionTests(unittest.IsolatedAsyncioTestCase):
         await tools.proceed()
         self.assertEqual(client.calls[-1][1], 'treasure-2')
 
-    async def test_invalid_arguments_consume_permission_without_game_call(self):
+    async def test_invalid_arguments_preserve_permission_without_game_call(self):
         for args in ({'open_only': 1}, {'open_only': None}, {'open_only': 'false'}, {'repeat': True}, [], False):
             client = TreasureClient(); tools = GameTools(client)
             await tools.get_observation()
             result = await tools.loot_treasure(args)
             self.assertEqual(result['error']['code'], 'invalid_request')
-            self.assertIsNone(tools.snapshot_id)
+            self.assertEqual(tools.snapshot_id, 'treasure-1')
             self.assertEqual(len(client.calls), 1)
         client = TreasureClient(); tools = GameTools(client)
         await tools.get_observation(); await tools.loot_treasure({'open_only': True})

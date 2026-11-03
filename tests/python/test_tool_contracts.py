@@ -47,6 +47,11 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                     want['error']['message'] = result['error']['message']
                 if case['tool'] == 'inspect_relics' and case['arguments'] == {'relic_indices': [2, 80], 'preset': 'full'}:
                     want['hover_tips'][0]['relic_indices'] = [2]
+                if case.get('error') and case['tool'] in {
+                    'inspect_run_result', 'inspect_event', 'inspect_ancient', 'inspect_shop',
+                    'inspect_treasure', 'inspect_rest_site', 'inspect_rewards', 'inspect_potions',
+                    'inspect_relics', 'inspect_selection'}:
+                    want['error']['recovery'] = 'choose_legal_action'
                 self.assertEqual(result, want)
                 self.assertEqual(getattr(result, 'image', None), case.get('expected_image'))
                 self.assertEqual(client.calls, case['native_calls'])

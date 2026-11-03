@@ -167,7 +167,7 @@ class SelectionPresetTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(client.calls[-1], ('select_card', 'state-1', {'card_id': 9}))
         client.error = 'illegal_action'
         self.assertEqual((await tools.inspect_selection({'preset': 'summary'}))['error']['code'], 'illegal_action')
-        self.assertIsNone(tools.snapshot_id)
+        self.assertEqual(tools.snapshot_id, 'state-2')
 
 
 class SelectionPresetStdioTests(unittest.IsolatedAsyncioTestCase):

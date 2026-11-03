@@ -37,7 +37,7 @@ def validate_schema(value, schema, field='arguments'):
         if 'pattern' in schema and not re.search(schema['pattern'], value):
             raise ValueError(f'{field} must match {schema["pattern"]}.')
         if len(value) < schema.get('minLength', 0) or len(value) > schema.get('maxLength', float('inf')):
-            raise ValueError(f'{field} has an invalid length.')
+            raise ValueError(f'{field} length must be from {schema.get("minLength", 0)} to {schema.get("maxLength", "unbounded")}.')
 
     alternatives = schema.get('oneOf') or schema.get('anyOf')
     if alternatives:
@@ -71,12 +71,12 @@ class NormalizedRequest:
     @property
     def returns_transition(self): return self.spec.returns_transition
     @property
-    def refreshes_permission(self): return self.effect != 'file'
+    def refreshes_permission(self): return self.spec.refreshes_permission
 
     def project(self, payload):
         if self.spec.projector:
             payload = binding(self.spec.projector)(payload, **self.output_arguments)
-        compact = self.preset == 'summary' and self.spec.name != 'get_observation'
+        compact = self.preset == 'summary' and self.spec.category != 'observation'
         return apply_preset(payload, 'default' if compact else self.preset)
 
 
@@ -100,9 +100,11 @@ def normalize_request(spec, arguments):
         output = {'preset': native.pop('preset', 'full')}
     else:
         native, output = (normalized if spec.parser else normalized or None), {}
-    if spec.name == 'inspect_combatants':
-        native = {'level': normalized['preset']}
-        output = normalized
-    effect = 'view' if spec.name == 'inspect_selection' and native else spec.effect
-    media = spec.name in {'get_observation', 'inspect_event'} and preset not in {'actions_only', 'top_bar'}
+    if spec.projector and 'preset' in normalized:
+        output['preset'] = normalized['preset']
+    if native is not None:
+        for source, target in spec.native_renames:
+            native[target] = native.pop(source)
+    effect = spec.effect_for(native)
+    media = spec.media and preset not in {'actions_only', 'top_bar'}
     return NormalizedRequest(spec, preset, native, output, effect, media)

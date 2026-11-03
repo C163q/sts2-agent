@@ -17,7 +17,7 @@ KNOWN_OUTCOME = {'stale_state', 'illegal_action', 'invalid_request', 'expired_re
                  'screenshot_unavailable', 'file_exists', 'screenshot_save_failed'}
 
 
-def error_result(error):
+def error_result(error, *, state_changing=False):
     code = error['code']
     message, recovery = MESSAGES.get(code, (
         'The request failed; execution outcome is unknown. Read the current state and do not retry the action automatically.',
@@ -26,6 +26,10 @@ def error_result(error):
     if (code in {'illegal_action', 'invalid_request'}
             and isinstance(error.get('public_message'), str) and error['public_message'].strip()):
         message = error['public_message']
+    if state_changing and code == 'screenshot_unavailable':
+        return {'error': {'code': code,
+            'message': 'The viewport could not be captured; the request may already have changed the game. Read the current state and do not retry automatically.',
+            'recovery': 'get_state', 'outcome': 'unknown'}}
     result = {'code': code, 'message': message, 'recovery': recovery}
     if code not in KNOWN_OUTCOME:
         result['outcome'] = 'unknown'

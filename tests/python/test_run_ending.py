@@ -127,7 +127,7 @@ class EndingSessionTests(unittest.IsolatedAsyncioTestCase):
             await tools.get_observation(); before = len(client.calls)
             self.assertEqual((await tools.run_result_option(args))['error']['code'], 'invalid_request')
             self.assertEqual(len(client.calls), before)
-            self.assertIsNone(tools.snapshot_id)
+            self.assertEqual(tools.snapshot_id, 'result-2')
 
 
 class EndingBoundaryTests(unittest.TestCase):

@@ -55,6 +55,15 @@ class ToolSpec:
     parser_operation: bool = False
     projector: str | None = None
     native_keys: tuple | None = None
+    native_renames: tuple = ()
+    reader_argument: str | None = None
+    changes_view_with_arguments: bool = False
+    refreshes_permission: bool = True
+    media: bool = False
+    unsubmitted_rejection_unchanged: bool = False
+
+    def effect_for(self, native_arguments):
+        return 'view' if self.changes_view_with_arguments and native_arguments else self.effect
 
     @property
     def native_operation(self):
@@ -172,7 +181,8 @@ SPECS = (
         requires_permission=False,
         returns_transition=False,
         records_events=False,
-        reader='event_details:inspect_event_details'),
+        reader='event_details:inspect_event_details',
+        media=True),
     ToolSpec(
         name='choose_event_option',
         schema=EVENT_OPTION_SCHEMA,
@@ -290,7 +300,8 @@ SPECS = (
         operation='get_state',
         reader='observation_details:observation_details',
         projector='observation_presets:observation_preset',
-        native_keys=()),
+        native_keys=(),
+        media=True),
     ToolSpec(
         name='inspect_rewards',
         schema=NO_ARGUMENTS,
@@ -411,7 +422,8 @@ SPECS = (
         records_events=False,
         reader='card_play_details:target_details',
         parser='card_play_details:card_play_arguments',
-        parser_operation=True),
+        parser_operation=True,
+        reader_argument='request'),
     ToolSpec(
         name='play_card',
         schema=PLAY_SCHEMA,
@@ -425,7 +437,8 @@ SPECS = (
         records_events=True,
         reader='transition_details:end_turn_details',
         parser='card_play_details:card_play_arguments',
-        parser_operation=True),
+        parser_operation=True,
+        unsubmitted_rejection_unchanged=True),
     ToolSpec(
         name='inspect_ui',
         schema=UI_SCHEMA,
@@ -496,7 +509,8 @@ SPECS = (
         reader='combatant_details:combatant_details',
         parser='combatant_presets:combatant_arguments',
         parser_operation=False,
-        projector='combatant_presets:combatant_preset'),
+        projector='combatant_presets:combatant_preset',
+        native_keys=('preset',), native_renames=(('preset', 'level'),)),
     ToolSpec(
         name='inspect_relics',
         schema=RELIC_SCHEMA,
@@ -543,7 +557,8 @@ SPECS = (
         reader='pile_details:pile_details',
         parser='pile_details:pile_arguments',
         parser_operation=False,
-        projector='card_format:browse_preset'),
+        projector='card_format:browse_preset',
+        reader_argument='pile'),
     ToolSpec(
         name='close_card_view',
         schema=NO_ARGUMENTS,
@@ -603,7 +618,8 @@ SPECS = (
         parser='selection_presets:selection_inspection_arguments',
         parser_operation=False,
         projector='selection_presets:selection_preset',
-        native_keys=('view_upgrades',)),
+        native_keys=('view_upgrades',),
+        changes_view_with_arguments=True),
     ToolSpec(
         name='select_card',
         schema=CARD_SCHEMA,
@@ -672,7 +688,8 @@ SPECS = (
         returns_transition=False,
         records_events=False,
         parser='screenshot_tool:screenshot_arguments',
-        parser_operation=False),
+        parser_operation=False,
+        refreshes_permission=False, media=True),
 )
 TOOLS = {spec.name: spec for spec in SPECS}
 NATIVE_TOOLS = {spec.native_operation: spec for spec in SPECS}

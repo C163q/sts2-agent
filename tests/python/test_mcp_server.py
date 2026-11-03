@@ -116,16 +116,16 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual([item["operation"] for item in game.operations], ["get_state", "inspect_relics", "end_turn"])
             self.assertEqual(game.operations[-1]["expected_state"], "state-2")
 
-    async def test_failed_relic_inspection_clears_token_and_sanitizes_game_error(self):
+    async def test_rejected_relic_inspection_retains_token_and_sanitizes_game_error(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             game.relic_error = True
             result = await tools.inspect_relics()
             self.assertEqual(result["error"]["code"], "illegal_action")
-            self.assertEqual(result["error"]["recovery"], "get_observation")
+            self.assertEqual(result["error"]["recovery"], "choose_legal_action")
             self.assertNotIn("/private", json.dumps(result))
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
 
     async def test_timed_out_relic_inspection_clears_token_without_retry(self):
         with FakeGame() as game:
@@ -416,16 +416,16 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
                     "potion_slots": slots, "hover_tips": [],
                 })
 
-    async def test_failed_potion_inspection_clears_token_and_sanitizes_game_error(self):
+    async def test_rejected_potion_inspection_retains_token_and_sanitizes_game_error(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             game.potion_error = True
             result = await tools.inspect_potions()
             self.assertEqual(result["error"]["code"], "illegal_action")
-            self.assertEqual(result["error"]["recovery"], "get_observation")
+            self.assertEqual(result["error"]["recovery"], "choose_legal_action")
             self.assertNotIn("/private", json.dumps(result))
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
 
     async def test_timed_out_potion_inspection_clears_token_without_retry(self):
         with FakeGame() as game:
@@ -822,10 +822,6 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     invalid = await session.call_tool("end_turn", {"unexpected": True})
                     self.assertTrue(invalid.isError)
                     self.assertEqual(game.turn, 1)
-                    blocked = await session.call_tool("end_turn", {})
-                    self.assertTrue(blocked.isError)
-                    self.assertEqual(blocked.structuredContent["error"]["code"], "observation_required")
-                    await session.call_tool("get_observation", {})
                     executed = await session.call_tool("end_turn", {})
                     self.assertFalse(executed.isError)
                     self.assertTrue(executed.structuredContent["transition"]["complete"])

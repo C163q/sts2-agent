@@ -90,7 +90,7 @@ class MapTravelTests(unittest.IsolatedAsyncioTestCase):
             count = len(client.calls)
             self.assertEqual((await tools.travel_to_node(arguments))['error']['code'], 'invalid_request')
             self.assertEqual(len(client.calls), count)
-            self.assertIsNone(tools.snapshot_id)
+            self.assertEqual(tools.snapshot_id, 'map-token')
 
     async def test_corrupt_map_response_revokes_permission(self):
         client = NavigationClient(); tools = GameTools(client)

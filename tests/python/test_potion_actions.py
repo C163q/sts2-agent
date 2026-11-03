@@ -124,7 +124,7 @@ class PotionPermissionTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(tools.client.calls[-1], (name, 'fixture-1', {'potion_slot': 0}))
             self.assertNotIn('error', await getattr(tools, name)({'potion_slot': 0}))
 
-    async def test_invalid_arguments_never_reach_game_and_only_actions_clear_permission(self):
+    async def test_invalid_arguments_never_reach_game_and_preserve_permission(self):
         tools = GameTools(Client())
         self.assertTrue(hasattr(tools, 'use_potion'))
         for name in ('inspect_targets', 'use_potion', 'discard_potion'):
@@ -139,10 +139,7 @@ class PotionPermissionTests(unittest.IsolatedAsyncioTestCase):
                 result = await getattr(tools, name)(args)
                 self.assertEqual(result['error']['code'], 'invalid_request', (name, args))
                 self.assertEqual(len(tools.client.calls), before)
-                if name == 'inspect_targets':
-                    self.assertEqual(tools.snapshot_id, 'fixture-1')
-                else:
-                    self.assertIsNone(tools.snapshot_id)
+                self.assertEqual(tools.snapshot_id, 'fixture-1')
 
     async def test_merchant_target_forwarded_and_corrupt_output_drops_permission(self):
         tools = GameTools(Client())

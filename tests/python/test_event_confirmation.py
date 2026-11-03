@@ -99,7 +99,7 @@ class ConfirmationSessionTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(tools.snapshot_id)
         self.assertEqual(client.calls[-1], ('respond_to_confirmation', 'dialog-2', {'option': 'confirm'}))
 
-    async def test_invalid_response_never_reaches_game_and_revokes_permission(self):
+    async def test_invalid_response_never_reaches_game_and_preserves_permission(self):
         for args in (None, {}, {'option': True}, {'option': 1}, {'option': 'yes'},
                      {'option': ['cancel']}, {'option': 'cancel', 'extra': 1}):
             client = ConfirmationClient(); tools = GameTools(client); await tools.get_observation()
@@ -107,7 +107,7 @@ class ConfirmationSessionTests(unittest.IsolatedAsyncioTestCase):
                 result = await tools.respond_to_confirmation(args)
                 self.assertEqual(result['error']['code'], 'invalid_request')
                 self.assertEqual(len(client.calls), 1)
-                self.assertIsNone(tools.snapshot_id)
+                self.assertEqual(tools.snapshot_id, 'dialog-1')
 
     async def test_missing_dialog_revokes_permission_instead_of_accepting_buttons(self):
         client = ConfirmationClient(); client.raw.pop('confirmation')

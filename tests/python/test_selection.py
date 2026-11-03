@@ -194,7 +194,7 @@ class SelectionPermissionTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("error", again)
         self.assertEqual(client.calls[-1], ("selection_option", "fixture-1", {"option_id": "skip"}))
 
-    async def test_bad_arguments_clear_permission_without_submitting_input(self):
+    async def test_bad_arguments_preserve_permission_without_submitting_input(self):
         client = Client()
         tools = GameTools(client)
         self.assertTrue(hasattr(tools, "select_card"), "Missing native selection action")
@@ -202,7 +202,7 @@ class SelectionPermissionTests(unittest.IsolatedAsyncioTestCase):
             await tools.get_observation()
             result = await tools.select_card(arguments)
             self.assertEqual(result["error"]["code"], "invalid_request")
-            self.assertIsNone(tools.snapshot_id)
+            self.assertEqual(tools.snapshot_id, 'fixture-1')
         self.assertTrue(all(call[0] == "get_state" for call in client.calls))
 
     async def test_view_change_returns_current_action_state(self):

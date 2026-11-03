@@ -115,17 +115,17 @@ class ShopSessionTests(unittest.IsolatedAsyncioTestCase):
         await tools.buy_item({'item_id': 15})
         self.assertEqual(client.calls[-1][1:], ('shop-2', {'item_id': 15}))
 
-    async def test_bad_purchase_or_page_arguments_consume_permission(self):
+    async def test_bad_purchase_or_page_arguments_preserve_permission(self):
         for args in (None, {}, {'item_id': -1}, {'item_id': True}, {'item_id': 1.0}, {'item_id': '0'},
                      {'item_id': 0, 'repeat': True}, [], False):
             tools = GameTools(ShopClient()); await tools.get_observation()
             self.assertEqual((await tools.buy_item(args))['error']['code'], 'invalid_request')
-            self.assertIsNone(tools.snapshot_id)
+            self.assertEqual(tools.snapshot_id, 'shop-1')
             self.assertEqual(len(tools.client.calls), 1)
         for name in ('open_shop', 'close_shop'):
             tools = GameTools(ShopClient()); await tools.get_observation()
             self.assertEqual((await getattr(tools, name)({'ignored': True}))['error']['code'], 'invalid_request')
-            self.assertIsNone(tools.snapshot_id)
+            self.assertEqual(tools.snapshot_id, 'shop-1')
 
 
 class ShopStdioTests(unittest.IsolatedAsyncioTestCase):

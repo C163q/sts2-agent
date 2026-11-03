@@ -132,7 +132,7 @@ class CardPlayPermissionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(tools.snapshot_id, 'fixture-1')
         self.assertNotIn('error', await tools.play_card({'card_id': 7, 'target_id': 3}))
 
-    async def test_invalid_play_parameters_consume_permission_without_input(self):
+    async def test_invalid_play_parameters_preserve_permission_without_input(self):
         client = Client()
         tools = GameTools(client)
         self.assertTrue(hasattr(tools, 'play_card'), 'Play action is missing')
@@ -143,7 +143,7 @@ class CardPlayPermissionTests(unittest.IsolatedAsyncioTestCase):
             await tools.get_observation()
             result = await tools.play_card(args)
             self.assertEqual(result['error']['code'], 'invalid_request', args)
-            self.assertIsNone(tools.snapshot_id)
+            self.assertEqual(tools.snapshot_id, 'fixture-1')
         self.assertTrue(all(call[0] == 'get_state' for call in client.calls))
 
     async def test_query_rejects_extra_parameters_and_malformed_output(self):

@@ -144,7 +144,7 @@ class RewardSessionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(client.calls, [('get_state', None, None), ('inspect_rewards', None, None),
                                        ('claim_reward', 'reward-1', {'reward_id': 12}), ('proceed', 'reward-1x', None)])
 
-    async def test_illegal_arguments_clear_permission_without_sending_action(self):
+    async def test_illegal_arguments_preserve_permission_without_sending_action(self):
         cases = [('claim_reward', None), ('claim_reward', {'reward_id': True}),
                  ('claim_reward', {'reward_id': -1}), ('claim_reward', {'reward_id': 2**31}),
                  ('claim_reward', {'reward_id': 12, 'all': True}), ('proceed', {'skip': True})]
@@ -156,7 +156,7 @@ class RewardSessionTests(unittest.IsolatedAsyncioTestCase):
                 result = await getattr(tools, name)(args)
                 self.assertEqual(result['error']['code'], 'invalid_request')
                 self.assertEqual(len(client.calls), 1)
-                self.assertIsNone(tools.snapshot_id)
+                self.assertEqual(tools.snapshot_id, 'reward-1')
 
     async def test_no_observation_cannot_claim_or_proceed(self):
         tools = GameTools(RewardClient())
@@ -165,7 +165,7 @@ class RewardSessionTests(unittest.IsolatedAsyncioTestCase):
 
 
 class RewardStdioTests(unittest.IsolatedAsyncioTestCase):
-    async def test_real_stdio_routes_reward_arguments_and_consumes_invalid_proceed_permission(self):
+    async def test_real_stdio_routes_reward_arguments_and_preserves_invalid_proceed_permission(self):
         import json
         import sys
         from mcp import ClientSession, StdioServerParameters
@@ -201,10 +201,7 @@ class RewardStdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(json.loads(claimed.content[0].text), claimed.structuredContent)
                     bad = await session.call_tool('proceed', {'skip': True})
                     self.assertEqual(bad.structuredContent['error']['code'], 'invalid_request')
-                    missing = await session.call_tool('proceed', {})
-                    self.assertEqual(missing.structuredContent['error']['code'], 'observation_required')
-                    await session.call_tool('get_observation', {})
                     result = await session.call_tool('proceed', {})
                     self.assertEqual(result.structuredContent['screen']['view'], 'map')
             self.assertEqual([r['operation'] for r in game.operations],
-                             ['inspect_rewards', 'claim_reward', 'inspect_rewards', 'get_state', 'proceed'])
+                             ['inspect_rewards', 'claim_reward', 'inspect_rewards', 'proceed'])

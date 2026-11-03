@@ -98,7 +98,7 @@ class RestSiteSessionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result['available_actions'], ['proceed'])
         self.assertEqual(tools.snapshot_id, 'rest-2')
 
-    async def test_invalid_arguments_consume_permission_and_do_not_click(self):
+    async def test_invalid_arguments_preserve_permission_and_do_not_click(self):
         for args in (None, {}, {'option_id': 0}, {'option_id': ''}, {'option_id': 'x' * 129},
                      {'option_id': 'HEAL', 'repeat': True}):
             with self.subTest(args=args):
@@ -106,12 +106,12 @@ class RestSiteSessionTests(unittest.IsolatedAsyncioTestCase):
                 await tools.get_observation()
                 result = await tools.choose_rest_option(args)
                 self.assertEqual(result['error']['code'], 'invalid_request')
-                self.assertIsNone(tools.snapshot_id)
+                self.assertEqual(tools.snapshot_id, 'rest-1')
                 self.assertEqual(len(client.calls), 1)
 
 
 class RestSiteStdioTests(unittest.IsolatedAsyncioTestCase):
-    async def test_stdio_routes_option_and_invalid_request_clears_permission(self):
+    async def test_stdio_routes_option_and_invalid_request_preserves_permission(self):
         import json
         import sys
         from mcp import ClientSession, StdioServerParameters
@@ -142,12 +142,9 @@ class RestSiteStdioTests(unittest.IsolatedAsyncioTestCase):
                     await session.call_tool('inspect_rest_site', {})
                     bad = await session.call_tool('choose_rest_option', {'option_id': 'HEAL', 'repeat': True})
                     self.assertEqual(bad.structuredContent['error']['code'], 'invalid_request')
-                    missing = await session.call_tool('choose_rest_option', {'option_id': 'HEAL'})
-                    self.assertEqual(missing.structuredContent['error']['code'], 'observation_required')
-                    await session.call_tool('get_observation', {})
                     selected = await session.call_tool('choose_rest_option', {'option_id': 'HEAL'})
                     self.assertNotIn('rest_site', selected.structuredContent)
                     self.assertEqual(selected.structuredContent['transition']['stop_reason'], 'action_completed')
                     self.assertEqual(json.loads(selected.content[0].text), selected.structuredContent)
             self.assertEqual([r['operation'] for r in game.operations],
-                             ['inspect_rest_site', 'get_state', 'choose_rest_option'])
+                             ['inspect_rest_site', 'choose_rest_option'])

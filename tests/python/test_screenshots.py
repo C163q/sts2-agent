@@ -148,7 +148,7 @@ class ScreenshotSessionTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(tools.snapshot_id)
             self.assertEqual((await tools.end_turn())['error']['code'], 'observation_required')
 
-    async def test_disabled_bad_filename_unavailable_and_save_failure_clear_permission(self):
+    async def test_local_capture_errors_preserve_but_native_capture_failures_clear_permission(self):
         client = CaptureClient()
         disabled = GameTools(client)
         self.assertEqual((await disabled.capture_screenshot())['error']['code'], 'invalid_request')
@@ -157,7 +157,7 @@ class ScreenshotSessionTests(unittest.IsolatedAsyncioTestCase):
             tools = GameTools(client, screenshot_directory=Path(directory))
             await tools.get_observation()
             self.assertEqual((await tools.capture_screenshot({'filename': '../bad.png'}))['error']['code'], 'invalid_request')
-            self.assertIsNone(tools.snapshot_id)
+            self.assertEqual(tools.snapshot_id, 'fixture-1')
             self.assertEqual(client.calls, ['get_state'])
             client.error = 'screenshot_unavailable'
             await tools.get_observation()
