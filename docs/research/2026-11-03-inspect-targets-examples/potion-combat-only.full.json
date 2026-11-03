@@ -1,0 +1,18 @@
+{
+  "potion": {
+    "slot_index": 2,
+    "name": "Block Potion"
+  },
+  "usable": false,
+  "discardable": true,
+  "target_type": "any_player",
+  "requires_target": false,
+  "targets": [
+    {
+      "id": "self",
+      "kind": "player",
+      "name": "The Ironclad"
+    }
+  ],
+  "reason": "This potion can only be used in combat."
+}

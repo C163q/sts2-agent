@@ -1,0 +1,18 @@
+{
+  "potion": {
+    "slot_index": 0,
+    "name": "Foul Potion"
+  },
+  "usable": true,
+  "discardable": true,
+  "target_type": "targeted_no_creature",
+  "requires_target": true,
+  "targets": [
+    {
+      "id": "merchant",
+      "kind": "merchant",
+      "name": "Merchant"
+    }
+  ],
+  "reason": null
+}

@@ -1,0 +1,11 @@
+{
+  "card": {
+    "id": 5,
+    "name": "Sword Boomerang"
+  },
+  "playable": true,
+  "target_type": "random_enemy",
+  "requires_target": false,
+  "targets": [],
+  "reason": null
+}

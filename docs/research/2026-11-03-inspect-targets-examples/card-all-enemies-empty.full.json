@@ -1,0 +1,11 @@
+{
+  "card": {
+    "id": 9,
+    "name": "Thunderclap"
+  },
+  "playable": true,
+  "target_type": "all_enemies",
+  "requires_target": false,
+  "targets": [],
+  "reason": null
+}

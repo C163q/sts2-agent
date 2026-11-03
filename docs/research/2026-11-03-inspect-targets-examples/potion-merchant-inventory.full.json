@@ -1,0 +1,12 @@
+{
+  "potion": {
+    "slot_index": 0,
+    "name": "Foul Potion"
+  },
+  "usable": false,
+  "discardable": true,
+  "target_type": "targeted_no_creature",
+  "requires_target": true,
+  "targets": [],
+  "reason": "This potion cannot be used here."
+}

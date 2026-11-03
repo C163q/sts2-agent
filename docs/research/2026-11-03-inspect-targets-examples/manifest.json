@@ -1,0 +1,276 @@
+{
+  "baseline": "96c8471",
+  "kind": "historical_native_samples_reprojected",
+  "note": "历史隔离实例返回经当前校验与公开投影；不是本轮游戏实测。错误样本按当前错误映射整理。",
+  "examples": [
+    {
+      "file": "card-enemy.full.json",
+      "arguments": {
+        "card_id": 5,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-play-card/basic.json",
+      "record_index": 13,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "card-self.full.json",
+      "arguments": {
+        "card_id": 6,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-play-card/basic.json",
+      "record_index": 19,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "card-random.full.json",
+      "arguments": {
+        "card_id": 5,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-play-card/random.json",
+      "record_index": 6,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "card-all-enemies.full.json",
+      "arguments": {
+        "card_id": 5,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-play-card/aoe.json",
+      "record_index": 5,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "card-energy.full.json",
+      "arguments": {
+        "card_id": 5,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-play-card/energy.json",
+      "record_index": 5,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "card-stars.full.json",
+      "arguments": {
+        "card_id": 5,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-play-card/stars.json",
+      "record_index": 5,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "card-unplayable.full.json",
+      "arguments": {
+        "card_id": 5,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-play-card/unplayable.json",
+      "record_index": 5,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "card-no-allies.full.json",
+      "arguments": {
+        "card_id": 5,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-play-card/ally.json",
+      "record_index": 5,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "card-condition.full.json",
+      "arguments": {
+        "card_id": 5,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-play-card/card_logic.json",
+      "record_index": 5,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "card-hook.full.json",
+      "arguments": {
+        "card_id": 8,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-play-card/hook.json",
+      "record_index": 18,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "card-no-target.full.json",
+      "arguments": {
+        "card_id": 5,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-play-card/no_target.json",
+      "record_index": 5,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "card-random-empty.full.json",
+      "arguments": {
+        "card_id": 5,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-play-card/random_empty.json",
+      "record_index": 6,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "card-all-enemies-empty.full.json",
+      "arguments": {
+        "card_id": 9,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-play-card/test_subject.json",
+      "record_index": 22,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "potion-enemy.full.json",
+      "arguments": {
+        "potion_slot": 0,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-potions/basic.json",
+      "record_index": 7,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "potion-self.full.json",
+      "arguments": {
+        "potion_slot": 0,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-potions/skill.json",
+      "record_index": 8,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "potion-any-player.full.json",
+      "arguments": {
+        "potion_slot": 1,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-potions/basic.json",
+      "record_index": 39,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "potion-noncombat.full.json",
+      "arguments": {
+        "potion_slot": 0,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-potions/noncombat_rest.json",
+      "record_index": 7,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "potion-combat-only.full.json",
+      "arguments": {
+        "potion_slot": 2,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-potions/noncombat_rest.json",
+      "record_index": 16,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "potion-automatic.full.json",
+      "arguments": {
+        "potion_slot": 2,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-potions/basic.json",
+      "record_index": 45,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "potion-cannot-remove.full.json",
+      "arguments": {
+        "potion_slot": 0,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-potions/blocked.json",
+      "record_index": 8,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "potion-merchant.full.json",
+      "arguments": {
+        "potion_slot": 0,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-potions/merchant.json",
+      "record_index": 8,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "potion-merchant-map.full.json",
+      "arguments": {
+        "potion_slot": 0,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-potions/merchant_map.json",
+      "record_index": 7,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "potion-merchant-inventory.full.json",
+      "arguments": {
+        "potion_slot": 0,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-potions/merchant_inventory.json",
+      "record_index": 8,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "potion-all-enemies.full.json",
+      "arguments": {
+        "potion_slot": 0,
+        "preset": "full"
+      },
+      "source": ".tmp/2026-10-30-potions/aoe.json",
+      "record_index": 8,
+      "kind": "historical_native_sample_reprojected"
+    },
+    {
+      "file": "error-invalid-request.full.json",
+      "arguments": {
+        "card_ids": [
+          5
+        ],
+        "preset": "full"
+      },
+      "kind": "current_error_mapping_example",
+      "code": "invalid_request"
+    },
+    {
+      "file": "error-illegal-action.full.json",
+      "arguments": {
+        "card_id": 999999,
+        "preset": "full"
+      },
+      "kind": "current_error_mapping_example",
+      "code": "illegal_action"
+    },
+    {
+      "file": "error-transport.full.json",
+      "arguments": {
+        "card_id": 5,
+        "preset": "full"
+      },
+      "kind": "current_error_mapping_example",
+      "code": "transport_error"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "potion": {
+    "slot_index": 0,
+    "name": "Fruit Juice"
+  },
+  "usable": true,
+  "discardable": true,
+  "target_type": "any_player",
+  "requires_target": false,
+  "targets": [
+    {
+      "id": "self",
+      "kind": "player",
+      "name": "The Ironclad"
+    }
+  ],
+  "reason": null
+}

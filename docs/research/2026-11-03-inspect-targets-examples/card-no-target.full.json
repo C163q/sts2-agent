@@ -1,0 +1,11 @@
+{
+  "card": {
+    "id": 5,
+    "name": "Strike"
+  },
+  "playable": false,
+  "target_type": "any_enemy",
+  "requires_target": true,
+  "targets": [],
+  "reason": "No valid target."
+}

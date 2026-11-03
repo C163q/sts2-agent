@@ -1,0 +1,17 @@
+{
+  "card": {
+    "id": 6,
+    "name": "Defend"
+  },
+  "playable": true,
+  "target_type": "self",
+  "requires_target": false,
+  "targets": [
+    {
+      "id": 0,
+      "kind": "player",
+      "name": "The Ironclad"
+    }
+  ],
+  "reason": null
+}

@@ -1,0 +1,11 @@
+{
+  "card": {
+    "id": 5,
+    "name": "Dazed"
+  },
+  "playable": false,
+  "target_type": "none",
+  "requires_target": false,
+  "targets": [],
+  "reason": "This card cannot be played now."
+}

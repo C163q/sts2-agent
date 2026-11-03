@@ -1,0 +1,18 @@
+{
+  "potion": {
+    "slot_index": 1,
+    "name": "Block Potion"
+  },
+  "usable": true,
+  "discardable": true,
+  "target_type": "any_player",
+  "requires_target": false,
+  "targets": [
+    {
+      "id": 0,
+      "kind": "player",
+      "name": "The Ironclad"
+    }
+  ],
+  "reason": null
+}

@@ -1,0 +1,11 @@
+{
+  "card": {
+    "id": 5,
+    "name": "Mimic"
+  },
+  "playable": false,
+  "target_type": "any_ally",
+  "requires_target": true,
+  "targets": [],
+  "reason": "No living allies."
+}
