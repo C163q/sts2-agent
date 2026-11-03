@@ -25,12 +25,12 @@ internal static class OrbInspection
     }
 
     internal static bool SlotVisible(NOrb slot, bool entering = false) => VisibleUi.Shown(slot) && (slot.Model == null
-        ? VisibleUi.OnScreen(slot.GetNodeOrNull<Control>("%Outline"))
-        : VisibleUi.OnScreen(slot.GetNodeOrNull<Control>("Bounds")) && SpriteVisible(slot, entering));
+        ? VisibleUi.Displayed(slot.GetNodeOrNull<Control>("%Outline"))
+        : VisibleUi.Displayed(slot.GetNodeOrNull<Control>("Bounds")) && SpriteVisible(slot, entering));
 
     private static bool SpriteVisible(NOrb slot, bool entering)
     {
-        if (CardSelection.Field(slot, "_sprite") is not Node2D sprite || !VisibleUi.OnScreen(sprite)) return false;
+        if (CardSelection.Field(slot, "_sprite") is not Node2D sprite || !VisibleUi.Displayed(sprite)) return false;
         var transform = sprite.GetGlobalTransformWithCanvas();
         if (Mathf.Abs(transform.Determinant()) <= 0.000001f
             && !(entering && RewardInspection.Animating(slot, "_curTween"))) return false;
@@ -42,9 +42,11 @@ internal static class OrbInspection
         return true;
     }
 
-    public static OrbText?[]? Read(NCreature node) => VisibleNodes(node)?.Select(slot => slot.Model == null ? null
-        : new OrbText(English.Name(slot.Model.Title), VisibleUi.Number(slot, "%PassiveAmount"),
-            VisibleUi.Number(slot, "%EvokeAmount"))).ToArray();
+    public static OrbText?[]? Read(NCreature node) => ReadSlots(VisibleNodes(node));
+
+    internal static OrbText?[]? ReadSlots(NOrb[]? slots) => slots?.Select(slot => slot.Model == null ? null
+        : new OrbText(English.Name(slot.Model.Title), VisibleUi.DisplayedNumber(slot, "%PassiveAmount"),
+            VisibleUi.DisplayedNumber(slot, "%EvokeAmount"))).ToArray();
 
     public static bool Hoverable(NOrb node) => node.IsEnabled && node.MouseFilter != Control.MouseFilterEnum.Ignore;
 }

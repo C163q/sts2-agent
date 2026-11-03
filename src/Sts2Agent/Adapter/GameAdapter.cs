@@ -133,6 +133,8 @@ internal sealed partial class GameAdapter(bool testMode)
         string visibility = ObservationContext.Visibility(scene, map, epilogue, ending);
         if (ending != null) selection = null;
         var screen = ObservationContext.Screen(scene, visibility, map != null);
+        var combatants = scene == "combat" && CombatObservation.Status() == "visible"
+            ? observation.Combatants(player) : null;
         string body = JsonSerializer.Serialize(new
         {
             schema_version = 34, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
@@ -143,9 +145,9 @@ internal sealed partial class GameAdapter(bool testMode)
             run_result_generation = runResultInspection.Generation, selection_generation = selectionGeneration, map_generation = mapGeneration, scene, map,
             screen,
             turn = scene == "combat" ? observation.Turn() : null,
-            player = scene == "combat" ? observation.Player(player) : null,
-            enemies = scene == "combat" ? observation.Enemies() : null,
-            allies = scene == "combat" ? observation.Allies() : null,
+            player = scene == "combat" ? observation.Player(player, combatants) : null,
+            enemies = scene == "combat" ? observation.Enemies(combatants) : null,
+            allies = scene == "combat" ? observation.Allies(combatants) : null,
             top_bar = observation.TopBar(),
             buttons = scene == "combat" ? observation.Buttons() : null,
             selection = new SelectionInspection(observation).Read(selection),

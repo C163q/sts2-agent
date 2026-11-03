@@ -67,10 +67,15 @@ internal sealed class CombatObservation
         return VisibleUi.Shown(room) ? "visible" : "hidden";
     }
 
-    public object? Player(Player? player)
+    public CombatantInspection.Result Combatants(Player? player) =>
+        CombatantInspection.Read(player, CardId, CombatantInspection.Level.Summary);
+
+    public object? Player(Player? player, CombatantInspection.Result? common = null)
     {
         if (player == null || Status() != "visible")
             return null;
+        common ??= Combatants(player);
+        if (common.player == null) return null;
         var room = NCombatRoom.Instance!;
         NCreature? node = room.GetCreatureNode(player.Creature);
         if (!VisibleUi.Shown(node) || !VisibleUi.OnScreen(node!.Body))
@@ -82,9 +87,9 @@ internal sealed class CombatObservation
             character = player.Character.Id.Entry,
             hp = hp.current, max_hp = hp.maximum, hp_display = hp.display, block = Block(node!),
             energy = resources.Energy, max_energy = resources.Maximum, stars = resources.Stars,
-            powers = Powers(node!),
-            orb_slots = OrbInspection.Read(node!),
-            sovereign_blades = SovereignBladeInspection.Read(node!, CardId),
+            powers = common.player.powers,
+            orb_slots = common.player.orb_slots,
+            sovereign_blades = common.player.sovereign_blades,
             hand = VisibleUi.Shown(room.Ui.Hand) ? HandCards(room.Ui.Hand).Select(Card).ToArray() : null,
             draw_count = VisibleUi.Number(room.Ui.DrawPile, "CountContainer/Count"),
             discard_count = VisibleUi.Number(room.Ui.DiscardPile, "CountContainer/Count"),
@@ -101,11 +106,15 @@ internal sealed class CombatObservation
         && new[] { "%TitleLabel", "%Portrait", "%AncientPortrait", "%Frame" }
             .Any(path => readable(card!.GetNodeOrNull<Control>(path)));
 
-    public object[]? Enemies()
+    public object[]? Enemies(CombatantInspection.Result? common = null)
     {
         if (Status() != "visible")
             return null;
-        return EnemyNodes().Select(Enemy).ToArray();
+        common ??= Combatants(null);
+        var nodes = EnemyNodes().ToArray();
+        if (!nodes.Select(node => node.Entity.CombatId).SequenceEqual(common.enemies.Select(item => item.id)))
+            throw new InvalidOperationException("Displayed enemies changed during observation.");
+        return nodes.Select((node, index) => Enemy(node, common.enemies[index])).ToArray();
     }
 
     internal static IEnumerable<NCreature> VisibleCreatureNodes() =>
@@ -117,17 +126,22 @@ internal sealed class CombatObservation
     internal static IEnumerable<NCreature> AllyNodes() => VisibleCreatureNodes()
         .Where(node => !node.Entity.IsPlayer && !node.Entity.IsEnemy);
 
-    public object[]? Allies()
+    public object[]? Allies(CombatantInspection.Result? common = null)
     {
         if (Status() != "visible") return null;
-        return AllyNodes().Select(node =>
+        common ??= Combatants(null);
+        var nodes = AllyNodes().ToArray();
+        if (!nodes.Select(node => node.Entity.CombatId).SequenceEqual(common.allies.Select(item => item.id)))
+            throw new InvalidOperationException("Displayed allies changed during observation.");
+        return nodes.Select((node, index) =>
         {
+            var shared = common.allies[index];
             var hp = Health(node);
             var result = new Dictionary<string, object?>
             {
-                ["id"] = node.Entity.CombatId, ["name"] = english.Name(node.Entity.Monster!.Title),
+                ["id"] = shared.id, ["name"] = shared.name,
                 ["hp"] = hp.current, ["max_hp"] = hp.maximum, ["hp_display"] = hp.display,
-                ["block"] = Block(node), ["powers"] = Powers(node)
+                ["block"] = Block(node), ["powers"] = shared.powers
             };
             var display = node.GetNodeOrNull<NCreatureStateDisplay>("%HealthBar");
             if (display != null && CardSelection.Field(display, "_blockTrackingCreature") is Creature { IsPlayer: true } tracked
@@ -137,18 +151,14 @@ internal sealed class CombatObservation
         }).ToArray();
     }
 
-    private object Enemy(NCreature node)
+    private object Enemy(NCreature node, CombatantInspection.EnemyText shared)
     {
         var hp = Health(node);
         return new
         {
-            id = node.Entity.CombatId,
-            name = english.Name(node.Entity.Monster!.Title),
+            id = shared.id, name = shared.name,
             hp = hp.current, max_hp = hp.maximum, hp_display = hp.display, block = Block(node),
-            powers = Powers(node),
-            intents = !VisibleUi.Shown(node.IntentContainer) ? null : node.IntentContainer.GetChildren()
-                .OfType<NIntent>().Where(intent => VisibleUi.OnScreen(intent.GetNodeOrNull<Control>("%IntentHolder")))
-                .Select(Intent).ToArray()
+            powers = shared.powers, intents = shared.intents
         };
     }
 
@@ -156,7 +166,7 @@ internal sealed class CombatObservation
     {
         // Identify the rendered texture, never the monster's mutable next-move model.
         var sprite = intent.GetNodeOrNull<Sprite2D>("%Intent");
-        string? path = VisibleUi.Shown(sprite) ? sprite?.Texture?.ResourcePath : null;
+        string? path = VisibleUi.Displayed(sprite) ? sprite?.Texture?.ResourcePath : null;
         string? category = path == null ? null : Regex.Match(path,
             @"intent_(attack_[1-5]|carddebuff|death_blow|megadebuff|buff|defend|escape|heal|hidden|sleep|statuscard|stunned|summon|unknown)").Groups[1].Value;
         category = category switch
@@ -166,7 +176,7 @@ internal sealed class CombatObservation
         };
         if (category?.StartsWith("attack_") == true)
             category = "attack";
-        return new { category, value = VisibleUi.Text(intent, "%Value") };
+        return new { category, value = VisibleUi.DisplayedText(intent, "%Value") };
     }
 
     internal Dictionary<string, object?> Card(NCard card)
@@ -204,18 +214,6 @@ internal sealed class CombatObservation
             result["star_cost_color"] = starColor;
         CardAppearance.Read(card, result);
         return result;
-    }
-
-    private object[]? Powers(NCreature node)
-    {
-        var container = node.GetNodeOrNull<NCreatureStateDisplay>("%HealthBar")
-            ?.GetNodeOrNull<NPowerContainer>("%PowerContainer");
-        if (!VisibleUi.Shown(container))
-            return null;
-        return container!.GetChildren().OfType<NPower>()
-            .Where(power => VisibleUi.OnScreen(power) && power.Model.IsVisible)
-            .Select(power => (object)new { name = english.Name(power.Model.Title),
-                amount = VisibleUi.Number(power, "%AmountLabel") }).ToArray();
     }
 
     internal static (int? current, int? maximum, string display) Health(NCreature node)

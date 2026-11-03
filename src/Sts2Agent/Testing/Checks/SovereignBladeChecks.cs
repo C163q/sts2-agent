@@ -51,7 +51,7 @@ internal static class SovereignBladeChecks
         finally { sprite.Scale = scale; }
         var position = blade.Position;
         blade.Position = new Vector2(-10000, -10000);
-        try { Check("offscreen sword is omitted", Count() == 0 && !HasTip()); }
+        try { Check("offscreen sword retains identity and help", Count() == 1 && HasTip()); }
         finally { blade.Position = position; }
         hitbox.Hide();
         try { Check("hidden hitbox preserves the sword but omits help", Count() == 1 && !HasTip()); }

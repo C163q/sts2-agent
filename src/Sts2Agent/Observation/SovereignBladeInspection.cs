@@ -17,7 +17,7 @@ internal static class SovereignBladeInspection
     private static bool Visible(NSovereignBladeVfx node)
     {
         var sprite = node.GetNodeOrNull<Node2D>("SpineSword");
-        if (!VisibleUi.Shown(node) || !VisibleUi.OnScreen(sprite)
+        if (!VisibleUi.Shown(node) || !VisibleUi.Displayed(sprite)
             || Mathf.Abs(sprite!.GetGlobalTransformWithCanvas().Determinant()) <= 0.000001f) return false;
         for (Node? ancestor = sprite.GetParent(); ancestor != null; ancestor = ancestor.GetParent())
             if (ancestor is Control { ClipContents: true } clip
@@ -27,13 +27,16 @@ internal static class SovereignBladeInspection
     }
 
     public static bool Hoverable(NSovereignBladeVfx node) => Visible(node)
-        && VisibleUi.OnScreen(node.GetNodeOrNull<Control>("%Hitbox"))
+        && VisibleUi.Displayed(node.GetNodeOrNull<Control>("%Hitbox"))
         && node.GetNode<Control>("%Hitbox").MouseFilter != Control.MouseFilterEnum.Ignore
         && CardSelection.Field(node, "_isAttacking") is false
         && !NTargetManager.Instance.IsInSelection;
 
     public static BladeText[] Read(NCreature owner, Func<CardModel, int> cardId) =>
-        VisibleNodes(owner, cardId).Select(node => new BladeText(cardId(node.Card),
+        ReadNodes(VisibleNodes(owner, cardId), cardId);
+
+    internal static BladeText[] ReadNodes(NSovereignBladeVfx[] nodes, Func<CardModel, int> cardId) =>
+        nodes.Select(node => new BladeText(cardId(node.Card),
             EnglishCardText.Read(() => EnglishCardText.Plain(node.Card.TitleLocString.GetFormattedText())))).ToArray();
 
     public static bool Pending(NCreature owner) => owner.GetChildren().OfType<NSovereignBladeVfx>()

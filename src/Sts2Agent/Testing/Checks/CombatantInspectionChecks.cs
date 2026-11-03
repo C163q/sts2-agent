@@ -86,10 +86,16 @@ internal static class CombatantInspectionChecks
         try
         {
             power.MouseFilter = Control.MouseFilterEnum.Ignore;
-            Check("non_hoverable_power_is_excluded", CombatantInspection.Read(player, cardIds.Get).player!.powers!.Length == count - 1);
+            Check("non_hoverable_power_keeps_static_entry", CombatantInspection.Read(player, cardIds.Get).player!.powers!.Length == count);
+            var disabled = CombatantInspection.Read(player, cardIds.Get);
+            Check("disabled_power_has_explicit_source", disabled.unavailable_hover_sources.Contains("player.powers.0")
+                && !disabled.hover_tips.Any(tip => tip.sources.Contains("player.powers.0")));
+            var summary = CombatantInspection.Read(player, cardIds.Get, CombatantInspection.Level.Summary);
+            Check("summary_keeps_static_power_without_hover_metadata", summary.player!.powers!.Length == count
+                && summary.hover_tips.Length == 0 && summary.unavailable_hover_sources.Length == 0);
             power.MouseFilter = mouseFilter;
             power.Position = new Vector2(-10000, -10000);
-            Check("offscreen_power_is_excluded", CombatantInspection.Read(player, cardIds.Get).player!.powers!.Length == count - 1);
+            Check("offscreen_power_keeps_static_entry", CombatantInspection.Read(player, cardIds.Get).player!.powers!.Length == count);
         }
         finally { power.MouseFilter = mouseFilter; power.Position = position; }
         var intentNode = enemies.First(node => node.IntentContainer.GetChildren().Contains(intent));
@@ -105,8 +111,13 @@ internal static class CombatantInspectionChecks
         try
         {
             intent.MouseFilter = Control.MouseFilterEnum.Ignore;
-            Check("non_hoverable_intent_is_excluded", CombatantInspection.Read(player, cardIds.Get).enemies[intentIndex].intents!.Length == intentCount - 1);
+            Check("non_hoverable_intent_keeps_static_entry", CombatantInspection.Read(player, cardIds.Get).enemies[intentIndex].intents!.Length == intentCount);
+            Check("disabled_intent_has_explicit_source", CombatantInspection.Read(player, cardIds.Get)
+                .unavailable_hover_sources.Contains($"enemies.{intentIndex}.intents.0"));
             intent.MouseFilter = intentMouseFilter;
+            field.SetValue(intent, null);
+            Check("summary_does_not_read_hover_binding", CombatantInspection.Read(player, cardIds.Get,
+                CombatantInspection.Level.Summary).enemies[intentIndex].intents!.Length == intentCount);
             field.SetValue(intent, new HiddenIntent());
             Check("hidden_intent_has_no_explanation", !CombatantInspection.Read(player, cardIds.Get).hover_tips.Any(tip =>
                 tip.sources.Contains($"enemies.{intentIndex}.intents.0")));
@@ -129,6 +140,8 @@ internal static class CombatantInspectionChecks
             try { CombatantInspection.Read(player, cardIds.Get); }
             catch (InvalidOperationException) { rejected = true; }
             Check("card_aiming_is_unavailable", rejected);
+            Check("static_read_survives_card_aiming", CombatantInspection.Read(player, cardIds.Get,
+                CombatantInspection.Level.Summary).enemies.Length == before.enemies.Length);
         }
         finally { cardPlayField.SetValue(room.Ui.Hand, previousPlay); dummyPlay.Free(); }
         Check("locale_unchanged", language == LocManager.Instance.Language && localized.GetFormattedText() == original);

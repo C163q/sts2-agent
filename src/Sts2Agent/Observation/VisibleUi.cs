@@ -38,6 +38,22 @@ internal static class VisibleUi
         return VisibleBounds(control).HasArea();
     }
 
+    public static bool Displayed(CanvasItem? item)
+    {
+        if (!Shown(item)) return false;
+        if (item is Control control) return BoundsWithinClips(control).HasArea();
+        var origin = item!.GetGlobalTransformWithCanvas().Origin;
+        for (Node? ancestor = item.GetParent(); ancestor != null; ancestor = ancestor.GetParent())
+            if (ancestor is Control { ClipContents: true } clip
+                && !new Rect2(Vector2.Zero, clip.Size).HasPoint(
+                    clip.GetGlobalTransformWithCanvas().AffineInverse() * origin)) return false;
+        return true;
+    }
+
+    public static string? DisplayedText(Node? owner, string path) => ReadText(owner, path, Displayed);
+    public static int? DisplayedNumber(Node? owner, string path) =>
+        int.TryParse(DisplayedText(owner, path), out int value) ? value : null;
+
     public static bool Browsable(CanvasItem? item)
     {
         if (OnScreen(item)) return true;
@@ -57,16 +73,17 @@ internal static class VisibleUi
         return false;
     }
 
-    private static Rect2 VisibleBounds(Control control)
+    private static Rect2 VisibleBounds(Control control) =>
+        BoundsWithinClips(control).Intersection(control.GetViewport().GetVisibleRect());
+
+    private static Rect2 BoundsWithinClips(Control control)
     {
-        Rect2 bounds = Bounds(control).Intersection(control.GetViewport().GetVisibleRect());
-        if (!bounds.HasArea()) return bounds;
+        Rect2 bounds = Bounds(control);
         for (Node? ancestor = control.GetParent(); ancestor != null; ancestor = ancestor.GetParent())
             if (ancestor is Control { ClipContents: true } clip)
             {
                 bounds = bounds.Intersection(Bounds(clip));
-                if (!bounds.HasArea())
-                    return bounds;
+                if (!bounds.HasArea()) return bounds;
             }
         return bounds;
     }
@@ -80,10 +97,12 @@ internal static class VisibleUi
         return bounds.Expand(transform * new Vector2(0, control.Size.Y));
     }
 
-    public static string? Text(Node? owner, string path)
+    public static string? Text(Node? owner, string path) => ReadText(owner, path, OnScreen);
+
+    private static string? ReadText(Node? owner, string path, Func<CanvasItem?, bool> readable)
     {
         var node = owner?.GetNodeOrNull<CanvasItem>(path);
-        if (!OnScreen(node))
+        if (!readable(node))
             return null;
         return node switch
         {

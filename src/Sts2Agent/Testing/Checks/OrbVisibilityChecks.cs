@@ -56,7 +56,7 @@ internal static class OrbVisibilityChecks
             Check("zero-scale sprite is unknown", Unknown() && NoTips());
             sprite.Scale = spriteScale;
             sprite.Position = new(-10000, -10000);
-            Check("offscreen sprite is unknown", Unknown() && NoTips());
+            Check("offscreen sprite retains displayed slots", !Unknown() && !NoTips());
         }
         finally { sprite.Scale = spriteScale; sprite.Position = spritePosition; }
         var visual = sprite.GetParent<Control>();
@@ -71,7 +71,7 @@ internal static class OrbVisibilityChecks
         finally { visual.ClipContents = visualClip; visual.Size = visualSize; sprite.Position = spritePosition; }
         var bounds = slots[0].GetNode<Control>("Bounds");
         var position = bounds.Position;
-        try { bounds.Position = new(-10000, -10000); await frame(); Check("offscreen bounds are unknown", Unknown() && NoTips()); }
+        try { bounds.Position = new(-10000, -10000); await frame(); Check("offscreen bounds retain displayed slots", !Unknown() && !NoTips()); }
         finally { bounds.Position = position; }
         var container = slots[0].GetParent<Control>();
         var clip = container.ClipContents;
