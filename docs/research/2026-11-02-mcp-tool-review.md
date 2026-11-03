@@ -1,12 +1,12 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 43 项，已核销 1 项。get_observation 的 17 个场景组均已有核验记录：01–04、07–15 组约定 summary 已交付；05、06 组覆盖页主体暂用 default、顶栏共用摘要已交付，实际内容待对应工具核验；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状和完整 full 已交付；[文字修复、unrecognized 改名及 summary](2026-11-03-result-observation-implementation.md)已交付。该工具整体未核销；[inspect_ui](2026-11-03-inspect-ui-review.md) 的正确性修复、场景统一、summary 与 sources 筛选已交付并核销。[inspect_hand](2026-11-03-inspect-hand-review.md) 设计范围已确认，[全部卡牌接入点与例外](2026-11-03-card-format-coverage.md)及悬浮剑实测 JSON 已交付，待实施；本轮纳入牌组／牌堆 preset 迁移，仍优先补 Affliction 和相关小范围重构。其余 40 项尚未进入完整逐项核验。
+> 当前状态：工具核验进行中，共 43 项，已核销 2 项。get_observation 的 17 个场景组均已有核验记录：01–04、07–15 组约定 summary 已交付；05、06 组覆盖页主体暂用 default、顶栏共用摘要已交付，实际内容待对应工具核验；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状和完整 full 已交付；[文字修复、unrecognized 改名及 summary](2026-11-03-result-observation-implementation.md)已交付。该工具整体未核销；[inspect_ui](2026-11-03-inspect-ui-review.md) 的正确性修复、场景统一、summary 与 sources 筛选已交付并核销。[inspect_hand](2026-11-03-inspect-hand-review.md) 的 Affliction、空值、共用牌面及资源字段已交付并核销；[实施记录](2026-11-03-card-format-implementation.md)同时完成牌组／牌堆 preset 迁移，未替代其他工具的完整核验。其余 40 项尚未进入完整逐项核验。
 
 ## 范围与基线
 
 - 核对基线：提交 `ef9f34e`，MCP `0.48.0`；工具名称与数量依据 [mcp_catalog.py](../../src/sts2_mcp/mcp_catalog.py)。后续以每项核验时的实现为准，工具增删时同步本清单及总数。
 - 逐项检查工具的适用场景、返回内容、参数及预设，目标是符合玩家实际可从 UI 获得的信息，并让 LLM 聚焦所关心的内容。遵循[可见信息边界](../observation.md)。
-- 42 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、遗物的 `summary`、地图的 `selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆另有独立的 `detail_level`。既有能力也须重新核验，不因此直接核销。
+- 42 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、遗物的 `summary`、地图的 `selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆也已迁移为 full/default/summary，旧 detail_level 已移除。既有能力也须重新核验，不因此直接核销。
 - `capture_screenshot` 按配置启用，不支持 preset；核验其现有参数与返回。统一预设的现行契约见 [MCP 输出预设](../development/mcp.md#输出预设)。
 
 ## 逐项工作流程
@@ -31,7 +31,7 @@
 
 - [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：[07–09 组奖励、火堆与宝箱](2026-11-02-get-observation-rooms.md)现状核验和 summary 已交付，[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)现状核验及 summary 已交付，[13–15 组](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状及完整 full 已交付，summary 已交付；[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)已交付本阶段摘要占位，内容待对应工具核验；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
 - [x] `inspect_ui`：可见顶栏、战斗 UI、资源及空充能球槽帮助。阶段：[修复与核验完成](2026-11-03-inspect-ui-review.md)，[统一上下文、summary、sources 筛选及验证](2026-11-03-ui-context-implementation.md)已交付；部分条件变体保留源码／历史核对边界。
-- [ ] `inspect_hand`：手牌详情。阶段：[现状与完整 full 样本核验完成，设计范围已确认，待实施](2026-11-03-inspect-hand-review.md)；[全部牌面接入点、字段例外与悬浮剑真实 JSON](2026-11-03-card-format-coverage.md)已交付。face 固定无正文；展开牌 full/default 增加解释；牌组／牌堆本轮移除 detail_level、改用 preset。实施优先处理 Affliction 与相关小范围重构，尚未修改行为。
+- [x] `inspect_hand`：手牌详情。阶段：[核验及定稿](2026-11-03-inspect-hand-review.md)、[覆盖清单](2026-11-03-card-format-coverage.md)和[实现／验证](2026-11-03-card-format-implementation.md)已完成；新增可见 Affliction、统一附魔空值、资源计数及共用卡牌格式。
 - [ ] `inspect_targets`：指定手牌或药水的可用性与目标范围。
 - [ ] `inspect_combatants`：战斗角色、能力、意图、充能球等详情。
 - [ ] `inspect_potions`：药水详情。
@@ -39,8 +39,8 @@
 
 ### 卡牌浏览（3 项）
 
-- [ ] `inspect_deck`：打开并查看牌组。本轮共享卡牌改造已纳入[移除 detail_level、统一 preset](2026-11-03-card-format-coverage.md#牌组牌堆参数迁移范围)，尚未实施，不因此视为本工具完整核验。后续同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)。
-- [ ] `inspect_pile`：打开并查看抽牌堆、弃牌堆或消耗堆。本轮共享卡牌改造已纳入[统一 preset](2026-11-03-card-format-coverage.md#牌组牌堆参数迁移范围)，尚未实施，不因此视为本工具完整核验。后续同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)。
+- [ ] `inspect_deck`：打开并查看牌组。本轮共享卡牌改造已纳入[移除 detail_level、统一 preset](2026-11-03-card-format-coverage.md#牌组牌堆参数迁移范围)，已实现并验证，不因此视为本工具完整核验。后续同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)。
+- [ ] `inspect_pile`：打开并查看抽牌堆、弃牌堆或消耗堆。本轮共享卡牌改造已纳入[统一 preset](2026-11-03-card-format-coverage.md#牌组牌堆参数迁移范围)，已实现并验证，不因此视为本工具完整核验。后续同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)。
 - [ ] `close_card_view`：关闭牌组或牌堆浏览界面。
 
 ### 战斗与药水操作（4 项）

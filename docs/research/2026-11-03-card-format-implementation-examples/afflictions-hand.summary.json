@@ -1,0 +1,37 @@
+{
+  "hand": [
+    {
+      "id": 5,
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1",
+      "outline": "cyan",
+      "enchantment": {
+        "name": "Sharp",
+        "dimmed": false,
+        "amount": 3
+      },
+      "affliction": {
+        "name": "Bound"
+      }
+    },
+    {
+      "id": 6,
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1",
+      "outline": "cyan",
+      "affliction": {
+        "name": "Smog"
+      }
+    },
+    {
+      "id": 7,
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1",
+      "outline": "cyan"
+    }
+  ],
+  "energy": "20/3"
+}

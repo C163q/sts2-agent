@@ -76,16 +76,12 @@ internal sealed class CombatObservation
         if (!VisibleUi.Shown(node) || !VisibleUi.OnScreen(node!.Body))
             return null;
         var hp = Health(node!);
-        string? energyText = VisibleUi.Descendants<NEnergyCounter>(room.Ui.EnergyCounterContainer)
-            .Select(counter => VisibleUi.Text(counter, "Label")).FirstOrDefault(text => text != null);
-        var energy = Pair(energyText);
+        var resources = CombatResources.Read();
         return new
         {
             character = player.Character.Id.Entry,
             hp = hp.current, max_hp = hp.maximum, hp_display = hp.display, block = Block(node!),
-            energy = energy.current, max_energy = energy.maximum,
-            stars = VisibleUi.Descendants<NStarCounter>(room.Ui).Where(VisibleUi.OnScreen)
-                .Select(counter => VisibleUi.Number(counter, "%CountLabel")).FirstOrDefault(),
+            energy = resources.Energy, max_energy = resources.Maximum, stars = resources.Stars,
             powers = Powers(node!),
             orb_slots = OrbInspection.Read(node!),
             sovereign_blades = SovereignBladeInspection.Read(node!, CardId),

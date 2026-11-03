@@ -137,6 +137,9 @@ async def verify(args):
                 if 'Cards Unlocked!' in data['run_result']['texts']:
                     assert len(data['run_result']['cards']) == 3, data
                     assert all(c.get('name') and c.get('description') for c in data['run_result']['cards']), data
+                    assert data['run_result']['cards'] == details['run_result']['cards'], (data, details)
+                    assert all('hover_tips' in card and 'enchantment' in card and 'affliction' in card
+                               for card in data['run_result']['cards']), data
                 if phase == 'timeline':
                     expected = {o['id'] for o in data['run_result']['options'] if o['id'].startswith('epoch:')}
                     actual = {t['source'] for t in details['run_result']['hover_tips'] if t['source'].startswith('epoch:')}

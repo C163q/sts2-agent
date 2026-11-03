@@ -1,16 +1,16 @@
 # inspect_hand 场景与现有预设核验
 
-> 当前状态：设计范围已确认，字段例外清单已交付，待实施。现状核验已完成 11 个隔离测试局及菜单读取，导出 26 份真实返回和 1 份控制输入示例；新增一局当前版本悬浮剑实测。已确认 face 不含正文、展开牌 full/default 补悬停解释、牌组／牌堆改用 preset；[完整接入与例外清单](2026-11-03-card-format-coverage.md)已交付。实施优先处理 Affliction 和相关小范围重构，HAND-01 尚待实际画面读取验证。尚未修改玩法行为，不核销工具；暂无调研阻塞。完整流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
+> 当前状态：已完成核验、设计、实现与验证，inspect_hand 已核销。Affliction、附魔空值、共用卡牌格式、浏览预设和手牌资源均已交付，见[实施记录](2026-11-03-card-format-implementation.md)。本文的旧 full 样本与现状分析保留原核验基线，当前接口以[手牌说明](../development/hand-inspection.md)为准；其他五种覆盖外观及部分动画／未知牌变体没有逐一新增 GUI 实测。
 
 ## 优先关注的问题
 
 | 编号 | 优先级与状态 | 影响及证据 | 建议处理范围 |
 | --- | --- | --- | --- |
-| HAND-01 | 中；已确认字段缺口，具体外观范围待 GUI 核验；未修复 | 游戏的 AfflictionModel 与 EnchantmentModel 是两类独立效果。NCard.ReloadOverlay 会为有资源的 Affliction 绘制覆盖外观，CardModel.GetDescriptionForPile/HoverTips 提供其文字；当前 CombatObservation.Card 和 Python CARD、共用 card_summary 都没有对应外观字段。因此 full 可从正文／悬停提示读到效果，summary 及基础手牌观察却无法表达这些牌面外观。不能因附魔已支持就认为全部特殊牌面状态已覆盖 | 先核对实际可见覆盖外观及其可识别身份，再确定是否补充共享卡牌字段；同步基础观察、手牌、选择等调用方。不直接输出模型 Amount，也不假定所有 Affliction 都有可见覆盖外观 |
+| HAND-01 | 中；已修复并验证魂缚／烟雾及隐藏边界 | 游戏的 AfflictionModel 与 EnchantmentModel 是两类独立效果。NCard.ReloadOverlay 会为有资源的 Affliction 绘制覆盖外观，CardModel.GetDescriptionForPile/HoverTips 提供其文字；当前 CombatObservation.Card 和 Python CARD、共用 card_summary 都没有对应外观字段。因此 full 可从正文／悬停提示读到效果，summary 及基础手牌观察却无法表达这些牌面外观。不能因附魔已支持就认为全部特殊牌面状态已覆盖 | 先核对实际可见覆盖外观及其可识别身份，再确定是否补充共享卡牌字段；同步基础观察、手牌、选择等调用方。不直接输出模型 Amount，也不假定所有 Affliction 都有可见覆盖外观 |
 
 没有证据表明当前参数筛选或共享提示合并存在错误。未知／锁定牌、目标预览、动作过渡等未新实测的分支属于验证边界，不据此判为缺陷。`unplayable_markers` 的名称容易引起误读，实际是可见禁用图标的位置，下面单独说明；不是已确认的错误采样。
 
-需要关注的小范围重构：基础观察和 inspect_hand 在两个位置重复枚举 ActiveHolders 并过滤可读牌面，后续改动可能造成 ID／候选不一致。建议在需要修改采样时提取共用手牌枚举入口，保留 HandInspection 只负责附加正文及悬停提示的职责。Python 的 card_summary 已集中复用，无须为本轮新增第二套摘要实现。
+原基线的基础观察和 inspect_hand 重复枚举 ActiveHolders，外观及正文组装也分散。本次已提取共用枚举、CardAppearance/CardPresentation 和 Python card_format；保留实卡与网格克隆分工，没有新增第二套摘要规则。
 
 ## 核对基线与证据
 
@@ -117,9 +117,9 @@
 
 已确认保留现有卡牌摘要及 card_ids 筛选，补充 Affliction 和附魔空值一致性。共用格式覆盖、牌组／牌堆 preset 迁移及所有非牌面字段的明确归属见[字段清点](2026-11-03-card-format-coverage.md)。本轮不修改用户维护的 TODO.md，也不提前核销其他工具。
 
-## 共享卡牌输出与手牌资源的候选契约
+## 共享卡牌输出与手牌资源契约
 
-本节记录本项已确认的设计规则与实施范围，**尚未实现**；上面的现状与原始样本保持不变。非牌面字段的逐项核验另见[覆盖清单](2026-11-03-card-format-coverage.md)。
+本节记录已确认且已交付的设计契约，验证见[实施记录](2026-11-03-card-format-implementation.md)；上面的现状与原始样本保留原核验基线。非牌面字段的逐项核验另见[覆盖清单](2026-11-03-card-format-coverage.md)。
 
 ### Affliction 与附魔空值
 
@@ -127,7 +127,7 @@
 
 本轮补充证据在 `.tmp/2026-11-03-card-presentation-design/`：目标程序集的两个 Power 反编译、资源只读探针 `resources.gd` 与输出 `resources.json`。资源来自 `res://localization/{zhs,eng}/{powers,afflictions}.json` 的对应 title 条目，以及 `res://scenes/cards/overlays/afflictions/{bound,entangled,galvanized,hexed,ringing,smog,tainted}.tscn`。探针在隔离数据目录的无界面进程中读取并实例化场景，没有进入对局；它确认资源及节点结构，不能替代实际手牌外观采样验证。无界面音频和 Sentry 初始化日志未影响资源输出，不据此宣称实战 UI 已验证。
 
-候选规则：
+实施规则：
 
 - 统一使用单数 `affliction`，full 的无可读效果值为 null，不使用空数组。有实际可识别覆盖外观时为 `{"name":"Bound"}`；summary 只保留其身份，效果文字仍由 full 的正文／悬停解释提供。
 - full 与 face_full 的卡牌均显式生成 `enchantment:null` 和 `affliction:null`；未知牌或不可识别效果不补真实身份。default、face_default 和 summary 的普通卡牌省略空值。这两项是已提出的行为调整，与保持其他既有字段不变的重构分开验证。
@@ -155,7 +155,7 @@
 
 ### 兼容迁移与旧牌组／牌堆摘要
 
-当前旧 detail_level:summary 只返回 id/name/type/rarity/visual_card_pool/energy_cost/star_cost；full 在此基础上增加正文与解释，两个层级都没有完整的结构化外观。现状来源仍是[浏览校验](../../src/sts2_mcp/output/deck_details.py)及此前保存的真实样本。
+实施前 detail_level:summary 只返回 id/name/type/rarity/visual_card_pool/energy_cost/star_cost；full 在此基础上增加正文与解释，两个层级都没有完整的结构化外观。该事实对应本记录原核验基线及保存的真实样本，当前实现已迁移。
 
 已确认这轮移除 inspect_deck/inspect_pile 的 detail_level，改用 preset:full/default/summary，默认 default，并直接接入共用卡牌格式；原生公开字段、CLI、schema、校验、共享提示合并、测试和文档一并清理，不再为保留旧七字段摘要维护临时格式。详细参数及行为变化见[迁移范围](2026-11-03-card-format-coverage.md#牌组牌堆参数迁移范围)。
 
@@ -163,13 +163,13 @@
 
 ### inspect_hand 的资源信息
 
-建议采用额外的顶层 energy、max_energy、stars，与 hand 筛选独立：即使 card_ids 为空或全部无效，成功读取仍返回当前可读资源。参数错误或底层非法读取继续只返回 error。
+采用额外的顶层 energy、max_energy、stars，与 hand 筛选独立：即使 card_ids 为空或全部无效，成功读取仍返回当前可读资源。参数错误或底层非法读取继续只返回 error。
 
 full 中 energy/max_energy 为可空整数，stars 为可空整数。default 仅省略不可读空值；summary 与 get_observation.summary 一致，将成对可读能量合为字符串 energy，例如 `3/3`，并省略 max_energy；stars 可见时保留整数，包括 0。部分能量不可读时沿用现行 summary 行为省略能量，不从模型补值。
 
 游戏端提取共用战斗资源采样，MCP 端提取共用资源摘要逻辑，避免两处分别读取／拼接。资源来自当前显示的能量计和星星计，不依赖整个 player 对象或角色身体是否可读，也不因职业身份推断星星为 0。
 
-建议的成功结果骨架如下；这是设计示例，不是实测返回：
+成功结果骨架如下；这是设计示例，不是实测返回：
 
 ```json
 {
@@ -190,4 +190,4 @@ full 中 energy/max_energy 为可空整数，stars 为可空整数。default 仅
 }
 ```
 
-上述规则尚未实施；具体非牌面字段和真实示例以[覆盖清单](2026-11-03-card-format-coverage.md)为依据，不能把设计记录当作已交付行为。
+上述规则已交付；具体非牌面字段和原核验示例以[覆盖清单](2026-11-03-card-format-coverage.md)为依据，当前行为和新增实测见[实施记录](2026-11-03-card-format-implementation.md)。

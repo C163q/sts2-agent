@@ -53,6 +53,29 @@ async def verify_browse(call, raw, record):
     assert before == after, 'Browsing changed gameplay.'
 
 
+async def verify_resources(call, raw, record):
+    before = await asyncio.to_thread(raw.call, 'get_state')
+    checks = await asyncio.to_thread(raw.call, 'check_test_hand_resources')
+    record({'native_resource_checks': checks})
+    assert checks['ok'] and checks['state']['passed'], checks
+    observation = await call('get_observation', {'preset': 'full'})
+    values = {key: observation['player'][key] for key in ('energy', 'max_energy', 'stars')}
+    assert values['energy'] == 20 and values['max_energy'] == 3, values
+    compact = {'energy': '20/3'}
+    if values['stars'] is not None: compact['stars'] = values['stars']
+    for preset in ('full', 'default', 'summary'):
+        for ids in ([], [2147483647]):
+            hand = await call('inspect_hand', {'preset': preset, 'card_ids': ids})
+            assert hand['hand'] == []
+            expected = compact if preset == 'summary' else {key: value for key, value in values.items()
+                                                            if preset == 'full' or value is not None}
+            assert {key: value for key, value in hand.items() if key in values} == expected, hand
+            if ids: assert hand['errors'] == [{'code': 'cards_not_in_hand', 'card_ids': ids}]
+    after = await asyncio.to_thread(raw.call, 'get_state')
+    record({'before': before, 'after': after})
+    assert before['state'] == after['state'], 'Resource checks changed game or UI.'
+
+
 async def verify(args):
     raw = Client(ipc_directory())
     await asyncio.to_thread(ensure_run, raw)
@@ -82,6 +105,10 @@ async def verify(args):
                 await verify_browse(call, raw, record)
                 print('PASS shared browse formats, options and native old-option rejection', flush=True)
                 return
+            if args.scenario == 'resources':
+                await verify_resources(call, raw, record)
+                print('PASS hand HUD resources, hidden-body independence and empty filters', flush=True)
+                return
             before = await asyncio.to_thread(raw.call, 'get_state')
             checks = await asyncio.to_thread(raw.call, 'check_test_afflictions')
             record({'native_checks': checks})
@@ -107,6 +134,6 @@ async def verify(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='验证共用卡牌格式与可见外观。')
-    parser.add_argument('--scenario', choices=('afflictions', 'browse'), default='afflictions')
+    parser.add_argument('--scenario', choices=('afflictions', 'browse', 'resources'), default='afflictions')
     parser.add_argument('--report', type=Path, required=True)
     asyncio.run(verify(parser.parse_args()))

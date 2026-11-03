@@ -20,6 +20,8 @@ def main():
     assert after["ok"], after
     assert before["state"]["snapshot_id"] == after["state"]["snapshot_id"], "Game state changed during inspection."
     result = player_result(inspection)
+    resources = {key: before["state"]["player"][key] for key in ("energy", "max_energy", "stars")}
+    assert {key: result[key] for key in resources} == resources
     hand = result["hand"]
     basic = before["state"]["player"]["hand"]
     assert [card["id"] for card in hand] == [card["id"] for card in basic], (hand, basic)
@@ -40,10 +42,10 @@ def main():
                     for tip in tips for card_id in tip["card_ids"]}
     assert shared_links == raw_links, (shared_links, raw_links)
     if hand:
-        assert set(result) == {"hand", "hover_tips", "notes"}, result
+        assert set(result) == {"energy", "max_energy", "stars", "hand", "hover_tips", "notes"}, result
         assert set(result["notes"]) == {"card_values"}, result
     else:
-        assert result == {"hand": [], "hover_tips": []}, result
+        assert result == {**resources, "hand": [], "hover_tips": []}, result
     assert all("description" not in card for card in basic), basic
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")

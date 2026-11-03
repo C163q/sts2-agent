@@ -1,0 +1,44 @@
+{
+  "entries": [
+    {
+      "file": "afflictions-hand.full.json",
+      "source": ".tmp/2026-11-03-card-format-implementation/final-gui/afflictions/verify/evidence.json",
+      "index": 2,
+      "tool": "inspect_hand",
+      "arguments": {
+        "preset": "full"
+      },
+      "kind": "live_stdio_mcp",
+      "mod": "0.51.0",
+      "mcp": "0.52.0",
+      "schema": 34
+    },
+    {
+      "file": "afflictions-hand.default.json",
+      "source": ".tmp/2026-11-03-card-format-implementation/final-gui/afflictions/verify/evidence.json",
+      "index": 4,
+      "tool": "inspect_hand",
+      "arguments": {
+        "preset": "default"
+      },
+      "kind": "live_stdio_mcp",
+      "mod": "0.51.0",
+      "mcp": "0.52.0",
+      "schema": 34
+    },
+    {
+      "file": "afflictions-hand.summary.json",
+      "source": ".tmp/2026-11-03-card-format-implementation/final-gui/afflictions/verify/evidence.json",
+      "index": 6,
+      "tool": "inspect_hand",
+      "arguments": {
+        "preset": "summary"
+      },
+      "kind": "live_stdio_mcp",
+      "mod": "0.51.0",
+      "mcp": "0.52.0",
+      "schema": 34
+    }
+  ],
+  "note": "来源套件的前两局通过，后续资源测试辅助类型错误导致整套中止；这些返回来自已通过的 Affliction 局，原始失败目录保留。"
+}

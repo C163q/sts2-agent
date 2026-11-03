@@ -1,8 +1,82 @@
 [
-  {"name":"afflictions","scenarios":{"play":"afflictions"},"steps":[
-    {"name":"verify","verifier":"verify_card_formats.py","args":["--scenario","afflictions"]}
-  ]},
-  {"name":"enchantments","scenarios":{"play":"enchantments"},"steps":[
-    {"name":"verify","verifier":"verify_hand_presets.py","args":["--scenario","enchantments"]}
-  ]}
+  {
+    "name": "afflictions",
+    "scenarios": {
+      "play": "afflictions"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_card_formats.py",
+        "args": [
+          "--scenario",
+          "afflictions"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "enchantments",
+    "scenarios": {
+      "play": "enchantments"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_hand_presets.py",
+        "args": [
+          "--scenario",
+          "enchantments"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "resources_ironclad",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_card_formats.py",
+        "args": [
+          "--scenario",
+          "resources"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "resources_regent",
+    "scenarios": {
+      "play": "companions_blade"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_card_formats.py",
+        "args": [
+          "--scenario",
+          "resources"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "browse",
+    "scenarios": {
+      "play": "pommel_strike"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_card_formats.py",
+        "args": [
+          "--scenario",
+          "browse"
+        ]
+      }
+    ]
+  }
 ]

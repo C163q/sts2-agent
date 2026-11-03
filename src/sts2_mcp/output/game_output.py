@@ -102,6 +102,7 @@ from sts2_mcp.output.run_ending_details import RESULT, EPILOGUE
 
 OPTIONAL_OBSERVATION = {'allies': nullable([ALLY]), 'run_result': nullable(RESULT), 'epilogue': nullable(EPILOGUE), 'map': nullable(MAP_SUMMARY), 'confirmation': nullable(CONFIRMATION), 'divination': nullable(DIVINATION), "event": nullable(ROOM_EVENT), "ancient": nullable(ANCIENT),"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
 GAMEPLAY = {
+    'energy': NUMBER, 'max_energy': NUMBER, 'stars': NUMBER,
     'reward_result': {'reward_id': int, 'status': str},
     'purchase_result': {'item_id': int, 'status': str},
     **OBSERVATION, **OPTIONAL_OBSERVATION, "transition": TRANSITION, "hand": nullable([HAND_CARD]),
@@ -382,4 +383,4 @@ def hand_details(state):
         for tip in card["hover_tips"] or []:
             if set(tip) != set(TIP):
                 raise ValueError("Invalid hand hover tip.")
-    return {"hand": hand}
+    return {**project(state, {key: NUMBER for key in ('energy', 'max_energy', 'stars')}), "hand": hand}

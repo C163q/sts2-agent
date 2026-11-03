@@ -53,7 +53,7 @@ flowchart LR
 | `inspect_rest_site()` | [当前休息处选项及动态悬停说明](rest-site.md) |
 | `choose_rest_option(option_id)` | 点击一个启用的休息处选项，后续选牌单独处理 |
 | `get_observation(preset?)` | 默认 `default`；`full` 保留空值；`summary` 精简战斗、卡牌、事件、占卜说明与顶栏；`actions_only` 仅返回上下文与工具名；`top_bar` 再附顶栏和遗物数量，各预设均刷新动作令牌 |
-| `inspect_hand({preset?, card_ids?})` | [手牌完整详情或摘要，可按 ID 筛选](hand-inspection.md) |
+| `inspect_hand({preset?, card_ids?})` | [手牌完整详情或摘要及当前能量／星星，可按 ID 筛选卡牌](hand-inspection.md) |
 | `inspect_targets(card_id 或 potion_slot)` | 查询[手牌](card-play.md)或[药水](potion-actions.md)可用性、是否须指定目标及范围，不进入瞄准或抽随机数 |
 | `play_card(card_id, target_id?)` | [提交一次原生手动出牌](card-play.md)，后续选牌单独操作 |
 | `inspect_ui(preset?, sources?)` | [可见顶栏与战斗通用悬停帮助](ui-inspection.md)，summary 省略正文，sources 精确筛选来源 |

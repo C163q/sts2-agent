@@ -88,7 +88,7 @@ def load_cases(path):
             if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
-                'verify_card_formats.py': ('afflictions', 'browse'),
+                'verify_card_formats.py': ('afflictions', 'browse', 'resources'),
                 'verify_ui_context.py': ('combat', 'orbs', 'event', 'rest', 'treasure', 'ancient', 'shop', 'rewards', 'selection', 'confirmation', 'divination'),
                 'verify_run_result_observation.py': ('history',),
                 'verify_browsable_content.py': ('rewards', 'history', 'audit'),

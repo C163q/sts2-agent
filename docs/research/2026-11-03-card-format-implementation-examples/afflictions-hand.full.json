@@ -1,0 +1,90 @@
+{
+  "energy": 20,
+  "max_energy": 3,
+  "stars": null,
+  "hand": [
+    {
+      "id": 5,
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "enchantment": {
+        "name": "Sharp",
+        "dimmed": false,
+        "amount": 3
+      },
+      "affliction": {
+        "name": "Bound"
+      },
+      "description": "Deal 9 damage.\nBound"
+    },
+    {
+      "id": 6,
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "enchantment": null,
+      "affliction": {
+        "name": "Smog"
+      },
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": 7,
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 6 damage."
+    }
+  ],
+  "hover_tips": [
+    {
+      "title": "Sharp",
+      "description": "Increases damage on this card by 3.",
+      "card_ids": [
+        5
+      ]
+    },
+    {
+      "title": "Bound",
+      "description": "Only 1 Bound card can be played each turn. Cards are un-Bound at end of turn.",
+      "card_ids": [
+        5
+      ]
+    },
+    {
+      "title": "Smog",
+      "description": "You cannot play additional Skills this turn. Clears at the end of the turn.",
+      "card_ids": [
+        6
+      ]
+    },
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        6
+      ]
+    }
+  ],
+  "notes": {
+    "card_values": "Card values are contextual previews. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again."
+  }
+}

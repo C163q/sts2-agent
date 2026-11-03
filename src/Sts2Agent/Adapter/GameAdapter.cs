@@ -135,7 +135,7 @@ internal sealed partial class GameAdapter(bool testMode)
         var screen = ObservationContext.Screen(scene, visibility, map != null);
         string body = JsonSerializer.Serialize(new
         {
-            schema_version = 33, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 34, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -314,6 +314,9 @@ internal sealed partial class GameAdapter(bool testMode)
         if (testMode && testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") == "afflictions"
             && request.Operation == "check_test_afflictions")
             return Success(request.Id, JsonSerializer.Serialize(AfflictionObservationChecks.Run(observation, Observe)));
+        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+            && request.Operation == "check_test_hand_resources" && LocalPlayer is { } handResourcePlayer)
+            return Success(request.Id, JsonSerializer.Serialize(await HandResourceChecks.Run(this, handResourcePlayer)));
         if (testMode && testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") == "enchantments"
             && request.Operation == "check_test_enchantments")
             return Success(request.Id, JsonSerializer.Serialize(EnchantmentObservationChecks.Run()));
@@ -596,9 +599,11 @@ internal sealed partial class GameAdapter(bool testMode)
             if (testMode && handChecks != null)
                 HandInspectionChecks.Run(handChecks);
             var reader = new HandInspection(observation);
+            var resources = CombatResources.Read();
             return Success(request.Id, JsonSerializer.Serialize(new
             {
                 snapshot_id = document.RootElement.GetProperty("snapshot_id").GetString(),
+                energy = resources.Energy, max_energy = resources.Maximum, stars = resources.Stars,
                 hand = CombatObservation.HandCards(hand).Select(reader.Card).ToArray()
             }));
         }

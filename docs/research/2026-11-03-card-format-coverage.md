@@ -1,6 +1,6 @@
 # 共享卡牌格式覆盖与例外核验
 
-> 当前状态：已完成字段清点和悬浮君王之剑的当前版本实测；已确认 face 不含正文、展开牌面 full/default 增加悬停解释，以及牌组／牌堆移除 detail_level、改用 preset。尚未实施。本文逐项列出共享牌面入口的范围及其外部字段，供核验后进入实现；没有新增临时卡牌模式。主记录见[inspect_hand 核验](2026-11-03-inspect-hand-review.md)。
+> 当前状态：定稿范围已实现并验证，见[实施记录](2026-11-03-card-format-implementation.md)。本文保留字段覆盖、例外及迁移要求；下方悬浮剑 JSON 与来源仍对应实施前核验基线。牌组／牌堆的完整工具核验仍待后续进行。
 
 ## 已确认的内部规则
 
@@ -151,4 +151,4 @@ CardHoverTip 文本预览，来自[十张手牌 full](2026-11-03-inspect-hand-ex
 - 本轮悬浮剑测试的 DLL 与当前构建相同，SHA-256 为 `eedee2ff5b7ba98325f8b42bf03fe19767094ba8fa0b807864820ee59ca80e30`。一个隔离游戏进程执行已有 verify_companions 的 blade 场景，通过正常卡牌动作检查锻造和伤害归属，测试局清理通过，PID 35939 已关闭。
 - 完整证据在 `.tmp/2026-11-03-card-format-coverage/blade-gui/`；公开 JSON 的来源、数组下标及参数见 [manifest](2026-11-03-card-format-examples/manifest.json)。目标查询复用前轮同一原生 DLL 的真实样本，明确标记来源。
 - 核对生产点：CombatObservation、HandInspection、SelectionInspection、BrowsedCard、DeckInspection、PileInspection、ShopInspection、RunResultInspection、SovereignBladeInspection、CombatantInspection、TargetInspection、HoverTipText、EnglishEventText，以及 TurnJournal、RunInventoryJournal、PermanentCardCapture；对应核对 game_output、selection_details、run_ending_details、deck_details、pile_details、transition_details、player_output 等 Python 白名单和投影。
-- 实施仍先处理 Affliction、附魔空值和直接相关的小范围重构；随后统一普通牌面、增加已确认的展开牌解释，迁移牌组／牌堆 preset，并接入手牌资源。此处不宣称已完成实现，不核销尚未完整核验的工具。
+- 实施已按 Affliction、附魔空值及小范围重构 → 统一牌面与展开解释 → 浏览预设 → 手牌资源的顺序完成。实现及未验证范围以[实施记录](2026-11-03-card-format-implementation.md)为准，不核销尚未完整核验的工具。

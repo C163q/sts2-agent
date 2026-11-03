@@ -80,7 +80,7 @@ async def verify(args):
             assert not {"snapshot_id", "session", "schema_version", "overlay", "language"} & before.keys()
             inspected = await call("inspect_hand")
             assert not inspected.isError
-            assert set(inspected.structuredContent) == {"hand", "hover_tips", "notes"}
+            assert set(inspected.structuredContent) == {"energy", "max_energy", "stars", "hand", "hover_tips", "notes"}
             assert [card["id"] for card in inspected.structuredContent["hand"]] == [card["id"] for card in before["player"]["hand"]]
             invalid = await call("end_turn", {"unexpected": True})
             assert invalid.isError and invalid.structuredContent["error"]["code"] == "invalid_request"

@@ -71,8 +71,13 @@ async def verify(args):
                 assert any(tip['title'] == 'Spiral' and spiral_id in tip['card_ids']
                            for tip in full['hover_tips']), full
             allowed = {'id', 'name', 'type', 'energy_cost', 'star_cost', 'energy_cost_color',
-                       'star_cost_color', 'unplayable_markers', 'outline', 'enchantment'}
-            assert set(summary) == {'hand'}, summary
+                       'star_cost_color', 'unplayable_markers', 'outline', 'enchantment', 'affliction'}
+            resources = {key: full[key] for key in ('energy', 'max_energy', 'stars')}
+            assert resources == {key: before['state']['player'][key] for key in resources}
+            compact_resources = {'energy': f"{full['energy']}/{full['max_energy']}"}
+            if full['stars'] is not None: compact_resources['stars'] = full['stars']
+            assert {key: summary[key] for key in compact_resources} == compact_resources
+            assert set(summary) == {'hand', *compact_resources}, summary
             for brief, card in zip(summary['hand'], full['hand'], strict=True):
                 assert set(brief) <= allowed
                 assert all(brief[key] == card[key] for key in brief)
@@ -103,7 +108,7 @@ async def verify(args):
                     links = {(i, tip['title'], tip['description']) for tip in selected['hover_tips'] for i in tip['card_ids']}
                     assert links == expected_links, selected
                 assert (await call('inspect_hand', {'preset': preset, 'card_ids': []})) == {
-                    'hand': [], **({'hover_tips': []} if preset == 'full' else {})}
+                    'hand': [], **({'hover_tips': [], **resources} if preset == 'full' else compact_resources)}
             await call('capture_screenshot', {'filename': f'{args.scenario}-hand.png'})
             after = await asyncio.to_thread(raw.call, 'get_state')
             record({'before': before, 'after': after})

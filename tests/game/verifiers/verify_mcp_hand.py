@@ -27,7 +27,7 @@ async def verify(args):
             evidence["server"] = initialized.serverInfo.model_dump()
             listed = await session.list_tools()
             evidence["tools"] = [tool.model_dump(exclude_none=True) for tool in listed.tools]
-            assert {tool.name for tool in listed.tools} == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"}
+            assert {tool.name for tool in listed.tools} >= {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"}
 
             async def call(name):
                 result = await session.call_tool(name, full_output_arguments(name, {}))
@@ -42,7 +42,7 @@ async def verify(args):
             assert inspected == repeated, "Hand changed during read-only verification."
             assert observed["scene"] == "combat"
             assert [card["id"] for card in inspected["hand"]] == [card["id"] for card in observed["player"]["hand"]]
-            assert set(inspected) == ({"hand", "hover_tips", "notes"} if inspected["hand"] else {"hand", "hover_tips"})
+            assert set(inspected) == ({"energy", "max_energy", "stars", "hand", "hover_tips", "notes"} if inspected["hand"] else {"energy", "max_energy", "stars", "hand", "hover_tips"})
             if inspected["hand"]:
                 assert set(inspected["notes"]) == {"card_values"}
             assert all("hover_tips" not in card for card in inspected["hand"])

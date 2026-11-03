@@ -1,13 +1,14 @@
 """Project validated hand details without changing the game's observation token."""
 from sts2_mcp.output.card_play_details import CARD_ID
 from sts2_mcp.output.card_format import card_summary
+from sts2_mcp.output.resource_summary import resource_summary
 
 
 HAND_SCHEMA = {
     'type': 'object',
     'properties': {
         'preset': {'type': 'string', 'enum': ['full', 'summary'], 'default': 'full',
-                   'description': 'full includes card descriptions and shared hover help; summary keeps identity, visible costs, enchantments and UI markers, without effects or hover help.'},
+                   'description': 'full includes card descriptions and shared hover help; summary keeps identity, visible costs, enchantments, afflictions and UI markers, without effects or hover help.'},
         'card_ids': {'type': 'array', 'items': CARD_ID,
                      'description': 'Optional current hand IDs. Omit for all visible hand cards; [] returns none. Duplicates are ignored; results keep hand order. Unavailable IDs are grouped in errors[].card_ids alongside valid cards.'},
     },
@@ -38,6 +39,7 @@ def hand_preset(payload, preset, card_ids):
     cards = [card for card in payload['hand'] if card['id'] in selected]
     result = {**payload, 'hand': cards}
     if preset == 'summary':
+        result = resource_summary(result)
         result['hand'] = [card_summary(card) for card in cards]
         result.pop('hover_tips', None)
     else:

@@ -79,11 +79,8 @@ def observation_summary(payload):
     if result.get('player') is not None:
         player, original = result['player'], payload['player']
         unit_summary(player, original)
-        energy, maximum = original.get('energy'), original.get('max_energy')
-        player.pop('max_energy', None)
-        player.pop('energy', None)
-        if type(energy) is int and type(maximum) is int:
-            player['energy'] = f'{energy}/{maximum}'
+        from sts2_mcp.output.resource_summary import resource_summary
+        player = result['player'] = resource_summary(player)
         if 'hand' in player:
             player['hand'] = [card_summary(card) for card in player['hand']]
     for key in ('enemies', 'allies'):

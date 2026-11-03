@@ -33,7 +33,9 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 
 `unplayable_markers` 的 energy/star 表示禁用图标所在的费用位置，不是不可打出的原因；资源不足通常显示为红色费用，而标记数组仍可能为空。无可读附魔或 Affliction 时，full 显式保留 `enchantment:null`、`affliction:null`，default 和 summary 省略普通空值；比较中的空值仍遵循统一例外规则。附魔不显示计数时不生成 amount。`affliction` 仅含已识别覆盖外观的英语 `name`，不返回内部层数；两种效果可以共存，效果解释通过完整详情查看。
 
-筛选后的 `full` 仅保留命中卡牌及其共享提示关联；空结果为 `hand: []/hover_tips: []`，不附卡牌数值说明。摘要空结果仅包含 `hand: []`，可能另有下述错误或导航说明。显式 `preset: full` 与原输出兼容；省略 preset 则使用 default，过滤规则见[MCP 输出预设](mcp.md#输出预设)。
+资源字段与卡牌筛选独立。full 提供顶层可空整数 `energy/max_energy/stars`，来自当前能量计和星星计；即使角色身体隐藏，也不影响独立可见的 HUD。default 省略普通空值；summary 将完整能量对合并为 `energy:"3/3"`，省略 max_energy，stars 可见时保留整数，包括 0。部分能量不可读时 summary 省略能量，不从模型补齐。
+
+筛选后的 `full` 仅保留命中卡牌及其共享提示关联；空结果为 `hand: []/hover_tips: []`，不附卡牌数值说明。摘要空结果保留 `hand: []` 及当前可读资源，可能另有下述错误或导航说明。full 的资源字段也不受空筛选或无效 ID 影响；省略 preset 则使用 default，过滤规则见[MCP 输出预设](mcp.md#输出预设)。
 
 不在当前可见手牌中的 ID 按请求首次出现的顺序合并报告，其他有效卡牌正常返回：
 
@@ -52,7 +54,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 
 ## 格式
 
-`full` 结果包含平级的 `hand` 和 `hover_tips` 数组。手牌顺序与基础观察一致，ID 也保持一致；每张牌复用 [基础手牌字段](observation.md#手牌与身份)，新增 `description`，不再内嵌提示集合：
+`full` 结果包含平级资源计数，以及 `hand` 和 `hover_tips` 数组。手牌顺序与基础观察一致，ID 也保持一致；每张牌复用 [基础手牌字段](observation.md#手牌与身份)，新增 `description`，不再内嵌提示集合：
 
 | 字段 | 含义 |
 | --- | --- |
@@ -64,7 +66,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 
 例如多张防御只保留一条 Block 解释；同名提示的正文或动态数值不同时仍为不同条目。客户端完成整合，不修改原始响应；`--raw` 仍保留逐牌 `hover_tips`，不修改游戏内原始采样。
 
-资源图标转为 `<Energy>`、`<Star>`；尚无明确语义映射的资源保留为 `<Icon:资源文件名>`，不静默丢弃。未知或锁定牌的 `description` 为 `null`，不生成该牌的提示条目，不补真实内容；顶层空集合不代表未知牌没有提示。正常可读的空手牌返回 `hand: []` 和 `hover_tips: []`。
+资源图标转为 `<Energy>`、`<Star>`；尚无明确语义映射的资源保留为 `<Icon:资源文件名>`，不静默丢弃。未知或锁定牌的 `description` 为 `null`，不生成该牌的提示条目，不补真实内容；顶层空集合不代表未知牌没有提示。正常可读的空手牌返回 `hand: []`、`hover_tips: []` 及当前可读资源。
 
 有手牌时只附带 `notes.card_values`：
 
@@ -77,6 +79,13 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 ```
 
 该结果不包含敌人及意图，也不附带 `enemy_attack_intents`。空手牌不附带数值说明。基础观察仍只返回半隐藏手牌允许提供的字段，不自动附送正文和解释。
+
+
+## 共用卡牌格式
+
+卡牌字段由 `output/card_format.py` 统一投影。内部 face_full/face_default 固定不含 description 或 hover_tips，供半隐藏手牌与商店基础观察使用；full/default 提供正文和可读悬停解释，供专项详情、已展开候选、比较及结算卡牌使用；summary 共用本页摘要规则。这些是内部内容模式，不增加公开 face 参数。
+
+普通 null 由统一 preset 入口过滤，比较的 before/after 仍保留必要空值；各工具保留自己的 ID、顺序、上下文和提示关联。原生实卡读取与网格隔离克隆分别保留，不重算持有卡牌。卡牌身份引用、transition 来源、悬浮君王之剑和一般悬停文本不扩展成完整卡牌。
 
 ## 数值与读取边界
 
