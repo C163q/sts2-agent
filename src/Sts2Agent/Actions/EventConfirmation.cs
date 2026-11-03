@@ -53,7 +53,7 @@ internal static class EventConfirmation
     public static NVerticalPopup Contents(NAbandonRunConfirmPopup popup) => popup.GetNode<NVerticalPopup>("VerticalPopup");
 
     public static bool Exposed(NAbandonRunConfirmPopup popup) => ReferenceEquals(Current, popup)
-        && TreasureInspection.Singleplayer && !RunUi.Transitioning() && NGame.Instance?.MainMenu == null
+        && RunContext.Singleplayer && !RunUi.Transitioning() && NGame.Instance?.MainMenu == null
         && NRun.Instance?.GlobalUi is { } global && !global.CapstoneContainer.InUse && global.Overlays.ScreenCount == 0
         && !global.MapScreen.IsOpen && !global.MapScreen.IsTraveling
         && !VisibleUi.Shown(NGame.Instance!.InspectCardScreen) && !VisibleUi.Shown(NGame.Instance.InspectRelicScreen)

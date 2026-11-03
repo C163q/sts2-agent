@@ -6,8 +6,6 @@ namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
 {
-    private object? lastConfirmation;
-    private int confirmationGeneration;
 
     private async Task<string> ConfirmationRequest(Request request, JsonElement before)
     {
@@ -26,7 +24,7 @@ internal sealed partial class GameAdapter
         if (!EventConfirmation.Clickable(popup, button))
             return FileMailbox.Error(request.Id, "illegal_action", "The confirmation button is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
-        uiGeneration++;
+        capture.UiChanged();
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => {
             if (!ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())) return "interrupted";

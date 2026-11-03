@@ -11,7 +11,6 @@ namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
 {
-    private readonly RunResultInspection runResultInspection = new();
 
     private async Task<string> EpilogueRequest(Request request, JsonElement before)
     {
@@ -23,7 +22,7 @@ internal sealed partial class GameAdapter
             || EpilogueInspection.IsProceed(button) != (request.Operation == "proceed"))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested dialogue action is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
-        uiGeneration++;
+        capture.UiChanged();
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
             ? NonCombatBoundary() : "interrupted");
@@ -57,7 +56,7 @@ internal sealed partial class GameAdapter
         }
         bool returningToMenu = id == "main_menu" || runResultInspection.ReturningToMenu;
         if (id == "main_menu") runResultInspection.Leaving();
-        uiGeneration++;
+        capture.UiChanged();
         if (id is "next_chapter" or "previous_chapter")
         {
             // These native paginators subscribe to MouseReleased, not Released.

@@ -27,7 +27,7 @@ internal sealed partial class GameAdapter
             && (option == null || !RestSiteInspection.Clickable(option)))
             return FileMailbox.Error(request.Id, "illegal_action", "This rest site option or proceed button is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
-        uiGeneration++;
+        capture.UiChanged();
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
             ? NonCombatBoundary() : "interrupted");

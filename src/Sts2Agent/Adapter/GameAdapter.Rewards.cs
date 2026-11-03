@@ -13,7 +13,6 @@ namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
 {
-    private readonly RewardInspection rewardInspection = new();
 
     private string? NonCombatBoundary(bool includeRunOutcome = true)
     {
@@ -42,7 +41,7 @@ internal sealed partial class GameAdapter
             || global?.Overlays.ScreenCount > 0 && !RunUi.OnlyRewardOverlays() && !DivinationInspection.OnlyOverlay
                 && (selection == null || !ReferenceEquals(global.Overlays.Peek(), selection.Owner))
             || rewards == null && rest == null && treasure == null && shop == null && ancient == null && currentEvent == null && selection == null && !mapOpening && RunUi.NonCombatVisible()
-            || (treasure != null || shop != null || ancient != null || currentEvent != null) && !TreasureInspection.Singleplayer
+            || (treasure != null || shop != null || ancient != null || currentEvent != null) && !RunContext.Singleplayer
             || NGame.Instance?.MainMenu != null;
         bool ready = DivinationInspection.Current is { } divination && DivinationInspection.Ready(divination)
             || rewards != null && RewardInspection.Ready(rewards)
@@ -103,7 +102,7 @@ internal sealed partial class GameAdapter
         }
         try
         {
-            uiGeneration++;
+            capture.UiChanged();
             button.ForceClick();
             var (after, reason) = await ActionObservation(() =>
             {

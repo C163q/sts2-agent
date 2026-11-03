@@ -16,7 +16,7 @@ internal sealed partial class GameAdapter
     private object TestSession()
     {
         var run = RunManager.Instance.DebugOnlyGetState();
-        return new { process_id = Environment.ProcessId, session,
+        return new { process_id = Environment.ProcessId, session = capture.Session,
             run_id = run == null ? null : testRuns.GetValue(run, _ => new(Guid.NewGuid().ToString("N"))).Id };
     }
 
@@ -67,7 +67,7 @@ internal sealed partial class GameAdapter
         CombatHandoffFixture.Reset();
         foreach (string owner in new[] { "sts2_agent.test_shop_inventory", "sts2_agent.test_treasure_extra", "sts2_agent.test_treasure_map_pending" })
             new Harmony(owner).UnpatchAll(owner);
-        uiGeneration++;
+        capture.UiChanged();
         await SettledObservation();
         testResetFailed = false;
         return Success(request.Id, JsonSerializer.Serialize(TestSession()));

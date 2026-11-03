@@ -65,7 +65,7 @@ async def verify(args):
                 invalid = [
                     ('get_observation', {'extra': True}, 'preset'),
                     ('inspect_hand', {'card_ids': [True]}, 'card_ids'),
-                    ('inspect_ui', {'sources': None}, 'sources'),
+                    ('inspect_ui', {'sources': False}, 'sources'),
                     ('inspect_targets', {'card_id': attack['id'], 'preset': 'summary'}, 'preset'),
                 ]
                 for tool, arguments, field in invalid:

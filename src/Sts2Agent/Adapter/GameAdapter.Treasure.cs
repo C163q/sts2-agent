@@ -35,7 +35,7 @@ internal sealed partial class GameAdapter
         string? Boundary() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
             && ReferenceEquals(room, TreasureInspection.Current) ? NonCombatBoundary() : "interrupted";
         var timer = Stopwatch.StartNew();
-        uiGeneration++;
+        capture.UiChanged();
         button.ForceClick();
         var (after, reason) = await ActionObservation(Boundary, TimeSpan.FromSeconds(25) - timer.Elapsed);
         if (request.Operation == "loot_treasure" && closed && !openOnly && reason == "action_completed"
@@ -46,7 +46,7 @@ internal sealed partial class GameAdapter
             if (remaining <= TimeSpan.Zero) reason = "timeout";
             else
             {
-                uiGeneration++;
+                capture.UiChanged();
                 relic.ForceClick();
                 (after, reason) = await ActionObservation(Boundary, TimeSpan.FromSeconds(25) - timer.Elapsed);
             }

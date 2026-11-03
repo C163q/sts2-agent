@@ -1,0 +1,252 @@
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using Godot;
+using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Commands;
+using MegaCrit.Sts2.Core.Context;
+using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.GameActions;
+using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Models.Characters;
+using MegaCrit.Sts2.Core.Models.Cards;
+using MegaCrit.Sts2.Core.Models.Encounters;
+using MegaCrit.Sts2.Core.Models.Potions;
+using MegaCrit.Sts2.Core.Models.Powers;
+using MegaCrit.Sts2.Core.Models.Relics;
+using MegaCrit.Sts2.Core.Nodes;
+using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
+using MegaCrit.Sts2.Core.Nodes.Combat;
+using MegaCrit.Sts2.Core.Nodes.Rooms;
+using MegaCrit.Sts2.Core.Nodes.Screens;
+using MegaCrit.Sts2.Core.Nodes.Screens.Capstones;
+using MegaCrit.Sts2.Core.Rooms;
+using MegaCrit.Sts2.Core.Runs;
+using MegaCrit.Sts2.Core.Saves;
+
+namespace Sts2Agent;
+
+internal sealed partial class GameAdapter
+{
+    private async Task<string> ExecuteCore(Request request)
+    {
+        if (await TestRequestBeforeCapture(request) is { } early) return early;
+        var snapshot = Capture();
+        string before = snapshot.Json;
+        JsonElement beforeState = snapshot.State;
+        if (request.Operation is not ("inspect_combatants" or "inspect_deck" or "inspect_pile" or "inspect_selection" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
+            && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
+            return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
+        if (request.Operation == "get_state")
+        {
+            string? capture = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_CAPTURE");
+            if (testMode && capture != null && DisplayServer.GetName() != "headless")
+                TestCapture.Save(capture);
+            string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_CHECKS");
+            if (testMode && checks != null)
+                ObservationChecks.Run(checks);
+            return Success(request.Id, before);
+        }
+        if (request.Operation == "capture_screenshot")
+        {
+            if (ViewportCapture.Read() is not { } capture)
+                return FileMailbox.Error(request.Id, "screenshot_unavailable", "A rendered game viewport is required.");
+            return Success(request.Id, JsonSerializer.Serialize(new
+            {
+                snapshot_id = beforeState.GetProperty("snapshot_id").GetString(),
+                capture.width, capture.height, png_base64 = Convert.ToBase64String(capture.png)
+            }));
+        }
+        if (await TestRequestAfterCapture(request, beforeState) is { } testResponse) return testResponse;
+        if (request.Operation == "respond_to_confirmation")
+            return await ConfirmationRequest(request, beforeState);
+        if (request.Operation is "inspect_run_result" or "run_result_option") return await RunResultRequest(request, beforeState);
+        if (request.Operation is "advance_dialogue" or "proceed" && EpilogueInspection.Current != null)
+            return await EpilogueRequest(request, beforeState);
+        if (request.Operation == "travel_to_node") return await TravelRequest(request, beforeState);
+        if (request.Operation is "use_potion" or "discard_potion" || request.Operation == "inspect_targets"
+            && request.Arguments is { } targetArguments && targetArguments.TryGetProperty("potion_slot", out _))
+            return await PotionRequest(request, beforeState);
+        if (request.Operation is "inspect_ancient" or "choose_ancient_option" or "advance_dialogue"
+            || request.Operation == "proceed" && RewardInspection.Current == null && AncientInspection.Current != null)
+            return await AncientRequest(request, beforeState);
+        if (request.Operation is "set_divination_tool" or "divine"
+            || request.Operation is "inspect_event" or "proceed" && RewardInspection.Current == null && DivinationInspection.Current != null)
+            return await DivinationRequest(request, beforeState);
+        if (request.Operation is "inspect_event" or "choose_event_option"
+            || request.Operation == "proceed" && RewardInspection.Current == null && EventInspection.Current != null)
+            return await EventRequest(request, beforeState);
+        if (request.Operation is "open_shop" or "close_shop" or "inspect_shop" or "buy_item"
+            || request.Operation == "proceed" && RewardInspection.Current == null && ShopInspection.Current != null)
+            return await ShopRequest(request, beforeState);
+        if (request.Operation is "loot_treasure" or "inspect_treasure"
+            || request.Operation == "proceed" && RewardInspection.Current == null && TreasureInspection.Current != null)
+            return await TreasureRequest(request, beforeState);
+        if (request.Operation is "inspect_rest_site" or "choose_rest_option"
+            || request.Operation == "proceed" && RewardInspection.Current == null && RestSiteInspection.Current != null)
+            return await RestSiteRequest(request, beforeState);
+        if (request.Operation is "inspect_rewards" or "claim_reward" or "proceed")
+            return await RewardRequest(request, beforeState);
+        if (request.Operation is "inspect_targets" or "play_card")
+            return await CardPlayRequest(request, beforeState);
+        if (request.Operation is "inspect_selection" or "set_selection_view" or "select_card" or "selection_option")
+            return await SelectionRequest(request, beforeState);
+        if (request.Operation == "inspect_deck")
+        {
+            DeckOptions options;
+            try { options = DeckOptions.Parse(request.Arguments); }
+            catch (Exception error) when (error is JsonException or InvalidOperationException)
+            {
+                return FileMailbox.Error(request.Id, "invalid_request", "Invalid deck options.");
+            }
+            return await InspectDeck(request, options);
+        }
+        if (request.Operation == "inspect_pile")
+        {
+            PileOptions options;
+            try { options = PileOptions.Parse(request.Arguments); }
+            catch (Exception error) when (error is JsonException or InvalidOperationException)
+            {
+                return FileMailbox.Error(request.Id, "invalid_request", "Invalid pile options.");
+            }
+            return await InspectPile(request, options);
+        }
+        if (request.Operation == "inspect_map")
+            return await InspectMap(request);
+        if (request.Operation == "close_map")
+        {
+            var map = NRun.Instance?.GlobalUi.MapScreen;
+            if (map == null || !MapView.CanClose(map))
+                return FileMailbox.Error(request.Id, "illegal_action", "The current map cannot be closed.");
+            var run = RunManager.Instance.DebugOnlyGetState();
+            var graph = run?.Map;
+            int? act = run?.CurrentActIndex;
+            var underlyingOverlay = NRun.Instance!.GlobalUi.Overlays.Peek();
+            bool reopened = false;
+            void Opened() => reopened = true;
+            capture.UiChanged();
+            bool SameMap() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
+                && ReferenceEquals(graph, run?.Map) && act == run?.CurrentActIndex && GodotObject.IsInstanceValid(map)
+                && ReferenceEquals(underlyingOverlay, NRun.Instance?.GlobalUi.Overlays.Peek())
+                && ReferenceEquals(NRun.Instance?.GlobalUi.MapScreen, map);
+            map.Opened += Opened;
+            try
+            {
+                MapView.Back(map)!.ForceClick();
+                await ObservationFrame();
+                await WaitUntil(() => !SameMap() || reopened || map.IsOpen || !MapView.Clear() || !VisibleUi.Shown(map));
+                if (!SameMap() || reopened || map.IsOpen || !MapView.Clear())
+                    return FileMailbox.Error(request.Id, "illegal_action", "The map changed while closing.");
+                string after = await SettledObservation();
+                if (!SameMap() || reopened || map.IsOpen || !MapView.Clear())
+                    return FileMailbox.Error(request.Id, "illegal_action", "The map changed while closing.");
+                return Success(request.Id, after);
+            }
+            finally
+            {
+                if (GodotObject.IsInstanceValid(map)) map.Opened -= Opened;
+            }
+        }
+        if (request.Operation == "close_card_view")
+        {
+            var screen = CardView.Current;
+            if (screen == null || !CardView.CanClose(screen))
+                return FileMailbox.Error(request.Id, "illegal_action", "The current card view cannot be closed.");
+            capture.UiChanged();
+            CardView.Close(screen);
+            return Success(request.Id, await SettledObservation());
+        }
+        if (request.Operation == "close_deck")
+        {
+            var screen = DeckView.Current;
+            if (screen == null || !DeckView.CanClose(screen))
+                return FileMailbox.Error(request.Id, "illegal_action", "The current deck screen cannot be closed.");
+            capture.UiChanged();
+            DeckView.Close(screen);
+            return Success(request.Id, await SettledObservation());
+        }
+        if (request.Operation == "inspect_relics")
+        {
+            var holders = RelicInspection.VisibleHolders();
+            if (holders == null)
+                return FileMailbox.Error(request.Id, "illegal_action", "Relic details are unavailable in the current screen.");
+            string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_RELIC_CHECKS");
+            if (testMode && checks != null)
+                RelicInspectionChecks.Run(checks);
+            return Success(request.Id, JsonSerializer.Serialize(new
+            {
+                snapshot_id = beforeState.GetProperty("snapshot_id").GetString(),
+                relics = RelicInspection.Read(holders)
+            }));
+        }
+        if (request.Operation == "inspect_combatants")
+            return CombatantsRequest(request, beforeState);
+        if (request.Operation == "inspect_potions")
+        {
+            var holders = PotionInspection.VisibleHolders();
+            if (holders == null)
+                return FileMailbox.Error(request.Id, "illegal_action", "Potion details are unavailable in the current screen.");
+            string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_POTION_CHECKS");
+            if (testMode && checks != null)
+                PotionInspectionChecks.Run(checks);
+            var inspection = PotionInspection.Read(holders);
+            return Success(request.Id, JsonSerializer.Serialize(new
+            {
+                snapshot_id = beforeState.GetProperty("snapshot_id").GetString(),
+                inspection.slot_tip, inspection.potion_slots
+            }));
+        }
+        if (request.Operation == "inspect_ui")
+        {
+            if (!UiInspection.CanRead())
+                return FileMailbox.Error(request.Id, "illegal_action", "UI details are unavailable in the current screen.", publicMessage: true);
+            string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_UI_CHECKS");
+            if (testMode && checks != null)
+                UiInspectionChecks.Run(checks);
+            return InspectionSuccess(request.Id, beforeState, new { hover_tips = UiInspection.Read() });
+        }
+        if (request.Operation == "inspect_hand")
+        {
+            var hand = NCombatRoom.Instance?.Ui.Hand;
+            if (hand == null || !CanInspectHand())
+                return FileMailbox.Error(request.Id, "illegal_action", "Hand details are unavailable in the current screen.", publicMessage: true);
+            string? handChecks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_HAND_CHECKS");
+            if (testMode && handChecks != null)
+                HandInspectionChecks.Run(handChecks);
+            var reader = new HandInspection(observation);
+            var resources = CombatResources.Read();
+            return Success(request.Id, JsonSerializer.Serialize(new
+            {
+                snapshot_id = beforeState.GetProperty("snapshot_id").GetString(),
+                energy = resources.Energy, max_energy = resources.Maximum, stars = resources.Stars,
+                hand = CombatObservation.HandCards(hand).Select(reader.Card).ToArray()
+            }));
+        }
+        if (request.ExpectedState != beforeState.GetProperty("snapshot_id").GetString())
+            return FileMailbox.Error(request.Id, "stale_state", "Read current state before submitting an action.");
+        if (!beforeState.GetProperty("available_actions").EnumerateArray()
+                .Any(action => action.GetString() == request.Operation))
+            return FileMailbox.Error(request.Id, "illegal_action", "Action is not available in this state.");
+
+
+        if (request.Operation == "end_turn")
+        {
+            Player player = LocalPlayer!;
+            int turn = player.PlayerCombatState!.TurnNumber;
+            if (!STS2RitsuLib.RitsuLibFramework.IsActive)
+                return FileMailbox.Error(request.Id, "illegal_action", "RitsuLib is unavailable; no action was submitted.");
+            var journal = CombatJournalScope.Current!;
+            RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(new EndPlayerTurnAction(player, turn));
+            var (state, reason) = await ActionObservation(() =>
+            {
+                return journal.StopReason(player.PlayerCombatState?.TurnNumber > turn && CanEndTurn()
+                    && RunManager.Instance.ActionQueueSet.IsEmpty, requireTurnStarted: true);
+            });
+            return Success(request.Id, state[..^1] + ",\"transition\":" + JsonSerializer.Serialize(journal.Result(reason)) + "}");
+        }
+        return Success(request.Id, await SettledObservation());
+    }
+
+}

@@ -40,7 +40,7 @@ internal sealed class EventInspection
         is { VisibleRatio: >= 0.999f } description && VisibleUi.OnScreen(description)
         && !RewardInspection.Animating(context.Layout, "_descriptionTween");
 
-    public static bool Ready(Context context) => TreasureInspection.Singleplayer && Exposed(context)
+    public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context)
         && !EventTaskTracker.Pending && !RelicObtainTracker.Pending && TextComplete(context)
         && !RunUi.CardPreviewsPending() && !RunUi.ResourceMotionPending()
         && !NTargetManager.Instance.IsInSelection && RunManager.Instance.ActionQueueSet.IsEmpty

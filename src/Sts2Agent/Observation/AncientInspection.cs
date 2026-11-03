@@ -31,7 +31,7 @@ internal sealed class AncientInspection
         && CardSelection.Field(RunManager.Instance.EventSynchronizer, "_pendingOptionTasks") is IEnumerable<Task> tasks
         && tasks.Any(t => !t.IsCompleted) || RelicObtainTracker.Pending;
 
-    public static bool Ready(Context context) => TreasureInspection.Singleplayer && Exposed(context)
+    public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context)
         && !Busy && !RunUi.CardPreviewsPending() && !RunUi.ResourceMotionPending()
         && !NTargetManager.Instance.IsInSelection && RunManager.Instance.ActionQueueSet.IsEmpty
         && !MotionPending(context)

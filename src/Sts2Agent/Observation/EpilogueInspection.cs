@@ -23,7 +23,7 @@ internal static class EpilogueInspection
     private static bool LineReady(Context context) => CardSelection.Field(context.Model, "_speechBubble") is not NSpeechBubbleVfx bubble
         || bubble.GetNodeOrNull<RichTextLabel>("%Text") is { VisibleRatio: >= 0.999f } label && VisibleUi.OnScreen(label)
             && VisibleUi.Shown(bubble);
-    public static bool Ready(Context context) => TreasureInspection.Singleplayer && Exposed(context)
+    public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context)
         && !EventTaskTracker.Pending && !NavigationTasks.ChangingAct && LineReady(context)
         && Button(context) is { } button && EventInspection.Clickable(button);
     public static object? Read()

@@ -72,7 +72,7 @@ internal sealed partial class GameAdapter
         RunManager.Instance.ActionQueueSet.ActionEnqueued += Enqueued;
         try
         {
-            uiGeneration++;
+            capture.UiChanged();
             if (!card.TryManualPlay(target))
                 return FileMailbox.Error(request.Id, "illegal_action", "The native card play was rejected before submission.");
             if (target != null) NCombatRoom.Instance!.LastTargetedCreature = target;

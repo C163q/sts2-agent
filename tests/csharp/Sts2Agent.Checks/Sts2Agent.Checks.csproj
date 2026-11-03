@@ -7,6 +7,7 @@
     <DisableTransitiveFrameworkReferenceDownloads>true</DisableTransitiveFrameworkReferenceDownloads>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../../src/Sts2Agent/Observation/ObservationSnapshot.cs" Link="ObservationSnapshot.cs" />
     <Compile Include="../../../src/Sts2Agent/Testing/TestScenarioSettings.cs" Link="TestScenarioSettings.cs" />
     <EmbeddedResource Include="../../game/data/test_scenarios.json" LogicalName="Sts2Agent.TestScenarios" />
     <Compile Include="../../../src/Sts2Agent/Actions/ActionSettling.cs" Link="ActionSettling.cs" />

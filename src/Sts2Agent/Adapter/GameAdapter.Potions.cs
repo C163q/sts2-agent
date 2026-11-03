@@ -71,7 +71,7 @@ internal sealed partial class GameAdapter
         RunManager.Instance.ActionQueueSet.ActionEnqueued += Enqueued;
         try
         {
-            uiGeneration++;
+            capture.UiChanged();
             holder!.DisableUntilPotionRemoved();
             if (use) potion.EnqueueManualUse(potion.TargetType == TargetType.Self ? player.Creature : target);
             else RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(new DiscardPotionGameAction(player, (uint)slot, inCombat));

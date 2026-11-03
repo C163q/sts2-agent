@@ -6,7 +6,6 @@ namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
 {
-    private readonly EventInspection eventInspection = new();
 
     private async Task<string> EventRequest(Request request, JsonElement before)
     {
@@ -19,7 +18,7 @@ internal sealed partial class GameAdapter
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current event before acting.");
         var context = EventInspection.Current;
-        if (context == null || !EventInspection.Exposed(context) || !TreasureInspection.Singleplayer
+        if (context == null || !EventInspection.Exposed(context) || !RunContext.Singleplayer
             || !inspect && !EventInspection.Ready(context))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player event.");
         if (inspect) return InspectionSuccess(request.Id, before, new { @event = eventInspection.Read(full: true) });
@@ -28,7 +27,7 @@ internal sealed partial class GameAdapter
             return FileMailbox.Error(request.Id, "illegal_action", "The requested event option is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
         var enteringCombat = CombatJournalScope.Current!;
-        uiGeneration++;
+        capture.UiChanged();
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => !ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
             ? "interrupted" : enteringCombat.StopReason(CanPlayCards()) ?? NonCombatBoundary());

@@ -48,7 +48,7 @@ internal static class DivinationInspection
             || VisibleUi.Descendants<NCrystalSphereItem>(screen).Any(item => RewardInspection.Animating(item, "_tween"));
     }
 
-    public static bool Ready(NCrystalSphereScreen screen) => Exposed(screen) && TreasureInspection.Singleplayer
+    public static bool Ready(NCrystalSphereScreen screen) => Exposed(screen) && RunContext.Singleplayer
         && !DivinationTasks.Pending(screen) && !Revealing(screen) && !RunUi.CardPreviewsPending()
         && !RunUi.ResourceMotionPending() && !RelicObtainTracker.Pending && RunManager.Instance.ActionQueueSet.IsEmpty
         && (Finished(screen) ? !EventTaskTracker.Pending : Model(screen).DivinationCount > 0);

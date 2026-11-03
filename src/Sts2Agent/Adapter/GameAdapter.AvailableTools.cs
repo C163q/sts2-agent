@@ -186,12 +186,12 @@ internal sealed partial class GameAdapter
         if (RestSiteInspection.Current is { } restPage && RestSiteInspection.Ready(restPage)
             && RunManager.Instance.IsSingleplayerOrFakeMultiplayer) actions.Add("inspect_rest_site");
         if (TreasureInspection.Current is { } treasurePage && TreasureInspection.Exposed(treasurePage)) actions.Add("inspect_treasure");
-        if (ShopInspection.Current is { } shopPage && ShopInspection.Exposed(shopPage) && TreasureInspection.Singleplayer
+        if (ShopInspection.Current is { } shopPage && ShopInspection.Exposed(shopPage) && RunContext.Singleplayer
             && shopPage.Inventory.IsOpen && !ShopInspection.Animating(shopPage)) actions.Add("inspect_shop");
         if (AncientInspection.Current is { } ancientPage && AncientInspection.Exposed(ancientPage)
-            && TreasureInspection.Singleplayer) actions.Add("inspect_ancient");
+            && RunContext.Singleplayer) actions.Add("inspect_ancient");
         if (DivinationInspection.Current is { } board ? DivinationInspection.Ready(board)
-            : EventInspection.Current is { } eventPage && EventInspection.Exposed(eventPage) && TreasureInspection.Singleplayer)
+            : EventInspection.Current is { } eventPage && EventInspection.Exposed(eventPage) && RunContext.Singleplayer)
             actions.Add("inspect_event");
         return actions.Distinct().ToList();
     }

@@ -7,7 +7,6 @@ namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
 {
-    private readonly AncientInspection ancientInspection = new();
 
     private async Task<string> AncientRequest(Request request, JsonElement before)
     {
@@ -20,7 +19,7 @@ internal sealed partial class GameAdapter
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current ancient before acting.");
         var context = AncientInspection.Current;
-        if (context == null || !AncientInspection.Exposed(context) || !TreasureInspection.Singleplayer
+        if (context == null || !AncientInspection.Exposed(context) || !RunContext.Singleplayer
             || !inspect && !AncientInspection.Ready(context))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player ancient.");
         if (inspect) return InspectionSuccess(request.Id, before, new { ancient = ancientInspection.Read(full: true) });
@@ -30,7 +29,7 @@ internal sealed partial class GameAdapter
             && (!AncientInspection.Clickable(option) || AncientInspection.Continue(context) != null))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested dialogue or option is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
-        uiGeneration++;
+        capture.UiChanged();
         // Match the native mouse/controller release; EventSynchronizer owns the option task.
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())

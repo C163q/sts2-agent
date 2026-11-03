@@ -41,7 +41,7 @@ internal sealed class ShopInspection
     public static NBackButton Back(Context context) => context.Inventory.GetNode<NBackButton>("%BackButton");
     public static bool Animating(Context context) => RewardInspection.Animating(context.Inventory, "_inventoryTween");
     public static bool Busy => ShopTransactions.Pending || RelicObtainTracker.Pending;
-    public static bool Ready(Context context) => TreasureInspection.Singleplayer && Exposed(context) && !Animating(context)
+    public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context) && !Animating(context)
         && !MegaCrit.Sts2.Core.Nodes.Combat.NTargetManager.Instance.IsInSelection
         && !Busy && !RunUi.CardPreviewsPending() && !RunUi.ResourceMotionPending() && RunManager.Instance.ActionQueueSet.IsEmpty
         && CardSelection.Field(context.Inventory, "_isInputBlocked") is false

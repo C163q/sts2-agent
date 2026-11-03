@@ -15,9 +15,6 @@ internal static class TreasureInspection
         && NRun.Instance?.GetNodeOrNull<Node>("%RoomContainer") is { } container
         ? VisibleUi.Descendants<NTreasureRoom>(container).LastOrDefault(r => !r.IsQueuedForDeletion() && r.IsNodeReady()) : null;
 
-    public static bool Singleplayer => RunManager.Instance.IsSingleplayerOrFakeMultiplayer
-        && RunManager.Instance.DebugOnlyGetState()?.Players.Count == 1;
-
     public static bool Exposed(NTreasureRoom room) => ReferenceEquals(Current, room) && RunUi.NonCombatVisible()
         && NRun.Instance?.GlobalUi.Overlays.ScreenCount == 0 && !RunUi.CardPreviewsPending()
         && !VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen) && VisibleUi.Shown(room);
@@ -43,7 +40,7 @@ internal static class TreasureInspection
 
     public static bool Ready(NTreasureRoom room)
     {
-        if (!Singleplayer || !Exposed(room) || !RunManager.Instance.ActionQueueSet.IsEmpty || RelicObtainTracker.Pending) return false;
+        if (!RunContext.Singleplayer || !Exposed(room) || !RunManager.Instance.ActionQueueSet.IsEmpty || RelicObtainTracker.Pending) return false;
         if (!Opened(room)) return Chest(room).IsEnabled && VisibleUi.OnScreen(Chest(room));
         if (Proceed(room)?.IsEnabled != true) return false;
         return Picking(room) ? RelicClickable(room) : !VisibleUi.Shown(Collection(room));

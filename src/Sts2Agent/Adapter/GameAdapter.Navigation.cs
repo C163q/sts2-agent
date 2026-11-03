@@ -9,9 +9,6 @@ namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
 {
-    private object? lastMap;
-    private object? lastRun;
-    private int mapGeneration;
 
     private static bool NodeId(string? id)
     {
@@ -51,7 +48,7 @@ internal sealed partial class GameAdapter
         if (!SamePage() || !map.IsNodeOnScreen(point))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested map node cannot be clicked now.");
         var enteringCombat = CombatJournalScope.Current!;
-        uiGeneration++;
+        capture.UiChanged();
         point.ForceClick();
         var destination = point.Point.coord;
         var (after, reason) = await ActionObservation(() =>

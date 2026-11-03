@@ -33,7 +33,7 @@ internal sealed partial class GameAdapter
         if (button?.IsEnabled != true)
             return FileMailbox.Error(request.Id, "illegal_action", "The requested divination action is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
-        uiGeneration++;
+        capture.UiChanged();
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => !ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
             ? "interrupted" : NonCombatBoundary());

@@ -9,7 +9,6 @@ namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
 {
-    private readonly ShopInspection shopInspection = new();
 
     private async Task<string> ShopRequest(Request request, JsonElement before)
     {
@@ -21,7 +20,7 @@ internal sealed partial class GameAdapter
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current shop before acting.");
         var context = ShopInspection.Current;
-        if (context == null || !ShopInspection.Exposed(context) || !TreasureInspection.Singleplayer
+        if (context == null || !ShopInspection.Exposed(context) || !RunContext.Singleplayer
             || (!inspect && !ShopInspection.Ready(context)))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player shop.");
         if (inspect)
@@ -50,7 +49,7 @@ internal sealed partial class GameAdapter
         if (slot != null) { slot.Entry.PurchaseCompleted += Purchased; slot.Entry.PurchaseFailed += Failed; }
         try
         {
-            uiGeneration++;
+            capture.UiChanged();
             if (slot != null)
                 submitted = (Task)AccessTools.Method(typeof(NMerchantSlot), "OnSelected").Invoke(slot, null)!;
             else if (request.Operation == "open_shop") context.Merchant.ForceClick();

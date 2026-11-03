@@ -61,7 +61,7 @@ internal sealed class RunResultInspection
             if (NRun.Instance?.GlobalUi.Overlays.Peek() is NGameOverScreen over && GodotObject.IsInstanceValid(over)
                 && over.IsNodeReady() && !over.IsQueuedForDeletion())
             {
-                if (!ReferenceEquals(lastGameOver, over)) { Finished(); lastGameOver = over; Generation++; epochIds.Clear(); singleplayer = TreasureInspection.Singleplayer; }
+                if (!ReferenceEquals(lastGameOver, over)) { Finished(); lastGameOver = over; Generation++; epochIds.Clear(); singleplayer = RunContext.Singleplayer; }
                 if (VisibleUi.Descendants<NRunHistory>(over).FirstOrDefault(VisibleUi.Shown) is { } history) return new(history, "history");
                 if (VisibleUi.Shown(over.GetNodeOrNull<Control>("%DailyRunLeaderboard"))) return new(over, "leaderboard");
                 return new(over, CardSelection.Field(over, "_isAnimatingSummary") is true || VisibleUi.Descendants<NScoreLine>(over).Any() ? "summary" : "outcome");

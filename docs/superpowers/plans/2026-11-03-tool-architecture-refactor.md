@@ -114,7 +114,7 @@
 **接口：** `ObservationSnapshot` 携带一次 Capture 的完整状态、scene/screen、令牌及原生身份上下文；`ResponseBuilder` 接收该快照、工具结果和明确 transition／媒体需求。没有 UI 改动的详情复用本次快照；页面操作完成后再捕获一次，不用详情内容重新发明 scene。
 
 - [x] 先迁出测试请求，逐条件保留 testMode、suite／scenario 双重限制；测试操作不得进入 MCP catalog 或 available_actions。运行纯检查与测试分派回归后单独提交。
-- [ ] 迁移同步 Capture 与代际维护，保留现有哈希输入及占卜 dialogue 特例，不在此次搬迁中重新定义令牌有效性；比较移动前后相同输入的状态与令牌行为。
+- [x] 迁移同步 Capture 与代际维护，保留现有哈希输入及占卜 dialogue 特例，不在此次搬迁中重新定义令牌有效性；比较移动前后相同输入的状态与令牌行为。
 - [ ] 路由显式保留 proceed／inspect_event 等按当前页面决定去向的优先级；AvailableTools 与处理器共用条件，但工具被列出不代表任意参数都可执行。单人条件移出宝箱模块放到共用运行上下文。
 - [ ] hand、targets、potions、relics 全部经统一响应构造，补同次 scene/screen；地图下的详情、眼睛切回战场、建筑师背景和结算顶栏逐项对比 get_observation。
 - [ ] 将重复字符串拼接 transition 改为结构化组装；共用 complete 与事件缓冲应用入口，保留场景特有 stop_reason 选择、事件预留顺序／截断与战斗间交接，不改原生事件捕获原理。

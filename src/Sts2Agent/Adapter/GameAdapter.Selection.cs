@@ -56,7 +56,7 @@ internal sealed partial class GameAdapter
             string? snapshot = before.GetProperty("snapshot_id").GetString();
             if (viewUpgrades.HasValue && !unavailable && selection.ViewUpgrades != viewUpgrades)
             {
-                uiGeneration++;
+                capture.UiChanged();
                 selection.UpgradeToggle!.ForceClick();
                 string viewed = await SettledObservation();
                 if (!SelectionActions.Same(selection) || selection.Status != "visible" || selection.InPreview
@@ -79,7 +79,7 @@ internal sealed partial class GameAdapter
             bool peeking = value == "battlefield";
             if (selection.Peeking != peeking)
             {
-                uiGeneration++;
+                capture.UiChanged();
                 selection.Eye!.ForceClick();
             }
             string state = await SettledObservation();
@@ -99,7 +99,7 @@ internal sealed partial class GameAdapter
             return FileMailbox.Error(request.Id, "illegal_action", "The requested candidate or button is unavailable.");
         var journal = CombatJournalScope.Current!;
         bool startedInCombat = journal.Capturing;
-        uiGeneration++;
+        capture.UiChanged();
         if (model != null)
         {
             try { await SelectionActions.Click(selection, model, ObservationFrame); }
