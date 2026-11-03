@@ -227,7 +227,29 @@ inspect_ui 当前只筛悬停提示且仅做精确匹配；本轮不擅自扩大
 
 - 读取可用性在 CanInspectCombatants 和 CombatantInspection.ReadAll 重复判断，可用同一“不可用原因”入口供 available_actions、拒绝说明及最后读取复核使用；保留读取端的状态复核，不仅依赖之前菜单列出的可用动作。
 - 错误与许可直接接入前一轮已有共用层，不再创建本工具专属恢复机制。
-- 静态对象列表与悬停能力须分离。当前详情 Powers/Intents 会跳过 MouseFilter.Ignore 条目，不能仅删除现有 full 的 hover_tips 就宣称 summary 与基础画面一致。应共用已核对的可见图标读取，只有说明生成受可悬停条件限制；统一核对 get_observation 与本工具的图标／标签边界，避免不同 preset 因悬停条件产生不同对象下标。这是已确认静态摘要要求涉及的小范围重构，不扩展到整个观察架构。
+- 静态对象列表与悬停能力分离，按下节的字段对照提取共用入口；不扩展到整个观察架构。
+
+### 与 get_observation 共用静态读取
+
+本节是本轮源码对照及拟采用的内部结构，尚未修改实现。两个工具的完整对象**当前不相同**，公共静态字段则可以共享采样。
+
+| 内容 | get_observation 当前行为 | inspect_combatants 当前／拟实现行为 |
+| --- | --- | --- |
+| powers | name/amount；full 与 summary 非空条目字段相同 | 当前详情同样为 name/amount，但筛选条件更严；拟统一静态采样 |
+| intents | category/value；full 与 summary 使用同一数据 | 当前字段相同，但列表筛选条件更严；拟统一静态采样 |
+| orb_slots | 可见队列、实际空槽及标签数字 | 已经共用 OrbInspection.Read；拟 summary 继续使用，不补悬停数值 |
+| sovereign_blades | 可见绑定卡牌 id/name | 已经共用 SovereignBladeInspection.Read；拟 summary 继续使用 |
+| 敌人／友方身份与顺序 | id/name、原生可见节点、按位置排序 | 已复用 EnemyNodes/AllyNodes；拟统一字段组装 |
+| 生命／格挡、玩家资源／手牌／牌堆计数 | 基础观察已有 | 当前详情没有；本轮不因共用入口擅自全部加入 |
+| 外层摘要格式 | 战斗 summary 合并生命和能量，使用手牌摘要，省略空 powers/orb_slots/sovereign_blades | 本工具 summary 完全省略 hover_tips；其他格式按各自已确认契约投影，不能将整份公开 summary 直接替换进基础观察 |
+
+建议的数据流是：共用静态战场读取 → 各工具选取字段 → 各自应用公共 preset。get_observation 的 full 和 summary 都使用静态来源，外部预设名称与已确认格式保持；inspect_combatants.summary 使用相同来源，default/full 在静态对象上附加当前允许读取的悬停说明。共用数据层不互相调用公开 MCP 工具，也不沿用详情特有的 InCardPlay 拒绝来阻断基础观察。
+
+静态摘要不以“可悬停”作为图标存在的条件。当前 CombatObservation.Powers 检查状态节点可见和模型允许展示；CombatantInspection.Powers 还检查图标子节点可见及 MouseFilter 不为 Ignore。意图详情也比基础观察额外检查图标和 MouseFilter。因此目前不能保证公共列表在全部边界状态逐项相等；统一时须核对真实图标／标签的可见性，不能直接把其中一套条件无差别复制给另一套。
+
+**“可见但不能悬停”的具体含义：**MouseFilter.Ignore 让 Godot 控件不接收鼠标事件，本身不等于隐藏图标；普通鼠标尚未移到图标上，并不会因此变为 Ignore。目标程序集 NPower.OnOwnerDied 在 ShouldPowerBeRemovedAfterOwnerDeath 为真时将 MouseFilter 设为 Ignore，OnOwnerRevived 恢复 Stop；这两个方法没有直接隐藏图标。若采样时其余显示条件仍满足，基础观察仍可能保留 name/amount，当前详情却会把整条状态移除。不能把这一源码分支表述为已证明某个死亡状态会在正常游戏中持续可见；身体、状态栏及节点的其他生命周期条件仍会影响实际画面。
+
+本项目 CombatantInspectionChecks 已有人工设置 MouseFilter.Ignore 的用例，旧断言要求整条 power/intent 消失。后续改为静态列表共享时，应验证条目保留、只有悬停说明被移除，来源下标不漂移；隐藏／离屏图标则仍不能进入静态列表。上述判断依据为本轮基线同一程序集的 `.tmp/2026-11-01-power-descriptions/source/Nodes.Combat.NPower.cs`、当前两个读取类及原生检查，不是新增游戏内死亡时点采样。
 
 ## 验证与剩余范围
 
