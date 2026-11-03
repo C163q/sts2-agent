@@ -68,7 +68,7 @@ Unavailable while aiming or playing a card.
 
 full 保留原生已生成的 null；default 仅按公共规则省略普通 null，数组中的空充能球槽位不删除。无可读玩家为 player:null；容器隐藏时 powers/intents 为 null；容器可见但无可读条目时为 []。可见无计数图标的 amount:null 不等于 0。上述未知、空、零值不能互换。
 
-球和剑仍沿用各自非滚动战场的可见性边界；本工具不存在应取消的可浏览列表视口截断。隐藏、离屏、透明或不可悬停图标不补全文；未知提示类型或绑定失效使整次读取失败，不返回猜测内容。
+核验基线中，球和剑仍沿用非滚动战场的几何可见性边界，隐藏、离屏、透明或不可悬停图标不补全文；未知提示类型或绑定失效使整次读取失败，不返回猜测内容。后续已确认取消本轮相关图标的屏幕坐标截断，具体范围及显隐约束见下方“图标位置与不可悬停说明”；该要求尚未实现，不把上述旧行为继续作为实施规则。
 
 ## 场景目录
 
@@ -243,13 +243,46 @@ inspect_ui 当前只筛悬停提示且仅做精确匹配；本轮不擅自扩大
 | 生命／格挡、玩家资源／手牌／牌堆计数 | 基础观察已有 | 当前详情没有；本轮不因共用入口擅自全部加入 |
 | 外层摘要格式 | 战斗 summary 合并生命和能量，使用手牌摘要，省略空 powers/orb_slots/sovereign_blades | 本工具 summary 完全省略 hover_tips；其他格式按各自已确认契约投影，不能将整份公开 summary 直接替换进基础观察 |
 
-建议的数据流是：共用静态战场读取 → 各工具选取字段 → 各自应用公共 preset。get_observation 的 full 和 summary 都使用静态来源，外部预设名称与已确认格式保持；inspect_combatants.summary 使用相同来源，default/full 在静态对象上附加当前允许读取的悬停说明。共用数据层不互相调用公开 MCP 工具，也不沿用详情特有的 InCardPlay 拒绝来阻断基础观察。
+拟采用同一个 combatants 相关读取函数，以 level 参数选择两种信息量；不是两个独立采样入口。实现时宜用有明确名字的枚举表示 level，避免裸数字。两级都只负责本工具与基础观察的公共战斗对象字段，不接管生命、格挡、资源、手牌或牌堆计数。
+
+| 调用方 | 内部读取与外部处理 |
+| --- | --- |
+| get_observation.full | 公共入口 level 1 → 与生命、资源、手牌等各自入口的结果组装；保留公开 full 格式 |
+| get_observation.summary | 公共入口 level 1 → 同样组装完整基础数据 → 原有观察摘要投影 |
+| inspect_combatants.summary | 公共入口 level 1 → sources 对象筛选 → 本工具摘要／普通空值过滤；不返回 hover_tips |
+| inspect_combatants.full | 公共入口 level 2 → sources 对象及提示筛选；保留 null |
+| inspect_combatants.default | 与本工具 full 使用同一读取及筛选 → 已有统一 default 空值过滤 |
+
+这能统一对象、顺序及可见数值，避免两套读取逐渐分歧，并让普通观察不生成不需要的悬停说明。level 2 必须在同一份 level 1 静态结果上补充说明，不能重新枚举一遍并按悬停能力压缩列表。
+
+内部 level 1 是原始静态数据，保留 null、空列表、零值及原始数字，不直接套用任何公开 summary 的省略或格式压缩规则。否则 get_observation.full 无法保留完整空值，生命／能量等外层格式也会互相污染。组装时显式确定各字段归属，不依赖任意字典合并时后写覆盖前写；公共数据层不互相调用公开 MCP 工具，也不沿用详情特有的 InCardPlay 拒绝来阻断基础观察。
 
 静态摘要不以“可悬停”作为图标存在的条件。当前 CombatObservation.Powers 检查状态节点可见和模型允许展示；CombatantInspection.Powers 还检查图标子节点可见及 MouseFilter 不为 Ignore。意图详情也比基础观察额外检查图标和 MouseFilter。因此目前不能保证公共列表在全部边界状态逐项相等；统一时须核对真实图标／标签的可见性，不能直接把其中一套条件无差别复制给另一套。
 
 **“可见但不能悬停”的具体含义：**MouseFilter.Ignore 让 Godot 控件不接收鼠标事件，本身不等于隐藏图标；普通鼠标尚未移到图标上，并不会因此变为 Ignore。目标程序集 NPower.OnOwnerDied 在 ShouldPowerBeRemovedAfterOwnerDeath 为真时将 MouseFilter 设为 Ignore，OnOwnerRevived 恢复 Stop；这两个方法没有直接隐藏图标。若采样时其余显示条件仍满足，基础观察仍可能保留 name/amount，当前详情却会把整条状态移除。不能把这一源码分支表述为已证明某个死亡状态会在正常游戏中持续可见；身体、状态栏及节点的其他生命周期条件仍会影响实际画面。
 
-本项目 CombatantInspectionChecks 已有人工设置 MouseFilter.Ignore 的用例，旧断言要求整条 power/intent 消失。后续改为静态列表共享时，应验证条目保留、只有悬停说明被移除，来源下标不漂移；隐藏／离屏图标则仍不能进入静态列表。上述判断依据为本轮基线同一程序集的 `.tmp/2026-11-01-power-descriptions/source/Nodes.Combat.NPower.cs`、当前两个读取类及原生检查，不是新增游戏内死亡时点采样。
+本项目 CombatantInspectionChecks 已有人工设置 MouseFilter.Ignore 的用例，旧断言要求整条 power/intent 消失。后续改为静态列表共享时，应验证条目保留、只有悬停说明被移除，来源下标不漂移；真正隐藏的图标仍排除，屏幕坐标筛选按下节的新要求取消。上述判断依据为本轮基线同一程序集的 `.tmp/2026-11-01-power-descriptions/source/Nodes.Combat.NPower.cs`、当前两个读取类及原生检查，不是新增游戏内死亡时点采样。
+
+### 图标位置与不可悬停说明
+
+**已确认、尚未实现：**本轮相关图标不因屏幕坐标越界而被截断，沿用遗物列表取消视口截断的方向；相应可读计数采用一致的位置规则。保留所属界面、容器、图标的显隐、透明、纹理及真实展示条件，不从后台模型补齐被隐藏的图标或数值。实现须区分 VisibleUi.OnScreen 中混合的位置、显隐及裁剪条件，不全局替换该函数而影响其他工具。球槽、球与悬浮剑现有几何检查同时核对，保留其实际未入场、零缩放、隐藏等独立边界。
+
+“可见但不能悬停”的说明建议只在 level 2 确实要求读取悬停内容、且被选中对象因交互禁用而无法提供说明时返回。level 1、get_observation 和 inspect_combatants.summary 不为未尝试的悬停补这条说明；sources 过滤同时裁剪关联路径，空筛选不保留该 note。
+
+候选格式如下，仅作为设计示例，不是已实现返回：
+
+```json
+{
+  "notes": {
+    "hover_tips_unavailable": {
+      "message": "Hover help is currently unavailable for these displayed icons.",
+      "sources": ["enemies.0.powers.1"]
+    }
+  }
+}
+```
+
+静态 name/amount 仍保留，不把状态消失或计数归零作为替代反馈，也不猜测禁用原因或恢复时间。原生本就没有说明的意图与“目前禁用悬停”分开处理；不因缺少 HasIntentTip 而生成此 note。未知悬停类型、坏绑定或响应异常仍走错误契约，不降级成正常不可悬停说明。
 
 ## 验证与剩余范围
 
