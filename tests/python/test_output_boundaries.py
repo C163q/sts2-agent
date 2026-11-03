@@ -26,7 +26,7 @@ class ReplyClient:
     def __init__(self, state):
         self.state = state
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         return {"ok": True, "state": self.state}
 
 

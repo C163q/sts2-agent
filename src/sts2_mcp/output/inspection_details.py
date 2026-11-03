@@ -21,7 +21,7 @@ def _read_details(operation, state, arguments=None):
 
 def inspection_details(operation, state, arguments=None):
     result = _read_details(operation, state, arguments)
-    if "scene" in result:
+    if "scene" in result or state.get("schema_version") == 35:
         result.update(scene_context(state))
     if "selection_view" in state:
         if state["selection_view"] not in {"visible", "battlefield", "covered", "unsupported"}:

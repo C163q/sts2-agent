@@ -228,3 +228,6 @@ python3 -m tests.game.verifiers.verify_roundtrip --ipc-dir .tmp/roundtrip/ipc --
 地图展开时返回 `map` 候选摘要及 `travel_to_node` 动作；整幕节点和连线仍由 `inspect_map` 提供，见[地图接口](map-inspection.md#地图选路)。
 
 各场景工具可用性与早期预设验证见[核查记录](../research/2026-10-31-observation-presets-validation.md)；当前各场景 summary 的设计与实施证据见[逐项核验记录](../research/2026-11-02-get-observation-review.md)。
+
+
+原生采样由 GameObservation.Capture 统一管理同步与代次，ObservationSnapshot 同时持有 JSON、令牌及原生身份；详情共用该快照的上下文。公开格式不因此增加私有元数据，见[MCP 成功上下文](mcp.md#成功结果的场景上下文)。占卜的图片需求由响应选项控制，不参与逻辑令牌计算，见[占卜接口](divination.md#工具与图像)。

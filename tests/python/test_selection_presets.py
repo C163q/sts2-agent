@@ -23,7 +23,7 @@ class SelectionClient(ActionClient):
         self.choice['cards'][0]['enchantment'] = {'name': 'Sharp', 'amount': 3, 'dimmed': False}
         self.error = None
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         if operation != 'inspect_selection':
             return super().call(operation, expected_state, arguments)
         self.calls.append((operation, expected_state, arguments))

@@ -1,0 +1,238 @@
+[
+  {
+    "name": "dispatch",
+    "scenarios": {},
+    "steps": [
+      {
+        "name": "gates",
+        "verifier": "verify_native_dispatch.py",
+        "args": []
+      }
+    ]
+  },
+  {
+    "name": "combat_context",
+    "scenarios": {
+      "play": "basic",
+      "potion": "skill"
+    },
+    "steps": [
+      {
+        "name": "context",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "combat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "energy",
+    "scenarios": {
+      "play": "energy"
+    },
+    "steps": [
+      {
+        "name": "recovery",
+        "verifier": "verify_inspection_errors.py",
+        "args": [
+          "--scenario",
+          "energy"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "event_selection",
+    "scenarios": {
+      "event": "upgrade"
+    },
+    "steps": [
+      {
+        "name": "context_and_selection",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "event_selection"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ancient_selection",
+    "scenarios": {
+      "ancient": "bundle"
+    },
+    "steps": [
+      {
+        "name": "context",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "context"
+        ]
+      },
+      {
+        "name": "selection",
+        "verifier": "verify_selection_scene.py",
+        "args": [
+          "--scenario",
+          "ancient_bundle"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "smith",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "context",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "context"
+        ]
+      },
+      {
+        "name": "smith",
+        "verifier": "verify_rest_site.py",
+        "args": [
+          "--scenario",
+          "smith"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "shop",
+    "scenarios": {
+      "shop": "courier"
+    },
+    "steps": [
+      {
+        "name": "context",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "context"
+        ]
+      },
+      {
+        "name": "buy",
+        "verifier": "verify_shop.py",
+        "args": [
+          "--scenario",
+          "courier"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "treasure",
+    "scenarios": {
+      "treasure": "basic"
+    },
+    "steps": [
+      {
+        "name": "context",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "context"
+        ]
+      },
+      {
+        "name": "loot",
+        "verifier": "verify_treasure.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "rewards",
+    "scenarios": {
+      "reward": "basic"
+    },
+    "steps": [
+      {
+        "name": "context",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "context"
+        ]
+      },
+      {
+        "name": "claim",
+        "verifier": "verify_rewards.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "divination_media",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "media",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "divination"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "combat_handoff",
+    "scenarios": {
+      "play": "handoff_play"
+    },
+    "steps": [
+      {
+        "name": "handoff",
+        "verifier": "verify_combat_handoff.py",
+        "args": [
+          "--scenario",
+          "play"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "epilogue",
+    "scenarios": {
+      "navigation": "boss3"
+    },
+    "steps": [
+      {
+        "name": "views",
+        "verifier": "verify_view_availability.py",
+        "args": [
+          "--scenario",
+          "epilogue"
+        ]
+      },
+      {
+        "name": "context",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "context"
+        ]
+      }
+    ]
+  }
+]

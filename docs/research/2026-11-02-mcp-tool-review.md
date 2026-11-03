@@ -2,7 +2,7 @@
 
 > 当前状态：工具核验进行中，共 43 项，已核销 4 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants。战斗对象的[错误修复、公共两级读取、summary、sources 与 GUI 验证](2026-11-03-combatants-implementation.md)已交付。get_observation 的浏览覆盖仍待对应工具，整体未核销；其余 38 项尚待逐项核验。其他工具的完整错误审阅继续留在用户 TODO。暂无阻塞。
 
-当前先按[共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)收拢基础实现，暂不选择下一个工具。[第 1–2 阶段](2026-11-04-refactor-stages-1-2.md)及[第 3–4 阶段](2026-11-04-refactor-stages-3-4.md)分批收拢契约、参数与会话规则；上下文和遗物展示仍按后续阶段实施，不改变本清单完成数。
+当前先按[共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)收拢基础实现，暂不选择下一个工具。[第 1–2 阶段](2026-11-04-refactor-stages-1-2.md)及[第 3–4 阶段](2026-11-04-refactor-stages-3-4.md)分批收拢契约、参数与会话规则；[第 5 阶段](2026-11-04-refactor-stage-5.md)补齐上下文并拆分原生响应；遗物展示仍按后续阶段实施，不改变本清单完成数。
 
 ## 范围与基线
 

@@ -73,9 +73,8 @@ public static class BridgeMod
                 return;
             if (operation.IsFaulted) GD.PushError("[Sts2Agent] Operation failed: " + operation.Exception);
             string response = operation.IsCompletedSuccessfully ? operation.Result
-                : FileMailbox.Error(active.Request.Id,
-                    operation.Exception?.GetBaseException() is TimeoutException ? "timeout" : "game_error",
-                    operation.Exception?.GetBaseException().Message ?? "Operation canceled.");
+                : operation.Exception is { } failure ? ResponseBuilder.Failure(active.Request.Id, failure)
+                : FileMailbox.Error(active.Request.Id, "game_error", "Operation canceled.");
             active.Completion.TrySetResult(response);
             active = null;
             operation = null;

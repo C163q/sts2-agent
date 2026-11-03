@@ -3,8 +3,6 @@ using System.Text.Json;
 
 namespace Sts2Agent;
 
-internal sealed record Request(string Id, string Operation, string? ExpectedState, JsonElement? Arguments = null);
-
 internal sealed class WorkItem(Request request)
 {
     public Request Request { get; } = request;
@@ -57,7 +55,9 @@ internal sealed class FileMailbox(string directory)
                             throw new JsonException("Arguments must be an object.");
                         arguments = supplied.Clone();
                     }
-                    WorkItem work = new(new Request(id, operation, expected, arguments));
+                    ResponseOptions? options = root.TryGetProperty("response_options", out var responseOptions)
+                        ? ResponseOptions.Parse(responseOptions) : null;
+                    WorkItem work = new(new Request(id, operation, expected, arguments, options));
                     Queue.Enqueue(work);
                     try
                     {
@@ -83,10 +83,8 @@ internal sealed class FileMailbox(string directory)
     }
 
     public static string Error(string id, string code, string message, bool publicMessage = false) =>
-        publicMessage
-            ? JsonSerializer.Serialize(new { id, ok = false, error = new { code, message, public_message = message } })
-            : JsonSerializer.Serialize(new { id, ok = false, error = new { code, message } });
+        ResponseBuilder.Error(id, code, message, publicMessage);
 
     public static string RejectedBeforeSubmission(string id, string code, string message) =>
-        JsonSerializer.Serialize(new { id, ok = false, error = new { code, message, public_message = message, action_submitted = false } });
+        ResponseBuilder.Error(id, code, message, publicMessage: true, actionSubmitted: false);
 }

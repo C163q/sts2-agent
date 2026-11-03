@@ -57,7 +57,9 @@ async def verify(args):
             async def select(card): return await observe_after_action(call, await call('select_card', {'card_id': card['id']}))
 
             def done(result):
-                assert result['transition'] == {'stop_reason': 'action_completed', 'complete': True, 'events': []}, result
+                transition = result['transition']
+                assert transition['stop_reason'] == 'action_completed' and transition['complete'], result
+                assert [event['sequence'] for event in transition['events']] == list(range(1, len(transition['events']) + 1)), result
 
             await call('choose_rest_option', {'option_id': 'HEAL'}, error='observation_required')
             initial = await call('get_observation')
@@ -105,6 +107,7 @@ async def verify(args):
                 cards = (await call('inspect_selection'))['selection']['cards']
                 for card in cards[:count]: await select(card)
                 confirmed = await option('confirm'); done(confirmed)
+                assert any(event['type'] == 'card_upgraded' for event in confirmed['transition']['events']), confirmed
                 after = await fixture()
                 assert sum(c['upgrades'] for c in after['deck']) == count, after
                 assert not after['preview_cards'], after

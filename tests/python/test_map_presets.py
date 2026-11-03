@@ -35,7 +35,8 @@ class MapPresetTests(unittest.IsolatedAsyncioTestCase):
                 ],
             })
             self.assertNotIn('next', result['nodes'][0])
-            self.assertEqual(game.operations[0], {'id': game.operations[0]['id'], 'operation': 'inspect_map'})
+            self.assertEqual(game.operations[0], {'id': game.operations[0]['id'], 'operation': 'inspect_map',
+                                                  'response_options': {'include_divination_image': False}})
 
     async def test_selectable_without_travel_returns_no_nodes(self):
         with FakeGame() as game:

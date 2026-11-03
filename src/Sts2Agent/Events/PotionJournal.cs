@@ -61,8 +61,7 @@ internal sealed class PotionJournal : IDisposable
         }
     }
 
-    public object Result(string reason) => new { stop_reason = reason,
-        complete = !buffer.Truncated && reason is not ("timeout" or "interrupted"), events = buffer.Events };
+    public object Result(string reason) => TransitionResult.Create(reason, buffer);
 
     public void Dispose()
     {

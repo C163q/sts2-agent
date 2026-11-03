@@ -36,7 +36,7 @@ internal sealed partial class GameAdapter
         var snapshot = Capture();
         string before = snapshot.Json;
         JsonElement beforeState = snapshot.State;
-        if (request.Operation is not ("inspect_combatants" or "inspect_deck" or "inspect_pile" or "inspect_selection" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
+        if (request.Operation is not ("set_test_capture_failure" or "inspect_combatants" or "inspect_deck" or "inspect_pile" or "inspect_selection" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
@@ -47,13 +47,13 @@ internal sealed partial class GameAdapter
             string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_CHECKS");
             if (testMode && checks != null)
                 ObservationChecks.Run(checks);
-            return Success(request.Id, before);
+            return Success(request, before);
         }
         if (request.Operation == "capture_screenshot")
         {
             if (ViewportCapture.Read() is not { } capture)
                 return FileMailbox.Error(request.Id, "screenshot_unavailable", "A rendered game viewport is required.");
-            return Success(request.Id, JsonSerializer.Serialize(new
+            return Success(request, JsonSerializer.Serialize(new
             {
                 snapshot_id = beforeState.GetProperty("snapshot_id").GetString(),
                 capture.width, capture.height, png_base64 = Convert.ToBase64String(capture.png)
@@ -126,7 +126,7 @@ internal sealed partial class GameAdapter
             var underlyingOverlay = NRun.Instance!.GlobalUi.Overlays.Peek();
             bool reopened = false;
             void Opened() => reopened = true;
-            capture.UiChanged();
+            UiChanged();
             bool SameMap() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
                 && ReferenceEquals(graph, run?.Map) && act == run?.CurrentActIndex && GodotObject.IsInstanceValid(map)
                 && ReferenceEquals(underlyingOverlay, NRun.Instance?.GlobalUi.Overlays.Peek())
@@ -142,7 +142,7 @@ internal sealed partial class GameAdapter
                 string after = await SettledObservation();
                 if (!SameMap() || reopened || map.IsOpen || !MapView.Clear())
                     return FileMailbox.Error(request.Id, "illegal_action", "The map changed while closing.");
-                return Success(request.Id, after);
+                return Success(request, after);
             }
             finally
             {
@@ -154,18 +154,18 @@ internal sealed partial class GameAdapter
             var screen = CardView.Current;
             if (screen == null || !CardView.CanClose(screen))
                 return FileMailbox.Error(request.Id, "illegal_action", "The current card view cannot be closed.");
-            capture.UiChanged();
+            UiChanged();
             CardView.Close(screen);
-            return Success(request.Id, await SettledObservation());
+            return Success(request, await SettledObservation());
         }
         if (request.Operation == "close_deck")
         {
             var screen = DeckView.Current;
             if (screen == null || !DeckView.CanClose(screen))
                 return FileMailbox.Error(request.Id, "illegal_action", "The current deck screen cannot be closed.");
-            capture.UiChanged();
+            UiChanged();
             DeckView.Close(screen);
-            return Success(request.Id, await SettledObservation());
+            return Success(request, await SettledObservation());
         }
         if (request.Operation == "inspect_relics")
         {
@@ -175,11 +175,7 @@ internal sealed partial class GameAdapter
             string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_RELIC_CHECKS");
             if (testMode && checks != null)
                 RelicInspectionChecks.Run(checks);
-            return Success(request.Id, JsonSerializer.Serialize(new
-            {
-                snapshot_id = beforeState.GetProperty("snapshot_id").GetString(),
-                relics = RelicInspection.Read(holders)
-            }));
+            return InspectionSuccess(request, beforeState, new { relics = RelicInspection.Read(holders) });
         }
         if (request.Operation == "inspect_combatants")
             return CombatantsRequest(request, beforeState);
@@ -192,11 +188,7 @@ internal sealed partial class GameAdapter
             if (testMode && checks != null)
                 PotionInspectionChecks.Run(checks);
             var inspection = PotionInspection.Read(holders);
-            return Success(request.Id, JsonSerializer.Serialize(new
-            {
-                snapshot_id = beforeState.GetProperty("snapshot_id").GetString(),
-                inspection.slot_tip, inspection.potion_slots
-            }));
+            return InspectionSuccess(request, beforeState, new { inspection.slot_tip, inspection.potion_slots });
         }
         if (request.Operation == "inspect_ui")
         {
@@ -205,7 +197,7 @@ internal sealed partial class GameAdapter
             string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_UI_CHECKS");
             if (testMode && checks != null)
                 UiInspectionChecks.Run(checks);
-            return InspectionSuccess(request.Id, beforeState, new { hover_tips = UiInspection.Read() });
+            return InspectionSuccess(request, beforeState, new { hover_tips = UiInspection.Read() });
         }
         if (request.Operation == "inspect_hand")
         {
@@ -217,12 +209,9 @@ internal sealed partial class GameAdapter
                 HandInspectionChecks.Run(handChecks);
             var reader = new HandInspection(observation);
             var resources = CombatResources.Read();
-            return Success(request.Id, JsonSerializer.Serialize(new
-            {
-                snapshot_id = beforeState.GetProperty("snapshot_id").GetString(),
+            return InspectionSuccess(request, beforeState, new {
                 energy = resources.Energy, max_energy = resources.Maximum, stars = resources.Stars,
-                hand = CombatObservation.HandCards(hand).Select(reader.Card).ToArray()
-            }));
+                hand = CombatObservation.HandCards(hand).Select(reader.Card).ToArray() });
         }
         if (request.ExpectedState != beforeState.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read current state before submitting an action.");
@@ -239,14 +228,15 @@ internal sealed partial class GameAdapter
                 return FileMailbox.Error(request.Id, "illegal_action", "RitsuLib is unavailable; no action was submitted.");
             var journal = CombatJournalScope.Current!;
             RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(new EndPlayerTurnAction(player, turn));
+            execution?.ActionSubmitted();
             var (state, reason) = await ActionObservation(() =>
             {
                 return journal.StopReason(player.PlayerCombatState?.TurnNumber > turn && CanEndTurn()
                     && RunManager.Instance.ActionQueueSet.IsEmpty, requireTurnStarted: true);
             });
-            return Success(request.Id, state[..^1] + ",\"transition\":" + JsonSerializer.Serialize(journal.Result(reason)) + "}");
+            return Success(request, ResponseBuilder.WithTransition(state, journal.Result(reason)));
         }
-        return Success(request.Id, await SettledObservation());
+        return Success(request, await SettledObservation());
     }
 
 }

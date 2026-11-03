@@ -113,7 +113,7 @@ class CombatantClient(ActionClient):
         super().__init__()
         self.mutate = lambda state: None
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         if operation != 'inspect_combatants': return super().call(operation, expected_state, arguments)
         self.calls.append((operation, expected_state, arguments))
         state = payload(); state.pop('notes')

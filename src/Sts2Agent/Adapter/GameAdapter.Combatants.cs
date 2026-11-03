@@ -24,7 +24,7 @@ internal sealed partial class GameAdapter
         if (testMode && checks != null && level == CombatantInspection.Level.Full)
             CombatantInspectionChecks.Run(checks, player!);
         var inspection = CombatantInspection.Read(player, observation.CardId, level);
-        return InspectionSuccess(request.Id, snapshot, new
+        return InspectionSuccess(request, snapshot, new
         {
             inspection.player, inspection.enemies, inspection.allies, inspection.hover_tips,
             inspection.unavailable_hover_sources

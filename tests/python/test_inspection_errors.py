@@ -22,7 +22,7 @@ class Client(ActionClient):
         super().__init__()
         self.errors = {}
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         if operation in self.errors:
             self.calls.append((operation, expected_state, arguments))
             error = self.errors[operation]
@@ -181,7 +181,7 @@ class InspectionErrorTests(unittest.IsolatedAsyncioTestCase):
         started, release = threading.Event(), threading.Event()
 
         class BlockingClient(Client):
-            def call(self, operation, expected_state=None, arguments=None):
+            def call(self, operation, expected_state=None, arguments=None, response_options=None):
                 if operation == 'inspect_targets':
                     started.set()
                     if not release.wait(3): raise TimeoutError('Test did not release read')
@@ -202,7 +202,7 @@ class InspectionErrorTests(unittest.IsolatedAsyncioTestCase):
         started, release = threading.Event(), threading.Event()
 
         class BlockingClient(Client):
-            def call(self, operation, expected_state=None, arguments=None):
+            def call(self, operation, expected_state=None, arguments=None, response_options=None):
                 if operation == 'inspect_targets':
                     started.set()
                     if not release.wait(3): raise TimeoutError('Test did not release read')

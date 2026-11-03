@@ -20,7 +20,7 @@ class Client:
         self.directory = Path(directory)
         self.timeout = timeout
 
-    def call(self, operation, expected_state=None, request_id=None, arguments=None):
+    def call(self, operation, expected_state=None, request_id=None, arguments=None, *, response_options=None):
         request_id = request_id or uuid.uuid4().hex
         if len(request_id) != 32 or uuid.UUID(hex=request_id).hex != request_id:
             raise ValueError("Request id must be a lowercase UUID hex string.")
@@ -29,6 +29,8 @@ class Client:
             request["expected_state"] = expected_state
         if arguments is not None:
             request["arguments"] = arguments
+        if response_options is not None:
+            request["response_options"] = response_options
         requests = self.directory / "requests"
         responses = self.directory / "responses"
         requests.mkdir(parents=True, exist_ok=True)

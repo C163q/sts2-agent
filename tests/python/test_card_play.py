@@ -86,7 +86,7 @@ class Client:
         self.calls = []
         self.malformed = False
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         self.calls.append((operation, expected_state, arguments))
         raw = targets() if operation == 'inspect_targets' else combat()
         if self.malformed:
@@ -101,7 +101,7 @@ class CardPlayPermissionTests(unittest.IsolatedAsyncioTestCase):
         started, release = threading.Event(), threading.Event()
 
         class SlowClient(Client):
-            def call(self, operation, expected_state=None, arguments=None):
+            def call(self, operation, expected_state=None, arguments=None, response_options=None):
                 started.set()
                 if not release.wait(3):
                     raise TimeoutError('Test observation was not released')

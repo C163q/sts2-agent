@@ -22,11 +22,11 @@ internal sealed partial class GameAdapter
             || EpilogueInspection.IsProceed(button) != (request.Operation == "proceed"))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested dialogue action is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
-        capture.UiChanged();
+        UiChanged();
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
             ? NonCombatBoundary() : "interrupted");
-        return TransitionSuccess(request.Id, after, reason);
+        return TransitionSuccess(request, after, reason);
     }
 
     private async Task<string> RunResultRequest(Request request, JsonElement before)
@@ -43,7 +43,7 @@ internal sealed partial class GameAdapter
         var context = runResultInspection.Current;
         if (context == null || !RunResultInspection.Exposed(context) || !runResultInspection.Ready(context))
             return FileMailbox.Error(request.Id, "illegal_action", "The run result is unavailable.");
-        if (inspect) return InspectionSuccess(request.Id, before, new { run_result = runResultInspection.Read(full: true) });
+        if (inspect) return InspectionSuccess(request, before, new { run_result = runResultInspection.Read(full: true) });
         var button = runResultInspection.Options(context).FirstOrDefault(o => o.id == id).button;
         if (button == null || !RunResultInspection.Clickable(button))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested result button is unavailable.");
@@ -56,7 +56,7 @@ internal sealed partial class GameAdapter
         }
         bool returningToMenu = id == "main_menu" || runResultInspection.ReturningToMenu;
         if (id == "main_menu") runResultInspection.Leaving();
-        capture.UiChanged();
+        UiChanged();
         if (id is "next_chapter" or "previous_chapter")
         {
             // These native paginators subscribe to MouseReleased, not Released.
@@ -69,10 +69,7 @@ internal sealed partial class GameAdapter
                 && !RunUi.Transitioning() ? "action_completed" : NonCombatBoundary(includeRunOutcome: false));
         if (NGame.Instance?.MainMenu is { } menu && !menu.SubmenuStack.SubmenusOpen && !RunUi.Transitioning())
             runResultInspection.Finished();
-        return TransitionSuccess(request.Id, after, reason);
+        return TransitionSuccess(request, after, reason);
     }
 
-    private static string TransitionSuccess(string id, string observation, string reason) => Success(id,
-        observation[..^1] + ",\"transition\":" + JsonSerializer.Serialize(new {
-            stop_reason = reason, complete = reason is not ("timeout" or "interrupted"), events = Array.Empty<object>() }) + "}");
 }

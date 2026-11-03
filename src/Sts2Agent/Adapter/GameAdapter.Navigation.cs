@@ -48,7 +48,7 @@ internal sealed partial class GameAdapter
         if (!SamePage() || !map.IsNodeOnScreen(point))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested map node cannot be clicked now.");
         var enteringCombat = CombatJournalScope.Current!;
-        capture.UiChanged();
+        UiChanged();
         point.ForceClick();
         var destination = point.Point.coord;
         var (after, reason) = await ActionObservation(() =>
@@ -58,6 +58,6 @@ internal sealed partial class GameAdapter
             if (run.CurrentMapCoord != destination) return null;
             return enteringCombat.StopReason(CanPlayCards()) ?? NonCombatBoundary();
         });
-        return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(enteringCombat.Result(reason)) + "}");
+        return Success(request, ResponseBuilder.WithTransition(after, enteringCombat.Result(reason)));
     }
 }

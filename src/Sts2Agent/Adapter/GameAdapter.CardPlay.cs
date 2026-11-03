@@ -41,7 +41,7 @@ internal sealed partial class GameAdapter
         var player = LocalPlayer!;
         if (card == null || card.Owner != player || card.Pile?.Type != PileType.Hand || TargetInspection.Type(card) == null)
             return Reject("illegal_action", "No supported visible hand card has that ID.");
-        if (!playing) return Success(request.Id, JsonSerializer.Serialize(reader.Read(card, before.GetProperty("snapshot_id").GetString()!)));
+        if (!playing) return InspectionSuccess(request, before, reader.Read(card, before.GetProperty("snapshot_id").GetString()!));
 
         var targets = TargetInspection.Targets(card);
         var target = suppliedTarget ? targets.FirstOrDefault(creature => creature.CombatId == targetId) : null;
@@ -60,19 +60,21 @@ internal sealed partial class GameAdapter
         PlayCardAction? submitted = null;
         bool canceled = false;
         void Canceled(GameAction action) => canceled = true;
+        var actionExecution = execution;
         void Enqueued(GameAction action)
         {
             if (submitted == null && action is PlayCardAction play && play.Player == player
                 && ReferenceEquals(play.NetCombatCard.ToCardModelOrNull(), card))
             {
                 submitted = play;
+                actionExecution?.ActionSubmitted();
                 play.BeforeCancelled += Canceled;
             }
         }
         RunManager.Instance.ActionQueueSet.ActionEnqueued += Enqueued;
         try
         {
-            capture.UiChanged();
+            UiChanged();
             if (!card.TryManualPlay(target))
                 return FileMailbox.Error(request.Id, "illegal_action", "The native card play was rejected before submission.");
             if (target != null) NCombatRoom.Instance!.LastTargetedCreature = target;
@@ -83,7 +85,7 @@ internal sealed partial class GameAdapter
                 string? boundary = journal.StopReason(ready);
                 return boundary == "player_ready" && canceled ? "action_canceled" : boundary;
             });
-            return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(journal.Result(reason)) + "}");
+            return Success(request, ResponseBuilder.WithTransition(after, journal.Result(reason)));
         }
         finally
         {

@@ -59,7 +59,7 @@ class NavigationClient:
         self.calls = []
         self.state = map_observation()
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         self.calls.append((operation, expected_state, arguments))
         state = copy.deepcopy(self.state)
         if operation == 'travel_to_node':

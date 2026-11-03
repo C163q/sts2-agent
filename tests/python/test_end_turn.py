@@ -79,7 +79,7 @@ class EndTurnTests(unittest.TestCase):
 class EndTurnSessionTests(unittest.IsolatedAsyncioTestCase):
     async def test_choice_and_timeout_keep_events_without_preparing_another_action(self):
         class Client:
-            def call(self, operation, expected_state=None, arguments=None):
+            def call(self, operation, expected_state=None, arguments=None, response_options=None):
                 return {"ok": True, "state": observation() if operation == "get_state" else state}
 
         for reason, complete in [("choice_required", True), ("timeout", False)]:

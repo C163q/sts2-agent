@@ -24,7 +24,7 @@ internal sealed partial class GameAdapter
         if (!EventConfirmation.Clickable(popup, button))
             return FileMailbox.Error(request.Id, "illegal_action", "The confirmation button is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
-        capture.UiChanged();
+        UiChanged();
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => {
             if (!ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())) return "interrupted";
@@ -32,7 +32,6 @@ internal sealed partial class GameAdapter
             if (confirming && !EventTaskTracker.RunLost) return null;
             return NonCombatBoundary();
         });
-        return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(new {
-            stop_reason = reason, complete = reason is not ("timeout" or "interrupted"), events = Array.Empty<object>() }) + "}");
+        return TransitionSuccess(request, after, reason);
     }
 }

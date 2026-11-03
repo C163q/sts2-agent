@@ -599,7 +599,8 @@ SPECS = (
         requires_permission=False,
         returns_transition=False,
         records_events=False,
-        reader='view_details:closed_map'),
+        reader='view_details:closed_map',
+        media=True),
     ToolSpec(
         name='inspect_selection',
         schema=SELECTION_SCHEMA,
@@ -663,7 +664,8 @@ SPECS = (
         records_events=False,
         reader='observation_details:observation_details',
         parser='selection_details:selection_arguments',
-        parser_operation=True),
+        parser_operation=True,
+        media=True),
     ToolSpec(
         name='end_turn',
         schema=NO_ARGUMENTS,

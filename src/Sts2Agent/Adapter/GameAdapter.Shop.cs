@@ -27,7 +27,7 @@ internal sealed partial class GameAdapter
         {
             if (!context.Inventory.IsOpen || ShopInspection.Animating(context))
                 return FileMailbox.Error(request.Id, "illegal_action", "Open the shop before inspecting its items.");
-            return InspectionSuccess(request.Id, before, new { shop = shopInspection.Read(full: true)
+            return InspectionSuccess(request, before, new { shop = shopInspection.Read(full: true)
             });
         }
         var run = RunManager.Instance.DebugOnlyGetState();
@@ -49,7 +49,7 @@ internal sealed partial class GameAdapter
         if (slot != null) { slot.Entry.PurchaseCompleted += Purchased; slot.Entry.PurchaseFailed += Failed; }
         try
         {
-            capture.UiChanged();
+            UiChanged();
             if (slot != null)
                 submitted = (Task)AccessTools.Method(typeof(NMerchantSlot), "OnSelected").Invoke(slot, null)!;
             else if (request.Operation == "open_shop") context.Merchant.ForceClick();
@@ -63,10 +63,8 @@ internal sealed partial class GameAdapter
                 return boundary == "action_completed" && RewardInspection.Current == null && submitted is { IsCompleted: false } ? null : boundary;
             });
             if (submitted is { IsCompletedSuccessfully: true } && outcome == null) outcome = "canceled";
-            return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(new
-            {
-                stop_reason = reason, complete = reason is not ("timeout" or "interrupted"), events = Array.Empty<object>()
-            }) + (slot != null && outcome != null ? ",\"purchase_result\":" + JsonSerializer.Serialize(new { item_id = itemId, status = outcome }) : "") + "}");
+            return TransitionSuccess(request, after, reason, purchaseResult:
+                slot != null && outcome != null ? new { item_id = itemId, status = outcome } : null);
         }
         finally
         {

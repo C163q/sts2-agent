@@ -72,7 +72,7 @@ internal sealed partial class GameAdapter
         var screen = RewardInspection.Current;
         if (screen == null || !RewardInspection.Ready(screen) || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available local rewards screen.");
-        if (inspect) return InspectionSuccess(request.Id, before, new { rewards = rewardInspection.Read(full: true)
+        if (inspect) return InspectionSuccess(request, before, new { rewards = rewardInspection.Read(full: true)
         });
 
         var run = RunManager.Instance.DebugOnlyGetState();
@@ -102,7 +102,7 @@ internal sealed partial class GameAdapter
         }
         try
         {
-            capture.UiChanged();
+            UiChanged();
             button.ForceClick();
             var (after, reason) = await ActionObservation(() =>
             {
@@ -113,15 +113,12 @@ internal sealed partial class GameAdapter
                     && RewardInspection.Ready(current);
                 return boundary is "choice_required" or "manual_input_required" || finished || nestedReward ? boundary : null;
             });
-            string rewardResult = row == null ? "" : ",\"reward_result\":" + JsonSerializer.Serialize(new
+            object? rewardResult = row == null ? null : new
             {
                 reward_id = rewardId, status = claimed == true ? potionReward != null && !potionObtained ? "not_obtained" : "claimed"
                     : claimed == false ? "not_claimed" : "pending"
-            });
-            return Success(request.Id, after[..^1] + rewardResult + ",\"transition\":" + JsonSerializer.Serialize(new
-            {
-                stop_reason = reason, complete = reason is not ("timeout" or "interrupted"), events = Array.Empty<object>()
-            }) + "}");
+            };
+            return TransitionSuccess(request, after, reason, rewardResult: rewardResult);
         }
         finally
         {

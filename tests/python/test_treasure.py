@@ -56,7 +56,7 @@ class TreasureOutputTests(unittest.TestCase):
 class TreasureClient:
     def __init__(self): self.raw = state(); self.calls = []
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         self.calls.append((operation, expected_state, arguments))
         if operation == 'loot_treasure':
             self.raw.update(snapshot_id='treasure-2', transition={'complete': True, 'stop_reason': 'action_completed', 'events': []})

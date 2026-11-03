@@ -117,7 +117,7 @@ class CaptureClient:
         self.error = None
         self.payload = None
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         self.calls.append(operation)
         if operation == 'capture_screenshot':
             if self.error:

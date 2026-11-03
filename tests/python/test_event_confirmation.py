@@ -65,7 +65,7 @@ class ConfirmationOutputTests(unittest.TestCase):
 
 class ConfirmationClient:
     def __init__(self): self.raw = state(); self.calls = []
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         self.calls.append((operation, expected_state, arguments))
         if operation == 'respond_to_confirmation':
             if arguments['option'] == 'cancel':

@@ -44,7 +44,7 @@ internal sealed partial class GameAdapter
         if (potion == null || potion.Owner != player || player.GetPotionSlotIndex(potion) != slot
             || PotionActions.Type(potion) == null)
             return FileMailbox.Error(request.Id, "illegal_action", "No supported visible potion occupies that slot.", publicMessage: query);
-        if (query) return Success(request.Id, JsonSerializer.Serialize(PotionActions.Read(potion, slot, before.GetProperty("snapshot_id").GetString()!)));
+        if (query) return InspectionSuccess(request, before, PotionActions.Read(potion, slot, before.GetProperty("snapshot_id").GetString()!));
         var target = suppliedTarget && !merchant ? PotionActions.Targets(potion).FirstOrDefault(c => c.CombatId == creatureId) : null;
         if (!PotionActions.Discardable(potion) || use && (PotionActions.Reason(potion) != null
             || suppliedTarget != PotionActions.RequiresTarget(potion)
@@ -60,18 +60,20 @@ internal sealed partial class GameAdapter
         GameAction? submitted = null;
         bool canceled = false;
         void Canceled(GameAction _) => canceled = true;
+        var actionExecution = execution;
         void Enqueued(GameAction action)
         {
             if (submitted != null) return;
             if (use ? action is not UsePotionAction played || played.Player != player || played.PotionIndex != slot
                 : action is not DiscardPotionGameAction || action.OwnerId != player.NetId) return;
             submitted = action;
+            actionExecution?.ActionSubmitted();
             action.BeforeCancelled += Canceled;
         }
         RunManager.Instance.ActionQueueSet.ActionEnqueued += Enqueued;
         try
         {
-            capture.UiChanged();
+            UiChanged();
             holder!.DisableUntilPotionRemoved();
             if (use) potion.EnqueueManualUse(potion.TargetType == TargetType.Self ? player.Creature : target);
             else RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(new DiscardPotionGameAction(player, (uint)slot, inCombat));
@@ -88,7 +90,7 @@ internal sealed partial class GameAdapter
                 return boundary is "player_ready" or "action_completed" && canceled ? "action_canceled" : boundary;
             });
             object transition = journal.Result(reason);
-            return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(transition) + "}");
+            return Success(request, ResponseBuilder.WithTransition(after, transition));
         }
         finally
         {

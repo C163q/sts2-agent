@@ -49,7 +49,9 @@ async def verify(args):
                 return result['state']
 
             def done(result):
-                assert result['transition'] == {'stop_reason': 'action_completed', 'complete': True, 'events': []}, result
+                transition = result['transition']
+                assert transition['stop_reason'] == 'action_completed' and transition['complete'], result
+                assert [event['sequence'] for event in transition['events']] == list(range(1, len(transition['events']) + 1)), result
 
             await call('loot_treasure', error='observation_required')
             initial = await call('get_observation')
@@ -65,10 +67,12 @@ async def verify(args):
                 await call('inspect_map')
                 covered = await call('get_observation')
                 assert covered['treasure'] == {'status': 'covered', 'chest': None, 'relic': None, 'proceed': None}, covered
-                await call('inspect_treasure', error='illegal_action')
-                await call('loot_treasure', error='observation_required')
+                rejected = await call('inspect_treasure', error='illegal_action')
+                assert rejected['error']['recovery'] == 'choose_legal_action', rejected
+                await call('loot_treasure', error='illegal_action')
                 await call('close_map')
                 result = await observe_after_action(call, await call('loot_treasure')); done(result)
+                assert any(event['type'] == 'relic_obtained' for event in result['transition']['events']), result
             elif args.scenario in {'open', 'skip'}:
                 result = await observe_after_action(call, await call('loot_treasure', {'open_only': True})); done(result)
                 assert result['treasure']['relic'] == {'name': 'Anchor', 'enabled': True}, result

@@ -93,7 +93,7 @@ class ShopOutputTests(unittest.TestCase):
 class ShopClient:
     def __init__(self): self.raw = state(); self.calls = []
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         self.calls.append((operation, expected_state, arguments))
         if operation in {'buy_item', 'open_shop', 'close_shop'}:
             self.raw.update(snapshot_id='shop-2', transition={'complete': True, 'stop_reason': 'action_completed', 'events': []})

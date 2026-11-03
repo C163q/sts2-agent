@@ -21,16 +21,16 @@ internal sealed partial class GameAdapter
         if (context == null || !EventInspection.Exposed(context) || !RunContext.Singleplayer
             || !inspect && !EventInspection.Ready(context))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player event.");
-        if (inspect) return InspectionSuccess(request.Id, before, new { @event = eventInspection.Read(full: true) });
+        if (inspect) return InspectionSuccess(request, before, new { @event = eventInspection.Read(full: true) });
         var button = request.Operation == "proceed" ? EventInspection.Proceed(context) : eventInspection.Find(context, optionId);
         if (button == null || !EventInspection.Clickable(button))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested event option is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
         var enteringCombat = CombatJournalScope.Current!;
-        capture.UiChanged();
+        UiChanged();
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => !ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
             ? "interrupted" : enteringCombat.StopReason(CanPlayCards()) ?? NonCombatBoundary());
-        return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(enteringCombat.Result(reason)) + "}");
+        return Success(request, ResponseBuilder.WithTransition(after, enteringCombat.Result(reason)));
     }
 }

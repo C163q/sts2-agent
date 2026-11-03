@@ -99,7 +99,7 @@ class Client:
         self.calls = []
         self.malformed = False
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         self.calls.append((operation, expected_state, arguments))
         raw = potion_targets() if operation == 'inspect_targets' else combat()
         if self.malformed:

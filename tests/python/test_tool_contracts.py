@@ -22,7 +22,7 @@ class ContractReply:
         self.error = error
         self.calls = []
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         self.calls.append({'operation': operation, 'expected_state': expected_state, 'arguments': arguments})
         if self.error is not None:
             return {'ok': False, 'error': copy.deepcopy(self.error)}

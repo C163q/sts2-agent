@@ -56,7 +56,7 @@ internal sealed partial class GameAdapter
             string? snapshot = before.GetProperty("snapshot_id").GetString();
             if (viewUpgrades.HasValue && !unavailable && selection.ViewUpgrades != viewUpgrades)
             {
-                capture.UiChanged();
+                UiChanged();
                 selection.UpgradeToggle!.ForceClick();
                 string viewed = await SettledObservation();
                 if (!SelectionActions.Same(selection) || selection.Status != "visible" || selection.InPreview
@@ -70,7 +70,7 @@ internal sealed partial class GameAdapter
                 ["snapshot_id"] = snapshot,
                 ["selection"] = new SelectionInspection(observation).Read(selection, full: true) };
             if (unavailable) result["errors"] = new[] { new { code = "upgrade_view_unavailable" } };
-            return InspectionSuccess(request.Id, context, result);
+            return InspectionSuccess(request, context, result);
         }
         if (request.Operation == "set_selection_view")
         {
@@ -79,13 +79,13 @@ internal sealed partial class GameAdapter
             bool peeking = value == "battlefield";
             if (selection.Peeking != peeking)
             {
-                capture.UiChanged();
+                UiChanged();
                 selection.Eye!.ForceClick();
             }
             string state = await SettledObservation();
             if (!SelectionActions.Same(selection) || !selection.Exposed || selection.Peeking != peeking)
                 return FileMailbox.Error(request.Id, "illegal_action", "The selection changed while switching views.");
-            return Success(request.Id, state);
+            return Success(request, state);
         }
         if (request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current selection before acting.");
@@ -99,7 +99,7 @@ internal sealed partial class GameAdapter
             return FileMailbox.Error(request.Id, "illegal_action", "The requested candidate or button is unavailable.");
         var journal = CombatJournalScope.Current!;
         bool startedInCombat = journal.Capturing;
-        capture.UiChanged();
+        UiChanged();
         if (model != null)
         {
             try { await SelectionActions.Click(selection, model, ObservationFrame); }
@@ -121,6 +121,6 @@ internal sealed partial class GameAdapter
             return boundary;
         });
         object transition = journal.Result(reason);
-        return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(transition) + "}");
+        return Success(request, ResponseBuilder.WithTransition(after, transition));
     }
 }

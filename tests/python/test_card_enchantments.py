@@ -13,7 +13,7 @@ class EnchantmentClient(HandClient):
         self.hand[1]['enchantment'] = {'name': 'Swift', 'amount': 2, 'dimmed': True}
         self.hand[2]['enchantment'] = {'name': 'Clone', 'dimmed': False}
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         response = super().call(operation, expected_state, arguments)
         if operation == 'get_state' and response['ok']:
             response['state']['player']['hand'] = copy.deepcopy(self.hand)

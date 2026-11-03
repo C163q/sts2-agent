@@ -23,7 +23,7 @@ internal sealed partial class GameAdapter
         var room = TreasureInspection.Current;
         if (room == null || !TreasureInspection.Exposed(room) || !inspect && !TreasureInspection.Ready(room))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player treasure room.");
-        if (inspect) return InspectionSuccess(request.Id, before, new { treasure = TreasureInspection.Read(full: true)
+        if (inspect) return InspectionSuccess(request, before, new { treasure = TreasureInspection.Read(full: true)
         });
         bool closed = !TreasureInspection.Opened(room);
         var button = request.Operation == "proceed" ? TreasureInspection.Proceed(room)
@@ -35,7 +35,7 @@ internal sealed partial class GameAdapter
         string? Boundary() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
             && ReferenceEquals(room, TreasureInspection.Current) ? NonCombatBoundary() : "interrupted";
         var timer = Stopwatch.StartNew();
-        capture.UiChanged();
+        UiChanged();
         button.ForceClick();
         var (after, reason) = await ActionObservation(Boundary, TimeSpan.FromSeconds(25) - timer.Elapsed);
         if (request.Operation == "loot_treasure" && closed && !openOnly && reason == "action_completed"
@@ -46,14 +46,11 @@ internal sealed partial class GameAdapter
             if (remaining <= TimeSpan.Zero) reason = "timeout";
             else
             {
-                capture.UiChanged();
+                UiChanged();
                 relic.ForceClick();
                 (after, reason) = await ActionObservation(Boundary, TimeSpan.FromSeconds(25) - timer.Elapsed);
             }
         }
-        return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(new
-        {
-            stop_reason = reason, complete = reason is not ("timeout" or "interrupted"), events = Array.Empty<object>()
-        }) + "}");
+        return TransitionSuccess(request, after, reason);
     }
 }

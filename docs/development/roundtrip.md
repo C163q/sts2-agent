@@ -77,6 +77,12 @@ python3 -m tests.python.test_prepare_roundtrip
 
 已审阅入口的明确拒绝可另带 `error.public_message`，表示经适配器确认可公开的原因；普通 message 仍可含私有诊断，不能直接转发。`play_card` 在提交和 UI 变化之前被拒绝时另带布尔 `error.action_submitted:false`；缺省不表示 false。MCP 校验这些字段，只在对应条件下保留已有许可，不把控制标记交给 LLM；完整语义见[MCP 错误处理](mcp.md#调用和错误语义)。观察 schema 的版本不因这些可选错误字段改变。 inspect_combatants 的文件请求另支持可选 level:summary/full，默认为 full；客户端的 preset/sources 与底层级别不同，详见[战斗对象入口](combatant-inspection.md#文件入口与验证)。
 
+内部请求包装可带 `response_options:{"include_divination_image":false}`，它与游戏 `arguments` 分开，不是 MCP 工具参数。省略时仍按旧文件调用规则捕获可见占卜棋盘；显式布尔值控制是否附加该 PNG，不改变结构化采样、令牌或独立截图。未知选项、重复键和非布尔值会被拒绝。MCP 按最终输出是否需要棋盘传入：完整观察、summary、占卜详情及会返回棋盘的关闭页结果需要图片；动作回执和 actions_only/top_bar 不捕获图片。
+
+适配器响应根部另有私有 `execution` 正向事实：`ui_interaction_started` 表示开始过 UI 交互，`action_submission_observed` 表示观察到原生动作提交，`state_captured` 表示完成过完整快照采样。后者不保证采样晚于最后一次动作或当前仍有效；所有 false 只表示未记录正向事实，不是“未执行”证明。异常、媒体或序列化失败保留已经记录的事实。MCP 会话校验这些控制字段，不转发给模型，也不据此自动重试或续权；矛盾的未提交标记作为坏响应拒绝。
+
+新协议详情携带同次快照的 `schema_version/snapshot_id/scene/screen`；前两项为私有控制信息，公开上下文见[MCP 约定](mcp.md#成功结果的场景上下文)。
+
 - 文件读写和等待在后台进行，状态读取与动作提交在 Godot 主线程进行；当前串行处理请求。
 - `snapshot_id` 根据当前导出的观察内容、进程会话、战斗代次、工具界面操作代次、选择实例代次、药水实例代次及模态弹窗实例代次生成。动作在主线程核对令牌和合法性后提交，选牌若跨帧滚动还会在点击前核对候选、已选和数量规则；通过工具查看并关闭牌组后旧令牌不会恢复，须重新观察。占卜的动态图像及临时对白不纳入令牌，次数、工具、格子和可操作状态仍纳入；见[占卜接口](divination.md)。这不是对所有游戏内部状态或两次请求之间全部人工 UI 操作历史的完整版本标识。
 - 相同请求 ID 且缓存响应仍在时返回原结果。重复请求不分配新 ID；删除响应缓存后不再保证同一 ID 不会再次执行。

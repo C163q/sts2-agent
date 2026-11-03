@@ -20,8 +20,7 @@ internal sealed class ActionEventScope : IDisposable
         var root = JsonNode.Parse(response)!;
         if (root["ok"]?.GetValue<bool>() != true || root["state"]?["transition"] is not JsonObject transition)
             return response;
-        transition["events"] = JsonSerializer.SerializeToNode(Buffer.Events);
-        transition["complete"] = transition["complete"]!.GetValue<bool>() && !Buffer.Truncated;
+        TransitionResult.ApplyEvents(transition, Buffer);
         return root.ToJsonString();
     }
 

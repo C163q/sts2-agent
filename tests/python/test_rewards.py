@@ -106,7 +106,7 @@ class RewardClient:
         self.raw = state()
         self.calls = []
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         self.calls.append((operation, expected_state, arguments))
         if operation == 'get_state':
             return {'ok': True, 'state': copy.deepcopy(self.raw)}

@@ -4,6 +4,6 @@ namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
 {
-    private static string InspectionSuccess(string id, JsonElement snapshot, object details) =>
-        Success(id, ObservationContext.Inspection(snapshot, details));
+    private string InspectionSuccess(Request request, JsonElement snapshot, object details) =>
+        Success(request, ObservationContext.Inspection(snapshot, details));
 }

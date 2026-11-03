@@ -37,6 +37,7 @@ class PermissionState:
 class ExecutionEvidence(Enum):
     UNKNOWN = 'unknown'
     SUBMITTED = 'submitted'
+    INTERACTION_STARTED = 'interaction_started'
     UNSUBMITTED_UNCHANGED = 'unsubmitted_ui_unchanged'
     SUCCESS = 'success'
 
@@ -90,6 +91,7 @@ class GameSession:
                 if 'error' in payload:
                     retain = previous.token is not None and (
                         request.effect == 'read' and payload['error']['code'] in self.READ_REJECTIONS
+                        and response.evidence not in {ExecutionEvidence.SUBMITTED, ExecutionEvidence.INTERACTION_STARTED}
                         or request.requires_permission
                         and response.evidence is ExecutionEvidence.UNSUBMITTED_UNCHANGED)
                     if retain and self.permission.generation == generation:
@@ -141,9 +143,15 @@ class GameSession:
         try:
             native = None if request.effect == 'file' else arguments
             response = await anyio.to_thread.run_sync(
-                partial(self.client.call, operation, expected_state, arguments=native))
+                partial(self.client.call, operation, expected_state, arguments=native,
+                        response_options={"include_divination_image": request.media_required}))
             if not isinstance(response, dict) or type(response.get('ok')) is not bool:
                 raise ValueError('Invalid game response.')
+            facts = response.get('execution')
+            if facts is not None:
+                fields = ('ui_interaction_started', 'action_submission_observed', 'state_captured')
+                if not isinstance(facts, dict) or any(type(facts.get(field)) is not bool for field in fields):
+                    raise ValueError('Invalid execution evidence.')
             if not response['ok']:
                 error = response['error']
                 if not isinstance(error['code'], str):
@@ -153,7 +161,13 @@ class GameSession:
                         raise ValueError('Invalid game error message.')
                 if 'action_submitted' in error and type(error['action_submitted']) is not bool:
                     raise ValueError('Invalid action submission status.')
-                evidence = ExecutionEvidence.SUBMITTED if error.get('action_submitted') is True else ExecutionEvidence.UNKNOWN
+                evidence = ExecutionEvidence.UNKNOWN
+                if facts and facts['ui_interaction_started']: evidence = ExecutionEvidence.INTERACTION_STARTED
+                if error.get('action_submitted') is True or facts and facts['action_submission_observed']:
+                    evidence = ExecutionEvidence.SUBMITTED
+                if error.get('action_submitted') is False and facts and (
+                        facts['ui_interaction_started'] or facts['action_submission_observed']):
+                    raise ValueError('Contradictory rejection evidence.')
                 # Only play_card currently guarantees both no submission and no prior UI changes.
                 if (request.spec.unsubmitted_rejection_unchanged and expected_state is not None
                         and error['code'] in {'invalid_request', 'illegal_action'}
@@ -170,7 +184,8 @@ class GameSession:
                 payload = await anyio.to_thread.run_sync(self.screenshots.save, state, arguments)
             else:
                 payload = decode_success(operation, state, arguments)
-                payload = attach_divination_image(payload, state)
+                if request.media_required:
+                    payload = attach_divination_image(payload, state)
                 if 'available_actions' in payload:
                     payload['available_actions'] = public_tools(payload['available_actions'])
             return GameResponse(payload, token, ExecutionEvidence.SUCCESS)

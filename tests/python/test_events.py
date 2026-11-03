@@ -67,7 +67,7 @@ class EventOutputTests(unittest.TestCase):
 class EventClient:
     def __init__(self): self.calls = []; self.raw = state()
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         self.calls.append((operation, expected_state, arguments))
         if operation == 'choose_event_option':
             self.raw.update(snapshot_id='event-2', transition={'stop_reason': 'action_completed', 'complete': True, 'events': []},

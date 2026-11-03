@@ -23,7 +23,7 @@ class Client:
     def token(self):
         return f'state-{self.revision}'
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         self.calls.append((operation, expected_state, arguments))
         if operation == 'inspect_hand':
             return {'ok': True, 'state': {'snapshot_id': self.token, 'hand': []}}
@@ -104,7 +104,7 @@ class ActionObservationTests(unittest.IsolatedAsyncioTestCase):
                 ('buy_item', {'item_id': 0}, shop_state, 'purchase_result', {'item_id': 0, 'status': 'failure_space'}),
                 ('claim_reward', {'reward_id': 12}, reward_state, 'reward_result', {'reward_id': 12, 'status': 'not_obtained'})]:
             class ReceiptClient:
-                def call(self, name, expected_state=None, arguments=None):
+                def call(self, name, expected_state=None, arguments=None, response_options=None):
                     state = make_state()
                     if name != 'get_state':
                         state.update(transition={'stop_reason': 'action_completed', 'complete': True, 'events': []},
@@ -252,7 +252,7 @@ class ActionObservationTests(unittest.IsolatedAsyncioTestCase):
         started, release = threading.Event(), threading.Event()
 
         class BlockingClient(Client):
-            def call(self, operation, expected_state=None, arguments=None):
+            def call(self, operation, expected_state=None, arguments=None, response_options=None):
                 result = super().call(operation, expected_state, arguments)
                 if operation == 'end_turn':
                     started.set()

@@ -160,7 +160,7 @@ internal sealed class CombatJournalScope : IDisposable
     public object Result(string reason)
     {
         Flush();
-        return new { stop_reason = reason, complete = !buffer.Truncated && reason is not ("timeout" or "interrupted"), events = buffer.Events };
+        return TransitionResult.Create(reason, buffer);
     }
     public void Dispose()
     {

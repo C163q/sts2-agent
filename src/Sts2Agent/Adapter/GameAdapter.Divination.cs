@@ -25,7 +25,7 @@ internal sealed partial class GameAdapter
         var screen = DivinationInspection.Current;
         if (screen == null || !DivinationInspection.Ready(screen))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available divination board.");
-        if (inspect) return InspectionSuccess(request.Id, before, new { divination = DivinationInspection.Read() });
+        if (inspect) return InspectionSuccess(request, before, new { divination = DivinationInspection.Read() });
         NClickableControl? button = request.Operation == "proceed" ? DivinationInspection.Proceed(screen)
             : !DivinationInspection.Playing(screen) ? null
             : tool != null ? DivinationInspection.Tool(screen, tool)
@@ -33,11 +33,10 @@ internal sealed partial class GameAdapter
         if (button?.IsEnabled != true)
             return FileMailbox.Error(request.Id, "illegal_action", "The requested divination action is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
-        capture.UiChanged();
+        UiChanged();
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => !ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
             ? "interrupted" : NonCombatBoundary());
-        return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(new {
-            stop_reason = reason, complete = reason is not ("timeout" or "interrupted"), events = Array.Empty<object>() }) + "}");
+        return TransitionSuccess(request, after, reason);
     }
 }

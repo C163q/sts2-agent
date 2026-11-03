@@ -22,19 +22,18 @@ internal sealed partial class GameAdapter
         if (context == null || !AncientInspection.Exposed(context) || !RunContext.Singleplayer
             || !inspect && !AncientInspection.Ready(context))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player ancient.");
-        if (inspect) return InspectionSuccess(request.Id, before, new { ancient = ancientInspection.Read(full: true) });
+        if (inspect) return InspectionSuccess(request, before, new { ancient = ancientInspection.Read(full: true) });
         NClickableControl? button = request.Operation == "advance_dialogue" ? AncientInspection.Continue(context)
             : request.Operation == "proceed" ? AncientInspection.Proceed(context) : ancientInspection.Find(context, optionId);
         if (button?.IsEnabled != true || button is MegaCrit.Sts2.Core.Nodes.Events.NEventOptionButton option
             && (!AncientInspection.Clickable(option) || AncientInspection.Continue(context) != null))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested dialogue or option is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
-        capture.UiChanged();
+        UiChanged();
         // Match the native mouse/controller release; EventSynchronizer owns the option task.
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
             && ReferenceEquals(context.Model, AncientInspection.Current?.Model) ? NonCombatBoundary() : "interrupted");
-        return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(new {
-            stop_reason = reason, complete = reason is not ("timeout" or "interrupted"), events = Array.Empty<object>() }) + "}");
+        return TransitionSuccess(request, after, reason);
     }
 }

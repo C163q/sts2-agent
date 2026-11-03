@@ -6,11 +6,11 @@
 
 | 位置 | 职责与主要入口 |
 | --- | --- |
-| [Infrastructure/](../../src/Sts2Agent/Infrastructure/) | `BridgeMod` 初始化与主线程任务泵；`FileMailbox` 负责原子文件协议、队列、缓存及超时 |
-| [Adapter/](../../src/Sts2Agent/Adapter/) | `RequestDispatcher` 保留玩法优先分派；`GameAdapter` 组合采样与场景处理，Views／Settling 管理浏览与等待；`AvailableTools` 与调用入口共用可用性条件，`Resources` 包装游戏动作的共享记录作用域 |
+| [Infrastructure/](../../src/Sts2Agent/Infrastructure/) | `BridgeMod` 初始化与主线程任务泵；`Request/ResponseOptions` 定义文件请求，`RequestExecution` 保存正向事实；`FileMailbox` 负责原子文件协议、队列、缓存及超时 |
+| [Adapter/](../../src/Sts2Agent/Adapter/) | `RequestDispatcher` 保留玩法优先分派；`GameAdapter` 组合采样与场景处理，Views／Settling 管理浏览与等待；`AvailableTools` 与调用入口共用可用性条件，`Resources` 包装游戏动作的共享记录作用域与执行事实；`ResponseBuilder` 组装上下文、transition 和协议 JSON，Responses partial 决定原生媒体 |
 | [Observation/](../../src/Sts2Agent/Observation/) | `GameObservation` 管理采样、同步与代次，`ObservationSnapshot` 绑定状态、令牌和原生身份；可见数据及专项详情由领域读取器组合；`RunContext` 提供共用本局上下文，`VisibleUi`、`RunUi` 维护显示边界，`CardAppearance/CardPresentation` 共用实卡外观及完整牌面，`BrowsedCard` 保留隔离克隆上下文，`CombatResources` 读取独立 HUD；`CardView/DeckView/MapView` 管理原生浏览页面，`ViewportCapture` 读取帧后图像 |
 | [Actions/](../../src/Sts2Agent/Actions/) | 原生选择、目标与界面操作辅助；`ActionSettling/CombatMotion` 等等待有限流程，`EventTaskTracker/ShopTransactions/NavigationTasks` 跟踪原生任务，不替代游戏效果 |
-| [Events/](../../src/Sts2Agent/Events/) | `ActionEventScope` 管理单动作缓冲；资源、物品、永久卡牌、战斗及充能球记录器采集公开变化，`CombatJournalScope` 管理战斗生命周期与交接 |
+| [Events/](../../src/Sts2Agent/Events/) | `TransitionResult` 统一 complete 与事件附加，`ActionEventScope` 管理单动作缓冲；资源、物品、永久卡牌、战斗及充能球记录器采集公开变化，`CombatJournalScope` 管理战斗生命周期与交接 |
 | [Localization/](../../src/Sts2Agent/Localization/) | 独立英语读取和格式化、共享悬停解释；事件及结算文本保留原生来源，不切换全局语言或重新生成随机文本 |
 | [Testing/](../../src/Sts2Agent/Testing/) | TestRequestDispatcher 管理隔离测试分派；夹具、原生检查及测试生命周期；随 Mod 编译，仅在相应测试门控开启时调用 |
 | [roundtrip_client.py](../../src/sts2_mcp/roundtrip_client.py) | 标准库文件客户端与 CLI；默认玩法输出，`--raw` 保留诊断协议 |
@@ -86,7 +86,7 @@ Mod 构建需要自行安装游戏程序集，见[构建前提](roundtrip.md#前
 
 `tool_registry.SPECS` 为公开名称、原生 operation、参数 schema／解析绑定、预设、reader／投影绑定与执行规则的唯一登记。目录、GameTools 方法、公开工具分类及成功解码从该表派生；reader 的模块／函数显式绑定，在解码时解析，避免领域分类反向导入总装配。截图独立登记且无玩法 preset；文件客户端的测试入口及 close_deck 别名保持私有兼容。
 
-`request_arguments.normalize_request` 先检查公共类型、范围、枚举、必填与跨字段条件，再调用领域解析器；输出原生参数、投影参数及独立执行类别，不通过 handler 签名或 readOnlyHint 猜测行为。普通 inspect_selection 为读取，显式 view_upgrades 为页面操作；set_divination_tool 虽使用页面 annotation，仍需动作许可并记录 transition。媒体需求先在内部表达，原生请求接入仍待后续阶段。
+`request_arguments.normalize_request` 先检查公共类型、范围、枚举、必填与跨字段条件，再调用领域解析器；输出原生参数、投影参数及独立执行类别，不通过 handler 签名或 readOnlyHint 猜测行为。普通 inspect_selection 为读取，显式 view_upgrades 为页面操作；set_divination_tool 虽使用页面 annotation，仍需动作许可并记录 transition。媒体需求通过原生 response_options 接入，不作为公开工具参数。
 
 `output/filtering.py` 共用可选筛选校验、位置选择与悬停关联裁剪；精确 UI 路径、战斗对象前缀、卡牌身份及遗物位置仍保持各自含义。公共筛选省略／null 表示全部，[] 表示空集合；遗物提示和结果映射均引用未筛选列表。完整解码先于筛选、摘要与最终 null 过滤。
 
@@ -95,4 +95,4 @@ Mod 构建需要自行安装游戏程序集，见[构建前提](roundtrip.md#前
 
 GameTools 仅负责公开入口、参数拒绝与规范化请求；GameSession.execute 统一控制锁、串行请求、成功校验、媒体、投影和许可更新，transport Client 仍独立等待文件。PermissionState 的令牌／代次在请求开始时捕获，动作不能借用排队后产生的许可；取消撤销许可并阻止在途结果重新授权。
 
-GameResponse 在内部保存成功、已提交、未知或“未提交且 UI 未变”的证据。登记表仅为已核实的 play_card 前置拒绝声明后者，不从 illegal_action 或 readOnlyHint 推测。所有成功投影完成后才发布许可，错误保留／失效规则统一见[MCP 调用语义](mcp.md#调用和错误语义)。原生新增证据与占卜媒体请求选项尚待后续原生阶段，本层不以假数据补齐。
+GameResponse 在内部保存成功、已提交、未知或“未提交且 UI 未变”的证据。登记表仅为已核实的 play_card 前置拒绝声明后者，不从 illegal_action 或 readOnlyHint 推测。所有成功投影完成后才发布许可，错误保留／失效规则统一见[MCP 调用语义](mcp.md#调用和错误语义)。原生正向事实与显式媒体需求已经接入，缺失或 false 仍不代表未执行。

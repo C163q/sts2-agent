@@ -44,12 +44,5 @@ internal static class ObservationContext
         return screen;
     }
 
-    public static string Inspection(JsonElement snapshot, object details)
-    {
-        var result = JsonSerializer.SerializeToNode(details)!.AsObject();
-        // Copy the response's own snapshot; a fresh observation could change its token or context.
-        foreach (string key in new[] { "snapshot_id", "scene", "screen" })
-            result[key] = JsonNode.Parse(snapshot.GetProperty(key).GetRawText());
-        return result.ToJsonString();
-    }
+    public static string Inspection(JsonElement snapshot, object details) => ResponseBuilder.Inspection(snapshot, details);
 }

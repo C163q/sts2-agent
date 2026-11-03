@@ -25,7 +25,7 @@ class ObservationPresetTests(unittest.IsolatedAsyncioTestCase):
     async def test_actions_only_preserves_selection_context_without_candidates_or_notes(self):
         client = Client()
         original = client.call
-        def choose(operation, expected_state=None, arguments=None):
+        def choose(operation, expected_state=None, arguments=None, response_options=None):
             reply = original(operation, expected_state, arguments)
             reply['state'].update(screen={'status': 'covered'}, selection=selection(),
                                   available_actions=['inspect_selection', 'select_card', 'selection_option', 'set_selection_view'])

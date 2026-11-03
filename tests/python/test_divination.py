@@ -70,7 +70,7 @@ class DivinationOutputTests(unittest.TestCase):
 
 class DivinationClient:
     def __init__(self): self.raw = state(); self.calls = []
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         self.calls.append((operation, expected_state, arguments))
         if operation == 'set_divination_tool': self.raw['divination']['tool'] = arguments['tool']
         if operation == 'divine': self.raw['divination']['remaining'] -= 1
@@ -132,14 +132,20 @@ class DivinationSessionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([c.type for c in result.content], ['text'])
         self.assertNotIn('png_base64', result.content[0].text)
 
-    async def test_bad_image_on_action_or_inspection_clears_previous_permission(self):
+    async def test_bad_required_image_rejects_inspection_but_does_not_affect_action_receipt(self):
         for operation in ('inspect_event', 'divine'):
             client = DivinationClient(); tools = GameTools(client)
             await tools.get_observation()
             client.raw['divination_image']['png_base64'] = 'broken'
             result = await tools.inspect_event() if operation == 'inspect_event' else await tools.divine({'x': 5, 'y': 5})
-            self.assertIn('error', result)
-            self.assertIsNone(tools.snapshot_id)
+            if operation == 'inspect_event':
+                self.assertIn('error', result)
+                self.assertIsNone(tools.snapshot_id)
+            else:
+                self.assertNotIn('error', result)
+                self.assertTrue(result['transition']['complete'])
+                self.assertIsNotNone(tools.snapshot_id)
+                self.assertNotIn('divination', result)
 
     async def test_stdio_delivers_native_image_content_without_screenshot_tool(self):
         from mcp import ClientSession, StdioServerParameters

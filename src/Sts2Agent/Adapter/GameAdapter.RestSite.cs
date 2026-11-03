@@ -19,7 +19,7 @@ internal sealed partial class GameAdapter
         var room = RestSiteInspection.Current;
         if (room == null || !RestSiteInspection.Ready(room) || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available local rest site.");
-        if (inspect) return InspectionSuccess(request.Id, before, new { rest_site = RestSiteInspection.Read(full: true)
+        if (inspect) return InspectionSuccess(request, before, new { rest_site = RestSiteInspection.Read(full: true)
         });
         var option = RestSiteInspection.Buttons(room).FirstOrDefault(b => b.Option.OptionId == optionId);
         NButton? button = request.Operation == "proceed" ? RestSiteInspection.Proceed(room) : option;
@@ -27,13 +27,10 @@ internal sealed partial class GameAdapter
             && (option == null || !RestSiteInspection.Clickable(option)))
             return FileMailbox.Error(request.Id, "illegal_action", "This rest site option or proceed button is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
-        capture.UiChanged();
+        UiChanged();
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
             ? NonCombatBoundary() : "interrupted");
-        return Success(request.Id, after[..^1] + ",\"transition\":" + JsonSerializer.Serialize(new
-        {
-            stop_reason = reason, complete = reason is not ("timeout" or "interrupted"), events = Array.Empty<object>()
-        }) + "}");
+        return TransitionSuccess(request, after, reason);
     }
 }

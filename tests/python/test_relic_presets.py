@@ -24,7 +24,7 @@ class RelicClient(ActionClient):
         ]
         self.error = None
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         if operation != 'inspect_relics':
             return super().call(operation, expected_state, arguments)
         self.calls.append((operation, expected_state, arguments))

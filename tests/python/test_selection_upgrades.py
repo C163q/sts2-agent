@@ -18,7 +18,7 @@ class UpgradeClient(SelectionClient):
         if supported:
             self.choice['upgrade_previews'] = []
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         if operation != 'inspect_selection' or self.error:
             return super().call(operation, expected_state, arguments)
         self.calls.append((operation, expected_state, arguments))

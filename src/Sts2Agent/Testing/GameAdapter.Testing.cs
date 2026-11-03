@@ -28,7 +28,7 @@ internal sealed partial class GameAdapter
         {
             if (request.Arguments is { } supplied && supplied.EnumerateObject().Any())
                 return FileMailbox.Error(request.Id, "invalid_request", "No arguments are accepted.");
-            return Success(request.Id, JsonSerializer.Serialize(TestSession()));
+            return Success(request, JsonSerializer.Serialize(TestSession()));
         }
         using var observed = JsonDocument.Parse(Observe());
         if (request.ExpectedState != observed.RootElement.GetProperty("snapshot_id").GetString())
@@ -47,7 +47,7 @@ internal sealed partial class GameAdapter
                 testSettings.Configure(scenarios);
             }
             catch (ArgumentException error) { return FileMailbox.Error(request.Id, "invalid_request", error.Message); }
-            return Success(request.Id, JsonSerializer.Serialize(TestSession()));
+            return Success(request, JsonSerializer.Serialize(TestSession()));
         }
         if (request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "No arguments are accepted.");
@@ -60,6 +60,7 @@ internal sealed partial class GameAdapter
         catch (OperationCanceledException) { }
         if (RunManager.Instance.IsInProgress || NRun.Instance != null || CardSelection.Current != null)
             throw new InvalidOperationException("Native run cleanup is incomplete.");
+        MediaFailureFixture.Enabled = false;
         SelectionFixture.Pending = null;
         RewardFixture.Reset();
         ShopFixture.Reset();
@@ -67,9 +68,9 @@ internal sealed partial class GameAdapter
         CombatHandoffFixture.Reset();
         foreach (string owner in new[] { "sts2_agent.test_shop_inventory", "sts2_agent.test_treasure_extra", "sts2_agent.test_treasure_map_pending" })
             new Harmony(owner).UnpatchAll(owner);
-        capture.UiChanged();
+        UiChanged();
         await SettledObservation();
         testResetFailed = false;
-        return Success(request.Id, JsonSerializer.Serialize(TestSession()));
+        return Success(request, JsonSerializer.Serialize(TestSession()));
     }
 }

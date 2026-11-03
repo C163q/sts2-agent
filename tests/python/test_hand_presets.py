@@ -42,7 +42,7 @@ class HandClient(ActionClient):
         self.extra = {}
         self.hand_error = None
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         if operation != 'inspect_hand':
             return super().call(operation, expected_state, arguments)
         self.calls.append((operation, expected_state, arguments))

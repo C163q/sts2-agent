@@ -1,3 +1,5 @@
+using Godot;
+
 namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
@@ -9,7 +11,23 @@ internal sealed partial class GameAdapter
         "respond_to_confirmation", "travel_to_node", "run_result_option"
     ];
 
+    private RequestExecution? execution;
+
     public async Task<string> Execute(Request request)
+    {
+        var previous = execution;
+        var current = new RequestExecution();
+        execution = current;
+        try { return ResponseBuilder.WithExecution(await ExecuteRecorded(request), current); }
+        catch (Exception error)
+        {
+            GD.PushError("[Sts2Agent] Operation failed: " + error);
+            return ResponseBuilder.WithExecution(ResponseBuilder.Failure(request.Id, error), current);
+        }
+        finally { execution = previous; }
+    }
+
+    private async Task<string> ExecuteRecorded(Request request)
     {
         if (!RecordedActions.Contains(request.Operation)) return await ExecuteCore(request);
         using var events = new ActionEventScope();

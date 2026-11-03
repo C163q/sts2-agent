@@ -61,23 +61,8 @@ internal sealed partial class GameAdapter(bool testMode)
     private static bool CanInspectViews(bool allowPause = false) => CanEndTurn(allowPause)
         || CardSelection.Current is { Peeking: true, Supported: true } && LocalPlayer?.Creature.IsAlive == true;
 
-    private ObservationSnapshot Capture() => capture.Capture(AvailableTools);
+    private ObservationSnapshot Capture() => execution is { } request
+        ? request.RecordCapture(() => capture.Capture(AvailableTools)) : capture.Capture(AvailableTools);
     public string Observe() => Capture().Json;
 
-    private static string Success(string id, string state)
-    {
-        using var document = JsonDocument.Parse(state);
-        if (document.RootElement.TryGetProperty("divination", out var divination) && divination.ValueKind == JsonValueKind.Object
-            && divination.GetProperty("status").GetString() == "visible")
-        {
-            var screen = DivinationInspection.Current;
-            var capture = screen == null ? null : ViewportCapture.Read(DivinationInspection.Bounds(screen));
-            if (capture == null) return FileMailbox.Error(id, "screenshot_unavailable", "A rendered divination board image is required.");
-            var (width, height, png) = capture.Value;
-            state = state[..^1] + ",\"divination_image\":" + JsonSerializer.Serialize(new { width, height, png_base64 = Convert.ToBase64String(png) }) + "}";
-        }
-        if (CardSelection.Current is { } selection)
-            state = state[..^1] + ",\"selection_view\":\"" + selection.Status + "\"}";
-        return "{\"id\":\"" + id + "\",\"ok\":true,\"state\":" + state + "}";
-    }
 }

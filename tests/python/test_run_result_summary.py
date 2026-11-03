@@ -18,7 +18,7 @@ class ResultClient:
                     'visual_card_pool': 'regent', 'energy_cost': '0', 'star_cost': '2',
                     'description': 'Visible card text.', 'hover_tips': []}], hover_tips=[])
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         if operation not in {'get_state', 'inspect_run_result'}: raise AssertionError(operation)
         return {'ok': True, 'state': copy.deepcopy(self.raw)}
 

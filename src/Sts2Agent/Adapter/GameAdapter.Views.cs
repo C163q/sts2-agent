@@ -46,7 +46,7 @@ internal sealed partial class GameAdapter
                 || (!map.IsOpen && VisibleUi.Shown(map))
                 || (CombatManager.Instance.IsInProgress && !CanInspectViews(allowPause: map.IsOpen || cardOpen)))
                 return FileMailbox.Error(request.Id, "illegal_action", "The map button is unavailable.");
-            capture.UiChanged();
+            UiChanged();
             button.ForceClick();
         }
         bool closed = false;
@@ -61,7 +61,7 @@ internal sealed partial class GameAdapter
             if (!SamePage() || !MapView.Ready(map))
                 return FileMailbox.Error(request.Id, "illegal_action", "The map changed while reading.");
             using var snapshot = JsonDocument.Parse(Observe());
-            return InspectionSuccess(request.Id, snapshot.RootElement, MapInspection.Read(map, run,
+            return InspectionSuccess(request, snapshot.RootElement, MapInspection.Read(map, run,
                 snapshot.RootElement.GetProperty("snapshot_id").GetString()!));
         }
         finally
@@ -81,7 +81,7 @@ internal sealed partial class GameAdapter
             var button = NRun.Instance!.GlobalUi.TopBar.Deck;
             if (!CanInspectDeck())
                 return FileMailbox.Error(request.Id, "illegal_action", "The deck button is unavailable.");
-            capture.UiChanged();
+            UiChanged();
             button.ForceClick();
             screen = NCapstoneContainer.Instance?.CurrentCapstoneScreen as NDeckViewScreen;
             if (screen == null)
@@ -92,7 +92,7 @@ internal sealed partial class GameAdapter
         if (!ReferenceEquals(DeckView.Current, screen))
             return FileMailbox.Error(request.Id, "illegal_action", "The deck screen changed while opening.");
         if (options.ViewUpgrades.HasValue || options.SortBy != null)
-            capture.UiChanged();
+            UiChanged();
         try { DeckView.Apply(screen, options); }
         catch (InvalidOperationException)
         {
@@ -108,7 +108,7 @@ internal sealed partial class GameAdapter
         string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS");
         if (testMode && checks != null)
             DeckInspectionChecks.Run(checks, screen, player, deckInspection, inspection);
-        return InspectionSuccess(request.Id, snapshot.RootElement, inspection);
+        return InspectionSuccess(request, snapshot.RootElement, inspection);
     }
 
     private async Task<string> InspectPile(Request request, PileOptions options)
@@ -129,7 +129,7 @@ internal sealed partial class GameAdapter
                 if (!CardView.CanClose(previous))
                     return FileMailbox.Error(request.Id, "illegal_action", "The current card page cannot be replaced.");
                 // Native screen context disables combat pile buttons while any card page is open.
-                capture.UiChanged();
+                UiChanged();
                 CardView.Close(previous);
                 await ObservationFrame();
                 if (CombatObservation.Status() != "visible" || !CanInspectViews() || !ReferenceEquals(player, LocalPlayer)
@@ -140,7 +140,7 @@ internal sealed partial class GameAdapter
             {
                 using var snapshot = JsonDocument.Parse(Observe());
                 bool visible = VisibleUi.OnScreen(button);
-                return InspectionSuccess(request.Id, snapshot.RootElement, PileInspection.Result(options, "unavailable",
+                return InspectionSuccess(request, snapshot.RootElement, PileInspection.Result(options, "unavailable",
                     snapshot.RootElement.GetProperty("snapshot_id").GetString()!, visible
                         ? "The pile button is disabled." : "The pile button is not visible.", null,
                     visible ? "entry_disabled" : "entry_not_visible"));
@@ -148,7 +148,7 @@ internal sealed partial class GameAdapter
             var emptyTip = PileInspection.EmptyTip(button);
             if (VisibleUi.Number(button, "CountContainer/Count") == 0 && emptyTip == null)
                 return FileMailbox.Error(request.Id, "illegal_action", "The empty pile has no native inspection feedback.");
-            capture.UiChanged();
+            UiChanged();
             button.ForceClick();
             screen = PileInspection.Current(options);
             if (screen == null)
@@ -158,7 +158,7 @@ internal sealed partial class GameAdapter
                     || CombatObservation.Status() != "visible" || VisibleUi.Number(button, "CountContainer/Count") != 0 || emptyTip == null)
                     return FileMailbox.Error(request.Id, "illegal_action", "The pile screen did not open or the screen changed.");
                 using var snapshot = JsonDocument.Parse(Observe());
-                return InspectionSuccess(request.Id, snapshot.RootElement, PileInspection.Result(options, "empty",
+                return InspectionSuccess(request, snapshot.RootElement, PileInspection.Result(options, "empty",
                     snapshot.RootElement.GetProperty("snapshot_id").GetString()!,
                     EnglishCardText.Read(() => EnglishCardText.Plain(emptyTip.GetFormattedText())), Array.Empty<object>()));
             }
@@ -171,7 +171,7 @@ internal sealed partial class GameAdapter
             return FileMailbox.Error(request.Id, "illegal_action", "The pile screen changed while reading.");
         using var observed = JsonDocument.Parse(Observe());
         var inspection = pileInspection.Read(screen, options, observed.RootElement.GetProperty("snapshot_id").GetString()!);
-        return InspectionSuccess(request.Id, observed.RootElement, inspection);
+        return InspectionSuccess(request, observed.RootElement, inspection);
     }
 
 }

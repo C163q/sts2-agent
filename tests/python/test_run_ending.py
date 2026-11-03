@@ -109,7 +109,7 @@ class EndingSessionTests(unittest.IsolatedAsyncioTestCase):
     async def test_result_action_reuses_successful_observation_and_inspection_does_not_refresh_it(self):
         class Client:
             def __init__(self): self.calls = []; self.raw = state()
-            def call(self, operation, expected_state=None, arguments=None):
+            def call(self, operation, expected_state=None, arguments=None, response_options=None):
                 self.calls.append((operation, expected_state, arguments))
                 if operation == 'run_result_option':
                     self.raw = state('summary'); self.raw['snapshot_id'] = 'result-2'

@@ -169,7 +169,7 @@ class Client:
     def __init__(self):
         self.calls = []
 
-    def call(self, operation, expected_state=None, arguments=None):
+    def call(self, operation, expected_state=None, arguments=None, response_options=None):
         self.calls.append((operation, expected_state, arguments))
         result = state()
         if operation in ("select_card", "selection_option"):
