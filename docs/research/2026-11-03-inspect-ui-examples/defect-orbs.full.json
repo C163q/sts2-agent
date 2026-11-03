@@ -1,0 +1,92 @@
+{
+  "scene": "combat",
+  "hover_tips": [
+    {
+      "title": "Hit Points (HP)",
+      "description": "If you run out of HP, you die.",
+      "sources": [
+        "player.hp",
+        "player.max_hp"
+      ]
+    },
+    {
+      "title": "Gold",
+      "description": "How much Gold you have. Gold is the currency within the Spire.",
+      "sources": [
+        "top_bar.gold"
+      ]
+    },
+    {
+      "title": "Floor",
+      "description": "How far up you have climbed.",
+      "sources": [
+        "top_bar.floor"
+      ]
+    },
+    {
+      "title": "Vantom",
+      "description": "At the end of the act, you will fight Vantom.",
+      "sources": [
+        "top_bar.bosses"
+      ]
+    },
+    {
+      "title": "Map (M)",
+      "description": "View this current Act's map.",
+      "sources": [
+        "top_bar.map_visible"
+      ]
+    },
+    {
+      "title": "Deck (D)",
+      "description": "View all of the cards in your deck.",
+      "sources": [
+        "top_bar.deck_visible",
+        "top_bar.deck_count"
+      ]
+    },
+    {
+      "title": "Settings (ESC)",
+      "description": "Opens the game menu.\n\nChange or update your graphics, audio, and gameplay preferences here.",
+      "sources": [
+        "top_bar.settings_visible"
+      ]
+    },
+    {
+      "title": "Energy",
+      "description": "Your current Energy ( <Energy>) count. Cards require <Energy> to play, indicated in the top left corner.",
+      "sources": [
+        "player.energy",
+        "player.max_energy"
+      ]
+    },
+    {
+      "title": "Orb Slot",
+      "description": "Orbs can be channeled into these slots.",
+      "sources": [
+        "player.orb_slots.4"
+      ]
+    },
+    {
+      "title": "Draw Pile (A)",
+      "description": "At the start of each turn,\n5 cards are drawn from here.\n\nClick to view the cards in your draw pile (shuffled).",
+      "sources": [
+        "player.draw_count"
+      ]
+    },
+    {
+      "title": "Discard Pile (S)",
+      "description": "If your draw pile is empty, the discard pile is shuffled into the draw pile.\n\nClick to view the cards in your discard pile.",
+      "sources": [
+        "player.discard_count"
+      ]
+    },
+    {
+      "title": "End Turn (E)",
+      "description": "Pressing this button will end your turn.\n\nYou will discard your hand, enemies will take their turn, you will draw 5 cards, then it will be your turn again.",
+      "sources": [
+        "buttons.end_turn"
+      ]
+    }
+  ]
+}

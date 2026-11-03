@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "The request arguments are invalid. Correct them before submitting again.",
+    "recovery": "correct_request"
+  }
+}

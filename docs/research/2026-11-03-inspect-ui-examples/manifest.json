@@ -1,0 +1,137 @@
+[
+  {
+    "file": "combat.full.json",
+    "source": ".tmp/2026-11-03-inspect-ui-review/gui-2/combat/evidence.json",
+    "entry_index": 1,
+    "tool": "inspect_ui",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "initial",
+    "provenance": "real_mcp"
+  },
+  {
+    "file": "defect-orbs.full.json",
+    "source": ".tmp/2026-11-03-inspect-ui-review/gui-2/orbs/evidence.json",
+    "entry_index": 1,
+    "tool": "inspect_ui",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "initial",
+    "provenance": "real_mcp"
+  },
+  {
+    "file": "defect-extra-empty-slots.full.json",
+    "source": ".tmp/2026-11-03-inspect-ui-review/gui-2/orbs/evidence.json",
+    "entry_index": 7,
+    "tool": "inspect_ui",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "after-capacitor",
+    "provenance": "real_mcp"
+  },
+  {
+    "file": "defect-after-channel.full.json",
+    "source": ".tmp/2026-11-03-inspect-ui-review/gui-2/orbs/evidence.json",
+    "entry_index": 13,
+    "tool": "inspect_ui",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "after-zap",
+    "provenance": "real_mcp"
+  },
+  {
+    "file": "regent.full.json",
+    "source": ".tmp/2026-11-03-inspect-ui-review/gui-2/regent/evidence.json",
+    "entry_index": 1,
+    "tool": "inspect_ui",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "initial",
+    "provenance": "real_mcp"
+  },
+  {
+    "file": "necrobinder-osty.full.json",
+    "source": ".tmp/2026-11-03-inspect-ui-review/gui-2/osty/evidence.json",
+    "entry_index": 1,
+    "tool": "inspect_ui",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "initial",
+    "provenance": "real_mcp"
+  },
+  {
+    "file": "hand-selection-battlefield.full.json",
+    "source": ".tmp/2026-11-03-inspect-ui-review/gui-2/hand_selection/evidence.json",
+    "entry_index": 11,
+    "tool": "inspect_ui",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "battlefield",
+    "provenance": "real_mcp"
+  },
+  {
+    "file": "grid-selection-battlefield.full.json",
+    "source": ".tmp/2026-11-03-inspect-ui-review/gui-2/grid_selection/evidence.json",
+    "entry_index": 11,
+    "tool": "inspect_ui",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "battlefield",
+    "provenance": "real_mcp"
+  },
+  {
+    "file": "epilogue.full.json",
+    "source": ".tmp/2026-11-03-inspect-ui-review/ending-gui/ending/evidence.json",
+    "entry_index": 92,
+    "tool": "inspect_ui",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "epilogue",
+    "provenance": "real_mcp"
+  },
+  {
+    "file": "unavailable.full.json",
+    "source": ".tmp/2026-11-03-inspect-ui-review/gui-2/combat/evidence.json",
+    "entry_index": 23,
+    "tool": "inspect_ui",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "map-covered",
+    "provenance": "real_mcp"
+  },
+  {
+    "file": "invalid-preset.full.json",
+    "source": ".tmp/2026-11-03-inspect-ui-review/gui-2/menu/evidence.json",
+    "entry_index": 3,
+    "tool": "inspect_ui",
+    "arguments": {
+      "preset": "summary"
+    },
+    "label": "unsupported-summary",
+    "provenance": "real_mcp"
+  },
+  {
+    "file": "invalid-filter.full.json",
+    "source": ".tmp/2026-11-03-inspect-ui-review/gui-2/menu/evidence.json",
+    "entry_index": 4,
+    "tool": "inspect_ui",
+    "arguments": {
+      "preset": "full",
+      "sources": [
+        "player.energy"
+      ]
+    },
+    "label": "unsupported-filter",
+    "provenance": "real_mcp"
+  }
+]
