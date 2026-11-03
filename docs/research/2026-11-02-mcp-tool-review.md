@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 43 项，已核销 0 项。get_observation 的 17 个场景组均已有核验记录：01–04、07–15 组约定 summary 已交付；05、06 组覆盖页主体暂用 default、顶栏共用摘要已交付，实际内容待对应工具核验；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状和完整 full 已交付，summary 已定稿、待实现。该工具整体未核销，其余 42 项待选。
+> 当前状态：工具核验进行中，共 43 项，已核销 0 项。get_observation 的 17 个场景组均已有核验记录：01–04、07–15 组约定 summary 已交付；05、06 组覆盖页主体暂用 default、顶栏共用摘要已交付，实际内容待对应工具核验；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状和完整 full 已交付；[文字修复、unrecognized 改名及 summary](2026-11-03-result-observation-implementation.md)已交付。该工具整体未核销，其余 42 项待选。
 
 ## 范围与基线
 
@@ -27,7 +27,7 @@
 
 ### 基础观察与战斗详情（7 项）
 
-- [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：[07–09 组奖励、火堆与宝箱](2026-11-02-get-observation-rooms.md)现状核验和 summary 已交付，[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)现状核验及 summary 已交付，[13–15 组](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状及完整 full 已交付，summary 已定稿、待实现；[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)已交付本阶段摘要占位，内容待对应工具核验；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
+- [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：[07–09 组奖励、火堆与宝箱](2026-11-02-get-observation-rooms.md)现状核验和 summary 已交付，[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)现状核验及 summary 已交付，[13–15 组](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状及完整 full 已交付，summary 已交付；[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)已交付本阶段摘要占位，内容待对应工具核验；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
 - [ ] `inspect_ui`：可见战斗 UI、资源及空充能球栏位的悬停说明。
 - [ ] `inspect_hand`：手牌详情。
 - [ ] `inspect_targets`：指定手牌或药水的可用性与目标范围。

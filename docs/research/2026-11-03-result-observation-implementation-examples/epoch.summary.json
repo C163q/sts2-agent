@@ -1,0 +1,35 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "run_result": {
+    "status": "visible",
+    "phase": "epoch",
+    "texts": [
+      "Chapter 1 - Preon",
+      "Magnum Opus",
+      "Continue",
+      "A void of nothingness.\n\nBut then, the world came into existence!\nIt churned about and molded itself to “That which tells stories.” Along this journey lay a planet named Preon, a mere speck in this universe. They say that a great story about a Spire took place there.",
+      "Placeholder"
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "continue",
+        "text": "Continue",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [],
+    "potions": []
+  },
+  "available_actions": [
+    "run_result_option",
+    "inspect_run_result"
+  ]
+}

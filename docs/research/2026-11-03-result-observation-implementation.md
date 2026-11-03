@@ -1,6 +1,6 @@
 # 结算文字修复与观察摘要实施
 
-> 当前状态：实施中，共 2 阶段，已完成 1 阶段；文字缺口和场景命名已修复并通过验证，接下来实现结算卡牌摘要。无阻塞。不更新正式游戏 Mod。
+> 当前状态：本轮交付完成，共 2 阶段，已完成 2 阶段；文字缺口、兜底改名及结算卡牌 summary 均已验证，独立代码审查和文档／样本检查通过。无阻塞；未更新正式游戏 Mod。
 
 ## 最终要求与依据
 
@@ -24,9 +24,9 @@
 
 接口：消费阶段 1 的完整已验证观察。只在 Python observation_summary 中投影 run_result.cards，不改变来源读取、权限、详情或原生 schema。
 
-- [ ] 添加公开 GameTools 回归：已显示解锁卡牌的 summary 使用字符串 card:N ID、名称、类型、费用；保留 texts/options/空列表及已有顶栏规则，full/default/inspect_run_result 保留正文；畸形 full 在投影前拒绝。先确认新增测试在原实现失败。
-- [ ] 复用 card_summary，实现并运行相关／全套 Python；隔离 GUI 核对实际解锁牌、章节正文和菜单，保存修复后 full/summary 例子。
-- [ ] 同步研究记录、接口说明、两份审查入口和完成数，提交；独立最终代码审查，处理实质问题，记录未覆盖范围。
+- [x] 添加公开 GameTools 回归：已显示解锁卡牌的 summary 使用字符串 card:N ID、名称、类型、费用；保留 texts/options/空列表及已有顶栏规则，full/default/inspect_run_result 保留正文；畸形 full 在投影前拒绝。先确认新增测试在原实现失败。
+- [x] 复用 card_summary，实现并运行相关／全套 Python；隔离 GUI 核对实际解锁牌、章节正文和菜单，保存修复后 full/summary 例子。
+- [x] 同步研究记录、接口说明、两份审查入口和完成数；记录未覆盖范围。最终审查与提交另记下文。
 
 ## 验证重点与接口核对
 
@@ -48,3 +48,28 @@
 - green-death、green-history 两类 GUI 均通过，共 35 次真实 MCP、6 次显式原生检查；含全部五预设、详情、重复观察及 256 次无关本地化渲染压力。中文原生标签与区域前后逐值一致，原生可见 UI 未改变；本局详情仍为受门控原生夹具，未启用普通 View Run 入口。
 - 修复后真实返回：[失败 summary full](2026-11-03-result-observation-implementation-examples/death-summary.full.json)、[本局详情 full](2026-11-03-result-observation-implementation-examples/history.full.json)。来源、下标、DLL 哈希和自有 PID 清理记录见本地 fix-verification.json，原始截图在各 GUI verify/screenshots。失败句为 `“The Ironclad was felled by a Group of Slimes.”`；历史日期已按英文格式转写。
 - 未穷举所有死亡来源、语言、时区和每日榜单；未替换正式游戏 Mod。加载过渡的实际新 scene 采样随阶段 2 一并记录。
+
+## 阶段 2 验证
+
+- 版本：MCP 0.50.8，Mod 0.49.3、schema 32 不变。共用卡牌摘要仅接入观察投影，不更改底层读取或 inspect_run_result。
+- 有效 RED：3 个新增公开工具测试中，卡牌摘要预期在原实现产生 1 个断言失败；非卡牌页面及畸形正文拒绝原本已经通过。实现后相关 Python 39 项通过，全套 479 项通过，31.518 秒，日志为 summary-related.log、summary-python.log。
+- summary-gui 沿原生胜利、首次教程、多个 epoch、卡牌／药水／遗物／角色／功能解锁及返回菜单完成 29 组实际 full/summary 对照，共 140 次真实 MCP 和 4 次显式原生测试调用。卡牌用字符串 ID 与费用摘要，其他结算主体逐字段保持；普通主菜单时间线仍不获得本次结算权限。
+- 同次游戏启动实际捕获新 unrecognized；没有将其当作商店等非战斗房间，也未制造不能可靠判断的 loading 状态。自有 PID 37312 已关闭，源码及运行时 DLL 与阶段 1 相同。
+- 原始来源、下标和数量见本地 summary-verification.json；基线 47 份 full 未改写，用户 TODO 和正式 Mod 未改。每日挑战榜单、所有死亡来源／语言及章节翻页组合仍未穷举。
+
+| 实测场景 | 完整返回 |
+| --- | --- |
+| 启动兜底 | [full](2026-11-03-result-observation-implementation-examples/unrecognized.full.json)、[summary](2026-11-03-result-observation-implementation-examples/unrecognized.summary.json) |
+| 已显示解锁卡牌 | [get_observation full](2026-11-03-result-observation-implementation-examples/unlock-cards.full.json)、[get_observation summary](2026-11-03-result-observation-implementation-examples/unlock-cards.summary.json)、[随后 inspect_run_result full](2026-11-03-result-observation-implementation-examples/unlock-cards-inspection.full.json) |
+| 章节与主菜单 | [章节 summary](2026-11-03-result-observation-implementation-examples/epoch.summary.json)、[主菜单 summary](2026-11-03-result-observation-implementation-examples/menu.summary.json) |
+
+## 提交与最终审查
+
+阶段 1 提交：46e1a47，fix(observation): retain result text provenance and clarify fallback scenes。阶段 2 实现、验证与最终独立只读审查均已完成，摘要提交标题为 feat(mcp): summarize displayed run result cards。
+
+
+独立审查由 review_result_observation（gpt-6.1-sol，high）完成，范围为 c8306ab 至最终 src/tests 工作区，含新增回归；核对原生目标版本源码、来源绑定、日期精度、schema 和摘要边界。Critical／Important／Minor 均无具体发现；未修改文件、未另启游戏或运行整套测试。
+
+对审查者未另行判断的范围，处理如下：本轮实际构建、60 项 C#、479 项 Python 及 3 类 GUI 的证据由实施者核验，不重复同一全套检查；其他游戏版本、全部语言／时区／死亡来源和每日榜单仍明确为未穷举；最终文档完成状态由实施者另查链接及样本来源。未将这些范围写成已验证能力或擅自加入用户 TODO。
+
+本轮共 175 次真实 MCP 与 10 次显式原生检查，3 类成功 GUI 的自有 PID 均已关闭。9 份新增 JSON 均逐对象匹配对应响应，结构按工具与预设校验；运行时 DLL 与构建产物一致，SHA-256 为 501d8ee982c64a77115565623d79b0154a6955b379dd2999a5efaa8e4a5f889e。最终 Markdown、链接及差异检查通过；旧基线样本、AGENTS.md 和用户 TODO 未改。

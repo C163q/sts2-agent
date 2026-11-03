@@ -126,6 +126,12 @@ async def verify(args):
                 await capture(f'05-unlock-{index}-{phase}')
                 details = await call('inspect_run_result')
                 assert not any('\u4e00' <= c <= '\u9fff' for c in json.dumps(details, ensure_ascii=False)), details
+                compact = await call('get_observation', {'preset': 'summary'})
+                expected = {key: value for key, value in data['run_result'].items() if value is not None}
+                expected['cards'] = [{key: value for key, value in card.items()
+                                      if key in {'id', 'name', 'type', 'energy_cost', 'star_cost'} and value is not None}
+                                     for card in data['run_result']['cards']]
+                assert compact['run_result'] == expected, (compact, expected)
                 enabled = [o for o in data['run_result']['options'] if o['enabled']]
                 assert enabled, data
                 if 'Cards Unlocked!' in data['run_result']['texts']:

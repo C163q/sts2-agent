@@ -39,7 +39,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 五种预设都会实时读取、完整校验并刷新内部动作令牌，精简模式不改变游戏 UI，也不改变后续动作的精简回执格式，见[MCP 动作返回](mcp.md#动作返回格式)。只允许可选字符串 `preset: default/full/actions_only/summary/top_bar`；非法值或额外字段返回 `invalid_request`，清除旧动作许可且不请求游戏。预设属于 MCP 输出投影，底层文件 `get_state` 仍返回完整状态。
 
-`preset:"summary"` 基于 default 分别处理共用顶栏、战斗观察、当前卡牌选择、商店卡牌、普通事件和占卜教学说明；共用部分先于场景分派执行：
+`preset:"summary"` 基于 default 分别处理共用顶栏、战斗观察、当前卡牌选择、结算卡牌、商店卡牌、普通事件和占卜教学说明；共用部分先于场景分派执行：
 
 - 玩家、敌人及友方的 `hp/max_hp/hp_display` 合并为 `health`：正常为 `"70/80"`，无限为 `"∞"`，死亡为 `"dead"`，无法识别显示为 `"unknown"`，隐藏时显式保留 `null`。不补隐藏生命数字，格式为 numeric 但数字不完整时也保留 `health:null`。
 - 玩家能量合并为 `energy:"3/3"`，移除 `max_energy`；数字不可完整读取时省略，不拼接猜测值。`stars` 保持原有意义。
@@ -58,6 +58,8 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 审判（Trial）的 event.description 同样省略；确认框的 confirmation.description 保留，不能按字段名递归删掉后果说明。建筑师 epilogue 主体沿用 default。占卜 summary 从 MCP `0.50.6` 起另省略 divination.instructions，其余可见主体、工具按钮、当前完整对白、坐标 notes 和同次棋盘 PNG 保留；default/full 及 inspect_event 的说明不变。13–15 组完整规则、示例和验证见[专项核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md)。
 
 地图及牌组／牌堆浏览覆盖（`screen.view:map/deck/draw_pile/discard_pile/exhaust_pile`）的页面主体暂时沿用 default，由浏览摘要占位入口处理；顶栏先应用上述共用摘要。占位保留页面上下文和隐藏选择元数据，不对下层战斗再次压缩。当前基础观察仍不附浏览卡牌列表；后续核验 inspect_map、inspect_deck、inspect_pile 时再补充对应内容与摘要。MCP `0.50.2` 起统一采用此分工，见[共用顶栏记录](../research/2026-11-02-shared-top-bar-summary.md)。
+
+结算的 `run_result` 主体沿用 default，保留完整的当前页 texts、分数、徽章、发现、options 及空列表；MCP `0.50.8` 起，已显示的 cards 复用卡牌摘要，保留字符串 card:N ID、名称、类型和费用等字段，省略正文、稀有度及卡池。需要正文或悬停说明时调用 inspect_run_result。full/default 和详情工具的信息范围不变。主菜单与 unrecognized 主体沿用 default；共用顶栏规则独立适用。约定及验证见[结算观察实施记录](../research/2026-11-03-result-observation-implementation.md)。
 
 Mod `0.49.0` 起，已打开候选页的 full/default/summary 都提供整个原生可浏览列表，包含滚动区域外的候选，保持原生顺序及原牌 ID。读取不滚动或选择卡牌；确认预览只提供该页展示内容，眼睛与覆盖页继续隐藏选择。网格候选的已有附魔同时修复，显示计数和置灰规则与原生卡面一致。详见[选牌接口](card-selection.md)。需要更换 Mod、重启游戏并重连 MCP。
 

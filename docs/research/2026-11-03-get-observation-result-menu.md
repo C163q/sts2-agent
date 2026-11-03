@@ -1,6 +1,6 @@
 # get_observation 胜负结算、解锁与菜单核验
 
-> 当前状态：16–17 组现状核验完成，共 2 组；保存的 47 份 full 与 2 份错误响应属于 MCP 0.50.6 原始基线。后续 Mod 0.49.3／MCP 0.50.7 已修复文字转写并将兜底改名为 unrecognized，见[实施记录](2026-11-03-result-observation-implementation.md)。summary 已定稿，正在实施。leaderboard 仅源码核对；地图及牌组／牌堆覆盖主体仍留待对应工具核验，get_observation 整体未核销。
+> 当前状态：16–17 组现状核验完成，共 2 组；保存的 47 份 full 与 2 份错误响应属于 MCP 0.50.6 原始基线。后续 Mod 0.49.3／MCP 0.50.7 已修复文字转写并将兜底改名为 unrecognized，见[实施记录](2026-11-03-result-observation-implementation.md)。summary 已交付，见[实施与验证](2026-11-03-result-observation-implementation.md)。leaderboard 仅源码核对；地图及牌组／牌堆覆盖主体仍留待对应工具核验，get_observation 整体未核销。
 
 流程见[工具核验清单](2026-11-02-mcp-tool-review.md)，场景编号见[观察总目录](2026-11-02-get-observation-review.md)。本轮不核销 inspect_run_result 或 run_result_option。
 
@@ -129,11 +129,13 @@
 
 结算主体沿用 default，保留 status、phase、title、texts、score_lines、badges、discoveries、options 及当前空列表；仅 cards 使用共用 card_summary，保留字符串 card:N ID、名字、类型和费用等摘要字段，正文、rarity、visual_card_pool 由 inspect_run_result 按需查看。full/default/详情保持当前信息范围。菜单及 unrecognized 主体沿用 default；顶栏仍独立使用共用摘要。
 
-texts 保留：章节故事、教程、死亡原因、建筑师伤害、分数进度和非物品解锁均依赖它。title、按钮或分数的重复不另加自动去重。实现和验证见[实施记录](2026-11-03-result-observation-implementation.md)，当前尚未完成阶段 2。
+texts 保留：章节故事、教程、死亡原因、建筑师伤害、分数进度和非物品解锁均依赖它。title、按钮或分数的重复不另加自动去重。实现和验证见[实施记录](2026-11-03-result-observation-implementation.md)，阶段 2 已完成真实解锁页验证。
 
 ## 验证与未覆盖范围
+
+以下为 MCP 0.50.6 的原始采样结果；后续文字修复、改名及 summary 验证见[实施记录](2026-11-03-result-observation-implementation.md)。
 
 - 三个自有 GUI 案例均完成：death、victory_unlock、history。共 183 次真实 MCP 调用及 10 次显式原生测试调用；不将启动器内部状态轮询计入。7 个已采样 phase 为 epoch, history, outcome, summary, timeline, tutorial, unlock。
 - 47 份 full 逐对象匹配来源，并通过当前观察结构校验；逐份确认现行 run_result.summary 主体与 default 相同。哈希、样本位置、下标及过程见本地 verification.json，原始流程见 gui/report.json。
 - 自有 PID 为 14552, 15125, 15773，全部关闭；本轮未更换运行时 DLL、正式 Mod 或个人存档，未修改生产实现和测试，未重新运行整套编译及 Python 回归。
-- 样本数量不等于穷举全部游戏内容：每日挑战榜单、各类解锁的全部内容、章节翻页、覆盖与动画瞬态、所有菜单子页及未知 Mod 页面未穷举；已区分源码核验、测试夹具与正常交互流程。失败结算及本局详情的混合语言缺口如上，未声称已修复。
+- 样本数量不等于穷举全部游戏内容：每日挑战榜单、各类解锁的全部内容、章节翻页、覆盖与动画瞬态、所有菜单子页及未知 Mod 页面未穷举；已区分源码核验、测试夹具与正常交互流程。该采样基线未修复混合语言缺口；后续修复及新版本实测样本已单独交付。
