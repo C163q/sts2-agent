@@ -82,3 +82,4 @@ cp .env.example .env
 - [协作约定](AGENTS.md)、[文档规范](docs/documentation.md)、[Codex 环境约定](docs/ai/codex.md)、[Cursor 模型选择](docs/ai/cursor-model-selection.md)。
 - 各接口文档链接对应的源码核对、验证报告和样本；带日期的记录保留当时基线。
 - [工具核验清单及流程](docs/research/2026-11-02-mcp-tool-review.md)记录本轮逐项设计进度，当前行为以开发文档为准。
+- [架构重构验收与完整返回样例](docs/research/2026-11-04-refactor-stage-7.md)记录共用链路核对和四项已确认接口调整的游戏内证据。

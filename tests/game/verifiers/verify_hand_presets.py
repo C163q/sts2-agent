@@ -77,7 +77,9 @@ async def verify(args):
             compact_resources = {'energy': f"{full['energy']}/{full['max_energy']}"}
             if full['stars'] is not None: compact_resources['stars'] = full['stars']
             assert {key: summary[key] for key in compact_resources} == compact_resources
-            assert set(summary) == {'hand', *compact_resources}, summary
+            context = {key: before['state'][key] for key in ('scene', 'screen')}
+            assert {key: full[key] for key in context} == {key: summary[key] for key in context} == context
+            assert set(summary) == {'hand', *compact_resources, *context}, summary
             for brief, card in zip(summary['hand'], full['hand'], strict=True):
                 assert set(brief) <= allowed
                 assert all(brief[key] == card[key] for key in brief)
@@ -108,7 +110,7 @@ async def verify(args):
                     links = {(i, tip['title'], tip['description']) for tip in selected['hover_tips'] for i in tip['card_ids']}
                     assert links == expected_links, selected
                 assert (await call('inspect_hand', {'preset': preset, 'card_ids': []})) == {
-                    'hand': [], **({'hover_tips': [], **resources} if preset == 'full' else compact_resources)}
+                    **context, 'hand': [], **({'hover_tips': [], **resources} if preset == 'full' else compact_resources)}
             await call('capture_screenshot', {'filename': f'{args.scenario}-hand.png'})
             after = await asyncio.to_thread(raw.call, 'get_state')
             record({'before': before, 'after': after})

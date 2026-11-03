@@ -48,6 +48,23 @@ async def verify(args):
             assert len(summary['relics']) == len(full['relics'])
             assert 'notes' not in summary and 'hover_tips' not in summary
             assert before['state'] == (await asyncio.to_thread(raw.call, 'get_state'))['state']
+            for tool, field, collection in (
+                ('inspect_relics', 'relic_indices', 'relics'),
+                ('inspect_hand', 'card_ids', 'hand'),
+                ('inspect_ui', 'sources', 'hover_tips'),
+                ('inspect_combatants', 'sources', None),
+            ):
+                all_items = await call(tool, {'preset': 'full'})
+                null_filter = await call(tool, {'preset': 'full', field: None})
+                assert null_filter == all_items, (tool, null_filter, all_items)
+                empty = await call(tool, {'preset': 'full', field: []})
+                if collection: assert empty[collection] == [], (tool, empty)
+                else: assert not {'player', 'enemies', 'allies'} & empty.keys(), empty
+            await call('inspect_targets', {'preset': 'full', 'card_id': observation['player']['hand'][0]['id']})
+            lantern = next(i for i, relic in enumerate(full['relics']) if relic['name'] == 'Lantern')
+            filtered = await call('inspect_relics', {'preset': 'full', 'relic_indices': [lantern]})
+            assert filtered['relic_indices'] == [lantern]
+            assert filtered['hover_tips'] and all(tip['relic_indices'] == [lantern] for tip in filtered['hover_tips'])
             changed = await asyncio.to_thread(raw.call, 'set_test_relic_hover', arguments={'enabled': False})
             record({'fixture_injection': changed})
             assert changed['ok'], changed

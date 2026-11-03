@@ -1,0 +1,34 @@
+{
+  "slot_tip": {
+    "title": "Potion Slot",
+    "description": "Use potions during combat to gain bonuses or hinder enemies."
+  },
+  "potion_slots": [
+    {
+      "name": "Skill Potion",
+      "description": "Choose 1 of 3 random Skill cards to add into your Hand. It's free to play this turn."
+    },
+    {
+      "name": "Block Potion",
+      "description": "Gain 12 Block."
+    },
+    {
+      "name": "Fairy in a Bottle",
+      "description": "When your HP would be reduced to 0, instead this potion is discarded and you heal to 30% of your Max HP."
+    }
+  ],
+  "scene": "combat",
+  "screen": {
+    "status": "visible",
+    "view": "map"
+  },
+  "hover_tips": [
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "slot_indices": [
+        1
+      ]
+    }
+  ]
+}

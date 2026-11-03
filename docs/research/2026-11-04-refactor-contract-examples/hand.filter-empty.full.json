@@ -1,0 +1,11 @@
+{
+  "energy": 20,
+  "max_energy": 3,
+  "stars": null,
+  "hand": [],
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "hover_tips": []
+}

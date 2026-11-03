@@ -59,6 +59,9 @@ async def verify(args):
                 await call('choose_event_option', {'option_id': state['event']['options'][1]['id']})
 
             original = await call('inspect_selection')
+            assert await call('inspect_selection', {'card_ids': None}) == original
+            empty = await call('inspect_selection', {'card_ids': []})
+            assert empty['selection']['cards'] == [] and empty['hover_tips'] == [], empty
             supported = args.scenario in {'smith', 'event_upgrade', 'ancient_transform', 'ancient_pandora', 'multi_upgrade'}
             assert original['selection']['can_view_upgrades'] == supported, original
             assert original['selection']['view_upgrades'] is False, original

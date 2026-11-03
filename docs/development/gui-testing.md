@@ -22,6 +22,7 @@
 
 | 专项 | 清单 |
 | --- | --- |
+| 架构组合回归与四项契约样例采集 | [architecture_refactor](../../tests/game/data/gui_suite_architecture_refactor.json) |
 | 展示／悬停分离、共用读取及相关场景 | [display_readers](../../tests/game/data/gui_suite_display_readers.json) |
 | 原生上下文、媒体故障与跨场景响应 | [native_responses](../../tests/game/data/gui_suite_native_responses.json) |
 | 原生测试路由门控 | [native_dispatch](../../tests/game/data/gui_suite_native_dispatch.json) |
@@ -103,3 +104,5 @@
 native_responses 的媒体故障夹具仅在 testMode 与 suite 同时开启时可用，局间重置会清除故障。它检查默认文件媒体、显式无图请求、图像失败时动作回执仍成功，以及实际 UI 已变化但旧文件媒体生成失败时的执行事实。注入故障不代表自然游戏已出现相同故障；完整结算仍须使用独立进度实例。
 
 `display_readers` 的不可悬停遗物通过双重测试门控夹具关闭鼠标与控制器入口，恢复后继续原生页面读取；这是人为注入的验证条件，不表示已观察到自然游玩中的同类遗物。
+
+架构组合的本轮验收见[第 7 阶段记录](../research/2026-11-04-refactor-stage-7.md)。其主批与药水补充批使用同一构建；完整胜利解锁按进程隔离要求单独运行。筛选、上下文和不可悬停的完整公开返回见[JSON 样例](../research/2026-11-04-refactor-contract-examples/README.md)。

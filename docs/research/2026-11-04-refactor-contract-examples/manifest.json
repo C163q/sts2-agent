@@ -1,0 +1,393 @@
+{
+  "mod_version": "0.55.0",
+  "mcp_version": "0.57.0",
+  "schema_version": 36,
+  "game_version": "v0.107.1",
+  "ritsulib_version": "0.6.10",
+  "mod_sha256": "4a0b79dd4b7e5cb901ddf6f37f1b4f2d3b0b24972c3bc540e624c96bab98bae6",
+  "samples": [
+    {
+      "file": "observation.combat.full.json",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "verifier_arguments": {
+        "preset": "full"
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 3,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "e5107532da6724563fce395d0cfc0bfe34f5f36fd76440664c99f369beccfc86"
+    },
+    {
+      "file": "relics.full.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "verifier_arguments": {
+        "preset": "full"
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 1,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "d2c70c10318d7d94f8cdd02ea520b8592c20f7e4a34ddbf632ed2cd7b4f7e66f"
+    },
+    {
+      "file": "relics.filter-null.full.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full",
+        "relic_indices": null
+      },
+      "verifier_arguments": {
+        "preset": "full",
+        "relic_indices": null
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 5,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "d2c70c10318d7d94f8cdd02ea520b8592c20f7e4a34ddbf632ed2cd7b4f7e66f"
+    },
+    {
+      "file": "relics.filter-empty.full.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full",
+        "relic_indices": []
+      },
+      "verifier_arguments": {
+        "preset": "full",
+        "relic_indices": []
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 6,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "b57199f0032126372ff24dbae3977a862fa7b08ed8025766440d17b91959f927"
+    },
+    {
+      "file": "hand.full.json",
+      "tool": "inspect_hand",
+      "arguments": {
+        "preset": "full"
+      },
+      "verifier_arguments": {
+        "preset": "full"
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 7,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "4ca3dd09e4517023377dda3de7df544d6ce5514e28ac25d6f35649a41ecae5d6"
+    },
+    {
+      "file": "hand.filter-null.full.json",
+      "tool": "inspect_hand",
+      "arguments": {
+        "preset": "full",
+        "card_ids": null
+      },
+      "verifier_arguments": {
+        "preset": "full",
+        "card_ids": null
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 8,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "4ca3dd09e4517023377dda3de7df544d6ce5514e28ac25d6f35649a41ecae5d6"
+    },
+    {
+      "file": "hand.filter-empty.full.json",
+      "tool": "inspect_hand",
+      "arguments": {
+        "preset": "full",
+        "card_ids": []
+      },
+      "verifier_arguments": {
+        "preset": "full",
+        "card_ids": []
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 9,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "11dea852d7aad05ed9cbb344f95ee42bb84afc0312884d7c16e46bd8433813a1"
+    },
+    {
+      "file": "ui.full.json",
+      "tool": "inspect_ui",
+      "arguments": {
+        "preset": "full"
+      },
+      "verifier_arguments": {
+        "preset": "full"
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 10,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "0c91000e992e3ce2ba3cb5105cbea967f24488a14cd68e38f6ba7c7159cab35d"
+    },
+    {
+      "file": "ui.filter-null.full.json",
+      "tool": "inspect_ui",
+      "arguments": {
+        "preset": "full",
+        "sources": null
+      },
+      "verifier_arguments": {
+        "preset": "full",
+        "sources": null
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 11,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "0c91000e992e3ce2ba3cb5105cbea967f24488a14cd68e38f6ba7c7159cab35d"
+    },
+    {
+      "file": "ui.filter-empty.full.json",
+      "tool": "inspect_ui",
+      "arguments": {
+        "preset": "full",
+        "sources": []
+      },
+      "verifier_arguments": {
+        "preset": "full",
+        "sources": []
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 12,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "986f4fe98f98ee39505c6b078bfbcf10b947da663056ff125f10fe5178bd2469"
+    },
+    {
+      "file": "combatants.full.json",
+      "tool": "inspect_combatants",
+      "arguments": {
+        "preset": "full"
+      },
+      "verifier_arguments": {
+        "preset": "full"
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 13,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "d5b65402cf7f155621a1740ace63dacd73284636a06a67d9b7fa5779f781336c"
+    },
+    {
+      "file": "combatants.filter-null.full.json",
+      "tool": "inspect_combatants",
+      "arguments": {
+        "preset": "full",
+        "sources": null
+      },
+      "verifier_arguments": {
+        "preset": "full",
+        "sources": null
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 14,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "d5b65402cf7f155621a1740ace63dacd73284636a06a67d9b7fa5779f781336c"
+    },
+    {
+      "file": "combatants.filter-empty.full.json",
+      "tool": "inspect_combatants",
+      "arguments": {
+        "preset": "full",
+        "sources": []
+      },
+      "verifier_arguments": {
+        "preset": "full",
+        "sources": []
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 15,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "9b2a99a3612c0e1f9017111e3177591231ff5c4536242749fabe5c6bce2802cd"
+    },
+    {
+      "file": "relics.filtered.full.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full",
+        "relic_indices": [
+          2
+        ]
+      },
+      "verifier_arguments": {
+        "preset": "full",
+        "relic_indices": [
+          2
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 17,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "02580662cf56c011c80577d030400aadee059ffd6e10ab2d7dbe523554bd902a"
+    },
+    {
+      "file": "targets.full.json",
+      "tool": "inspect_targets",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "verifier_arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 16,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "a5e2bbd39ed13e336dc3df8520bcbbe36693074199954c28073a4604a5a9528c"
+    },
+    {
+      "file": "relics.map-context.default.json",
+      "tool": "inspect_relics",
+      "arguments": {},
+      "verifier_arguments": null,
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 27,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "e557aa2fed585c9224acfd356f1021c39239f3759eda74c94d24309414741c0f"
+    },
+    {
+      "file": "potions.map-context.default.json",
+      "tool": "inspect_potions",
+      "arguments": {},
+      "verifier_arguments": null,
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 28,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "9ca1200611e048d691a07de0ef445e95f295e5ee0edeadd41351a7b47fa011dc"
+    },
+    {
+      "file": "ui.map-context.default.json",
+      "tool": "inspect_ui",
+      "arguments": {},
+      "verifier_arguments": null,
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 29,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "d12a68552adc9dde6a4a122bdce6f38bb17f622055b48e3bd49520e9a80715ce"
+    },
+    {
+      "file": "relics.hover-unavailable.full.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "verifier_arguments": {
+        "preset": "full"
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 19,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "c1746ddca1ae2267de28c5867113521ee30b4c4180593bbc53f6b6e6a42e3666"
+    },
+    {
+      "file": "relics.hover-unavailable.default.json",
+      "tool": "inspect_relics",
+      "arguments": {},
+      "verifier_arguments": null,
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 20,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "188f53f6123f50435108faac45cb24687e0e85bffb50559dd561b8e34ae08f8e"
+    },
+    {
+      "file": "relics.hover-unavailable.summary.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "summary"
+      },
+      "verifier_arguments": {
+        "preset": "summary"
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 21,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "74b0654740f7ca5a8d6eaf72fe7ff1aeba15edfa178d098f01d95ea261b5aeb3"
+    },
+    {
+      "file": "relics.hover-unavailable-filtered.full.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full",
+        "relic_indices": [
+          3,
+          0,
+          3
+        ]
+      },
+      "verifier_arguments": {
+        "preset": "full",
+        "relic_indices": [
+          3,
+          0,
+          3
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 22,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "438e08ba3061b28dfeed8138bc4b8025b481598c029fcb2bcd61f7d2a38a5ce9"
+    },
+    {
+      "file": "selection.full.json",
+      "tool": "inspect_selection",
+      "arguments": {
+        "preset": "full"
+      },
+      "verifier_arguments": null,
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/smith_comparison/verify/evidence.json",
+      "source_entry": 2,
+      "source_sha256": "ba739b558abefadf9c246adedd2e387a520565f3b88b14ba660e4db9e4a56022",
+      "sha256": "795ef74c8b9018ca68b38c585b22d90d8e62a1a78909dc4c1998917158c46106"
+    },
+    {
+      "file": "selection.filter-null.full.json",
+      "tool": "inspect_selection",
+      "arguments": {
+        "preset": "full",
+        "card_ids": null
+      },
+      "verifier_arguments": {
+        "card_ids": null
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/smith_comparison/verify/evidence.json",
+      "source_entry": 3,
+      "source_sha256": "ba739b558abefadf9c246adedd2e387a520565f3b88b14ba660e4db9e4a56022",
+      "sha256": "795ef74c8b9018ca68b38c585b22d90d8e62a1a78909dc4c1998917158c46106"
+    },
+    {
+      "file": "selection.filter-empty.full.json",
+      "tool": "inspect_selection",
+      "arguments": {
+        "preset": "full",
+        "card_ids": []
+      },
+      "verifier_arguments": {
+        "card_ids": []
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/smith_comparison/verify/evidence.json",
+      "source_entry": 4,
+      "source_sha256": "ba739b558abefadf9c246adedd2e387a520565f3b88b14ba660e4db9e4a56022",
+      "sha256": "fca03abc77fad2c1345cd7ce78c42d47a95fffc97f8d242a261a42a8b13402a8"
+    },
+    {
+      "file": "selection.upgrade-comparison.full.json",
+      "tool": "inspect_selection",
+      "arguments": {
+        "preset": "full",
+        "view_upgrades": true
+      },
+      "verifier_arguments": {
+        "view_upgrades": true
+      },
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/smith_comparison/verify/evidence.json",
+      "source_entry": 16,
+      "source_sha256": "ba739b558abefadf9c246adedd2e387a520565f3b88b14ba660e4db9e4a56022",
+      "sha256": "b0a5ffb3bbb03436075727498c8b9d04b54bc23d818514a0d3d1e002de62671d"
+    }
+  ]
+}

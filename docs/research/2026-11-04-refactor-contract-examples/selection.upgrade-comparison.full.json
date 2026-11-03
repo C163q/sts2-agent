@@ -1,0 +1,72 @@
+{
+  "scene": "rest_site",
+  "selection": {
+    "type": "deck_upgrade",
+    "status": "visible",
+    "prompt": "Choose a card to Upgrade.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [
+      0
+    ],
+    "cards": [],
+    "options": [
+      {
+        "id": "cancel_preview",
+        "text": "Back",
+        "enabled": true
+      },
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": true,
+    "upgrade_previews": [
+      {
+        "before": {
+          "id": 0,
+          "name": "Strike",
+          "type": "Attack",
+          "rarity": "basic",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "1",
+          "star_cost": null,
+          "unplayable_markers": [],
+          "outline": "none",
+          "enchantment": null,
+          "affliction": null,
+          "description": "Deal 6 damage.",
+          "hover_tips": []
+        },
+        "after": {
+          "id": 0,
+          "name": "Strike+",
+          "type": "Attack",
+          "rarity": "basic",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "1",
+          "star_cost": null,
+          "unplayable_markers": [],
+          "outline": "none",
+          "enchantment": null,
+          "affliction": null,
+          "description": "Deal 9 damage.",
+          "hover_tips": []
+        }
+      }
+    ]
+  },
+  "errors": [
+    {
+      "code": "upgrade_view_unavailable"
+    }
+  ],
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": []
+}

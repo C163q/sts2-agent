@@ -1,0 +1,48 @@
+{
+  "relics": [
+    {
+      "name": "Burning Blood",
+      "description": "At the end of combat, heal 6 HP."
+    },
+    {
+      "name": "Anchor",
+      "description": "Start each combat with 10 Block."
+    },
+    {
+      "name": "Lantern",
+      "description": "Start each combat with an additional <Energy>."
+    },
+    {
+      "name": "Pen Nib",
+      "counter": 0
+    }
+  ],
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "hover_tips": [
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "relic_indices": [
+        1
+      ]
+    },
+    {
+      "title": "Energy",
+      "description": "Energy is used to play cards from your Hand.",
+      "relic_indices": [
+        2
+      ]
+    }
+  ],
+  "notes": {
+    "hover_tips_unavailable": {
+      "message": "Hover help is currently unavailable for these displayed icons.",
+      "sources": [
+        "relics.3"
+      ]
+    }
+  }
+}
