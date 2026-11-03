@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 43 项，已核销 3 项：inspect_ui、inspect_hand、inspect_targets。get_observation 的 17 个场景组已有记录，浏览覆盖仍待对应工具，整体未核销。当前审阅 inspect_combatants，已确认错误说明、明确读取拒绝后丢失许可及专项验证入口过时三项问题，参数与摘要待定稿；其余 38 项尚待逐项核验。inspect_targets 的[错误修复及四工具复查](2026-11-03-inspection-error-recovery.md)已交付，未取样目标类型仍保留源码边界；其他工具的完整错误审阅继续留待用户 TODO。暂无阻塞。
+> 当前状态：工具核验进行中，共 43 项，已核销 3 项：inspect_ui、inspect_hand、inspect_targets。get_observation 的 17 个场景组已有记录，浏览覆盖仍待对应工具，整体未核销。当前审阅 inspect_combatants，已确认错误说明、明确读取拒绝后丢失许可及专项验证入口过时三项问题；summary 与筛选主体语义已确认，细粒度定位待定稿，其余 38 项尚待逐项核验。inspect_targets 的[错误修复及四工具复查](2026-11-03-inspection-error-recovery.md)已交付，未取样目标类型仍保留源码边界；其他工具的完整错误审阅继续留待用户 TODO。暂无阻塞。
 
 ## 范围与基线
 
@@ -33,7 +33,7 @@
 - [x] `inspect_ui`：可见顶栏、战斗 UI、资源及空充能球槽帮助。阶段：[修复与核验完成](2026-11-03-inspect-ui-review.md)，[统一上下文、summary、sources 筛选及验证](2026-11-03-ui-context-implementation.md)已交付；部分条件变体保留源码／历史核对边界。
 - [x] `inspect_hand`：手牌详情。阶段：[核验及定稿](2026-11-03-inspect-hand-review.md)、[覆盖清单](2026-11-03-card-format-coverage.md)和[实现／验证](2026-11-03-card-format-implementation.md)已完成；新增可见 Affliction、统一附魔空值、资源计数及共用卡牌格式。
 - [x] `inspect_targets`：指定手牌或药水的可用性与目标范围。阶段：[核验及输出定稿](2026-11-03-inspect-targets-review.md)、[错误修复与验证](2026-11-03-inspection-error-recovery.md)完成；维持 default/full，不新增 summary，不改原生指示范围。AnyPlayer／AllAllies／Osty 卡牌分支保留源码核对边界，未新增实际调用样本。
-- [ ] `inspect_combatants`：战斗对象、状态、意图、充能球及悬浮剑详情。阶段：[场景、完整示例与错误审查](2026-11-03-inspect-combatants-review.md)；COMBATANT-01/02 为错误说明及明确拒绝后的许可缺口，COMBATANT-03 为专项验证脚本过时。已确认新增 summary 与 sources；summary 粒度、筛选层级及显式 null 待定，[] 表示空选中集合，未改运行代码。
+- [ ] `inspect_combatants`：战斗对象、状态、意图、充能球及悬浮剑详情。阶段：[场景、完整示例与错误审查](2026-11-03-inspect-combatants-review.md)；COMBATANT-01/02 为错误说明及明确拒绝后的许可缺口，COMBATANT-03 为专项验证脚本过时。已确认 summary 完全省略 hover_tips，sources 筛选对象及关联说明，[] 只保留上下文与必要 notes；细粒度定位及显式 null 待定，未改运行代码。
 - [ ] `inspect_potions`：药水详情。
 - [ ] `inspect_relics`：已拥有遗物的详情。
 

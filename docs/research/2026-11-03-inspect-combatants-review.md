@@ -1,6 +1,6 @@
 # inspect_combatants 场景与现有参数核验
 
-> 当前状态：本轮场景核验与错误审查完成，尚未核销。已记录 3 项问题，提供 21 份完整公开 JSON，完成 82 项 Python 回归、11 项错误探针及七组隔离对局与独立建筑师背景采样。已确认增加 summary 与 sources；summary 是否整组省略悬停提示正在澄清，筛选层级、显式 null 与修复范围待定稿，未改运行代码。未验证分支见末节。
+> 当前状态：本轮场景核验与错误审查完成，尚未核销。已记录 3 项问题，提供 21 份完整公开 JSON，完成 82 项 Python 回归、11 项错误探针及七组隔离对局与独立建筑师背景采样。已确认 summary 完全省略 hover_tips，sources 同时筛选对象数据及关联说明，[] 只保留场景上下文及必要 notes；细粒度定位、显式 null 与修复范围待定稿，未改运行代码。未验证分支见末节。
 
 ## 优先关注的问题
 
@@ -124,17 +124,85 @@ full 保留原生已生成的 null；default 仅按公共规则省略普通 null
 
 ## 参数与摘要设计
 
-**已确认、尚未实现：**增加 summary 与 sources 筛选，不引入伤害预测或新的机制字段。
+### 已确认、尚未实现
 
-**summary 粒度待确认：**仅省略 hover_tips[].description、保留标题与来源，或省略整个 hover_tips。两种含义影响是否还提供说明索引，未确认前不实施。
+summary 表示不悬停时能够看到的对象信息，完全省略整个 hover_tips，包括标题、正文及来源。例如 power 只给 name/amount，意图给 category/value，球槽与剑保留基础观察能够看到的字段。其余普通 null 按 default 规则处理，球槽的真实空位不删除。
 
-**空筛选器语义：**未指定筛选表示全部；[] 表示选中集合为空，不作为“全部”的别名。现有 inspect_hand.card_ids、inspect_selection.card_ids、inspect_relics.relic_indices、inspect_ui.sources 已采用这一规则；其中显式 JSON null 目前会被参数校验拒绝，不能与省略参数混称为现有接口能力。新 sources 是否额外接受显式 null 表示全部仍待定稿，不擅自扩大到其他已审阅工具。
+sources 筛选对象数据及其关联悬停说明，不仅裁剪 hover_tips；preset 决定被选中对象的信息精简程度。两项独立组合：
 
-空集合的作用范围取决于过滤器：card_ids:[] 清空候选卡牌及其说明；当前来源筛选候选只作用于 hover_tips，因此 sources:[] 不会清除 player/enemies/allies 等对象字段，也不删除 scene/screen 等上下文。若要筛掉对象本身，须另行明确输出结构及来源下标规则，不能将它与提示筛选视为同一已确认能力。
+| 调用条件 | 数据范围 | 悬停说明 |
+| --- | --- | --- |
+| 省略 sources，default/full | 全部对象 | 读取允许提供的说明 |
+| 省略 sources，summary | 全部对象的静态信息 | 不出现 hover_tips |
+| sources:["enemies"]，default/full | 仅敌人数据 | 仅敌人关联说明，共享提示裁掉其他来源 |
+| sources:["enemies"]，summary | 仅敌人的静态数据 | 不出现 hover_tips |
+| sources:[]，任意 preset | 不返回 player/enemies/allies 等对象字段 | 不出现 hover_tips |
 
-**筛选层级建议，待确认：**sources 同时支持具体来源和分组前缀，按点分隔的路径段匹配。
+scene、screen 和仍适用的 notes 保留；仅用于解释已过滤内容的 note 不保留。例如选择仍未完成时保留 notes.selection，而没有敌人意图数据时移除 notes.enemy_attack_intents。部分路径失败时仍可返回 errors。显式筛掉字段不是“不可见”，full 也不把未选中的对象填成 null 或空数组。
 
-| 选择器 | 拟选择的悬停说明 |
+未指定筛选表示全部；[] 表示选中集合为空，不作为“全部”的别名。现有 inspect_hand.card_ids、inspect_selection.card_ids、inspect_relics.relic_indices、inspect_ui.sources 已采用这一集合语义；显式 JSON null 目前会被参数校验拒绝。新 sources 是否额外接受显式 null 表示全部仍待定稿，不擅自改变其他已审阅工具。
+
+### 设计 JSON 示例
+
+以下按已确认规则投影入库 full 样本，只用于说明拟实现契约，**不是已实现接口的实测返回**。数值沿用原样本，不新增游戏机制信息。
+
+调用 `{"preset":"summary","sources":["enemies"]}`，投影[草蜢原始样本](2026-11-03-inspect-combatants-examples/hopper.full.json)：
+
+```json
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "enemies": [
+    {
+      "id": 1,
+      "name": "Thieving Hopper",
+      "powers": [
+        {
+          "name": "Escape Artist",
+          "amount": 5
+        }
+      ],
+      "intents": [
+        {
+          "category": "attack",
+          "value": "17"
+        },
+        {
+          "category": "card_debuff",
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "notes": {
+    "enemy_attack_intents": "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
+  }
+}
+```
+
+调用 `{"preset":"summary","sources":[]}`，投影[待选牌战场样本](2026-11-03-inspect-combatants-examples/pending-selection-battlefield.full.json)：
+
+```json
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "notes": {
+    "selection": "Selection pending; return with set_selection_view(view=\"selection\") before choosing."
+  }
+}
+```
+
+普通战斗若没有仍适用的 notes，空筛选结果只含 scene/screen；不创建空 notes 占位。
+
+### 分组与精确路径建议
+
+sources 同时支持具体对象／条目和分组前缀，按点分隔的路径段匹配；细粒度定位规则待定稿。
+
+| 选择器 | 拟选择的数据及关联说明 |
 | --- | --- |
 | player | 玩家的状态、充能球及悬浮剑 |
 | player.powers | 全部玩家状态 |
@@ -143,24 +211,23 @@ full 保留原生已生成的 null；default 仅按公共规则省略普通 null
 | enemies | 所有敌人 |
 | enemies.0 | 第一个敌人的状态及意图 |
 | enemies.0.intents | 第一个敌人的全部意图 |
-| enemies.0.intents.0 | 第一个敌人的第一个意图，包括附带的术语解释 |
+| enemies.0.intents.0 | 第一个敌人的第一个意图 |
 | allies.0 | 第一个友方召唤物 |
 
-- 精确命中或以“选择器加一个点”开头的实际来源命中；enemies.1 不匹配 enemies.10。返回的 sources 仍是实际具体路径。
-- 省略 sources 取全部；空数组不取悬停提示；多个选择器取并集，去重并保留原生顺序；共享提示只保留命中的具体来源。
-- sources 只裁剪 hover_tips，保留原有对象字段和数组下标，避免把 enemies.2 压成 enemies.0。下标是本次详情中的位置，从 0 开始，不是生物 ID。
-- 固定分组及实际存在的条目没有可读说明时，拟返回空提示，不以“无说明”判路径错误。例如 enemies:[] 下选择 enemies，或某条意图没有悬停说明。不存在的对象下标、不支持的字段或格式错误的路径合并到 errors，有效选择器仍返回内容。
-- 先读取并校验完整数据，再过滤与应用 preset，不因过滤绕过失败。
+- 精确命中或以“选择器加一个点”开头的实际来源命中；enemies.1 不匹配 enemies.10。多个选择器取并集，去重并保留原生顺序。
+- 细粒度选择保留必要的所属对象身份，避免只得到数值却不知道属于哪个敌人；不附送未选中的其他状态、意图或玩家信息。
+- 空分组本身合法，例如 enemies:[] 下选择 enemies；没有悬停提示的可见条目仍可返回静态数据。不存在的对象下标、不支持的字段或格式错误的路径合并到 errors，有效部分继续返回。
+- sources:[] 不生成 hover_tips:[]，也不保留空的对象字段；它是空选中集合，不是保留全部基础数据、只隐藏说明的替代 preset。
+- 数组筛选不能把返回位置冒充原选择器下标，悬停来源须关联正确对象；尤其不能用 null 补齐未选中的球槽，因为 null 在球槽中已经表示真实空位。细粒度实现需确定紧凑列表与原位置映射，或其他明确的定位方式；在此之前不把此前“保留全部数组、仅筛提示”的方案当作实施依据。
+- 先读取并校验工具要求的完整数据，再应用选择与 preset，不因空筛选放过错误响应；结果仍不生成新的未知信息。
 
-只接受具体来源最简单，但读取整个敌人需要列出多条路径；增加路径分组能覆盖上述需求，也避免为玩家、生物、球和剑分别新增定位参数。现有 inspect_ui 仍只做精确匹配，暂未授权改为分组匹配；共用的参数校验和提示投影可复用，工具各自保留其匹配规则。
-
-进一步省略空列表或改变球槽、意图和对象结构均不在当前已确认要求中，修复与筛选边界确认后再实施。
+inspect_ui 当前只筛悬停提示且仅做精确匹配；本轮不擅自扩大其职责。可复用通用参数校验和共享提示投影，不能将两个工具的对象筛选语义强行合并。
 
 ## 有依据的小范围重构
 
 - 读取可用性在 CanInspectCombatants 和 CombatantInspection.ReadAll 重复判断，可用同一“不可用原因”入口供 available_actions、拒绝说明及最后读取复核使用；保留读取端的状态复核，不仅依赖之前菜单列出的可用动作。
 - 错误与许可直接接入前一轮已有共用层，不再创建本工具专属恢复机制。
-- 原生 CombatObservation.Powers 与详情 Powers 有意使用不同的可悬停筛选；不能为减少重复直接把基础图标列表替换为详情列表，否则会丢失仍可看见但不可悬停的图标。若后续抽取共用读取，应显式保留这项差异，本轮不需扩大到整个观察架构。
+- 静态对象列表与悬停能力须分离。当前详情 Powers/Intents 会跳过 MouseFilter.Ignore 条目，不能仅删除现有 full 的 hover_tips 就宣称 summary 与基础画面一致。应共用已核对的可见图标读取，只有说明生成受可悬停条件限制；统一核对 get_observation 与本工具的图标／标签边界，避免不同 preset 因悬停条件产生不同对象下标。这是已确认静态摘要要求涉及的小范围重构，不扩展到整个观察架构。
 
 ## 验证与剩余范围
 
