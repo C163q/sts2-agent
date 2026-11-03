@@ -2,6 +2,8 @@
 
 > 当前状态：工具核验进行中，共 43 项，已核销 4 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants。战斗对象的[错误修复、公共两级读取、summary、sources 与 GUI 验证](2026-11-03-combatants-implementation.md)已交付。get_observation 的浏览覆盖仍待对应工具，整体未核销；其余 38 项尚待逐项核验。其他工具的完整错误审阅继续留在用户 TODO。暂无阻塞。
 
+当前先进行[共用链路重构的源码审查](2026-11-03-architecture-refactor-audit.md)与[分阶段计划审阅](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)，暂不选择下一个工具。四项已确认的共用契约调整见该审查；计划尚未实施，不改变本清单完成数，重构后继续逐项核验。
+
 ## 范围与基线
 
 - 核对基线：提交 `ef9f34e`，MCP `0.48.0`；工具名称与数量依据 [mcp_catalog.py](../../src/sts2_mcp/mcp_catalog.py)。后续以每项核验时的实现为准，工具增删时同步本清单及总数。
