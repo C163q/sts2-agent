@@ -1,5 +1,3 @@
-using System.Text.Json;
-using System.Text.Json.Nodes;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Nodes;
 
@@ -43,6 +41,4 @@ internal static class ObservationContext
             screen["view"] = scene;
         return screen;
     }
-
-    public static string Inspection(JsonElement snapshot, object details) => ResponseBuilder.Inspection(snapshot, details);
 }
