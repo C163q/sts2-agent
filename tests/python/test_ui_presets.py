@@ -40,7 +40,7 @@ class UiPresetTests(unittest.TestCase):
         self.assertEqual(ui_arguments(None), {'preset': 'full', 'sources': None})
         self.assertEqual(ui_arguments({'preset': 'summary', 'sources': ['top_bar.hp', 'top_bar.hp']}),
                          {'preset': 'summary', 'sources': ['top_bar.hp']})
-        for bad in [[], {'sources': None}, {'sources': 'top_bar.hp'}, {'sources': ['']},
+        for bad in [[], {'sources': 'top_bar.hp'}, {'sources': ['']},
                     {'sources': [1]}, {'extra': True}, {'preset': 'invalid'}]:
             with self.subTest(bad=bad), self.assertRaises(ValueError): ui_arguments(bad)
 
@@ -68,7 +68,7 @@ class UiToolBoundaryTests(unittest.IsolatedAsyncioTestCase):
         with FakeGame() as game:
             tools = GameTools(Client(game.directory))
             await tools.get_observation()
-            self.assertEqual((await tools.inspect_ui({'sources': None}))['error']['code'], 'invalid_request')
+            self.assertEqual((await tools.inspect_ui({'sources': False}))['error']['code'], 'invalid_request')
             self.assertEqual([r['operation'] for r in game.operations], ['get_state'])
             self.assertTrue((await tools.end_turn())['transition']['complete'])
 

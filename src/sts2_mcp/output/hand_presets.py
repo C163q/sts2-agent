@@ -1,3 +1,4 @@
+from sts2_mcp.output.filtering import optional_filter, linked_help, filter_indices
 """Project validated hand details without changing the game's observation token."""
 from sts2_mcp.output.card_play_details import CARD_ID
 from sts2_mcp.output.card_format import card_summary
@@ -9,8 +10,8 @@ HAND_SCHEMA = {
     'properties': {
         'preset': {'type': 'string', 'enum': ['full', 'summary'], 'default': 'full',
                    'description': 'full includes card descriptions and shared hover help; summary keeps identity, visible costs, enchantments, afflictions and UI markers, without effects or hover help.'},
-        'card_ids': {'type': 'array', 'items': CARD_ID,
-                     'description': 'Optional current hand IDs. Omit for all visible hand cards; [] returns none. Duplicates are ignored; results keep hand order. Unavailable IDs are grouped in errors[].card_ids alongside valid cards.'},
+        'card_ids': {'type': ['array', 'null'], 'items': CARD_ID,
+                     'description': 'Optional current hand IDs. Omit/null for all visible hand cards; [] returns none. Duplicates are ignored; results keep hand order. Unavailable IDs are grouped in errors[].card_ids alongside valid cards.'},
     },
     'additionalProperties': False,
 }
@@ -25,9 +26,7 @@ def hand_arguments(arguments):
     if not isinstance(preset, str) or preset not in ('full', 'summary'):
         raise ValueError('Invalid hand preset.')
     card_ids = arguments.get('card_ids')
-    if 'card_ids' in arguments and (not isinstance(card_ids, list) or any(
-            type(card_id) is not int or not 0 <= card_id <= 2147483647 for card_id in card_ids)):
-        raise ValueError('card_ids must be an array of integer hand IDs from 0 to 2147483647.')
+    card_ids = optional_filter(card_ids, 'card_ids', integers=True)
     return {'preset': preset, 'card_ids': None if card_ids is None else list(dict.fromkeys(card_ids))}
 
 
@@ -43,8 +42,7 @@ def hand_preset(payload, preset, card_ids):
         result['hand'] = [card_summary(card) for card in cards]
         result.pop('hover_tips', None)
     else:
-        result['hover_tips'] = [{**tip, 'card_ids': [i for i in tip['card_ids'] if i in selected]}
-                                for tip in payload['hover_tips'] if any(i in selected for i in tip['card_ids'])]
+        result['hover_tips'] = linked_help(payload['hover_tips'], 'card_ids', selected.__contains__)
     if preset == 'summary' or not cards:
         notes = {key: value for key, value in result.get('notes', {}).items() if key != 'card_values'}
         result.pop('notes', None)

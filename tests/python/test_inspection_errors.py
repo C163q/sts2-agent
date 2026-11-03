@@ -50,7 +50,7 @@ class InspectionErrorTests(unittest.IsolatedAsyncioTestCase):
             ('inspect_targets', {'card_id': 7, 'target_id': 2}, 'target_id'),
             ('inspect_targets', {'card_id': 7, 'preset': 'summary'}, 'preset'),
             ('inspect_hand', {'card_ids': [True]}, 'card_ids'),
-            ('inspect_ui', {'sources': None}, 'sources'),
+            ('inspect_ui', {'sources': False}, 'sources'),
             ('inspect_combatants', {'enemy_id': 1}, 'preset'),
         ]
         for tool, arguments, expected in cases:

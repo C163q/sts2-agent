@@ -131,7 +131,7 @@ class SelectionPresetTests(unittest.IsolatedAsyncioTestCase):
         tools = GameTools(client)
         await tools.get_observation()
         for args in ([], False, 0, '', {'preset': None}, {'preset': []}, {'preset': True},
-                     {'preset': 'FULL'}, {'card_ids': None}, {'preset': 'summary', 'extra': 1}):
+                     {'preset': 'FULL'}, {'preset': 'summary', 'extra': 1}):
             with self.subTest(args=args):
                 result = await tools.inspect_selection(args)
                 self.assertEqual(result['error']['code'], 'invalid_request')

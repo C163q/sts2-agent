@@ -23,7 +23,7 @@ MCP 调用 `inspect_relics()` 默认返回完整详情，也可传入以下预�
 | 参数 | 默认值 | 含义 |
 | --- | --- | --- |
 | `preset` | `default` | `default` 保留完整内容并省略普通空值；`full` 保留原有空值；`summary` 的遗物条目仅保留 `name/counter/melted`，与基础观察的字段一致 |
-| `relic_indices` | 省略 | 当前未筛选 `inspect_relics` 列表从 0 开始的下标数组；省略返回全部，`[]` 返回空列表，重复值去重，结果保持遗物栏顺序 |
+| `relic_indices` | 省略 | 当前未筛选 `inspect_relics` 列表从 0 开始的下标数组；省略或 `null` 返回全部，`[]` 返回空列表，重复值去重，结果保持遗物栏顺序 |
 
 ```json
 {"preset":"summary","relic_indices":[1,2,3]}
@@ -31,7 +31,7 @@ MCP 调用 `inspect_relics()` 默认返回完整详情，也可传入以下预�
 
 遗物当前没有稳定 ID，因此使用 `relic_indices`；这些下标不保证与基础观察的 `top_bar.relics` 相同，也不能在遗物增减、重排或可见性改变后直接复用。summary 沿用本调用可见、可悬停的遗物范围，不扩大为其他图标。可见计数为 0 时保留 0，不可读为 `null`；兼容旧 Mod 时不补原本缺失的 `melted`。
 
-传入筛选时，顶层 `relic_indices` 与返回的 `relics` 一一对应，保留它们在未筛选列表中的原始位置。例如请求 `[3,1,3]`，结果映射为 `[1,3]`。full 的 `hover_tips[].relic_indices` 仍指向**本次返回数组**，同步重新编号并删除无关联解释；summary 不返回正文或 `hover_tips`。省略筛选时不增加顶层映射，显式 full 与原格式兼容；default 下普通遗物的 `melted:null` 和不可读计数可省略，summary 同样省略这些普通空值。
+传入筛选时，顶层 `relic_indices` 与返回的 `relics` 一一对应，保留它们在未筛选列表中的原始位置。例如请求 `[3,1,3]`，结果映射为 `[1,3]`。full 的 `hover_tips[].relic_indices` 同样指向**未筛选列表**，只保留命中的原位置并删除无关联解释；summary 不返回正文或 `hover_tips`。省略筛选时不增加顶层映射，显式 full 与原格式兼容；default 下普通遗物的 `melted:null` 和不可读计数可省略，summary 同样省略这些普通空值。
 
 下标仅接受 0 至 2147483647 的整数，拒绝布尔值、浮点数、字符串、`null` 与未知参数。超出本次可读列表范围的下标按请求首次出现顺序合并，有效结果照常返回：
 
@@ -53,7 +53,7 @@ MCP 调用 `inspect_relics()` 默认返回完整详情，也可传入以下预�
 | `relics[].melted` | 蜡质遗物未熔化为 `false`、已熔化为 `true`；非蜡质不适用，或图标不可读时为 `null`。依据实际显示的蜡质效果和熔化着色，普通禁用不表示熔化 |
 | `relics[].description` | 当前实例的原生英语正文，包括原生提供的动态值及用尽、熔化等说明 |
 | `hover_tips[]` | 附带的关键词或卡牌解释，以 `title/description` 共同去重 |
-| `hover_tips[].relic_indices[]` | 对应本次 `relics` 数组的位置，从 0 开始，仅对本次结果有效 |
+| `hover_tips[].relic_indices[]` | 当前未筛选列表的位置，从 0 开始；筛选后通过顶层 `relic_indices` 查找对应条目 |
 
 主正文保留在遗物条目内；重复附带解释集中保存，同名但正文不同的解释分别保留。没有可读条目时返回 `relics: []`；没有额外解释时为 `hover_tips: []`。本调用不包含手牌数值、敌人意图 notes。
 

@@ -53,21 +53,21 @@ class RelicPresetTests(unittest.IsolatedAsyncioTestCase):
             {'name': 'Anchor', 'melted': True},
         ]})
 
-    async def test_filter_uses_original_positions_preserves_order_and_remaps_tip_links(self):
+    async def test_filter_uses_original_positions_preserves_order_and_original_tip_links(self):
         client = RelicClient()
         original = copy.deepcopy(client.relics)
         result = await GameTools(client).inspect_relics({'relic_indices': [2, 1, 2]})
         self.assertEqual(result['relic_indices'], [1, 2])
         self.assertEqual([r['name'] for r in result['relics']], ['Pen Nib', 'Anchor'])
         self.assertEqual(result['hover_tips'], [
-            {'title': 'Block', 'description': 'Prevents damage.', 'relic_indices': [1]}])
+            {'title': 'Block', 'description': 'Prevents damage.', 'relic_indices': [2]}])
         self.assertEqual(client.relics, original)
         self.assertEqual(client.calls, [('inspect_relics', None, None)])
 
-    async def test_shared_tip_keeps_all_matching_relics_with_new_indices(self):
+    async def test_shared_tip_keeps_all_matching_original_indices(self):
         result = await GameTools(RelicClient()).inspect_relics({'relic_indices': [2, 0]})
         self.assertEqual(result['relic_indices'], [0, 2])
-        self.assertEqual(result['hover_tips'][0]['relic_indices'], [0, 1])
+        self.assertEqual(result['hover_tips'][0]['relic_indices'], [0, 2])
 
     async def test_missing_indices_are_grouped_once_alongside_valid_results(self):
         for preset in ('full', 'summary'):
@@ -107,7 +107,7 @@ class RelicPresetTests(unittest.IsolatedAsyncioTestCase):
         args = [[], False, 0, '', {'preset': None}, {'preset': 'FULL'}, {'preset': []},
                 {'relic_ids': [0]}, {'extra': True}]
         args += [{'relic_indices': indices} for indices in
-                 (None, False, '0', {}, [True], [1.0], ['0'], [-1], [2147483648])]
+                 (False, '0', {}, [True], [1.0], ['0'], [-1], [2147483648])]
         for value in args:
             with self.subTest(args=value):
                 self.assertEqual((await tools.inspect_relics(value))['error']['code'], 'invalid_request')

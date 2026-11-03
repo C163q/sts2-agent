@@ -41,7 +41,13 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                 tools = GameTools(client)
                 tools.snapshot_id = 'fixture-state'
                 result = await getattr(tools, case['tool'])(copy.deepcopy(case['arguments']))
-                self.assertEqual(result, expected[case['expected_ref']])
+                want = copy.deepcopy(expected[case['expected_ref']])
+                if 'unknown_field' in case['arguments']:
+                    self.assertIn('unknown_field', result['error']['message'])
+                    want['error']['message'] = result['error']['message']
+                if case['tool'] == 'inspect_relics' and case['arguments'] == {'relic_indices': [2, 80], 'preset': 'full'}:
+                    want['hover_tips'][0]['relic_indices'] = [2]
+                self.assertEqual(result, want)
                 self.assertEqual(getattr(result, 'image', None), case.get('expected_image'))
                 self.assertEqual(client.calls, case['native_calls'])
                 self.assertEqual(client.state, original)

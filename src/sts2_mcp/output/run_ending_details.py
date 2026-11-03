@@ -5,7 +5,7 @@ import re
 
 
 OPTION_SCHEMA = {'type': 'object', 'properties': {'option_id': {
-    'type': 'string', 'minLength': 1,
+    'type': 'string', 'minLength': 1, 'pattern': r'^[a-z][a-z0-9_]*(?::[0-9]+)?$',
     'description': 'An enabled run_result.options[].id from get_observation or inspect_run_result; use the exact offered value.',
 }},
                  'required': ['option_id'], 'additionalProperties': False}

@@ -1,6 +1,6 @@
 # 工具共用契约与执行链路重构计划
 
-> 当前状态：本轮第 1–2 阶段完成并验证，整体完成 2／7；固定行为基线、Python 契约分离与统一解码已交付，见[实施记录](../../research/2026-11-04-refactor-stages-1-2.md)。第 3–7 阶段留待后续，当前没有正在执行的步骤，暂无阻塞。
+> 当前状态：第 1–3 阶段完成并验证，整体完成 3／7。正在实施第 4 阶段；第 5–7 阶段尚未开始，暂无阻塞。第 1–2 阶段见[既有记录](../../research/2026-11-04-refactor-stages-1-2.md)，本轮见[第 3–4 阶段记录](../../research/2026-11-04-refactor-stages-3-4.md)。
 >
 > 执行方式：按阶段实施与验证，每阶段独立提交；使用 `superpowers:executing-plans`。后续发现无法确认的语义差异时先询问，不把整理结构当作改变行为的授权。
 
@@ -82,14 +82,14 @@
 
 **接口：** `ToolSpec` 登记公开名称、原生操作、工具提示、参数 schema／解析器、支持的 preset、响应 reader 和投影。副作用类别、是否需要动作许可、是否记录／返回 transition、MCP annotations 独立登记。`normalize_request(spec, arguments) -> NormalizedRequest` 将公开 preset、原生参数、输出筛选、媒体需求与这些执行规则分开；`filter_indices(items, requested)` 返回保留的原位置及缺失位置。
 
-- [ ] 测试登记表与公开工具目录、handler、reader、公共分类一一对应；截图单独登记而不获得玩法 preset，get_observation 明确映射 get_state。先迁移登记，不引入跨语言代码生成。
-- [ ] 从登记表导出 catalog／handler 分派与 preset 列表，移除包装器签名推断和按工具名堆叠的错误特判。通用参数类型、范围及允许值共用定义；目标选择等跨字段约束保留明确解析器。
-- [ ] 独立测试这些执行维度：inspect_selection 仅在提供 view_upgrades 时按可能改 UI 处理，但不因此要求旧动作许可；set_divination_tool 改 UI、需要许可并返回动作回执；截图写文件但不刷新游戏许可。原生 RecordedActions 对照登记的事件记录要求，不从 MCP readOnlyHint 推导。
-- [ ] 用表驱动测试统一可选筛选：省略／null 全部、[] 为空、重复去重、原生顺序、有效与无效项并存；只改变四项已经确认的接口契约。
-- [ ] 遗物顶层映射仍用 relic_indices，提示中的 relic_indices 改为原位置；combatants 保持 source_indices 与原路径。药水的真实槽位 null 不压缩，卡牌身份不换成位置；不强制更名所有关联字段。
-- [ ] 共用筛选选择与帮助关联裁剪，匹配策略保持显式：UI 精确来源、combatants 对象／分组；关联 note 同步裁剪。summary 完全省略悬停还是仅省 description 仍按工具规定。
-- [ ] 将 default 空值过滤保持为最终单一入口；过渡事件、比较两侧、真实数组 null 和宝箱可见 relic:null 的例外用路径规则测试，不能在工具中另写一套删 null。
-- [ ] 对所有工具的未知参数、错误 preset、布尔冒充整数、范围边界、null 逐项检查 schema 与实际解析一致；运行完整 Python 测试，按接口变化更新 MCP 版本与指南后提交。
+- [x] 测试登记表与公开工具目录、handler、reader、公共分类一一对应；截图单独登记而不获得玩法 preset，get_observation 明确映射 get_state。先迁移登记，不引入跨语言代码生成。
+- [x] 从登记表导出 catalog／handler 分派与 preset 列表，移除包装器签名推断和按工具名堆叠的错误特判。通用参数类型、范围及允许值共用定义；目标选择等跨字段约束保留明确解析器。
+- [x] 独立测试这些执行维度：inspect_selection 仅在提供 view_upgrades 时按可能改 UI 处理，但不因此要求旧动作许可；set_divination_tool 改 UI、需要许可并返回动作回执；截图写文件但不刷新游戏许可。原生 RecordedActions 对照登记的事件记录要求，不从 MCP readOnlyHint 推导。
+- [x] 用表驱动测试统一可选筛选：省略／null 全部、[] 为空、重复去重、原生顺序、有效与无效项并存；只改变四项已经确认的接口契约。
+- [x] 遗物顶层映射仍用 relic_indices，提示中的 relic_indices 改为原位置；combatants 保持 source_indices 与原路径。药水的真实槽位 null 不压缩，卡牌身份不换成位置；不强制更名所有关联字段。
+- [x] 共用筛选选择与帮助关联裁剪，匹配策略保持显式：UI 精确来源、combatants 对象／分组；关联 note 同步裁剪。summary 完全省略悬停还是仅省 description 仍按工具规定。
+- [x] 将 default 空值过滤保持为最终单一入口；过渡事件、比较两侧、真实数组 null 和宝箱可见 relic:null 的例外用路径规则测试，不能在工具中另写一套删 null。
+- [x] 对所有工具的未知参数、错误 preset、布尔冒充整数、范围边界、null 逐项检查 schema 与实际解析一致；运行完整 Python 测试，按接口变化更新 MCP 版本与指南后提交。
 
 ## 第 4 阶段：会话许可和错误恢复
 

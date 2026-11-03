@@ -112,7 +112,7 @@ class SelectionFilterTests(unittest.IsolatedAsyncioTestCase):
         client = SelectionClient()
         tools = GameTools(client)
         await tools.get_observation()
-        for ids in (None, False, '9', {}, [True], [1.0], ['9'], [-1], [2147483648]):
+        for ids in ( False, '9', {}, [True], [1.0], ['9'], [-1], [2147483648]):
             with self.subTest(ids=ids):
                 result = await tools.inspect_selection({'card_ids': ids})
                 self.assertEqual(result['error']['code'], 'invalid_request')

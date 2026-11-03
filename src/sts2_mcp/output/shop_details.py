@@ -3,7 +3,7 @@ from sts2_mcp.output.contracts.rooms import SHOP, SHOP_ITEM, SHOP_CARD
 
 
 BUY_SCHEMA = {'type': 'object', 'properties': {'item_id': {
-    'type': 'integer', 'minimum': 0,
+    'type': 'integer', 'minimum': 0, 'maximum': 2147483647,
     'description': 'A current shop.items[].id from get_observation or inspect_shop; restocked items have new IDs.',
 }},
               'required': ['item_id'], 'additionalProperties': False}

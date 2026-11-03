@@ -21,7 +21,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 | 参数 | 默认值 | 含义 |
 | --- | --- | --- |
 | `preset` | `default` | `default` 保留完整内容并省略普通空值；`full` 保留原有空值；`summary` 仅保留身份、显示费用与标记 |
-| `card_ids` | 省略 | 非负整数卡牌 ID 数组；省略返回全部可见手牌，`[]` 返回空结果。重复 ID 去重，结果仍按当前手牌顺序排列 |
+| `card_ids` | 省略 | 非负整数卡牌 ID 数组；省略或 `null` 返回全部可见手牌，`[]` 返回空结果。重复 ID 去重，结果仍按当前手牌顺序排列 |
 
 调用示例：
 

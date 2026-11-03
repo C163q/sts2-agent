@@ -23,7 +23,7 @@ inspect_ui(preset="full", sources=["player.energy"])
 | 参数 | 行为 |
 | --- | --- |
 | `preset` | 默认 `default`，按[公共预设](mcp.md#输出预设)省略普通空值；`full` 保留空值；`summary` 在 default 基础上省略每条提示的 `description`，保留标题、来源和上下文 |
-| `sources` | 按提示来源路径精确匹配。省略表示全部，`[]` 表示不返回提示；重复值去重，提示与来源保持原生顺序。共享提示只保留匹配的来源；不会将 `top_bar` 当作路径前缀 |
+| `sources` | 按提示来源路径精确匹配。省略或 `null` 表示全部，`[]` 表示不返回提示；重复值去重，提示与来源保持原生顺序。共享提示只保留匹配的来源；不会将 `top_bar` 当作路径前缀 |
 
 未匹配来源集中返回 `errors:[{"code":"ui_sources_unavailable","sources":[...]}]`，其余匹配提示仍正常返回；可能是来源拼写错误，也可能是当前页面没有该入口或不允许悬停。未知参数、非法预设、非字符串或空字符串来源等返回 `invalid_request`。
 

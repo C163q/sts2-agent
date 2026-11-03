@@ -1,4 +1,6 @@
 from sts2_mcp.output.response_pipeline import decode_success
+from sts2_mcp.tool_registry import NATIVE_TOOLS
+from sts2_mcp.request_arguments import normalize_request
 import argparse
 import json
 import os
@@ -50,7 +52,7 @@ class Client:
 def main():
     parser = argparse.ArgumentParser(description="调用最小验证原型的文件工具接口。")
     parser.add_argument("--ipc-dir", required=True, type=Path)
-    parser.add_argument("operation", choices=("inspect_run_result", "run_result_option", "travel_to_node", "get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "inspect_map", "close_map", "close_card_view", "close_deck", "inspect_selection", "select_card", "selection_option", "set_selection_view", "start_test_combat", "end_turn", "inspect_targets", "play_card", "use_potion", "discard_potion", "inspect_rewards", "claim_reward", "proceed", "inspect_rest_site", "choose_rest_option", "loot_treasure", "inspect_treasure", "open_shop", "close_shop", "inspect_shop", "buy_item", "inspect_ancient", "choose_ancient_option", "advance_dialogue", "inspect_event", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation"))
+    parser.add_argument("operation", choices=tuple(name for name in NATIVE_TOOLS if name != 'capture_screenshot') + ('close_deck', 'start_test_combat'))
     parser.add_argument("--pile", choices=("draw", "discard", "exhaust"))
     parser.add_argument("--preset", choices=("default", "full", "summary"), help="牌组／牌堆默认 default；战斗对象默认 full")
     parser.add_argument("--sources", nargs="*", help="战斗对象来源路径；省略取全部，空列表不取对象")
@@ -92,14 +94,13 @@ def main():
         if combatants:
             if arguments:
                 raise ValueError('inspect_combatants accepts only --preset and --sources.')
-            from sts2_mcp.output.combatant_presets import combatant_arguments
-            settings = combatant_arguments({'preset': 'summary' if args.preset == 'summary' else 'full', **(
-                {'sources': args.sources} if args.sources is not None else {})})
-            arguments = {'level': settings['preset']}
+            normalized = normalize_request(NATIVE_TOOLS[args.operation], {
+                'preset': args.preset or 'full', **({'sources': args.sources} if args.sources is not None else {})})
+            settings = normalized.output_arguments
+            arguments = normalized.native_arguments
         if browsing:
-            from sts2_mcp.output.deck_details import deck_arguments
-            from sts2_mcp.output.pile_details import pile_arguments
-            arguments = (deck_arguments if args.operation == 'inspect_deck' else pile_arguments)(arguments)
+            normalized = normalize_request(NATIVE_TOOLS[args.operation], {**arguments, 'preset': args.preset or 'default'})
+            arguments = normalized.native_arguments
         request_sent = True
         result = Client(args.ipc_dir).call(args.operation, args.expected_state, arguments=arguments or None)
         if not isinstance(result, dict) or type(result.get("ok")) is not bool:

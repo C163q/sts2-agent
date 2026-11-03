@@ -124,7 +124,7 @@ class HandPresetTests(unittest.IsolatedAsyncioTestCase):
         tools = GameTools(client)
         await tools.get_observation()
         for args in ([], False, 0, '', {'preset': None}, {'preset': []}, {'preset': 'FULL'},
-                     {'filter': [9]}, {'card_ids': None}, {'card_ids': 9}, {'card_ids': '9'},
+                     {'filter': [9]}, {'card_ids': 9}, {'card_ids': '9'},
                      {'card_ids': [True]}, {'card_ids': [1.0]}, {'card_ids': [-1]},
                      {'card_ids': [2147483648]}, {'card_ids': ['9']}, {'extra': True}):
             with self.subTest(args=args):

@@ -1,3 +1,4 @@
+from sts2_mcp.output.filtering import optional_filter, linked_help, filter_indices
 """Select static combatant subtrees while preserving canonical source addresses."""
 from copy import deepcopy
 
@@ -19,9 +20,7 @@ def combatant_arguments(arguments):
     if not isinstance(preset, str) or preset not in ('full', 'summary'):
         raise ValueError('preset must be one of: default, full, summary.')
     sources = arguments.get('sources')
-    if sources is not None and (not isinstance(sources, list) or any(
-            not isinstance(source, str) or not source for source in sources)):
-        raise ValueError('sources must be null or an array of non-empty combatant source paths.')
+    sources = optional_filter(sources, 'sources', integers=False)
     return {'preset': preset, 'sources': None if sources is None else list(dict.fromkeys(sources))}
 
 
@@ -84,11 +83,7 @@ def combatant_preset(payload, preset, sources):
             if item is not omitted: result[root] = item
     if mappings: result['source_indices'] = mappings
     if preset == 'full' and any(root in result for root in ROOTS):
-        tips = []
-        for tip in payload['hover_tips']:
-            matches = [source for source in tip['sources'] if selected(source)]
-            if matches: tips.append({**tip, 'sources': matches})
-        result['hover_tips'] = tips
+        result['hover_tips'] = linked_help(payload['hover_tips'], 'sources', selected)
     notes = deepcopy(payload.get('notes', {}))
     if not any(enemy.get('intents') for enemy in result.get('enemies') or []):
         notes.pop('enemy_attack_intents', None)

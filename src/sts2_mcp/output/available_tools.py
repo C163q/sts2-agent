@@ -1,15 +1,9 @@
-INSPECTIONS = frozenset({
-    'inspect_hand', 'inspect_ui', 'inspect_potions', 'inspect_combatants', 'inspect_relics',
-    'inspect_selection', 'inspect_targets', 'inspect_rewards', 'inspect_rest_site', 'inspect_treasure',
-    'inspect_shop', 'inspect_ancient', 'inspect_event', 'inspect_run_result',
-})
-VIEWS = frozenset({'inspect_deck', 'inspect_pile', 'close_card_view', 'inspect_map', 'close_map', 'set_selection_view'})
-GAME_ACTIONS = frozenset({
-    'play_card', 'end_turn', 'use_potion', 'discard_potion', 'select_card', 'selection_option',
-    'claim_reward', 'proceed', 'choose_rest_option', 'loot_treasure', 'open_shop', 'close_shop', 'buy_item',
-    'choose_ancient_option', 'advance_dialogue', 'choose_event_option', 'set_divination_tool', 'divine',
-    'respond_to_confirmation', 'travel_to_node', 'run_result_option',
-})
+"""Public classifications derive from the tool registry, never from annotations."""
+from sts2_mcp.tool_registry import SPECS
+
+INSPECTIONS = frozenset(spec.name for spec in SPECS if spec.category == 'inspection')
+VIEWS = frozenset(spec.name for spec in SPECS if spec.category == 'view')
+GAME_ACTIONS = frozenset(spec.name for spec in SPECS if spec.returns_transition)
 PUBLIC_TOOLS = INSPECTIONS | VIEWS | GAME_ACTIONS
 
 

@@ -10,7 +10,7 @@ CARD_SCHEMA = {"type": "object", "properties": {"card_id": {
 }},
                "required": ["card_id"], "additionalProperties": False}
 OPTION_SCHEMA = {"type": "object", "properties": {"option_id": {
-    "type": "string", "minLength": 1, "maxLength": 128,
+    "type": "string", "minLength": 1, "maxLength": 128, "pattern": r"\S",
     "description": "An enabled selection.options[].id from get_observation or inspect_selection; use the exact offered value.",
 }},
                  "required": ["option_id"], "additionalProperties": False}
