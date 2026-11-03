@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中。共 43 项，已核销 0 项。get_observation 的战斗及全部选牌约定范围已交付，地图与牌组／牌堆浏览覆盖（05、06 组）的主体占位及独立顶栏摘要已交付，具体内容待对应工具核验。[07–09 组](2026-11-02-get-observation-rooms.md)已有基线 full 样本，期间完成[可浏览内容筛选审查与修复](2026-11-02-browsable-content-audit.md)，summary 已交付，房间主体沿用 default、可见宝箱保留 relic:null；[10–12 组商店、先古之民与普通事件](2026-11-03-get-observation-shop-ancient-event.md)的现状核验和 summary 约定范围已交付，保留 82 份完整 full 及 5 份投影摘要；[13–15 组占卜、确认框与建筑师终章](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付；其余 2 组及另外 42 项待选。
+> 当前状态：工具核验进行中，共 43 项，已核销 0 项。get_observation 的 17 个场景组均已有核验记录：01–04、07–15 组约定 summary 已交付；05、06 组覆盖页主体暂用 default、顶栏共用摘要已交付，实际内容待对应工具核验；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状和完整 full 已交付，summary 待讨论定稿。该工具整体未核销，其余 42 项待选。
 
 ## 范围与基线
 
@@ -27,7 +27,7 @@
 
 ### 基础观察与战斗详情（7 项）
 
-- [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：[07–09 组奖励、火堆与宝箱](2026-11-02-get-observation-rooms.md)现状核验和 summary 已交付，[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)现状核验及 summary 已交付，[13–15 组](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付，16–17 组待选；[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)已交付本阶段摘要占位，内容待对应工具核验；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
+- [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：[07–09 组奖励、火堆与宝箱](2026-11-02-get-observation-rooms.md)现状核验和 summary 已交付，[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)现状核验及 summary 已交付，[13–15 组](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状及完整 full 已交付，summary 待讨论定稿；[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)已交付本阶段摘要占位，内容待对应工具核验；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
 - [ ] `inspect_ui`：可见战斗 UI、资源及空充能球栏位的悬停说明。
 - [ ] `inspect_hand`：手牌详情。
 - [ ] `inspect_targets`：指定手牌或药水的可用性与目标范围。

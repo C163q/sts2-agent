@@ -1,0 +1,82 @@
+{
+  "scene": "run_result",
+  "map": null,
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": null,
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": {
+    "status": "visible",
+    "phase": "unlock",
+    "title": null,
+    "texts": [
+      "Cards Unlocked!",
+      "The following cards will appear in future runs.",
+      "Confirm"
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "cards": [
+      {
+        "id": "card:0",
+        "name": "Molten Fist",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "description": "Deal 10 damage.\nDouble the enemy's Vulnerable.\nExhaust."
+      },
+      {
+        "id": "card:1",
+        "name": "Cruelty",
+        "type": "Power",
+        "rarity": "rare",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "description": "Vulnerable enemies take an additional 25% damage."
+      },
+      {
+        "id": "card:2",
+        "name": "Dominate",
+        "type": "Skill",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "description": "Apply 1 Vulnerable.\nGain 1 Strength for each Vulnerable on the enemy.\nExhaust."
+      }
+    ],
+    "relics": [],
+    "potions": []
+  },
+  "available_actions": [
+    "run_result_option",
+    "inspect_run_result"
+  ]
+}

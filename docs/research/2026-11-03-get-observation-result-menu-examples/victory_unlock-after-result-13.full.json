@@ -1,0 +1,61 @@
+{
+  "scene": "run_result",
+  "map": null,
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": null,
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": {
+    "status": "visible",
+    "phase": "unlock",
+    "title": null,
+    "texts": [
+      "Relics Unlocked!",
+      "The following relics will appear in future runs.",
+      "Confirm"
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [
+      {
+        "name": "Red Skull"
+      },
+      {
+        "name": "Paper Phrog"
+      },
+      {
+        "name": "Ruined Helmet"
+      }
+    ],
+    "potions": []
+  },
+  "available_actions": [
+    "run_result_option",
+    "inspect_run_result"
+  ]
+}

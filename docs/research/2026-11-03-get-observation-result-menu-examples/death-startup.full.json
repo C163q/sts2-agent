@@ -1,0 +1,25 @@
+{
+  "scene": "loading_or_noncombat",
+  "map": null,
+  "screen": {
+    "status": "not_applicable"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": null,
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": []
+}

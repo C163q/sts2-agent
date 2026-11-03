@@ -1,6 +1,6 @@
 # get_observation 场景核验与参数设计
 
-> 当前状态：战斗与全部选牌（01–04 组）的约定范围已交付；地图及牌组／牌堆浏览覆盖（05、06 组）已完成主体暂用 default、顶栏独立复用共用摘要的占位，实际内容待对应工具核验。奖励、火堆与宝箱（07–09 组）已收录 37 份基线 full 样本，其间完成[可浏览内容筛选审查与修复](2026-11-02-browsable-content-audit.md)，当前完整奖励样本见该记录，07–09 组 summary 已定稿并实现，房间主体沿用 default、可见宝箱显式保留 relic:null。[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)已有 82 份完整 full 样本，现状核验与 summary 约定范围已交付；[13–15 组占卜、确认框与建筑师终章](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付；其余 2 组待选，get_observation 整体尚未核销。
+> 当前状态：01–04 组战斗与全部选牌、07–15 组房间／事件／占卜／确认框／建筑师终章的约定 summary 已交付；05、06 组地图及牌组／牌堆覆盖已完成主体 default 占位和共用顶栏摘要，实际内容待对应工具核验。[剩余 16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状核验已交付，完整 full 样本与源码边界已记录，summary 待讨论定稿。17 组均已有对应核验记录，但仍有明确的后续范围，get_observation 整体尚未核销。
 
 总清单与流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
 
@@ -14,7 +14,7 @@
 
 ## 当前调用与返回范围
 
-当前接受可选的 `preset: default/full/actions_only/summary/top_bar`，没有其他筛选参数。summary 精简战斗、当前选牌、商店卡牌和普通事件，其余主体暂用 default；top_bar 为 actions_only 上下文加顶栏及遗物数量，完整契约见[观察预设](../development/observation.md#mcp-输出预设)。公开默认值由公共预设包装器提供，不能把内部旧版参数解析函数中的 full 默认值当作公开默认值。
+当前接受可选的 `preset: default/full/actions_only/summary/top_bar`，没有其他筛选参数。summary 精简战斗、当前选牌、商店卡牌、普通事件和占卜教学说明，并复用共用顶栏摘要，其余主体沿用 default；top_bar 为 actions_only 上下文加顶栏及遗物数量，完整契约见[观察预设](../development/observation.md#mcp-输出预设)。公开默认值由公共预设包装器提供，不能把内部旧版参数解析函数中的 full 默认值当作公开默认值。
 
 ```json
 {"preset":"full"}
@@ -57,8 +57,8 @@ divination, confirmation, epilogue, run_result, available_actions
 | 13 | 占卜 | 底层 scene:event，`screen.view:divination`；`playing/settling/finished`，棋盘 grid、可见次数、工具、对话、继续以及独立 PNG；被覆盖时棋盘和图片不返回 | [现状核验与 full／图片已交付，summary 已交付](2026-11-03-get-observation-divination-confirmation-epilogue.md#13占卜) |
 | 14 | 确认框与人工输入 | Trial 弹窗使用 `screen.view:confirmation` 与 confirmation；未知确认来源可能为 confirmation:null 并附 notes.interaction；区分可操作确认框和其他未支持覆盖页 | [来源、取消／确认及人工边界已核验，summary 已交付](2026-11-03-get-observation-divination-confirmation-epilogue.md#14确认框与人工输入) |
 | 15 | 建筑师终章 | `scene:epilogue`、`screen.view:epilogue`；已完整显示的气泡、推进 / 继续按钮、尚未准备或被地图 / 牌组覆盖。进入终章与已判定胜利并非同一条件 | [对话、覆盖与交接已核验，牌组覆盖校验已修复；summary 主体沿用 default](2026-11-03-get-observation-divination-confirmation-epilogue.md#15建筑师终章) |
-| 16 | 胜负结算与解锁 | `scene:run_result`；`outcome/summary/history/leaderboard/timeline/epoch/unlock/tutorial` 八种 phase，分数、徽章、发现、已显示解锁卡牌 / 遗物 / 药水与按钮随页变化 | 待选择 |
-| 17 | 主菜单、加载及未识别页面 | `scene:main_menu/loading_or_noncombat`；无战斗内容，状态可为 not_applicable、visible 等；需区分尚未加载、已退出本局和未识别页面，不能把空内容当作正常战斗 | 待选择 |
+| 16 | 胜负结算与解锁 | `scene:run_result`；`outcome/summary/history/leaderboard/timeline/epoch/unlock/tutorial` 八种 phase，分数、徽章、发现、已显示解锁卡牌 / 遗物 / 药水与按钮随页变化 | [现状与完整 full 已交付](2026-11-03-get-observation-result-menu.md#16胜负结算与解锁)，7 种 phase 已采样，leaderboard 仅源码核验；summary 待定稿 |
+| 17 | 主菜单、加载及未识别页面 | `scene:main_menu/loading_or_noncombat`；后者是当前仍在使用的兜底分类，不等同于加载中；主菜单体系也可能包含未支持子页，不返回其正文或操作 | [启动过渡、主菜单、普通时间线与结算退出已核验](2026-11-03-get-observation-result-menu.md#17主菜单加载及未分类页面)，其余兜底分支明确源码边界；summary 待定稿 |
 
 除上表外，各组还须检查 `screen.status` 的 `visible/covered/hidden/not_ready/not_applicable`、顶栏是否可读、动画中数值、空容器与未知值，以及 available_actions 是否对应当前真实可用工具。目录不表示所有状态都能与所有页面任意组合。
 
@@ -84,6 +84,7 @@ divination, confirmation, epilogue, run_result, available_actions
 - 选牌包含战斗、火堆、事件及先古之民等底层场景；本轮围绕 selection 及其可见上下文核验，不自动决定这些房间自身的摘要字段。
 - 奖励、火堆与宝箱的基线及完整样本见[07–09 组记录](2026-11-02-get-observation-rooms.md)，summary 已交付，定稿与验证见同页。奖励可见行限制已在[浏览范围修复](2026-11-02-browsable-content-audit.md)中取消，新增当前 full/default/summary 样本；不要将原先截断的基线文件当作当前返回。
 - 商店、先古之民与普通事件的字段、分支和 82 份完整 full 样本见[10–12 组记录](2026-11-03-get-observation-shop-ancient-event.md)；summary 已实现共用商品卡牌摘要、保留先古主体、事件页面正文与 false 警告省略。商店卡牌正文由专门查看工具提供，这是已确认的职责分工，不作为 get_observation 的信息缺口。
+- [16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)已保存本轮完整 full，区分正常流程、history 夹具与 leaderboard 源码边界；失败死亡原因的混合语言缺口已记录，尚未修复。当前结算主体沿用 default，后续 summary 待讨论。
 - 新的设计结论、确认范围、验证结果及后续提交持续记录于对应专项文件，并在本目录同步状态。
 
 首轮目录检查：5 份初始 JSON 与上述原始 full 调用逐对象一致，能够通过当前观察结构校验；清单名称与 43 个公开工具对应，链接与 Markdown 围栏检查通过。首轮目录整理未启动游戏；后续新增的战斗实测、完整样本及未覆盖范围见专项记录。

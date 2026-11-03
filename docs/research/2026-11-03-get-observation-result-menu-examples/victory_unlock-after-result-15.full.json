@@ -1,0 +1,52 @@
+{
+  "scene": "run_result",
+  "map": null,
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": null,
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": {
+    "status": "visible",
+    "phase": "epoch",
+    "title": null,
+    "texts": [
+      "Chapter 3 - The Ironclad",
+      "The Ironclad",
+      "Continue",
+      "The Ironclad. A warrior from a faraway land entered the Spire.\nDriven by pure instinct and accursed blood, he has lost all reason and identity.\n\nAll who prevent his ascent shall perish."
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "continue",
+        "text": "Continue",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [],
+    "potions": []
+  },
+  "available_actions": [
+    "run_result_option",
+    "inspect_run_result"
+  ]
+}
