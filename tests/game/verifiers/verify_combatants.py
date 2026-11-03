@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 from sts2_mcp.roundtrip_client import Client, player_result
+from tests.game.support.combatant_assertions import assert_combatant_inspection
 
 
 def assert_visible_subsequence(actual, observed):
@@ -32,36 +33,7 @@ def main():
     assert after["ok"], after
     assert len({response["state"]["snapshot_id"] for response in (before, inspected, repeated, after)}) == 1, "Observation changed."
     result = player_result(inspected)
-    expected = {"scene", "player", "enemies", "hover_tips"}
-    if any(enemy.get("intents") for enemy in result["enemies"]):
-        expected.add("notes")
-        assert set(result["notes"]) == {"enemy_attack_intents"}, result
-    assert set(result) == expected and result["scene"] == "combat", result
-    if result["player"] is not None:
-        assert set(result["player"]) == {"powers", "orb_slots"}, result["player"]
-        assert_visible_subsequence(result["player"]["powers"], before["state"]["player"]["powers"])
-        assert result['player']['orb_slots'] == before['state']['player']['orb_slots'], result['player']
-    observed = {enemy["id"]: enemy for enemy in before["state"]["enemies"]}
-    for enemy in result["enemies"]:
-        assert set(enemy) == {"id", "name", "powers", "intents"}, enemy
-        basic = observed[enemy["id"]]
-        assert enemy["name"] == basic["name"], enemy
-        for field in ("powers", "intents"):
-            assert_visible_subsequence(enemy[field], basic[field])
-    tips = result["hover_tips"]
-    assert len(tips) == len({(tip["title"], tip["description"]) for tip in tips}), tips
-    for tip in tips:
-        assert set(tip) == {"title", "description", "sources"}, tip
-        assert isinstance(tip["description"], str), tip
-        assert "[img]" not in tip["description"] and "[gold]" not in tip["description"], tip
-        assert tip["sources"] and len(tip["sources"]) == len(set(tip["sources"])), tip
-        for source in tip["sources"]:
-            assert (".powers." in source or source.startswith('player.orb_slots.')
-                    or (source.startswith("enemies.") and ".intents." in source)), source
-            value = result
-            for part in source.split("."):
-                value = value[int(part)] if isinstance(value, list) else value[part]
-            assert isinstance(value, dict), (source, value)
+    assert_combatant_inspection(result, player_result(before))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
     args.report.parent.mkdir(parents=True, exist_ok=True)

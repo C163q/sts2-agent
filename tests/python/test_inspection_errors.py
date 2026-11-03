@@ -12,7 +12,7 @@ from tests.python.test_action_observations import Client as ActionClient
 from tests.python.test_card_play import targets
 
 
-READS = ('get_observation', 'inspect_targets', 'inspect_hand', 'inspect_ui')
+READS = ('get_observation', 'inspect_targets', 'inspect_hand', 'inspect_ui', 'inspect_combatants')
 ARGUMENTS = {'inspect_targets': {'card_id': 7}}
 NATIVE = {'get_observation': 'get_state'}
 
@@ -51,6 +51,7 @@ class InspectionErrorTests(unittest.IsolatedAsyncioTestCase):
             ('inspect_targets', {'card_id': 7, 'preset': 'summary'}, 'preset'),
             ('inspect_hand', {'card_ids': [True]}, 'card_ids'),
             ('inspect_ui', {'sources': None}, 'sources'),
+            ('inspect_combatants', {'enemy_id': 1}, 'preset'),
         ]
         for tool, arguments, expected in cases:
             with self.subTest(tool=tool, arguments=arguments):

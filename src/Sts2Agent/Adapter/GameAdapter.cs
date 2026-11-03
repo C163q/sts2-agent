@@ -556,7 +556,7 @@ internal sealed partial class GameAdapter(bool testMode)
         {
             var inspectedPlayer = LocalPlayer;
             if (inspectedPlayer == null || !CanInspectCombatants())
-                return FileMailbox.Error(request.Id, "illegal_action", "Combatant details are unavailable in the current screen.");
+                return FileMailbox.Error(request.Id, "illegal_action", "Combatant details are unavailable in the current screen.", publicMessage: true);
             string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_COMBATANT_CHECKS");
             if (testMode && checks != null)
                 CombatantInspectionChecks.Run(checks, inspectedPlayer);

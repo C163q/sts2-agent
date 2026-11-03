@@ -92,6 +92,8 @@ def output_preset(handler):
         if accepts_arguments:
             payload = await handler(self, native)
         elif native:
+            if operation == 'inspect_combatants':
+                return invalid_request('inspect_combatants accepts only preset.')
             return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
         else:
             payload = await handler(self)

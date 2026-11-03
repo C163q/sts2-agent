@@ -11,7 +11,8 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 from sts2_mcp.roundtrip_client import Client, player_result
-from tests.game.verifiers.verify_combatants import assert_visible_subsequence
+from tests.game.support.combatant_assertions import assert_combatant_inspection
+from sts2_mcp.mcp_catalog import tool_definitions
 
 
 async def verify(args):
@@ -30,8 +31,7 @@ async def verify(args):
             evidence["server"] = initialized.serverInfo.model_dump()
             listed = await session.list_tools()
             evidence["tools"] = [tool.model_dump(exclude_none=True) for tool in listed.tools]
-            assert {tool.name for tool in listed.tools} == {
-                "get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"}
+            assert {tool.name for tool in listed.tools} == {tool.name for tool in tool_definitions()}
             tool = next(tool for tool in listed.tools if tool.name == "inspect_combatants")
             assert tool.annotations.readOnlyHint is True
             assert set(tool.inputSchema['properties']) == {'preset'} and not tool.inputSchema['additionalProperties']
@@ -47,30 +47,7 @@ async def verify(args):
             observed = await call("get_observation")
             repeated = await call("inspect_combatants")
             assert inspected == repeated == player_result(reference), "Combatants changed or MCP differs from file inspection."
-            expected = {"scene", "player", "enemies", "hover_tips"}
-            if any(enemy["intents"] for enemy in inspected["enemies"]):
-                expected.add("notes")
-                assert set(inspected["notes"]) == {"enemy_attack_intents"}, inspected
-            assert set(inspected) == expected and inspected["scene"] == "combat", inspected
-            if inspected["player"] is not None:
-                assert set(inspected["player"]) == {"powers"}, inspected["player"]
-                assert_visible_subsequence(inspected["player"]["powers"], observed["player"]["powers"])
-            basic = {enemy["id"]: enemy for enemy in observed["enemies"]}
-            for enemy in inspected["enemies"]:
-                assert set(enemy) == {"id", "name", "powers", "intents"}, enemy
-                assert enemy["name"] == basic[enemy["id"]]["name"], enemy
-                for field in ("powers", "intents"):
-                    assert_visible_subsequence(enemy[field], basic[enemy["id"]][field])
-            tips = inspected["hover_tips"]
-            assert len(tips) == len({(tip["title"], tip["description"]) for tip in tips}), tips
-            for tip in tips:
-                assert set(tip) == {"title", "description", "sources"}, tip
-                assert tip["sources"] and len(tip["sources"]) == len(set(tip["sources"])), tip
-                for source in tip["sources"]:
-                    value = inspected
-                    for part in source.split("."):
-                        value = value[int(part)] if isinstance(value, list) else value[part]
-                    assert isinstance(value, dict), (source, value)
+            assert_combatant_inspection(inspected, observed)
     after = await asyncio.to_thread(client.call, "get_state")
     assert after["ok"], after
     assert len({response["state"]["snapshot_id"] for response in (before, reference, after)}) == 1, "Observation changed."

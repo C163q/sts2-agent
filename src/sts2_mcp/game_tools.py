@@ -36,7 +36,7 @@ from sts2_mcp.output.action_output import action_result
 
 
 class GameTools:
-    PURE_READS = {'get_state', 'inspect_targets', 'inspect_ui', 'inspect_hand'}
+    PURE_READS = {'get_state', 'inspect_targets', 'inspect_ui', 'inspect_hand', 'inspect_combatants'}
     READ_REJECTIONS = {'invalid_request', 'illegal_action', 'expired_request'}
 
     def __init__(self, client, controller=None, screenshot_directory=None):

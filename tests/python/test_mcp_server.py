@@ -557,16 +557,16 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(await tools.inspect_combatants({"preset": "full"}), {
                 **game.combatant_payload, "notes": {"enemy_attack_intents": ENEMY_ATTACK_INTENT_NOTE}})
 
-    async def test_failed_combatant_inspection_clears_token_and_sanitizes_game_error(self):
+    async def test_rejected_combatant_inspection_retains_token_and_sanitizes_private_message(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             await tools.get_observation()
             game.combatant_error = True
             result = await tools.inspect_combatants()
             self.assertEqual(result["error"]["code"], "illegal_action")
-            self.assertEqual(result["error"]["recovery"], "get_observation")
+            self.assertEqual(result["error"]["recovery"], "choose_legal_action")
             self.assertNotIn("/private", json.dumps(result))
-            self.assertEqual((await tools.end_turn())["error"]["code"], "observation_required")
+            self.assertTrue((await tools.end_turn())["transition"]["complete"])
 
     async def test_timed_out_combatant_inspection_clears_token_without_retry(self):
         with FakeGame() as game:
