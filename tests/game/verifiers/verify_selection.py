@@ -94,7 +94,7 @@ def main():
         call("inspect_hand")
         call("inspect_combatants")
         call("inspect_ui")
-        deck = call("inspect_deck", {"detail_level": "summary"})
+        deck = call("inspect_deck", {})
         assert deck["scene"] == observed["scene"], deck
         covered = call("get_state")
         assert covered["selection"]["status"] == "covered" and covered["selection"]["cards"] is None, covered
@@ -103,7 +103,7 @@ def main():
         map_view = call("inspect_map", success=False)
         if "ok" not in map_view:
             call("close_map")
-        pile = call("inspect_pile", {"pile": "discard", "detail_level": "full"})
+        pile = call("inspect_pile", {"pile": "discard"})
         if pile["status"] == "opened":
             call("close_card_view")
         peek = call("get_state")

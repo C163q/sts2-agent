@@ -63,9 +63,9 @@ internal static class PileInspectionChecks
             calls.Add(new { operation, arguments = args, response = result });
             return result;
         }
-        async Task<JsonElement> Inspect(string pile, string level = "summary")
+        async Task<JsonElement> Inspect(string pile)
         {
-            var response = await Call("inspect_pile", new { pile, detail_level = level });
+            var response = await Call("inspect_pile", new { pile });
             if (!response.GetProperty("ok").GetBoolean())
                 throw new InvalidOperationException("Pile test inspection failed: " + response);
             return response.GetProperty("state");
@@ -101,14 +101,14 @@ internal static class PileInspectionChecks
                 Check("invalid_arguments_preserve_screen_and_token", !result.GetProperty("ok").GetBoolean()
                     && result.GetProperty("error").GetProperty("code").GetString() == "invalid_request" && Token() == token);
             }
-            var hidden = await Inspect("exhaust", "full");
+            var hidden = await Inspect("exhaust");
             Check("hidden_exhaust_not_clicked_or_read", hidden.GetProperty("status").GetString() == "unavailable"
                 && hidden.GetProperty("cards").ValueKind == JsonValueKind.Null && clicks[ui.ExhaustPile] == 0 && Token() == token);
 
             await Call("inspect_deck");
             token = Token();
             int bubbles = VisibleUi.Descendants<NThoughtBubbleVfx>(NCombatRoom.Instance!).Count();
-            var empty = await Inspect("discard", "full");
+            var empty = await Inspect("discard");
             Check("empty_discard_clicks_closes_deck_and_shows_bubble", empty.GetProperty("status").GetString() == "empty"
                 && empty.GetProperty("cards").GetArrayLength() == 0 && clicks[ui.DiscardPile] == 1
                 && NCapstoneContainer.Instance?.CurrentCapstoneScreen == null && Token() != token
@@ -144,7 +144,7 @@ internal static class PileInspectionChecks
             string savedRng = JsonSerializer.Serialize(player.RunState.Rng.ToSerializable());
             string language = LocManager.Instance.Language;
             var summary = await Inspect("draw");
-            var screen = PileInspection.Current(new("draw", "summary"))!;
+            var screen = PileInspection.Current(new("draw"))!;
             var nativeCards = CardView.Cards(screen);
             var expected = draw.Cards.OrderBy(card => card.Rarity).ThenBy(card => card.Id.Entry, StringComparer.Ordinal).ToArray();
             Check("draw_uses_native_display_order_not_draw_order", nativeCards.Select(card => (card.Rarity, card.Id.Entry))
@@ -152,11 +152,11 @@ internal static class PileInspectionChecks
                 && !nativeCards.SequenceEqual(draw.Cards));
             Check("entire_pile_includes_offscreen_cards", summary.GetProperty("cards").GetArrayLength() == draw.Cards.Count
                 && draw.Cards.Count > CardView.Grid(screen).CurrentlyDisplayedCardHolders.Count(holder => VisibleUi.OnScreen(holder.CardNode)));
-            Check("summary_has_no_body_tips_or_page_controls", summary.GetProperty("cards").EnumerateArray().All(card =>
-                !card.TryGetProperty("description", out _) && !card.TryGetProperty("hover_tips", out _))
+            Check("complete_body_tips_without_page_controls", summary.GetProperty("cards").EnumerateArray().All(card =>
+                card.TryGetProperty("description", out _) && card.TryGetProperty("hover_tips", out _))
                 && !summary.TryGetProperty("sort", out _) && !summary.TryGetProperty("view_upgrades", out _));
             int clicked = clicks[ui.DrawPile];
-            var full = await Inspect("draw", "full");
+            var full = await Inspect("draw");
             Check("same_pile_reuses_page_without_toggle", ReferenceEquals(screen, CardView.Current) && clicks[ui.DrawPile] == clicked);
             Check("summary_full_ids_stable", summary.GetProperty("cards").EnumerateArray().Select(card => card.GetProperty("id").GetString())
                 .SequenceEqual(full.GetProperty("cards").EnumerateArray().Select(card => card.GetProperty("id").GetString())));
@@ -187,21 +187,21 @@ internal static class PileInspectionChecks
             await Call("inspect_deck");
             Check("deck_replaces_pile", CardView.Current is NDeckViewScreen);
             await Inspect("draw");
-            Check("pile_replaces_deck", PileInspection.Current(new("draw", "summary")) != null);
+            Check("pile_replaces_deck", PileInspection.Current(new("draw")) != null);
             var transferred = generated[0];
             string transferredId = cards[Array.IndexOf(nativeCards, transferred)].GetProperty("id").GetString()!;
             await Close();
             await Move(transferred, PileType.Discard);
-            var discarded = await Inspect("discard", "full");
+            var discarded = await Inspect("discard");
             Check("discard_context_and_identity_across_piles", discarded.GetProperty("cards").GetArrayLength() == discard.Cards.Count
                 && discarded.GetProperty("cards")[0].GetProperty("id").GetString() == transferredId);
             Capture("discard");
             var exhausted = generated[1];
             await Move(exhausted, PileType.Exhaust);
             await Wait(() => VisibleUi.OnScreen(ui.ExhaustPile));
-            var exhaustedResult = await Inspect("exhaust", "full");
+            var exhaustedResult = await Inspect("exhaust");
             Check("nonempty_exhaust_click_replaces_discard", clicks[ui.ExhaustPile] == 1
-                && PileInspection.Current(new("exhaust", "full")) != null && exhaustedResult.GetProperty("cards").GetArrayLength() == exhaust.Cards.Count);
+                && PileInspection.Current(new("exhaust")) != null && exhaustedResult.GetProperty("cards").GetArrayLength() == exhaust.Cards.Count);
             Capture("exhaust");
             await Close();
 
@@ -217,7 +217,7 @@ internal static class PileInspectionChecks
                 bool interrupted = false;
                 void Interrupt()
                 {
-                    if (PileInspection.Current(new("draw", "summary")) is not { } current) return;
+                    if (PileInspection.Current(new("draw")) is not { } current) return;
                     RenderingServer.FramePreDraw -= Interrupt;
                     interrupted = true;
                     if (mode == "closed") CardView.Close(current);

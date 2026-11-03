@@ -208,7 +208,7 @@ class FakeGame:
                     if "sort_by" in arguments:
                         self.deck_sort = {"by": arguments["sort_by"], "descending": arguments.get("descending", False)}
                     response["state"] = {"snapshot_id": self.token(), "scene": "combat", "screen": {"status": "covered", "view": "deck"},
-                        "detail_level": arguments.get("detail_level", "summary"), "view_upgrades": self.deck_upgrades,
+                        "view_upgrades": self.deck_upgrades,
                         "sort": self.deck_sort.copy(), **self.deck_payload}
                     if self.deck_error:
                         response = {"id": request["id"], "ok": False,
@@ -221,7 +221,7 @@ class FakeGame:
                     self.deck_open = False
                     self.pile_open = pile
                     response["state"] = {"snapshot_id": self.token(), "scene": "combat", "pile": pile,
-                        "detail_level": arguments.get("detail_level", "summary"), "status": "opened",
+                        "status": "opened",
                         "screen": {"status": "covered", "view": pile + "_pile"}, "message": "Native pile information.",
                         "cards": [{"id": "pile:0", "name": "Defend", "type": "Skill", "rarity": "basic",
                             "visual_card_pool": "ironclad", "energy_cost": "1", "star_cost": None,
@@ -1035,13 +1035,13 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertFalse(deck_tool.annotations.readOnlyHint)
                     self.assertFalse(deck_tool.annotations.destructiveHint)
                     self.assertFalse(deck_tool.annotations.idempotentHint)
-                    self.assertEqual(set(deck_tool.inputSchema["properties"]), {"preset", "detail_level", "view_upgrades", "sort_by", "descending"})
+                    self.assertEqual(set(deck_tool.inputSchema["properties"]), {"preset", "view_upgrades", "sort_by", "descending"})
                     pile_tool = next(tool for tool in listed.tools if tool.name == "inspect_pile")
                     self.assertFalse(pile_tool.annotations.readOnlyHint)
                     self.assertFalse(pile_tool.annotations.destructiveHint)
                     self.assertFalse(pile_tool.annotations.idempotentHint)
                     self.assertEqual(pile_tool.inputSchema["required"], ["pile"])
-                    self.assertEqual(set(pile_tool.inputSchema["properties"]), {"preset", "pile", "detail_level"})
+                    self.assertEqual(set(pile_tool.inputSchema["properties"]), {"preset", "pile"})
                     close_tool = next(tool for tool in listed.tools if tool.name == "close_card_view")
                     self.assertFalse(close_tool.annotations.readOnlyHint)
                     self.assertEqual(set(close_tool.inputSchema["properties"]), {"preset"})
@@ -1114,14 +1114,14 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual([item["expected_state"] for item in game.operations if item["operation"] == "end_turn"],
                                      ["state-1", "state-2"])
 
-                    deck = await session.call_tool("inspect_deck", {"detail_level": "full", "view_upgrades": True})
+                    deck = await session.call_tool("inspect_deck", {"preset": "full", "view_upgrades": True})
                     self.assertFalse(deck.isError)
                     self.assertEqual(json.loads(deck.content[0].text), deck.structuredContent)
                     self.assertEqual(deck.structuredContent["hover_tips"][0]["card_ids"], ["deck:0", "deck:1"])
                     repeated = await session.call_tool("inspect_deck", {})
                     self.assertTrue(repeated.structuredContent["view_upgrades"])
-                    self.assertEqual(repeated.structuredContent["detail_level"], "summary")
-                    self.assertNotIn("hover_tips", repeated.structuredContent)
+                    self.assertNotIn("detail_level", repeated.structuredContent)
+                    self.assertIn("hover_tips", repeated.structuredContent)
                     invalid_deck = await session.call_tool("inspect_deck", {"view_upgrades": 1})
                     self.assertTrue(invalid_deck.isError)
                     self.assertEqual(invalid_deck.structuredContent["error"]["code"], "invalid_request")
@@ -1137,7 +1137,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertTrue(invalid_pile.isError)
                     self.assertEqual(invalid_pile.structuredContent["error"]["code"], "invalid_request")
                     for pile in ("draw", "discard", "exhaust"):
-                        inspected = await session.call_tool("inspect_pile", {"pile": pile, "detail_level": "full"})
+                        inspected = await session.call_tool("inspect_pile", {"pile": pile, "preset": "full"})
                         self.assertFalse(inspected.isError)
                         self.assertEqual(json.loads(inspected.content[0].text), inspected.structuredContent)
                         self.assertEqual(inspected.structuredContent["pile"], pile)

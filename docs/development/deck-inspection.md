@@ -2,7 +2,7 @@
 
 版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
 
-文件操作及 [MCP 工具](mcp.md) `inspect_deck` 真实打开原生牌组页，一次返回整个可浏览牌组，包括滚动区域外的卡牌；页面保留至显式调用 `close_card_view` 或人手动返回。MCP full 返回相同玩法 JSON，默认 default 省略普通空值。
+文件操作及 [MCP 工具](mcp.md) `inspect_deck` 真实打开原生牌组页，一次返回整个可浏览牌组，包括滚动区域外的卡牌；页面保留至显式调用 `close_card_view` 或人手动返回。MCP 和文件 CLI 共用 full/default/summary 卡牌投影，默认 default 返回完整内容并省略普通空值。
 
 牌组、抽牌堆、弃牌堆和消耗牌堆共用单一卡牌查看层，打开其中一种会替换当前卡牌页；地图是独立界面。支持单人可行动战斗及原生牌组按钮可用的非战斗页面，包括事件、先古之民、火堆、宝箱、奖励和商店；也可从地图或战斗牌堆页打开，并复用当前未被覆盖的牌组页。三类牌堆通过 [战斗牌堆查看](pile-inspection.md) 访问，保留原生空堆反馈，仍使用同一个关闭工具。打开与关闭沿用原生暂停/恢复行为；地图上打开牌组时，关闭卡牌页仍保留地图，不自动再关闭地图。这些操作会改变 UI，不是完全无界面副作用的读取。不会出牌、升级实际卡牌、推进回合或自动关闭其他页面。
 
@@ -14,10 +14,10 @@
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_deck
 ```
 
-detail_level 默认只返回摘要，与[MCP 通用 preset](mcp.md#输出预设)独立；文件客户端保留原有空值，MCP 需要保留空值时传 `preset:"full"`。查看完整正文与原生升级预览：
+`preset` 支持 `default/full/summary`，默认 `default`；full 保留普通空值，summary 复用[手牌摘要](hand-inspection.md#参数与返回范围)，无正文及悬停解释。查看完整正文与原生升级预览：
 
 ```sh
-python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_deck --detail-level full --view-upgrades
+python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_deck --preset full --view-upgrades
 ```
 
 按费用降序排列，关闭升级预览：
@@ -36,11 +36,11 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_card_view
 
 ## 参数
 
-文件请求增加可选的 `arguments` 对象，旧调用省略该字段即可。
+底层文件请求的 `arguments` 仅接受下表中的升级与排序参数，始终采样完整内容；`preset` 由 MCP／文件 CLI 消费，不传入 Mod。旧 `detail_level` 参数不再接受。
 
 | JSON 参数 | CLI 参数 | 行为 |
 | --- | --- | --- |
-| `detail_level` | `--detail-level summary/full` | 默认 `summary`，每次调用独立决定信息量 |
+| `preset` | `--preset default/full/summary` | 默认 `default`，由 Python 投影，每次独立选择 |
 | `view_upgrades` | `--view-upgrades` / `--no-view-upgrades` | 可选布尔值，控制原生升级预览复选框 |
 | `sort_by` | `--sort-by obtained/type/cost/name` | 可选主排序：获得顺序、类型、费用、名称 |
 | `descending` | `--descending` / `--ascending` | 需同时指定 `sort_by`；省略时显式排序采用升序 |
@@ -54,17 +54,17 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_card_view
 | 字段 | 内容 |
 | --- | --- |
 | `scene/screen` | 与当前基础观察相同的[场景上下文](observation.md#场景上下文)，页面为 screen.view:deck |
-| `detail_level` | 本次 `summary` 或 `full` |
 | `view_upgrades` | 页面当前实际的升级预览状态 |
 | `sort.by/descending` | 页面当前实际的主排序及方向 |
 | `deck[]` | 原生页面完整排序列表；重复卡牌保留独立条目 |
 | `deck[].id` | `deck:` 前缀的标识，同一对局内对原卡实例稳定；与战斗手牌 ID 分开 |
 | `deck[].name/type/rarity/visual_card_pool` | 英语名称、类型、稀有度及实际外观卡池；卡池不等于持有者角色 |
 | `deck[].energy_cost/star_cost` | 与牌组页面相同的费用文字，包括 `X`；没有对应费用图标时为 `null` |
-| `deck[].description` | 仅 `full`：英语正文，使用牌组页面或升级预览上下文 |
-| `hover_tips[]` | 仅 `full`：共同去重后的附带解释，通过 `card_ids` 关联 |
+| `deck[].description` | full/default 的英语正文，使用牌组页面或升级预览上下文 |
+| `deck[].enchantment/affliction` | 共用卡面外观；full 保留 null，default/summary 省略普通空值 |
+| `hover_tips[]` | full/default 共同去重后的附带解释，通过 `card_ids` 关联 |
 
-`summary` 不返回正文或解释字段；`full` 即使没有解释，也保留 `hover_tips: []`。不添加手牌或敌人意图的数值 notes。原始响应保留各卡的解释，默认文件客户端合并到平级列表。加 `--raw` 可查看状态令牌等控制信息。
+`summary` 不返回正文、稀有度、卡池或解释字段；full/default 即使没有解释，也保留 `hover_tips: []`。不回显 preset。不添加手牌或敌人意图的数值 notes。原始响应保留完整卡牌与各卡的解释，文件 CLI 共用 MCP 投影并合并到平级列表。加 `--raw` 可查看状态令牌等控制信息。
 
 升级预览仅显示下一次可用升级；不能再升级的卡保持原样，卡牌 ID 不变。描述和数值沿用牌组页面，不套用当前手牌或瞄准目标的预览。实现使用网格的完整排序列表，在隔离克隆上调用原生预览流程；不会修改实际牌组或读取抽牌顺序。
 

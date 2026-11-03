@@ -130,7 +130,7 @@ class SelectionBoundaryTests(unittest.TestCase):
         self.assertEqual(result.get("selection", {}).get("prompt"), "Choose a Card")
         card = result["selection"]["cards"][0]
         self.assertNotIn("seed", card)
-        self.assertNotIn("hover_tips", card)
+        self.assertEqual(card["hover_tips"], [{"title": "Block", "description": "Prevents damage"}])
         self.assertNotIn("callback", result["selection"]["options"][0])
 
     def test_hidden_choices_reject_inconsistent_payload(self):

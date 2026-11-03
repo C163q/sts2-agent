@@ -51,7 +51,7 @@ def main():
     parser.add_argument("--ipc-dir", required=True, type=Path)
     parser.add_argument("operation", choices=("inspect_run_result", "run_result_option", "travel_to_node", "get_state", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "inspect_map", "close_map", "close_card_view", "close_deck", "inspect_selection", "select_card", "selection_option", "set_selection_view", "start_test_combat", "end_turn", "inspect_targets", "play_card", "use_potion", "discard_potion", "inspect_rewards", "claim_reward", "proceed", "inspect_rest_site", "choose_rest_option", "loot_treasure", "inspect_treasure", "open_shop", "close_shop", "inspect_shop", "buy_item", "inspect_ancient", "choose_ancient_option", "advance_dialogue", "inspect_event", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation"))
     parser.add_argument("--pile", choices=("draw", "discard", "exhaust"))
-    parser.add_argument("--detail-level", choices=("summary", "full"))
+    parser.add_argument("--preset", choices=("default", "full", "summary"), help="牌组／牌堆的输出预设，默认 default")
     parser.add_argument("--view-upgrades", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--sort-by", choices=("obtained", "type", "cost", "name"))
     direction = parser.add_mutually_exclusive_group()
@@ -74,16 +74,27 @@ def main():
     parser.add_argument("--raw", action="store_true", help="输出保留状态令牌等控制信息的原始响应")
     args = parser.parse_args()
     try:
-        arguments = {key: getattr(args, key) for key in ("pile", "detail_level", "view_upgrades", "sort_by", "descending", "card_id", "potion_slot", "target_id", "option_id", "view", "reward_id", "open_only", "item_id", "tool", "x", "y", "option", "node_id")
+        arguments = {key: getattr(args, key) for key in ("pile", "view_upgrades", "sort_by", "descending", "card_id", "potion_slot", "target_id", "option_id", "view", "reward_id", "open_only", "item_id", "tool", "x", "y", "option", "node_id")
                      if getattr(args, key) is not None}
         if args.operation in {'choose_ancient_option', 'choose_event_option'} and args.option_id is not None:
             arguments['option_id'] = int(args.option_id)
         if args.target_id is not None and args.target_id.isascii() and args.target_id.isdecimal():
             arguments["target_id"] = int(args.target_id)
+        browsing = args.operation in {'inspect_deck', 'inspect_pile'}
+        if args.preset is not None and not browsing:
+            raise ValueError('--preset is supported for inspect_deck and inspect_pile.')
+        if browsing:
+            from sts2_mcp.output.deck_details import deck_arguments
+            from sts2_mcp.output.pile_details import pile_arguments
+            arguments = (deck_arguments if args.operation == 'inspect_deck' else pile_arguments)(arguments)
         result = Client(args.ipc_dir).call(args.operation, args.expected_state, arguments=arguments or None)
         if not isinstance(result, dict) or type(result.get("ok")) is not bool:
             raise ValueError("Invalid game response.")
-        payload = result if args.raw else player_result(result, operation=args.operation)
+        if browsing and result['ok'] and not args.raw:
+            from sts2_mcp.output.card_format import browse_result
+            payload = browse_result(result, args.operation, arguments, args.preset or 'default')
+        else:
+            payload = result if args.raw else player_result(result, operation=args.operation)
     except (OSError, RuntimeError, ValueError, KeyError, TypeError) as error:
         code = "timeout" if isinstance(error, TimeoutError) else "transport_error"
         result = {"ok": False, "error": {"code": code, "message": str(error)}}

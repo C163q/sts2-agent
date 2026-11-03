@@ -50,7 +50,7 @@ internal sealed partial class GameAdapter
         var ui = NCombatRoom.Instance!.Ui;
         return new[] { "draw", "discard", "exhaust" }.Any(pile =>
         {
-            var button = SelectionPileButton(new PileOptions(pile, "summary"))
+            var button = SelectionPileButton(new PileOptions(pile))
                 ?? (pile == "draw" ? ui.DrawPile : pile == "discard" ? ui.DiscardPile : ui.ExhaustPile);
             return VisibleUi.OnScreen(button) && (button.IsEnabled || cardOpen && CardView.CanClose(CardView.Current!));
         });

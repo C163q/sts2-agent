@@ -125,7 +125,7 @@ internal sealed class ShopInspection
         };
         if (slot.Entry is MerchantCardEntry card)
         {
-            var details = BrowsedCard.Read(card.CreationResult!.Card, "", PileType.None, false, full);
+            var details = BrowsedCard.Read(card.CreationResult!.Card, "", PileType.None, false, full, appearance: true);
             details.Remove("id"); result["card"] = details;
             result["on_sale"] = VisibleUi.Shown(slot.GetNode<Node2D>("%SaleVisual"));
         }

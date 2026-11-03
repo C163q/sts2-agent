@@ -61,7 +61,7 @@ async def verify(args):
             assert changes[0]['card']['name'] == ('Genetic Algorithm' if args.scenario == 'genetic' else 'Strike'), changes
             # A successful mutation receipt must support the next action without a compulsory observation.
             await call('end_turn')
-            deck = await call('inspect_deck', {'detail_level': 'full'})
+            deck = await call('inspect_deck', {'preset': 'full'})
             if args.scenario == 'genetic':
                 grown = next(c for c in deck['deck'] if c['name'] == 'Genetic Algorithm')
                 assert '4' in grown['description'], grown

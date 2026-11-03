@@ -1,46 +1,10 @@
 from sts2_mcp.output.available_tools import public_tools
 
 
-def nullable(shape):
-    return (shape,)
+from sts2_mcp.output.value_shapes import nullable, project, TEXT, NUMBER, TIP
+from sts2_mcp.output.card_format import CARD_FACE as CARD, CARD_FULL as HAND_CARD, BROWSED_CARD, format_game_cards
 
 
-def project(value, shape):
-    """Copy declared fields; a tuple allows null and a list describes array items."""
-    if isinstance(shape, frozenset):
-        if type(value) not in shape:
-            raise ValueError("Invalid gameplay scalar type.")
-        return value
-    if isinstance(shape, tuple):
-        if value is None:
-            return None
-        return project(value, shape[0])
-    if isinstance(shape, dict):
-        if not isinstance(value, dict):
-            raise ValueError("Expected a gameplay object.")
-        return {key: project(item, shape[key]) for key, item in value.items() if key in shape}
-    if isinstance(shape, list):
-        if not isinstance(value, list):
-            raise ValueError("Expected a gameplay array.")
-        return [project(item, shape[0]) for item in value]
-    # bool is an int subclass; accepting it would hide malformed numeric fields.
-    if type(value) is not shape:
-        raise ValueError("Invalid gameplay field type.")
-    return value
-
-
-TEXT = nullable(str)
-NUMBER = nullable(int)
-TIP = {"title": TEXT, "description": str}
-CARD = {
-    "id": int, "name": TEXT, "type": TEXT, "rarity": TEXT, "visual_card_pool": TEXT,
-    "energy_cost": TEXT, "star_cost": TEXT, "energy_cost_color": str, "star_cost_color": str,
-    "unplayable_markers": [str], "outline": str,
-    "enchantment": nullable({"name": TEXT, "amount": int, "dimmed": bool}),
-    "affliction": nullable({"name": str}),
-}
-HAND_CARD = {**CARD, "description": TEXT, "hover_tips": nullable([TIP])}
-BROWSED_CARD = {**HAND_CARD, "id": str}
 POWER = {"name": TEXT, "amount": NUMBER}
 INTENT = {"category": TEXT, "value": TEXT}
 HEALTH = {"hp": NUMBER, "max_hp": NUMBER, "hp_display": str, "block": NUMBER}
@@ -68,7 +32,7 @@ TOP_BAR = {
     "map_visible": bool, "deck_visible": bool, "settings_visible": bool,
 }
 SCREEN = {"status": str, "view": str}
-SELECTION_CARD = {**CARD, "description": TEXT}
+SELECTION_CARD = HAND_CARD
 SELECTION_OPTION = {"id": str, "text": TEXT, "enabled": bool}
 UPGRADE_PREVIEW = {"before": SELECTION_CARD, "after": SELECTION_CARD}
 SELECTION = {
@@ -102,7 +66,7 @@ REST_SITE = {'status': str, 'prompt': TEXT, 'description': TEXT, 'options': null
 TREASURE_RELIC = {'name': str, 'enabled': bool}
 TREASURE = {'status': str, 'chest': TEXT, 'relic': nullable(TREASURE_RELIC),
             'proceed': nullable({'text': str, 'enabled': bool, 'skips_remaining': bool})}
-SHOP_CARD = {key: BROWSED_CARD[key] for key in ('name', 'type', 'rarity', 'visual_card_pool', 'energy_cost', 'star_cost')}
+SHOP_CARD = {key: shape for key, shape in CARD.items() if key != "id"}
 SHOP_ITEM = {'id': int, 'kind': str, 'position': str, 'price': NUMBER, 'affordable': nullable(bool),
              'enabled': bool, 'name': str, 'used': bool, 'on_sale': bool, 'card': SHOP_CARD}
 SHOP = {'status': str, 'view': TEXT, 'items': nullable([SHOP_ITEM]),
@@ -146,7 +110,7 @@ GAMEPLAY = {
     "potion_slots": nullable([nullable({"name": TEXT, "description": str, "hover_tips": [TIP]})]),
     "relics": nullable([{**RELIC, "description": str, "hover_tips": [TIP]}]),
     "deck": [BROWSED_CARD], "cards": nullable([BROWSED_CARD]),
-    "detail_level": str, "view_upgrades": bool, "sort": {"by": str, "descending": bool},
+    "view_upgrades": bool, "sort": {"by": str, "descending": bool},
     "pile": str, "status": str, "reason": TEXT, "message": str,
     "card": {"id": int, "name": TEXT}, "playable": bool, "target_type": str,
     "requires_target": bool, "targets": [TARGET_ENTITY], "potion": POTION_REF, "usable": bool, "discardable": bool,
@@ -180,8 +144,8 @@ def gameplay_fields(state, *, operation=None):
         shape = {**shape, 'event': {**ROOM_EVENT, 'options': nullable([{**ROOM_EVENT_OPTION, 'hover_tips': [TIP]}])}}
     if 'hover_tips' in (state.get('run_result') or {}):
         from sts2_mcp.output.run_ending_details import result_details
-        return {**project(state, shape), 'run_result': result_details(state['run_result'], full=True)}
-    return project(state, shape)
+        return format_game_cards({**project(state, shape), 'run_result': result_details(state['run_result'], full=True)})
+    return format_game_cards(project(state, shape))
 
 
 def validate_identities(items, maximum):
@@ -297,7 +261,7 @@ def observation_details(state):
           or result['screen'] == {'status': 'visible', 'view': 'confirmation'}):
         raise ValueError('Missing event confirmation.')
     from sts2_mcp.output.run_ending_details import validate_ending
-    return validate_ending(result)
+    return format_game_cards(validate_ending(result))
 
 
 def selection_details(value):

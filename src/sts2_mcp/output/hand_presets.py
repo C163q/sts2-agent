@@ -1,6 +1,6 @@
 """Project validated hand details without changing the game's observation token."""
 from sts2_mcp.output.card_play_details import CARD_ID
-from sts2_mcp.output.card_summary import card_summary
+from sts2_mcp.output.card_format import card_summary
 
 
 HAND_SCHEMA = {

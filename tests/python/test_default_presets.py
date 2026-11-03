@@ -122,7 +122,8 @@ class DefaultProjectionTests(unittest.TestCase):
                     self.assertIn('preset', branch['properties'])
                     self.assertFalse(branch['additionalProperties'])
         indexed = {t.name: t.inputSchema for t in tools}
-        self.assertEqual(indexed['inspect_deck']['properties']['detail_level']['default'], 'summary')
+        self.assertNotIn('detail_level', indexed['inspect_deck']['properties'])
+        self.assertIn('summary', indexed['inspect_deck']['properties']['preset']['enum'])
         self.assertEqual(indexed['inspect_pile']['required'], ['pile'])
         self.assertEqual(indexed['inspect_deck']['dependentRequired'], {'descending': ['sort_by']})
 

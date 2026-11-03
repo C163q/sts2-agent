@@ -110,9 +110,9 @@ def _read_details(operation, state, arguments=None):
     if operation == "inspect_targets":
         return target_details(state, arguments)
     if operation == "inspect_deck":
-        return deck_details(state, (arguments or {}).get("detail_level", "summary"))
+        return deck_details(state)
     if operation == "inspect_pile":
-        return pile_details(state, arguments["pile"], arguments.get("detail_level", "summary"))
+        return pile_details(state, arguments["pile"])
     return READERS[operation](state)
 
 

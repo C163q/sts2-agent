@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from sts2_mcp.roundtrip_client import Client, player_result
+from sts2_mcp.output.card_format import browse_result
 
 
 def main():
@@ -20,23 +21,25 @@ def main():
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
     def call(operation, arguments=None):
-        response = client.call(operation, arguments=arguments)
+        options = dict(arguments or {})
+        preset = options.pop('preset', 'full')
+        response = client.call(operation, arguments=options or None)
         evidence.append({"operation": operation, "arguments": arguments, "response": response})
         assert response["ok"], response
-        return player_result(response)
+        return browse_result(response, operation, options, preset) if operation in {'inspect_deck', 'inspect_pile'} else player_result(response)
 
     before = call("get_state")
     assert before["scene"] == "combat" and before["screen"] == {"status": "visible"}, before
     for pile in ("draw", "discard", "exhaust"):
-        summary = call("inspect_pile", {"pile": pile})
-        assert summary["pile"] == pile and summary["detail_level"] == "summary", summary
+        summary = call("inspect_pile", {"pile": pile, "preset": "summary"})
+        assert summary["pile"] == pile and "detail_level" not in summary, summary
         assert "hover_tips" not in summary and "notes" not in summary
         if summary["status"] == "opened":
             assert summary["cards"] and all("description" not in card for card in summary["cards"])
-            full = call("inspect_pile", {"pile": pile, "detail_level": "full"})
+            full = call("inspect_pile", {"pile": pile, "preset": "full"})
             assert [card["id"] for card in full["cards"]] == [card["id"] for card in summary["cards"]]
             assert "hover_tips" in full and all("description" in card for card in full["cards"])
-            assert call("inspect_pile", {"pile": pile}) == summary
+            assert call("inspect_pile", {"pile": pile, "preset": "summary"}) == summary
             call("close_card_view")
             (args.output_dir / (pile + "-full.json")).write_text(json.dumps(full, ensure_ascii=False, indent=2) + "\n")
         elif summary["status"] == "empty":
@@ -56,7 +59,7 @@ def main():
             if entry["operation"] != "inspect_pile" or not entry["response"]["ok"]:
                 continue
             sample = player_result(entry["response"])
-            name = "-".join(sample[key] for key in ("pile", "status", "detail_level"))
+            name = "-".join(sample[key] for key in ("pile", "status"))
             (args.output_dir / (name + ".json")).write_text(json.dumps(sample, ensure_ascii=False, indent=2) + "\n")
     (args.output_dir / "pile-evidence.json").write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + "\n")
     print("PASS: all three pile outcomes, repeated summary/full and explicit close; gameplay unchanged.")

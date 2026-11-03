@@ -8,8 +8,8 @@ from sts2_mcp.roundtrip_client import Client, player_result
 from tests.python.test_mcp_server import FakeGame
 
 
-def opened(pile="draw", level="summary"):
-    return {"scene": "combat", "pile": pile, "detail_level": level, "status": "opened",
+def opened(pile="draw"):
+    return {"scene": "combat", "pile": pile, "status": "opened",
             "screen": {"status": "covered", "view": pile + "_pile"}, "message": "Native pile information.",
             "cards": [{"id": "pile:0", "name": "Defend", "type": "Skill", "rarity": "basic",
                        "visual_card_pool": "ironclad", "energy_cost": "1", "star_cost": None,
@@ -23,7 +23,7 @@ class PileMcpTests(unittest.IsolatedAsyncioTestCase):
         with FakeGame() as game:
             tools = GameTools(Client(game.directory))
             for pile in ("draw", "discard", "exhaust"):
-                summary = await tools.inspect_pile({"pile": pile})
+                summary = await tools.inspect_pile({"pile": pile, "preset": "summary"})
                 self.assertEqual(summary["pile"], pile)
                 self.assertEqual(summary["status"], "opened")
                 self.assertEqual(summary["screen"], {"status": "covered", "view": pile + "_pile"})
@@ -31,11 +31,11 @@ class PileMcpTests(unittest.IsolatedAsyncioTestCase):
                 self.assertNotIn("hover_tips", summary)
                 self.assertNotIn("notes", summary)
                 self.assertEqual(game.operations[-1]["arguments"], {"pile": pile})
-                full = await tools.inspect_pile({"pile": pile, "detail_level": "full"})
+                full = await tools.inspect_pile({"pile": pile, "preset": "full"})
                 self.assertEqual(full["cards"][0]["description"], "Gain 5 Block.")
                 self.assertEqual(full["hover_tips"], [{"title": "Block", "description": "Prevents damage.",
                                                        "card_ids": ["pile:0"]}])
-                self.assertEqual((await tools.inspect_pile({"pile": pile}))["cards"], summary["cards"])
+                self.assertEqual((await tools.inspect_pile({"pile": pile, "preset": "summary"}))["cards"], summary["cards"])
                 await tools.get_observation()
                 await tools.inspect_pile({"pile": pile})
                 self.assertEqual((await tools.end_turn())["error"]["code"], "illegal_action")
@@ -60,15 +60,15 @@ class PileMcpTests(unittest.IsolatedAsyncioTestCase):
         for status, pile, cards, screen in (("empty", "discard", [], {"status": "visible"}),
                                            ("unavailable", "exhaust", None, {"status": "covered", "view": "deck"})):
             with self.subTest(status=status), FakeGame() as game:
-                game.pile_payload = {"scene": "combat", "pile": pile, "detail_level": "full",
+                game.pile_payload = {"scene": "combat", "pile": pile,
                     "status": status, "screen": screen, "message": "An English explanation.", "cards": cards}
                 if status == "unavailable": game.pile_payload["reason"] = "entry_not_visible"
                 game.deck_open = status == "unavailable"
                 tools = GameTools(Client(game.directory))
                 await tools.get_observation()
-                result = await tools.inspect_pile({"pile": pile, "detail_level": "full"})
+                result = await tools.inspect_pile({"pile": pile, "preset": "full"})
                 self.assertNotIn("error", result)
-                if cards is None: self.assertNotIn("cards", result)
+                if cards is None: self.assertIsNone(result["cards"])
                 else: self.assertEqual(result["cards"], cards)
                 self.assertEqual(result["screen"], screen)
                 if cards is None: self.assertNotIn("hover_tips", result)
@@ -81,7 +81,7 @@ class PileMcpTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_malformed_payloads_fail_closed(self):
         from sts2_mcp.mcp_server import GameTools
-        changes = [{"scene": "card_pile"}, {"pile": "discard"}, {"detail_level": "full"}, {"status": "unknown"},
+        changes = [{"scene": "card_pile"}, {"pile": "discard"}, {"status": "unknown"},
                    {"screen": {}}, {"screen": {"status": "covered", "view": "deck"}}, {"cards": None},
                    {"cards": []}, {"message": None}, {"status": "empty"},
                    {"status": "unavailable", "reason": "entry_not_visible"}]
@@ -95,10 +95,10 @@ class PileMcpTests(unittest.IsolatedAsyncioTestCase):
         for change in ({"id": "deck:0"}, {"id": "pile:00"}, {"energy_cost": 1}, {"name": None},
                        {"description": None}, {"hover_tips": [{"title": 1, "description": "x"}]}):
             with self.subTest(card=change), FakeGame() as game:
-                game.pile_payload = opened(level="full")
+                game.pile_payload = opened()
                 game.pile_payload["cards"][0].update(change)
                 tools = GameTools(Client(game.directory))
-                self.assertEqual((await tools.inspect_pile({"pile": "draw", "detail_level": "full"}))["error"]["code"],
+                self.assertEqual((await tools.inspect_pile({"pile": "draw"}))["error"]["code"],
                                  "transport_error")
 
     async def test_errors_timeouts_and_cancellation_never_retry_or_close(self):
@@ -138,7 +138,7 @@ class PileMcpTests(unittest.IsolatedAsyncioTestCase):
 class PileProjectionTests(unittest.TestCase):
     def test_strict_projection_and_shared_tips_do_not_leak_raw_metadata(self):
         from sts2_mcp.output.pile_details import pile_details
-        raw = opened(level="full")
+        raw = opened()
         second = copy.deepcopy(raw["cards"][0])
         second["id"] = "pile:7"
         raw["cards"].append(second)
@@ -147,8 +147,8 @@ class PileProjectionTests(unittest.TestCase):
         raw["cards"][0]["hover_tips"][0]["secret"] = 1
         raw["screen"]["secret"] = 1
         before = copy.deepcopy(raw)
-        result = player_result({"ok": True, "state": pile_details(raw, "draw", "full")})
-        self.assertEqual(set(result), {"scene", "pile", "status", "screen", "detail_level", "message", "cards", "hover_tips"})
+        result = player_result({"ok": True, "state": pile_details(raw, "draw")})
+        self.assertEqual(set(result), {"scene", "pile", "status", "screen", "message", "cards", "hover_tips"})
         self.assertNotIn("secret", json.dumps(result))
         self.assertEqual(result["hover_tips"][0]["card_ids"], ["pile:0", "pile:7"])
         self.assertEqual(raw, before)
@@ -160,10 +160,10 @@ class PileProjectionTests(unittest.TestCase):
                  dict(status="unavailable", cards=None), dict(status="empty", cards=None)]
         for changes in cases:
             with self.subTest(changes=changes), self.assertRaises((ValueError, KeyError)):
-                pile_details({**opened(), **changes}, "draw", "summary")
+                pile_details({**opened(), **changes}, "draw")
         value = opened()
         value["cards"] *= 2
-        with self.assertRaises(ValueError): pile_details(value, "draw", "summary")
+        with self.assertRaises(ValueError): pile_details(value, "draw")
 
 
 if __name__ == "__main__":

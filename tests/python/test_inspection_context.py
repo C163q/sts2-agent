@@ -18,9 +18,9 @@ class InspectionContextTests(unittest.TestCase):
 
     def test_deck_uses_underlying_epilogue(self):
         state = {'scene': 'epilogue', 'screen': {'status': 'covered', 'view': 'deck'},
-                 'detail_level': 'summary', 'view_upgrades': False,
+                 'view_upgrades': False,
                  'sort': {'by': 'obtained', 'descending': False}, 'deck': []}
-        result = deck_details(state, 'summary')
+        result = deck_details(state)
         self.assertEqual(result['scene'], 'epilogue')
         self.assertEqual(result['screen'], state['screen'])
 
@@ -31,11 +31,11 @@ class InspectionContextTests(unittest.TestCase):
 
     def test_pile_full_help_no_longer_depends_on_scene_card_pile(self):
         state = {'scene': 'combat', 'screen': {'status': 'covered', 'view': 'discard_pile'},
-            'pile': 'discard', 'detail_level': 'full', 'status': 'opened', 'message': 'Discard pile.',
+            'pile': 'discard', 'status': 'opened', 'message': 'Discard pile.',
             'cards': [{'id': 'pile:0', 'name': 'Defend', 'type': 'Skill', 'rarity': 'basic',
                 'visual_card_pool': 'ironclad', 'energy_cost': '1', 'star_cost': None,
                 'description': 'Gain 5 Block.', 'hover_tips': [{'title': 'Block', 'description': 'Block help.'}]}]}
-        payload = pile_details(state, 'discard', 'full')
+        payload = pile_details(state, 'discard')
         result = player_result({'ok': True, 'state': payload}, operation='inspect_pile')
         self.assertEqual(result['scene'], 'combat')
         self.assertEqual(result['hover_tips'][0]['card_ids'], ['pile:0'])

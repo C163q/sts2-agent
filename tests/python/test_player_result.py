@@ -6,20 +6,20 @@ import sts2_mcp.roundtrip_client as roundtrip_client
 
 class PlayerResultTests(unittest.TestCase):
     def test_deck_summary_preserves_options_without_descriptions_or_notes(self):
-        state = {"snapshot_id": "token", "scene": "combat", "screen": {"status": "covered", "view": "deck"}, "detail_level": "summary", "view_upgrades": False,
+        state = {"snapshot_id": "token", "scene": "combat", "screen": {"status": "covered", "view": "deck"}, "view_upgrades": False,
                  "sort": {"by": "obtained", "descending": False},
                  "deck": [{"id": "deck:0", "name": "Strike", "energy_cost": "1", "type": "Attack"}]}
-        expected = {key: value for key, value in state.items() if key != "snapshot_id"}
+        expected = {**{key: value for key, value in state.items() if key != "snapshot_id"}, "hover_tips": []}
         self.assertEqual(roundtrip_client.player_result({"ok": True, "state": state}), expected)
 
     def test_deck_full_shares_tips_with_deck_ids_and_no_hand_notes(self):
         tip = {"title": "Block", "description": "Prevents damage."}
-        state = {"snapshot_id": "token", "scene": "combat", "screen": {"status": "covered", "view": "deck"}, "detail_level": "full", "view_upgrades": True,
+        state = {"snapshot_id": "token", "scene": "combat", "screen": {"status": "covered", "view": "deck"}, "view_upgrades": True,
                  "sort": {"by": "cost", "descending": True}, "deck": [
                      {"id": "deck:2", "description": "Gain 8 Block.", "hover_tips": [tip]},
                      {"id": "deck:0", "description": "Gain 8 Block.", "hover_tips": [tip]}]}
         self.assertEqual(roundtrip_client.player_result({"ok": True, "state": state}), {
-            "scene": "combat", "screen": {"status": "covered", "view": "deck"}, "detail_level": "full", "view_upgrades": True,
+            "scene": "combat", "screen": {"status": "covered", "view": "deck"}, "view_upgrades": True,
             "sort": {"by": "cost", "descending": True}, "deck": [
                 {"id": "deck:2", "description": "Gain 8 Block."},
                 {"id": "deck:0", "description": "Gain 8 Block."}],

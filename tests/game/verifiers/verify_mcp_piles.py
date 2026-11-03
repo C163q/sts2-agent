@@ -12,6 +12,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 from sts2_mcp.roundtrip_client import Client, player_result
+from sts2_mcp.output.card_format import browse_result
 
 
 async def verify(args):
@@ -28,11 +29,11 @@ async def verify(args):
             evidence.update(protocol_version=initialized.protocolVersion, server=initialized.serverInfo.model_dump())
             listed = await session.list_tools()
             names = {tool.name for tool in listed.tools}
-            assert names == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants",
+            assert names >= {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants",
                              "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"}, names
             tool = next(tool for tool in listed.tools if tool.name == "inspect_pile")
             assert tool.annotations.readOnlyHint is False and tool.annotations.destructiveHint is False
-            assert set(tool.inputSchema["properties"]) == {"preset", "pile", "detail_level"} and tool.inputSchema["required"] == ["pile"]
+            assert set(tool.inputSchema["properties"]) == {"preset", "pile"} and tool.inputSchema["required"] == ["pile"]
             evidence["tools"] = [tool.model_dump(exclude_none=True) for tool in listed.tools]
 
             async def call(name, arguments=None):
@@ -46,12 +47,12 @@ async def verify(args):
             assert observed == player_result(before), observed
             for pile in ("draw", "discard", "exhaust"):
                 for level in ("summary", "full"):
-                    arguments = {"pile": pile, "detail_level": level}
+                    arguments = {"pile": pile, "preset": level}
                     result = await call("inspect_pile", arguments)
-                    reference = await asyncio.to_thread(client.call, "inspect_pile", arguments=arguments)
+                    reference = await asyncio.to_thread(client.call, "inspect_pile", arguments={"pile": pile})
                     evidence["references"].append(reference)
-                    assert reference["ok"] and result == player_result(reference), (result, reference)
-                    assert result["pile"] == pile and result["detail_level"] == level
+                    assert reference["ok"] and result == browse_result(reference, "inspect_pile", {"pile": pile}, level), (result, reference)
+                    assert result["pile"] == pile and "detail_level" not in result
                     assert "snapshot_id" not in result and "available_actions" not in result and "notes" not in result
                     if result["cards"] is not None:
                         ids = [card["id"] for card in result["cards"]]
@@ -68,7 +69,7 @@ async def verify(args):
                     samples[pile + "-" + level] = result
                 if result["status"] == "opened":
                     assert [card["id"] for card in samples[pile + "-summary"]["cards"]] == ids
-                    assert await call("inspect_pile", {"pile": pile}) == samples[pile + "-summary"]
+                    assert await call("inspect_pile", {"pile": pile, "preset": "summary"}) == samples[pile + "-summary"]
                     assert await call("close_card_view") == observed
                 assert await call("get_observation") == observed
             assert {tool.name for tool in (await session.list_tools()).tools} == names

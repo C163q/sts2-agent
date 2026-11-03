@@ -49,13 +49,13 @@
 | `score_lines` | 当前可见计分行，每项为 `label`、`value` |
 | `badges` | 当前可见徽章名称及 `bronze/silver/gold` 外观等级；悬停效果在详情调用中读取 |
 | `discoveries` | 当前发现图标的类别及显示数量，`cards/relics/potions/enemies/epochs` |
-| `cards` | 当前解锁页中已显示卡牌的牌面信息与正文；不包含后续页面的卡牌 |
+| `cards` | 当前解锁页中已显示卡牌的完整牌面及逐牌悬停解释；不包含后续页面的卡牌 |
 | `relics` / `potions` | 当前已显示的解锁物品名称；效果由详情调用提供 |
 | `options` | 当前按钮的 `id`、`text`、`enabled`；调用时原样传回 ID |
 
 `top_bar` 仅在原生结算上方确实可见时保留；不由本局历史补出未显示的数值。战斗、事件、奖励等底层操作不再提供。初始 `outcome` 页不会提前给出分数行、徽章或发现列表。
 
-详情增加 `hover_tips`，来源如 `badge:0`、`discovery:cards`；卡牌、遗物、药水的附加说明位于各自条目。原生发现提示最多列十个名称，之后用省略号，工具保留这个限制。累计建筑师伤害与随机死亡语句来自已显示标签的本地化来源，不能重新抽签或根据当前存档重算。
+卡牌在 full/default 基础观察和详情中均采用共用完整格式，逐牌解释保留在卡牌条目内。详情另增加页面级 `hover_tips`，来源如 `badge:0`、`discovery:cards`；卡牌、遗物、药水的附加说明位于各自条目。原生发现提示最多列十个名称，之后用省略号，工具保留这个限制。累计建筑师伤害与随机死亡语句来自已显示标签的本地化来源，不能重新抽签或根据当前存档重算。
 
 get_observation 的 summary 保留当前结算主体和全部 texts、options、空列表，只将已显示 cards 压缩为共用卡牌摘要，卡牌 ID 仍为 card:N 字符串。正文、稀有度和卡池保留在 full/default 及 inspect_run_result；顶栏继续独立复用共用摘要。完整规则见[观察预设](observation.md#mcp-输出预设)。
 

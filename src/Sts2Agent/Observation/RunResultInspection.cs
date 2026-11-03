@@ -158,11 +158,10 @@ internal sealed class RunResultInspection
     private static object Badge(NBadge badge) => EnglishEventText.Read(() => new {
         name = CardSelection.Field(badge, "_title") is LocString title ? EnglishCardText.Plain(title.GetFormattedText()) : "",
         rarity = Path.GetFileNameWithoutExtension(badge.GetNode<TextureRect>("%BadgeHolder").Texture.ResourcePath).Replace("badge_", "") });
-    private static object[] Cards(Node root, bool full) => VisibleUi.Descendants<NCard>(root)
+    private static object[] Cards(Node root) => VisibleUi.Descendants<NCard>(root)
         .Where(c => CombatObservation.CardVisible(c, VisibleUi.Browsable) && c.Visibility == ModelVisibility.Visible && c.Model != null).Select((card, index) =>
         EnglishEventText.Read(() => {
-            var result = BrowsedCard.Read(card.Model!, $"card:{index}", PileType.None, upgrades: false, full: true);
-            if (!full) result.Remove("hover_tips");
+            var result = BrowsedCard.Read(card.Model!, $"card:{index}", PileType.None, upgrades: false, full: true, appearance: true);
             return (object)result;
         })).ToArray();
 
@@ -181,7 +180,7 @@ internal sealed class RunResultInspection
             ["discoveries"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NDiscoveredItem>(root).Where(VisibleUi.Browsable).Select(item => new {
                 kind = DiscoveryKind(item), count = int.TryParse(Text(item.GetNode<CanvasItem>("%Label")), out int count) ? count : 0 }).ToArray() : Array.Empty<object>(),
             ["options"] = exposed ? Options(context).Select(o => new { id = o.id, text = ButtonText(o.button), enabled = ready && Clickable(o.button) }).ToArray() : Array.Empty<object>() };
-        result["cards"] = exposed ? Cards(root, full) : Array.Empty<object>();
+        result["cards"] = exposed ? Cards(root) : Array.Empty<object>();
         result["relics"] = exposed ? VisibleUi.Descendants<NRelicBasicHolder>(root).Where(h => VisibleUi.Browsable(h) && VisibleUi.Browsable(h.Relic.Icon))
             .Select(h => full ? (object)RelicInspection.Details(h.Relic.Model, null) : EnglishEventText.Read(() => (object)new { name = EnglishCardText.Plain(h.Relic.Model.Title.GetFormattedText()) })).ToArray() : Array.Empty<object>();
         result["potions"] = exposed ? VisibleUi.Descendants<NPotionHolder>(root).Where(h => VisibleUi.Browsable(h) && h.HasPotion && VisibleUi.Browsable(h.Potion))

@@ -67,8 +67,8 @@ python3 -m tests.python.test_prepare_roundtrip
 | 基础观察 | 使用 `get_state`，对应 MCP 的 `get_observation` |
 | 游戏动作 | 调用方自行保存最新 `state.snapshot_id`，以 `expected_state` 提交；MCP 会话内部管理令牌 |
 | 详情及浏览页面 | 无须 `expected_state`，仍检查当前场景、遮挡、参数及原生合法性 |
-| 输出预设及筛选 | 不接受 MCP 的 `preset`、`card_ids`、`relic_indices` 或地图 `max_steps`；文件客户端保留完整空值 |
-| 原生参数 | `inspect_deck/inspect_pile` 的 `detail_level`、牌组排序／升级模式，以及 `inspect_selection.view_upgrades` 仍按各工具定义传入 `arguments` |
+| 输出预设及筛选 | 不接受 MCP 的 `preset`、`card_ids`、`relic_indices` 或地图 `max_steps`；底层文件响应保留完整空值；牌组／牌堆 CLI 另支持共用 --preset 投影 |
+| 原生参数 | 牌堆 pile、牌组排序／升级模式，以及 `inspect_selection.view_upgrades` 按各工具定义传入 arguments；牌组／牌堆 CLI 的 --preset 只在 Python 投影，不传入 Mod |
 | 兼容操作 | `close_deck` 仅关闭牌组，不注册为 MCP；公开工具使用 `close_card_view` |
 | 截图 | 文件 `capture_screenshot` 返回图像载荷；可选 MCP 工具负责文件名和存盘，见[截图接口](screenshots.md)；普通 CLI 不公开此操作 |
 | 测试入口 | `start_test_combat` 仅测试模式、主菜单且无进行中对局可用，需要令牌；不是公开玩法工具。套件专用入口见[图形测试](gui-testing.md#生命周期与证据) |

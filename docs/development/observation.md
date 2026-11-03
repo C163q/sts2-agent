@@ -64,7 +64,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 奖励、火堆和宝箱的房间主体保持与 default 一致，不省略标题、当前已显示说明、选项、空列表或按钮状态。宝箱可见时 default／summary 保留 `treasure.relic:null`；被覆盖时仍省略，完整规则见[公共空值规则](mcp.md#输出预设)。弹出的选牌使用上述共用摘要，顶栏独立精简。
 
-商店的商品卡牌复用共用卡牌摘要：保留已有的名称、类型和费用，省略 rarity／visual_card_pool；商品 ID 保持在 items[].id，card 内不额外生成 ID。价格、affordable、enabled、on_sale、position、已用删牌项等商品信息仍沿用 default。当前商店原生读取未提供附魔、费用颜色、描边或不可打出标记，摘要不补造这些字段；卡牌正文继续通过 inspect_shop 查看。先古之民主体保持 default。
+商店的商品卡牌复用共用卡牌摘要：保留已有的名称、类型和费用，省略 rarity／visual_card_pool；商品 ID 保持在 items[].id，card 内不额外生成 ID。价格、affordable、enabled、on_sale、position、已用删牌项等商品信息仍沿用 default。商店卡牌沿用其网格上下文的可见外观字段；未显示的费用颜色、描边或不可打出标记不补造；卡牌正文继续通过 inspect_shop 查看。先古之民主体保持 default。
 
 普通事件 summary 省略 event.description，即当前页面叙事正文；options[].description 仍保留，用于展示效果、费用及锁定原因。选项 lethal_warning:false 时省略，true 时保留；其他 false 不受影响。省略表示本次没有显示原生危险红框，不沿用上次警告。default/full 和 inspect_event 仍保留页面正文与完整警告字段。示例与验证范围见[10–12 组记录](../research/2026-11-03-get-observation-shop-ancient-event.md)。
 
@@ -72,7 +72,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 地图及牌组／牌堆浏览覆盖（`screen.view:map/deck/draw_pile/discard_pile/exhaust_pile`）的页面主体暂时沿用 default，由浏览摘要占位入口处理；顶栏先应用上述共用摘要。占位保留页面上下文和隐藏选择元数据，不对下层战斗再次压缩。当前基础观察仍不附浏览卡牌列表；后续核验 inspect_map、inspect_deck、inspect_pile 时再补充对应内容与摘要。分工依据见[共用顶栏记录](../research/2026-11-02-shared-top-bar-summary.md)。
 
-结算的 `run_result` 主体沿用 default，保留完整的当前页 texts、分数、徽章、发现、options 及空列表；已显示的 cards 复用卡牌摘要，保留字符串 card:N ID、名称、类型和费用等字段，省略正文、稀有度及卡池。需要正文或悬停说明时调用 inspect_run_result。full/default 和详情工具的信息范围不变。主菜单与 unrecognized 主体沿用 default；共用顶栏规则独立适用。约定及验证见[结算观察实施记录](../research/2026-11-03-result-observation-implementation.md)。
+结算的 `run_result` 主体沿用 default，保留完整的当前页 texts、分数、徽章、发现、options 及空列表；已显示的 cards 复用卡牌摘要，保留字符串 card:N ID、名称、类型和费用等字段，省略正文、稀有度及卡池。需要正文或悬停说明时调用 inspect_run_result。full/default 的结算卡牌使用共用完整格式，包含逐牌悬停解释；结算页其他悬停帮助仍由专项详情提供。主菜单与 unrecognized 主体沿用 default；共用顶栏规则独立适用。约定及验证见[结算观察实施记录](../research/2026-11-03-result-observation-implementation.md)。
 
 已打开候选页的 full/default/summary 都提供整个原生可浏览列表，包含滚动区域外的候选，保持原生顺序及原牌 ID。读取不滚动或选择卡牌；确认预览只提供该页展示内容，眼睛与覆盖页继续隐藏选择。卡面附魔按实际显示规则读取，字段及界面操作见[选牌接口](card-selection.md)。
 

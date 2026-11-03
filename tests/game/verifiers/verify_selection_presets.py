@@ -20,7 +20,7 @@ def compare_summary(full, summary, path=()):
         assert set(summary) <= set(full), (full, summary)
         card = type(full.get('id')) is int and 'name' in full
         allowed = {'id', 'name', 'type', 'energy_cost', 'star_cost', 'energy_cost_color',
-                   'star_cost_color', 'unplayable_markers', 'outline', 'enchantment'}
+                   'star_cost_color', 'unplayable_markers', 'outline', 'enchantment', 'affliction'}
         comparison = 'before' in path or 'after' in path
         for key, value in full.items():
             omitted = (card and key not in allowed or key == 'hover_tips'
@@ -110,6 +110,12 @@ async def verify(args):
                 await call('capture_screenshot', {'filename': label + '.png'})
                 full = await call('inspect_selection')
                 assert full == await call('inspect_selection', {'preset': 'full'})
+                expanded = await call('get_observation', {'preset': 'full'})
+                for cards in card_lists(expanded['selection']):
+                    assert all('hover_tips' in card for card in cards if 'description' in card), cards
+                for key in ('upgrade_preview', 'upgrade_previews', 'enchant_previews', 'transform_previews'):
+                    if expanded['selection'].get(key):
+                        assert expanded['selection'][key] == full['selection'][key]
                 summary = await call('inspect_selection', {'preset': 'summary'})
                 compare_summary(full, summary)
                 observed = await call('get_observation', {'preset': 'summary'})

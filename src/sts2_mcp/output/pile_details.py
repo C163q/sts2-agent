@@ -7,8 +7,8 @@ PILE_SCHEMA = {
     "type": "object",
     "properties": {
         "pile": {"type": "string", "enum": list(PILES), "description": "The combat pile to inspect."},
-        "detail_level": {"type": "string", "enum": ["summary", "full"], "default": "summary",
-                         "description": "Summary omits descriptions and hover tips; full includes both."},
+        "preset": {"type": "string", "enum": ["full", "summary"], "default": "full",
+                   "description": "full includes card effects and shared hover help; summary keeps the shared compact card fields."},
     },
     "required": ["pile"],
     "additionalProperties": False,
@@ -18,16 +18,16 @@ PILE_SCHEMA = {
 def pile_arguments(arguments):
     if (not isinstance(arguments, dict) or set(arguments) - set(PILE_SCHEMA["properties"])
             or arguments.get("pile") not in PILES
-            or arguments.get("detail_level", "summary") not in ("summary", "full")):
+            or arguments.get("preset", "full") not in ("summary", "full")):
         raise ValueError("Invalid pile arguments.")
     return dict(arguments)
 
 
-def pile_details(state, pile, level):
+def pile_details(state, pile):
     context = scene_context(state)
     status = state["status"]
     screen = state["screen"]
-    if (state["pile"] != pile or state["detail_level"] != level
+    if (state["pile"] != pile
             or status not in ("opened", "empty", "unavailable") or not isinstance(screen, dict)
             or not isinstance(screen["status"], str) or not isinstance(state["message"], str)):
         raise ValueError("Invalid pile details.")
@@ -36,7 +36,7 @@ def pile_details(state, pile, level):
         if not isinstance(screen["view"], str):
             raise ValueError("Invalid pile screen view.")
         view["view"] = screen["view"]
-    result = {**context, "pile": pile, "detail_level": level, "status": status,
+    result = {**context, "pile": pile, "status": status,
               "screen": view, "message": state["message"]}
     if status == "unavailable":
         if state["cards"] is not None or state["reason"] not in ("entry_not_visible", "entry_disabled"):
@@ -48,5 +48,5 @@ def pile_details(state, pile, level):
                 raise ValueError("Invalid opened pile screen.")
         elif state["cards"] != [] or view != {"status": "visible"}:
             raise ValueError("Invalid empty pile.")
-        result["cards"] = browsed_cards(state["cards"], level, "pile")
+        result["cards"] = browsed_cards(state["cards"], "pile")
     return result

@@ -15,24 +15,22 @@ class DeckMcpTests(unittest.IsolatedAsyncioTestCase):
     async def test_repeated_inspection_preserves_omitted_options_and_summary_privacy(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
-            summary = await tools.inspect_deck()
-            self.assertEqual(summary, {"scene": "combat", "screen": {"status": "covered", "view": "deck"}, "detail_level": "summary", "view_upgrades": False,
+            summary = await tools.inspect_deck({"preset": "summary"})
+            self.assertEqual(summary, {"scene": "combat", "screen": {"status": "covered", "view": "deck"}, "view_upgrades": False,
                 "sort": {"by": "obtained", "descending": False}, "deck": [
-                    {"id": "deck:0", "name": "Defend+", "type": "Skill", "rarity": "basic",
-                     "visual_card_pool": "ironclad", "energy_cost": "1"},
-                    {"id": "deck:1", "name": "Defend+", "type": "Skill", "rarity": "basic",
-                     "visual_card_pool": "ironclad", "energy_cost": "1"}]})
-            options = {"detail_level": "full", "view_upgrades": True, "sort_by": "cost", "descending": True}
+                    {"id": "deck:0", "name": "Defend+", "type": "Skill", "energy_cost": "1"},
+                    {"id": "deck:1", "name": "Defend+", "type": "Skill", "energy_cost": "1"}]})
+            options = {"preset": "full", "view_upgrades": True, "sort_by": "cost", "descending": True}
             full = await tools.inspect_deck(options)
             self.assertEqual(full["hover_tips"], [{"title": "Block", "description": "Prevents damage.",
                                                    "card_ids": ["deck:0", "deck:1"]}])
             repeated = await tools.inspect_deck()
-            self.assertEqual(repeated["detail_level"], "summary")
+            self.assertNotIn("detail_level", repeated)
             self.assertTrue(repeated["view_upgrades"])
             self.assertEqual(repeated["sort"], {"by": "cost", "descending": True})
-            self.assertNotIn("description", repeated["deck"][0])
-            self.assertNotIn("hover_tips", repeated)
-            self.assertEqual(game.operations[1]["arguments"], options)
+            self.assertIn("description", repeated["deck"][0])
+            self.assertIn("hover_tips", repeated)
+            self.assertEqual(game.operations[1]["arguments"], {k: v for k, v in options.items() if k != "preset"})
             self.assertFalse(game.operations[0].get("arguments"))
             self.assertFalse(game.operations[2].get("arguments"))
             self.assertEqual((await tools.end_turn())["error"]["code"], "illegal_action")
@@ -75,7 +73,7 @@ class DeckMcpTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_malformed_deck_fields_clear_permission(self):
         missing = object()
-        cases = [(("scene",), "deck"), (("detail_level",), "full"), (("view_upgrades",), 1),
+        cases = [(("scene",), "deck"), (("view_upgrades",), 1),
                  (("sort",), None), (("sort",), {"by": "bad", "descending": False}),
                  (("sort",), {"by": "cost", "descending": 0}), (("sort",), {}),
                  (("deck",), None), (("deck",), [None]), (("deck", 0, "id"), missing),
@@ -106,19 +104,19 @@ class DeckMcpTests(unittest.IsolatedAsyncioTestCase):
             with self.subTest(invalid=invalid), FakeGame() as game:
                 tools = self.tools_type(Client(game.directory))
                 game.deck_payload["deck"][0].update(invalid)
-                self.assertEqual((await tools.inspect_deck({"detail_level": "full"}))["error"]["code"], "transport_error")
+                self.assertEqual((await tools.inspect_deck({"preset": "full"}))["error"]["code"], "transport_error")
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
-            expected = await tools.inspect_deck({"detail_level": "full"})
+            expected = await tools.inspect_deck({"preset": "full"})
             game.deck_payload.update(hand=[{"secret": 1}], notes={"secret": 1}, available_actions=["end_turn"])
             game.deck_payload["deck"][0].update(secret=1, card_ids=["bad"])
             game.deck_payload["deck"][0]["hover_tips"][0].update(secret=1, card_ids=["bad"])
             original = json.dumps(game.deck_payload)
-            self.assertEqual(await tools.inspect_deck({"detail_level": "full"}), expected)
+            self.assertEqual(await tools.inspect_deck({"preset": "full"}), expected)
             self.assertEqual(json.dumps(game.deck_payload), original)
             game.deck_payload["deck"] = []
             self.assertEqual((await tools.inspect_deck())["deck"], [])
-            self.assertEqual((await tools.inspect_deck({"detail_level": "full"}))["hover_tips"], [])
+            self.assertEqual((await tools.inspect_deck({"preset": "full"}))["hover_tips"], [])
 
     async def test_close_only_returns_basic_observation_fields(self):
         with FakeGame() as game:

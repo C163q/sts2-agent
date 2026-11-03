@@ -60,7 +60,9 @@ def shop_details(value, *, full=False):
             elif (clean['price'] is None) != (clean['affordable'] is None) or clean['enabled'] and clean['affordable'] is not True:
                 raise ValueError('Invalid item availability.')
             text = clean['card'] if clean['kind'] == 'card' else clean
-            if clean['kind'] == 'card' and set(text) != set(shape['card']) or not text.get('name'):
+            required_card = {'name', 'type', 'rarity', 'visual_card_pool', 'energy_cost', 'star_cost'}
+            if full: required_card |= {'description', 'hover_tips'}
+            if (clean['kind'] == 'card' and not required_card <= text.keys()) or not text.get('name'):
                 raise ValueError('Missing visible item details.')
             if full and not used and any(set(tip) != set(TIP) for tip in text['hover_tips']):
                 raise ValueError('Invalid shop hover help.')

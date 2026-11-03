@@ -11,6 +11,8 @@ SPECIAL_PRESETS = {
     'get_observation': ('actions_only', 'summary', 'top_bar'),
     'inspect_ui': ('summary',),
     'inspect_hand': ('summary',),
+    'inspect_deck': ('summary',),
+    'inspect_pile': ('summary',),
     'inspect_selection': ('summary',),
     'inspect_relics': ('summary',),
     'inspect_map': ('selectable',),
@@ -48,7 +50,7 @@ def preserve_null(path, parent):
                and path[len(prefix)] in {'before', 'after'} for prefix in PREVIEW_PATHS)
 
 
-def apply_preset(payload, preset):
+def apply_preset(payload, preset, *, path=()):
     if preset != 'default' or 'error' in payload:
         return payload
 
@@ -60,7 +62,7 @@ def apply_preset(payload, preset):
             return [compact(item, (*path, '*')) for item in value]
         return value
 
-    result = compact(payload)
+    result = compact(payload, path)
     return ImagePayload(result, payload.image) if isinstance(payload, ImagePayload) else result
 
 
@@ -91,7 +93,7 @@ def output_preset(handler):
         else:
             payload = await handler(self)
         compact_summary = preset == 'summary' and operation in {
-            'inspect_ui', 'inspect_hand', 'inspect_selection', 'inspect_relics'}
+            'inspect_ui', 'inspect_hand', 'inspect_selection', 'inspect_relics', 'inspect_deck', 'inspect_pile'}
         return apply_preset(payload, 'default' if compact_summary else preset)
 
     wrapped.supports_output_presets = True

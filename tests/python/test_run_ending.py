@@ -176,7 +176,8 @@ class EndingBoundaryTests(unittest.TestCase):
                                       'hidden_upgrade': 'secret'}]
         raw['run_result']['potions'] = [{'name': 'Potion', 'description': 'hover only', 'owner': 'secret', 'hover_tips': []}]
         result = observation_details(raw)['run_result']
-        self.assertEqual(result['cards'][0], {'id': 'card:0', 'name': 'Molten Fist', 'description': 'Deal 10 damage.'})
+        self.assertEqual(result['cards'][0], {'id': 'card:0', 'name': 'Molten Fist', 'description': 'Deal 10 damage.',
+                                                   'hover_tips': [{'title': 'Vulnerable', 'description': 'Extra damage.'}]})
         self.assertEqual(result['potions'], [{'name': 'Potion'}])
         detail = inspection_details('inspect_run_result', raw)['run_result']
         self.assertEqual(detail['potions'][0]['description'], 'hover only')

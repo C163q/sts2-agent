@@ -36,7 +36,7 @@ def observation_preset(payload, preset):
 
 
 def observation_summary(payload):
-    from sts2_mcp.output.card_summary import card_summary
+    from sts2_mcp.output.card_format import card_summary
     from sts2_mcp.output.presets import apply_preset
     from sts2_mcp.output.selection_summary import selection_summary
     from sts2_mcp.output.top_bar_summary import top_bar_summary

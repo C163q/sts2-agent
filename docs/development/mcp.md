@@ -63,7 +63,7 @@ flowchart LR
 | `inspect_combatants()` | [双方 powers、敌人当前意图及已生成充能球说明](combatant-inspection.md) |
 | `inspect_relics(preset?, relic_indices?)` | [遗物完整／摘要与下标筛选](relic-inspection.md#mcp-参数)，默认保留正文、可见计数与共享解释 |
 | `inspect_deck(...)` | [打开或复用全牌组页面](deck-inspection.md)，可选信息档位、升级预览和排序 |
-| `inspect_pile(...)` | [打开或复用战斗牌堆](pile-inspection.md)，必填 `pile`，可选 `detail_level` |
+| `inspect_pile(...)` | [打开或复用战斗牌堆](pile-inspection.md)，必填 `pile`，支持 full/default/summary |
 | `close_card_view()` | 关闭顶层牌组/牌堆查看页，保留下层地图 |
 | `inspect_map(preset?, max_steps?)` | [打开或复用当前幕地图](map-inspection.md)，可返回全图、前瞻子图或实际可选节点详情 |
 | `travel_to_node(node_id)` | [按当前候选选路](map-inspection.md#地图选路)，离开房间并放弃未领取奖励；飞鞋由原生流程处理 |
@@ -149,11 +149,11 @@ approval_mode = "approve"
 
 `0`、`false`、空字符串、空数组、空对象均保留。数组长度、顺序和引用下标不变；过滤后为空的对象仍保留。省略不表示零、否或空集合，也不表示沿用上次值；结果不是状态增量。需要明确空值时使用 full。
 
-例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。遗物 summary 同样省略普通空值。`inspect_deck` / `inspect_pile` 的 `detail_level` 独立决定正文范围，默认仍是 summary；`preset:"full"` 不会更改它。
+例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。遗物 summary 同样省略普通空值。`inspect_deck` / `inspect_pile` 同样使用 full/default/summary，默认完整内容；旧 detail_level 已移除。
 
 各工具专用预设的完整字段规则由对应接口维护：`get_observation` 的 summary／top_bar 见[观察预设](observation.md#mcp-输出预设)，UI 帮助、手牌、选牌和遗物摘要见各工具说明。不要把 default 保留空数组的公共规则套用到明确精简空列表的专用 summary。
 
-该参数只控制 Python 公开输出，不转发给 Mod；完整响应校验、动作许可判断和原有筛选先完成，再过滤空值。部分成功的 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。标准库文件客户端继续保留原有空值，本节预设只适用于 MCP 和 GameTools 的玩法调用；`detail_level` 等原生参数仍独立生效。
+该参数只控制 Python 公开输出，不转发给 Mod；完整响应校验、动作许可判断和原有筛选先完成，再过滤空值。部分成功的 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。其他标准库文件调用继续保留原有空值；牌组／牌堆 CLI 的 --preset 共用上述 Python 投影，底层 Mod 始终采样完整卡牌。
 
 ## 调用和错误语义
 

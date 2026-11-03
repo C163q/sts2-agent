@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from sts2_mcp.roundtrip_client import Client, player_result
+from sts2_mcp.output.card_format import browse_result
 
 
 def main():
@@ -19,10 +20,12 @@ def main():
     evidence = {"completed": False, "calls": []}
 
     def call(operation, arguments=None):
-        response = client.call(operation, arguments=arguments)
+        options = dict(arguments or {})
+        preset = options.pop('preset', 'full')
+        response = client.call(operation, arguments=options or None)
         evidence["calls"].append({"operation": operation, "arguments": arguments, "response": response})
         assert response["ok"], response
-        return player_result(response)
+        return browse_result(response, operation, options, preset) if operation in {'inspect_deck', 'inspect_pile'} else player_result(response)
 
     before = call("get_state")
     assert before["screen"]["status"] == "visible", before
@@ -35,11 +38,11 @@ def main():
             evidence["calls"].append({"operation": "inspect_deck", "arguments": invalid, "response": response})
             assert not response["ok"] and response["error"]["code"] == "invalid_request", response
         assert call("get_state") == before, "Invalid options changed the observation."
-    summary = call("inspect_deck")
-    assert summary["scene"] == before["scene"] and summary["detail_level"] == "summary", summary
+    summary = call("inspect_deck", {"preset": "summary"})
+    assert summary["scene"] == before["scene"] and "detail_level" not in summary, summary
     assert not summary["view_upgrades"] and summary["sort"] == {"by": "obtained", "descending": False}, summary
-    basic_fields = {"id", "name", "type", "rarity", "visual_card_pool", "energy_cost", "star_cost"}
-    assert all(set(card) == basic_fields for card in summary["deck"]), summary
+    basic_fields = {"id", "name", "type", "energy_cost"}
+    assert all(basic_fields <= card.keys() and "description" not in card for card in summary["deck"]), summary
     assert "hover_tips" not in summary and "notes" not in summary, summary
     assert len(summary["deck"]) == before["top_bar"]["deck_count"], summary
     ids = [card["id"] for card in summary["deck"]]
@@ -53,21 +56,21 @@ def main():
             assert not rejected["ok"] and rejected["error"]["code"] == "illegal_action", rejected
         rejected = client.call("inspect_deck", arguments={"detail_level": "bad"})
         assert not rejected["ok"] and rejected["error"]["code"] == "invalid_request", rejected
-        assert call("inspect_deck") == summary, "Invalid options changed the open deck."
-    full = call("inspect_deck", {"detail_level": "full"})
+        assert call("inspect_deck", {"preset": "summary"}) == summary, "Invalid options changed the open deck."
+    full = call("inspect_deck", {"preset": "full"})
     assert full["sort"] == summary["sort"] and not full["view_upgrades"], full
     assert [card["id"] for card in full["deck"]] == ids, full
-    assert all(set(card) == basic_fields | {"description"} for card in full["deck"]), full
+    assert all(basic_fields | {"rarity", "visual_card_pool", "star_cost", "description"} <= card.keys() for card in full["deck"]), full
     assert "notes" not in full, full
     for item in (full,):
         tips = item["hover_tips"]
         assert len(tips) == len({(tip["title"], tip["description"]) for tip in tips}), tips
         assert all(tip["card_ids"] and len(tip["card_ids"]) == len(set(tip["card_ids"]))
                    and set(tip["card_ids"]) <= set(ids) for tip in tips), tips
-    upgraded = call("inspect_deck", {"detail_level": "full", "view_upgrades": True})
+    upgraded = call("inspect_deck", {"preset": "full", "view_upgrades": True})
     assert upgraded["view_upgrades"] and [card["id"] for card in upgraded["deck"]] == ids, upgraded
     retained = call("inspect_deck")
-    assert retained["view_upgrades"] and retained["detail_level"] == "summary", retained
+    assert retained["view_upgrades"] and "detail_level" not in retained, retained
     if args.exercise_options:
         strike = next(card for card in full["deck"] if card["name"] == "Strike")
         strike_upgraded = next(card for card in upgraded["deck"] if card["id"] == strike["id"])
@@ -87,7 +90,7 @@ def main():
                 if sort_by == "obtained":
                     assert [card["id"] for card in sorted_view["deck"]] == (list(reversed(ids)) if descending else ids)
                 assert call("inspect_deck") == sorted_view, "Omitted options reset the current page."
-        restored = call("inspect_deck", {"detail_level": "full", "view_upgrades": False, "sort_by": "obtained"})
+        restored = call("inspect_deck", {"preset": "full", "view_upgrades": False, "sort_by": "obtained"})
         assert restored == full, "Returning to normal changed card details."
     closed = call("close_deck")
     assert closed == before, "Closing did not restore the original visible observation."

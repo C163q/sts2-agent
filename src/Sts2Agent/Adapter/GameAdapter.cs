@@ -821,11 +821,11 @@ internal sealed partial class GameAdapter(bool testMode)
         if (!ReferenceEquals(DeckView.Current, screen) || !ReferenceEquals(LocalPlayer, player))
             return FileMailbox.Error(request.Id, "illegal_action", "The deck screen changed while reading.");
         using var snapshot = JsonDocument.Parse(Observe());
-        var inspection = deckInspection.Read(screen, player, options.DetailLevel,
+        var inspection = deckInspection.Read(screen, player,
             snapshot.RootElement.GetProperty("snapshot_id").GetString()!);
         string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS");
         if (testMode && checks != null)
-            DeckInspectionChecks.Run(checks, screen, player, deckInspection, inspection, options.DetailLevel);
+            DeckInspectionChecks.Run(checks, screen, player, deckInspection, inspection);
         return InspectionSuccess(request.Id, snapshot.RootElement, inspection);
     }
 

@@ -7,6 +7,7 @@ from sts2_mcp.output.presets import output_preset
 import anyio
 
 from sts2_mcp.output.run_ending_details import option_arguments
+from sts2_mcp.output.card_format import browse_preset
 from sts2_mcp.output.deck_details import deck_arguments
 from sts2_mcp.output.inspection_details import inspection_details
 from sts2_mcp.output.hand_presets import hand_arguments, hand_preset
@@ -221,7 +222,8 @@ class GameTools:
             arguments = deck_arguments(arguments)
         except ValueError:
             return player_result({"ok": False, "error": {"code": "invalid_request"}})
-        return await self._change_view("inspect_deck", arguments)
+        preset = arguments.pop("preset", "full")
+        return browse_preset(await self._change_view("inspect_deck", arguments), preset)
 
     @output_preset
     async def close_card_view(self):
@@ -251,7 +253,8 @@ class GameTools:
             arguments = pile_arguments(arguments)
         except ValueError:
             return player_result({"ok": False, "error": {"code": "invalid_request"}})
-        return await self._change_view("inspect_pile", arguments)
+        preset = arguments.pop("preset", "full")
+        return browse_preset(await self._change_view("inspect_pile", arguments), preset)
 
     async def _change_view(self, operation, arguments=None, validate_selection=False):
         async with self.lock:

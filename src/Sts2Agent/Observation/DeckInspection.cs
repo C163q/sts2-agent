@@ -10,7 +10,7 @@ internal sealed class DeckInspection
     private readonly CardIdentityMap<CardModel> ids = new();
     private object? run;
 
-    public object Read(NDeckViewScreen screen, Player player, string detailLevel, string snapshotId)
+    public object Read(NDeckViewScreen screen, Player player, string snapshotId)
     {
         if (!ReferenceEquals(run, player.RunState))
         {
@@ -20,10 +20,10 @@ internal sealed class DeckInspection
         bool upgrades = DeckView.Grid(screen).IsShowingUpgrades;
         return EnglishCardText.Read(() => new
         {
-            snapshot_id = snapshotId, detail_level = detailLevel,
+            snapshot_id = snapshotId,
             view_upgrades = upgrades, sort = DeckView.Sorting(screen),
             deck = DeckView.Cards(screen).Select(card => BrowsedCard.Read(card, "deck:" + ids.Get(card),
-                PileType.Deck, upgrades, detailLevel == "full")).ToArray()
+                PileType.Deck, upgrades, full: true, appearance: true)).ToArray()
         });
     }
 }

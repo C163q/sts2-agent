@@ -32,8 +32,7 @@ internal sealed class SelectionInspection(CombatObservation observation)
                             card = Card(node, full, expanded: true);
                         else
                         {
-                            card = new() { ["name"] = null, ["description"] = null };
-                            if (full) card["hover_tips"] = null;
+                            card = CardPresentation.Unknown();
                         }
                     }
                     else
@@ -41,7 +40,6 @@ internal sealed class SelectionInspection(CombatObservation observation)
                         // Every browsable card uses the same panel data, including partly clipped rows.
                         card = BrowsedCard.Read(model, "selection", selection.DisplayingPile,
                             selection.ViewUpgrades == true, true, preservePile: true, appearance: true);
-                        if (!full) card.Remove("hover_tips");
                         if (CombatObservation.CardVisible(node))
                         {
                             var displayed = observation.Card(node!);
@@ -110,7 +108,7 @@ internal sealed class SelectionInspection(CombatObservation observation)
             result["enchantment"] = visible ? DeckEnchantSelection.Description(selection) : null;
             result["enchant_previews"] = !visible ? Array.Empty<object>() : DeckEnchantSelection.Previews(selection).Select(pair =>
             {
-                var before = pair.before == null ? new Dictionary<string, object?> { ["name"] = null, ["description"] = null }
+                var before = pair.before == null ? CardPresentation.Unknown()
                     : Card(pair.before, full, expanded: true);
                 var after = Card(pair.after, full, expanded: true);
                 before["id"] = after["id"] = observation.CardId(pair.original);
@@ -120,7 +118,7 @@ internal sealed class SelectionInspection(CombatObservation observation)
         if (selection.Kind == "deck_upgrade")
             result["upgrade_previews"] = !visible ? Array.Empty<object>() : DeckUpgradeSelection.Previews(selection).Select(pair =>
             {
-                var before = pair.before == null ? new Dictionary<string, object?> { ["name"] = null, ["description"] = null }
+                var before = pair.before == null ? CardPresentation.Unknown()
                     : Card(pair.before, full, expanded: true);
                 var after = Card(pair.after, full, expanded: true);
                 before["id"] = after["id"] = observation.CardId(pair.original);
@@ -133,13 +131,6 @@ internal sealed class SelectionInspection(CombatObservation observation)
 
     private Dictionary<string, object?> Card(NCard node, bool full, bool expanded)
     {
-        var card = observation.Card(node);
-        bool identified = node.Visibility == ModelVisibility.Visible;
-        if (full || expanded && VisibleUi.Text(node, "%DescriptionLabel") != null)
-            card["description"] = identified ? EnglishCardText.Read(() => HoverTipText.DescribeCard(node.Model!, node.DisplayingPile,
-                CardSelection.Field(node, "_previewTarget") as MegaCrit.Sts2.Core.Entities.Creatures.Creature ?? node.Model!.CurrentTarget)) : null;
-        if (full)
-            card["hover_tips"] = identified ? EnglishCardText.Read(() => IHoverTip.RemoveDupes(node.Model!.HoverTips).Select(HoverTipText.From).ToArray()) : null;
-        return card;
+        return CardPresentation.Read(node, observation, full || expanded && VisibleUi.Text(node, "%DescriptionLabel") != null);
     }
 }

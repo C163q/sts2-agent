@@ -1,4 +1,5 @@
 import re
+from sts2_mcp.output.card_format import BROWSED_CARD
 
 OPTION_SCHEMA = {'type': 'object', 'properties': {'option_id': {
     'type': 'string', 'minLength': 1,
@@ -9,8 +10,7 @@ OPTION = {'id': str, 'text': str, 'enabled': bool}
 RESULT = {'status': str, 'phase': str, 'title': (str,), 'texts': [str],
           'score_lines': [{'label': str, 'value': str}], 'badges': [{'name': str, 'rarity': str}],
           'discoveries': [{'kind': str, 'count': int}], 'options': [OPTION],
-          'cards': [{'id': str, 'name': (str,), 'type': (str,), 'rarity': (str,), 'visual_card_pool': (str,),
-                     'energy_cost': (str,), 'star_cost': (str,), 'description': (str,)}],
+          'cards': [BROWSED_CARD],
           'relics': [{'name': (str,)}], 'potions': [{'name': (str,)}]}
 EPILOGUE = {'status': str, 'dialogue': ({'speaker': str, 'text': str},),
             'continue': ({'text': str, 'enabled': bool},), 'proceed': ({'text': str, 'enabled': bool},)}

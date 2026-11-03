@@ -2,7 +2,7 @@
 
 版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
 
-文件操作及 MCP 工具 `inspect_pile` 支持抽牌堆、弃牌堆、消耗牌堆。调用真实使用原生入口，默认返回整个可浏览列表的摘要，也支持完整正文和共享悬停解释。页面没有升级或排序控件，接口不提供对应参数。
+文件操作及 MCP 工具 `inspect_pile` 支持抽牌堆、弃牌堆、消耗牌堆。调用真实使用原生入口，默认 default 返回整个可浏览列表的完整正文与共享悬停解释，也支持手牌共用摘要。页面没有升级或排序控件，接口不提供对应参数。
 
 ## 调用与页面行为
 
@@ -10,18 +10,18 @@ MCP 调用：
 
 ```text
 inspect_pile(pile="draw")
-inspect_pile(pile="discard", detail_level="full")
-inspect_pile(pile="exhaust", detail_level="full")
+inspect_pile(pile="discard", preset="full")
+inspect_pile(pile="exhaust", preset="full")
 close_card_view()
 ```
 
 同一操作的文件客户端示例，须先按 [正常加载指南](live-game.md) 安装并重启游戏：
 
 ```sh
-python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_pile --pile draw --detail-level full
+python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_pile --pile draw --preset full
 ```
 
-MCP 另接受[通用 preset](mcp.md#输出预设)，默认省略普通空值，例如不可用时省略 cards；显式 full 保留 cards:null。`pile` 必填，只接受 `draw/discard/exhaust`；`detail_level` 可省略，默认 `summary`，另可选 `full`。未知参数、重复 JSON 字段、错误类型及非法枚举在 UI 操作之前拒绝。文件请求的参数放在 `arguments` 对象，`expected_state` 不需要。
+MCP 另接受[通用 preset](mcp.md#输出预设)，默认省略普通空值，例如不可用时省略 cards；显式 full 保留 cards:null。`pile` 必填，只接受 `draw/discard/exhaust`；`preset` 默认 `default`，另可选 `full/summary`；不回显该参数。旧 `detail_level` 请求在 UI 操作前拒绝。未知参数、重复 JSON 字段、错误类型及非法枚举在 UI 操作之前拒绝。底层文件请求的 `arguments` 只含 pile，始终读取完整内容；preset 由 MCP／文件 CLI 投影。`expected_state` 不需要。
 
 非空牌堆实际打开原生页面，返回后保持打开；重复查看同一堆复用页面，信息档位每次独立选择。不同卡牌页共用一层：战斗牌堆按钮在其他卡牌页打开时被原生屏幕上下文禁用，所以跨页先通过原生返回按钮关闭当前页，复核当前状态，再点击目标牌堆。查看牌组也可以替换当前牌堆页。
 
@@ -47,7 +47,6 @@ scene/screen 遵循[统一上下文](observation.md#场景上下文)；打开页
 {
   "scene": "combat",
   "pile": "discard",
-  "detail_level": "summary",
   "status": "empty",
   "screen": {"status": "visible"},
   "message": "My Discard Pile is empty.",
@@ -61,7 +60,6 @@ scene/screen 遵循[统一上下文](observation.md#场景上下文)；打开页
 {
   "scene": "combat",
   "pile": "exhaust",
-  "detail_level": "summary",
   "status": "unavailable",
   "screen": {"status": "visible"},
   "message": "The pile button is not visible.",
@@ -76,13 +74,13 @@ scene/screen 遵循[统一上下文](observation.md#场景上下文)；打开页
 
 浏览覆盖不再使实际可见的顶栏整体隐藏；相应药水／遗物可只读查看，战斗动作仍受覆盖限制。规则见[基础观察](observation.md#mcp-输出预设)。
 
-卡牌摘要包含 `id/name/type/rarity/visual_card_pool/energy_cost/star_cost`，语义与 [牌组字段](deck-inspection.md) 一致。`full` 为每张牌增加 `description`，并把附带解释在根级 `hover_tips` 按完整标题和正文去重，以 `card_ids` 关联；可读空列表的完整模式保留 `hover_tips: []`，不可用时不返回解释字段。所有文字使用英语，不切换游戏语言；不附送手牌、敌人意图、动作列表或数值 notes。
+full/default 卡牌沿用[共用完整格式](hand-inspection.md#格式)，包括正文、费用和可见外观，并把附带解释在根级 `hover_tips` 按完整标题和正文去重，以 `card_ids` 关联；summary 沿用[共用卡牌摘要](hand-inspection.md#参数与返回范围)，省略正文、稀有度、卡池及解释。可读空列表的完整模式保留 `hover_tips: []`，不可用时不返回解释字段。所有文字使用英语，不切换游戏语言；不附送手牌、敌人意图、动作列表或数值 notes。
 
 抽牌堆沿用原生页面的稀有度及卡名重排结果，绝不返回真实抽牌顺序。弃牌和消耗堆沿用各自原生页面顺序；ID 不表达将来抽取顺序。`pile:` ID 与手牌和永久牌组 ID 分开，同一场战斗内按同一原卡实例稳定，也可跨牌堆对应。新 ID 仅在浏览原生显示列表时分配。
 
 费用、正文、升级后已有数值、战斗临时修改、附魔和关键词使用实际牌堆上下文，不套用手牌瞄准预览。实现读取完整网格列表并使用隔离克隆格式化；线程局部作用域只为当前克隆保留原牌堆上下文，不把克隆放入真实牌堆，不修改持有卡牌。
 
-文件默认 JSON 与 MCP full 一致，均去掉传输控制信息并共享提示。文件客户端加 `--raw` 才保留状态令牌等原始信息及每张牌的解释列表。
+文件 CLI 和 MCP 使用相同预设投影，均去掉传输控制信息并共享提示。文件客户端加 `--raw` 才保留状态令牌等原始信息及每张牌的解释列表。
 
 ## 生命周期与验证
 

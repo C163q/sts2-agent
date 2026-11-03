@@ -49,9 +49,9 @@ def player_result(response, *, operation=None):
             result["potion_slots"], result["hover_tips"] = share_potion_tips(result["potion_slots"])
         if "relics" in result and result["relics"] is not None:
             result["relics"], result["hover_tips"] = share_indexed_tips(result["relics"], "relic_indices")
-        if "deck" in result and result.get("detail_level") == "full":
+        if "deck" in result:
             result["deck"], result["hover_tips"] = share_hand_tips(result["deck"])
-        if "pile" in result and result.get("detail_level") == "full" and result.get("cards") is not None:
+        if "pile" in result and result.get("cards") is not None:
             result["cards"], result["hover_tips"] = share_hand_tips(result["cards"])
         if operation == "inspect_selection":
             result["selection"]["cards"], result["hover_tips"] = share_hand_tips(result["selection"]["cards"])

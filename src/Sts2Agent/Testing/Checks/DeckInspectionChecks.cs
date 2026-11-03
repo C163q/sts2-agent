@@ -145,7 +145,7 @@ internal static class DeckInspectionChecks
         return report;
     }
 
-    public static void Run(string path, NDeckViewScreen screen, Player player, DeckInspection reader, object inspection, string level)
+    public static void Run(string path, NDeckViewScreen screen, Player player, DeckInspection reader, object inspection)
     {
         List<object> results = [];
         void Check(string name, bool passed) => results.Add(new { name, passed });
@@ -179,16 +179,14 @@ internal static class DeckInspectionChecks
                 renderedMatch &= cards[index].GetProperty("energy_cost").GetString() == cost;
         }
         Check("rendered_cards_match_projected_names_and_costs", renderedMatch);
-        Check("summary_has_no_description_or_tips", level != "summary" || cards.All(card =>
-            !card.TryGetProperty("description", out _) && !card.TryGetProperty("hover_tips", out _)));
-        Check("full_has_descriptions_and_tips", level != "full" || cards.All(card =>
+        Check("complete_descriptions_and_tips", cards.All(card =>
             card.GetProperty("description").ValueKind == JsonValueKind.String && card.GetProperty("hover_tips").ValueKind == JsonValueKind.Array));
-        var repeated = reader.Read(screen, player, level, data.GetProperty("snapshot_id").GetString()!);
+        var repeated = reader.Read(screen, player, data.GetProperty("snapshot_id").GetString()!);
         Check("repeatable", JsonSerializer.Serialize(inspection) == JsonSerializer.Serialize(repeated));
         Check("owned_cards_unchanged", saved == JsonSerializer.Serialize(original.Select(card => card.ToSerializable())));
         Check("owned_energy_prefixes_unchanged", prefixes.All(entry => entry.value.ColorPrefix == entry.ColorPrefix));
         Check("locale_unchanged", LocManager.Instance.Language == language && keyword.GetFormattedText() == localized);
-        Runs.Add(new { detail_level = level, view_upgrades = DeckView.Grid(screen).IsShowingUpgrades, results });
+        Runs.Add(new { view_upgrades = DeckView.Grid(screen).IsShowingUpgrades, results });
         File.WriteAllText(path, JsonSerializer.Serialize(new { language, runs = Runs }, new JsonSerializerOptions { WriteIndented = true }));
         if (results.Any(result => !JsonSerializer.SerializeToElement(result).GetProperty("passed").GetBoolean()))
             throw new InvalidOperationException("Deck inspection checks failed; see the local report.");

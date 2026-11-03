@@ -32,7 +32,7 @@ internal sealed class PileInspection
         return EnglishCardText.Read(() => Result(options, "opened", snapshotId,
             EnglishCardText.Plain(new LocString("gameplay_ui", options.Pile.ToUpperInvariant() + "_PILE_INFO").GetFormattedText()),
             CardView.Cards(screen).Select(card => BrowsedCard.Read(card, "pile:" + ids.Get(card),
-                options.Type, false, options.DetailLevel == "full")).ToArray()));
+                options.Type, false, full: true, appearance: true)).ToArray()));
     }
 
     public static object Result(PileOptions options, string status, string snapshotId, string message,
@@ -41,7 +41,7 @@ internal sealed class PileInspection
         var result = new Dictionary<string, object?>
         {
             ["snapshot_id"] = snapshotId, ["pile"] = options.Pile,
-            ["detail_level"] = options.DetailLevel, ["status"] = status,
+            ["status"] = status,
             ["message"] = message, ["cards"] = cards
         };
         if (reason != null) result["reason"] = reason;

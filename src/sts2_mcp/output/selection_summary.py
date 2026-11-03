@@ -1,5 +1,5 @@
 """Compact every selection card while preserving the native choice context."""
-from sts2_mcp.output.card_summary import card_summary
+from sts2_mcp.output.card_format import card_summary
 
 
 PREVIEW_LISTS = ('upgrade_previews', 'enchant_previews', 'transform_previews')

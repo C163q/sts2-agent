@@ -37,8 +37,8 @@ internal static class SelectionObservationChecks
         }
         Check("complete basic candidates", Read().GetProperty("cards").GetArrayLength() == 40);
         Check("complete detail candidates", Read(true).GetProperty("cards").GetArrayLength() == 40);
-        Check("basic cards do not include hover help", Read().GetProperty("cards").EnumerateArray()
-            .All(card => !card.TryGetProperty("hover_tips", out _)));
+        Check("expanded basic cards include hover help", Read().GetProperty("cards").EnumerateArray()
+            .All(card => card.TryGetProperty("hover_tips", out _)));
         var holder = selection.Holders.First(h => CombatObservation.CardVisible(h.CardNode)
             && h.CardNode!.Model!.Enchantment != null);
         var node = holder.CardNode!;

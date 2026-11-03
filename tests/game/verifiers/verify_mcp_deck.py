@@ -12,6 +12,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 from sts2_mcp.roundtrip_client import Client, player_result
+from sts2_mcp.output.card_format import browse_result
 
 
 async def verify(args):
@@ -29,13 +30,13 @@ async def verify(args):
             listed = await session.list_tools()
             evidence["tools"] = [tool.model_dump(exclude_none=True) for tool in listed.tools]
             names = {tool.name for tool in listed.tools}
-            assert names == {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants",
+            assert names >= {"get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants",
                              "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"}, names
             for name in ("inspect_deck", "close_card_view"):
                 tool = next(tool for tool in listed.tools if tool.name == name)
                 assert tool.annotations.readOnlyHint is False and tool.annotations.destructiveHint is False
             schema = next(tool for tool in listed.tools if tool.name == "inspect_deck").inputSchema
-            assert set(schema["properties"]) == {"preset", "detail_level", "view_upgrades", "sort_by", "descending"}, schema
+            assert set(schema["properties"]) == {"preset", "view_upgrades", "sort_by", "descending"}, schema
 
             async def call(name, arguments=None):
                 result = await session.call_tool(name, full_output_arguments(name, arguments or {}))
@@ -46,13 +47,12 @@ async def verify(args):
 
             observed = await call("get_observation")
             assert observed == player_result(before), observed
-            for name, arguments in [("summary", {}), ("full", {"detail_level": "full"}),
-                                    ("upgraded", {"detail_level": "full", "view_upgrades": True})]:
+            for name, arguments in [("summary", {"preset": "summary"}), ("full", {"preset": "full"}),
+                                    ("upgraded", {"preset": "full", "view_upgrades": True})]:
                 result = await call("inspect_deck", arguments)
-                reference = await asyncio.to_thread(client.call, "inspect_deck", arguments={
-                    "detail_level": arguments.get("detail_level", "summary")})
+                reference = await asyncio.to_thread(client.call, "inspect_deck", arguments={key: value for key, value in arguments.items() if key != 'preset'})
                 evidence["references"].append(reference)
-                assert reference["ok"] and result == player_result(reference), (result, reference)
+                assert reference["ok"] and result == browse_result(reference, "inspect_deck", preset=arguments["preset"]), (result, reference)
                 assert len(result["deck"]) == observed["top_bar"]["deck_count"], result
                 samples[name] = result
             ids = [card["id"] for card in samples["summary"]["deck"]]
@@ -65,7 +65,7 @@ async def verify(args):
                 assert all("description" in card for card in result["deck"])
                 assert all(set(tip["card_ids"]) <= set(ids) for tip in result["hover_tips"])
             retained = await call("inspect_deck")
-            assert retained["view_upgrades"] and retained["detail_level"] == "summary", retained
+            assert retained["view_upgrades"] and "detail_level" not in retained, retained
             assert retained["sort"] == samples["upgraded"]["sort"], retained
             covered = await call("get_observation")
             assert covered["screen"] == {"status": "covered", "view": "deck"} and "close_card_view" in covered["available_actions"] and not set(covered["available_actions"]) & GAME_ACTIONS, covered

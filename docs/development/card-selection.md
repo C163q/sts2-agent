@@ -24,7 +24,7 @@
 | `upgrade_previews` | 仅 `deck_upgrade` 提供；已经显示的单牌或多牌升级比较，未进入预览或隐藏时为空列表 |
 | `upgrade_preview` | 仅 `hand_upgrade` 提供；已显示的升级前后牌面 `before`、`after`，未选择或隐藏时为 `null` |
 
-`cards` 在查看战场、被覆盖或未支持时为 `null`，与没有候选的空列表不同。网格候选按原生列表顺序完整返回，不按滚动位置截断；基础观察保留已展开牌面，`inspect_selection()` 默认显式读取整个可浏览候选列表、正文及共享 `hover_tips`，不会展开尚未生成的结果。省略 `view_upgrades` 时不改变 UI。共享解释通过整数 `card_ids` 引用候选。手牌选择沿用战斗手牌 ID，升级预览的克隆仍使用原牌 ID。
+`cards` 在查看战场、被覆盖或未支持时为 `null`，与没有候选的空列表不同。网格候选按原生列表顺序完整返回，不按滚动位置截断；基础观察的已展开牌面使用共用完整格式，含正文和逐牌悬停解释；半隐藏手牌及未展开卡包保持无正文的 face 格式。`inspect_selection()` 默认显式读取整个可浏览候选列表、正文及共享 `hover_tips`，不会展开尚未生成的结果。省略 `view_upgrades` 时不改变 UI。候选的共享解释通过整数 `card_ids` 关联；比较两侧的解释分别保留在 before/after 卡牌中，不因原牌 ID 相同而混合。手牌选择沿用战斗手牌 ID，升级预览的克隆仍使用原牌 ID。
 
 基础观察和查看结果按情境附简短 `notes.selection`：选择遮挡时提示用眼睛查看战场；查看战场时提醒仍有选择待完成，须返回选择界面；牌组、牌堆或地图覆盖选择时提醒先关闭当前查看页。这些说明不重复候选正文或按钮列表。
 
@@ -44,7 +44,7 @@
 {"preset": "summary", "card_ids": [1, 2, 3], "view_upgrades": true}
 ```
 
-`summary` 的每张卡牌沿用[手牌摘要字段](hand-inspection.md#参数与返回范围)：保留身份、费用、可见附魔及卡面标记，移除正文、稀有度、卡池和悬停帮助；没有星耗时不输出该项。规则统一作用于 `cards`、`bundles[].cards`，以及 `upgrade_preview`、`upgrade_previews`、`enchant_previews`、`transform_previews` 的 `before/after`；预览也不保留正文，需要时另读 `full`。空 bundles、upgrade_previews、enchant_previews、transform_previews 省略；cards、selected_ids、options 即使为空也保留。
+`summary` 的每张卡牌沿用[手牌摘要字段](hand-inspection.md#参数与返回范围)：保留身份、费用、可见附魔、Affliction 及卡面标记，移除正文、稀有度、卡池和悬停帮助；没有星耗时不输出该项。规则统一作用于 `cards`、`bundles[].cards`，以及 `upgrade_preview`、`upgrade_previews`、`enchant_previews`、`transform_previews` 的 `before/after`；预览也不保留正文，需要时另读 `full`。空 bundles、upgrade_previews、enchant_previews、transform_previews 省略；cards、selected_ids、options 即使为空也保留。
 
 候选的已有附魔遵循[统一卡面字段](observation.md#手牌与身份)；屏幕外候选按原生卡面显示规则保留附魔名称、实际可显示计数与置灰状态。
 

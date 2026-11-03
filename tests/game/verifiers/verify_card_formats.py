@@ -12,6 +12,47 @@ from sts2_mcp.roundtrip_client import Client
 from tests.game.support.verification_runtime import ensure_run, ipc_directory
 
 
+async def verify_browse(call, raw, record):
+    before = await call('get_observation', {'preset': 'full'})
+    full = await call('inspect_deck', {'preset': 'full'})
+    assert full['deck'] and 'detail_level' not in full, full
+    assert all('description' in card and 'enchantment' in card and 'affliction' in card for card in full['deck'])
+    default = await call('inspect_deck', {})
+    assert all('description' in card for card in default['deck']) and 'hover_tips' in default
+    summary = await call('inspect_deck', {'preset': 'summary'})
+    assert [card['id'] for card in summary['deck']] == [card['id'] for card in full['deck']]
+    assert all(not {'description', 'hover_tips', 'rarity', 'visual_card_pool'} & card.keys() for card in summary['deck'])
+    assert 'hover_tips' not in summary
+    token = await asyncio.to_thread(raw.call, 'get_state')
+    invalid = await asyncio.to_thread(raw.call, 'inspect_deck', arguments={'detail_level': 'full'})
+    current = await asyncio.to_thread(raw.call, 'get_state')
+    record({'native_old_option': invalid, 'before': token, 'after': current})
+    assert not invalid['ok'] and invalid['error']['code'] == 'invalid_request'
+    assert token['state'] == current['state']
+    upgraded = await call('inspect_deck', {'preset': 'full', 'view_upgrades': True})
+    assert upgraded['view_upgrades'] and any(a['name'] != b['name'] for a, b in zip(full['deck'], upgraded['deck'], strict=True))
+    sorted_view = await call('inspect_deck', {'preset': 'summary', 'sort_by': 'cost', 'descending': True})
+    assert sorted_view['view_upgrades'] and sorted_view['sort'] == {'by': 'cost', 'descending': True}
+    assert set(card['id'] for card in sorted_view['deck']) == set(card['id'] for card in full['deck'])
+    await call('close_card_view', {})
+    for pile in ('draw', 'discard', 'exhaust'):
+        full = await call('inspect_pile', {'pile': pile, 'preset': 'full'})
+        default = await call('inspect_pile', {'pile': pile})
+        summary = await call('inspect_pile', {'pile': pile, 'preset': 'summary'})
+        assert 'detail_level' not in full and summary['status'] == full['status']
+        if full['status'] == 'opened':
+            assert full['cards'] and all('description' in card for card in default['cards'])
+            assert [card['id'] for card in full['cards']] == [card['id'] for card in summary['cards']]
+            assert all(not {'description', 'hover_tips', 'rarity', 'visual_card_pool'} & card.keys() for card in summary['cards'])
+            await call('close_card_view', {})
+        elif full['status'] == 'empty':
+            assert full['cards'] == default['cards'] == summary['cards'] == []
+        else:
+            assert full['cards'] is None and 'cards' not in default and 'cards' not in summary
+    after = await call('get_observation', {'preset': 'full'})
+    assert before == after, 'Browsing changed gameplay.'
+
+
 async def verify(args):
     raw = Client(ipc_directory())
     await asyncio.to_thread(ensure_run, raw)
@@ -37,6 +78,10 @@ async def verify(args):
                 assert not response.isError and 'error' not in value, value
                 return value
 
+            if args.scenario == 'browse':
+                await verify_browse(call, raw, record)
+                print('PASS shared browse formats, options and native old-option rejection', flush=True)
+                return
             before = await asyncio.to_thread(raw.call, 'get_state')
             checks = await asyncio.to_thread(raw.call, 'check_test_afflictions')
             record({'native_checks': checks})
@@ -62,6 +107,6 @@ async def verify(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='验证共用卡牌格式与可见外观。')
-    parser.add_argument('--scenario', choices=('afflictions',), default='afflictions')
+    parser.add_argument('--scenario', choices=('afflictions', 'browse'), default='afflictions')
     parser.add_argument('--report', type=Path, required=True)
     asyncio.run(verify(parser.parse_args()))

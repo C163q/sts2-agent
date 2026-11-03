@@ -154,7 +154,7 @@ async def verify(args):
                 if args.scenario == 'combat':
                     card = next(c for c in state['player']['hand'] if c['name'] == 'Defend')
                     await act('play_card', {'card_id': card['id']})
-                    await inspect('inspect_pile', {'pile': 'discard', 'detail_level': 'full'})
+                    await inspect('inspect_pile', {'pile': 'discard', 'preset': 'full'})
                     await check('discard-view')
                     await call('close_card_view')
                 if 'inspect_deck' in (await call('get_observation'))['available_actions']:
