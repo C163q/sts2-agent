@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The requested action is unavailable. Read the current state and choose a legal action.",
+    "recovery": "get_observation"
+  }
+}

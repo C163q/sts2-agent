@@ -1,0 +1,157 @@
+{
+  "hand": [
+    {
+      "id": 5,
+      "name": "Blade Dance",
+      "type": "Skill",
+      "rarity": "common",
+      "visual_card_pool": "silent",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Add 3 Shiv into your Hand.\nExhaust."
+    },
+    {
+      "id": 6,
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": 7,
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": 8,
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": 9,
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": 10,
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": 11,
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": 12,
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": 13,
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": 14,
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Gain 5 Block."
+    }
+  ],
+  "hover_tips": [
+    {
+      "title": "Shiv",
+      "description": "Deal 4 damage.\nExhaust.",
+      "card_ids": [
+        5
+      ]
+    },
+    {
+      "title": "Exhaust",
+      "description": "Removed until the end of combat.",
+      "card_ids": [
+        5
+      ]
+    },
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    }
+  ],
+  "notes": {
+    "card_values": "Card values are contextual previews. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again."
+  }
+}

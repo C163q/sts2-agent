@@ -1,0 +1,142 @@
+{
+  "hand": [
+    {
+      "id": 5,
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "enchantment": {
+        "name": "Sharp",
+        "dimmed": false,
+        "amount": 3
+      },
+      "description": "Deal 9 damage."
+    },
+    {
+      "id": 6,
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "enchantment": {
+        "name": "Swift",
+        "dimmed": true,
+        "amount": 2
+      },
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": 7,
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "enchantment": {
+        "name": "Clone",
+        "dimmed": false
+      },
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": 8,
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": 9,
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": 10,
+      "name": "Defend+",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "enchantment": {
+        "name": "Spiral",
+        "dimmed": false
+      },
+      "description": "Gain 8 Block.\nReplay 1."
+    }
+  ],
+  "hover_tips": [
+    {
+      "title": "Sharp",
+      "description": "Increases damage on this card by 3.",
+      "card_ids": [
+        5
+      ]
+    },
+    {
+      "title": "Swift",
+      "description": "The first time you play this card, draw 2 cards.",
+      "card_ids": [
+        6
+      ]
+    },
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        6,
+        10
+      ]
+    },
+    {
+      "title": "Clone",
+      "description": "This card can be duplicated at Rest Sites.",
+      "card_ids": [
+        7
+      ]
+    },
+    {
+      "title": "Spiral",
+      "description": "This card gains Replay 1.",
+      "card_ids": [
+        10
+      ]
+    },
+    {
+      "title": "Replay",
+      "description": "Plays this card an additional time.",
+      "card_ids": [
+        10
+      ]
+    }
+  ],
+  "notes": {
+    "card_values": "Card values are contextual previews. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again."
+  }
+}

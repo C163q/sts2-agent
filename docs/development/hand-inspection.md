@@ -29,7 +29,9 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 {"preset":"summary","card_ids":[1,2,3]}
 ```
 
-`summary` 的每张牌保留 `id/name/type/energy_cost`，按实际显示保留非空 `unplayable_markers` 和有颜色的 `outline`，以及实际显示的 `star_cost`、已有特殊费用颜色和可见 `enchantment`。附魔名称、显示计数及置灰字段与[基础观察](observation.md#手牌与身份)完全相同，summary 不附送其效果正文；full 沿用原生共享悬停提示提供正文。费用仍是显示字符串，保留 `X`、`?`；未显示耗星时省略 `star_cost`；空资源标记和 `outline:"none"` 也省略。名称保留可见升级后缀，普通未知字段按 default 省略，不补真实内容或假定为零。摘要省略正文、稀有度、卡池、共享提示和 `notes.card_values`；选牌查看战场等仍适用的导航说明保留。标记和描边不等于可打出判断，合法性仍由 `inspect_targets` 或动作校验确认。
+`summary` 的每张牌保留 `id/name/type/energy_cost`，按实际显示保留非空 `unplayable_markers` 和有颜色的 `outline`，以及实际显示的 `star_cost`、已有特殊费用颜色和可见 `enchantment`。附魔名称、显示计数及置灰字段与[基础观察](observation.md#手牌与身份)完全相同，summary 不附送其效果正文；full 沿用原生共享悬停提示提供正文。费用仍是显示字符串，保留 `X`、`?`；未显示耗星时省略 `star_cost`；空禁用标记和 `outline:"none"` 也省略。名称保留可见升级后缀，普通未知字段按 default 省略，不补真实内容或假定为零。摘要省略正文、稀有度、卡池、共享提示和 `notes.card_values`；选牌查看战场等仍适用的导航说明保留。标记和描边不等于可打出判断，合法性仍由 `inspect_targets` 或动作校验确认。
+
+`unplayable_markers` 的 energy/star 表示禁用图标所在的费用位置，不是不可打出的原因；资源不足通常显示为红色费用，而标记数组仍可能为空。无可见附魔时，full 也不生成 enchantment 字段；附魔不显示计数时也不生成 amount。游戏另有 Affliction 牌面覆盖效果，目前仅正文／悬停解释能携带其文字，共用卡牌观察和摘要尚无对应外观字段，范围与待验证事项见[手牌核验](../research/2026-11-03-inspect-hand-review.md#优先关注的问题)。
 
 筛选后的 `full` 仅保留命中卡牌及其共享提示关联；空结果为 `hand: []/hover_tips: []`，不附卡牌数值说明。摘要空结果仅包含 `hand: []`，可能另有下述错误或导航说明。显式 `preset: full` 与原输出兼容；省略 preset 则使用 default，过滤规则见[MCP 输出预设](mcp.md#输出预设)。
 

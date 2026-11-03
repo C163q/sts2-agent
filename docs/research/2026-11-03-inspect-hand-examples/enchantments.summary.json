@@ -1,0 +1,64 @@
+{
+  "hand": [
+    {
+      "id": 5,
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1",
+      "outline": "cyan",
+      "enchantment": {
+        "name": "Sharp",
+        "dimmed": false,
+        "amount": 3
+      }
+    },
+    {
+      "id": 6,
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1",
+      "outline": "cyan",
+      "enchantment": {
+        "name": "Swift",
+        "dimmed": true,
+        "amount": 2
+      }
+    },
+    {
+      "id": 7,
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1",
+      "outline": "cyan",
+      "enchantment": {
+        "name": "Clone",
+        "dimmed": false
+      }
+    },
+    {
+      "id": 8,
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1",
+      "outline": "cyan"
+    },
+    {
+      "id": 9,
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1",
+      "outline": "cyan"
+    },
+    {
+      "id": 10,
+      "name": "Defend+",
+      "type": "Skill",
+      "energy_cost": "1",
+      "outline": "cyan",
+      "enchantment": {
+        "name": "Spiral",
+        "dimmed": false
+      }
+    }
+  ]
+}

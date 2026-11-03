@@ -1,0 +1,40 @@
+{
+  "hand": [
+    {
+      "id": 5,
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": 7,
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Deal 6 damage."
+    }
+  ],
+  "hover_tips": [],
+  "notes": {
+    "card_values": "Card values are contextual previews. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again."
+  },
+  "errors": [
+    {
+      "code": "cards_not_in_hand",
+      "card_ids": [
+        2147483647
+      ]
+    }
+  ]
+}

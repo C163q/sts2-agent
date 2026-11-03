@@ -1,0 +1,52 @@
+{
+  "hand": [
+    {
+      "id": 5,
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": 6,
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": 7,
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Deal 6 damage."
+    }
+  ],
+  "hover_tips": [
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        6
+      ]
+    }
+  ],
+  "notes": {
+    "card_values": "Card values are contextual previews. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again."
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "hand": [
+    {
+      "id": 5,
+      "name": "True Grit+",
+      "type": "Skill",
+      "rarity": "common",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Gain 9 Block.\nExhaust 1 card."
+    },
+    {
+      "id": 6,
+      "name": "Strike+",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Deal 9 damage."
+    },
+    {
+      "id": 7,
+      "name": "Defend+",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Gain 8 Block."
+    },
+    {
+      "id": 8,
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": 9,
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "cyan",
+      "description": "Gain 5 Block."
+    }
+  ],
+  "hover_tips": [
+    {
+      "title": "Exhaust",
+      "description": "Removed until the end of combat.",
+      "card_ids": [
+        5
+      ]
+    },
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        5,
+        7,
+        9
+      ]
+    }
+  ],
+  "notes": {
+    "card_values": "Card values are contextual previews. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again."
+  }
+}

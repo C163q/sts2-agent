@@ -1,0 +1,25 @@
+{
+  "hand": [
+    {
+      "id": 5,
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1",
+      "outline": "cyan"
+    },
+    {
+      "id": 6,
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1",
+      "outline": "cyan"
+    },
+    {
+      "id": 7,
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1",
+      "outline": "cyan"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "hand": [
+    {
+      "id": 7,
+      "name": "Unknown",
+      "type": null,
+      "rarity": null,
+      "visual_card_pool": null,
+      "energy_cost": null,
+      "star_cost": null,
+      "unplayable_markers": [],
+      "outline": "none",
+      "description": null
+    }
+  ],
+  "hover_tips": [],
+  "notes": {
+    "card_values": "Card values are contextual previews. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again."
+  }
+}
