@@ -73,7 +73,7 @@ internal sealed partial class GameAdapter
             if (selection.CanSelect) actions.Add("select_card");
             if (selection.Options().Any(option => option.button.IsEnabled)) actions.Add("selection_option");
         }
-        if (scene == "loading_or_noncombat" && RunUi.NonCombatVisible()) visibility = "visible";
+        if (scene == "unrecognized" && RunUi.NonCombatVisible()) visibility = "visible";
         if (scene == "rewards") visibility = RewardInspection.Exposed(RewardInspection.Current!) ? "visible" : "covered";
         if (scene == "rest_site") visibility = RestSiteInspection.Exposed(RestSiteInspection.Current!) ? "visible" : "covered";
         if (scene == "treasure") visibility = TreasureInspection.Exposed(TreasureInspection.Current!) ? "visible" : "covered";

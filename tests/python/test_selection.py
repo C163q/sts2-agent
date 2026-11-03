@@ -31,7 +31,7 @@ def state():
 
 class SelectionBoundaryTests(unittest.TestCase):
     def test_inspection_preserves_room_scene_and_complete_card_details(self):
-        for scene in ('combat', 'ancient', 'event', 'rest_site', 'shop', 'rewards', 'treasure', 'loading_or_noncombat'):
+        for scene in ('combat', 'ancient', 'event', 'rest_site', 'shop', 'rewards', 'treasure', 'unrecognized'):
             raw = {'scene': scene, 'selection': selection()}
             raw['selection']['cards'][0]['hover_tips'] = [{'title': 'Block', 'description': 'Prevents damage.'}]
             raw['selection']['cards'][0]['private'] = 'hidden'

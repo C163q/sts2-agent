@@ -165,7 +165,7 @@ class ActionObservationTests(unittest.IsolatedAsyncioTestCase):
     async def test_noncombat_completed_potion_can_chain_to_discard(self):
         client = Client()
         client.reason = 'action_completed'
-        client.mutate_reply = lambda state: state.update(scene='loading_or_noncombat', player=None,
+        client.mutate_reply = lambda state: state.update(scene='unrecognized', player=None,
                                                          enemies=None, turn=None, buttons=None)
         tools = GameTools(client)
         await tools.get_observation()

@@ -47,7 +47,7 @@ def main():
 
     state = call('get_state')
     deadline = time.monotonic() + 30
-    while state['scene'] == 'loading_or_noncombat' and time.monotonic() < deadline:
+    while state['scene'] == 'unrecognized' and time.monotonic() < deadline:
         time.sleep(.1)
         state = call('get_state')
     assert state['scene'] == 'main_menu', '只允许新启动的隔离实例。'

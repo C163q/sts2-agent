@@ -20,7 +20,7 @@ def ensure_run(client):
         assert state.get('ok') and state['state']['scene'] != 'main_menu', state
         return state
     deadline = time.monotonic() + 30
-    while state['state']['scene'] == 'loading_or_noncombat' and time.monotonic() < deadline:
+    while state['state']['scene'] == 'unrecognized' and time.monotonic() < deadline:
         time.sleep(.1)
         state = client.call('get_state')
     assert state['state']['scene'] == 'main_menu', 'Requires an isolated game at the main menu.'

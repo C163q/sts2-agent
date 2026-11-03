@@ -81,7 +81,7 @@ python3 -m tests.python.test_prepare_roundtrip
 | `set_divination_tool` / `divine` | 占卜大小工具切换与格子点击，需要 `expected_state`；参数及图像格式见[占卜接口](divination.md) |
 | `choose_event_option` | 参数为整数 `option_id`，需要 `expected_state`，点击一个当前启用选项，见[事件接口](events.md) |
 | `respond_to_confirmation` | 参数 `option` 为 `confirm` 或 `cancel`，需要 `expected_state`；只操作[当前 Trial 事件确认框](events.md#事件确认弹窗) |
-| `get_state` | 读取主菜单、战斗、[奖励](rewards.md)、[休息处](rest-site.md)、[宝箱房](treasure.md)、[商店](shop.md)、[先古之民](ancients.md)或[通用事件](events.md)状态及 `available_actions`；未识别场景归为 `loading_or_noncombat` |
+| `get_state` | 读取主菜单、战斗、[奖励](rewards.md)、[休息处](rest-site.md)、[宝箱房](treasure.md)、[商店](shop.md)、[先古之民](ancients.md)或[通用事件](events.md)状态及 `available_actions`；未识别场景归为 `unrecognized` |
 | `inspect_hand` | 只读、无须动作令牌；一次读取全部当前可见手牌的英语正文和悬停解释，格式见 [手牌详情](hand-inspection.md) |
 | `inspect_targets` | 参数 `card_id` 或 `potion_slot` 二选一，只读查询可见手牌或药水的可用性与目标范围，见 [出牌](card-play.md) 和 [药水](potion-actions.md) |
 | `play_card` | 需最新令牌，参数 `card_id` 与必要的 `target_id`；提交一次原生手动出牌，后续选择单独操作 |

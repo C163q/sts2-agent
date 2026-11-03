@@ -23,6 +23,7 @@ internal static class EnglishEventText
     private static readonly LinkedList<Rendered> Recent = new();
     private sealed record BoundText(string Original, (string literal, Source? source)[] Parts);
     private static readonly ConditionalWeakTable<Node, BoundText> Labels = new();
+    private static readonly ConditionalWeakTable<string, BoundText> Composites = new();
     private static readonly MethodInfo Clone = typeof(object).GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic)!;
     [ThreadStatic] private static Rendered? last;
     [ThreadStatic] private static bool active;
@@ -100,7 +101,34 @@ internal static class EnglishEventText
     {
         if (!Capturing) return;
         Labels.Remove(__instance);
-        Labels.Add(__instance, CaptureText(__0));
+        Labels.Add(__instance, Composites.TryGetValue(__0, out var retained) ? retained : CaptureText(__0));
+    }
+
+    public static void RetainComposite(string text)
+    {
+        if (!Capturing) return;
+        Composites.Remove(text);
+        Composites.Add(text, CaptureText(text));
+    }
+
+    public static void BindTranslation(Node node, string displayed, string translated)
+    {
+        Labels.Remove(node);
+        Labels.Add(node, new(displayed, [(translated, null)]));
+    }
+
+    public static string CaptureFormatted(LocString text)
+    {
+        string result = text.GetFormattedText();
+        if (Capturing) Remember(result, Snapshot(text));
+        return result;
+    }
+
+    public static string CaptureRaw(LocString text)
+    {
+        string result = text.GetRawText();
+        if (Capturing) Remember(result, Snapshot(text, raw: true));
+        return result;
     }
 
     private static BoundText CaptureText(string text)

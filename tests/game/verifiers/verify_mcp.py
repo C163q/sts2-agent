@@ -36,7 +36,7 @@ async def verify(args):
 
     state = await raw("get_state")
     deadline = time.monotonic() + 30
-    while state["scene"] == "loading_or_noncombat" and time.monotonic() < deadline:
+    while state["scene"] == "unrecognized" and time.monotonic() < deadline:
         await asyncio.sleep(0.25)
         state = await raw("get_state")
     assert state["scene"] == "main_menu", "完整验证须从新启动的独立实例主菜单执行。"

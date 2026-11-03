@@ -61,7 +61,7 @@ def main():
     response = client.call("get_state")
     assert response["ok"], response
     deadline = time.monotonic() + 30
-    while response["state"]["scene"] == "loading_or_noncombat" and time.monotonic() < deadline:
+    while response["state"]["scene"] == "unrecognized" and time.monotonic() < deadline:
         time.sleep(0.25)
         response = client.call("get_state")
         assert response["ok"], response

@@ -23,7 +23,7 @@ async def verify(args):
     client = Client(root / '.tmp/roundtrip/ipc')
     state = await asyncio.to_thread(client.call, 'get_state')
     deadline = time.monotonic() + 30
-    while state['state']['scene'] == 'loading_or_noncombat' and time.monotonic() < deadline:
+    while state['state']['scene'] == 'unrecognized' and time.monotonic() < deadline:
         await asyncio.sleep(.1)
         state = await asyncio.to_thread(client.call, 'get_state')
     assert state['ok'] and state['state']['scene'] == 'main_menu', 'Requires a fresh isolated instance.'

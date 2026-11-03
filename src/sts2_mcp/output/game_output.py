@@ -128,7 +128,7 @@ OBSERVATION = {
     "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
     "available_actions": [str],
 }
-OBSERVATION_SCENES = frozenset(('combat', 'main_menu', 'loading_or_noncombat', 'rewards', 'rest_site',
+OBSERVATION_SCENES = frozenset(('combat', 'main_menu', 'unrecognized', 'rewards', 'rest_site',
                               'treasure', 'shop', 'ancient', 'event', 'epilogue', 'run_result'))
 from sts2_mcp.output.map_details import MAP_SUMMARY
 

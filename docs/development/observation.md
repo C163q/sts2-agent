@@ -1,6 +1,6 @@
 # 战斗观察 JSON
 
-适用于 Linux 游戏 `v0.107.1` 与 Mod `0.49.2`。底层观察结构版本为 `31`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+适用于 Linux 游戏 `v0.107.1` 与 Mod `0.49.3`。底层观察结构版本为 `32`，输出语言为英语，游戏本身可以继续使用中文。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -100,7 +100,9 @@ Mod `0.49.1` 起，当前暴露的地图、牌组及抽牌／弃牌／消耗堆�
 | `available_actions` | 当前场景可用的查看与操作工具名，不含参数；省略 `get_observation`、截图和测试入口。具体参数、状态和原生条件仍在调用时检查 |
 | `notes` | 按结果内容附带的英语数值解读说明，无适用内容时省略；属于接口说明，不是额外采样到的游戏状态 |
 
-战斗外在 [药水工具支持的页面](potion-actions.md#场景与停止边界) 也提供可见顶栏；搜刮页使用 `scene: "rewards"` 和独立的[奖励结构](rewards.md)，休息处、宝箱房、商店、先古之民和[通用事件](events.md)分别使用 `rest_site`、`treasure`、`shop`、`ancient`、`event`；[终章与结算](run-ending.md)使用 `epilogue` 与 `run_result`；未识别的非战斗页面仍使用 `loading_or_noncombat`。战斗外的 `player/enemies/turn/buttons` 为空；事件被覆盖时不附送其下方的正文和选项。
+战斗外在 [药水工具支持的页面](potion-actions.md#场景与停止边界) 也提供可见顶栏；搜刮页使用 `scene: "rewards"` 和独立的[奖励结构](rewards.md)，休息处、宝箱房、商店、先古之民和[通用事件](events.md)分别使用 `rest_site`、`treasure`、`shop`、`ancient`、`event`；[终章与结算](run-ending.md)使用 `epilogue` 与 `run_result`；未匹配已支持场景的页面使用 `unrecognized`，也可能处于加载过渡；不将商店等已识别非战斗场景归入该类。战斗外的 `player/enemies/turn/buttons` 为空；事件被覆盖时不附送其下方的正文和选项。
+
+Mod `0.49.3`／MCP `0.50.7`、schema `32` 起，兜底名称由 `loading_or_noncombat` 改为 `unrecognized`。该值本身不判断加载是否完成；仍结合 screen、实际内容和 available_actions 判断。MCP 校验使用新标识，更新时应同时更换 Mod 并重启游戏、更新 Python 并重连客户端。
 
 Mod 0.49.2 起，奖励列表及已打开本局详情的滚动内容完整读取，不按视口截断；适用边界统一见[可浏览列表](../observation.md#可浏览列表)。这不改变地图／牌组／牌堆主体的摘要占位，也不自动展开悬停、隐藏页面或未来内容。
 

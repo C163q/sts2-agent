@@ -39,7 +39,7 @@ def main():
 
     observed = call("get_state")
     deadline = time.monotonic() + 30
-    while observed["scene"] == "loading_or_noncombat" and time.monotonic() < deadline:
+    while observed["scene"] == "unrecognized" and time.monotonic() < deadline:
         time.sleep(0.25)
         observed = call("get_state")
     assert observed["scene"] == "main_menu", "须从带匹配 --turn-scenario 参数的新测试实例主菜单执行。"

@@ -12,7 +12,7 @@ class SharedTopBarSummaryTests(unittest.TestCase):
                'relic_count': 0, 'relics': [], 'settings_visible': True}
         expected = {'gold': 0, 'deck_count': 10, 'potion_slots': bar['potion_slots'], 'relic_count': 0}
         for scene in ('combat', 'event', 'rest_site', 'rewards', 'treasure', 'shop', 'ancient',
-                      'epilogue', 'run_result', 'main_menu', 'loading_or_noncombat'):
+                      'epilogue', 'run_result', 'main_menu', 'unrecognized'):
             for view in (None, 'map', 'deck', 'draw_pile', 'discard_pile', 'exhaust_pile', 'divination'):
                 with self.subTest(scene=scene, view=view):
                     source = {'scene': scene, 'screen': {'status': 'visible'},

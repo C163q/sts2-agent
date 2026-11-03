@@ -49,7 +49,7 @@ def main():
 
     observed = call("get_state")
     deadline = time.monotonic() + 30
-    while observed["scene"] == "loading_or_noncombat" and time.monotonic() < deadline:
+    while observed["scene"] == "unrecognized" and time.monotonic() < deadline:
         time.sleep(.25)
         observed = call("get_state")
     assert observed["scene"] == "main_menu", "仅允许新启动独立测试实例，不能复用正式对局。"

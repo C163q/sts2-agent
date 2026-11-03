@@ -1,6 +1,6 @@
 # get_observation 胜负结算、解锁与菜单核验
 
-> 当前状态：16–17 组现状核验完成，共 2 组；已保存 47 份真实 MCP full 与 2 份实际错误响应。summary 尚待讨论定稿，本轮未修改工具行为或版本。结算的 7 种 phase 有实测样本，leaderboard 仅源码核对；地图及牌组／牌堆覆盖主体仍留待对应工具核验，get_observation 整体未核销。
+> 当前状态：16–17 组现状核验完成，共 2 组；保存的 47 份 full 与 2 份错误响应属于 MCP 0.50.6 原始基线。后续 Mod 0.49.3／MCP 0.50.7 已修复文字转写并将兜底改名为 unrecognized，见[实施记录](2026-11-03-result-observation-implementation.md)。summary 已定稿，正在实施。leaderboard 仅源码核对；地图及牌组／牌堆覆盖主体仍留待对应工具核验，get_observation 整体未核销。
 
 流程见[工具核验清单](2026-11-02-mcp-tool-review.md)，场景编号见[观察总目录](2026-11-02-get-observation-review.md)。本轮不核销 inspect_run_result 或 run_result_option。
 
@@ -37,11 +37,11 @@
 
 ### 已复现的文字缺口
 
-失败 summary 的 texts 中出现 `“The Ironclad被Group of Slimes打倒了。”`；history 夹具页也含中文月份及 `“The Ironclad成功到达了塔顶？”`。当前英文转写没有覆盖这些完整句式和日期。原样保留 full，未手工翻译样本；default、summary 与 inspect_run_result 共用该读取路径。可见内容来源一致，但语言转换不完整。影响范围及未修复状态见本地[问题记录](../../.tmp/2026-11-03-observation-final-review-report.md)，后续修复应保留已显示句子的来源，不能重新抽签死亡语句。
+失败 summary 的 texts 中出现 `“The Ironclad被Group of Slimes打倒了。”`；history 夹具页也含中文月份及 `“The Ironclad成功到达了塔顶？”`。当前英文转写没有覆盖这些完整句式和日期。原样保留 full，未手工翻译样本；default、summary 与 inspect_run_result 共用该读取路径。可见内容来源一致，但语言转换不完整。基线影响及修复验证见本地[问题记录](../../.tmp/2026-11-03-observation-final-review-report.md)，后续修复应保留已显示句子的来源，不能重新抽签死亡语句。Mod 0.49.3 已修复上述转写，原始样本继续保留，新的真实 full 见[阶段 1 验证](2026-11-03-result-observation-implementation.md#阶段-1-验证)。
 
 ## 17：主菜单、加载及未分类页面
 
-loading_or_noncombat 是当前实现仍在使用的 scene，并非过时名称；但它是兜底分类，不是可靠的“正在加载”判断。Observe 优先识别结算、建筑师、战斗、受支持房间；均未匹配时，MainMenu 节点存在则使用 main_menu，否则使用 loading_or_noncombat。
+本节表格与 JSON 保留 MCP 0.50.6 的原始基线：当时 loading_or_noncombat 仍是正在使用的兜底 scene，不是可靠的“正在加载”判断。该命名也容易将商店等已识别非战斗场景包含进来，现已改为 unrecognized。判定范围不变：Observe 优先识别结算、建筑师、战斗、受支持房间；均未匹配时，MainMenu 节点存在则使用 main_menu，否则使用兜底。
 
 | 返回 | 可据此确认 | 不应推断 |
 | --- | --- | --- |
@@ -51,7 +51,7 @@ loading_or_noncombat 是当前实现仍在使用的 scene，并非过时名称�
 
 当前没有独立 unknown scene，也没有菜单正文、开始新局或通用菜单点击工具。测试模式内部的 start_test_combat 不属于公开 MCP available_actions，不能写进玩法示例。真正未知 Mod 页面没有穷举。
 
-因此，需要讨论的是兜底命名或场景区分是否清楚，而不是删除一个已失效分支。可选择保留现有标识并说明语义，或另行设计加载／未识别页面区分；本轮尚未决定更名或新增状态，未改变任何客户端契约。
+最终采用 unrecognized，表示尚未识别成受支持场景，包括加载过渡；不新增没有可靠 UI 判据的 loading 状态。新旧标识与版本边界见[观察接口](../development/observation.md)。原始样本未改名，不能直接当作新版本响应。
 
 ## 完整 full 示例
 
@@ -125,16 +125,11 @@ loading_or_noncombat 是当前实现仍在使用的 scene，并非过时名称�
 
 普通时间线拒绝结算操作的实际错误另保存在 [death-ordinary-timeline-rejected.error.json](2026-11-03-get-observation-result-menu-examples/death-ordinary-timeline-rejected.error.json)、[victory_unlock-ordinary-timeline-rejected.error.json](2026-11-03-get-observation-result-menu-examples/victory_unlock-ordinary-timeline-rejected.error.json)，它们是错误响应，不是 full 成功观察。
 
-## summary 讨论候选
+## summary 定稿
 
-以下均未定稿、未实施；当前实际行为仍是 run_result 主体沿用 default，加共用顶栏摘要。
+结算主体沿用 default，保留 status、phase、title、texts、score_lines、badges、discoveries、options 及当前空列表；仅 cards 使用共用 card_summary，保留字符串 card:N ID、名字、类型和费用等摘要字段，正文、rarity、visual_card_pool 由 inspect_run_result 按需查看。full/default/详情保持当前信息范围。菜单及 unrecognized 主体沿用 default；顶栏仍独立使用共用摘要。
 
-1. **保留当前主体**：结算与时间线大多是当前页文字和少量按钮，沿用 default 最稳妥；保留 status、phase、title、texts、分数、发现与 options。菜单及兜底返回本身已很短，可同样沿用 default。这是改动最少的方案。
-2. **小幅精简**：在上述基础上，让已显示解锁卡牌使用共用 card_summary，仅保留名称、类型、费用和 ID 等摘要字段；需要正文时调用 inspect_run_result。可再省略 score_lines、badges、discoveries、cards、relics、potions 中当前为空的数组。texts 和 options 不按“空数组”统一删除，保留判断当前页及能否操作所需的上下文。
-
-建议以方案 1 为基础讨论；若希望卡牌与之前所有摘要保持一致，可只加方案 2 的卡牌精简。不能简单删掉 texts：章节故事、教程、死亡原因、建筑师伤害、分数进度和非物品解锁等都依赖它。title／按钮／分数虽有重复，直接过滤易丢失上下文，暂不建议增加自动去重规则。
-
-本轮已明确 loading_or_noncombat 的实际语义；是否更名或拆分需要单独定稿。没有发现为展示现状必须先做的结构重构；若后续新增摘要，宜继续在 Python 投影层复用现有卡牌与顶栏函数，避免在原生页面读取中混入 preset 分支。
+texts 保留：章节故事、教程、死亡原因、建筑师伤害、分数进度和非物品解锁均依赖它。title、按钮或分数的重复不另加自动去重。实现和验证见[实施记录](2026-11-03-result-observation-implementation.md)，当前尚未完成阶段 2。
 
 ## 验证与未覆盖范围
 

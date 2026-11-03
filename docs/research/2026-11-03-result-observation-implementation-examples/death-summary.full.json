@@ -1,0 +1,107 @@
+{
+  "scene": "run_result",
+  "map": null,
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 0,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": {
+    "status": "visible",
+    "phase": "summary",
+    "title": "Defeated!",
+    "texts": [
+      "Floors Climbed: 1",
+      "+10",
+      "Gold Gained: 0",
+      "+0",
+      "[10/200]",
+      "Unlocks Remaining: 18",
+      "Discoveries",
+      "3",
+      "1",
+      "Defeated!",
+      "“The Ironclad was felled by a Group of Slimes.”",
+      "Unlock"
+    ],
+    "score_lines": [
+      {
+        "label": "Floors Climbed: 1",
+        "value": "+10"
+      },
+      {
+        "label": "Gold Gained: 0",
+        "value": "+0"
+      }
+    ],
+    "badges": [],
+    "discoveries": [
+      {
+        "kind": "enemies",
+        "count": 3
+      },
+      {
+        "kind": "epochs",
+        "count": 1
+      }
+    ],
+    "options": [
+      {
+        "id": "main_menu",
+        "text": "Unlock",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [],
+    "potions": []
+  },
+  "available_actions": [
+    "run_result_option",
+    "inspect_run_result",
+    "inspect_potions",
+    "inspect_relics"
+  ]
+}

@@ -25,6 +25,7 @@ public static class BridgeMod
         VisibleUi.Initialize();
         EnglishCardText.Initialize();
         EnglishEventText.Initialize();
+        EnglishRunResultText.Initialize();
         TurnCapture.Initialize();
         RelicObtainTracker.Initialize();
         EventTaskTracker.Initialize();

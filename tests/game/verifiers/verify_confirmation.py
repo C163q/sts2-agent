@@ -21,7 +21,7 @@ async def verify(args):
     raw = Client(root / '.tmp/roundtrip/ipc')
     initial = await asyncio.to_thread(raw.call, 'get_state')
     deadline = time.monotonic() + 30
-    while initial['state']['scene'] == 'loading_or_noncombat' and time.monotonic() < deadline:
+    while initial['state']['scene'] == 'unrecognized' and time.monotonic() < deadline:
         await asyncio.sleep(.1); initial = await asyncio.to_thread(raw.call, 'get_state')
     assert initial['state']['scene'] == 'main_menu', 'Requires a fresh isolated Trial instance.'
     created = await asyncio.to_thread(raw.call, 'start_test_combat', initial['state']['snapshot_id'])

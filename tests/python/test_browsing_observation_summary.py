@@ -34,7 +34,7 @@ class BrowsingSummaryTests(unittest.TestCase):
 
     def test_browser_context_uses_shared_top_bar_independently_of_room(self):
         for view in VIEWS:
-            for scene in ('combat', 'event', 'loading_or_noncombat'):
+            for scene in ('combat', 'event', 'unrecognized'):
                 with self.subTest(view=view, scene=scene):
                     source = {'scene': scene, 'screen': {'status': 'covered', 'view': view},
                               'top_bar': {'hp': 70, 'max_hp': 80, 'gold': 0, 'floor': 2,

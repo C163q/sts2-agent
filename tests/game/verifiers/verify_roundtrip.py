@@ -28,7 +28,7 @@ def main():
     assert observed["ok"], observed
     state = observed["state"]
     deadline = time.monotonic() + 30
-    while state["scene"] == "loading_or_noncombat" and time.monotonic() < deadline:
+    while state["scene"] == "unrecognized" and time.monotonic() < deadline:
         time.sleep(0.25)
         observed = call("get_state")
         assert observed["ok"], observed

@@ -70,7 +70,7 @@ class PotionBoundaryTests(unittest.TestCase):
 
     def test_completed_noncombat_action_preserves_available_action_list(self):
         raw = combat()
-        raw.update(scene='loading_or_noncombat', player=None, enemies=None, turn=None, buttons=None,
+        raw.update(scene='unrecognized', player=None, enemies=None, turn=None, buttons=None,
                    top_bar={'hp': 80, 'max_hp': 85, 'potion_slots': [None]},
                    available_actions=['use_potion', 'discard_potion'])
         raw['transition'] = {'stop_reason': 'action_completed', 'complete': True, 'events': [
