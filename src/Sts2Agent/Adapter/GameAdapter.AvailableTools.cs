@@ -12,8 +12,8 @@ internal sealed partial class GameAdapter
     private static bool CanInspectHand() => CombatObservation.Status() == "visible"
         && NCombatRoom.Instance?.Ui.Hand is { } hand && VisibleUi.Shown(hand) && !hand.InCardPlay;
 
-    private static bool CanInspectCombatants() => CombatObservation.Status() == "visible"
-        && LocalPlayer != null && !NCombatRoom.Instance!.Ui.Hand.InCardPlay;
+    private static bool CanInspectCombatants() => LocalPlayer != null
+        && CombatantInspection.UnavailableReason(CombatantInspection.Level.Summary) == null;
 
     private static bool CanInspectMap()
     {

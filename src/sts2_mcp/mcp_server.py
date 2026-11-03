@@ -17,6 +17,8 @@ from sts2_mcp.roundtrip_client import Client
 from sts2_mcp.mcp_config import load_config
 
 
+SERVER_VERSION = "0.54.0"
+
 def tool_result(payload):
     content = [TextContent(type="text", text=json.dumps(payload, ensure_ascii=False, separators=(",", ":")))]
     if isinstance(payload, ImagePayload):
@@ -30,7 +32,7 @@ def tool_result(payload):
 
 
 def create_server(tools, *, screenshots_enabled=False):
-    server = Server("sts2-agent", version="0.53.0", instructions=SERVER_INSTRUCTIONS)
+    server = Server("sts2-agent", version=SERVER_VERSION, instructions=SERVER_INSTRUCTIONS)
     definitions = tool_definitions(screenshots_enabled=screenshots_enabled)
     handlers = {tool.name: getattr(tools, tool.name) for tool in definitions}
 

@@ -9,6 +9,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 from sts2_mcp.roundtrip_client import Client
+from sts2_mcp.mcp_server import SERVER_VERSION
 from tests.game.support.verification_runtime import ensure_run, ipc_directory
 
 
@@ -25,7 +26,7 @@ async def verify(args):
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             initialized = await session.initialize()
-            assert initialized.serverInfo.version == '0.53.0'
+            assert initialized.serverInfo.version == SERVER_VERSION
 
             async def call(tool, arguments=None, error=None, message=None):
                 supplied = {'preset': 'full', **(arguments or {})} if tool != 'capture_screenshot' else arguments

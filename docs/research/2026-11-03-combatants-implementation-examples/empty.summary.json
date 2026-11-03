@@ -1,0 +1,9 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "notes": {
+    "selection": "Selection pending; return with set_selection_view(view=\"selection\") before choosing."
+  }
+}

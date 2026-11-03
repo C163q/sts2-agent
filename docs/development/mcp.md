@@ -60,7 +60,7 @@ flowchart LR
 | `inspect_potions()` | [药水正文、空槽位置和共享解释](potion-inspection.md) |
 | `use_potion(potion_slot, target_id?)` | [使用药水](potion-actions.md)，遇到后续选择立即返回 |
 | `discard_potion(potion_slot)` | 原生丢弃，遵守禁止移除药水的限制 |
-| `inspect_combatants()` | [双方 powers、敌人当前意图及已生成充能球说明](combatant-inspection.md) |
+| `inspect_combatants(preset?, sources?)` | [战斗对象、意图、球与悬浮剑；summary 为静态信息，sources 筛选对象](combatant-inspection.md) |
 | `inspect_relics(preset?, relic_indices?)` | [遗物完整／摘要与下标筛选](relic-inspection.md#mcp-参数)，默认保留正文、可见计数与共享解释 |
 | `inspect_deck(...)` | [打开或复用全牌组页面](deck-inspection.md)，可选信息档位、升级预览和排序 |
 | `inspect_pile(...)` | [打开或复用战斗牌堆](pile-inspection.md)，必填 `pile`，支持 full/default/summary |
@@ -172,7 +172,7 @@ approval_mode = "approve"
 
 Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其他客户端使状态改变时返回 `stale_state`，不自动刷新或重试。坏响应、超时、游戏异常、取消、不完整结果、无可执行动作、未支持选择及胜负停止均不续接动作许可，须先重新读取当前状态再决定。取消不能撤回已提交给游戏的操作。状态令牌留在 MCP 内部，不增加模型参数，也不回放未收到的动作结果。
 
-`get_observation`、`inspect_targets`、`inspect_hand`、`inspect_ui` 的参数错误，以及原生明确返回 `invalid_request/illegal_action/expired_request` 时，保留此前已有的动作许可；首次读取失败不会生成许可。它们不会自动刷新旧观察，外部状态改变后下一动作仍会被 Mod 拒绝为 stale_state。控制器冲突、坏响应、连接失败、超时、异常或取消仍清除许可。
+`get_observation`、`inspect_targets`、`inspect_hand`、`inspect_ui`、`inspect_combatants` 的参数错误，以及原生明确返回 `invalid_request/illegal_action/expired_request` 时，保留此前已有的动作许可；首次读取失败不会生成许可。它们不会自动刷新旧观察，外部状态改变后下一动作仍会被 Mod 拒绝为 stale_state。控制器冲突、坏响应、连接失败、超时、异常或取消仍清除许可。
 
 `play_card` 仅在 Mod 明确标记尚未提交且未改变 UI 的前置拒绝时，保留原许可。费用不足、缺少／多余目标和目标不在当前范围分别给出具体提示；例如能量不足的出牌被拒后，可以直接决定结束回合。缺少该标记的旧 Mod、其他动作失败或结果未知时不恢复许可。
 
@@ -213,8 +213,9 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 | --- | --- |
 | `observation_required` | 读取当前状态，可用 `get_observation` 或相关专项详情；`recovery` 提供通用的 `get_observation` 恢复入口 |
 | `controller_busy` | 断开占用控制权的连接，再观察；当前连接仍可握手和发现工具 |
-| `stale_state`、`illegal_action`、`expired_request` | 重新观察并核对当前动作或页面是否合法 |
-| `invalid_request` | 对照工具 schema 修正参数；再次执行动作前重新观察 |
+| `stale_state` | 读取当前状态，再核对动作或页面是否合法 |
+| `illegal_action`、`expired_request` | 按 recovery 继续；choose_legal_action 表示已有许可保留，可据已有信息决策，其他情况先观察 |
+| `invalid_request` | 对照 schema 修正参数；已有许可按上述规则保留，没有许可时仍须先读取状态 |
 | `timeout`、`game_error` | 先观察结果，禁止自动重试动作 |
 | `transport_error` | 检查游戏、Mod、IPC 路径、权限与响应格式，再观察 |
 
@@ -238,7 +239,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 详情及页面的真实 stdio 验证分别使用 `verify_mcp_hand.py`、`verify_mcp_ui.py`、`verify_mcp_potions.py`、`verify_mcp_combatants.py`、`verify_mcp_relics.py`、`verify_mcp_deck.py`、`verify_mcp_piles.py`、`verify_mcp_map.py`；参数见各脚本 `--help` 和上表对应指南。页面检查会真实打开、切换及关闭页面。
 
-其中 `verify_mcp_combatants.py` 的专项结构与工具清单断言已过时，修复前不能作为当前通过验证的入口，见[战斗对象验证限制](combatant-inspection.md#验证)。
+战斗对象专项验证已同步当前结构及工具清单，预设与筛选的完整 GUI 覆盖见[战斗对象验证](combatant-inspection.md#文件入口与验证)。
 
 已有独立游戏与正式游戏的只读采样，及真实 Codex 模型结束一次回合的验证。历史环境、样本和未覆盖项见 [首次 MCP 往返](../research/2026-10-29-mcp-plan.md)、[牌组](../research/2026-10-29-mcp-deck-inspection.md)、[牌堆](../research/2026-10-29-pile-inspection.md) 和 [地图](../research/2026-10-29-mcp-map-inspection.md) 等阶段性记录。
 

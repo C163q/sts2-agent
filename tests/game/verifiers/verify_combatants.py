@@ -28,18 +28,18 @@ def main():
     inspected = client.call("inspect_combatants")
     assert inspected["ok"], inspected
     repeated = client.call("inspect_combatants")
-    assert repeated["ok"] and player_result(inspected) == player_result(repeated), repeated
+    assert repeated["ok"] and player_result(inspected, operation="inspect_combatants") == player_result(repeated, operation="inspect_combatants"), repeated
     after = client.call("get_state")
     assert after["ok"], after
     assert len({response["state"]["snapshot_id"] for response in (before, inspected, repeated, after)}) == 1, "Observation changed."
-    result = player_result(inspected)
+    result = player_result(inspected, operation="inspect_combatants")
     assert_combatant_inspection(result, player_result(before))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps({"completed": True, "before": before, "inspection": inspected,
                                      "repeated": repeated, "after": after}, indent=2, ensure_ascii=False) + "\n")
-    print(f"PASS: {len(result['enemies'])} enemies and {len(tips)} shared tips; observation unchanged; JSON: {args.output}")
+    print(f"PASS: {len(result['enemies'])} enemies and {len(result['hover_tips'])} shared tips; observation unchanged; JSON: {args.output}")
 
 
 if __name__ == "__main__":

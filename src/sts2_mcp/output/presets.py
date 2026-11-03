@@ -11,6 +11,7 @@ from sts2_mcp.output.error_output import invalid_request
 SPECIAL_PRESETS = {
     'get_observation': ('actions_only', 'summary', 'top_bar'),
     'inspect_ui': ('summary',),
+    'inspect_combatants': ('summary',),
     'inspect_hand': ('summary',),
     'inspect_deck': ('summary',),
     'inspect_pile': ('summary',),
@@ -78,7 +79,7 @@ def output_preset(handler):
         valid = valid and isinstance(preset, str) and preset in (
             'default', 'full', *SPECIAL_PRESETS.get(operation, ()))
         if not valid:
-            if operation not in {'get_observation', 'inspect_targets', 'inspect_ui', 'inspect_hand'} and accepts_arguments:
+            if operation not in {'get_observation', 'inspect_targets', 'inspect_ui', 'inspect_hand', 'inspect_combatants'} and accepts_arguments:
                 return await handler(self, arguments)
             if not isinstance(arguments, dict):
                 return invalid_request('Tool arguments must be a JSON object.')
@@ -92,13 +93,11 @@ def output_preset(handler):
         if accepts_arguments:
             payload = await handler(self, native)
         elif native:
-            if operation == 'inspect_combatants':
-                return invalid_request('inspect_combatants accepts only preset.')
             return player_result({'ok': False, 'error': {'code': 'invalid_request'}})
         else:
             payload = await handler(self)
         compact_summary = preset == 'summary' and operation in {
-            'inspect_ui', 'inspect_hand', 'inspect_selection', 'inspect_relics', 'inspect_deck', 'inspect_pile'}
+            'inspect_ui', 'inspect_combatants', 'inspect_hand', 'inspect_selection', 'inspect_relics', 'inspect_deck', 'inspect_pile'}
         return apply_preset(payload, 'default' if compact_summary else preset)
 
     wrapped.supports_output_presets = True

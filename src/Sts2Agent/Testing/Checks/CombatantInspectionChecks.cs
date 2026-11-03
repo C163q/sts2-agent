@@ -105,6 +105,17 @@ internal static class CombatantInspectionChecks
             state => state.enemies[intentIndex].intents!.Length == intentCount - 1);
         Hidden(intent.GetNode<Sprite2D>("%Intent"), "hidden_intent_sprite_is_excluded",
             state => state.enemies[intentIndex].intents!.Length == intentCount - 1);
+        var intentSprite = intent.GetNode<Sprite2D>("%Intent");
+        var spriteScale = intentSprite.Scale;
+        try
+        {
+            intentSprite.Scale = Vector2.Zero;
+            Check("zero_scale_intent_has_no_static_entry", CombatantInspection.Read(player, cardIds.Get,
+                CombatantInspection.Level.Summary).enemies[intentIndex].intents!.Length == intentCount - 1);
+            Check("zero_scale_intent_has_no_detailed_entry", CombatantInspection.Read(player, cardIds.Get)
+                .enemies[intentIndex].intents!.Length == intentCount - 1);
+        }
+        finally { intentSprite.Scale = spriteScale; }
         var intentMouseFilter = intent.MouseFilter;
         var field = typeof(NIntent).GetField("_intent", BindingFlags.Instance | BindingFlags.NonPublic)!;
         var model = field.GetValue(intent);

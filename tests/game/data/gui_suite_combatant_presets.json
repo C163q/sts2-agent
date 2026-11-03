@@ -1,0 +1,8 @@
+[
+  {"name":"basic","scenarios":{"play":"basic"},"steps":[{"name":"verify","verifier":"verify_combatant_presets.py","args":["--scenario","basic"]}]},
+  {"name":"orbs","scenarios":{"play":"orbs"},"steps":[{"name":"verify","verifier":"verify_combatant_presets.py","args":["--scenario","orbs"]}]},
+  {"name":"osty","scenarios":{"play":"companions_osty"},"steps":[{"name":"verify","verifier":"verify_combatant_presets.py","args":["--scenario","osty"]}]},
+  {"name":"blade","scenarios":{"play":"companions_blade"},"steps":[{"name":"verify","verifier":"verify_combatant_presets.py","args":["--scenario","blade"]}]},
+  {"name":"selection","scenarios":{"play":"armaments_free"},"steps":[{"name":"verify","verifier":"verify_combatant_presets.py","args":["--scenario","selection"]}]},
+  {"name":"zero_energy","scenarios":{"play":"energy"},"steps":[{"name":"verify","verifier":"verify_inspection_errors.py","args":["--scenario","energy"]}]}
+]

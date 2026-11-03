@@ -178,8 +178,18 @@ internal sealed partial class GameAdapter(bool testMode)
     {
         if (request.Operation is "configure_test_run" or "reset_test_run" or "get_test_session")
             return await TestRunRequest(request);
+        if (request.Operation == "set_test_combatant_hover" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
+        {
+            if (request.Arguments is not { } testArguments
+                || testArguments.EnumerateObject().Count() != 1
+                || !testArguments.TryGetProperty("enabled", out var enabled)
+                || enabled.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected the test enabled flag.");
+            return Success(request.Id, JsonSerializer.Serialize(CombatantHoverChecks.SetEnabled(enabled.GetBoolean())));
+        }
         string before = Observe();
-        if (request.Operation is not ("inspect_deck" or "inspect_pile" or "inspect_selection" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
+        if (request.Operation is not ("inspect_combatants" or "inspect_deck" or "inspect_pile" or "inspect_selection" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
@@ -555,19 +565,7 @@ internal sealed partial class GameAdapter(bool testMode)
             }));
         }
         if (request.Operation == "inspect_combatants")
-        {
-            var inspectedPlayer = LocalPlayer;
-            if (inspectedPlayer == null || !CanInspectCombatants())
-                return FileMailbox.Error(request.Id, "illegal_action", "Combatant details are unavailable in the current screen.", publicMessage: true);
-            string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_COMBATANT_CHECKS");
-            if (testMode && checks != null)
-                CombatantInspectionChecks.Run(checks, inspectedPlayer);
-            var inspection = CombatantInspection.Read(inspectedPlayer, observation.CardId);
-            return InspectionSuccess(request.Id, document.RootElement, new
-            {
-                inspection.player, inspection.enemies, inspection.allies, inspection.hover_tips
-            });
-        }
+            return CombatantsRequest(request, document.RootElement);
         if (request.Operation == "inspect_potions")
         {
             var holders = PotionInspection.VisibleHolders();

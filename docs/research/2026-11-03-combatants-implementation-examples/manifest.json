@@ -1,0 +1,65 @@
+{
+  "kind": "current_isolated_mcp_samples",
+  "mod": "0.53.0",
+  "mcp": "0.54.0",
+  "schema": 34,
+  "mod_sha256": "3ae6924b77bb945968e288d3bb570753b0f0dab36d7b8e4a4175b3755773dfe9",
+  "examples": [
+    {
+      "file": "enemies.summary.json",
+      "source": ".tmp/2026-11-03-combatants-implementation/gui-reviewed/basic/verify/evidence.json",
+      "record_index": 5,
+      "arguments": {
+        "preset": "summary",
+        "sources": [
+          "enemies"
+        ]
+      },
+      "condition": "独立测试局的正常公开调用。"
+    },
+    {
+      "file": "single-intent.full.json",
+      "source": ".tmp/2026-11-03-combatants-implementation/gui-reviewed/basic/verify/evidence.json",
+      "record_index": 7,
+      "arguments": {
+        "preset": "full",
+        "sources": [
+          "enemies.2.intents.0"
+        ]
+      },
+      "condition": "独立测试局的正常公开调用。"
+    },
+    {
+      "file": "unavailable-hover.full.json",
+      "source": ".tmp/2026-11-03-combatants-implementation/gui-reviewed/basic/verify/evidence.json",
+      "record_index": 9,
+      "arguments": {
+        "preset": "full"
+      },
+      "condition": "测试专用文件入口暂时禁用一条意图的鼠标事件，finally 恢复。"
+    },
+    {
+      "file": "empty-orb.summary.json",
+      "source": ".tmp/2026-11-03-combatants-implementation/gui-reviewed/orbs/verify/evidence.json",
+      "record_index": 9,
+      "arguments": {
+        "preset": "summary",
+        "sources": [
+          "player.orb_slots.4"
+        ]
+      },
+      "condition": "独立测试局的正常公开调用。"
+    },
+    {
+      "file": "empty.summary.json",
+      "source": ".tmp/2026-11-03-combatants-implementation/gui-reviewed/selection/verify/evidence.json",
+      "record_index": 12,
+      "arguments": {
+        "preset": "summary",
+        "sources": []
+      },
+      "condition": "独立测试局的正常公开调用。"
+    }
+  ],
+  "note": "完整公开JSON原样复制；不是手工构造，不代表正常开局配置或自然死亡帧。"
+}

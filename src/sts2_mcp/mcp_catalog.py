@@ -5,6 +5,7 @@ from sts2_mcp.output.observation_presets import OBSERVATION_SCHEMA
 from sts2_mcp.output.hand_presets import HAND_SCHEMA
 from sts2_mcp.output.selection_presets import SELECTION_SCHEMA
 from sts2_mcp.output.relic_presets import RELIC_SCHEMA
+from sts2_mcp.output.combatant_presets import COMBATANT_SCHEMA
 
 from sts2_mcp.output.run_ending_details import OPTION_SCHEMA as RESULT_OPTION_SCHEMA
 from sts2_mcp.output.map_details import MAP_SCHEMA, TRAVEL_SCHEMA
@@ -133,9 +134,10 @@ def tool_definitions(*, screenshots_enabled=False):
         Tool(name="discard_potion", inputSchema=POTION_SCHEMA, annotations=action, description=(
             "Discard one potion through the native action. "
             "Allowed only when potions can be removed; automatic potions may be discarded.")),
-        Tool(name="inspect_combatants", inputSchema=NO_ARGUMENTS, annotations=read_only, description=(
-            "Read visible combatant powers, enemy intent explanations, occupied orb help and floating Sovereign Blade previews. "
-            "Unavailable while aiming or playing a card.")),
+        Tool(name="inspect_combatants", inputSchema=COMBATANT_SCHEMA, annotations=read_only, description=(
+            "Read exposed combatant powers, intents, orbs and floating Sovereign Blades. "
+            "summary keeps static data without hover help. sources selects objects or groups by canonical paths; [] selects none. "
+            "Full hover help is unavailable during card drag/aim/play; disabled icons remain with a note.")),
         Tool(name="inspect_relics", inputSchema=RELIC_SCHEMA, annotations=read_only, description=(
             "Read visible, hoverable owned relics. Descriptions and hover help by default; "
             "summary keeps basic fields. relic_indices filters by positions in the current unfiltered inspection.")),

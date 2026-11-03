@@ -57,6 +57,12 @@ def player_result(response, *, operation=None):
         if operation == "inspect_selection":
             result["selection"]["cards"], result["hover_tips"] = share_hand_tips(result["selection"]["cards"])
         notes = {}
+        unavailable = result.pop('unavailable_hover_sources', [])
+        if unavailable:
+            notes['hover_tips_unavailable'] = {
+                'message': 'Hover help is currently unavailable for these displayed icons.',
+                'sources': unavailable,
+            }
         if result.get('transition', {}).get('stop_reason') == 'manual_input_required' \
                 or result.get('screen', {}).get('view') == 'confirmation' and result.get('confirmation') is None:
             notes['interaction'] = 'A native dialog or unsupported screen requires manual input.'

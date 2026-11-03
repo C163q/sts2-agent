@@ -125,6 +125,8 @@ GAMEPLAY = {
 
 def gameplay_fields(state, *, operation=None):
     shape = GAMEPLAY
+    if operation == 'inspect_combatants':
+        shape = {**shape, 'unavailable_hover_sources': [str]}
     if operation == "inspect_selection":
         shape = {**GAMEPLAY, 'errors': [{'code': str}],
                  "selection": {**SELECTION_OUTPUT, "cards": [HAND_CARD], "bundles": [{"id": str, "cards": [HAND_CARD]}]}}

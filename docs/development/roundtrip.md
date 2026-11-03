@@ -75,7 +75,7 @@ python3 -m tests.python.test_prepare_roundtrip
 
 请求写入 `requests/<id>.json`，其中 `id` 是不带连字符的 UUID；先写临时文件再原子重命名为 `.json`。请求体包含 `id`、`operation`；动作另带 `expected_state`，有参数操作的选项放在 `arguments` 对象中。响应写入 `responses/<id>.json`，成功包含 `ok: true` 和 `state`，失败包含 `ok: false` 和 `error.code`、`error.message`。
 
-已审阅入口的明确拒绝可另带 `error.public_message`，表示经适配器确认可公开的原因；普通 message 仍可含私有诊断，不能直接转发。`play_card` 在提交和 UI 变化之前被拒绝时另带布尔 `error.action_submitted:false`；缺省不表示 false。MCP 校验这些字段，只在对应条件下保留已有许可，不把控制标记交给 LLM；完整语义见[MCP 错误处理](mcp.md#调用和错误语义)。观察 schema 的版本不因这些可选错误字段改变。
+已审阅入口的明确拒绝可另带 `error.public_message`，表示经适配器确认可公开的原因；普通 message 仍可含私有诊断，不能直接转发。`play_card` 在提交和 UI 变化之前被拒绝时另带布尔 `error.action_submitted:false`；缺省不表示 false。MCP 校验这些字段，只在对应条件下保留已有许可，不把控制标记交给 LLM；完整语义见[MCP 错误处理](mcp.md#调用和错误语义)。观察 schema 的版本不因这些可选错误字段改变。 inspect_combatants 的文件请求另支持可选 level:summary/full，默认为 full；客户端的 preset/sources 与底层级别不同，详见[战斗对象入口](combatant-inspection.md#文件入口与验证)。
 
 - 文件读写和等待在后台进行，状态读取与动作提交在 Godot 主线程进行；当前串行处理请求。
 - `snapshot_id` 根据当前导出的观察内容、进程会话、战斗代次、工具界面操作代次、选择实例代次、药水实例代次及模态弹窗实例代次生成。动作在主线程核对令牌和合法性后提交，选牌若跨帧滚动还会在点击前核对候选、已选和数量规则；通过工具查看并关闭牌组后旧令牌不会恢复，须重新观察。占卜的动态图像及临时对白不纳入令牌，次数、工具、格子和可操作状态仍纳入；见[占卜接口](divination.md)。这不是对所有游戏内部状态或两次请求之间全部人工 UI 操作历史的完整版本标识。

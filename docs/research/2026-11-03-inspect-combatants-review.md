@@ -1,16 +1,16 @@
 # inspect_combatants 场景与现有参数核验
 
-> 当前状态：本轮场景核验与错误审查完成，尚未核销。已记录 3 项问题，提供 21 份完整公开 JSON，完成 82 项 Python 回归、11 项错误探针及七组隔离对局与独立建筑师背景采样。已确认 summary 完全省略 hover_tips，sources 同时筛选对象数据及关联说明，[] 只保留场景上下文及必要 notes；细粒度定位、显式 null 与修复范围待定稿，未改运行代码。未验证分支见末节。
+> 当前状态：核验、设计、实现与验证完成，inspect_combatants 已核销。三项基线问题、公共两级读取、图标位置过滤、summary、对象筛选及不可悬停提示已交付，见[实施与验证](2026-11-03-combatants-implementation.md)。下方原样本与源码对照保留核验基线；当前接口以[开发指南](../development/combatant-inspection.md)为准，未穷举范围见实施记录。
 
 ## 优先关注的问题
 
 | 编号 | 优先级与状态 | 已确认的问题与影响 | 建议处理范围 |
 | --- | --- | --- | --- |
-| COMBATANT-01 | 中；待修复 | 当前画面不允许查看时，Mod 有明确的 `Combatant details are unavailable in the current screen.`，但没有显式许可公开该消息，MCP 仍返回 `The requested action is unavailable.`。本地未知字段也只返回通用参数错误；非法 preset 与参数对象类型的说明则已具体 | 使用现有安全公开错误机制；为未知字段明确列出允许参数。区分没有可读战场和正在拖动／打出卡牌，不转发异常堆栈或任意底层消息 |
-| COMBATANT-02 | 中；待修复 | `GameTools.PURE_READS` 未包含本工具。已有成功观察后，原生 `illegal_action/invalid_request/expired_request` 会清掉旧许可，下一动作被 MCP 以 `observation_required` 拒绝；恢复提示也要求再观察。无需状态改变即可通过模拟传输复现，现有测试还明确断言此旧行为 | 接入已审阅四工具的明确读取拒绝恢复。仅保留原有许可，不制造新许可；过期状态、超时、异常、坏响应、取消和控制器冲突继续清许可，实际动作仍由 Mod 复核 |
-| COMBATANT-03 | 中；验证入口待修复 | [verify_combatants.py](../../tests/game/verifiers/verify_combatants.py) 仍断言顶层没有 screen/allies、玩家只有 powers/orb_slots；[verify_mcp_combatants.py](../../tests/game/verifiers/verify_mcp_combatants.py) 还固定旧工具清单、旧玩家结构。当前正常响应也会被判失败，文档原先仍推荐它们 | 更新这两个专项脚本的结构、来源与工具发现检查，保留只读、语言、共享提示、前后令牌一致性断言；不以删掉断言解决。文档已标明限制 |
+| COMBATANT-01 | 中；已修复 | 当前画面不允许查看时，Mod 有明确的 `Combatant details are unavailable in the current screen.`，但没有显式许可公开该消息，MCP 仍返回 `The requested action is unavailable.`。本地未知字段也只返回通用参数错误；非法 preset 与参数对象类型的说明则已具体 | 使用现有安全公开错误机制；为未知字段明确列出允许参数。区分没有可读战场和正在拖动／打出卡牌，不转发异常堆栈或任意底层消息 |
+| COMBATANT-02 | 中；已修复 | `GameTools.PURE_READS` 未包含本工具。已有成功观察后，原生 `illegal_action/invalid_request/expired_request` 会清掉旧许可，下一动作被 MCP 以 `observation_required` 拒绝；恢复提示也要求再观察。无需状态改变即可通过模拟传输复现，现有测试还明确断言此旧行为 | 接入已审阅四工具的明确读取拒绝恢复。仅保留原有许可，不制造新许可；过期状态、超时、异常、坏响应、取消和控制器冲突继续清许可，实际动作仍由 Mod 复核 |
+| COMBATANT-03 | 中；验证入口已修复 | [verify_combatants.py](../../tests/game/verifiers/verify_combatants.py) 仍断言顶层没有 screen/allies、玩家只有 powers/orb_slots；[verify_mcp_combatants.py](../../tests/game/verifiers/verify_mcp_combatants.py) 还固定旧工具清单、旧玩家结构。当前正常响应也会被判失败，文档原先仍推荐它们 | 更新这两个专项脚本的结构、来源与工具发现检查，保留只读、语言、共享提示、前后令牌一致性断言；不以删掉断言解决。文档已标明限制 |
 
-前两项属于[用户 TODO](../development/TODO.md#当前工具审阅结束后处理)的本工具范围；不据此勾销其他工具的完整审阅。COMBATANT-03 是验证设施缺口，不代表生产工具已经返回错误玩法信息。上述问题优先于新增筛选或摘要。
+上表问题描述记录基线缺口；三项现均已按[实施记录](2026-11-03-combatants-implementation.md)修复并完成回归。前两项属于[用户 TODO](../development/TODO.md#当前工具审阅结束后处理)的本工具范围；不据此勾销其他工具的完整审阅。COMBATANT-03 是验证设施缺口，不代表生产工具已经返回错误玩法信息。上述问题优先于新增筛选或摘要。
 
 ## 核对基线与证据
 
@@ -22,7 +22,7 @@
 - 原生悬停证据复核自同一程序集的本地反编译产物：`.tmp/2026-11-01-power-descriptions/source/Nodes.Combat.NPower.cs` 的 OnHovered、`.tmp/2026-11-01-minion-attribution/source/NIntent.cs` 的 OnHovered、`.tmp/2026-11-01-orb-events/source/Nodes.Orbs.NOrb.cs` 的 OnFocus、`.tmp/2026-11-02-companions/source/Nodes.Combat.NCreature.cs` 的 ShowHoverTips，以及同目录 NSovereignBladeVfx 的 UpdateHoverTip。没有将它们当作新增 UI 实测。原调查见[状态动态说明](2026-11-01-power-descriptions.md)、[同伴与悬浮剑](2026-11-02-companions.md)。
 - 本轮采样与模拟错误探针保存在不入库的 `.tmp/2026-11-03-inspect-combatants-review/`。入库示例仅包含公开玩法 JSON，内部令牌、路径、进程信息和测试配置不进入返回示例。
 
-## 当前参数与职责
+## 核验基线参数与职责
 
 ```json
 {"preset":"full"}
@@ -42,6 +42,8 @@ Unavailable while aiming or playing a card.
 第二句的实际整次门控是手牌 `InCardPlay`，包括卡牌拖动／瞄准／打出流程；不是独立检查所有 `NTargetManager.IsInSelection`。剑的正文另有全局瞄准与攻击动画门控。后续提示词宜明确为卡牌操作期间，避免把所有形式的瞄准一概解释为整次拒绝。
 
 ## 返回结构与 UI 语义
+
+本节保留核验基线的主体字段；新增预设、对象筛选及定位映射以[当前接口](../development/combatant-inspection.md)为准。
 
 | 字段 | 当前含义 |
 | --- | --- |
@@ -68,7 +70,7 @@ Unavailable while aiming or playing a card.
 
 full 保留原生已生成的 null；default 仅按公共规则省略普通 null，数组中的空充能球槽位不删除。无可读玩家为 player:null；容器隐藏时 powers/intents 为 null；容器可见但无可读条目时为 []。可见无计数图标的 amount:null 不等于 0。上述未知、空、零值不能互换。
 
-核验基线中，球和剑仍沿用非滚动战场的几何可见性边界，隐藏、离屏、透明或不可悬停图标不补全文；未知提示类型或绑定失效使整次读取失败，不返回猜测内容。后续已确认取消本轮相关图标的屏幕坐标截断，具体范围及显隐约束见下方“图标位置与不可悬停说明”；该要求尚未实现，不把上述旧行为继续作为实施规则。
+核验基线中，球和剑仍沿用非滚动战场的几何可见性边界，隐藏、离屏、透明或不可悬停图标不补全文；未知提示类型或绑定失效使整次读取失败，不返回猜测内容。后续已确认取消本轮相关图标的屏幕坐标截断，具体范围及显隐约束见下方“图标位置与不可悬停说明”；该要求已实现，不再把上述旧行为作为实施规则。
 
 ## 场景目录
 
@@ -124,7 +126,7 @@ full 保留原生已生成的 null；default 仅按公共规则省略普通 null
 
 ## 参数与摘要设计
 
-### 已确认、尚未实现
+### 已确认并已实现
 
 summary 表示不悬停时能够看到的对象信息，完全省略整个 hover_tips，包括标题、正文及来源。例如 power 只给 name/amount，意图给 category/value，球槽与剑保留基础观察能够看到的字段。其余普通 null 按 default 规则处理，球槽的真实空位不删除。
 
@@ -140,7 +142,7 @@ sources 筛选对象数据及其关联悬停说明，不仅裁剪 hover_tips；p
 
 scene、screen 和仍适用的 notes 保留；仅用于解释已过滤内容的 note 不保留。例如选择仍未完成时保留 notes.selection，而没有敌人意图数据时移除 notes.enemy_attack_intents。部分路径失败时仍可返回 errors。显式筛掉字段不是“不可见”，full 也不把未选中的对象填成 null 或空数组。
 
-未指定筛选表示全部；[] 表示选中集合为空，不作为“全部”的别名。现有 inspect_hand.card_ids、inspect_selection.card_ids、inspect_relics.relic_indices、inspect_ui.sources 已采用这一集合语义；显式 JSON null 目前会被参数校验拒绝。新 sources 是否额外接受显式 null 表示全部仍待定稿，不擅自改变其他已审阅工具。
+未指定筛选表示全部；[] 表示选中集合为空，不作为“全部”的别名。现有 inspect_hand.card_ids、inspect_selection.card_ids、inspect_relics.relic_indices、inspect_ui.sources 已采用这一集合语义；显式 JSON null 目前会被参数校验拒绝。本工具 sources 已接受显式 null 表示全部，不改变其他工具的参数规则。
 
 ### 设计 JSON 示例
 
@@ -198,9 +200,9 @@ scene、screen 和仍适用的 notes 保留；仅用于解释已过滤内容的 
 
 普通战斗若没有仍适用的 notes，空筛选结果只含 scene/screen；不创建空 notes 占位。
 
-### 分组与精确路径建议
+### 分组与精确路径定稿
 
-sources 同时支持具体对象／条目和分组前缀，按点分隔的路径段匹配；细粒度定位规则待定稿。
+sources 同时支持具体对象／条目和分组前缀，按点分隔的路径段匹配。
 
 | 选择器 | 拟选择的数据及关联说明 |
 | --- | --- |
@@ -218,7 +220,7 @@ sources 同时支持具体对象／条目和分组前缀，按点分隔的路径
 - 细粒度选择保留必要的所属对象身份，避免只得到数值却不知道属于哪个敌人；不附送未选中的其他状态、意图或玩家信息。
 - 空分组本身合法，例如 enemies:[] 下选择 enemies；没有悬停提示的可见条目仍可返回静态数据。不存在的对象下标、不支持的字段或格式错误的路径合并到 errors，有效部分继续返回。
 - sources:[] 不生成 hover_tips:[]，也不保留空的对象字段；它是空选中集合，不是保留全部基础数据、只隐藏说明的替代 preset。
-- 数组筛选不能把返回位置冒充原选择器下标，悬停来源须关联正确对象；尤其不能用 null 补齐未选中的球槽，因为 null 在球槽中已经表示真实空位。细粒度实现需确定紧凑列表与原位置映射，或其他明确的定位方式；在此之前不把此前“保留全部数组、仅筛提示”的方案当作实施依据。
+- 数组筛选不能把返回位置冒充原选择器下标，悬停来源须关联正确对象；尤其不能用 null 补齐未选中的球槽，因为 null 在球槽中已经表示真实空位。已使用紧凑数组与 source_indices 原位置映射，hover_tips 和 note 保留未筛选规范地址；完整定义见[来源筛选](../development/combatant-inspection.md#对象与来源筛选)。
 - 先读取并校验工具要求的完整数据，再应用选择与 preset，不因空筛选放过错误响应；结果仍不生成新的未知信息。
 
 inspect_ui 当前只筛悬停提示且仅做精确匹配；本轮不擅自扩大其职责。可复用通用参数校验和共享提示投影，不能将两个工具的对象筛选语义强行合并。
@@ -231,19 +233,19 @@ inspect_ui 当前只筛悬停提示且仅做精确匹配；本轮不擅自扩大
 
 ### 与 get_observation 共用静态读取
 
-本节是本轮源码对照及拟采用的内部结构，尚未修改实现。两个工具的完整对象**当前不相同**，公共静态字段则可以共享采样。
+本节保留本轮字段对照与已实施结构依据；公共静态数据现已共用，两个工具的完整对象仍各有职责。
 
 | 内容 | get_observation 当前行为 | inspect_combatants 当前／拟实现行为 |
 | --- | --- | --- |
-| powers | name/amount；full 与 summary 非空条目字段相同 | 当前详情同样为 name/amount，但筛选条件更严；拟统一静态采样 |
-| intents | category/value；full 与 summary 使用同一数据 | 当前字段相同，但列表筛选条件更严；拟统一静态采样 |
+| powers | name/amount；full 与 summary 非空条目字段相同 | 已统一静态采样；原基线筛选更严 |
+| intents | category/value；full 与 summary 使用同一数据 | 已统一静态采样；原基线列表筛选更严 |
 | orb_slots | 可见队列、实际空槽及标签数字 | 已经共用 OrbInspection.Read；拟 summary 继续使用，不补悬停数值 |
 | sovereign_blades | 可见绑定卡牌 id/name | 已经共用 SovereignBladeInspection.Read；拟 summary 继续使用 |
-| 敌人／友方身份与顺序 | id/name、原生可见节点、按位置排序 | 已复用 EnemyNodes/AllyNodes；拟统一字段组装 |
+| 敌人／友方身份与顺序 | id/name、原生可见节点、按位置排序 | 已共用 EnemyNodes/AllyNodes 与静态字段组装 |
 | 生命／格挡、玩家资源／手牌／牌堆计数 | 基础观察已有 | 当前详情没有；本轮不因共用入口擅自全部加入 |
 | 外层摘要格式 | 战斗 summary 合并生命和能量，使用手牌摘要，省略空 powers/orb_slots/sovereign_blades | 本工具 summary 完全省略 hover_tips；其他格式按各自已确认契约投影，不能将整份公开 summary 直接替换进基础观察 |
 
-拟采用同一个 combatants 相关读取函数，以 level 参数选择两种信息量；不是两个独立采样入口。实现时宜用有明确名字的枚举表示 level，避免裸数字。两级都只负责本工具与基础观察的公共战斗对象字段，不接管生命、格挡、资源、手牌或牌堆计数。
+已采用同一个 combatants 相关读取函数，以 level 参数选择两种信息量；不是两个独立采样入口。实现时宜用有明确名字的枚举表示 level，避免裸数字。两级都只负责本工具与基础观察的公共战斗对象字段，不接管生命、格挡、资源、手牌或牌堆计数。
 
 | 调用方 | 内部读取与外部处理 |
 | --- | --- |
@@ -259,17 +261,17 @@ inspect_ui 当前只筛悬停提示且仅做精确匹配；本轮不擅自扩大
 
 静态摘要不以“可悬停”作为图标存在的条件。当前 CombatObservation.Powers 检查状态节点可见和模型允许展示；CombatantInspection.Powers 还检查图标子节点可见及 MouseFilter 不为 Ignore。意图详情也比基础观察额外检查图标和 MouseFilter。因此目前不能保证公共列表在全部边界状态逐项相等；统一时须核对真实图标／标签的可见性，不能直接把其中一套条件无差别复制给另一套。
 
-**“可见但不能悬停”的具体含义：**MouseFilter.Ignore 让 Godot 控件不接收鼠标事件，本身不等于隐藏图标；普通鼠标尚未移到图标上，并不会因此变为 Ignore。目标程序集 NPower.OnOwnerDied 在 ShouldPowerBeRemovedAfterOwnerDeath 为真时将 MouseFilter 设为 Ignore，OnOwnerRevived 恢复 Stop；这两个方法没有直接隐藏图标。若采样时其余显示条件仍满足，基础观察仍可能保留 name/amount，当前详情却会把整条状态移除。不能把这一源码分支表述为已证明某个死亡状态会在正常游戏中持续可见；身体、状态栏及节点的其他生命周期条件仍会影响实际画面。
+**“可见但不能悬停”的具体含义：**MouseFilter.Ignore 让 Godot 控件不接收鼠标事件，本身不等于隐藏图标；普通鼠标尚未移到图标上，并不会因此变为 Ignore。目标程序集 NPower.OnOwnerDied 在 ShouldPowerBeRemovedAfterOwnerDeath 为真时将 MouseFilter 设为 Ignore，OnOwnerRevived 恢复 Stop；这两个方法没有直接隐藏图标。若采样时其余显示条件仍满足，基础观察仍可能保留 name/amount，基线详情却会把整条状态移除；现在保留静态条目，仅不生成悬停说明。不能把这一源码分支表述为已证明某个死亡状态会在正常游戏中持续可见；身体、状态栏及节点的其他生命周期条件仍会影响实际画面。
 
 本项目 CombatantInspectionChecks 已有人工设置 MouseFilter.Ignore 的用例，旧断言要求整条 power/intent 消失。后续改为静态列表共享时，应验证条目保留、只有悬停说明被移除，来源下标不漂移；真正隐藏的图标仍排除，屏幕坐标筛选按下节的新要求取消。上述判断依据为本轮基线同一程序集的 `.tmp/2026-11-01-power-descriptions/source/Nodes.Combat.NPower.cs`、当前两个读取类及原生检查，不是新增游戏内死亡时点采样。
 
 ### 图标位置与不可悬停说明
 
-**已确认、尚未实现：**本轮相关图标不因屏幕坐标越界而被截断，沿用遗物列表取消视口截断的方向；相应可读计数采用一致的位置规则。保留所属界面、容器、图标的显隐、透明、纹理及真实展示条件，不从后台模型补齐被隐藏的图标或数值。实现须区分 VisibleUi.OnScreen 中混合的位置、显隐及裁剪条件，不全局替换该函数而影响其他工具。球槽、球与悬浮剑现有几何检查同时核对，保留其实际未入场、零缩放、隐藏等独立边界。
+**已实现：**本轮相关图标不因屏幕坐标越界而被截断，沿用遗物列表取消视口截断的方向；相应可读计数采用一致的位置规则。保留所属界面、容器、图标的显隐、透明、纹理及真实展示条件，不从后台模型补齐被隐藏的图标或数值。实现须区分 VisibleUi.OnScreen 中混合的位置、显隐及裁剪条件，不全局替换该函数而影响其他工具。球槽、球与悬浮剑现有几何检查同时核对，保留其实际未入场、零缩放、隐藏等独立边界。
 
-“可见但不能悬停”的说明建议只在 level 2 确实要求读取悬停内容、且被选中对象因交互禁用而无法提供说明时返回。level 1、get_observation 和 inspect_combatants.summary 不为未尝试的悬停补这条说明；sources 过滤同时裁剪关联路径，空筛选不保留该 note。
+“可见但不能悬停”的说明只在 level 2 确实要求读取悬停内容、且被选中对象因交互禁用而无法提供说明时返回。level 1、get_observation 和 inspect_combatants.summary 不为未尝试的悬停补这条说明；sources 过滤同时裁剪关联路径，空筛选不保留该 note。
 
-候选格式如下，仅作为设计示例，不是已实现返回：
+以下为已实现说明的格式示例；真实 MCP 样本见末节链接：
 
 ```json
 {
@@ -284,7 +286,9 @@ inspect_ui 当前只筛悬停提示且仅做精确匹配；本轮不擅自扩大
 
 静态 name/amount 仍保留，不把状态消失或计数归零作为替代反馈，也不猜测禁用原因或恢复时间。原生本就没有说明的意图与“目前禁用悬停”分开处理；不因缺少 HasIntentTip 而生成此 note。未知悬停类型、坏绑定或响应异常仍走错误契约，不降级成正常不可悬停说明。
 
-## 验证与剩余范围
+## 核验阶段的验证与剩余范围
+
+以下保留原核验过程；实现阶段的完整结果以[最终验证](2026-11-03-combatants-implementation.md#最终验证与交付)为准。
 
 - 已运行现有 MCP、同伴、上下文与 default 预设测试：82 项通过。它们包含明确拒绝后清许可的旧断言，因此通过不代表 COMBATANT-02 已解决。
 - 11 项错误探针通过“当前行为”断言，复现问题；不是修复后的通过记录。
@@ -292,6 +296,10 @@ inspect_ui 当前只筛悬停提示且仅做精确匹配；本轮不擅自扩大
 - 两个自有进程均已关闭。无运行代码变化，未安装正式 Mod；本次采样不是旧验证脚本已修复的证据。
 - `gui/` 首次采样因脚本把空抽牌堆误当成覆盖页而失败；空堆返回原生反馈并保持战场符合现有契约。改为先正常打出防御，再查看非空弃牌堆。`gui-2/` 采集完地图覆盖后，多做了一次原生不允许的 close_map，返回 `The current map cannot be closed.` 而终止；测试开局地图不保证能关闭。最终采样在地图拒绝记录完成后按独立局生命周期清理，不修改地图动作规则。两份失败目录保留，不称为全绿批次。
 - 将本轮真实原生响应通过替代传输回放给 `verify_combatants.main`，在第 39 行旧顶层字段断言复现失败；`verify_mcp_combatants` 的旧清单／结构问题按源码确认，没有将其运行标为通过。已同步开发指南：撤下旧脚本的可用命令示例并标注限制，同时将“瞄准”明确为实际 InCardPlay 门控；问题与未修复状态以本记录跟进。
-- 本轮没有修改运行代码，不需要为文档重新构建 Mod；游戏采样使用上述已构建 DLL。
+- 原核验采样阶段没有修改运行代码，无须仅为该阶段文档重新构建 Mod；后续实现已重新构建并验证，见实施记录。
 - 玩家或状态／意图容器被单独隐藏、禁用悬停、HasIntentTip:false 和卡牌拖动门控，本轮核对源码及既有原生检查，没有逐一新增公开响应样本；敌方回合、自然战后过渡和球／剑攻击动画的每个时点同样没有逐帧新采样。
 - 尚未新增全部状态、所有意图／球／多剑组合、真正多人、第三方悬停类型、任意图层像素遮挡或动画竞态穷举；模型模板正确不等于所有生命周期均已实测。
+
+## 最终交付
+
+五份新的完整公开 MCP 样本见[交付样本清单](2026-11-03-combatants-implementation-examples/manifest.json)：敌人摘要、单一意图筛选、不可悬停 note、真实空球槽与空筛选导航。它们来自最终六局隔离 GUI，版本、DLL、测试与复审依据集中记录于[实施记录](2026-11-03-combatants-implementation.md)；旧 21 份样本保持原核验基线，不覆盖历史证据。

@@ -107,4 +107,14 @@ def combatant_details(state):
     result = {**context, "player": player, "enemies": enemies, "hover_tips": tips}
     if 'allies' in state:
         result['allies'] = allies
+    if 'unavailable_hover_sources' in state:
+        unavailable = state['unavailable_hover_sources']
+        if (not isinstance(unavailable, list) or any(not isinstance(source, str) for source in unavailable)
+                or len(set(unavailable)) != len(unavailable)):
+            raise ValueError('Invalid unavailable hover sources.')
+        explained = {source for tip in tips for source in tip['sources']}
+        for source in unavailable:
+            validate_source(source, player, enemies, allies)
+            if source in explained: raise ValueError('Conflicting hover availability.')
+        result['unavailable_hover_sources'] = list(unavailable)
     return result

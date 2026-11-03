@@ -35,6 +35,8 @@ from sts2_mcp.output.available_tools import GAME_ACTIONS, public_tools
 from sts2_mcp.output.action_output import action_result
 
 
+from sts2_mcp.output.combatant_presets import combatant_arguments, combatant_preset
+
 class GameTools:
     PURE_READS = {'get_state', 'inspect_targets', 'inspect_ui', 'inspect_hand', 'inspect_combatants'}
     READ_REJECTIONS = {'invalid_request', 'illegal_action', 'expired_request'}
@@ -202,8 +204,13 @@ class GameTools:
         return await self._inspect("inspect_potions")
 
     @output_preset
-    async def inspect_combatants(self):
-        return await self._inspect("inspect_combatants")
+    async def inspect_combatants(self, arguments=None):
+        try:
+            options = combatant_arguments(arguments)
+        except ValueError as error:
+            return invalid_request(str(error))
+        payload = await self._inspect('inspect_combatants', {'level': options['preset']})
+        return combatant_preset(payload, **options)
 
     @output_preset
     async def inspect_relics(self, arguments=None):

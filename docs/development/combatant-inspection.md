@@ -1,59 +1,103 @@
 # 战斗对象与充能球详情
 
-版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。scene/screen 遵循[统一上下文](observation.md#场景上下文)，可见建筑师背景使用 epilogue，不以所读对象来自战斗 UI 为由改写 scene。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。`inspect_combatants` 查看当前已展示的玩家、敌人、友方召唤物、充能球与悬浮君王之剑；不执行动作、不触发实际鼠标悬停、不修改语言、目标或游戏流程。场景遵循[统一上下文](observation.md#场景上下文)，建筑师背景仍为 epilogue。
 
-文件操作 `inspect_combatants` 与同名 [MCP 工具](mcp.md)用于一次只读查看玩家、可见敌人和友方召唤物的 powers、敌人当前意图、玩家已生成充能球及悬浮君王之剑的原生英语说明。不触发实际鼠标悬停，不改变目标、语言或游戏流程。MCP full 与文件客户端返回相同的玩法 JSON，默认 default 省略普通空值；规则见[公共预设](mcp.md#输出预设)。
+## 参数与预设
 
-## 读取
+| 参数 | 默认值 | 含义 |
+| --- | --- | --- |
+| preset | default | full 保留完整静态数据及可读取的原生悬停说明；default 经[共用空值规则](mcp.md#输出预设)过滤；summary 仅保留静态数据，完全省略 hover_tips，并过滤普通 null |
+| sources | 省略／null | 选择对象或条目及其关联说明；省略或 null 取全部，[] 不取任何对象，只保留 scene/screen、仍适用的 notes 和路径错误 |
 
-按 [正常游戏加载](live-game.md) 安装并重启，进入无遮挡战斗后执行：
-
-```sh
-python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_combatants > .tmp/live/combatant-inspection.json
+```json
+{"preset":"summary","sources":["enemies"]}
 ```
 
-MCP 调用 `inspect_combatants()` 除通用 preset 外无其他参数，成功时刷新状态令牌；完整规则见 [MCP 调用语义](mcp.md#调用和错误语义)。文件读取无须动作令牌，可用时列入 `available_actions`。默认客户端移除响应包装、状态令牌等控制信息；加 `--raw` 可保留这些字段。
+sources 接受非空字符串数组或 null，重复路径去重，结果保持原生顺序；未知参数、错误类型和不支持的 preset 整次 invalid_request。成功读取本身刷新动作许可，无须固定再调用 get_observation；明确拒绝保留已有许可，未知结果与状态过期的规则见[MCP 错误语义](mcp.md#调用和错误语义)。
 
-## 格式
+## 数据范围
 
 | 字段 | 内容 |
 | --- | --- |
-| `scene/screen` | 与当前基础观察一致的[场景上下文](observation.md#场景上下文)，例如建筑师为 epilogue |
-| `player.powers[]` | 玩家当前可读的 power 名称和可见计数 `name/amount` |
-| `player.orb_slots` | 与[基础观察](observation.md#玩法字段)相同的球槽顺序、空值和显示数字；不把悬停才出现的数字填入该摘要 |
-| `player.sovereign_blades[]` | 当前可见悬浮剑的绑定卡牌 `id/name`，与基础观察和手牌 ID 一致；按稳定 ID 排列 |
-| `allies[]` | 当前可见友方召唤物的 `id/name/powers`；如奥斯提，powers 格式同玩家 |
-| `enemies[]` | 当前可见敌人，从左到右排列 |
-| `enemies[].id/name` | 基础观察相同的战斗对象 ID 和英语名称 |
-| `enemies[].powers[]` | 该敌人当前可读的 powers，格式同玩家 |
-| `enemies[].intents[]` | 当前渲染意图的 `category/value`，格式同基础观察 |
-| `hover_tips[]` | 主说明和附带原生解释，按 `title/description` 同时相同去重 |
-| `hover_tips[].sources[]` | 关联到本次结果的对象，如 `player.powers.0`、`enemies.1.intents.0`、`allies.0.powers.0`、`player.orb_slots.0`、`player.sovereign_blades.0` |
+| scene/screen | 本次快照的房间／结算场景和页面；不因查看战场对象改写 scene |
+| player.powers | 当前展示的状态 name/amount |
+| player.orb_slots | 原生球槽队列，保留真正的空槽 null；每个球为 name/passive/evoke，数值只取已展示标签 |
+| player.sovereign_blades | 当前悬浮剑的绑定卡牌 id/name，沿用基础观察与手牌的稳定 ID；按 ID 排列 |
+| enemies | 从左到右的敌人 id/name/powers/intents；意图为 category/value |
+| allies | 从左到右的友方召唤物 id/name/powers；奥斯提不进入 enemies |
+| hover_tips | full/default 的原生主说明与附带解释，title/description/sources；summary 完全不返回 |
+| source_indices | 筛选压缩数组时的原下标映射，键为未筛选结果中的数组路径；没有压缩则不增加该项 |
+| errors | 无法匹配的选择器合并为 combatant_sources_unavailable，sources 保留首次请求顺序；有效部分继续返回，isError:false |
+| notes | 与返回内容相关的数值说明、未完成选择的导航，以及 full/default 的不可悬停提示 |
 
-`sources` 中的数组下标从 0 开始，只对本次结果有效。重复怪物用 `id` 区分；不要把数组位置当作跨请求的稳定 ID。同名提示正文不同时分开保留，包括层数、持续回合或拥有者不同造成的区别。附带的术语或卡牌预览也关联到提供它的 power。
+该工具不提供生命、格挡、资源、手牌、牌堆计数、available_actions 或 transition；基础战况与动作范围由 get_observation 提供。不可读玩家在 full 中为 player:null；隐藏容器为 powers/intents:null，已展示但没有条目为 []；无显示计数为 amount:null，不以模型 Amount 补齐。default/summary 省略普通 null，球槽数组中的真实空位保留。
 
-充能球说明使用可见且可悬停 `NOrb` 所绑定实例的原生 `HoverTips`，包含人悬停时可读的当前被动／激发效果及附带术语；这些正文可以包含基础画面未显示的激发数值。空槽不生成这里的正文，通用空槽帮助由 [inspect_ui](ui-inspection.md) 提供。隐藏、裁剪、零缩放或不可悬停的球不提供正文；已展示球不按屏幕坐标截断，读取不调用 `OnFocus` 或改变标签显示状态。
+## 对象与来源筛选
 
-计数取自已展示标签，不按屏幕坐标截断，不使用模型 Amount 替代隐藏的计数。无计数标签时 `amount: null`。容器隐藏时 powers 或 intents 为 `null`；可见容器中没有可读条目时为 `[]`。玩家节点不可见时 `player: null`。正文保留换行，移除格式标记，图标沿用 `<Energy>`、`<Star>` 等文本表示。
+路径针对**当前未筛选的本工具列表**，不是生物 ID，也不保证与其他工具或下一次读取的下标相同。使用点分隔的完整路径段匹配；enemies.1 不匹配 enemies.10。
 
-返回敌人意图时附带 `notes.enemy_attack_intents`，规则和完整文案见 [观察数值说明](observation.md#数值预览说明)；意图伤害已经包含当前预览修正，不能再叠加一次易伤等效果，也不保证等于最终生命损失。没有敌人意图时不附带该 note；不返回 `card_values`。
+| 路径示例 | 选择范围 |
+| --- | --- |
+| player | 玩家状态、球槽、悬浮剑 |
+| player.powers / player.powers.0 | 全部玩家状态／第一条状态 |
+| player.orb_slots.0 | 第一球槽，包括真实空槽 |
+| player.sovereign_blades.0 | 第一把悬浮剑 |
+| enemies | 全部敌人 |
+| enemies.0 | 第一敌人的全部状态与意图 |
+| enemies.0.intents / enemies.0.intents.0 | 第一敌人的全部意图／第一条意图 |
+| allies.0 / allies.0.powers.0 | 第一友方召唤物／其第一条状态 |
+
+多个路径取并集；父路径已包含子路径时不重复返回。选择状态／意图时保留所属敌人或友方的 id/name，不附送其他未选中分支。合法空分组返回空分组，没有悬停说明的条目仍可返回静态数据；不存在的下标、错误路径或不支持的字段进入 errors。筛选不跳过原生响应的完整校验。
+
+数组紧凑返回，不用 null 填补未选中的位置。例如选择 enemies.2.powers.1，可产生以下定位映射：
+
+```json
+{
+  "source_indices": {
+    "enemies": [2],
+    "enemies.2.powers": [1]
+  }
+}
+```
+
+此时返回 enemies 的第 0 项对应原第 2 项，其 powers 第 0 项对应原第 1 项。hover_tips.sources 与 note 中的路径仍为规范地址 enemies.2.powers.1，**可直接复用于后续 sources**；它们在存在映射时不是压缩后 JSON 的直接数组路径。整个父数组被选择时不增加无意义映射。共享说明只保留命中的来源，避免附送其他对象的信息。
 
 ## 读取边界
 
-支持无遮挡战场，包括原生可查看的建筑师战斗背景；手牌处于拖动、瞄准或打出卡牌流程（`InCardPlay`）时，原生界面会抑制战斗对象悬停说明，因此整次读取返回 `illegal_action`。该门控不等同于拒绝所有全局瞄准模式。敌人身份与顺序复用基础观察的可见节点筛选；power 必须有已展示图标且模型允许展示；意图必须有已展示的 holder 和图标。静态条目不要求可悬停，只有 hover_tips 的生成受鼠标交互条件限制。不枚举隐藏 powers，不读 `Monster.NextMove` 或后续招式，不增加格挡说明。`HasIntentTip: false` 的意图不构造说明。
+get_observation 的 full/summary 和本工具 summary 共用同一个战斗对象读取入口的静态级别；生命、资源和手牌仍由独立入口组装，外部观察格式保持。内部静态结果保留原始 null、空列表和数字，各工具最后应用自己的公开预设。full 在同一静态顺序上补充说明，不能因鼠标交互禁用而移除状态或意图。
 
-奥斯提按真实阵营进入 `allies`，不占用敌人下标。君王之剑的说明来自可见 `NSovereignBladeVfx.Card` 的原生卡牌预览，按原生 `PileType.Deck` 格式化；不返回独立铸造计数、所在牌堆或隐藏卡牌信息。剑可见但 hitbox 不可悬停、攻击动画进行中或被隐藏时不提供正文；多把剑分别绑定卡牌 ID，相同提示仍可共享多个来源。核对与验证见[记录](../research/2026-11-02-companions.md)。
+支持无遮挡战场及原生可查看的建筑师背景。选牌覆盖、地图、牌组、牌堆、模态框、未就绪或隐藏战场拒绝；通过眼睛切回战场可读，保留 notes.selection。没有额外要求必须是玩家回合或动作队列为空，但不保证动画任意时点都稳定。
 
-power 主说明使用当前实例 `HoverTips` 的动态正文，而非静态通用定义；包含人悬停时会看到的当前持续回合、层数、拥有者或施加者等变量。意图从已显示 `NIntent` 绑定的意图、目标和拥有者构造原生提示，包含当前预览伤害及连击次数。对 Shrink 等施加时缓存怪物本地化名称的情况，仅在独立格式化变量中放入英语施加者名称，不修改实际 power 的缓存或中文说明。读取不调用控件的 `OnFocus/OnHovered` 或更新流程；未知提示类型显式返回错误，不静默丢弃。
+拖动、瞄准或打出卡牌（InCardPlay）时，静态 summary 仍可读，full/default 返回具体拒绝并提示使用 summary；不把此门控误写为所有全局瞄准模式。工具列入 available_actions 表示至少存在支持的读取方式，不保证任何 preset 都能立即成功。
 
-原生 `PowerModel.HoverTips` 的格式化调用在英语读取作用域内显式经过英语渲染器，避免预编译或内联调用绕过 `LocString.GetFormattedText` 的拦截后，以中文复数规则解释英文模板。实例变量仍由原生提示流程填入；例如 Escape Artist 计数为 5、4 时分别显示 `after 5 turns`、`after 4 turns`，为 1 时显示 `this turn`。这是当前 UI 状态说明，不提供敌人后续招式或对未来回合的额外推演。修复与同类审查见[状态说明验证](../research/2026-11-01-power-descriptions.md)。
+身体身份按实际战场显示判断；附属图标及计数不因屏幕坐标越界而截断，仍检查显隐、透明、纹理、缩放和真实裁剪。原生 UI 队列之外的旧球图像不枚举，任一真实槽位隐藏或被裁剪时整个 orb_slots 为 null，不能把未知槽当空槽。可见性不是任意 Mod 图层的逐像素遮挡判断。
 
-沿用 [信息边界](../observation.md) 和现有英语作用域。战斗对象身份仍按身体实际显示判断；附属图标与标签按显隐、透明度和裁剪判断，不按视口坐标截断，不能精确判断任意像素遮挡。读取过程中如果发现绑定对象无效，则整次报错，不用其他模型状态补齐。其他 Mod 改写悬停行为、其他游戏版本、多人及其他非战斗背景尚未穷举验证。
+球正文来自当前 NOrb 的原生 HoverTips，可以包含显式悬停才看见的被动／激发数字；这些数字不回填静态槽位字段。空槽通用帮助由 inspect_ui 提供。剑正文为可见绑定卡牌的原生 PileType.Deck 预览，在副本上刷新数值，不修改原牌缓存、不提供独立铸造数或隐藏卡牌位置。
 
-## 验证
+状态使用当前 PowerModel 实例的动态原生说明，意图使用已显示 NIntent 绑定的模型、目标和拥有者；不读取 Monster.NextMove 或未来招式。标题与正文同时相同才共享提示，不因名称相同合并不同层数或回合数。英语格式化、Escape Artist 倒计时及施加者缓存的边界见[状态说明记录](../research/2026-11-01-power-descriptions.md)。
 
-`verify_combatants.py` 与 `verify_mcp_combatants.py` 的结构断言尚未适配 screen、友方、悬浮剑及当前工具清单，暂不能作为当前版本通过验证的入口；问题、采样与范围见[本轮核验](../research/2026-11-03-inspect-combatants-review.md)。修复须保留其重复读取、前后状态令牌一致、敌人 ID 与基础字段对应、共享说明去重、来源路径和数值 note 检查；详情仅保留可悬停图标，应按顺序匹配基础观察的子序列。
+## 不可悬停与错误
 
-独立中文实例可用 `scripts/run_roundtrip.py --windowed --capture --check-combatants`。此标志仅在原有测试入口创建战斗时，通过 `PowerCmd.Apply` 给测试玩家准备 Strength、Vulnerable、怪物施加的永久 Shrink，给测试敌人准备 Vulnerable 与计数 5 的 Escape Artist，并检查动态说明、共享提示及可见性；另用控制变量对照原生英文与中文环境下英语作用域的状态说明模板。模板对照不代表全部状态的生命周期均已实机验证。不要为正式游戏设置测试标志。实施依据、验证结果和未验证范围见 [实施记录](../research/2026-10-29-combatant-inspection-plan.md)。
+图标展示但交互被禁用时，静态条目仍保留；full/default 在 notes.hover_tips_unavailable 中给出固定 message 与相关 sources。不猜测禁用原因或恢复时间。summary 和基础观察不尝试读取悬停，不附这条 note；sources 过滤同步裁剪它，空筛选不保留。原生本就 HasIntentTip:false 的意图没有说明，不算交互禁用。
 
-历史独立及正式游戏采样见[战斗对象实施记录](../research/2026-10-29-combatant-inspection-plan.md)和[MCP 实施记录](../research/2026-10-29-mcp-combatant-inspection.md)；召唤物及悬浮剑的专项范围见[同伴验证](../research/2026-11-02-companions.md)。
+无法识别的悬停类型、失效绑定、坏来源或格式异常仍整次失败，不能降级为普通 note 或由 [] 掩盖。意图预览数值的 note 只在返回相关意图数据时保留，规则见[数值说明](observation.md#数值预览说明)；没有 card_values note。
+
+## 文件入口与验证
+
+文件客户端默认 full，支持与 MCP 相同的预设和筛选：
+
+```sh
+python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_combatants --preset summary --sources enemies
+```
+
+底层文件请求只接受可选内部参数 level:summary/full，省略为 full；sources 由客户端投影。--raw 保留原生包装及控制信息，不做筛选投影。Python 转换原生响应时传 operation="inspect_combatants"，以同样规则生成可选的悬停状态 note。正常游戏加载与 IPC 配置见[加载指南](live-game.md)。
+
+verify_combatants.py 与 verify_mcp_combatants.py 已使用当前共用契约断言，核对只读令牌、场景、静态字段、来源和共享说明；stdio 检查使用独立截图配置，避免依赖个人配置中的工具数量。运行期间避免手动改变游戏：
+
+```sh
+python3 -m tests.game.verifiers.verify_combatants --ipc-dir .tmp/live/ipc --output .tmp/live/combatant-inspection.json --report .tmp/live/combatant-inspection-check.json
+```
+
+完整预设、对象筛选、球／剑／同伴、错误续接及不可悬停 note 使用[combatant_presets 清单](../../tests/game/data/gui_suite_combatant_presets.json)，执行方法见[图形测试](gui-testing.md)。set_test_combatant_hover 仅在测试模式与套件双门控下开放文件请求，测试脚本 finally 恢复，不属于 MCP 玩法工具。
+
+历史核验与样本见[工具审阅](../research/2026-11-03-inspect-combatants-review.md)，本次实现、证据及未验证范围见[实施记录](../research/2026-11-03-combatants-implementation.md)。历史全部状态模板、第三方悬停、真正多人和任意动画组合的验证不能由本轮覆盖推断。

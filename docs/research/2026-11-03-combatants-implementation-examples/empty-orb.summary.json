@@ -1,0 +1,16 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "player": {
+    "orb_slots": [
+      null
+    ]
+  },
+  "source_indices": {
+    "player.orb_slots": [
+      4
+    ]
+  }
+}

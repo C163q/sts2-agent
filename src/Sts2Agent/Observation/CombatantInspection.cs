@@ -33,11 +33,18 @@ internal sealed class CombatantInspection(CombatantInspection.Level level)
     public static Result Read(Player? player, Func<CardModel, int> cardId, Level level = Level.Full) =>
         EnglishCardText.Read(() => new CombatantInspection(level).ReadAll(player, cardId));
 
+    internal static string? UnavailableReason(Level level)
+    {
+        if (CombatObservation.Status() != "visible")
+            return "The battlefield is covered, hidden, or not ready. Expose the battlefield before inspecting combatants.";
+        if (level == Level.Full && NCombatRoom.Instance!.Ui.Hand.InCardPlay)
+            return "Hover help is unavailable while dragging, aiming, or playing a card. Use preset summary for static combatant data.";
+        return null;
+    }
+
     private Result ReadAll(Player? player, Func<CardModel, int> cardId)
     {
-        if (CombatObservation.Status() != "visible"
-            || level == Level.Full && NCombatRoom.Instance!.Ui.Hand.InCardPlay)
-            throw new InvalidOperationException("Combatant details require an exposed combat screen.");
+        if (UnavailableReason(level) is { } reason) throw new InvalidOperationException(reason);
         var playerNode = player == null ? null : NCombatRoom.Instance!.GetCreatureNode(player.Creature);
         var playerText = VisibleUi.Shown(playerNode) && VisibleUi.OnScreen(playerNode!.Body)
             ? new PlayerText(Powers(playerNode, "player"), Orbs(playerNode), Blades(playerNode, cardId)) : null;
@@ -113,7 +120,8 @@ internal sealed class CombatantInspection(CombatantInspection.Level level)
         {
             var sprite = intent.GetNodeOrNull<Sprite2D>("%Intent");
             if (!VisibleUi.Displayed(intent.GetNodeOrNull<Control>("%IntentHolder"))
-                || !VisibleUi.Displayed(sprite) || sprite!.Texture == null) continue;
+                || !VisibleUi.Displayed(sprite) || sprite!.Texture == null
+                || Mathf.Abs(sprite.GetGlobalTransformWithCanvas().Determinant()) <= 0.000001f) continue;
             string path = $"{source}.intents.{intents.Count}";
             intents.Add(CombatObservation.Intent(intent));
             if (level != Level.Full) continue;

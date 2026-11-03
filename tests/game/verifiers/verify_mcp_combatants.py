@@ -21,8 +21,11 @@ async def verify(args):
     assert before["ok"] and before["state"]["screen"]["status"] == "visible", before
     reference = await asyncio.to_thread(client.call, "inspect_combatants")
     assert reference["ok"], reference
+    config = args.report.with_suffix('.config.json')
+    config.parent.mkdir(parents=True, exist_ok=True)
+    config.write_text(json.dumps({'screenshots': {'enabled': False}}))
     parameters = StdioServerParameters(command=sys.executable, args=[
-        str((ROOT / "scripts/mcp_server.py")), "--ipc-dir", str(args.ipc_dir.resolve())])
+        str((ROOT / "scripts/mcp_server.py")), "--ipc-dir", str(args.ipc_dir.resolve()), "--config", str(config)])
     evidence = {"completed": False, "before": before, "reference": reference, "calls": []}
     async with stdio_client(parameters) as (read, write):
         async with ClientSession(read, write, read_timeout_seconds=timedelta(seconds=60)) as session:
@@ -34,7 +37,7 @@ async def verify(args):
             assert {tool.name for tool in listed.tools} == {tool.name for tool in tool_definitions()}
             tool = next(tool for tool in listed.tools if tool.name == "inspect_combatants")
             assert tool.annotations.readOnlyHint is True
-            assert set(tool.inputSchema['properties']) == {'preset'} and not tool.inputSchema['additionalProperties']
+            assert set(tool.inputSchema['properties']) == {'preset', 'sources'} and not tool.inputSchema['additionalProperties']
 
             async def call(name):
                 result = await session.call_tool(name, full_output_arguments(name, {}))
@@ -46,7 +49,7 @@ async def verify(args):
             inspected = await call("inspect_combatants")
             observed = await call("get_observation")
             repeated = await call("inspect_combatants")
-            assert inspected == repeated == player_result(reference), "Combatants changed or MCP differs from file inspection."
+            assert inspected == repeated == player_result(reference, operation="inspect_combatants"), "Combatants changed or MCP differs from file inspection."
             assert_combatant_inspection(inspected, observed)
     after = await asyncio.to_thread(client.call, "get_state")
     assert after["ok"], after
@@ -56,7 +59,7 @@ async def verify(args):
     args.output.write_text(json.dumps(inspected, indent=2, ensure_ascii=False) + "\n")
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps(evidence, indent=2, ensure_ascii=False) + "\n")
-    print(f"PASS: real stdio MCP inspected {len(inspected['enemies'])} enemies and {len(tips)} shared tips; "
+    print(f"PASS: real stdio MCP inspected {len(inspected['enemies'])} enemies and {len(inspected['hover_tips'])} shared tips; "
           f"game observation unchanged; JSON: {args.output}")
 
 
