@@ -36,7 +36,7 @@ internal sealed partial class GameAdapter
         var snapshot = Capture();
         string before = snapshot.Json;
         JsonElement beforeState = snapshot.State;
-        if (request.Operation is not ("set_test_capture_failure" or "inspect_combatants" or "inspect_deck" or "inspect_pile" or "inspect_selection" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
+        if (request.Operation is not ("set_test_capture_failure" or "inspect_relics" or "inspect_combatants" or "inspect_deck" or "inspect_pile" or "inspect_selection" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
@@ -169,13 +169,22 @@ internal sealed partial class GameAdapter
         }
         if (request.Operation == "inspect_relics")
         {
+            bool full = true;
+            if (request.Arguments is { } options)
+            {
+                if (options.EnumerateObject().Any(property => property.Name != "level")
+                    || options.TryGetProperty("level", out var level)
+                        && (level.ValueKind != JsonValueKind.String || level.GetString() is not ("summary" or "full")))
+                    return FileMailbox.Error(request.Id, "invalid_request", "Relic level must be full or summary.", publicMessage: true);
+                if (options.TryGetProperty("level", out level)) full = level.GetString() != "summary";
+            }
             var holders = RelicInspection.VisibleHolders();
             if (holders == null)
                 return FileMailbox.Error(request.Id, "illegal_action", "Relic details are unavailable in the current screen.");
             string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_RELIC_CHECKS");
-            if (testMode && checks != null)
+            if (testMode && checks != null && full)
                 RelicInspectionChecks.Run(checks);
-            return InspectionSuccess(request, beforeState, new { relics = RelicInspection.Read(holders) });
+            return InspectionSuccess(request, beforeState, RelicInspection.Inspect(holders, full));
         }
         if (request.Operation == "inspect_combatants")
             return CombatantsRequest(request, beforeState);

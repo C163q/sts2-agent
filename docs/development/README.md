@@ -44,3 +44,5 @@
 - [工具共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)：第 1–2 阶段已完成，固定行为与 Python 共用输出链路见[实施记录](../research/2026-11-04-refactor-stages-1-2.md)；筛选、上下文和遗物悬停调整仍按后续阶段推进。
 
 工具共用链路重构的当前执行范围见[计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)、[第 1–2 阶段记录](../research/2026-11-04-refactor-stages-1-2.md)、[第 3–4 阶段记录](../research/2026-11-04-refactor-stages-3-4.md)与[第 5 阶段记录](../research/2026-11-04-refactor-stage-5.md)。
+
+展示与悬停读取共用入口见[架构说明](architecture.md#展示与悬停读取)。

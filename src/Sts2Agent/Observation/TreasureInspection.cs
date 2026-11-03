@@ -21,8 +21,8 @@ internal static class TreasureInspection
 
     public static NButton Chest(NTreasureRoom room) => room.GetNode<NButton>("%Chest");
     public static NTreasureRoomRelicCollection Collection(NTreasureRoom room) => room.GetNode<NTreasureRoomRelicCollection>("%RelicCollection");
-    public static bool Opened(NTreasureRoom room) => CardSelection.Field(room, "_hasChestBeenOpened") is true;
-    private static bool Picking(NTreasureRoom room) => CardSelection.Field(room, "_isRelicCollectionOpen") is true;
+    public static bool Opened(NTreasureRoom room) => PrivateFields.Read(room, "_hasChestBeenOpened") is true;
+    private static bool Picking(NTreasureRoom room) => PrivateFields.Read(room, "_isRelicCollectionOpen") is true;
 
     public static NTreasureRoomRelicHolder? Relic(NTreasureRoom room) => Opened(room) && Picking(room)
         && Collection(room).SingleplayerRelicHolder is { } holder && VisibleUi.OnScreen(holder)

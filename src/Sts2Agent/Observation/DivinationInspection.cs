@@ -35,14 +35,14 @@ internal static class DivinationInspection
     public static NProceedButton? Proceed(NCrystalSphereScreen screen) => screen.GetNode<NProceedButton>("%ProceedButton") is { } button
         && VisibleUi.OnScreen(button) && VisibleUi.Text(button, "%Label") is { Length: > 0 } ? button : null;
 
-    private static CrystalSphereMinigame Model(NCrystalSphereScreen screen) => (CrystalSphereMinigame)CardSelection.Field(screen, "_entity")!;
+    private static CrystalSphereMinigame Model(NCrystalSphereScreen screen) => (CrystalSphereMinigame)PrivateFields.Read(screen, "_entity")!;
     private static bool Finished(NCrystalSphereScreen screen) => !Tool(screen, "big").Visible && Proceed(screen)?.IsEnabled == true;
 
     private static bool Revealing(NCrystalSphereScreen screen)
     {
         var mask = screen.GetNode<NCrystalSphereMask>("%ScryMask");
-        float now = (float)CardSelection.Field(mask, "_time")!;
-        var values = (Godot.Collections.Array<Vector3>)CardSelection.Field(mask, "_values")!;
+        float now = (float)PrivateFields.Read(mask, "_time")!;
+        var values = (Godot.Collections.Array<Vector3>)PrivateFields.Read(mask, "_values")!;
         // The target version's scry_reveal shader interpolates gridFadeParams over 0.5 seconds.
         return values.Any(value => value.Z > 0 && now - value.Z < 0.5f)
             || VisibleUi.Descendants<NCrystalSphereItem>(screen).Any(item => RewardInspection.Animating(item, "_tween"));

@@ -10,7 +10,7 @@ internal static class DivinationFixture
     public static object Read(Player player)
     {
         var screen = DivinationInspection.Current!;
-        var model = (CrystalSphereMinigame)CardSelection.Field(screen, "_entity")!;
+        var model = (CrystalSphereMinigame)PrivateFields.Read(screen, "_entity")!;
         var capture = ViewportCapture.Read(DivinationInspection.Bounds(screen))!.Value;
         using Image image = new();
         image.LoadPngFromBuffer(capture.png);

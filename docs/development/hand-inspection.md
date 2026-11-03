@@ -111,3 +111,5 @@ python3 -m tests.game.verifiers.verify_hand --ipc-dir .tmp/live/ipc --output .tm
 它核对详情和基础观察的 ID、完整正文、共享提示去重及所有卡牌关联、说明适用范围，以及读取前后观察令牌一致。需要测试英语作用域、缓存、关键词和动态数值时，在独立实例使用 `scripts/run_roundtrip.py --windowed --capture --check-hand`；该标志仅供仓库创建的铁甲战士测试战斗使用，不用于正式游戏。游戏读取的实施与验证见 [手牌详情实施记录](../research/2026-10-29-hand-inspection-plan.md)，输出整合见 [共享提示记录](../research/2026-10-29-shared-hand-tips.md)。
 
 预设与筛选的单元、stdio 和独立图形验证见[手牌参数验证记录](../research/2026-11-01-hand-presets.md)。
+
+卡牌实节点与浏览克隆的职责及共享外观入口见[读取架构](architecture.md#展示与悬停读取)；克隆上下文不与半隐藏手牌读取合并。

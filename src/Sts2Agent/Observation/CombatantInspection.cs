@@ -18,7 +18,7 @@ internal sealed class CombatantInspection(CombatantInspection.Level level)
     private static readonly FieldInfo IntentModel = typeof(NIntent).GetField("_intent", PrivateInstance)!;
     private static readonly FieldInfo IntentTargets = typeof(NIntent).GetField("_targets", PrivateInstance)!;
     private static readonly FieldInfo IntentOwner = typeof(NIntent).GetField("_owner", PrivateInstance)!;
-    private readonly Dictionary<(string? title, string description), List<string>> tips = [];
+    private readonly HoverTextSources tips = new();
     private readonly List<string> unavailable = [];
 
     internal sealed record PowerText(string? name, int? amount);
@@ -26,9 +26,8 @@ internal sealed class CombatantInspection(CombatantInspection.Level level)
         SovereignBladeInspection.BladeText[] sovereign_blades);
     internal sealed record AllyText(uint? id, string? name, PowerText[]? powers);
     internal sealed record EnemyText(uint? id, string? name, PowerText[]? powers, object[]? intents);
-    internal sealed record SharedTip(string? title, string description, string[] sources);
     internal sealed record Result(PlayerText? player, EnemyText[] enemies, AllyText[] allies,
-        SharedTip[] hover_tips, string[] unavailable_hover_sources);
+        HoverTextSources.Tip[] hover_tips, string[] unavailable_hover_sources);
 
     public static Result Read(Player? player, Func<CardModel, int> cardId, Level level = Level.Full) =>
         EnglishCardText.Read(() => new CombatantInspection(level).ReadAll(player, cardId));
@@ -55,7 +54,7 @@ internal sealed class CombatantInspection(CombatantInspection.Level level)
             node.Entity.CombatId, EnglishCardText.Plain(node.Entity.Monster!.Title.GetFormattedText()),
             Powers(node, $"allies.{index}"))).ToArray();
         return new Result(playerText, enemies, allies,
-            tips.Select(pair => new SharedTip(pair.Key.title, pair.Key.description, pair.Value.ToArray())).ToArray(),
+            tips.Items,
             unavailable.ToArray());
     }
 
@@ -145,8 +144,6 @@ internal sealed class CombatantInspection(CombatantInspection.Level level)
 
     private void AddText(HoverTipText tip, string source)
     {
-        var key = (tip.title, tip.description);
-        if (!tips.TryGetValue(key, out var sources)) tips[key] = sources = [];
-        if (!sources.Contains(source)) sources.Add(source);
+        tips.Add(tip.title, tip.description, [source]);
     }
 }

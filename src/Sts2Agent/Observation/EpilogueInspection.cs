@@ -20,7 +20,7 @@ internal static class EpilogueInspection
         && !VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen) && VisibleUi.Shown(context.Layout);
     public static NEventOptionButton? Button(Context context) => context.Layout.OptionButtons.FirstOrDefault(EventInspection.Shown);
     public static bool IsProceed(NEventOptionButton button) => button.Option.TextKey == "PROCEED";
-    private static bool LineReady(Context context) => CardSelection.Field(context.Model, "_speechBubble") is not NSpeechBubbleVfx bubble
+    private static bool LineReady(Context context) => PrivateFields.Read(context.Model, "_speechBubble") is not NSpeechBubbleVfx bubble
         || bubble.GetNodeOrNull<RichTextLabel>("%Text") is { VisibleRatio: >= 0.999f } label && VisibleUi.OnScreen(label)
             && VisibleUi.Shown(bubble);
     public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context)
@@ -31,9 +31,9 @@ internal static class EpilogueInspection
         if (Current is not { } context) return null;
         bool exposed = Exposed(context), ready = Ready(context);
         object? dialogue = null;
-        if (exposed && LineReady(context) && CardSelection.Field(context.Model, "_speechBubble") is NSpeechBubbleVfx bubble
-            && VisibleUi.Shown(bubble) && CardSelection.Field(context.Model, "_dialogue") is AncientDialogue conversation
-            && CardSelection.Field(context.Model, "_currentLineIndex") is int index && index >= 0 && index < conversation.Lines.Count)
+        if (exposed && LineReady(context) && PrivateFields.Read(context.Model, "_speechBubble") is NSpeechBubbleVfx bubble
+            && VisibleUi.Shown(bubble) && PrivateFields.Read(context.Model, "_dialogue") is AncientDialogue conversation
+            && PrivateFields.Read(context.Model, "_currentLineIndex") is int index && index >= 0 && index < conversation.Lines.Count)
         {
             var line = conversation.Lines[index];
             dialogue = EnglishEventText.Read(() => (object)new {

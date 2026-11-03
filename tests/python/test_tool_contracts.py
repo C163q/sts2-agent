@@ -54,7 +54,10 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                     want['error']['recovery'] = 'choose_legal_action'
                 self.assertEqual(result, want)
                 self.assertEqual(getattr(result, 'image', None), case.get('expected_image'))
-                self.assertEqual(client.calls, case['native_calls'])
+                native_calls = copy.deepcopy(case['native_calls'])
+                if case['tool'] == 'inspect_relics' and case['arguments'].get('preset') == 'summary':
+                    for call in native_calls: call['arguments'] = {'level': 'summary'}
+                self.assertEqual(client.calls, native_calls)
                 self.assertEqual(client.state, original)
 
     def test_baseline_covers_catalog_presets_and_rejections(self):

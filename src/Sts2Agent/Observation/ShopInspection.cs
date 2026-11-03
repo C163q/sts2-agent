@@ -44,7 +44,7 @@ internal sealed class ShopInspection
     public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context) && !Animating(context)
         && !MegaCrit.Sts2.Core.Nodes.Combat.NTargetManager.Instance.IsInSelection
         && !Busy && !RunUi.CardPreviewsPending() && !RunUi.ResourceMotionPending() && RunManager.Instance.ActionQueueSet.IsEmpty
-        && CardSelection.Field(context.Inventory, "_isInputBlocked") is false
+        && PrivateFields.Read(context.Inventory, "_isInputBlocked") is false
         && (context.Inventory.IsOpen ? Back(context).IsEnabled : context.Merchant.IsEnabled || context.Proceed.IsEnabled);
 
     public static bool MerchantShown(Context context) => context.Merchant.IsVisibleInTree()

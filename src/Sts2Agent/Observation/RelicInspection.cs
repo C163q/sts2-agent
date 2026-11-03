@@ -9,20 +9,19 @@ namespace Sts2Agent;
 internal static class RelicInspection
 {
     private static readonly EnglishText Names = new();
-    internal sealed record RelicText(string? name, int? counter, string description, HoverTipText[] hover_tips, bool? melted);
+    internal sealed record RelicText(string? name, int? counter, string? description, HoverTipText[] hover_tips, bool? melted);
 
     internal static bool? Melted(NRelic relic)
     {
         var icon = relic.Icon;
-        if (!VisibleUi.OnScreen(icon) || icon.Texture == null || icon.Material is not ShaderMaterial shader
+        if (!VisibleUi.Displayed(icon) || icon.Texture == null || icon.Material is not ShaderMaterial shader
             || shader.GetShaderParameter("is_wax").AsSingle() <= 0) return null;
         return icon.SelfModulate.IsEqualApprox(Colors.DarkRed);
     }
 
     public static NRelicInventoryHolder[]? VisibleHolders()
     {
-        return DisplayedHolders()?.Where(holder => holder.IsEnabled
-            && holder.MouseFilter != Control.MouseFilterEnum.Ignore).ToArray();
+        return DisplayedHolders();
     }
 
     internal static int? HeldCount() => RunUi.TopBarReadable()
@@ -37,13 +36,31 @@ internal static class RelicInspection
         if (!VisibleUi.Shown(inventory))
             return null;
         // Inventory membership is independent of flow-layout viewport positions.
-        return inventory.RelicNodes.Where(holder => VisibleUi.Shown(holder)
-            && VisibleUi.Shown(holder.Relic) && VisibleUi.Shown(holder.Relic.Icon)
-            && holder.Relic.Icon.Texture != null).ToArray();
+        return inventory.RelicNodes.Where(holder => VisibleUi.Displayed(holder)
+            && VisibleUi.Displayed(holder.Relic) && VisibleUi.Displayed(holder.Relic.Icon)
+            && holder.Relic.Icon.Texture != null
+            && Mathf.Abs(holder.Relic.Icon.GetGlobalTransformWithCanvas().Determinant()) > 0.000001f).ToArray();
     }
 
-    public static RelicText[] Read(NRelicInventoryHolder[] holders) => EnglishCardText.Read(() =>
-        holders.Select(holder => Details(holder.Relic.Model, VisibleUi.Number(holder, "%AmountLabel"), Melted(holder.Relic))).ToArray());
+    internal sealed record StaticText(string? name, int? counter, bool? melted);
+    internal sealed record Result(RelicText[] relics, string[] unavailable_hover_sources);
+
+    internal static StaticText Static(NRelicInventoryHolder holder) => new(
+        Names.RelicName(holder.Relic.Model), VisibleUi.DisplayedNumber(holder, "%AmountLabel"), Melted(holder.Relic));
+
+    internal static bool Hoverable(NRelicInventoryHolder holder) => HoverAccess.CanFocus(holder);
+
+    public static RelicText[] Read(NRelicInventoryHolder[] holders, bool full = true) => EnglishCardText.Read(() =>
+        holders.Select(holder =>
+        {
+            var value = Static(holder);
+            return full && Hoverable(holder) ? Details(holder.Relic.Model, value.counter, value.melted)
+                : new RelicText(value.name, value.counter, null, [], value.melted);
+        }).ToArray());
+
+    internal static Result Inspect(NRelicInventoryHolder[] holders, bool full = true) => new(Read(holders, full),
+        full ? holders.Select((holder, index) => (holder, index)).Where(item => !Hoverable(item.holder))
+            .Select(item => $"relics.{item.index}").ToArray() : []);
 
     internal static RelicText Details(RelicModel model, int? counter, bool? melted = null) => EnglishRelicText.Read(model, () =>
     {

@@ -43,7 +43,7 @@ internal static class PermanentCardCapture
     {
         __state = null;
         if (RunInventoryJournal.Current == null || !NGame.IsMainThread()) return;
-        var owner = CardSelection.Field(__instance, "_owner");
+        var owner = PrivateFields.Read(__instance, "_owner");
         CardModel? card = owner as CardModel;
         string type = "card_stats_changed";
         if (owner is EnchantmentModel { IsMutable: true, HasCard: true } enchantment)
@@ -62,7 +62,7 @@ internal static class PermanentCardCapture
     {
         __state = null;
         if (RunInventoryJournal.Current == null || !NGame.IsMainThread()) return;
-        if (CardSelection.Field(__instance, "_card") is CardModel card && Tracking(card))
+        if (PrivateFields.Read(__instance, "_card") is CardModel card && Tracking(card))
             __state = new(card, "card_energy_cost_changed", __instance.GetWithModifiers(CostModifiers.None));
     }
     private static void AfterCost(CardEnergyCost __instance, Change? __state) =>

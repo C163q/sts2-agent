@@ -70,7 +70,7 @@ internal static class CapacityChecks
                 .Any(relic => relic.GetProperty("name").GetString() == "Wax Philosopher's Stone"));
             Check("offscreen relic remains inspectable", RelicInspection.VisibleHolders()!.Contains(countedHolder));
             Check("offscreen relic still counts", CountMatches());
-            Check("offscreen melting is not guessed", RelicInspection.Melted(countedHolder.Relic) == null);
+            Check("offscreen wax retains displayed unmelted state", RelicInspection.Melted(countedHolder.Relic) == false);
         }
         finally { countedHolder.Position = originalPosition; }
         bool holderEnabled = countedHolder.IsEnabled;
@@ -78,7 +78,7 @@ internal static class CapacityChecks
         {
             countedHolder.Disable();
             Check("non-hoverable relic still counts", CountMatches());
-            Check("non-hoverable relic cannot be inspected", !RelicInspection.VisibleHolders()!.Contains(countedHolder));
+            Check("non-hoverable relic retains static inspection", RelicInspection.VisibleHolders()!.Contains(countedHolder));
         }
         finally { if (holderEnabled) countedHolder.Enable(); }
         bool inventoryVisible = inventory.Visible;
@@ -160,6 +160,13 @@ internal static class CapacityChecks
             await frame();
             Check("actual redraw without status notification publishes melting", Events("relic_melted").Length == 2
                 && RelicInspection.Melted(disabledHolder.Relic) == true);
+            var waxPosition = disabledHolder.Position;
+            try
+            {
+                disabledHolder.Position = new Vector2(-10000, -10000);
+                Check("offscreen wax retains actual melted display", RelicInspection.Melted(disabledHolder.Relic) == true);
+            }
+            finally { disabledHolder.Position = waxPosition; }
             await frame();
             Check("repeated visible redraw is not duplicated", Events("relic_melted").Length == 2);
             Check("wax event names are entirely English", Events("relic_melted").All(e =>

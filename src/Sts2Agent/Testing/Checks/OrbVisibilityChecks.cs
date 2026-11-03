@@ -31,7 +31,7 @@ internal static class OrbVisibilityChecks
         Check("native five slots are exposed", ReadPlayer().GetProperty("orb_slots").GetArrayLength() == 5);
         foreach (var (item, name) in new (CanvasItem, string)[] {
             (manager, "manager"), (slots[4].GetNode<Control>("%Outline"), "empty outline"),
-            ((CanvasItem)CardSelection.Field(slots[0], "_sprite")!, "orb sprite"), (slots[0], "orb node") })
+            ((CanvasItem)PrivateFields.Read(slots[0], "_sprite")!, "orb sprite"), (slots[0], "orb node") })
         {
             bool visible = item.Visible;
             try { item.Hide(); await frame(); Check("hidden " + name + " is unknown without hover help", Unknown() && NoTips()); }
@@ -47,7 +47,7 @@ internal static class OrbVisibilityChecks
                 && lightning.GetProperty("passive").ValueKind == JsonValueKind.Null);
         }
         finally { label.Show(); }
-        var sprite = (Node2D)CardSelection.Field(slots[0], "_sprite")!;
+        var sprite = (Node2D)PrivateFields.Read(slots[0], "_sprite")!;
         var spriteScale = sprite.Scale;
         var spritePosition = sprite.Position;
         try

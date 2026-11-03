@@ -1,6 +1,6 @@
 # 工具共用契约与执行链路重构计划
 
-> 当前状态：第 1–5 阶段完成并验证，整体完成 5／7。第 6–7 阶段未开始，当前没有正在执行的步骤，暂无阻塞。阶段记录见[第 1–2 阶段](../../research/2026-11-04-refactor-stages-1-2.md)、[第 3–4 阶段](../../research/2026-11-04-refactor-stages-3-4.md)与[第 5 阶段](../../research/2026-11-04-refactor-stage-5.md)。
+> 当前状态：第 1–6 阶段完成并验证，整体完成 6／7。第 7 阶段未开始，当前无正在执行步骤，暂无阻塞。阶段记录见[第 1–2 阶段](../../research/2026-11-04-refactor-stages-1-2.md)、[第 3–4 阶段](../../research/2026-11-04-refactor-stages-3-4.md)、[第 5 阶段](../../research/2026-11-04-refactor-stage-5.md)与[第 6 阶段](../../research/2026-11-04-refactor-stage-6.md)。
 >
 > 执行方式：按阶段实施与验证，每阶段独立提交；使用 `superpowers:executing-plans`。后续发现无法确认的语义差异时先询问，不把整理结构当作改变行为的授权。
 
@@ -130,14 +130,14 @@
 
 **接口：** 保留“展示集合”和“可读取悬停说明”两个独立结果；每条悬停缺失 note 关联未筛选来源。可见性明确区分屏幕内可点击控件、原生可浏览列表、无需位置截断的显示图标，不能全局把 OnScreen 替换为 Shown。
 
-- [ ] 建立调用点清单，标明每个 OnScreen／Displayed／Browsable 的用途。图标移到视口外不应导致其静态字段单独消失；实际隐藏、透明、裁剪、零缩放、未揭示及节点删除继续按领域规则处理。
-- [ ] 遗物 full/default/summary 与基础观察共用展示顺序，禁用悬停不再删除静态条目；统一计数、melted 的位置策略。full 中不可读 description 为 null，hover_tips 不生成说明，notes.hover_tips_unavailable 关联原 relic_indices；default 过滤普通 null，summary 不读取说明也不附悬停 note。
-- [ ] 核对实际原生悬停条件，包括 AllowFocusWhileDisabled 与鼠标／控制器入口；note 只表示当前无可读说明，不把 RelicStatus.Disabled、普通无额外提示或未知提示异常误判为无法悬停。
-- [ ] 对遗物 note 的 sources 使用工具内规范地址 `relics.N`，并将源条目下标与第 3 阶段的 relic_indices 关联裁剪；不新增接受任意路径的遗物筛选参数。
-- [ ] 顶栏与药水静态槽位枚举、卡牌实节点／浏览克隆的格式化、UI 与战斗对象提示去重，只提取已经相同的片段；保留克隆上下文、动态预览、未揭示牌面与 before/after 侧别。
-- [ ] 将通用反射取字段辅助从 CardSelection 的领域类中迁出；私有 API 绑定仍各领域负责并验证，关键绑定缺失显式拒绝，不能统一静默返回 null。
-- [ ] 原生测试覆盖变灰仍可悬停、控件禁用但仍显示、实际隐藏／裁剪、计数 0、无计数、离屏图标、共享提示／note 筛选；GUI 验证基础观察、详情、summary 的共同静态数据和当前 UI。注入控件禁用的证据明确标为测试夹具，不冒充自然游玩案例。
-- [ ] 同步遗物／可见性／手牌等涉及的持续维护文档，运行相关 Python／C#／GUI 检查后提交。
+- [x] 建立调用点清单，标明每个 OnScreen／Displayed／Browsable 的用途。图标移到视口外不应导致其静态字段单独消失；实际隐藏、透明、裁剪、零缩放、未揭示及节点删除继续按领域规则处理。
+- [x] 遗物 full/default/summary 与基础观察共用展示顺序，禁用悬停不再删除静态条目；统一计数、melted 的位置策略。full 中不可读 description 为 null，hover_tips 不生成说明，notes.hover_tips_unavailable 关联原 relic_indices；default 过滤普通 null，summary 不读取说明也不附悬停 note。
+- [x] 核对实际原生悬停条件，包括 AllowFocusWhileDisabled 与鼠标／控制器入口；note 只表示当前无可读说明，不把 RelicStatus.Disabled、普通无额外提示或未知提示异常误判为无法悬停。
+- [x] 对遗物 note 的 sources 使用工具内规范地址 `relics.N`，并将源条目下标与第 3 阶段的 relic_indices 关联裁剪；不新增接受任意路径的遗物筛选参数。
+- [x] 顶栏与药水静态槽位枚举、卡牌实节点／浏览克隆的格式化、UI 与战斗对象提示去重，只提取已经相同的片段；保留克隆上下文、动态预览、未揭示牌面与 before/after 侧别。
+- [x] 将通用反射取字段辅助从 CardSelection 的领域类中迁出；私有 API 绑定仍各领域负责并验证，关键绑定缺失显式拒绝，不能统一静默返回 null。
+- [x] 原生测试覆盖变灰仍可悬停、控件禁用但仍显示、实际隐藏／裁剪、计数 0、无计数、离屏图标、共享提示／note 筛选；GUI 验证基础观察、详情、summary 的共同静态数据和当前 UI。注入控件禁用的证据明确标为测试夹具，不冒充自然游玩案例。
+- [x] 同步遗物／可见性／手牌等涉及的持续维护文档，运行相关 Python／C#／GUI 检查后提交。
 
 ## 第 7 阶段：组合回归与收尾
 

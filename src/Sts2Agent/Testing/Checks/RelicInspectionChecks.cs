@@ -12,7 +12,7 @@ namespace Sts2Agent;
 
 internal static class RelicInspectionChecks
 {
-    public static void Run(string reportPath)
+    public static object Run(string? reportPath = null)
     {
         List<object> results = [];
         void Check(string name, bool passed) => results.Add(new { name, passed });
@@ -31,12 +31,12 @@ internal static class RelicInspectionChecks
         energy.ColorPrefix = prefix;
         var before = RelicInspection.Read(holders);
         Check("english_burning_blood", before.Any(item => item.name == "Burning Blood"
-            && item.description.Contains("6") && item.counter == null));
+            && item.description!.Contains("6") && item.counter == null));
         Check("anchor_native_keyword", before.Any(item => item.name == "Anchor"
-            && item.description.Contains("10") && item.hover_tips.Any(tip => tip.title == "Block")));
+            && item.description!.Contains("10") && item.hover_tips.Any(tip => tip.title == "Block")));
         Check("zero_counter_is_visible", before.Single(item => item.name == "Pen Nib").counter == 0);
         Check("energy_icon_and_tip", before.Any(item => item.name == "Lantern"
-            && item.description.Contains("<Energy>") && item.hover_tips.Any(tip => tip.title == "Energy")));
+            && item.description!.Contains("<Energy>") && item.hover_tips.Any(tip => tip.title == "Energy")));
         Check("english_text", before.All(item => !(item.name + item.description
             + string.Concat(item.hover_tips.Select(tip => tip.title + tip.description)))
             .Any(character => character >= '\u4e00' && character <= '\u9fff')));
@@ -44,7 +44,7 @@ internal static class RelicInspectionChecks
         try
         {
             energy.ColorPrefix = "test-prefix";
-            Check("energy_format_uses_native_prefix", RelicInspection.Details(lantern, null).description.Contains("<Energy>"));
+            Check("energy_format_uses_native_prefix", RelicInspection.Details(lantern, null).description!.Contains("<Energy>"));
             Check("custom_energy_prefix_restored", energy.ColorPrefix == "test-prefix");
         }
         finally { energy.ColorPrefix = prefix; }
@@ -69,20 +69,43 @@ internal static class RelicInspectionChecks
             () => RelicInspection.Read(RelicInspection.VisibleHolders()!).Single(item => item.name == "Pen Nib").counter == null);
         bool enabled = counterHolder.IsEnabled;
         var filter = counterHolder.MouseFilter;
+        var focusMode = counterHolder.FocusMode;
         var position = counterHolder.Position;
+        var holderScale = counterHolder.Scale;
         var modulate = counterHolder.Relic.Icon.SelfModulate;
+        var status = counterHolder.Relic.Model.Status;
+        var clipped = counterHolder.ClipContents;
+        var relicPosition = counterHolder.Relic.Position;
         var texture = counterHolder.Relic.Icon.Texture;
         var scale = counterHolder.Relic.Icon.Scale;
         try
         {
+            counterHolder.Relic.Model.Status = MegaCrit.Sts2.Core.Entities.Relics.RelicStatus.Disabled;
+            Check("gray_relic_status_still_has_hover_help", RelicInspection.Read(holders).Single(item => item.name == "Pen Nib").description != null);
+            counterHolder.Relic.Model.Status = status;
+            counterHolder.ClipContents = true;
+            counterHolder.Relic.Position = new Vector2(10000, 10000);
+            Check("actually_clipped_icon_is_excluded", RelicInspection.DisplayedHolders()!.Length == count - 1);
+            counterHolder.ClipContents = clipped;
+            counterHolder.Relic.Position = relicPosition;
             counterHolder.Disable();
-            Check("disabled_holder_is_excluded", RelicInspection.VisibleHolders()!.Length == count - 1);
+            Check("disabled_holder_static_data_retained", RelicInspection.VisibleHolders()!.Length == count);
+            Check("disabled_holder_has_no_hover_description", RelicInspection.Read(holders).Single(item => item.name == "Pen Nib").description == null);
             if (enabled) counterHolder.Enable();
             counterHolder.MouseFilter = Control.MouseFilterEnum.Ignore;
-            Check("non_hoverable_holder_is_excluded", RelicInspection.VisibleHolders()!.Length == count - 1);
+            counterHolder.FocusMode = Control.FocusModeEnum.None;
+            Check("no_mouse_or_controller_static_data_retained", RelicInspection.VisibleHolders()!.Length == count);
+            Check("no_hover_help_is_null", RelicInspection.Read(holders).Single(item => item.name == "Pen Nib").description == null);
+            counterHolder.FocusMode = Control.FocusModeEnum.All;
+            Check("controller_focus_can_still_read_help", RelicInspection.Read(holders).Single(item => item.name == "Pen Nib").description != null);
             counterHolder.MouseFilter = filter;
+            counterHolder.FocusMode = focusMode;
             counterHolder.Position = new Vector2(-10000, -10000);
             Check("offscreen_relic_is_retained", RelicInspection.VisibleHolders()!.Length == count);
+            Check("offscreen_counter_retains_zero", RelicInspection.Read(holders).Single(item => item.name == "Pen Nib").counter == 0);
+            counterHolder.Scale = Vector2.Zero;
+            Check("zero_scaled_holder_is_excluded", RelicInspection.DisplayedHolders()!.Length == count - 1);
+            counterHolder.Scale = holderScale;
             counterHolder.Position = position;
             counterHolder.Relic.Icon.SelfModulate = new Color(1, 1, 1, 0);
             Check("transparent_icon_is_excluded", RelicInspection.VisibleHolders()!.Length == count - 1);
@@ -93,6 +116,11 @@ internal static class RelicInspectionChecks
         finally
         {
             counterHolder.Position = position;
+            counterHolder.Scale = holderScale;
+            counterHolder.ClipContents = clipped;
+            counterHolder.Relic.Position = relicPosition;
+            counterHolder.Relic.Model.Status = status;
+            counterHolder.FocusMode = focusMode;
             counterHolder.Relic.Icon.SelfModulate = modulate;
             counterHolder.Relic.Icon.Texture = texture;
             if (enabled) counterHolder.Enable(); else counterHolder.Disable();
@@ -115,9 +143,11 @@ internal static class RelicInspectionChecks
         string afterTips = JsonSerializer.Serialize(lantern.HoverTips.Select(HoverTipText.From));
         energy.ColorPrefix = prefix;
         Check("original_chinese_tips_unchanged", afterTips == originalTips);
-        File.WriteAllText(reportPath, JsonSerializer.Serialize(new { language, inspection = before, results },
+        var report = new { language, inspection = before, results };
+        if (reportPath != null) File.WriteAllText(reportPath, JsonSerializer.Serialize(report,
             new JsonSerializerOptions { WriteIndented = true }));
         if (results.Any(result => !JsonSerializer.SerializeToElement(result).GetProperty("passed").GetBoolean()))
-            throw new InvalidOperationException("Relic inspection checks failed; see the local report.");
+            throw new InvalidOperationException("Relic inspection checks failed: " + JsonSerializer.Serialize(results));
+        return report;
     }
 }

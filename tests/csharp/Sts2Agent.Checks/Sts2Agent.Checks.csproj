@@ -7,6 +7,8 @@
     <DisableTransitiveFrameworkReferenceDownloads>true</DisableTransitiveFrameworkReferenceDownloads>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../../src/Sts2Agent/Infrastructure/PrivateFields.cs" Link="PrivateFields.cs" />
+    <Compile Include="../../../src/Sts2Agent/Localization/HoverTextSources.cs" Link="HoverTextSources.cs" />
     <Compile Include="../../../src/Sts2Agent/Infrastructure/Request.cs" Link="Request.cs" />
     <Compile Include="../../../src/Sts2Agent/Infrastructure/RequestExecution.cs" Link="RequestExecution.cs" />
     <Compile Include="../../../src/Sts2Agent/Adapter/ResponseBuilder.cs" Link="ResponseBuilder.cs" />

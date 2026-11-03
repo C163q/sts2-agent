@@ -28,7 +28,7 @@ internal sealed class AncientInspection
         && !VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen) && VisibleUi.Shown(context.Layout);
 
     public static bool Busy => Current is { } current
-        && CardSelection.Field(RunManager.Instance.EventSynchronizer, "_pendingOptionTasks") is IEnumerable<Task> tasks
+        && PrivateFields.Read(RunManager.Instance.EventSynchronizer, "_pendingOptionTasks") is IEnumerable<Task> tasks
         && tasks.Any(t => !t.IsCompleted) || RelicObtainTracker.Pending;
 
     public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context)
@@ -41,7 +41,7 @@ internal sealed class AncientInspection
         || RewardInspection.Animating(context.Layout, "_descriptionTween")
         || RewardInspection.Animating(context.Layout, "_bannerTween")
         // The name banner can reveal its epithet after the options have become clickable.
-        || CardSelection.Field(context.Layout, "_ancientNameBanner") is Control banner && GodotObject.IsInstanceValid(banner)
+        || PrivateFields.Read(context.Layout, "_ancientNameBanner") is Control banner && GodotObject.IsInstanceValid(banner)
             && (RewardInspection.Animating(banner, "_tween") || RewardInspection.Animating(banner, "_moveTween"));
 
     public static NAncientDialogueHitbox? Continue(Context context) => context.Layout.GetNodeOrNull<NAncientDialogueHitbox>("%DialogueHitbox")
@@ -81,7 +81,7 @@ internal sealed class AncientInspection
             var lines = VisibleUi.Descendants<NAncientDialogueLine>(current.Layout).Where(line =>
                 VisibleUi.Text(line, "%Text") != null).Select(line =>
             {
-                var data = (AncientDialogueLine)CardSelection.Field(line, "_line")!;
+                var data = (AncientDialogueLine)PrivateFields.Read(line, "_line")!;
                 return new { speaker = EnglishCardText.Plain((data.Speaker == AncientDialogueSpeaker.Ancient
                     ? current.Model.Title : current.Model.Owner!.Character.Title).GetFormattedText()),
                     text = EnglishCardText.Plain(data.LineText!.GetFormattedText()) };
@@ -97,15 +97,15 @@ internal sealed class AncientInspection
             })).ToArray();
             var proceed = Proceed(current);
             var next = Continue(current);
-            var label = CardSelection.Field(current.Layout, "_fakeNextButtonLabel") as Control;
+            var label = PrivateFields.Read(current.Layout, "_fakeNextButtonLabel") as Control;
             return (object)new { status = "visible", name = EnglishCardText.Plain(current.Model.Title.GetFormattedText()),
-                epithet = VisibleUi.Text(CardSelection.Field(current.Layout, "_ancientNameBanner") as Control, "%Epithet") == null
+                epithet = VisibleUi.Text(PrivateFields.Read(current.Layout, "_ancientNameBanner") as Control, "%Epithet") == null
                     ? null : EnglishCardText.Plain(current.Model.Epithet.GetFormattedText()),
                 description = VisibleUi.Text(current.Layout, "%EventDescription") == null ? null
                     : EnglishCardText.Plain(current.Model.Description!.GetFormattedText()), dialogue = lines, options,
                 @continue = next == null ? null : new { text = VisibleUi.Text(label, ".") == null ? null :
-                    (CardSelection.Field(current.Layout, "_dialogue") as IReadOnlyList<AncientDialogueLine>)?
-                        .ElementAtOrDefault((int)CardSelection.Field(current.Layout, "_currentDialogueLine")!)?.NextButtonText is { } nextText
+                    (PrivateFields.Read(current.Layout, "_dialogue") as IReadOnlyList<AncientDialogueLine>)?
+                        .ElementAtOrDefault((int)PrivateFields.Read(current.Layout, "_currentDialogueLine")!)?.NextButtonText is { } nextText
                         ? EnglishCardText.Plain(nextText.GetFormattedText()) : null, enabled = ready },
                 proceed = proceed == null ? null : new { text = EnglishCardText.Plain(proceed.Option.Title.GetFormattedText()),
                     enabled = ready && Clickable(proceed) } };

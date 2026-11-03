@@ -1,0 +1,299 @@
+[
+  {
+    "name": "orb_event_checks",
+    "scenarios": {
+      "play": "orbs"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_orb_events.py",
+        "args": [
+          "--scenario",
+          "checks"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "capacity_checks",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_capacity.py",
+        "args": [
+          "--scenario",
+          "resources"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "display_readers",
+    "scenarios": {
+      "play": "basic",
+      "potion": "skill"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_display_readers.py",
+        "args": []
+      }
+    ]
+  },
+  {
+    "name": "wax",
+    "scenarios": {
+      "play": "wax_melt"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_relic_presets.py",
+        "args": [
+          "--scenario",
+          "wax_melt"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "orbs",
+    "scenarios": {
+      "play": "orbs"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_combatant_presets.py",
+        "args": [
+          "--scenario",
+          "orbs"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "osty",
+    "scenarios": {
+      "play": "companions_osty"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_combatant_presets.py",
+        "args": [
+          "--scenario",
+          "osty"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "blade",
+    "scenarios": {
+      "play": "companions_blade"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_combatant_presets.py",
+        "args": [
+          "--scenario",
+          "blade"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "selection",
+    "scenarios": {
+      "play": "armaments_free"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_combatant_presets.py",
+        "args": [
+          "--scenario",
+          "selection"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "afflictions",
+    "scenarios": {
+      "play": "afflictions"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_card_formats.py",
+        "args": [
+          "--scenario",
+          "afflictions"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "browse",
+    "scenarios": {
+      "play": "pommel_strike"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_card_formats.py",
+        "args": [
+          "--scenario",
+          "browse"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "gates",
+    "scenarios": {},
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_native_dispatch.py",
+        "args": []
+      }
+    ]
+  },
+  {
+    "name": "event_selection",
+    "scenarios": {
+      "event": "upgrade"
+    },
+    "steps": [
+      {
+        "name": "context_and_selection",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "event_selection"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ancient_selection",
+    "scenarios": {
+      "ancient": "bundle"
+    },
+    "steps": [
+      {
+        "name": "context",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "context"
+        ]
+      },
+      {
+        "name": "selection",
+        "verifier": "verify_selection_scene.py",
+        "args": [
+          "--scenario",
+          "ancient_bundle"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "smith",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "context",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "context"
+        ]
+      },
+      {
+        "name": "smith",
+        "verifier": "verify_rest_site.py",
+        "args": [
+          "--scenario",
+          "smith"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "shop",
+    "scenarios": {
+      "shop": "courier"
+    },
+    "steps": [
+      {
+        "name": "context",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "context"
+        ]
+      },
+      {
+        "name": "buy",
+        "verifier": "verify_shop.py",
+        "args": [
+          "--scenario",
+          "courier"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "divination_media",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "media",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "divination"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "epilogue",
+    "scenarios": {
+      "navigation": "boss3"
+    },
+    "steps": [
+      {
+        "name": "views",
+        "verifier": "verify_view_availability.py",
+        "args": [
+          "--scenario",
+          "epilogue"
+        ]
+      },
+      {
+        "name": "context",
+        "verifier": "verify_native_responses.py",
+        "args": [
+          "--scenario",
+          "context"
+        ]
+      }
+    ]
+  }
+]

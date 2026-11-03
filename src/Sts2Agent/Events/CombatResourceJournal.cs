@@ -38,11 +38,11 @@ internal sealed class CombatResourceJournal : IDisposable
 
     private (int? current, int? maximum) EnergyDisplay => !Visible ? (null, null) : CombatObservation.Pair(
         VisibleUi.Descendants<NEnergyCounter>(NCombatRoom.Instance!.Ui.EnergyCounterContainer)
-            .Where(counter => ReferenceEquals(CardSelection.Field(counter, "_player"), player))
+            .Where(counter => ReferenceEquals(PrivateFields.Read(counter, "_player"), player))
             .Select(counter => VisibleUi.Text(counter, "Label")).FirstOrDefault(text => text != null));
 
     private int? StarsDisplay => !Visible ? null : VisibleUi.Descendants<NStarCounter>(NCombatRoom.Instance!.Ui)
-        .Where(counter => VisibleUi.OnScreen(counter) && ReferenceEquals(CardSelection.Field(counter, "_player"), player))
+        .Where(counter => VisibleUi.OnScreen(counter) && ReferenceEquals(PrivateFields.Read(counter, "_player"), player))
         .Select(counter => VisibleUi.Number(counter, "%CountLabel")).FirstOrDefault();
 
     private bool StarAreaVisible
@@ -51,7 +51,7 @@ internal sealed class CombatResourceJournal : IDisposable
         {
             if (NCombatRoom.Instance is not { } room) return false;
             var counter = VisibleUi.Descendants<NStarCounter>(room.Ui)
-                .FirstOrDefault(node => ReferenceEquals(CardSelection.Field(node, "_player"), player));
+                .FirstOrDefault(node => ReferenceEquals(PrivateFields.Read(node, "_player"), player));
             var label = counter?.GetNodeOrNull<Control>("%CountLabel");
             starLabelHasLayout |= label != null && label.Size.X > 0 && label.Size.Y > 0;
             return Visible && VisibleUi.OnScreen(counter) && VisibleUi.Shown(label)

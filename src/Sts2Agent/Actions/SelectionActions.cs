@@ -28,7 +28,7 @@ internal static class SelectionActions
             // Follow the native grid layout, then let its virtualized rows catch up before clicking.
             int index = Array.IndexOf(selection.Cards, model);
             int columns = (int)HarmonyLib.AccessTools.Property(grid.GetType(), "Columns").GetValue(grid)!;
-            var size = (Vector2)CardSelection.Field(grid, "_cardSize")!;
+            var size = (Vector2)PrivateFields.Read(grid, "_cardSize")!;
             float padding = (float)HarmonyLib.AccessTools.Property(grid.GetType(), "CardPadding").GetValue(grid)!;
             grid.SetScrollPosition(-index / columns * (size.Y + padding));
             for (int i = 0; i < 10; i++)

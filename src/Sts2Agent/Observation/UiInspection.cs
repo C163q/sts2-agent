@@ -19,22 +19,17 @@ namespace Sts2Agent;
 
 internal static class UiInspection
 {
-    internal sealed record Tip(string? title, string description, string[] sources);
     private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
     private static readonly MethodInfo RoomTipPrefix = typeof(NTopBarRoomIcon)
         .GetMethod("GetHoverTipPrefixForRoomType", PrivateInstance)!;
     private static readonly FieldInfo BoundPile = typeof(NCombatCardPile).GetField("_pile", PrivateInstance)!;
-    private static readonly PropertyInfo DisabledFocus = typeof(NClickableControl)
-        .GetProperty("AllowFocusWhileDisabled", PrivateInstance)!;
-
     private static bool Hoverable(CanvasItem node) => VisibleUi.OnScreen(node)
-        && (node is not NClickableControl clickable || clickable.IsEnabled
-            || (bool)DisabledFocus.GetValue(clickable)!);
+        && (node is not NClickableControl clickable || HoverAccess.CanFocus(clickable));
 
     public static bool CanRead() => RunUi.TopBarReadable() || CombatObservation.Status() == "visible";
-    public static Tip[] Read() => EnglishCardText.Read(ReadEnglish);
+    public static HoverTextSources.Tip[] Read() => EnglishCardText.Read(ReadEnglish);
 
-    private static Tip[] ReadEnglish()
+    private static HoverTextSources.Tip[] ReadEnglish()
     {
         if (!CanRead()) throw new InvalidOperationException("UI details require an exposed UI region.");
         var tips = new TipCollector();
@@ -113,16 +108,13 @@ internal static class UiInspection
 
     private sealed class TipCollector
     {
-        public List<Tip> Items { get; } = [];
+        private readonly HoverTextSources texts = new();
+        public HoverTextSources.Tip[] Items => texts.Items;
         public void Add(HoverTip tip, params string[] sources)
         {
             string? title = tip.Title == null ? null : EnglishCardText.Plain(tip.Title);
             string description = EnglishCardText.Plain(tip.Description);
-            int index = Items.FindIndex(existing => existing.title == title && existing.description == description);
-            if (index < 0)
-                Items.Add(new Tip(title, description, sources.Distinct().ToArray()));
-            else
-                Items[index] = Items[index] with { sources = Items[index].sources.Concat(sources).Distinct().ToArray() };
+            texts.Add(title, description, sources);
         }
 
         public void Static(CanvasItem node, string key, string[] sources, string? hotkey = null,

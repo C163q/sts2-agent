@@ -20,7 +20,7 @@ internal static class OrbInspection
         var manager = node.OrbManager;
         if (CombatObservation.Status() != "visible" || !VisibleUi.Shown(manager)) return null;
         // The UI list excludes the old orb that may still be fading after an evoke.
-        if (CardSelection.Field(manager!, "_orbs") is not IEnumerable<NOrb> displayed) return null;
+        if (PrivateFields.Read(manager!, "_orbs") is not IEnumerable<NOrb> displayed) return null;
         return displayed.ToArray();
     }
 
@@ -30,7 +30,7 @@ internal static class OrbInspection
 
     private static bool SpriteVisible(NOrb slot, bool entering)
     {
-        if (CardSelection.Field(slot, "_sprite") is not Node2D sprite || !VisibleUi.Displayed(sprite)) return false;
+        if (PrivateFields.Read(slot, "_sprite") is not Node2D sprite || !VisibleUi.Displayed(sprite)) return false;
         var transform = sprite.GetGlobalTransformWithCanvas();
         if (Mathf.Abs(transform.Determinant()) <= 0.000001f
             && !(entering && RewardInspection.Animating(slot, "_curTween"))) return false;

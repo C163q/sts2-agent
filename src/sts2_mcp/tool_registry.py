@@ -514,7 +514,7 @@ SPECS = (
     ToolSpec(
         name='inspect_relics',
         schema=RELIC_SCHEMA,
-        description="Read visible, hoverable owned relics. Descriptions and hover help by default; "
+        description="Read displayed owned relics. Unavailable hover help is noted; "
             "summary keeps basic fields. relic_indices filters by positions in the current unfiltered inspection.",
         annotations=read_only,
         category='inspection',
@@ -523,10 +523,11 @@ SPECS = (
         returns_transition=False,
         records_events=False,
         reader='relic_details:relic_details',
+        reader_argument='request',
         parser='relic_presets:relic_arguments',
         parser_operation=False,
         projector='relic_presets:relic_preset',
-        native_keys=()),
+        native_keys=('level',)),
     ToolSpec(
         name='inspect_deck',
         schema=DECK_SCHEMA,

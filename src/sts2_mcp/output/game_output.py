@@ -12,6 +12,7 @@ from sts2_mcp.output.contracts.observation import OBSERVATION, OPTIONAL_OBSERVAT
 from sts2_mcp.output.scene_context import SCENES as OBSERVATION_SCENES, scene_context
 from sts2_mcp.output.card_format import format_game_cards
 from sts2_mcp.output.combat_fields import validate_identities, blade_refs, orb_slots
+from sts2_mcp.output.relic_details import relic_details
 from sts2_mcp.output.hand_details import hand_details
 from sts2_mcp.output.selection_details import selection_details
 from sts2_mcp.output.observation_details import observation_details
@@ -39,8 +40,11 @@ GAMEPLAY = {
 }
 
 
-def gameplay_fields(state, *, operation=None):
+def gameplay_fields(state, *, operation=None, arguments=None):
     shape = GAMEPLAY
+    relic_payload = relic_details(state, arguments) if 'unavailable_hover_sources' in state and state.get('relics') is not None else {}
+    if relic_payload:
+        shape = {**shape, 'relics': nullable([{**RELIC, 'description': TEXT, 'hover_tips': [TIP]}])}
     shop_mode = "face_full"
     if operation == 'inspect_combatants':
         shape = {**shape, 'unavailable_hover_sources': [str]}
@@ -65,5 +69,5 @@ def gameplay_fields(state, *, operation=None):
         shape = {**shape, 'event': {**ROOM_EVENT, 'options': nullable([{**ROOM_EVENT_OPTION, 'hover_tips': [TIP]}])}}
     if 'hover_tips' in (state.get('run_result') or {}):
         from sts2_mcp.output.run_ending_details import result_details
-        return format_game_cards({**project(state, shape), 'run_result': result_details(state['run_result'], full=True)}, shop_mode=shop_mode)
-    return format_game_cards(project(state, shape), shop_mode=shop_mode)
+        return {**format_game_cards({**project(state, shape), 'run_result': result_details(state['run_result'], full=True)}, shop_mode=shop_mode), **relic_payload}
+    return {**format_game_cards(project(state, shape), shop_mode=shop_mode), **relic_payload}

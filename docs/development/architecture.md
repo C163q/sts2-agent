@@ -6,12 +6,12 @@
 
 | 位置 | 职责与主要入口 |
 | --- | --- |
-| [Infrastructure/](../../src/Sts2Agent/Infrastructure/) | `BridgeMod` 初始化与主线程任务泵；`Request/ResponseOptions` 定义文件请求，`RequestExecution` 保存正向事实；`FileMailbox` 负责原子文件协议、队列、缓存及超时 |
+| [Infrastructure/](../../src/Sts2Agent/Infrastructure/) | `BridgeMod` 初始化与主线程任务泵；`PrivateFields` 区分必需绑定与可选多类型字段；`Request/ResponseOptions` 定义文件请求，`RequestExecution` 保存正向事实；`FileMailbox` 负责原子文件协议、队列、缓存及超时 |
 | [Adapter/](../../src/Sts2Agent/Adapter/) | `RequestDispatcher` 保留玩法优先分派；`GameAdapter` 组合采样与场景处理，Views／Settling 管理浏览与等待；`AvailableTools` 与调用入口共用可用性条件，`Resources` 包装游戏动作的共享记录作用域与执行事实；`ResponseBuilder` 组装上下文、transition 和协议 JSON，Responses partial 决定原生媒体 |
 | [Observation/](../../src/Sts2Agent/Observation/) | `GameObservation` 管理采样、同步与代次，`ObservationSnapshot` 绑定状态、令牌和原生身份；可见数据及专项详情由领域读取器组合；`RunContext` 提供共用本局上下文，`VisibleUi`、`RunUi` 维护显示边界，`CardAppearance/CardPresentation` 共用实卡外观及完整牌面，`BrowsedCard` 保留隔离克隆上下文，`CombatResources` 读取独立 HUD；`CardView/DeckView/MapView` 管理原生浏览页面，`ViewportCapture` 读取帧后图像 |
 | [Actions/](../../src/Sts2Agent/Actions/) | 原生选择、目标与界面操作辅助；`ActionSettling/CombatMotion` 等等待有限流程，`EventTaskTracker/ShopTransactions/NavigationTasks` 跟踪原生任务，不替代游戏效果 |
 | [Events/](../../src/Sts2Agent/Events/) | `TransitionResult` 统一 complete 与事件附加，`ActionEventScope` 管理单动作缓冲；资源、物品、永久卡牌、战斗及充能球记录器采集公开变化，`CombatJournalScope` 管理战斗生命周期与交接 |
-| [Localization/](../../src/Sts2Agent/Localization/) | 独立英语读取和格式化、共享悬停解释；事件及结算文本保留原生来源，不切换全局语言或重新生成随机文本 |
+| [Localization/](../../src/Sts2Agent/Localization/) | 独立英语读取和格式化；`HoverTextSources` 共用悬停解释去重与规范来源顺序；事件及结算文本保留原生来源，不切换全局语言或重新生成随机文本 |
 | [Testing/](../../src/Sts2Agent/Testing/) | TestRequestDispatcher 管理隔离测试分派；夹具、原生检查及测试生命周期；随 Mod 编译，仅在相应测试门控开启时调用 |
 | [roundtrip_client.py](../../src/sts2_mcp/roundtrip_client.py) | 标准库文件客户端与 CLI；默认玩法输出，`--raw` 保留诊断协议 |
 | [game_tools.py](../../src/sts2_mcp/game_tools.py)、[game_session.py](../../src/sts2_mcp/game_session.py)、[controller_lease.py](../../src/sts2_mcp/controller_lease.py) | 串行游戏会话、动作令牌、每个 IPC 目录的进程控制锁；文件请求在线程中等待 |
@@ -96,3 +96,9 @@ Mod 构建需要自行安装游戏程序集，见[构建前提](roundtrip.md#前
 GameTools 仅负责公开入口、参数拒绝与规范化请求；GameSession.execute 统一控制锁、串行请求、成功校验、媒体、投影和许可更新，transport Client 仍独立等待文件。PermissionState 的令牌／代次在请求开始时捕获，动作不能借用排队后产生的许可；取消撤销许可并阻止在途结果重新授权。
 
 GameResponse 在内部保存成功、已提交、未知或“未提交且 UI 未变”的证据。登记表仅为已核实的 play_card 前置拒绝声明后者，不从 illegal_action 或 readOnlyHint 推测。所有成功投影完成后才发布许可，错误保留／失效规则统一见[MCP 调用语义](mcp.md#调用和错误语义)。原生正向事实与显式媒体需求已经接入，缺失或 false 仍不代表未执行。
+
+## 展示与悬停读取
+
+`VisibleUi.OnScreen` 用于屏幕内控件和战场身体，`Displayed` 用于无需按视口截断的展示图标，`Browsable` 用于已打开的原生滚动列表。各入口仍检查自身显示边界，不能机械互换。`RelicInspection.Static` 供顶栏与详情共用静态字段；`PotionInspection.DisplayedHolders` 共用槽位顺序，详情另检悬停条件，不把灰色或禁用控件等同于隐藏。具体边界见[遗物](relic-inspection.md#读取边界)和[战斗对象](combatant-inspection.md#读取边界)。
+
+通用反射读取由 `PrivateFields` 负责：`Read` 缺少必需字段时明确失败，字段值本身可合法为 null。`Optional` 仅用于选牌多类型界面的 prefs／已选卡／完成源、动画字段探测及结算多类型按钮的提示探测；这些调用的类型差异仍由领域代码负责。不得用 Optional 掩盖目标 API 绑定缺失。实节点与浏览克隆继续分别通过 CardPresentation／BrowsedCard 读取，共用 CardAppearance 的外观组装，保留克隆牌堆及目标上下文和比较侧别。

@@ -19,7 +19,7 @@ internal static class CardPresentation
         if (!full) return result;
         bool identified = card.Visibility == ModelVisibility.Visible;
         result["description"] = identified ? EnglishCardText.Read(() => HoverTipText.DescribeCard(card.Model!, card.DisplayingPile,
-            CardSelection.Field(card, "_previewTarget") as Creature ?? card.Model!.CurrentTarget)) : null;
+            PrivateFields.Read(card, "_previewTarget") as Creature ?? card.Model!.CurrentTarget)) : null;
         result["hover_tips"] = identified ? EnglishCardText.Read(() => IHoverTip.RemoveDupes(card.Model!.HoverTips)
             .Select(HoverTipText.From).ToArray()) : null;
         return result;

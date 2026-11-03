@@ -17,15 +17,21 @@ internal static class PotionInspection
         if (!RunUi.TopBarReadable())
             return null;
         var container = NRun.Instance!.GlobalUi.TopBar.PotionContainer;
-        var layout = container.GetNodeOrNull<Control>("MarginContainer/PotionHolders");
-        if (!VisibleUi.Shown(container) || !VisibleUi.Shown(layout))
-            return null;
-        var holders = layout!.GetChildren().OfType<NPotionHolder>().ToArray();
+        var holders = DisplayedHolders(container);
+        if (holders == null) return null;
         if (holders.Any(holder => !VisibleUi.OnScreen(holder) || !holder.IsEnabled
             || (holder.HasPotion ? !VisibleUi.OnScreen(holder.Potion!.GetNodeOrNull<TextureRect>("%Image"))
                 : !VisibleUi.OnScreen(holder.GetNodeOrNull<TextureRect>("%EmptyIcon")))))
             return null;
         return holders;
+    }
+
+    internal static NPotionHolder[]? DisplayedHolders(NPotionContainer container)
+    {
+        var layout = container.GetNodeOrNull<Control>("MarginContainer/PotionHolders");
+        if (!VisibleUi.Shown(container) || !VisibleUi.Shown(layout)) return null;
+        var holders = layout!.GetChildren().OfType<NPotionHolder>().ToArray();
+        return holders.Any(holder => !VisibleUi.OnScreen(holder)) ? null : holders;
     }
 
     public static Result Read(NPotionHolder[] holders) => EnglishCardText.Read(() => new Result(

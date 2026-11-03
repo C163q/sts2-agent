@@ -40,7 +40,7 @@ internal sealed class RunResultInspection
 
     private void MenuStackChanged()
     {
-        if (resultMenuStack != null && CardSelection.Field(resultMenuStack, "_submenus") is Stack<NSubmenu> pages
+        if (resultMenuStack != null && PrivateFields.Read(resultMenuStack, "_submenus") is Stack<NSubmenu> pages
             && resultTimeline != null && pages.Contains(resultTimeline)) return;
         Finished();
     }
@@ -64,7 +64,7 @@ internal sealed class RunResultInspection
                 if (!ReferenceEquals(lastGameOver, over)) { Finished(); lastGameOver = over; Generation++; epochIds.Clear(); singleplayer = RunContext.Singleplayer; }
                 if (VisibleUi.Descendants<NRunHistory>(over).FirstOrDefault(VisibleUi.Shown) is { } history) return new(history, "history");
                 if (VisibleUi.Shown(over.GetNodeOrNull<Control>("%DailyRunLeaderboard"))) return new(over, "leaderboard");
-                return new(over, CardSelection.Field(over, "_isAnimatingSummary") is true || VisibleUi.Descendants<NScoreLine>(over).Any() ? "summary" : "outcome");
+                return new(over, PrivateFields.Read(over, "_isAnimatingSummary") is true || VisibleUi.Descendants<NScoreLine>(over).Any() ? "summary" : "outcome");
             }
             if (leavingResult && NGame.Instance?.MainMenu?.SubmenuStack.Peek() is NTimelineScreen timeline && VisibleUi.Shown(timeline))
             {
@@ -95,7 +95,7 @@ internal sealed class RunResultInspection
 
     private static bool TextReady(Node root) => VisibleUi.Descendants<RichTextLabel>(root).Where(VisibleUi.Browsable).All(l => l.VisibleRatio >= .999f);
     public bool Ready(Context context) => singleplayer && Exposed(context) && TextReady(context.Root)
-        && (context.Root is not NGameOverScreen over || CardSelection.Field(over, "_isAnimatingSummary") is not true
+        && (context.Root is not NGameOverScreen over || PrivateFields.Read(over, "_isAnimatingSummary") is not true
             && !RunResultMotion.Pending(over))
         && !new[] { "_tween", "_textTween", "_buttonTween", "_unlockTween", "_cardTween", "_relicTween", "_potionTween", "_screenTween", "_backstopTween", "_lineGrowTween" }
             .Any(field => RewardInspection.Animating(context.Root, field))
@@ -104,7 +104,7 @@ internal sealed class RunResultInspection
 
     // Use the same result as the native banner; victory also kills the player during the epilogue.
     public static string? Outcome(Context context) => context.Root is NGameOverScreen over
-        && CardSelection.Field(over, "_history") is RunHistory history
+        && PrivateFields.Read(over, "_history") is RunHistory history
             ? history.Win ? "run_won" : "run_lost" : null;
 
     public static bool Clickable(NClickableControl button) => (button is NEpochSlot ? VisibleUi.Shown(button) : VisibleUi.OnScreen(button)) && button.IsEnabled
@@ -156,7 +156,7 @@ internal sealed class RunResultInspection
         return false;
     }
     private static object Badge(NBadge badge) => EnglishEventText.Read(() => new {
-        name = CardSelection.Field(badge, "_title") is LocString title ? EnglishCardText.Plain(title.GetFormattedText()) : "",
+        name = PrivateFields.Read(badge, "_title") is LocString title ? EnglishCardText.Plain(title.GetFormattedText()) : "",
         rarity = Path.GetFileNameWithoutExtension(badge.GetNode<TextureRect>("%BadgeHolder").Texture.ResourcePath).Replace("badge_", "") });
     private static object[] Cards(Node root) => VisibleUi.Descendants<NCard>(root)
         .Where(c => CombatObservation.CardVisible(c, VisibleUi.Browsable) && c.Visibility == ModelVisibility.Visible && c.Model != null).Select((card, index) =>
@@ -186,7 +186,8 @@ internal sealed class RunResultInspection
         result["potions"] = exposed ? VisibleUi.Descendants<NPotionHolder>(root).Where(h => VisibleUi.Browsable(h) && h.HasPotion && VisibleUi.Browsable(h.Potion))
             .Select(h => full ? (object)PotionInspection.Details(h.Potion!.Model) : EnglishEventText.Read(() => (object)new { name = EnglishCardText.Plain(h.Potion!.Model.Title.GetFormattedText()) })).ToArray() : Array.Empty<object>();
         if (full) result["hover_tips"] = exposed ? VisibleUi.Descendants<NClickableControl>(root).Where(c => c is not NEpochSlot && VisibleUi.Browsable(c))
-            .Select(control => (control, tip: CardSelection.Field(control, "_hoverTip") as IHoverTip))
+            // Ordinary navigation buttons in this heterogeneous list do not own hover text.
+            .Select(control => (control, tip: PrivateFields.Optional(control, "_hoverTip") as IHoverTip))
             .Where(pair => pair.tip != null).Select(pair => EnglishEventText.Read(() => new {
                 source = pair.control is NBadge ? "badge:" + VisibleUi.Descendants<NBadge>(root).ToList().IndexOf((NBadge)pair.control)
                     : pair.control is NDiscoveredItem discovery ? "discovery:" + DiscoveryKind(discovery) : pair.control.Name.ToString(), title = EnglishEventText.Tip(pair.tip!).title,

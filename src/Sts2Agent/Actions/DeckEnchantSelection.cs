@@ -16,8 +16,8 @@ internal static class DeckEnchantSelection
             || VisibleUi.Text(selection.Owner, "%EnchantmentDescription") == null) return null;
         return EnglishCardText.Read(() =>
         {
-            var model = ((EnchantmentModel)CardSelection.Field(selection.Owner, "_enchantment")!).ToMutable();
-            model.Amount = (int)CardSelection.Field(selection.Owner, "_enchantmentAmount")!;
+            var model = ((EnchantmentModel)PrivateFields.Read(selection.Owner, "_enchantment")!).ToMutable();
+            model.Amount = (int)PrivateFields.Read(selection.Owner, "_enchantmentAmount")!;
             model.RecalculateValues();
             return (object)new { title = EnglishCardText.Plain(model.Title.GetFormattedText()),
                 description = EnglishCardText.Plain(model.DynamicDescription.GetFormattedText()) };

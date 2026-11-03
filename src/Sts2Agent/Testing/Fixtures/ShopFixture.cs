@@ -93,7 +93,7 @@ internal static class ShopFixture
         previews = RunUi.CardPreviewsPending(), rng_counter = player.PlayerRng.Shops.Counter,
         removal_used = ShopInspection.Current?.Inventory.Inventory?.CardRemovalEntry?.Used,
         removals = player.ExtraFields.CardShopRemovalsUsed,
-        base_prices = ShopInspection.Current?.Inventory.Inventory?.AllEntries.Select(e => (int)CardSelection.Field(e, "_cost")!).ToArray(),
+        base_prices = ShopInspection.Current?.Inventory.Inventory?.AllEntries.Select(e => (int)PrivateFields.Read(e, "_cost")!).ToArray(),
         inventory = ShopInspection.Current?.Inventory.Inventory?.AllEntries.Select(e => new
         {
             stocked = e.IsStocked, name = e switch

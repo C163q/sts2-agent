@@ -26,7 +26,7 @@ internal static class RestSiteInspection
         "HEAL" or "SMITH" or "DIG" or "LIFT" or "KINDLE" or "COOK" or "CLONE" or "HATCH";
 
     public static bool Clickable(NRestSiteButton button) => Supported(button) && button.IsEnabled && button.Option.IsEnabled
-        && CardSelection.Field(button, "_isUnclickable") is false && VisibleUi.OnScreen(button)
+        && PrivateFields.Read(button, "_isUnclickable") is false && VisibleUi.OnScreen(button)
         && button.Modulate.A >= 0.99f;
 
     public static bool Ready(NRestSiteRoom room)
@@ -35,7 +35,7 @@ internal static class RestSiteInspection
             || RewardInspection.Animating(room, "_choicesTween")
             || RewardInspection.Animating(room, "_descriptionTween")) return false;
         var buttons = Buttons(room);
-        if (buttons.Any(b => CardSelection.Field(b, "_executingOption") is true)) return false;
+        if (buttons.Any(b => PrivateFields.Read(b, "_executingOption") is true)) return false;
         if (room.Options.Count == 0) return Proceed(room)?.IsEnabled == true;
         return buttons.Length == room.Options.Count && buttons.All(b => room.Options.Contains(b.Option)
             && b.IsEnabled && VisibleUi.OnScreen(b) && b.Modulate.A >= 0.99f);

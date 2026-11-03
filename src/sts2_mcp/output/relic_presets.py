@@ -23,7 +23,9 @@ def relic_arguments(arguments):
         raise ValueError('Invalid relic inspection preset.')
     indices = arguments.get('relic_indices')
     indices = optional_filter(indices, 'relic_indices', integers=True)
-    return {'preset': preset, 'relic_indices': None if indices is None else list(dict.fromkeys(indices))}
+    result = {'preset': preset, 'relic_indices': None if indices is None else list(dict.fromkeys(indices))}
+    if preset == 'summary': result['level'] = 'summary'
+    return result
 
 
 def relic_preset(payload, preset, relic_indices):
@@ -39,6 +41,14 @@ def relic_preset(payload, preset, relic_indices):
         result.pop('hover_tips', None)
     elif relic_indices is not None:
         result['hover_tips'] = linked_help(payload['hover_tips'], 'relic_indices', set(retained).__contains__)
+    notes = dict(result.get('notes', {}))
+    unavailable = notes.pop('hover_tips_unavailable', None)
+    if preset == 'full' and unavailable:
+        selected = {f'relics.{index}' for index in retained}
+        sources = [source for source in unavailable['sources'] if source in selected]
+        if sources: notes['hover_tips_unavailable'] = {**unavailable, 'sources': sources}
+    if notes: result['notes'] = notes
+    else: result.pop('notes', None)
     if missing:
         result['errors'] = [{'code': 'relic_indices_out_of_range', 'relic_indices': missing}]
     return result

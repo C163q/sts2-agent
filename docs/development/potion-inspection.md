@@ -51,3 +51,5 @@ python3 -m tests.game.verifiers.verify_potions --ipc-dir .tmp/live/ipc --output 
 已在中文独立实例验证满栏与重复 Block 提示，在正式战斗验证 Skill Potion 加空槽的排列；两次采样前后观察令牌均一致。正式场景还完成了真实 stdio MCP 读取，与文件输出一致且前后观察未变，见 [MCP 实施记录](../research/2026-10-29-mcp-potion-inspection.md)。旧详情专项验证仅覆盖上述战斗样本；新药水动作验证另覆盖战斗外页面。
 
 独立实例可用 `scripts/run_roundtrip.py --windowed --capture --check-potions`。该标志仅用于测试：通过原有 `start_test_combat` 测试入口创建战斗时，使用游戏正常获取流程加入 Skill Potion 和两个 Block Potion；检查满栏、英语正文、可见性、缓存及能量前缀恢复。不要为正式 Steam 游戏设置该标志。证据见 [实施记录](../research/2026-10-29-potion-inspection-plan.md)。
+
+顶栏与详情共用槽位枚举，详情保留独立的悬停可用性检查；参见[读取架构](architecture.md#展示与悬停读取)。

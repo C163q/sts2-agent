@@ -34,6 +34,14 @@ internal sealed partial class GameAdapter
     {
         if (request.Operation is "configure_test_run" or "reset_test_run" or "get_test_session")
             return await TestRunRequest(request);
+        if (request.Operation == "set_test_relic_hover" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
+        {
+            if (request.Arguments is not { } options || options.EnumerateObject().Count() != 1
+                || !options.TryGetProperty("enabled", out var flag) || flag.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected test enabled flag.");
+            return Success(request, JsonSerializer.Serialize(RelicHoverFixture.SetEnabled(flag.GetBoolean())));
+        }
         if (request.Operation == "set_test_combatant_hover" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
         {
@@ -57,6 +65,15 @@ internal sealed partial class GameAdapter
                 return FileMailbox.Error(request.Id, "invalid_request", "Expected test enabled flag.");
             MediaFailureFixture.Enabled = enabled.GetBoolean();
             return ResponseBuilder.Success(request.Id, new System.Text.Json.Nodes.JsonObject { ["enabled"] = MediaFailureFixture.Enabled });
+        }
+        if (request.Operation == "check_test_display_readers" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } displayPlayer)
+        {
+            await RelicCmd.Obtain<Anchor>(displayPlayer);
+            await RelicCmd.Obtain<Lantern>(displayPlayer);
+            await RelicCmd.Obtain<PenNib>(displayPlayer);
+            await SettledObservation();
+            return Success(request, JsonSerializer.Serialize(RelicInspectionChecks.Run()));
         }
         if (request.Operation == "check_test_dispatch" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")

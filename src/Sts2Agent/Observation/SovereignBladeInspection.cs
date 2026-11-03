@@ -29,7 +29,7 @@ internal static class SovereignBladeInspection
     public static bool Hoverable(NSovereignBladeVfx node) => Visible(node)
         && VisibleUi.Displayed(node.GetNodeOrNull<Control>("%Hitbox"))
         && node.GetNode<Control>("%Hitbox").MouseFilter != Control.MouseFilterEnum.Ignore
-        && CardSelection.Field(node, "_isAttacking") is false
+        && PrivateFields.Read(node, "_isAttacking") is false
         && !NTargetManager.Instance.IsInSelection;
 
     public static BladeText[] Read(NCreature owner, Func<CardModel, int> cardId) =>

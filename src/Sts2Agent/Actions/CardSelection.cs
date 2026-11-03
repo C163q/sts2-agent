@@ -1,5 +1,4 @@
 using Godot;
-using HarmonyLib;
 using MegaCrit.Sts2.Core.CardSelection;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Models;
@@ -34,11 +33,10 @@ internal sealed class CardSelection(Control owner, string kind, object key)
             && !RewardInspection.Animating(selection.Owner, "_cardTween")
             && !RewardInspection.Animating(selection.Owner, "_buttonTween"));
     public PileType DisplayingPile => Kind == "view_cards" ? PileType.Deck
-        : Kind == "combat_pile" && Field(Owner, "_pile") is CardPile pile ? pile.Type : PileType.None;
-    public CardSelectorPrefs Prefs => Field(Owner, "_prefs") is CardSelectorPrefs prefs ? prefs : default;
-    public CardModel[] Selected => Kind == "bundle" ? (Field(Owner, "_selectedBundle") as NCardBundle)?.Bundle.ToArray() ?? [] : (Field(Owner, "_selectedCards") as IEnumerable<CardModel>)?.ToArray() ?? [];
+        : Kind == "combat_pile" && PrivateFields.Read(Owner, "_pile") is CardPile pile ? pile.Type : PileType.None;
+    public CardSelectorPrefs Prefs => PrivateFields.Optional(Owner, "_prefs") is CardSelectorPrefs prefs ? prefs : default;
+    public CardModel[] Selected => Kind == "bundle" ? (PrivateFields.Read(Owner, "_selectedBundle") as NCardBundle)?.Bundle.ToArray() ?? [] : (PrivateFields.Optional(Owner, "_selectedCards") as IEnumerable<CardModel>)?.ToArray() ?? [];
 
-    internal static object? Field(object instance, string name) => AccessTools.Field(instance.GetType(), name)?.GetValue(instance);
     public static CardSelection? Current
     {
         get
@@ -57,13 +55,13 @@ internal sealed class CardSelection(Control owner, string kind, object key)
             };
             if (kind != null && overlay != null && GodotObject.IsInstanceValid(overlay) && overlay.IsNodeReady())
             {
-                object? source = Field(overlay, "_completionSource");
+                object? source = PrivateFields.Optional(overlay, "_completionSource");
                 if (source?.GetType().GetProperty("Task")?.GetValue(source) is Task { IsCompleted: true }) return null;
                 return new(overlay, kind, source ?? overlay);
             }
             var hand = NPlayerHand.Instance;
             if (hand?.IsInCardSelection != true || !hand.IsNodeReady()) return null;
-            var completion = Field(hand, "_selectionCompletionSource");
+            var completion = PrivateFields.Read(hand, "_selectionCompletionSource");
             if (completion?.GetType().GetProperty("Task")?.GetValue(completion) is not Task { IsCompleted: false }) return null;
             return new(hand, hand.CurrentMode switch
                 { NPlayerHand.Mode.SimpleSelect => "hand", NPlayerHand.Mode.UpgradeSelect => "hand_upgrade", _ => "unsupported" }, completion);
@@ -105,7 +103,7 @@ internal sealed class CardSelection(Control owner, string kind, object key)
         || DeckUpgradeSelection.Preview(this) != null || DeckEnchantSelection.Preview(this) != null || TransformSelection.Preview(this) != null
         || Kind == "bundle" && VisibleUi.Shown(Owner.GetNodeOrNull<Control>("%BundlePreviewContainer"));
 
-    public NUpgradePreview? UpgradePreview => Kind == "hand_upgrade" && Field(Owner, "_upgradePreview") is NUpgradePreview preview
+    public NUpgradePreview? UpgradePreview => Kind == "hand_upgrade" && PrivateFields.Read(Owner, "_upgradePreview") is NUpgradePreview preview
         && VisibleUi.Shown(preview) ? preview : null;
 
     public NCard? UpgradeCard(string side) => UpgradePreview is { Card: not null } preview
@@ -155,7 +153,7 @@ internal sealed class CardSelection(Control owner, string kind, object key)
         }
         if (Kind == "reward")
         {
-            var alternatives = Field(Owner, "_extraOptions") as IReadOnlyList<CardRewardAlternative>;
+            var alternatives = PrivateFields.Read(Owner, "_extraOptions") as IReadOnlyList<CardRewardAlternative>;
             var buttons = Owner.GetNode<Control>("UI/RewardAlternatives").GetChildren().OfType<NCardRewardAlternativeButton>().ToArray();
             for (int i = 0; alternatives != null && i < alternatives.Count && i < buttons.Length; i++)
             {
@@ -188,9 +186,9 @@ internal sealed class CardSelection(Control owner, string kind, object key)
     }
 
     public bool CanSelect => Kind is not ("bundle" or "view_cards") && Status == "visible" && !InPreview
-        && (Kind != "choose_one" || Godot.Time.GetTicksMsec() - (ulong)(Field(Owner, "_openedTicks") ?? 0UL) > 350)
+        && (Kind != "choose_one" || Godot.Time.GetTicksMsec() - (ulong)(PrivateFields.Read(Owner, "_openedTicks") ?? 0UL) > 350)
         && (Grid == null || !Grid.IsAnimatingOut) && Holders.Any(Clickable);
 
     public static bool Clickable(NCardHolder holder) => VisibleUi.Shown(holder)
-        && CombatObservation.CardVisible(holder.CardNode) && Field(holder, "_isClickable") is true;
+        && CombatObservation.CardVisible(holder.CardNode) && PrivateFields.Read(holder, "_isClickable") is true;
 }

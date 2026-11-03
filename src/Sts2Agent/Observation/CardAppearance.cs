@@ -35,7 +35,7 @@ internal static class CardAppearance
             result["enchantment"] = Enchantment(enchantment, VisibleUi.Number(card, "%Enchantment/Label"), icon.UseParentMaterial);
         // The model alone is insufficient: an overlay can be hidden, stale or replaced by a built-in effect.
         if (card.Model!.Affliction is { HasOverlay: true } affliction
-            && CardSelection.Field(card, "_cardOverlay") is Control overlay
+            && PrivateFields.Read(card, "_cardOverlay") is Control overlay
             && overlay.SceneFilePath == affliction.OverlayPath && VisibleUi.Shown(overlay)
             && VisibleUi.Descendants<TextureRect>(overlay).Any(texture => texture.Texture != null && VisibleUi.OnScreen(texture)))
             result["affliction"] = Affliction(affliction);

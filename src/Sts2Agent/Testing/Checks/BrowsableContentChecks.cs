@@ -22,8 +22,8 @@ internal static class BrowsableContentChecks
     public static void PrepareResult(RunResultInspection results)
     {
         if (results.Current is not { Root: NGameOverScreen over, Phase: "outcome" }
-            || CardSelection.Field(over, "_serializableRun") is not SerializableRun run
-            || CardSelection.Field(over, "_history") is not RunHistory original)
+            || PrivateFields.Read(over, "_serializableRun") is not SerializableRun run
+            || PrivateFields.Read(over, "_history") is not RunHistory original)
             throw new InvalidOperationException("Expected an isolated result before its summary.");
         // Debug runs skip normal history and character progress creation.
         foreach (var player in run.Players)
@@ -42,7 +42,7 @@ internal static class BrowsableContentChecks
     {
         if (results.Current is not { Root: NGameOverScreen over, Phase: "summary" })
             throw new InvalidOperationException("Expected a completed isolated run summary.");
-        var history = CardSelection.Field(over, "_history")
+        var history = PrivateFields.Read(over, "_history")
             ?? throw new InvalidOperationException("The native result has no history.");
         // This version disables View Run. Prepare its native page only in the isolated fixture.
         var page = ResourceLoader.Load<PackedScene>(NRunHistory.AssetPaths[0]).Instantiate<NRunHistory>();

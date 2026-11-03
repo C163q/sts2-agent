@@ -54,6 +54,25 @@ internal static class OrbEventChecks
         static string Kind(Dictionary<string, object?> e) => (string)e["type"]!;
         static string Name(Dictionary<string, object?> e) => JsonSerializer.SerializeToElement(e["orb"]).GetProperty("name").GetString()!;
         await Reset();
+        var zeroEntry = await Capture("zero_scale_entry", async _ =>
+        {
+            await OrbCmd.Channel<PlasmaOrb>(choice, player);
+            var slot = OrbInspection.DisplayedNodes(node)!.Last(s => s.Model is PlasmaOrb);
+            var sprite = (Node2D)PrivateFields.Read(slot, "_sprite")!;
+            var scale = sprite.Scale;
+            try
+            {
+                sprite.Scale = Vector2.Zero;
+                Check("zero-scale entry waits without becoming public", !OrbInspection.SlotVisible(slot)
+                    && OrbInspection.SlotVisible(slot, entering: true));
+                OrbJournal.Current!.SampleVisibility();
+            }
+            finally { sprite.Scale = scale; }
+            await Settle();
+        });
+        Check("zero-scale entry retains its pending channel event", zeroEntry is [var zeroChannel]
+            && Kind(zeroChannel) == "orb_channeled" && Name(zeroChannel) == "Plasma");
+        await Reset();
         var events = await Capture("channel", async _ => { await OrbCmd.Channel<FrostOrb>(choice, player); await Settle(); });
         Check("same-name orbs retain their actual positions", events is [var channel] && Kind(channel) == "orb_channeled"
             && Name(channel) == "Frost" && (int)channel["slot_index"]! == 1);
@@ -153,13 +172,14 @@ internal static class OrbEventChecks
         {
             await OrbCmd.Channel<PlasmaOrb>(choice, player);
             var slot = OrbInspection.DisplayedNodes(node)!.Last(s => s.Model != null);
-            var sprite = (Node2D)CardSelection.Field(slot, "_sprite")!;
+            var sprite = (Node2D)PrivateFields.Read(slot, "_sprite")!;
             var position = sprite.Position;
             try { sprite.Position = new(-10000, -10000); await frame(); }
             finally { sprite.Position = position; }
             await Settle();
         });
-        Check("offscreen entry cancels pending identity without replay", events.Length == 0);
+        Check("offscreen entry retains displayed identity", events is [var outsideEntry]
+            && Kind(outsideEntry) == "orb_channeled" && Name(outsideEntry) == "Plasma");
         events = await Capture("capacity_coalesces", async _ =>
         {
             await OrbCmd.AddSlots(player, 2);
@@ -168,7 +188,7 @@ internal static class OrbEventChecks
         });
         Check("unpublished capacity round trips are omitted", events.Length == 0);
         await Reset();
-        events = await Capture("clipped", async _ =>
+        events = await Capture("existing_offscreen", async _ =>
         {
             var bounds = OrbInspection.VisibleNodes(node)![0].GetNode<Control>("Bounds");
             var position = bounds.Position;
@@ -180,7 +200,27 @@ internal static class OrbEventChecks
             finally { bounds.Position = position; }
             await Settle();
         });
-        Check("offscreen existing orb blocks disclosure", events.Length == 0);
+        Check("offscreen existing orb retains displayed changes", events.Select(Kind).SequenceEqual(new[] {
+            "orb_slots_changed", "orb_channeled" }));
+        await Reset();
+        events = await Capture("actually_clipped", async _ =>
+        {
+            var slot = OrbInspection.VisibleNodes(node)![0];
+            var sprite = (Node2D)PrivateFields.Read(slot, "_sprite")!;
+            var position = sprite.Position;
+            bool clips = slot.ClipContents;
+            try
+            {
+                slot.ClipContents = true;
+                sprite.Position = new(-10000, -10000);
+                Check("clipping fixture actually hides existing orb", !OrbInspection.SlotVisible(slot));
+                await frame();
+                await OrbCmd.AddSlots(player, 1); await OrbCmd.Channel<PlasmaOrb>(choice, player);
+            }
+            finally { sprite.Position = position; slot.ClipContents = clips; }
+            await Settle();
+        });
+        Check("actual clipping blocks disclosure without replay", events.Length == 0);
         await Reset();
         events = await Capture("covered", async _ =>
         {

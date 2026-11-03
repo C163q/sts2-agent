@@ -98,3 +98,5 @@ python3 -m tests.python.test_prepare_roundtrip
 API 核对依据与实测结果见 [验证记录](../research/2026-10-28-roundtrip-validation.md)。
 
 终章专用验证使用 `--ending-scenario victory_unlock`、`death` 或 `event_death`，配合 `tests/game/verifiers/verify_run_ending.py`；每次启动单独创建 `.tmp/roundtrip/ending-userdata-*`，只复制测试设置，不继承其他测试存档。此模式创建可保存的隔离对局以验证原生结算、历史与解锁；测试标志和构造操作不作为公开 MCP 工具。
+
+原生 `inspect_relics` 接受可选 `arguments.level: "full"|"summary"`，省略为 full；summary 只读静态展示字段，原生仍保留 `description:null/hover_tips:[]`，公开层按[遗物预设](relic-inspection.md)投影。full 的 `unavailable_hover_sources` 使用未筛选的 `relics.N` 地址，只有真实无法读取悬停时提供。

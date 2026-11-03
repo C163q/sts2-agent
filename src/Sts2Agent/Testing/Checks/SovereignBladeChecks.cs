@@ -68,7 +68,7 @@ internal static class SovereignBladeChecks
                 LocManager.Instance.SetLanguage(locale);
                 AccessTools.Method(typeof(NSovereignBladeVfx), "OnFocused").Invoke(blade, null);
                 await frame(); await frame();
-                var hover = (Node)CardSelection.Field(blade, "_hoverTip")!;
+                var hover = (Node)PrivateFields.Read(blade, "_hoverTip")!;
                 var preview = VisibleUi.Descendants<NCard>(hover).Single();
                 string? body = VisibleUi.Text(preview, "%DescriptionLabel");
                 string path = Path.Combine(Path.GetDirectoryName(System.Environment.GetEnvironmentVariable("STS2_AGENT_IPC_DIR"))!,
@@ -101,7 +101,7 @@ internal static class SovereignBladeChecks
             LocManager.Instance.SetLanguage("eng");
             AccessTools.Method(typeof(NSovereignBladeVfx), "OnFocused").Invoke(blade, null);
             await frame(); await frame();
-            var preview = VisibleUi.Descendants<NCard>((Node)CardSelection.Field(blade, "_hoverTip")!).Single();
+            var preview = VisibleUi.Descendants<NCard>((Node)PrivateFields.Read(blade, "_hoverTip")!).Single();
             string? body = VisibleUi.Text(preview, "%DescriptionLabel");
             Check("out-of-hand preview reflects current powers before native hovering", body == beforeHover.description);
             samples.Add(new { scenario = "out-of-hand Parry", native_description = body, tool_tip = beforeHover });

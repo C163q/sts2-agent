@@ -51,7 +51,7 @@ internal sealed class EventInspection
 
     public static bool Clickable(NEventOptionButton button) => Shown(button) && button.IsEnabled && !button.Option.IsLocked
         && button.MouseFilter != Control.MouseFilterEnum.Ignore
-        && (!button.Option.WasChosen || CardSelection.Field(button.Option, "<DisableOnChosen>k__BackingField") is false)
+        && (!button.Option.WasChosen || PrivateFields.Read(button.Option, "<DisableOnChosen>k__BackingField") is false)
         && !RewardInspection.Animating(button, "_animInTween");
 
     private static bool IsProceed(Context context, NEventOptionButton button) => context.Model.IsFinished

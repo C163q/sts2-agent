@@ -10,6 +10,6 @@ from sts2_mcp.output.public_output import (
 
 def player_result(response, *, operation=None, arguments=None):
     if response['ok']:
-        return assemble_details(gameplay_fields(response['state'], operation=operation), operation=operation)
+        return assemble_details(gameplay_fields(response['state'], operation=operation, arguments=arguments), operation=operation)
     spec = NATIVE_TOOLS.get(operation)
     return error_result(response['error'], state_changing=spec is not None and spec.effect_for(arguments) in {'view', 'action'})

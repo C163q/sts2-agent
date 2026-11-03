@@ -144,7 +144,7 @@ internal sealed class CombatObservation
                 ["block"] = Block(node), ["powers"] = shared.powers
             };
             var display = node.GetNodeOrNull<NCreatureStateDisplay>("%HealthBar");
-            if (display != null && CardSelection.Field(display, "_blockTrackingCreature") is Creature { IsPlayer: true } tracked
+            if (display != null && PrivateFields.Read(display, "_blockTrackingCreature") is Creature { IsPlayer: true } tracked
                 && ReferenceEquals(tracked.Player, node.Entity.PetOwner) && LocalContext.IsMe(tracked))
                 result["block_shared_with"] = "player";
             return (object)result;
@@ -294,12 +294,7 @@ internal sealed class CombatObservation
                 .Select(icon => BossName(icon.Texture!.ResourcePath, run)).ToArray(),
             potion_slots = PotionSlots(bar.PotionContainer),
             relic_count = RelicInspection.HeldCount(),
-            relics = RelicInspection.DisplayedHolders()?.Select(holder => new
-                {
-                    name = english.RelicName(holder.Relic.Model),
-                    counter = VisibleUi.Number(holder, "%AmountLabel"),
-                    melted = RelicInspection.Melted(holder.Relic)
-                }).ToArray(),
+            relics = RelicInspection.DisplayedHolders()?.Select(RelicInspection.Static).ToArray(),
             map_visible = VisibleUi.OnScreen(bar.Map), deck_visible = VisibleUi.OnScreen(bar.Deck),
             settings_visible = VisibleUi.OnScreen(bar.Pause)
         };
@@ -317,12 +312,8 @@ internal sealed class CombatObservation
 
     private object? PotionSlots(NPotionContainer container)
     {
-        var layout = container.GetNodeOrNull<Control>("MarginContainer/PotionHolders");
-        if (!VisibleUi.Shown(container) || !VisibleUi.Shown(layout))
-            return null;
-        var holders = layout!.GetChildren().OfType<NPotionHolder>().ToArray();
-        if (holders.Any(holder => !VisibleUi.OnScreen(holder)))
-            return null;
+        var holders = PotionInspection.DisplayedHolders(container);
+        if (holders == null) return null;
         return holders.Select(holder =>
         {
             if (!holder.HasPotion) return null;

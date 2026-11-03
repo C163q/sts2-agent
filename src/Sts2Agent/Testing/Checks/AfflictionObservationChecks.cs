@@ -23,7 +23,7 @@ internal static class AfflictionObservationChecks
             string name = card.Model.Affliction.Id.Entry == "BOUND" ? "Bound" : "Smog";
             Check(name + " visible name only", effect.GetRawText() == JsonSerializer.Serialize(new { name }));
             if (name == "Bound") Check("coexists with enchantment", Read(card).GetProperty("enchantment").ValueKind == JsonValueKind.Object);
-            var overlay = (Control)CardSelection.Field(card, "_cardOverlay")!;
+            var overlay = (Control)PrivateFields.Read(card, "_cardOverlay")!;
             bool shown = overlay.Visible;
             try { overlay.Visible = false; Check(name + " hidden overlay", Absent(card)); }
             finally { overlay.Visible = shown; }

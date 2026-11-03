@@ -16,6 +16,7 @@ from sts2_mcp.roundtrip_client import Client
 
 CATALOG = json.loads((ROOT / 'tests/game/data/test_scenarios.json').read_text())
 SUPPORTED_VERIFIERS = {
+    'verify_display_readers.py',
     'verify_native_dispatch.py',
     'verify_native_responses.py',
     'verify_inspection_errors.py',
