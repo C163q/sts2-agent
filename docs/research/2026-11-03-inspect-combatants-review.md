@@ -1,6 +1,6 @@
 # inspect_combatants 场景与现有参数核验
 
-> 当前状态：本轮场景核验与错误审查完成，尚未核销。已记录 3 项问题，提供 21 份完整公开 JSON，完成 82 项 Python 回归、11 项错误探针及七组隔离对局与独立建筑师背景采样。已确认 summary 省略悬停正文，并增加 sources 筛选；筛选层级与修复范围待定稿，未改运行代码。未验证分支见末节，暂无阻塞。
+> 当前状态：本轮场景核验与错误审查完成，尚未核销。已记录 3 项问题，提供 21 份完整公开 JSON，完成 82 项 Python 回归、11 项错误探针及七组隔离对局与独立建筑师背景采样。已确认增加 summary 与 sources；summary 是否整组省略悬停提示正在澄清，筛选层级、显式 null 与修复范围待定稿，未改运行代码。未验证分支见末节。
 
 ## 优先关注的问题
 
@@ -124,7 +124,13 @@ full 保留原生已生成的 null；default 仅按公共规则省略普通 null
 
 ## 参数与摘要设计
 
-**已确认、尚未实现：**增加 summary，保留现有对象身份、状态计数、意图、球槽、剑引用、提示标题及来源，仅删除 hover_tips[].description，保留必要 notes；增加 sources 筛选。summary 是说明索引，不等于 get_observation 战斗摘要，不引入伤害预测或新的机制字段。
+**已确认、尚未实现：**增加 summary 与 sources 筛选，不引入伤害预测或新的机制字段。
+
+**summary 粒度待确认：**仅省略 hover_tips[].description、保留标题与来源，或省略整个 hover_tips。两种含义影响是否还提供说明索引，未确认前不实施。
+
+**空筛选器语义：**未指定筛选表示全部；[] 表示选中集合为空，不作为“全部”的别名。现有 inspect_hand.card_ids、inspect_selection.card_ids、inspect_relics.relic_indices、inspect_ui.sources 已采用这一规则；其中显式 JSON null 目前会被参数校验拒绝，不能与省略参数混称为现有接口能力。新 sources 是否额外接受显式 null 表示全部仍待定稿，不擅自扩大到其他已审阅工具。
+
+空集合的作用范围取决于过滤器：card_ids:[] 清空候选卡牌及其说明；当前来源筛选候选只作用于 hover_tips，因此 sources:[] 不会清除 player/enemies/allies 等对象字段，也不删除 scene/screen 等上下文。若要筛掉对象本身，须另行明确输出结构及来源下标规则，不能将它与提示筛选视为同一已确认能力。
 
 **筛选层级建议，待确认：**sources 同时支持具体来源和分组前缀，按点分隔的路径段匹配。
 
