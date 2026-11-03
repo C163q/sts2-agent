@@ -1,22 +1,14 @@
+from sts2_mcp.output.value_shapes import project, TIP
+from sts2_mcp.output.contracts.ui import TOP_BAR
+from sts2_mcp.output.contracts.endings import OPTION, RESULT, EPILOGUE, PHASES, EPILOGUE_TOOLS
 import re
-from sts2_mcp.output.card_format import BROWSED_CARD
+
 
 OPTION_SCHEMA = {'type': 'object', 'properties': {'option_id': {
     'type': 'string', 'minLength': 1,
     'description': 'An enabled run_result.options[].id from get_observation or inspect_run_result; use the exact offered value.',
 }},
                  'required': ['option_id'], 'additionalProperties': False}
-OPTION = {'id': str, 'text': str, 'enabled': bool}
-RESULT = {'status': str, 'phase': str, 'title': (str,), 'texts': [str],
-          'score_lines': [{'label': str, 'value': str}], 'badges': [{'name': str, 'rarity': str}],
-          'discoveries': [{'kind': str, 'count': int}], 'options': [OPTION],
-          'cards': [BROWSED_CARD],
-          'relics': [{'name': (str,)}], 'potions': [{'name': (str,)}]}
-EPILOGUE = {'status': str, 'dialogue': ({'speaker': str, 'text': str},),
-            'continue': ({'text': str, 'enabled': bool},), 'proceed': ({'text': str, 'enabled': bool},)}
-PHASES = {'outcome', 'summary', 'history', 'leaderboard', 'timeline', 'epoch', 'unlock', 'tutorial'}
-EPILOGUE_TOOLS = {'advance_dialogue', 'proceed', 'inspect_map', 'inspect_potions', 'inspect_targets',
-                  'use_potion', 'discard_potion', 'inspect_ui', 'inspect_combatants', 'inspect_relics', 'inspect_deck'}
 
 
 def option_arguments(arguments):
@@ -28,7 +20,6 @@ def option_arguments(arguments):
 
 
 def result_details(value, full=False):
-    from sts2_mcp.output.game_output import project, TIP
     shape = RESULT
     if full:
         shape = {**RESULT, 'hover_tips': [{'source': str, **TIP}],
@@ -54,7 +45,6 @@ def result_details(value, full=False):
 
 
 def epilogue_details(value):
-    from sts2_mcp.output.game_output import project
     result = project(value, EPILOGUE)
     if not set(EPILOGUE) <= result.keys() or result['status'] not in {'visible', 'covered', 'not_ready'}:
         raise ValueError('Invalid epilogue.')
@@ -80,7 +70,6 @@ def validate_ending(result):
                 if any(result.get(k) is not None for k in ('turn', 'player', 'enemies', 'buttons', 'event',
                         'selection', 'rewards', 'shop', 'treasure', 'rest_site', 'ancient', 'divination', 'confirmation', 'map')):
                     raise ValueError('Exposed underlying result contents.')
-                from sts2_mcp.output.game_output import TOP_BAR
                 if result.get('top_bar') is not None and not (set(TOP_BAR) - {'relic_count'}) <= result['top_bar'].keys():
                     raise ValueError('Incomplete result top bar.')
                 enabled = any(o['enabled'] for o in value['options'])

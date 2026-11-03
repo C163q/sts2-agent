@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from sts2_mcp.roundtrip_client import Client, player_result
-from sts2_mcp.output.card_format import browse_result
+from sts2_mcp.output.browse_output import browse_result
 
 
 def main():

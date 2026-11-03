@@ -132,7 +132,7 @@ class AvailableToolOutputTests(unittest.TestCase):
         self.assertEqual(observation_details(raw)['available_actions'], raw['available_actions'])
 
     def test_close_map_restores_epilogue_and_current_dialogue_context(self):
-        from sts2_mcp.output.map_details import closed_map
+        from sts2_mcp.output.view_details import closed_map
         from tests.python.test_events import state as event_state
         raw = event_state()
         raw.update(scene='epilogue', event=None, screen={'status': 'visible', 'view': 'epilogue'},

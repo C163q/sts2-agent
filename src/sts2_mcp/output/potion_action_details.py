@@ -1,4 +1,5 @@
-from sts2_mcp.output.game_output import POTION_REF, TARGET_ENTITY, TEXT, project
+from sts2_mcp.output.value_shapes import project, TEXT
+from sts2_mcp.output.contracts.transition import POTION_REF, TARGET_ENTITY
 
 
 POTION_SLOT = {"type": "integer", "minimum": 0, "maximum": 2147483647,

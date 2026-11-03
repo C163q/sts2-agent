@@ -9,7 +9,7 @@ import anyio
 from sts2_mcp.output.run_ending_details import option_arguments
 from sts2_mcp.output.card_format import browse_preset
 from sts2_mcp.output.deck_details import deck_arguments
-from sts2_mcp.output.inspection_details import inspection_details
+from sts2_mcp.output.response_pipeline import decode_success
 from sts2_mcp.output.hand_presets import hand_arguments, hand_preset
 from sts2_mcp.output.ui_presets import ui_arguments, ui_preset
 from sts2_mcp.output.relic_presets import relic_arguments, relic_preset
@@ -449,7 +449,7 @@ class GameTools:
                 if operation == "capture_screenshot":
                     payload = await anyio.to_thread.run_sync(self.screenshots.save, state, arguments)
                     return payload, snapshot_id
-                response = {"ok": True, "state": inspection_details(operation, state, arguments)}
+                payload = decode_success(operation, state, arguments)
             else:
                 if not isinstance(response["error"]["code"], str):
                     raise ValueError("Invalid game error.")
@@ -463,7 +463,8 @@ class GameTools:
                         and response['error']['code'] in {'invalid_request', 'illegal_action'}
                         and response['error'].get('action_submitted') is False):
                     snapshot_id = expected_state
-            payload = player_result(response, operation=operation)
+            if not response['ok']:
+                payload = player_result(response, operation=operation)
             if response['ok']:
                 payload = attach_divination_image(payload, state)
             if response['ok'] and 'available_actions' in payload:

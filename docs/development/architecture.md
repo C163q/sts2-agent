@@ -16,8 +16,8 @@
 | [roundtrip_client.py](../../src/sts2_mcp/roundtrip_client.py) | 标准库文件客户端与 CLI；默认玩法输出，`--raw` 保留诊断协议 |
 | [game_tools.py](../../src/sts2_mcp/game_tools.py)、[controller_lease.py](../../src/sts2_mcp/controller_lease.py) | 串行游戏会话、动作令牌、每个 IPC 目录的进程控制锁；文件请求在线程中等待 |
 | [mcp_catalog.py](../../src/sts2_mcp/mcp_catalog.py)、[mcp_server.py](../../src/sts2_mcp/mcp_server.py) | 工具描述与参数 schema、stdio 分派及结果封装 |
-| [output/](../../src/sts2_mcp/output/) | `scene_context` 统一校验场景上下文，`game_output/inspection_details/*_details` 校验并过滤已声明字段；`player_output` 整合共享解释，`error_output` 管理公开错误与恢复提示；`presets` 统一空值规则，`card_format` 统一牌面内容模式，`resource_summary` 共用资源摘要；`observation_presets/selection_summary/top_bar_summary` 提供容器摘要，`action_output` 精简动作回执 |
-| [mcp_config.py](../../src/sts2_mcp/mcp_config.py)、[screenshot_tool.py](../../src/sts2_mcp/screenshot_tool.py) | 截图配置、PNG 校验和独占文件保存；占卜图像另由 `output/divination_details.py` 校验 |
+| [output/](../../src/sts2_mcp/output/) | `contracts/` 定义纯字段结构，`*_details` 校验领域数据，`inspection_details` 按原生操作分派，`response_pipeline.decode_success` 统一生产成功解码；`public_output` 整合共享解释与 notes，`game_output/player_output` 保留直接调用兼容；`error_output` 管理公开错误，`null_fields` 维护空值规则，`presets` 包装公开预设，`card_format` 统一牌面内容模式，`resource_summary` 共用资源摘要；`observation_presets/selection_summary/top_bar_summary` 提供容器摘要，`action_output` 精简动作回执 |
+| [mcp_config.py](../../src/sts2_mcp/mcp_config.py)、[screenshot_tool.py](../../src/sts2_mcp/screenshot_tool.py) | 截图配置和独占文件保存；`output/media.py` 提供媒体承载及 PNG 格式校验，占卜另校验图像像素及棋盘一致性 |
 | [scripts/](../../scripts/) | 常用 CLI、运行时准备／启动及 `_bootstrap.py` 源码路径引导 |
 | [tests/python/](../../tests/python/)、[tests/csharp/](../../tests/csharp/) | 无需游戏的自动检查；C# 纯检查不依赖游戏程序集 |
 | [tests/game/](../../tests/game/) | `suite.py` 编排游戏验证，`verifiers/` 为显式执行的验证器，`support/` 和 `data/` 为共享代码与场景清单 |
@@ -72,3 +72,11 @@ Mod 构建需要自行安装游戏程序集，见[构建前提](roundtrip.md#前
 游戏 API 或生命周期变化须验证加载和相关行为。只修改外部输出时，可先检查错误输入、真实 stdio 及合法游戏样本回放，但须明确是否重新运行真实游戏。历史检查数量和样本只在带日期的验证记录中维护。
 
 战斗对象静态字段由 CombatantInspection.Read 的 Summary 级统一读取，get_observation 组合独立的生命、资源与手牌字段；Full 只在同一对象顺序上增加悬停说明。原生校验、Python 对象筛选和公共空值过滤分别负责不同阶段，见[战斗对象契约](combatant-inspection.md)。
+
+## Python 输出依赖
+
+生产 MCP 与非 raw 文件客户端均使用 `response_pipeline.decode_success(operation, state, native_arguments)`：先由 operation reader 完整校验并只保留声明内容，再用 `public_output.assemble_details` 整合共享解释和 notes；后续媒体附加、会话许可及筛选／preset 各自处理。领域读取器只向纯契约或更小的读取器依赖，不反向导入总装配。`tests/python/test_output_architecture.py` 检查包括函数内导入在内的循环依赖及边界。
+
+文件客户端设置 `include_observation=True`，在原生响应确有完整观察时，保留经过观察校验的完整状态，再合并该操作的专项详情；这维护其既有动作／关闭页面输出范围。MCP 仍按专用工具范围返回，游戏动作随后投影为精简回执。`--raw` 不走公开解码。
+
+`player_result` 及其旧导入路径仍可直接投影片段，供已有调用和验证代码兼容使用；它不替代按 operation 的完整校验。生产成功链路不再通过 GAMEPLAY 全工具字段并集猜测结果类型。卡牌格式化不推断 description 是否存在来决定生产读取范围；范围由领域契约与调用处明确选择。浏览工具的文件预设组合位于 `output/browse_output.py`。

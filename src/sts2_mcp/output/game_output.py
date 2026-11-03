@@ -1,106 +1,22 @@
-from sts2_mcp.output.available_tools import public_tools
-
-
+"""Compatibility projection for direct player_result callers; production uses response_pipeline."""
 from sts2_mcp.output.value_shapes import nullable, project, TEXT, NUMBER, TIP
-from sts2_mcp.output.card_format import CARD_FACE as CARD, CARD_FULL as HAND_CARD, BROWSED_CARD, format_game_cards
-
-
-POWER = {"name": TEXT, "amount": NUMBER}
-INTENT = {"category": TEXT, "value": TEXT}
-HEALTH = {"hp": NUMBER, "max_hp": NUMBER, "hp_display": str, "block": NUMBER}
-ORB = {"name": str, "passive": NUMBER, "evoke": NUMBER}
-ORB_SLOTS = nullable([nullable(ORB)])
-BLADE = {"id": int, "name": TEXT}
-PLAYER = {
-    **HEALTH, "character": TEXT, "energy": NUMBER, "max_energy": NUMBER, "stars": NUMBER,
-    "powers": nullable([POWER]), "hand": nullable([CARD]),
-    "orb_slots": ORB_SLOTS,
-    "sovereign_blades": nullable([BLADE]),
-    "draw_count": NUMBER, "discard_count": NUMBER, "exhaust_count": NUMBER,
-}
-ENEMY = {
-    **HEALTH, "id": NUMBER, "name": TEXT, "powers": nullable([POWER]),
-    "intents": nullable([INTENT]),
-}
-ALLY = {**HEALTH, "id": int, "name": TEXT, "powers": nullable([POWER]), "block_shared_with": str}
-RELIC = {"name": TEXT, "counter": NUMBER, "melted": nullable(bool)}
-TOP_BAR = {
-    "hp": NUMBER, "max_hp": NUMBER,
-    "gold": NUMBER, "floor": NUMBER, "ascension": NUMBER, "deck_count": NUMBER,
-    "room_icon": TEXT, "bosses": [TEXT], "potion_slots": nullable([nullable({"name": TEXT, "usable_here": bool, "bouncing": bool})]),
-    "relics": nullable([RELIC]), "relic_count": NUMBER,
-    "map_visible": bool, "deck_visible": bool, "settings_visible": bool,
-}
-SCREEN = {"status": str, "view": str}
-SELECTION_CARD = HAND_CARD
-SELECTION_OPTION = {"id": str, "text": TEXT, "enabled": bool}
-UPGRADE_PREVIEW = {"before": SELECTION_CARD, "after": SELECTION_CARD}
-SELECTION = {
-    "type": str, "status": str, "prompt": TEXT, "min_select": NUMBER, "max_select": NUMBER,
-    "selected_ids": nullable([int]), "cards": nullable([SELECTION_CARD]),
-    "options": [SELECTION_OPTION], "can_view_battlefield": bool,
-}
-SELECTION_OUTPUT = {**SELECTION, 'can_view_upgrades': bool, 'view_upgrades': nullable(bool),
-                    "enchantment": nullable({"title": str, "description": str}), "enchant_previews": [UPGRADE_PREVIEW],
-                    "transform_previews": [{"before": SELECTION_CARD, "after": nullable(SELECTION_CARD), "random": bool}],
-                    "bundles": [{"id": str, "cards": [SELECTION_CARD]}], "upgrade_preview": nullable(UPGRADE_PREVIEW), "upgrade_previews": [UPGRADE_PREVIEW]}
-EVENT_ENTITY = {"id": int, "kind": str, "name": TEXT}
-TARGET_ENTITY = {**EVENT_ENTITY, "id": frozenset({int, str})}
-POTION_REF = {"slot_index": int, "name": TEXT}
-EVENT_SOURCE = {"kind": str, "name": TEXT}
-EVENT = {
-    "sequence": int, "type": str, "actor": EVENT_ENTITY, "target": EVENT_ENTITY,
-    "source": nullable(EVENT_SOURCE), "card": {"id": int, "name": TEXT},
-    "hp_loss": NUMBER, "blocked": int, "before": NUMBER, "after": NUMBER,
-    "name": TEXT, "autoplay": bool, "change": str, "potion": POTION_REF,
-    "relic": {"name": TEXT}, "pile": TEXT,
-    "orb": {"name": str}, "slot_index": int,
-}
-TRANSITION = {"stop_reason": str, "complete": bool, "events": [EVENT]}
-REWARD_ITEM = {'id': int, 'type': str, 'text': str, 'enabled': bool, 'linked_group': NUMBER}
-REWARDS = {'status': str, 'title': TEXT, 'items': nullable([REWARD_ITEM]),
-           'proceed': nullable({'text': str, 'enabled': bool, 'skips_remaining': bool})}
-REST_OPTION = {'id': str, 'text': str, 'enabled': bool}
-REST_SITE = {'status': str, 'prompt': TEXT, 'description': TEXT, 'options': nullable([REST_OPTION]),
-             'proceed': nullable({'text': str, 'enabled': bool})}
-TREASURE_RELIC = {'name': str, 'enabled': bool}
-TREASURE = {'status': str, 'chest': TEXT, 'relic': nullable(TREASURE_RELIC),
-            'proceed': nullable({'text': str, 'enabled': bool, 'skips_remaining': bool})}
-SHOP_CARD = {key: shape for key, shape in CARD.items() if key != "id"}
-SHOP_ITEM = {'id': int, 'kind': str, 'position': str, 'price': NUMBER, 'affordable': nullable(bool),
-             'enabled': bool, 'name': str, 'used': bool, 'on_sale': bool, 'card': SHOP_CARD}
-SHOP = {'status': str, 'view': TEXT, 'items': nullable([SHOP_ITEM]),
-        'open': nullable({'enabled': bool}), 'back': nullable({'enabled': bool}),
-        'proceed': nullable({'text': str, 'enabled': bool})}
-ANCIENT_OPTION = {'id': int, 'title': str, 'description': str, 'enabled': bool}
-ROOM_EVENT_OPTION = {**ANCIENT_OPTION, 'lethal_warning': bool}
-ROOM_EVENT = {'status': str, 'name': TEXT, 'description': TEXT, 'options': nullable([ROOM_EVENT_OPTION]),
-              'proceed': nullable({'text': str, 'enabled': bool})}
-DIVINATION = {'status': str, 'phase': TEXT, 'remaining': NUMBER, 'tool': TEXT,
-              'tools': nullable([{'id': str, 'text': str, 'enabled': bool}]),
-              'instructions': nullable({'title': str, 'description': str}), 'dialogue': TEXT,
-              'grid': nullable({'columns': int, 'rows': int, 'covered_rows': [str],
-                                'image': {'width': int, 'height': int}}),
-              'proceed': nullable({'text': str, 'enabled': bool})}
-ANCIENT = {'status': str, 'name': TEXT, 'epithet': TEXT, 'description': TEXT, 'dialogue': nullable([{'speaker': str, 'text': str}]),
-           'options': nullable([ANCIENT_OPTION]), 'continue': nullable({'text': TEXT, 'enabled': bool}),
-           'proceed': nullable({'text': str, 'enabled': bool})}
-CONFIRMATION = {'status': str, 'type': str, 'title': str, 'description': str,
-                'options': [{'id': str, 'text': str, 'enabled': bool}]}
-OBSERVATION = {
-    "scene": str, "screen": SCREEN, "turn": NUMBER, "player": nullable(PLAYER),
-    "enemies": nullable([ENEMY]), "top_bar": nullable(TOP_BAR),
-    "buttons": nullable({"end_turn": nullable({"text": TEXT, "enabled": bool})}),
-    "available_actions": [str],
-}
+from sts2_mcp.output.contracts.cards import CARD_FACE as CARD, CARD_FULL as HAND_CARD, BROWSED_CARD
+from sts2_mcp.output.contracts.combat import POWER, INTENT, HEALTH, ORB, ORB_SLOTS, BLADE, PLAYER, ENEMY, ALLY
+from sts2_mcp.output.contracts.ui import RELIC, TOP_BAR, SCREEN
+from sts2_mcp.output.contracts.selection import SELECTION_CARD, SELECTION_OPTION, UPGRADE_PREVIEW, SELECTION, SELECTION_OUTPUT
+from sts2_mcp.output.contracts.transition import EVENT_ENTITY, TARGET_ENTITY, POTION_REF, EVENT_SOURCE, EVENT, TRANSITION
+from sts2_mcp.output.contracts.rooms import REWARD_ITEM, REWARDS, REST_OPTION, REST_SITE, TREASURE_RELIC, TREASURE, SHOP_CARD, SHOP_ITEM, SHOP, ANCIENT_OPTION, ROOM_EVENT_OPTION, ROOM_EVENT, DIVINATION, ANCIENT, CONFIRMATION
+from sts2_mcp.output.contracts.endings import OPTION, RESULT, EPILOGUE, PHASES, EPILOGUE_TOOLS
+from sts2_mcp.output.contracts.map import MAP_SUMMARY
+from sts2_mcp.output.contracts.observation import OBSERVATION, OPTIONAL_OBSERVATION
 from sts2_mcp.output.scene_context import SCENES as OBSERVATION_SCENES, scene_context
+from sts2_mcp.output.card_format import format_game_cards
+from sts2_mcp.output.combat_fields import validate_identities, blade_refs, orb_slots
+from sts2_mcp.output.hand_details import hand_details
+from sts2_mcp.output.selection_details import selection_details
+from sts2_mcp.output.observation_details import observation_details
 
-from sts2_mcp.output.map_details import MAP_SUMMARY
 
-
-from sts2_mcp.output.run_ending_details import RESULT, EPILOGUE
-
-OPTIONAL_OBSERVATION = {'allies': nullable([ALLY]), 'run_result': nullable(RESULT), 'epilogue': nullable(EPILOGUE), 'map': nullable(MAP_SUMMARY), 'confirmation': nullable(CONFIRMATION), 'divination': nullable(DIVINATION), "event": nullable(ROOM_EVENT), "ancient": nullable(ANCIENT),"selection": nullable(SELECTION_OUTPUT), 'rewards': nullable(REWARDS), 'rest_site': nullable(REST_SITE), 'treasure': nullable(TREASURE), 'shop': nullable(SHOP)}
 GAMEPLAY = {
     'energy': NUMBER, 'max_energy': NUMBER, 'stars': NUMBER,
     'reward_result': {'reward_id': int, 'status': str},
@@ -125,6 +41,7 @@ GAMEPLAY = {
 
 def gameplay_fields(state, *, operation=None):
     shape = GAMEPLAY
+    shop_mode = "face_full"
     if operation == 'inspect_combatants':
         shape = {**shape, 'unavailable_hover_sources': [str]}
     if operation == "inspect_selection":
@@ -139,6 +56,7 @@ def gameplay_fields(state, *, operation=None):
     if state.get('scene') == 'shop' and (state.get('shop') or {}).get('items'):
         full = any('description' in (i.get('card') or i) for i in state['shop']['items'])
         if full:
+            shop_mode = "full"
             shape = {**shape, 'shop': {**SHOP, 'items': nullable([{**SHOP_ITEM, 'description': str, 'hover_tips': [TIP],
                 'card': {**SHOP_CARD, 'description': str, 'hover_tips': [TIP]}}])}}
     if state.get('scene') == 'ancient' and any('hover_tips' in o for o in (state.get('ancient') or {}).get('options') or []):
@@ -147,242 +65,5 @@ def gameplay_fields(state, *, operation=None):
         shape = {**shape, 'event': {**ROOM_EVENT, 'options': nullable([{**ROOM_EVENT_OPTION, 'hover_tips': [TIP]}])}}
     if 'hover_tips' in (state.get('run_result') or {}):
         from sts2_mcp.output.run_ending_details import result_details
-        return format_game_cards({**project(state, shape), 'run_result': result_details(state['run_result'], full=True)})
-    return format_game_cards(project(state, shape))
-
-
-def validate_identities(items, maximum):
-    seen = set()
-    for item in items:
-        identity = item.get('id')
-        if type(identity) is not int or not 0 <= identity <= maximum or identity in seen:
-            raise ValueError('Invalid or duplicate public identity.')
-        seen.add(identity)
-
-
-def blade_refs(value):
-    result = project(value, nullable([BLADE]))
-    if result is not None:
-        validate_identities(result, 2147483647)
-        if any(set(item) != set(BLADE) for item in result):
-            raise ValueError('Incomplete public blade identity.')
-    return result
-
-
-def orb_slots(value):
-    result = project(value, ORB_SLOTS)
-    if result is not None and (len(result) > 10 or any(
-            slot is not None and (set(slot) != set(ORB) or not slot['name']) for slot in result)):
-        raise ValueError('Invalid public orb slots.')
-    return result
-
-
-def observation_details(state):
-    result = project(state, {**OBSERVATION, **OPTIONAL_OBSERVATION})
-    if (not set(OBSERVATION) <= result.keys() or "status" not in result["screen"]
-            or result["scene"] not in OBSERVATION_SCENES
-            or result["screen"]["status"] not in ("visible", "covered", "hidden", "not_ready", "not_applicable")):
-        raise ValueError("Invalid observation structure.")
-    result.update(scene_context(state))
-    result['available_actions'] = public_tools(result['available_actions'])
-    count = (result.get('top_bar') or {}).get('relic_count')
-    if count is not None and count < 0:
-        raise ValueError('Invalid relic count.')
-    if result['player'] is not None and 'orb_slots' in result['player']:
-        result['player']['orb_slots'] = orb_slots(result['player']['orb_slots'])
-    if result['player'] is not None and 'sovereign_blades' in result['player']:
-        result['player']['sovereign_blades'] = blade_refs(result['player']['sovereign_blades'])
-    if result.get('allies') is not None:
-        validate_identities(result['allies'], 4294967295)
-        for ally in result['allies']:
-            if not {'id', 'name', *HEALTH, 'powers'} <= ally.keys() or ally.get('block_shared_with', 'player') != 'player':
-                raise ValueError('Invalid public ally.')
-    if result.get('map') is not None:
-        from sts2_mcp.output.map_details import map_summary
-        result['map'] = map_summary(result['map'])
-        map_tools = {'travel_to_node', 'inspect_map', 'close_map', 'inspect_deck', 'inspect_relics', 'inspect_potions', 'inspect_ui'}
-        if result['scene'] != 'combat':
-            map_tools |= {'inspect_targets', 'use_potion', 'discard_potion'}
-        if (result['screen'] != {'status': 'visible', 'view': 'map'}
-                or any(a not in map_tools for a in result['available_actions'])
-                or ('travel_to_node' in result['available_actions']) != result['map']['can_travel']):
-            raise ValueError('Map is not the exposed action screen.')
-    elif 'travel_to_node' in result['available_actions'] or result['screen'] == {'status': 'visible', 'view': 'map'}:
-        raise ValueError('Missing map summary.')
-    if result.get("selection") is not None:
-        result["selection"] = selection_details(result["selection"])
-    if result.get('rewards') is not None:
-        from sts2_mcp.output.reward_details import rewards_details
-        result['rewards'] = rewards_details(result['rewards'])
-    elif result['scene'] == 'rewards':
-        raise ValueError('Missing rewards state.')
-    if result.get('rest_site') is not None:
-        from sts2_mcp.output.rest_site_details import rest_site_details
-        result['rest_site'] = rest_site_details(result['rest_site'])
-    elif result['scene'] == 'rest_site':
-        raise ValueError('Missing rest site state.')
-    if result.get('treasure') is not None:
-        from sts2_mcp.output.treasure_details import treasure_details
-        result['treasure'] = treasure_details(result['treasure'])
-    elif result['scene'] == 'treasure':
-        raise ValueError('Missing treasure state.')
-    if result.get('shop') is not None:
-        from sts2_mcp.output.shop_details import shop_details
-        result['shop'] = shop_details(result['shop'])
-    elif result['scene'] == 'shop':
-        raise ValueError('Missing shop state.')
-    if result.get('ancient') is not None:
-        from sts2_mcp.output.ancient_details import ancient_details
-        result['ancient'] = ancient_details(result['ancient'])
-    elif result['scene'] == 'ancient':
-        raise ValueError('Missing ancient state.')
-    if result.get('event') is not None:
-        from sts2_mcp.output.event_details import event_details
-        result['event'] = event_details(result['event'])
-    elif result['scene'] == 'event':
-        raise ValueError('Missing event state.')
-    if result.get('divination') is not None:
-        from sts2_mcp.output.divination_details import divination_details
-        result['divination'] = divination_details(result['divination'])
-        if result['divination']['status'] == 'visible' and (result['scene'] != 'event'
-                or result['screen'] != {'status': 'visible', 'view': 'divination'}
-                or (result.get('event') or {}).get('status') != 'covered'):
-            raise ValueError('Divination is not the exposed screen.')
-    if result['screen'].get('view') == 'divination' and result.get('divination') is None:
-        raise ValueError('Missing divination state.')
-    if result.get('confirmation') is not None:
-        from sts2_mcp.output.confirmation_details import confirmation_details
-        result['confirmation'] = confirmation_details(result['confirmation'])
-        if (result['scene'] != 'event' or result['screen'] != {'status': 'visible', 'view': 'confirmation'}
-                or (result.get('event') or {}).get('status') != 'covered'
-                or any(action != 'respond_to_confirmation' for action in result['available_actions'])
-                or any(result.get(key) is not None for key in ('turn', 'player', 'enemies', 'top_bar', 'buttons',
-                                                              'selection', 'rewards', 'rest_site', 'treasure', 'shop', 'ancient', 'divination'))
-                or result['available_actions'] and not any(option['enabled'] for option in result['confirmation']['options'])):
-            raise ValueError('Confirmation is not the exposed screen.')
-    elif ('respond_to_confirmation' in result['available_actions']
-          or result['screen'] == {'status': 'visible', 'view': 'confirmation'}):
-        raise ValueError('Missing event confirmation.')
-    from sts2_mcp.output.run_ending_details import validate_ending
-    return format_game_cards(validate_ending(result))
-
-
-def selection_details(value):
-    result = project(value, SELECTION_OUTPUT)
-    if (not set(SELECTION) <= result.keys() or result["type"] not in
-            {"choose_one", "reward", "grid", "combat_pile", "deck", "deck_upgrade", "deck_enchant", "deck_transform", "bundle", "view_cards", "hand", "hand_upgrade", "unsupported"}
-            or result["status"] not in {"visible", "battlefield", "covered", "unsupported"}):
-        raise ValueError("Invalid card selection.")
-    upgrade_fields = {'can_view_upgrades', 'view_upgrades'}
-    if upgrade_fields & result.keys():
-        if (not upgrade_fields <= result.keys()
-                or result['status'] != 'visible' and (result['can_view_upgrades'] or result['view_upgrades'] is not None)
-                or result['status'] == 'visible' and result['view_upgrades'] is None
-                or (result['can_view_upgrades'] or result['view_upgrades'] is True)
-                    and result['type'] not in {'deck_upgrade', 'deck_transform', 'view_cards'}):
-            raise ValueError('Invalid selection upgrade view.')
-    preview = result.get("upgrade_preview")
-    if result["type"] == "hand_upgrade":
-        if "upgrade_preview" not in result:
-            raise ValueError("Missing upgrade preview state.")
-        if preview is not None and (set(preview) != set(UPGRADE_PREVIEW)
-                or any(not {"id", "name", "description"} <= card.keys() or card['id'] < 0
-                       for card in preview.values())
-                or result["selected_ids"] != [preview['before']['id']]
-                or preview['before']['id'] != preview['after']['id']):
-            raise ValueError("Invalid upgrade preview.")
-    elif preview is not None:
-        raise ValueError("Unexpected upgrade preview.")
-    previews = result.get('upgrade_previews', [])
-    if result['type'] == 'deck_upgrade':
-        if 'upgrade_previews' not in result:
-            raise ValueError('Missing deck upgrade previews.')
-        preview_ids = []
-        for pair in previews:
-            if (set(pair) != set(UPGRADE_PREVIEW) or any(not {'id', 'name', 'description'} <= c.keys() or c['id'] < 0
-                                                       for c in pair.values())
-                    or pair['before']['id'] != pair['after']['id']):
-                raise ValueError('Invalid deck upgrade preview identity.')
-            preview_ids.append(pair['before']['id'])
-        if len(set(preview_ids)) != len(preview_ids) or previews and set(preview_ids) != set(result['selected_ids'] or []):
-            raise ValueError('Invalid deck upgrade preview selection.')
-    elif previews:
-        raise ValueError('Unexpected deck upgrade previews.')
-    transformations = result.get('transform_previews', [])
-    if result['type'] == 'deck_transform':
-        if 'transform_previews' not in result: raise ValueError('Missing transform previews.')
-        preview_ids = []
-        for pair in transformations:
-            if (set(pair) != {'before', 'after', 'random'} or not {'id', 'name', 'description'} <= pair['before'].keys()
-                    or pair['before']['id'] < 0 or pair['random'] != (pair['after'] is None)
-                    or pair['after'] is not None and (not {'id', 'name', 'description'} <= pair['after'].keys()
-                                                     or pair['after']['id'] != pair['before']['id'])):
-                raise ValueError('Invalid transform preview.')
-            preview_ids.append(pair['before']['id'])
-        if len(set(preview_ids)) != len(preview_ids) or transformations and set(preview_ids) != set(result['selected_ids'] or []):
-            raise ValueError('Invalid transform selection.')
-    elif transformations: raise ValueError('Unexpected transform previews.')
-    bundles = result.get('bundles', [])
-    if result['type'] == 'bundle':
-        if 'bundles' not in result or any(set(b) != {'id', 'cards'} or not b['id'].startswith('bundle:')
-                                         or any(not {'id', 'name'} <= c.keys() for c in b['cards']) for b in bundles):
-            raise ValueError('Invalid bundles.')
-        if len({b['id'] for b in bundles}) != len(bundles): raise ValueError('Repeated bundle.')
-    elif bundles: raise ValueError('Unexpected bundles.')
-    enchantment = result.get('enchantment')
-    enchanted = result.get('enchant_previews', [])
-    if result['type'] == 'deck_enchant':
-        if 'enchantment' not in result or 'enchant_previews' not in result:
-            raise ValueError('Missing enchantment preview state.')
-        if enchantment is not None and set(enchantment) != {'title', 'description'}:
-            raise ValueError('Invalid enchantment help.')
-        preview_ids = []
-        for pair in enchanted:
-            if (set(pair) != set(UPGRADE_PREVIEW) or any(not {'id', 'name', 'description'} <= c.keys() or c['id'] < 0
-                                                      for c in pair.values()) or pair['before']['id'] != pair['after']['id']):
-                raise ValueError('Invalid enchantment preview identity.')
-            preview_ids.append(pair['before']['id'])
-        if len(set(preview_ids)) != len(preview_ids) or enchanted and set(preview_ids) != set(result['selected_ids'] or []):
-            raise ValueError('Invalid enchantment preview selection.')
-    elif enchantment is not None or enchanted:
-        raise ValueError('Unexpected enchantment preview.')
-    if result["status"] != "visible":
-        if (any(result[key] is not None for key in
-                ("prompt", "min_select", "max_select", "selected_ids", "cards")) or result["options"] or preview is not None or previews or enchantment is not None or enchanted or transformations or bundles):
-            raise ValueError("Hidden selection contents.")
-        return result
-    minimum, maximum = result["min_select"], result["max_select"]
-    if (type(minimum) is not int or type(maximum) is not int or not 0 <= minimum <= maximum
-            or result["cards"] is None or result["selected_ids"] is None
-            or any(i < 0 for i in result["selected_ids"])
-            or len(set(result["selected_ids"])) != len(result["selected_ids"])):
-        raise ValueError("Invalid selection rules.")
-    ids = []
-    for card in result["cards"]:
-        if not {"id", "name"} <= card.keys() or card["id"] < 0:
-            raise ValueError("Invalid selection card.")
-        ids.append(card["id"])
-    if len(set(ids)) != len(ids):
-        raise ValueError("Repeated selection card.")
-    options = []
-    for option in result["options"]:
-        if set(option) != set(SELECTION_OPTION) or not option["id"]:
-            raise ValueError("Invalid selection option.")
-        options.append(option["id"])
-    if len(set(options)) != len(options):
-        raise ValueError("Repeated selection option.")
-    return result
-
-
-def hand_details(state):
-    hand = project(state["hand"], [HAND_CARD])
-    ids = set()
-    for card in hand:
-        if (not {"id", "name", "description", "hover_tips"} <= card.keys()
-                or card["id"] < 0 or card["id"] in ids):
-            raise ValueError("Invalid hand card identity or details.")
-        ids.add(card["id"])
-        for tip in card["hover_tips"] or []:
-            if set(tip) != set(TIP):
-                raise ValueError("Invalid hand hover tip.")
-    return {**project(state, {key: NUMBER for key in ('energy', 'max_energy', 'stars')}), "hand": hand}
+        return format_game_cards({**project(state, shape), 'run_result': result_details(state['run_result'], full=True)}, shop_mode=shop_mode)
+    return format_game_cards(project(state, shape), shop_mode=shop_mode)

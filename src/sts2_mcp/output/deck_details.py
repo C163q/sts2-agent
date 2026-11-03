@@ -76,4 +76,7 @@ def closed_card_view(state):
         if not isinstance(state["screen"]["view"], str):
             raise ValueError("Invalid screen view.")
         result["screen"]["view"] = state["screen"]["view"]
-    return result
+    from sts2_mcp.output.contracts.observation import OBSERVATION
+    from sts2_mcp.output.value_shapes import project
+    from sts2_mcp.output.card_format import format_game_cards
+    return format_game_cards(project(result, OBSERVATION))

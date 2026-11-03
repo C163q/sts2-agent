@@ -1,10 +1,7 @@
-import base64
-import binascii
+from sts2_mcp.output.media import png_data as _png_data, MAX_PNG_BYTES, MAX_PIXELS
 import os
-import struct
 import tempfile
 import uuid
-import zlib
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -15,8 +12,6 @@ SCREENSHOT_SCHEMA = {
                                 "description": "PNG filename only, e.g. 01-before.png. Omit for a unique name; existing files are never overwritten."}},
     "additionalProperties": False,
 }
-MAX_PNG_BYTES = 32 * 1024 * 1024
-MAX_PIXELS = 16_777_216
 
 
 class ScreenshotError(Exception):
@@ -39,41 +34,6 @@ def screenshot_arguments(arguments):
     return dict(arguments)
 
 
-def _png_data(state):
-    width, height, encoded = state["width"], state["height"], state["png_base64"]
-    if (type(width) is not int or type(height) is not int or width <= 0 or height <= 0
-            or width * height > MAX_PIXELS or not isinstance(encoded, str)
-            or len(encoded) > 4 * ((MAX_PNG_BYTES + 2) // 3)):
-        raise ValueError("Invalid screenshot dimensions or data size.")
-    try:
-        data = base64.b64decode(encoded, validate=True)
-    except (binascii.Error, ValueError) as error:
-        raise ValueError("Invalid screenshot encoding.") from error
-    if len(data) > MAX_PNG_BYTES or data[:8] != b"\x89PNG\r\n\x1a\n":
-        raise ValueError("Invalid screenshot PNG.")
-    offset, has_pixels = 8, False
-    while offset + 12 <= len(data):
-        length, kind = struct.unpack_from(">I4s", data, offset)
-        end = offset + 12 + length
-        if end > len(data):
-            break
-        body = data[offset + 8:end - 4]
-        crc = struct.unpack_from(">I", data, end - 4)[0]
-        if zlib.crc32(kind + body) != crc:
-            break
-        if offset == 8:
-            if kind != b"IHDR" or length != 13 or struct.unpack_from(">II", body) != (width, height):
-                break
-        elif kind == b"IHDR":
-            break
-        if kind == b"IDAT":
-            has_pixels = True
-        if kind == b"IEND":
-            if length == 0 and end == len(data) and has_pixels:
-                return data, width, height
-            break
-        offset = end
-    raise ValueError("Incomplete or inconsistent screenshot PNG.")
 
 
 class ScreenshotStore:

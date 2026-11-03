@@ -1,3 +1,4 @@
+from sts2_mcp.output.response_pipeline import decode_success
 import argparse
 import json
 import os
@@ -104,17 +105,18 @@ def main():
         if not isinstance(result, dict) or type(result.get("ok")) is not bool:
             raise ValueError("Invalid game response.")
         if combatants and result['ok'] and not args.raw:
-            from sts2_mcp.output.combatant_details import combatant_details
             from sts2_mcp.output.combatant_presets import combatant_preset
             from sts2_mcp.output.presets import apply_preset
-            payload = player_result({'ok': True, 'state': combatant_details(result['state'])}, operation=args.operation)
+            payload = decode_success(args.operation, result['state'], arguments, include_observation=True)
             payload = combatant_preset(payload, **settings)
             payload = apply_preset(payload, 'default' if args.preset == 'default' or settings['preset'] == 'summary' else 'full')
         elif browsing and result['ok'] and not args.raw:
-            from sts2_mcp.output.card_format import browse_result
+            from sts2_mcp.output.browse_output import browse_result
             payload = browse_result(result, args.operation, arguments, args.preset or 'default')
         else:
-            payload = result if args.raw else player_result(result, operation=args.operation)
+            payload = result if args.raw else (
+                decode_success(args.operation, result['state'], arguments, include_observation=True)
+                if result['ok'] else player_result(result, operation=args.operation))
     except (OSError, RuntimeError, ValueError, KeyError, TypeError) as error:
         local_combatant_error = args.operation == 'inspect_combatants' and not request_sent and isinstance(error, ValueError)
         code = 'invalid_request' if local_combatant_error else 'timeout' if isinstance(error, TimeoutError) else 'transport_error'

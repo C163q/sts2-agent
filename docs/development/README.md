@@ -41,4 +41,4 @@
 
 - [用户后续待办](TODO.md)：只按用户明确要求维护，记录不等于授权实施。
 - [工具逐项核验清单及流程](../research/2026-11-02-mcp-tool-review.md)：本轮参数与摘要设计的阶段性工作记录；当前接口仍以本目录为准。
-- [工具共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)：源码审查后的待审阅计划，包含已经确认的筛选、上下文和遗物悬停调整；尚未实施。
+- [工具共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)：第 1–2 阶段已完成，固定行为与 Python 共用输出链路见[实施记录](../research/2026-11-04-refactor-stages-1-2.md)；筛选、上下文和遗物悬停调整仍按后续阶段推进。

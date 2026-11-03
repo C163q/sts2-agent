@@ -1,4 +1,5 @@
-from sts2_mcp.output.game_output import SHOP, SHOP_ITEM, SHOP_CARD, TIP, project
+from sts2_mcp.output.value_shapes import project, TIP
+from sts2_mcp.output.contracts.rooms import SHOP, SHOP_ITEM, SHOP_CARD
 
 
 BUY_SCHEMA = {'type': 'object', 'properties': {'item_id': {
@@ -78,15 +79,3 @@ def shop_details(value, *, full=False):
 def inspect_shop_details(state):
     if state.get('scene') != 'shop': raise ValueError('Invalid shop inspection scene.')
     return {'scene': 'shop', 'shop': shop_details(state['shop'], full=True)}
-
-
-def purchase_details(state):
-    from sts2_mcp.output.transition_details import end_turn_details
-    result = end_turn_details(state)
-    if 'purchase_result' in state:
-        purchase = project(state['purchase_result'], {'item_id': int, 'status': str})
-        if (set(purchase) != {'item_id', 'status'} or purchase['item_id'] < 0 or purchase['status'] not in {
-                'success', 'failure_space', 'failure_forbidden', 'failure_gold', 'failure_out_of_stock', 'canceled'}):
-            raise ValueError('Invalid purchase result.')
-        result['purchase_result'] = purchase
-    return result

@@ -1,4 +1,5 @@
-from sts2_mcp.output.game_output import EVENT_ENTITY, TEXT, project
+from sts2_mcp.output.value_shapes import project, TEXT
+from sts2_mcp.output.contracts.transition import EVENT_ENTITY
 from sts2_mcp.output.potion_action_details import POTION_SCHEMA, potion_arguments, potion_target_details
 
 

@@ -1,6 +1,6 @@
 from sts2_mcp.output.scene_context import scene_context
 import re
-from sts2_mcp.output.game_output import blade_refs, orb_slots, validate_identities
+from sts2_mcp.output.combat_fields import blade_refs, orb_slots, validate_identities
 
 
 def nullable_text(value):

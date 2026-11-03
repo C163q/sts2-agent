@@ -1,4 +1,5 @@
-from sts2_mcp.output.game_output import TREASURE, TREASURE_RELIC, TIP, project
+from sts2_mcp.output.value_shapes import project, TIP
+from sts2_mcp.output.contracts.rooms import TREASURE, TREASURE_RELIC
 
 
 LOOT_SCHEMA = {'type': 'object', 'properties': {'open_only': {

@@ -1,4 +1,5 @@
-from sts2_mcp.output.game_output import REST_SITE, REST_OPTION, project
+from sts2_mcp.output.value_shapes import project
+from sts2_mcp.output.contracts.rooms import REST_SITE, REST_OPTION
 from sts2_mcp.output.selection_details import OPTION_SCHEMA, selection_arguments
 
 

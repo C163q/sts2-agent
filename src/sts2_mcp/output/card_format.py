@@ -1,16 +1,8 @@
+from sts2_mcp.output.contracts.cards import CARD_FACE, CARD_FULL, BROWSED_CARD
 """Fixed card content modes; visibility is decided by the native page reader."""
-from sts2_mcp.output.value_shapes import nullable, project, TEXT, TIP
+from sts2_mcp.output.value_shapes import project
 from sts2_mcp.output.card_summary import card_summary as compact_card
 
-CARD_FACE = {
-    "id": int, "name": TEXT, "type": TEXT, "rarity": TEXT, "visual_card_pool": TEXT,
-    "energy_cost": TEXT, "star_cost": TEXT, "energy_cost_color": str, "star_cost_color": str,
-    "unplayable_markers": [str], "outline": str,
-    "enchantment": nullable({"name": TEXT, "amount": int, "dimmed": bool}),
-    "affliction": nullable({"name": str}),
-}
-CARD_FULL = {**CARD_FACE, "description": TEXT, "hover_tips": nullable([TIP])}
-BROWSED_CARD = {**CARD_FULL, "id": str}
 
 
 def format_card(card, mode, *, path=()):
@@ -23,12 +15,12 @@ def format_card(card, mode, *, path=()):
     elif mode == 'summary':
         result = compact_card(result)
     if mode in {'default', 'face_default'}:
-        from sts2_mcp.output.presets import apply_preset
+        from sts2_mcp.output.null_fields import apply_preset
         result = apply_preset(result, 'default', path=path)
     return result
 
 
-def format_game_cards(payload):
+def format_game_cards(payload, *, shop_mode="face_full"):
     """Route validated page card objects, keeping references and choice metadata separate."""
     def cards(items, mode):
         return None if items is None else [format_card(card, mode) for card in items]
@@ -44,7 +36,7 @@ def format_game_cards(payload):
     selection = payload.get('selection')
     if selection is not None:
         def candidates(items):
-            return [format_card(card, 'full' if 'description' in card else 'face_full') for card in items]
+            return [format_card(card, 'full') for card in items]
         if selection.get('cards') is not None:
             selection['cards'] = candidates(selection['cards'])
         for bundle in selection.get('bundles', []):
@@ -60,7 +52,7 @@ def format_game_cards(payload):
         payload['run_result']['cards'] = cards(payload['run_result']['cards'], 'full')
     for item in (payload.get('shop') or {}).get('items') or []:
         if item['kind'] == 'card':
-            item['card'] = format_card(item['card'], 'full' if 'description' in item['card'] else 'face_full')
+            item['card'] = format_card(item['card'], shop_mode)
     return payload
 
 
@@ -77,16 +69,3 @@ def browse_preset(payload, preset):
 
 def card_summary(card):
     return format_card(card, "summary")
-
-
-def browse_result(response, operation, arguments=None, preset='default'):
-    """Give the file CLI the same validated card projection as MCP."""
-    from sts2_mcp.output.inspection_details import inspection_details
-    from sts2_mcp.output.player_output import player_result
-    from sts2_mcp.output.presets import apply_preset
-    if not response['ok']:
-        return player_result(response, operation=operation)
-    details = inspection_details(operation, response['state'], arguments)
-    payload = player_result({'ok': True, 'state': details}, operation=operation)
-    payload = browse_preset(payload, 'summary' if preset == 'summary' else 'full')
-    return apply_preset(payload, 'full' if preset == 'full' else 'default')

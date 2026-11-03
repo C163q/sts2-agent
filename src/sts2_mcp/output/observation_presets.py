@@ -28,7 +28,7 @@ def observation_preset(payload, preset):
     if payload.get('selection') is not None:
         result['selection'] = {key: payload['selection'][key] for key in ('type', 'status')}
     if preset == 'top_bar':
-        from sts2_mcp.output.presets import apply_preset
+        from sts2_mcp.output.null_fields import apply_preset
         bar = apply_preset(payload, 'default').get('top_bar')
         if bar is not None:
             result['top_bar'] = {key: value for key, value in bar.items() if key != 'relics'}
@@ -37,7 +37,7 @@ def observation_preset(payload, preset):
 
 def observation_summary(payload):
     from sts2_mcp.output.card_format import card_summary
-    from sts2_mcp.output.presets import apply_preset
+    from sts2_mcp.output.null_fields import apply_preset
     from sts2_mcp.output.selection_summary import selection_summary
     from sts2_mcp.output.top_bar_summary import top_bar_summary
     result = apply_preset(payload, 'default')

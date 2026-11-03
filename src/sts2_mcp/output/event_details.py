@@ -1,4 +1,5 @@
-from sts2_mcp.output.game_output import ROOM_EVENT, ROOM_EVENT_OPTION, TIP, project
+from sts2_mcp.output.value_shapes import project, TIP
+from sts2_mcp.output.contracts.rooms import ROOM_EVENT, ROOM_EVENT_OPTION
 
 EVENT_OPTION_SCHEMA = {'type': 'object', 'properties': {'option_id': {
     'type': 'integer', 'minimum': 0, 'maximum': 2147483647,

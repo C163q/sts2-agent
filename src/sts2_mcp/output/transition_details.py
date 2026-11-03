@@ -1,4 +1,6 @@
-from sts2_mcp.output.game_output import TRANSITION, observation_details, project
+from sts2_mcp.output.observation_details import observation_details
+from sts2_mcp.output.value_shapes import project
+from sts2_mcp.output.contracts.transition import TRANSITION
 from sts2_mcp.output.available_tools import INSPECTIONS, VIEWS
 
 

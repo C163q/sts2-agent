@@ -1,4 +1,5 @@
-from sts2_mcp.output.game_output import CONFIRMATION, project
+from sts2_mcp.output.value_shapes import project
+from sts2_mcp.output.contracts.rooms import CONFIRMATION
 
 
 CONFIRMATION_SCHEMA = {'type': 'object', 'properties': {'option': {

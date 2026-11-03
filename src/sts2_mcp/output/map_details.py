@@ -1,13 +1,14 @@
+from sts2_mcp.output.contracts.map import MAP_SUMMARY
+from sts2_mcp.output.value_shapes import project
 from sts2_mcp.output.scene_context import scene_context
 import re
 
-from sts2_mcp.output.deck_details import closed_card_view
+
 
 
 NODE_TYPES = ("ancient", "boss", "monster", "elite", "shop", "treasure", "rest_site", "unknown", "unrecognized")
 REVEALED_TYPES = ("monster", "elite", "shop", "treasure", "rest_site")
 NODE_ID = re.compile(r'map:([1-9][0-9]*):(0|[1-9][0-9]*):(0|[1-9][0-9]*)')
-MAP_SUMMARY = {'status': str, 'act': int, 'current_node': (str,), 'can_travel': bool, 'selectable_nodes': [str]}
 MAP_SCHEMA = {
     'type': 'object',
     'properties': {
@@ -40,7 +41,6 @@ TRAVEL_SCHEMA = {'type': 'object', 'properties': {'node_id': {
 
 
 def map_summary(value):
-    from sts2_mcp.output.game_output import project
     result = project(value, MAP_SUMMARY)
     if (set(result) != set(MAP_SUMMARY) or result['status'] != 'visible'
             or not 1 <= result['act'] <= 2147483647
@@ -142,13 +142,3 @@ def map_details(state):
     return {**context, "act": act,
             "current_node": current, "visited_path": visited, "can_travel": state["can_travel"],
             "selectable_nodes": choices, "nodes": nodes}
-
-
-def closed_map(state):
-    result = closed_card_view(state)
-    if result['screen'].get('view') in {'divination', 'epilogue'}:
-        from sts2_mcp.output.game_output import observation_details
-        return observation_details(state)
-    if "view" in result["screen"]:
-        raise ValueError("Map close left a browsing page open.")
-    return result

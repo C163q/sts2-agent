@@ -1,9 +1,10 @@
+from sts2_mcp.output.value_shapes import project, TEXT, TIP
+from sts2_mcp.output.contracts.rooms import DIVINATION
 import base64
 import struct
 import zlib
 
-from sts2_mcp.output.game_output import DIVINATION, project
-from sts2_mcp.screenshot_tool import _png_data
+from sts2_mcp.output.media import ImagePayload, png_data as _png_data
 
 
 TOOL_SCHEMA = {'type': 'object', 'properties': {'tool': {
@@ -20,11 +21,6 @@ DIVINE_SCHEMA = {'type': 'object', 'properties': {
                  'required': ['x', 'y'], 'additionalProperties': False}
 
 
-class ImagePayload(dict):
-    """Validated gameplay JSON with media kept outside the JSON object."""
-    def __init__(self, payload, image):
-        super().__init__(payload)
-        self.image = image
 
 
 def divination_arguments(operation, arguments):

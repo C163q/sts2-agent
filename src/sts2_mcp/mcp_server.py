@@ -7,7 +7,7 @@ import anyio
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import CallToolResult, ImageContent, TextContent
-from sts2_mcp.output.divination_details import ImagePayload
+from sts2_mcp.output.media import ImagePayload
 
 from sts2_mcp.controller_lease import ControllerLease
 from sts2_mcp.game_tools import GameTools
@@ -17,7 +17,7 @@ from sts2_mcp.roundtrip_client import Client
 from sts2_mcp.mcp_config import load_config
 
 
-SERVER_VERSION = "0.54.0"
+SERVER_VERSION = "0.54.1"
 
 def tool_result(payload):
     content = [TextContent(type="text", text=json.dumps(payload, ensure_ascii=False, separators=(",", ":")))]

@@ -283,5 +283,3 @@ class FakeGame:
                     temporary.write_text(json.dumps(response))
                     temporary.replace(target)
                 path.unlink()
-
-
