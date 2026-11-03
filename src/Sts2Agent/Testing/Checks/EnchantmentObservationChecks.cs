@@ -24,7 +24,7 @@ internal static class EnchantmentObservationChecks
         JsonElement Enchantment(NCard card) => Read(card).TryGetProperty("enchantment", out var value) ? value : default;
         bool Value(NCard card, string key, object expected) => Enchantment(card).ValueKind == JsonValueKind.Object
             && Enchantment(card).TryGetProperty(key, out var value) && value.GetRawText() == JsonSerializer.Serialize(expected);
-        bool Absent(NCard card) => !Read(card).TryGetProperty("enchantment", out _);
+        bool Absent(NCard card) => Read(card).GetProperty("enchantment").ValueKind == JsonValueKind.Null;
         string before = Read(sharp).GetRawText();
         Check("visible_name", Value(sharp, "name", "Sharp"));
         Check("visible_amount", Value(sharp, "amount", 3));

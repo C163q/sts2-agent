@@ -60,16 +60,7 @@ internal static class BrowsedCard
         if (appearance)
         {
             // Match NCard's normal grid rendering; these are display properties, not internal stacks.
-            if (model.Enchantment is { } enchantment && enchantment.Icon != null)
-            {
-                var visible = new Dictionary<string, object?>
-                {
-                    ["name"] = EnglishCardText.Plain(enchantment.Title.GetFormattedText()),
-                    ["dimmed"] = enchantment.Status == EnchantmentStatus.Disabled
-                };
-                if (enchantment.ShowAmount) visible["amount"] = enchantment.DisplayAmount;
-                result["enchantment"] = visible;
-            }
+            CardAppearance.Preview(model, result);
             if (energy >= 0 && !model.EnergyCost.CostsX && model.EnergyCost.WasJustUpgraded)
                 result["energy_cost_color"] = "green";
             if (stars >= 0 && !model.HasStarCostX && model.WasStarCostJustUpgraded)

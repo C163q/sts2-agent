@@ -94,7 +94,8 @@
     "unhittable",
     "kill_chain",
     "delayed_ui",
-    "choice_chain"
+    "choice_chain",
+    "afflictions"
   ],
   "selection": [
     "upgrade_enchantments",

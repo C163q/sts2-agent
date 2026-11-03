@@ -1,0 +1,8 @@
+[
+  {"name":"afflictions","scenarios":{"play":"afflictions"},"steps":[
+    {"name":"verify","verifier":"verify_card_formats.py","args":["--scenario","afflictions"]}
+  ]},
+  {"name":"enchantments","scenarios":{"play":"enchantments"},"steps":[
+    {"name":"verify","verifier":"verify_hand_presets.py","args":["--scenario","enchantments"]}
+  ]}
+]

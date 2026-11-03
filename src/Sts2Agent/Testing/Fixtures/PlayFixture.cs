@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
+using MegaCrit.Sts2.Core.Models.Afflictions;
 using MegaCrit.Sts2.Core.Models.Enchantments;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Models.Powers.Mocks;
@@ -120,6 +121,12 @@ internal static class PlayFixture
             Add<StrikeIronclad>(); Add<DefendIronclad>();
             cards[5].UpgradeInternal(); cards[5].FinalizeUpgradeInternal();
             CardCmd.Enchant<Spiral>(cards[5], 1);
+        }
+        if (scenario == "afflictions")
+        {
+            CardCmd.Enchant<Sharp>(cards[0], 3);
+            await CardCmd.Afflict<Bound>(cards[0], 19);
+            await CardCmd.Afflict<Smog>(cards[1], 23);
         }
         if (scenario == "armaments_free") cards[0].SetToFreeThisTurn();
         if (scenario == "armaments_filtered")

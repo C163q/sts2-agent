@@ -170,7 +170,8 @@ full/default 顶栏提供 `relic_count`，表示原生遗物栏登记的持有�
 - `energy_cost/star_cost` 是显示字符串，保留 `X`、`?` 等形式。`energy_cost_color/star_cost_color` 仅在文字出现特殊颜色时输出 `red/green/blue/other`，默认颜色省略字段；不输出 RGB 或费用图标配色。
 - `unplayable_markers` 合并标记位置：`[]`、`["energy"]`、`["star"]` 或二者都有。没有标记不等于可以打出。
 - `outline` 为 `none/cyan/gold/red/other`，只表达当前描边，不据此声明动作合法。
-- `enchantment` 仅在已识别卡牌的原生附魔图标当前可见且与模型身份一致时提供。`name` 是图标身份的英语名称；计数标签可读时才提供整数 `amount`，不以内部 Amount 补齐；`dimmed` 表示图标当前使用原生置灰材质，不是未来效果或可打出性判断。没有可见附魔、未知/锁定卡牌、图标隐藏或视口外时省略整个对象。附魔正文不进入基础观察，仍由手牌完整详情的共享提示提供。来源与边界验证见[卡面附魔记录](../research/2026-11-01-card-enchantments.md)。
+- `enchantment` 仅在已识别卡牌的原生附魔图标当前可见且与模型身份一致时提供。`name` 是图标身份的英语名称；计数标签可读时才提供整数 `amount`，不以内部 Amount 补齐；`dimmed` 表示图标当前使用原生置灰材质，不是未来效果或可打出性判断。没有可见附魔、未知/锁定卡牌、图标隐藏或视口外时 full 返回 enchantment:null，default/summary 省略普通空值。附魔正文不进入基础观察，仍由手牌完整详情的共享提示提供。来源与边界验证见[卡面附魔记录](../research/2026-11-01-card-enchantments.md)。
+- `affliction` 记录已识别卡牌当前实际显示的 Affliction 覆盖外观，仅有英语 `name`，不补内部层数或置灰字段；可与附魔共存。无可读覆盖时 full 为 null，default/summary 省略普通空值。隐藏、透明、离屏及未知／锁定牌均不提供身份。
 - [手牌详情调用](hand-inspection.md) 一次返回全部当前可见手牌及其效果，沿用这些 ID；基础观察仍不输出完整效果、关键词或目标规则。
 
 ## 失败结果

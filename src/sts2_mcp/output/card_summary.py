@@ -1,7 +1,7 @@
 """Keep the same compact card fields across dedicated inspection tools."""
 
 SUMMARY_FIELDS = frozenset({'id', 'name', 'type', 'energy_cost', 'star_cost',
-                            'energy_cost_color', 'star_cost_color', 'unplayable_markers', 'outline', 'enchantment'})
+                            'energy_cost_color', 'star_cost_color', 'unplayable_markers', 'outline', 'enchantment', 'affliction'})
 
 
 def card_summary(card):

@@ -311,6 +311,9 @@ internal sealed partial class GameAdapter(bool testMode)
             && testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO") is "grid_enchantments" or "upgrade_enchantments"
             && request.Operation == "check_test_selection_observation")
             return Success(request.Id, JsonSerializer.Serialize(SelectionObservationChecks.Run(observation, Observe)));
+        if (testMode && testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") == "afflictions"
+            && request.Operation == "check_test_afflictions")
+            return Success(request.Id, JsonSerializer.Serialize(AfflictionObservationChecks.Run(observation, Observe)));
         if (testMode && testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") == "enchantments"
             && request.Operation == "check_test_enchantments")
             return Success(request.Id, JsonSerializer.Serialize(EnchantmentObservationChecks.Run()));
@@ -596,8 +599,7 @@ internal sealed partial class GameAdapter(bool testMode)
             return Success(request.Id, JsonSerializer.Serialize(new
             {
                 snapshot_id = document.RootElement.GetProperty("snapshot_id").GetString(),
-                hand = hand.ActiveHolders.Where(holder => VisibleUi.Shown(holder)
-                    && CombatObservation.CardVisible(holder.CardNode)).Select(holder => reader.Card(holder.CardNode!)).ToArray()
+                hand = CombatObservation.HandCards(hand).Select(reader.Card).ToArray()
             }));
         }
         if (request.ExpectedState != document.RootElement.GetProperty("snapshot_id").GetString())

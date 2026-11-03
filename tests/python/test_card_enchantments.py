@@ -21,6 +21,35 @@ class EnchantmentClient(HandClient):
 
 
 class CardEnchantmentTests(unittest.IsolatedAsyncioTestCase):
+    async def test_affliction_coexists_with_enchantment_and_nulls_follow_preset(self):
+        client = EnchantmentClient()
+        client.hand[0]['affliction'] = {'name': 'Bound', 'amount': 19, 'description': 'Full help only.'}
+        client.hand[1]['affliction'] = {'name': 'Smog'}
+        client.hand[3].update(enchantment=None, affliction=None)
+        tools = GameTools(client)
+        for preset in ('full', 'default', 'summary'):
+            for result in (await tools.get_observation({'preset': preset}),
+                           await tools.inspect_hand({'preset': preset})):
+                cards = result.get('hand', (result.get('player') or {}).get('hand'))
+                self.assertEqual(cards[0]['affliction'], {'name': 'Bound'})
+                self.assertEqual(cards[1]['affliction'], {'name': 'Smog'})
+                self.assertEqual(cards[0]['enchantment'], {'name': 'Sharp', 'amount': 3, 'dimmed': False})
+                for key in ('affliction', 'enchantment'):
+                    if preset == 'full':
+                        self.assertIn(key, cards[3])
+                        self.assertIsNone(cards[3][key])
+                    else:
+                        self.assertNotIn(key, cards[3])
+
+    async def test_invalid_affliction_is_rejected_before_filtering(self):
+        for value in ([], 'Bound', {'name': 1}):
+            client = EnchantmentClient()
+            client.hand[0]['affliction'] = value
+            tools = GameTools(client)
+            result = await tools.inspect_hand({'preset': 'summary', 'card_ids': []})
+            self.assertEqual(result['error']['code'], 'transport_error')
+            self.assertEqual((await tools.end_turn())['error']['code'], 'observation_required')
+
     async def test_basic_full_and_summary_keep_the_same_visible_metadata(self):
         client = EnchantmentClient()
         tools = GameTools(client)

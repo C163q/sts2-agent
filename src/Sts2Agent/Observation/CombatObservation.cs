@@ -89,9 +89,7 @@ internal sealed class CombatObservation
             powers = Powers(node!),
             orb_slots = OrbInspection.Read(node!),
             sovereign_blades = SovereignBladeInspection.Read(node!, CardId),
-            hand = VisibleUi.Shown(room.Ui.Hand) ? room.Ui.Hand.ActiveHolders
-                .Where(holder => VisibleUi.Shown(holder) && CardVisible(holder.CardNode))
-                .Select(holder => Card(holder.CardNode!)).ToArray() : null,
+            hand = VisibleUi.Shown(room.Ui.Hand) ? HandCards(room.Ui.Hand).Select(Card).ToArray() : null,
             draw_count = VisibleUi.Number(room.Ui.DrawPile, "CountContainer/Count"),
             discard_count = VisibleUi.Number(room.Ui.DiscardPile, "CountContainer/Count"),
             exhaust_count = VisibleUi.Number(room.Ui.ExhaustPile, "CountContainer/Count")
@@ -99,6 +97,9 @@ internal sealed class CombatObservation
     }
 
     internal static bool CardVisible(NCard? card) => CardVisible(card, VisibleUi.OnScreen);
+
+    internal static IEnumerable<NCard> HandCards(NPlayerHand hand) => hand.ActiveHolders
+        .Where(holder => VisibleUi.Shown(holder) && CardVisible(holder.CardNode)).Select(holder => holder.CardNode!);
 
     internal static bool CardVisible(NCard? card, Func<CanvasItem?, bool> readable) => VisibleUi.Shown(card)
         && new[] { "%TitleLabel", "%Portrait", "%AncientPortrait", "%Frame" }
@@ -205,24 +206,7 @@ internal sealed class CombatObservation
             result["energy_cost_color"] = energyColor;
         if (starColor != null)
             result["star_cost_color"] = starColor;
-        if (identified && VisibleEnchantment(card) is { } enchantment)
-            result["enchantment"] = enchantment;
-        return result;
-    }
-
-    private Dictionary<string, object?>? VisibleEnchantment(NCard card)
-    {
-        var tab = card.EnchantmentTab;
-        var icon = card.GetNodeOrNull<TextureRect>("%Enchantment/Icon");
-        if (!VisibleUi.OnScreen(tab) || !VisibleUi.OnScreen(icon) || icon!.Texture == null
-            || card.Model!.Enchantment is not { } model || icon.Texture != model.Icon)
-            return null;
-        var result = new Dictionary<string, object?>
-        {
-            ["name"] = english.Name(model.Title), ["dimmed"] = icon.UseParentMaterial
-        };
-        if (VisibleUi.Number(card, "%Enchantment/Label") is { } amount)
-            result["amount"] = amount;
+        CardAppearance.Read(card, result);
         return result;
     }
 

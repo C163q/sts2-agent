@@ -53,7 +53,8 @@ internal static class SelectionObservationChecks
                 foreach (bool full in new[] { false, true })
                 {
                     var card = Read(full).GetProperty("cards").EnumerateArray().Single(c => c.GetProperty("id").GetInt32() == id);
-                    Check($"{hidden} does not reveal card attributes ({full})", !card.TryGetProperty("enchantment", out _)
+                    Check($"{hidden} does not reveal card attributes ({full})", (!card.TryGetProperty("enchantment", out var effect)
+                        || effect.ValueKind == JsonValueKind.Null)
                         && card.GetProperty("type").ValueKind == JsonValueKind.Null
                         && card.GetProperty("description").ValueKind == JsonValueKind.Null);
                 }
