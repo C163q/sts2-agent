@@ -1,0 +1,111 @@
+[
+  {
+    "name": "potion_inspection",
+    "scenarios": {
+      "play": "basic",
+      "potion": "inspection"
+    },
+    "steps": [
+      {
+        "name": "boundaries",
+        "verifier": "verify_potion_presets.py",
+        "args": [
+          "--scenario",
+          "checks"
+        ]
+      },
+      {
+        "name": "presets",
+        "verifier": "verify_potion_presets.py",
+        "args": [
+          "--scenario",
+          "combat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "potion_merchant",
+    "scenarios": {
+      "play": "basic",
+      "potion": "merchant_inventory"
+    },
+    "steps": [
+      {
+        "name": "presets",
+        "verifier": "verify_potion_presets.py",
+        "args": [
+          "--scenario",
+          "merchant"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "potion_rest",
+    "scenarios": {
+      "play": "basic",
+      "potion": "noncombat_rest"
+    },
+    "steps": [
+      {
+        "name": "presets",
+        "verifier": "verify_potion_presets.py",
+        "args": [
+          "--scenario",
+          "rest"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "potion_empty",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "presets",
+        "verifier": "verify_potion_presets.py",
+        "args": [
+          "--scenario",
+          "empty"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "potion_map",
+    "scenarios": {
+      "play": "basic",
+      "potion": "inspection"
+    },
+    "steps": [
+      {
+        "name": "presets",
+        "verifier": "verify_potion_presets.py",
+        "args": [
+          "--scenario",
+          "map"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "potion_merchant_closed",
+    "scenarios": {
+      "play": "basic",
+      "potion": "merchant"
+    },
+    "steps": [
+      {
+        "name": "presets",
+        "verifier": "verify_potion_presets.py",
+        "args": [
+          "--scenario",
+          "merchant"
+        ]
+      }
+    ]
+  }
+]

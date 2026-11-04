@@ -17,7 +17,7 @@
 
 当前已展开页面的可浏览列表或文字一次完整读取，包括玩家可通过滚动、平移查看的区域；保留原生顺序、筛选／升级模式和已揭示状态，不要求 LLM 逐屏滚动。适用于选牌候选、奖励、显式打开的牌组／牌堆／地图，以及原生本局详情的滚动内容。
 
-滚动区域外与隐藏内容不同：整页被覆盖、控件隐藏／透明、未揭示牌面、未来选项或后续解锁仍不读取。非浏览区域的战场对象身体及入场动画继续按实际显示判断。已展示的战斗状态、意图、充能球及悬浮剑等附属图标与标签不按视口坐标截断，隐藏、透明或实际裁剪的内容仍不补齐；详见[战斗对象边界](development/combatant-inspection.md#读取边界)。遗物栏不按视口位置截断，具体图标、可悬停明细和持有总数的区别见[遗物边界](development/relic-inspection.md#读取边界)。
+滚动区域外与隐藏内容不同：整页被覆盖、控件隐藏／透明、未揭示牌面、未来选项或后续解锁仍不读取。非浏览区域的战场对象身体及入场动画继续按实际显示判断。已展示的战斗状态、意图、充能球及悬浮剑等附属图标与标签不按视口坐标截断，隐藏、透明或实际裁剪的内容仍不补齐；详见[战斗对象边界](development/combatant-inspection.md#读取边界)。药水槽位与图标不按视口位置截断，隐藏及不可悬停时的返回见[药水边界](development/potion-inspection.md#显示与悬停边界)。遗物栏不按视口位置截断，具体图标、可悬停明细和持有总数的区别见[遗物边界](development/relic-inspection.md#读取边界)。
 
 完整读取不意味着可直接点击画外对象；动作仍沿原生滚动定位、状态复核和合法性检查执行。这项规则不自动增加工具尚未实现的浏览主体，不授权读取真实抽牌顺序、未打开页面或隐藏历史。
 
@@ -27,7 +27,7 @@
 | --- | --- |
 | 手中卡牌 | [手牌详情](development/hand-inspection.md)显式提供正文及共享悬停解释，沿用基础观察的稳定 ID |
 | 界面与战斗对象 | [界面帮助](development/ui-inspection.md)、[生物、充能球与悬浮剑](development/combatant-inspection.md)仅提供当前可见且原生可悬停对象的说明；不读后续招式 |
-| 药水与遗物 | [药水详情](development/potion-inspection.md)保留槽位，并固定提供一份通用槽位帮助；[遗物详情](development/relic-inspection.md)不附送风味文本或隐藏计数 |
+| 药水与遗物 | [药水详情](development/potion-inspection.md)保留槽位，full/default 固定提供一份通用槽位帮助；[遗物详情](development/relic-inspection.md)不附送风味文本或隐藏计数 |
 | 牌组与牌堆 | [牌组](development/deck-inspection.md)、[战斗牌堆](development/pile-inspection.md)真实打开原生页面；抽牌堆只返回原生展示顺序，空堆保留真实反馈 |
 | 地图 | [地图查看](development/map-inspection.md)只读当前幕；已走路线和当前候选与绘制连线分别表达，不提前揭晓问号或其他幕 |
 | 卡牌选择 | [选牌](development/card-selection.md)保留当前模式及实际展开的比较；眼睛与覆盖页隐藏候选，不自动切换视图，随机轮换预览不当作确定结果 |

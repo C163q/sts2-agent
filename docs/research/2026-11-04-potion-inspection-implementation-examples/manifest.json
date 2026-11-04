@@ -1,0 +1,89 @@
+{
+  "mod_version": "0.56.0",
+  "mcp_version": "0.58.0",
+  "schema_version": 37,
+  "game_version": "v0.107.1",
+  "game_build": "59260271",
+  "ritsulib_version": "0.6.10",
+  "mod_sha256": "3207b4eaea1933c01829cb015e7cda9a0448c81ce5b96dd9899418be9b285249",
+  "samples": [
+    {
+      "file": "combat.full.json",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full"
+      },
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui4/potion_inspection/presets/evidence.json",
+      "source_entry": 1,
+      "source_sha256": "7269d9f61289744388da9ed1f4eeea71c1b2f7b483f55512c97c729d30fd4ecc",
+      "sha256": "0320dc417ba5f6fea69138ba5c6cb95216160ca86c9e841d0cade50a60d5cb15"
+    },
+    {
+      "file": "combat.summary.json",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "summary"
+      },
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui4/potion_inspection/presets/evidence.json",
+      "source_entry": 2,
+      "source_sha256": "7269d9f61289744388da9ed1f4eeea71c1b2f7b483f55512c97c729d30fd4ecc",
+      "sha256": "0cfeb2f3f6f04be6201ee3cd59d5c2cc71289bb9ba6c0d61eea0cf828bd88965"
+    },
+    {
+      "file": "filtered.full.json",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full",
+        "slot_indices": [
+          2
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui4/potion_inspection/presets/evidence.json",
+      "source_entry": 13,
+      "source_sha256": "7269d9f61289744388da9ed1f4eeea71c1b2f7b483f55512c97c729d30fd4ecc",
+      "sha256": "1e65ef3142b24e3bded1bdc54dfa09eda8326da0ca80b028210e6a3f65661dc4"
+    },
+    {
+      "file": "unhoverable-filtered.full.json",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full",
+        "slot_indices": [
+          2
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui4/potion_inspection/presets/evidence.json",
+      "source_entry": 15,
+      "source_sha256": "7269d9f61289744388da9ed1f4eeea71c1b2f7b483f55512c97c729d30fd4ecc",
+      "sha256": "855e4caebb2ab8ae205e25787adcbe2f1b5c75fc8cae25729bb7d436cb119210"
+    },
+    {
+      "file": "unhoverable-filtered.default.json",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "default",
+        "slot_indices": [
+          2
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui4/potion_inspection/presets/evidence.json",
+      "source_entry": 16,
+      "source_sha256": "7269d9f61289744388da9ed1f4eeea71c1b2f7b483f55512c97c729d30fd4ecc",
+      "sha256": "37e26ad38246702cc385e6bb3b1d9a8e70d35389f49604f165840a52952f5185"
+    },
+    {
+      "file": "empty-slot.full.json",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full",
+        "slot_indices": [
+          1
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui4/potion_inspection/presets/evidence.json",
+      "source_entry": 55,
+      "source_sha256": "7269d9f61289744388da9ed1f4eeea71c1b2f7b483f55512c97c729d30fd4ecc",
+      "sha256": "d7b7c975c3319a54ace633ad83c3012d40c39ef2792c503f3e64ff575f23d5e4"
+    }
+  ]
+}

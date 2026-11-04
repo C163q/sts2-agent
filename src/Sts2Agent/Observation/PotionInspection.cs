@@ -1,7 +1,9 @@
+using System.Text.Json.Serialization;
 using Godot;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Models.Potions;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Potions;
 
@@ -9,35 +11,80 @@ namespace Sts2Agent;
 
 internal static class PotionInspection
 {
-    internal sealed record PotionText(string? name, string description, HoverTipText[] hover_tips);
-    internal sealed record Result(HoverTipText slot_tip, PotionText?[] potion_slots);
-
-    public static NPotionHolder[]? VisibleHolders()
+    private static readonly EnglishText Names = new();
+    internal record StaticText(string? name)
     {
-        if (!RunUi.TopBarReadable())
-            return null;
-        var container = NRun.Instance!.GlobalUi.TopBar.PotionContainer;
-        var holders = DisplayedHolders(container);
-        if (holders == null) return null;
-        if (holders.Any(holder => !VisibleUi.OnScreen(holder) || !holder.IsEnabled
-            || (holder.HasPotion ? !VisibleUi.OnScreen(holder.Potion!.GetNodeOrNull<TextureRect>("%Image"))
-                : !VisibleUi.OnScreen(holder.GetNodeOrNull<TextureRect>("%EmptyIcon")))))
-            return null;
-        return holders;
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public bool? usable_here { get; init; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public bool? bouncing { get; init; }
     }
+    internal sealed record PotionText(string? name, string? description, HoverTipText[] hover_tips) : StaticText(name);
+    internal sealed record Result(HoverTipText? slot_tip, PotionText?[] potion_slots, string[] unavailable_hover_sources);
+
+    public static NPotionHolder[]? VisibleHolders() => RunUi.TopBarReadable()
+        ? DisplayedHolders(NRun.Instance!.GlobalUi.TopBar.PotionContainer) : null;
+
+    internal static bool Hoverable(NPotionHolder holder) => HoverAccess.CanFocus(holder);
+
+    internal static NPotionHolder[]? OnScreenHolders()
+    {
+        var holders = VisibleHolders();
+        return holders == null || holders.Any(holder => !VisibleUi.OnScreen(holder) || !holder.IsEnabled
+            || !VisibleUi.OnScreen(Icon(holder))) ? null : holders;
+    }
+
+    internal static NPotionHolder[]? InteractiveHolders()
+    {
+        var holders = OnScreenHolders();
+        return holders == null || holders.Any(holder => !Hoverable(holder)) ? null : holders;
+    }
+
+    private static TextureRect? Icon(NPotionHolder holder) => holder.HasPotion
+        ? holder.Potion!.GetNodeOrNull<TextureRect>("%Image") : holder.GetNodeOrNull<TextureRect>("%EmptyIcon");
 
     internal static NPotionHolder[]? DisplayedHolders(NPotionContainer container)
     {
         var layout = container.GetNodeOrNull<Control>("MarginContainer/PotionHolders");
-        if (!VisibleUi.Shown(container) || !VisibleUi.Shown(layout)) return null;
+        if (!VisibleUi.Displayed(container) || !VisibleUi.Displayed(layout)) return null;
         var holders = layout!.GetChildren().OfType<NPotionHolder>().ToArray();
-        return holders.Any(holder => !VisibleUi.OnScreen(holder)) ? null : holders;
+        return holders.Any(holder => !VisibleUi.Displayed(holder) || Icon(holder) is not { } icon
+            || !VisibleUi.Displayed(icon) || icon.Texture == null
+            || Mathf.Abs(icon.GetGlobalTransformWithCanvas().Determinant()) <= 0.000001f) ? null : holders;
     }
 
-    public static Result Read(NPotionHolder[] holders) => EnglishCardText.Read(() => new Result(
-        HoverTipText.From(new HoverTip(new LocString("static_hover_tips", "POTION_SLOT.title"),
-            new LocString("static_hover_tips", "POTION_SLOT.description"))),
-        holders.Select(holder => holder.HasPotion ? Details(holder.Potion!.Model) : null).ToArray()));
+    internal static string? UnavailableReason()
+    {
+        if (!RunUi.TopBarReadable()) return "The potion bar is not exposed in the current screen. Close the covering dialog or view first.";
+        var container = NRun.Instance!.GlobalUi.TopBar.PotionContainer;
+        if (!VisibleUi.Displayed(container) || !VisibleUi.Displayed(container.GetNodeOrNull<Control>("MarginContainer/PotionHolders")))
+            return "The potion bar is hidden or not ready. Wait for the current screen to finish appearing.";
+        return DisplayedHolders(container) == null
+            ? "At least one potion slot or icon is hidden, clipped, or not ready. Its contents cannot be identified; no slot positions were changed." : null;
+    }
+
+    internal static StaticText? Static(NPotionHolder holder)
+    {
+        if (!holder.HasPotion) return null;
+        var potion = holder.Potion!;
+        return new StaticText(Names.Name(potion.Model.Title))
+        {
+            usable_here = potion.Model is FoulPotion && ShopInspection.Current is { } shop && ShopInspection.Exposed(shop)
+                ? PotionActions.MerchantVisible(potion.Model) && PotionActions.Reason(potion.Model) == null : null,
+            bouncing = RewardInspection.Animating(potion, "_bounceTween") ? true : null
+        };
+    }
+
+    public static Result Read(NPotionHolder[] holders, bool full = true) => EnglishCardText.Read(() => new Result(
+        full ? HoverTipText.From(new HoverTip(new LocString("static_hover_tips", "POTION_SLOT.title"),
+            new LocString("static_hover_tips", "POTION_SLOT.description"))) : null,
+        holders.Select(holder =>
+        {
+            var value = Static(holder);
+            if (value == null) return null;
+            var detail = full && Hoverable(holder) ? Details(holder.Potion!.Model) : new PotionText(value.name, null, []);
+            return detail with { name = value.name, usable_here = value.usable_here, bouncing = value.bouncing };
+        }).ToArray(),
+        full ? holders.Select((holder, index) => (holder, index)).Where(item => item.holder.HasPotion && !Hoverable(item.holder))
+            .Select(item => $"potion_slots.{item.index}").ToArray() : []));
 
     internal static PotionText Details(PotionModel potion) => EnglishCardText.Read(() =>
         HoverTipText.WithPotionValues(potion, () =>

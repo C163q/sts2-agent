@@ -30,7 +30,7 @@ internal sealed class PotionJournal : IDisposable
 
     private void Remember(PotionModel potion)
     {
-        if (PotionInspection.VisibleHolders()?.Any(holder => ReferenceEquals(holder.Potion?.Model, potion)) == true)
+        if (PotionInspection.OnScreenHolders()?.Any(holder => ReferenceEquals(holder.Potion?.Model, potion)) == true)
             slots[potion] = player.GetPotionSlotIndex(potion);
     }
     private void Used(PotionModel potion) => Record("potion_used", potion);

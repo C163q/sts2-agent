@@ -62,6 +62,7 @@ internal sealed partial class GameAdapter
             throw new InvalidOperationException("Native run cleanup is incomplete.");
         MediaFailureFixture.Enabled = false;
         RelicHoverFixture.SetEnabled(true);
+        PotionDisplayFixture.Set("normal");
         SelectionFixture.Pending = null;
         RewardFixture.Reset();
         ShopFixture.Reset();

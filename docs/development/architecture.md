@@ -99,7 +99,7 @@ GameResponse 在内部保存成功、已提交、未知或“未提交且 UI 未
 
 ## 展示与悬停读取
 
-`VisibleUi.OnScreen` 用于屏幕内控件和战场身体，`Displayed` 用于无需按视口截断的展示图标，`Browsable` 用于已打开的原生滚动列表。各入口仍检查自身显示边界，不能机械互换。`RelicInspection.Static` 供顶栏与详情共用静态字段；`PotionInspection.DisplayedHolders` 共用槽位顺序，详情另检悬停条件，不把灰色或禁用控件等同于隐藏。具体边界见[遗物](relic-inspection.md#读取边界)和[战斗对象](combatant-inspection.md#读取边界)。
+`VisibleUi.OnScreen` 用于屏幕内控件和战场身体，`Displayed` 用于无需按视口截断的展示图标，`Browsable` 用于已打开的原生滚动列表。各入口仍检查自身显示边界，不能机械互换。`RelicInspection.Static` 供顶栏与详情共用静态字段；`PotionInspection.DisplayedHolders/Static` 共用槽位展示与静态字段，详情另检悬停条件；动作定位保留独立的位置及输入门控。不把灰色或禁用控件等同于隐藏。具体边界见[遗物](relic-inspection.md#读取边界)和[战斗对象](combatant-inspection.md#读取边界)。
 
 通用反射读取由 `PrivateFields` 负责：`Read` 缺少必需字段时明确失败，字段值本身可合法为 null。`Optional` 仅用于选牌多类型界面的 prefs／已选卡／完成源、动画字段探测及结算多类型按钮的提示探测；这些调用的类型差异仍由领域代码负责。不得用 Optional 掩盖目标 API 绑定缺失。实节点与浏览克隆继续分别通过 CardPresentation／BrowsedCard 读取，共用 CardAppearance 的外观组装，保留克隆牌堆及目标上下文和比较侧别。
 

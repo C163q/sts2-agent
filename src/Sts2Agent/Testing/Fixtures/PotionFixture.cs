@@ -46,7 +46,7 @@ internal static class PotionFixture
         {
             PotionModel primary = scenario switch
             {
-                "skill" => ModelDb.Potion<SkillPotion>(), "attack" => ModelDb.Potion<AttackPotion>(),
+                "skill" or "inspection" => ModelDb.Potion<SkillPotion>(), "attack" => ModelDb.Potion<AttackPotion>(),
                 "power" => ModelDb.Potion<PowerPotion>(), "colorless" => ModelDb.Potion<ColorlessPotion>(),
                 "memories" => ModelDb.Potion<LiquidMemories>(), "gamblers" => ModelDb.Potion<GamblersBrew>(),
                 "merchant" or "merchant_map" or "merchant_inventory" or "death" or "fairy_rescue" => ModelDb.Potion<FoulPotion>(), "entropic" => ModelDb.Potion<EntropicBrew>(),
@@ -56,7 +56,8 @@ internal static class PotionFixture
             if (scenario != "entropic")
             {
                 await PotionCmd.TryToProcure<BlockPotion>(player);
-                await PotionCmd.TryToProcure<FairyInABottle>(player);
+                if (scenario == "inspection") await PotionCmd.TryToProcure<BlockPotion>(player);
+                else await PotionCmd.TryToProcure<FairyInABottle>(player);
             }
         }
         if (scenario == "memories")

@@ -8,6 +8,7 @@ from sts2_mcp.output.observation_presets import OBSERVATION_SCHEMA
 from sts2_mcp.output.hand_presets import HAND_SCHEMA
 from sts2_mcp.output.selection_presets import SELECTION_SCHEMA
 from sts2_mcp.output.relic_presets import RELIC_SCHEMA
+from sts2_mcp.output.potion_presets import POTION_SCHEMA as POTION_INSPECTION_SCHEMA
 from sts2_mcp.output.combatant_presets import COMBATANT_SCHEMA
 from sts2_mcp.output.run_ending_details import OPTION_SCHEMA as RESULT_OPTION_SCHEMA
 from sts2_mcp.output.map_details import MAP_SCHEMA, TRAVEL_SCHEMA
@@ -457,15 +458,19 @@ SPECS = (
         native_keys=()),
     ToolSpec(
         name='inspect_potions',
-        schema=NO_ARGUMENTS,
-        description="Read visible potion descriptions and hover help. potion_slots preserves belt positions, with null for empty slots.",
+        schema=POTION_INSPECTION_SCHEMA,
+        description="Read potion descriptions and hover help. summary matches basic slot data. slot_indices selects original belt positions; null entries are empty slots.",
         annotations=read_only,
         category='inspection',
         effect='read',
         requires_permission=False,
         returns_transition=False,
         records_events=False,
-        reader='potion_details:potion_details'),
+        reader='potion_details:potion_details',
+        reader_argument='request',
+        parser='potion_presets:potion_arguments',
+        projector='potion_presets:potion_preset',
+        native_keys=('level',)),
     ToolSpec(
         name='use_potion',
         schema=USE_SCHEMA,

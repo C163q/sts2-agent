@@ -56,7 +56,8 @@ def main():
     parser.add_argument("--ipc-dir", required=True, type=Path)
     parser.add_argument("operation", choices=tuple(name for name in NATIVE_TOOLS if name != 'capture_screenshot') + ('close_deck', 'start_test_combat'))
     parser.add_argument("--pile", choices=("draw", "discard", "exhaust"))
-    parser.add_argument("--preset", choices=("default", "full", "summary"), help="牌组／牌堆默认 default；战斗对象默认 full")
+    parser.add_argument("--preset", choices=("default", "full", "summary"), help="牌组／牌堆默认 default；战斗对象／药水默认 full")
+    parser.add_argument("--slot-indices", nargs="*", type=int, help="药水的原始槽位；省略取全部，空列表不取槽位")
     parser.add_argument("--sources", nargs="*", help="战斗对象来源路径；省略取全部，空列表不取对象")
     parser.add_argument("--view-upgrades", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--sort-by", choices=("obtained", "type", "cost", "name"))
@@ -89,10 +90,19 @@ def main():
             arguments["target_id"] = int(args.target_id)
         browsing = args.operation in {'inspect_deck', 'inspect_pile'}
         combatants = args.operation == 'inspect_combatants'
-        if args.preset is not None and not (browsing or combatants):
-            raise ValueError('--preset is supported for inspect_deck, inspect_pile and inspect_combatants.')
+        potions = args.operation == 'inspect_potions'
+        if args.preset is not None and not (browsing or combatants or potions):
+            raise ValueError('--preset is supported for inspect_deck, inspect_pile, inspect_combatants and inspect_potions.')
         if args.sources is not None and not combatants:
             raise ValueError('--sources is supported for inspect_combatants.')
+        if args.slot_indices is not None and not potions:
+            raise ValueError('--slot-indices is supported for inspect_potions.')
+        if potions:
+            if arguments:
+                raise ValueError('inspect_potions accepts only --preset and --slot-indices.')
+            normalized = normalize_request(NATIVE_TOOLS[args.operation], {
+                'preset': args.preset or 'full', **({'slot_indices': args.slot_indices} if args.slot_indices is not None else {})})
+            arguments = normalized.native_arguments
         if combatants:
             if arguments:
                 raise ValueError('inspect_combatants accepts only --preset and --sources.')
@@ -107,7 +117,9 @@ def main():
         result = Client(args.ipc_dir).call(args.operation, args.expected_state, arguments=arguments or None)
         if not isinstance(result, dict) or type(result.get("ok")) is not bool:
             raise ValueError("Invalid game response.")
-        if combatants and result['ok'] and not args.raw:
+        if potions and result['ok'] and not args.raw:
+            payload = normalized.project(decode_success(args.operation, result['state'], arguments, include_observation=True))
+        elif combatants and result['ok'] and not args.raw:
             from sts2_mcp.output.combatant_presets import combatant_preset
             from sts2_mcp.output.presets import apply_preset
             payload = decode_success(args.operation, result['state'], arguments, include_observation=True)
@@ -121,7 +133,7 @@ def main():
                 decode_success(args.operation, result['state'], arguments, include_observation=True)
                 if result['ok'] else player_result(result, operation=args.operation, arguments=arguments))
     except (OSError, RuntimeError, ValueError, KeyError, TypeError) as error:
-        local_combatant_error = args.operation == 'inspect_combatants' and not request_sent and isinstance(error, ValueError)
+        local_combatant_error = args.operation in {'inspect_combatants', 'inspect_potions'} and not request_sent and isinstance(error, ValueError)
         code = 'invalid_request' if local_combatant_error else 'timeout' if isinstance(error, TimeoutError) else 'transport_error'
         result = {"ok": False, "error": {"code": code, "message": str(error)}}
         if local_combatant_error: result['error']['public_message'] = str(error)

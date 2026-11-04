@@ -1,0 +1,28 @@
+{
+  "slot_tip": {
+    "title": "Potion Slot",
+    "description": "Use potions during combat to gain bonuses or hinder enemies."
+  },
+  "potion_slots": [
+    {
+      "name": "Block Potion",
+      "description": null
+    }
+  ],
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "hover_tips": [],
+  "notes": {
+    "hover_tips_unavailable": {
+      "message": "Hover help is currently unavailable for these displayed icons.",
+      "sources": [
+        "potion_slots.2"
+      ]
+    }
+  },
+  "slot_indices": [
+    2
+  ]
+}

@@ -34,6 +34,18 @@ internal sealed partial class GameAdapter
     {
         if (request.Operation is "configure_test_run" or "reset_test_run" or "get_test_session")
             return await TestRunRequest(request);
+        if (request.Operation == "set_test_potion_display" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
+        {
+            if (request.Arguments is not { } options || options.EnumerateObject().Any(p => p.Name is not ("mode" or "index"))
+                || !options.TryGetProperty("mode", out var mode) || mode.ValueKind != JsonValueKind.String
+                || mode.GetString() is not ("normal" or "no_hover" or "disabled" or "hidden" or "offscreen"))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected a potion display test mode.");
+            int index = 0;
+            if (options.TryGetProperty("index", out var supplied) && (supplied.ValueKind != JsonValueKind.Number || !supplied.TryGetInt32(out index) || index < 0))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected a nonnegative test slot index.");
+            return Success(request, JsonSerializer.Serialize(PotionDisplayFixture.Set(mode.GetString()!, index)));
+        }
         if (request.Operation == "set_test_relic_hover" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
         {
@@ -66,6 +78,9 @@ internal sealed partial class GameAdapter
             MediaFailureFixture.Enabled = enabled.GetBoolean();
             return ResponseBuilder.Success(request.Id, new System.Text.Json.Nodes.JsonObject { ["enabled"] = MediaFailureFixture.Enabled });
         }
+        if (request.Operation == "check_test_potion_readers" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
+            return Success(request, JsonSerializer.Serialize(PotionInspectionChecks.Run(null, Observe)));
         if (request.Operation == "check_test_display_readers" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } displayPlayer)
         {

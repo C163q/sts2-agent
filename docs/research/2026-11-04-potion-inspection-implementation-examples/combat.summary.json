@@ -1,0 +1,17 @@
+{
+  "potion_slots": [
+    {
+      "name": "Skill Potion"
+    },
+    {
+      "name": "Block Potion"
+    },
+    {
+      "name": "Block Potion"
+    }
+  ],
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  }
+}

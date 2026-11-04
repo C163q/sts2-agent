@@ -202,7 +202,7 @@ internal sealed class RunInventoryJournal : IDisposable
     private void PotionObtained(PotionModel potion)
     {
         int slot = player.GetPotionSlotIndex(potion);
-        Defer("potion_obtained", () => PotionInspection.VisibleHolders()?.Any(holder =>
+        Defer("potion_obtained", () => PotionInspection.OnScreenHolders()?.Any(holder =>
             ReferenceEquals(holder.Potion?.Model, potion)) == true && slot >= 0
             && english.Name(potion.Title) is { } name
                 ? new() { ["potion"] = new { slot_index = slot, name } } : null,

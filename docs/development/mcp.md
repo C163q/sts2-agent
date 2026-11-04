@@ -57,7 +57,7 @@ flowchart LR
 | `inspect_targets(card_id 或 potion_slot)` | 查询[手牌](card-play.md)或[药水](potion-actions.md)可用性、是否须指定目标及范围，不进入瞄准或抽随机数 |
 | `play_card(card_id, target_id?)` | [提交一次原生手动出牌](card-play.md)，后续选牌单独操作 |
 | `inspect_ui(preset?, sources?)` | [可见顶栏与战斗通用悬停帮助](ui-inspection.md)，summary 省略正文，sources 精确筛选来源 |
-| `inspect_potions()` | [药水正文、空槽位置和共享解释](potion-inspection.md) |
+| `inspect_potions(preset?, slot_indices?)` | [药水完整／静态摘要及原槽位筛选](potion-inspection.md)，筛选同时裁剪关联提示并返回位置映射 |
 | `use_potion(potion_slot, target_id?)` | [使用药水](potion-actions.md)，遇到后续选择立即返回 |
 | `discard_potion(potion_slot)` | 原生丢弃，遵守禁止移除药水的限制 |
 | `inspect_combatants(preset?, sources?)` | [战斗对象、意图、球与悬浮剑；summary 为静态信息，sources 筛选对象](combatant-inspection.md) |
@@ -151,7 +151,7 @@ approval_mode = "approve"
 
 例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。遗物 summary 同样省略普通空值。`inspect_deck` / `inspect_pile` 同样使用 full/default/summary，默认完整内容；旧 detail_level 已移除。
 
-各工具专用预设的完整字段规则由对应接口维护：`get_observation` 的 summary／top_bar 见[观察预设](observation.md#mcp-输出预设)，UI 帮助、手牌、选牌和遗物摘要见各工具说明。不要把 default 保留空数组的公共规则套用到明确精简空列表的专用 summary。
+各工具专用预设的完整字段规则由对应接口维护：`get_observation` 的 summary／top_bar 见[观察预设](observation.md#mcp-输出预设)，UI 帮助、手牌、选牌、药水和遗物摘要见各工具说明。不要把 default 保留空数组的公共规则套用到明确精简空列表的专用 summary。
 
 该参数只控制 Python 公开输出，不转发给 Mod；先完整校验响应，再进行原有筛选与统一空值过滤；许可依据完整状态判断，公开投影成功后才发布。部分成功的 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。其他标准库文件调用继续保留原有空值；牌组／牌堆 CLI 的 --preset 共用上述 Python 投影，底层 Mod 始终采样完整卡牌。
 

@@ -747,7 +747,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertTrue(ui_tool.annotations.readOnlyHint)
                     potion_tool = next(tool for tool in listed.tools if tool.name == "inspect_potions")
                     self.assertTrue(potion_tool.annotations.readOnlyHint)
-                    self.assertEqual(set(potion_tool.inputSchema["properties"]), {"preset"})
+                    self.assertEqual(set(potion_tool.inputSchema["properties"]), {"preset", "slot_indices"})
                     combatant_tool = next(tool for tool in listed.tools if tool.name == "inspect_combatants")
                     self.assertTrue(combatant_tool.annotations.readOnlyHint)
                     self.assertEqual(set(combatant_tool.inputSchema["properties"]), {"preset", "sources"})
@@ -769,7 +769,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertFalse(close_tool.annotations.readOnlyHint)
                     self.assertEqual(set(close_tool.inputSchema["properties"]), {"preset"})
                     for tool in listed.tools:
-                        if tool.name not in {"inspect_combatants", "inspect_ui", "get_observation", "inspect_hand", "inspect_selection", "inspect_relics", "inspect_map", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "claim_reward", "choose_rest_option", "loot_treasure", "buy_item", "choose_ancient_option", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation", "travel_to_node", "run_result_option"}:
+                        if tool.name not in {"inspect_potions", "inspect_combatants", "inspect_ui", "get_observation", "inspect_hand", "inspect_selection", "inspect_relics", "inspect_map", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "use_potion", "discard_potion", "claim_reward", "choose_rest_option", "loot_treasure", "buy_item", "choose_ancient_option", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation", "travel_to_node", "run_result_option"}:
                             self.assertEqual(set(tool.inputSchema["properties"]), {"preset"})
                     missing = await session.call_tool("end_turn", {})
                     self.assertTrue(missing.isError)

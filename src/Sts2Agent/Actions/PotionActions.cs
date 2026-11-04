@@ -19,7 +19,7 @@ internal static class PotionActions
 
     public static NPotionHolder? Find(int slot)
     {
-        var holders = PotionInspection.VisibleHolders();
+        var holders = PotionInspection.InteractiveHolders();
         return holders != null && slot < holders.Length && holders[slot].HasPotion ? holders[slot] : null;
     }
 
