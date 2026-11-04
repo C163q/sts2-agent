@@ -1,0 +1,131 @@
+{
+  "base_commit": "62d998a",
+  "working_tree_implementation": true,
+  "mod": "0.60.0",
+  "mcp": "0.62.0",
+  "schema": 40,
+  "mod_sha256": "edef5d60ef876df356077e3648ee0515872ebd51ce3c05546f1d1d22f7b8206b",
+  "samples": [
+    {
+      "file": "no-view-rejected.json",
+      "source": ".tmp/2026-11-04-close-card-view-implementation/gui/close_combat/verify/evidence.json",
+      "source_index": 1,
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "purpose": "没有浏览页：具体原因与 choose_legal_action",
+      "sha256": "8a25054e3506e3ba73084078f2eb115edcd23e8bb37998b83d72d6a0e4162741"
+    },
+    {
+      "file": "turn-after-rejection.full.json",
+      "source": ".tmp/2026-11-04-close-card-view-implementation/gui/close_combat/verify/evidence.json",
+      "source_index": 2,
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "purpose": "拒绝后不额外观察，直接结束回合成功",
+      "sha256": "e0d5a47d0a3e4b019da204c25d1492ee77361601eee5950361b094fd10eb2b8f"
+    },
+    {
+      "file": "closed.full.json",
+      "source": ".tmp/2026-11-04-close-card-view-implementation/gui/close_combat/verify/evidence.json",
+      "source_index": 4,
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "purpose": "full 的成功最小返回",
+      "sha256": "47c56f5ddeb7183dceb0ae52b16dee49c83b1e6872f85513c26713af52031d45"
+    },
+    {
+      "file": "repeat-rejected.json",
+      "source": ".tmp/2026-11-04-close-card-view-implementation/gui/close_combat/verify/evidence.json",
+      "source_index": 5,
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "purpose": "连续关闭第二次仍拒绝，但保留已有许可",
+      "sha256": "8a25054e3506e3ba73084078f2eb115edcd23e8bb37998b83d72d6a0e4162741"
+    },
+    {
+      "file": "closed.default.json",
+      "source": ".tmp/2026-11-04-close-card-view-implementation/gui/close_combat/verify/evidence.json",
+      "source_index": 8,
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "default"
+      },
+      "purpose": "default 的成功最小返回",
+      "sha256": "47c56f5ddeb7183dceb0ae52b16dee49c83b1e6872f85513c26713af52031d45"
+    },
+    {
+      "file": "map-rejected.json",
+      "source": ".tmp/2026-11-04-close-card-view-implementation/gui/close_combat/verify/evidence.json",
+      "source_index": 12,
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "purpose": "仅地图时不误关闭地图",
+      "sha256": "8a25054e3506e3ba73084078f2eb115edcd23e8bb37998b83d72d6a0e4162741"
+    },
+    {
+      "file": "map.full.json",
+      "source": ".tmp/2026-11-04-close-card-view-implementation/gui/close_combat/verify/evidence.json",
+      "source_index": 15,
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "purpose": "关闭牌组后保留底下地图",
+      "sha256": "cf106d17abf27526b6f093a3439eaa634cc5c1387ce681a938476f298789147f"
+    },
+    {
+      "file": "selection-rejected.json",
+      "source": ".tmp/2026-11-04-close-card-view-implementation/gui/close_selection/verify/evidence.json",
+      "source_index": 3,
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "purpose": "当前为选择页：具体原因且保留许可",
+      "sha256": "dafc73b01bb4f5c594c5f7307bcb040bddc37a8904656f361202e2d551f4d9f5"
+    },
+    {
+      "file": "selection-continued.full.json",
+      "source": ".tmp/2026-11-04-close-card-view-implementation/gui/close_selection/verify/evidence.json",
+      "source_index": 4,
+      "tool": "selection_option",
+      "arguments": {
+        "option_id": "cancel"
+      },
+      "purpose": "无额外观察，直接选择按钮成功",
+      "sha256": "a0fa8afc7f0bbd52dab578013a99726ff82c0a080a726316c0e9bbe4f0744958"
+    },
+    {
+      "file": "battlefield.full.json",
+      "source": ".tmp/2026-11-04-close-card-view-implementation/gui/close_battlefield/verify/evidence.json",
+      "source_index": 3,
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "purpose": "关闭牌堆返回选择战场视图",
+      "sha256": "76a5bd0162a4272c3ba66162b9868beecb3740c272fbace76c34f5be2d34d24a"
+    },
+    {
+      "file": "selection-view.full.json",
+      "source": ".tmp/2026-11-04-close-card-view-implementation/gui/close_battlefield/verify/evidence.json",
+      "source_index": 4,
+      "tool": "set_selection_view",
+      "arguments": {
+        "view": "selection"
+      },
+      "purpose": "成功关闭后直接回到选择",
+      "sha256": "2581a1e46939aa130b0351b75c6ed5430ab40d9568030197e1918eeb7b14eebb"
+    }
+  ]
+}

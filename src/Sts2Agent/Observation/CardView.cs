@@ -23,17 +23,33 @@ internal static class CardView
         get
         {
             var screen = NCapstoneContainer.Instance?.CurrentCapstoneScreen as Control;
-            bool supported = screen is NDeckViewScreen || screen is NCardPileScreen pile
-                && pile.Pile?.Type is PileType.Draw or PileType.Discard or PileType.Exhaust;
-            return supported && VisibleUi.Shown(screen) && screen!.IsNodeReady()
+            return Supported(screen) && VisibleUi.Shown(screen) && screen!.IsNodeReady()
                 && (CombatObservation.Status(allowCardView: true, allowMap: true) == "visible"
                     || screen is NDeckViewScreen && RunUi.NonCombatVisible(allowCardView: true)) ? screen : null;
         }
     }
 
-    public static bool CanClose(Control screen) => ReferenceEquals(Current, screen)
-        && VisibleUi.OnScreen(screen.GetNodeOrNull<NButton>("BackButton"))
-        && screen.GetNode<NButton>("BackButton").IsEnabled;
+    private static bool Supported(Control? screen) => screen is NDeckViewScreen || screen is NCardPileScreen pile
+        && pile.Pile?.Type is PileType.Draw or PileType.Discard or PileType.Exhaust;
+
+    public static string? CloseUnavailableReason(Control? screen)
+    {
+        if (screen == null)
+        {
+            if (Supported(NCapstoneContainer.Instance?.CurrentCapstoneScreen as Control))
+                return "The card browsing page is covered, hidden or not ready. Return to it before closing it.";
+            if (CardSelection.Current is { Status: "visible" or "unsupported" })
+                return "A card selection is active. close_card_view only closes deck and combat-pile browsing pages.";
+            return "No supported card browsing page is open.";
+        }
+        if (!ReferenceEquals(Current, screen)) return "The card browsing page is no longer exposed.";
+        var button = screen.GetNodeOrNull<NButton>("BackButton");
+        if (button == null) return "The card browsing return button is not ready.";
+        if (!VisibleUi.OnScreen(button)) return "The card browsing return button is not visible.";
+        return button.IsEnabled ? null : "The card browsing return button is disabled.";
+    }
+
+    public static bool CanClose(Control screen) => CloseUnavailableReason(screen) == null;
 
     public static void Close(Control screen) => screen.GetNode<NButton>("BackButton").ForceClick();
 

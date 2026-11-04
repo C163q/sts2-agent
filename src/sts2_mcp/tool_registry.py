@@ -585,7 +585,8 @@ SPECS = (
         records_events=False,
         reader='observation_details:observation_details',
         projector='observation_presets:actions_only_result',
-        native_keys=()),
+        native_keys=(),
+        unchanged_view_rejections=True),
     ToolSpec(
         name='inspect_map',
         schema=MAP_SCHEMA,

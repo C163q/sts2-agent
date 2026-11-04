@@ -154,10 +154,10 @@ internal sealed partial class GameAdapter
         if (request.Operation == "close_card_view")
         {
             var screen = CardView.Current;
-            if (screen == null || !CardView.CanClose(screen))
-                return FileMailbox.Error(request.Id, "illegal_action", "The current card view cannot be closed.");
+            if (CardView.CloseUnavailableReason(screen) is { } reason)
+                return ResponseBuilder.Error(request.Id, "illegal_action", reason, publicMessage: true, uiUnchanged: true);
             UiChanged();
-            CardView.Close(screen);
+            CardView.Close(screen!);
             return Success(request, await SettledObservation());
         }
         if (request.Operation == "close_deck")

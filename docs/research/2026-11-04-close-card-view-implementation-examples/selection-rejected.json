@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "A card selection is active. close_card_view only closes deck and combat-pile browsing pages.",
+    "recovery": "choose_legal_action"
+  }
+}

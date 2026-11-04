@@ -1,0 +1,5 @@
+[
+  {"name":"close_combat","scenarios":{"play":"pommel_strike"},"steps":[{"name":"verify","verifier":"verify_card_view_close.py","args":["--scenario","combat"]}]},
+  {"name":"close_selection","scenarios":{"rest":"smith"},"steps":[{"name":"verify","verifier":"verify_card_view_close.py","args":["--scenario","selection"]}]},
+  {"name":"close_battlefield","scenarios":{"selection":"combat_pile"},"steps":[{"name":"verify","verifier":"verify_card_view_close.py","args":["--scenario","battlefield"]}]}
+]

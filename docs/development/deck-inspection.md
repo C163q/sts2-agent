@@ -34,7 +34,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_card_view
 
 `close_card_view` 同时支持原生牌组、抽牌堆、弃牌堆和消耗牌堆查看页。成功返回与 `get_observation.actions_only` 相同的上下文：scene、screen、available_actions，以及存在待处理选择时的 selection.type/status；不返回牌面、房间正文、顶栏、notes 或 transition。通用 default/full 均保持该最小结构。MCP 与普通文件 CLI 共用投影，底层 `--raw` 仍保留完整快照。成功刷新 MCP 动作许可，已有足够信息时可直接继续合法操作。
 
-调用不需要 `expected_state`；文件参数校验及当前页面复核仍然生效。当前没有受支持的卡牌查看页，或页面被卡牌详情等更高层界面覆盖时，`close_card_view` 返回 `illegal_action`，不会关闭其他页面。关闭的前置拒绝目前仍使用通用原因并清除已有 MCP 许可，属于待修缺口，见[CLOSE-01–02](../research/2026-11-04-close-card-view-review.md#优先关注的问题)。
+调用不需要 `expected_state`；文件参数校验及当前页面复核仍然生效。当前没有受支持的卡牌查看页，或页面被卡牌详情等更高层界面覆盖时，`close_card_view` 返回 `illegal_action`，不会关闭其他页面。关闭的前置拒绝区分无浏览页、选择页面、浏览页被覆盖／隐藏／未就绪及返回按钮缺失／隐藏／禁用，并给出安全原因；仅原生明确保证未交互时保留已有 MCP 许可。没有旧许可不会因拒绝获得许可，已点击、超时、取消或坏回复仍按未知／失败结果处理，见[MCP 错误语义](mcp.md#调用和错误语义)。
 
 ## 参数
 
@@ -100,3 +100,5 @@ python3 -m tests.game.verifiers.verify_deck --ipc-dir .tmp/live/ipc --output-dir
 历史独立及正式游戏采样、检查数量和限制见[牌组实施记录](../research/2026-10-29-deck-view-plan.md)及[MCP 接入记录](../research/2026-10-29-mcp-deck-inspection.md)。这些证据对应各自基线，不表示当前版本已重新运行同一套检查。
 
 牌组筛选、基础观察及最小关闭的验收使用 [deck_inspection 套件](../../tests/game/data/gui_suite_deck_inspection.json)；字段、许可、实测样本及未覆盖范围见[实施记录](../research/2026-11-04-deck-inspection-implementation.md)。
+
+关闭拒绝的具体原因、许可恢复及成功最小返回由 [card_view_close GUI 清单](../../tests/game/data/gui_suite_card_view_close.json)验证；证据和未验证范围见[关闭恢复实施](../research/2026-11-04-close-card-view-implementation.md)。

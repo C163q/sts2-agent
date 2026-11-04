@@ -1,6 +1,6 @@
 # close_card_view 场景与参数核验
 
-> 当前状态：现状核验完成，进入设计讨论；29 项 Python、7 组本地探针、四局 GUI／43 次真实 MCP 调用完成，已导出 20 份完整示例。成功 actions_only 保持原定稿，CLOSE-01–02 尚未修复，close_card_view 未核销。暂无阻塞。
+> 当前状态：定稿已实施，验证及独立审查完成，close_card_view 已核销。CLOSE-01–02 修复及新样本见[实施记录](2026-11-04-close-card-view-implementation.md)；下述问题和 20 份旧示例保留审阅基线。现行接口见[牌组与关闭指南](../development/deck-inspection.md)。暂无阻塞。
 
 ## 优先关注的问题
 
@@ -9,7 +9,7 @@
 | CLOSE-01 | 中；错误准确性 | 没有受支持的浏览页、被更高层遮挡、返回按钮不可用等前置拒绝，原生只有同一个内部 message；没有 public_message，MCP 进一步退化为 `The requested action is unavailable.`，无法判断应该返回选择、关闭详情还是当前根本没有浏览页 | [请求入口](../../src/Sts2Agent/Adapter/RequestDispatcher.cs)、[CardView](../../src/Sts2Agent/Observation/CardView.cs)、[错误公开](../../src/sts2_mcp/output/error_output.py)。建议复用统一的关闭可用性／安全原因入口，区分上述条件，异常诊断继续私有 |
 | CLOSE-02 | 中；错误恢复 | 前置拒绝发生在 UiChanged／ForceClick 之前，确定没有关闭任何页面，却仍清除旧 MCP 许可，原本合法的动作被 observation_required 阻挡 | [工具注册](../../src/sts2_mcp/tool_registry.py)、[会话](../../src/sts2_mcp/game_session.py)。close_card_view 尚未登记显式未交互拒绝；即使模拟回复提供 ui_unchanged:true 也不会恢复旧许可。建议沿用牌组／牌堆已落地机制，仅明确未交互时保留已有许可 |
 
-两项尚未修复，属于用户既有“错误原因与恢复提示”“工具报错后的观察前置要求”范围。完整观察先校验、成功最小投影及未知结果清除许可均已成立，没有把这些已处理行为重复列为问题。
+下述问题保留审阅基线，修复结果见[实施记录](2026-11-04-close-card-view-implementation.md)；两项属于用户既有“错误原因与恢复提示”“工具报错后的观察前置要求”范围。完整观察先校验、成功最小投影及未知结果清除许可均已成立，没有把这些已处理行为重复列为问题。
 
 ## 核对基线与证据
 
@@ -83,8 +83,8 @@ tests.python.test_mcp_deck、test_deck_inspection、test_response_pipeline 共 *
 
 本阶段只更新审阅、完整实际示例、核验进度及文档表述；不修改生产工具、版本、正式安装或用户 TODO。
 
-## 待确认的处理范围
+## 输出定稿
 
-建议维持 default/full、现有提示词及成功 actions_only，不增加新参数或 summary。先处理 CLOSE-01–02：关闭可用性与安全原因保持同一个入口，原生在 UiChanged／ForceClick 之前明确拒绝时提供 ui_unchanged:true，MCP 登记该工具以保留已有许可；一旦点击、结果未知、证据矛盾或没有旧许可，继续按原有规则处理，不能用错误码或两个 false 执行事实推断未交互。
+维持 default/full、现有提示词及成功 actions_only，不增加新参数或 summary。处理 CLOSE-01–02：关闭可用性与安全原因保持同一个入口，原生在 UiChanged／ForceClick 之前明确拒绝时提供 ui_unchanged:true，MCP 登记该工具以保留已有许可；一旦点击、结果未知、证据矛盾或没有旧许可，继续按原有规则处理，不能用错误码或两个 false 执行事实推断未交互。
 
-关闭在首个 await 前完成、后续只采样且不继续关闭新界面的语义保持原样；持续维护文档已明确这一点，把“等待期间换页则拒绝”限定为查看请求。后续修复应补直接拒绝后合法动作续接、具体原因与无旧许可／交互／超时边界，并复用完整观察先校验和当前最小输出，不扩展为通用关闭全部 UI。
+关闭在首个 await 前完成、后续只采样且不继续关闭新界面的语义保持原样；持续维护文档已明确这一点，把“等待期间换页则拒绝”限定为查看请求。修复须补直接拒绝后合法动作续接、具体原因与无旧许可／交互／超时边界，并复用完整观察先校验和当前最小输出，不扩展为通用关闭全部 UI。
