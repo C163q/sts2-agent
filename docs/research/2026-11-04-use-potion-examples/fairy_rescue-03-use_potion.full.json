@@ -1,0 +1,161 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "play_cards",
+    "use_potion",
+    "discard_potion",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "potion": {
+          "slot_index": 0,
+          "name": "Foul Potion"
+        },
+        "type": "potion_used",
+        "sequence": 1
+      },
+      {
+        "hp_loss": 1,
+        "blocked": 0,
+        "source": {
+          "kind": "potion",
+          "name": "Foul Potion"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 2
+      },
+      {
+        "hp_loss": 12,
+        "blocked": 0,
+        "source": {
+          "kind": "potion",
+          "name": "Foul Potion"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 3
+      },
+      {
+        "hp_loss": 12,
+        "blocked": 0,
+        "source": {
+          "kind": "potion",
+          "name": "Foul Potion"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "damage",
+        "sequence": 4
+      },
+      {
+        "hp_loss": 10,
+        "blocked": 0,
+        "source": {
+          "kind": "potion",
+          "name": "Foul Potion"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 5
+      },
+      {
+        "potion": {
+          "slot_index": 2,
+          "name": "Fairy in a Bottle"
+        },
+        "type": "potion_used",
+        "sequence": 6
+      },
+      {
+        "before": 0,
+        "after": 24,
+        "source": {
+          "kind": "potion",
+          "name": "Foul Potion"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "hp_changed",
+        "sequence": 7
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "revived",
+        "sequence": 8
+      },
+      {
+        "source": {
+          "kind": "potion",
+          "name": "Foul Potion"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "died",
+        "sequence": 9
+      }
+    ]
+  }
+}

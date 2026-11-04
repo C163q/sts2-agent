@@ -1,0 +1,511 @@
+[
+  {
+    "name": "basic",
+    "scenarios": {
+      "play": "basic",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "default",
+    "scenarios": {
+      "play": "basic",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "default"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "aoe",
+    "scenarios": {
+      "play": "basic",
+      "potion": "aoe"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "aoe"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "victory",
+    "scenarios": {
+      "play": "basic",
+      "potion": "victory"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "victory"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "death",
+    "scenarios": {
+      "play": "basic",
+      "potion": "death"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "death"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "fairy_rescue",
+    "scenarios": {
+      "play": "basic",
+      "potion": "fairy_rescue"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "fairy_rescue"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "cancel",
+    "scenarios": {
+      "play": "basic",
+      "potion": "cancel"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "cancel"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "skill",
+    "scenarios": {
+      "play": "basic",
+      "potion": "skill"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "skill"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "attack",
+    "scenarios": {
+      "play": "basic",
+      "potion": "attack"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "attack"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "power",
+    "scenarios": {
+      "play": "basic",
+      "potion": "power"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "power"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "colorless",
+    "scenarios": {
+      "play": "basic",
+      "potion": "colorless"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "colorless"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "memories",
+    "scenarios": {
+      "play": "basic",
+      "potion": "memories"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "memories"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "gamblers",
+    "scenarios": {
+      "play": "basic",
+      "potion": "gamblers"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "gamblers"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "fruit_combat",
+    "scenarios": {
+      "play": "basic",
+      "potion": "fruit_combat"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "fruit_combat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "noncombat_event",
+    "scenarios": {
+      "play": "basic",
+      "potion": "noncombat_event"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "noncombat_event"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "noncombat_rest",
+    "scenarios": {
+      "play": "basic",
+      "potion": "noncombat_rest"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "noncombat_rest"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "noncombat_shop",
+    "scenarios": {
+      "play": "basic",
+      "potion": "noncombat_shop"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "noncombat_shop"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "noncombat_map",
+    "scenarios": {
+      "play": "basic",
+      "potion": "noncombat_map"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "noncombat_map"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "noncombat_reward",
+    "scenarios": {
+      "play": "basic",
+      "potion": "noncombat_reward"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "noncombat_reward"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "merchant",
+    "scenarios": {
+      "play": "basic",
+      "potion": "merchant"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "merchant"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "merchant_inventory",
+    "scenarios": {
+      "play": "basic",
+      "potion": "merchant_inventory"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "merchant_inventory"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "merchant_map",
+    "scenarios": {
+      "play": "basic",
+      "potion": "merchant_map"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "merchant_map"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "blocked",
+    "scenarios": {
+      "play": "basic",
+      "potion": "blocked"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "blocked"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "entropic",
+    "scenarios": {
+      "play": "basic",
+      "potion": "entropic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "entropic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "replace",
+    "scenarios": {
+      "play": "basic",
+      "potion": "replace"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "replace"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "unhittable",
+    "scenarios": {
+      "play": "basic",
+      "potion": "unhittable"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "unhittable"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "covered",
+    "scenarios": {
+      "play": "basic",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "covered"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "slot_boundary",
+    "scenarios": {
+      "play": "basic",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "slot_boundary"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "journal_boundary",
+    "scenarios": {
+      "play": "basic",
+      "potion": "fairy_rescue"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "journal_boundary"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "fake_merchant",
+    "scenarios": {
+      "shop": "fake"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_use_potion_review.py",
+        "args": [
+          "--scenario",
+          "fake_merchant"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "potion": {
+    "slot_index": 0,
+    "name": "Liquid Memories"
+  },
+  "usable": true,
+  "discardable": true,
+  "target_type": "self",
+  "requires_target": false,
+  "targets": [
+    {
+      "id": 0,
+      "kind": "player",
+      "name": "The Ironclad"
+    }
+  ],
+  "reason": null,
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  }
+}

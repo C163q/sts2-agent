@@ -1,0 +1,60 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "play_cards",
+    "use_potion",
+    "discard_potion",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "potion": {
+          "slot_index": 0,
+          "name": "Entropic Brew"
+        },
+        "type": "potion_used",
+        "sequence": 1
+      },
+      {
+        "potion": {
+          "slot_index": 0,
+          "name": "Blessing of the Forge"
+        },
+        "type": "potion_obtained",
+        "sequence": 2
+      },
+      {
+        "potion": {
+          "slot_index": 1,
+          "name": "Duplicator"
+        },
+        "type": "potion_obtained",
+        "sequence": 3
+      },
+      {
+        "potion": {
+          "slot_index": 2,
+          "name": "Strength Potion"
+        },
+        "type": "potion_obtained",
+        "sequence": 4
+      }
+    ]
+  }
+}

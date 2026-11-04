@@ -32,6 +32,7 @@
 | 结束回合拒绝恢复、已有牌可见移动、洗牌隐私与自动出牌 | [turn_transitions](../../tests/game/data/gui_suite_turn_transitions.json) |
 | 单张出牌回执、拒绝恢复及原生连续出牌行为调研 | [play_card_review](../../tests/game/data/gui_suite_play_card_review.json) |
 | 公开批量出牌、逐张结果、原生选择续接与跨局清理 | [play_cards](../../tests/game/data/gui_suite_play_cards.json) |
+| 药水使用回执、选择／战斗外边界、拒绝恢复与跨槽事件核验 | [use_potion_review](../../tests/game/data/gui_suite_use_potion_review.json)；现状证据及已知缺口见[审阅记录](../research/2026-11-04-use-potion-review.md) |
 | 卡牌 Affliction、附魔、手牌 HUD 与浏览预设 | [card_formats](../../tests/game/data/gui_suite_card_formats.json) |
 | 战斗对象静态／完整级别、对象筛选、不可悬停提示及错误续接 | [combatant_presets](../../tests/game/data/gui_suite_combatant_presets.json) |
 | 查看错误说明、已有许可保留及零能量出牌拒绝后结束回合 | [inspection_errors](../../tests/game/data/gui_suite_inspection_errors.json) |

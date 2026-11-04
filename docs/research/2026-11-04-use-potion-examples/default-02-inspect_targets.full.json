@@ -1,0 +1,32 @@
+{
+  "potion": {
+    "slot_index": 0,
+    "name": "Fire Potion"
+  },
+  "usable": true,
+  "discardable": true,
+  "target_type": "any_enemy",
+  "requires_target": true,
+  "targets": [
+    {
+      "id": 1,
+      "kind": "enemy",
+      "name": "Leaf Slime (S)"
+    },
+    {
+      "id": 2,
+      "kind": "enemy",
+      "name": "Leaf Slime (M)"
+    },
+    {
+      "id": 3,
+      "kind": "enemy",
+      "name": "Twig Slime (S)"
+    }
+  ],
+  "reason": null,
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  }
+}

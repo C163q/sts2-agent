@@ -1,0 +1,128 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_targets",
+    "inspect_rewards"
+  ],
+  "transition": {
+    "stop_reason": "combat_won",
+    "complete": true,
+    "events": [
+      {
+        "potion": {
+          "slot_index": 0,
+          "name": "Explosive Ampoule"
+        },
+        "type": "potion_used",
+        "sequence": 1
+      },
+      {
+        "hp_loss": 1,
+        "blocked": 0,
+        "source": {
+          "kind": "potion",
+          "name": "Explosive Ampoule"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 2
+      },
+      {
+        "hp_loss": 1,
+        "blocked": 0,
+        "source": {
+          "kind": "potion",
+          "name": "Explosive Ampoule"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "damage",
+        "sequence": 3
+      },
+      {
+        "hp_loss": 1,
+        "blocked": 0,
+        "source": {
+          "kind": "potion",
+          "name": "Explosive Ampoule"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 4
+      },
+      {
+        "source": {
+          "kind": "potion",
+          "name": "Explosive Ampoule"
+        },
+        "target": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "type": "died",
+        "sequence": 5
+      },
+      {
+        "source": {
+          "kind": "potion",
+          "name": "Explosive Ampoule"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "died",
+        "sequence": 6
+      },
+      {
+        "source": {
+          "kind": "potion",
+          "name": "Explosive Ampoule"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "died",
+        "sequence": 7
+      }
+    ]
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "scene": "combat",
+  "selection": {
+    "type": "choose_one",
+    "status": "visible",
+    "prompt": "Choose a Card",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 8,
+        "name": "Mayhem",
+        "type": "Power",
+        "rarity": "rare",
+        "visual_card_pool": "colorless",
+        "energy_cost": "2",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "At the start of your turn, play the top card of your Draw Pile."
+      },
+      {
+        "id": 9,
+        "name": "Secret Weapon",
+        "type": "Skill",
+        "rarity": "rare",
+        "visual_card_pool": "colorless",
+        "energy_cost": "0",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Put an Attack from your Draw Pile into your Hand.\nExhaust."
+      },
+      {
+        "id": 10,
+        "name": "Fisticuffs",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "colorless",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 7 damage.\nGain Block equal to damage dealt."
+      }
+    ],
+    "options": [
+      {
+        "id": "skip",
+        "text": "Skip",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": true,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [
+    {
+      "title": "Exhaust",
+      "description": "Removed until the end of combat.",
+      "card_ids": [
+        9
+      ]
+    },
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        10
+      ]
+    }
+  ],
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "scene": "rest_site",
+  "screen": {
+    "status": "visible",
+    "view": "map"
+  },
+  "available_actions": [
+    "use_potion",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "potion": {
+          "slot_index": 0,
+          "name": "Fruit Juice"
+        },
+        "type": "potion_used",
+        "sequence": 1
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 80,
+        "after": 85,
+        "type": "max_hp_changed",
+        "sequence": 2
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 40,
+        "after": 45,
+        "type": "hp_changed",
+        "sequence": 3
+      }
+    ]
+  }
+}
