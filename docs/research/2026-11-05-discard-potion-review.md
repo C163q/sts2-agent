@@ -43,11 +43,11 @@
 
 成功只出现 potion_discarded，没有把丢弃记成 potion_used；测试中的果汁不增加最大生命，恶臭药水不增加金币，其他药水也不因丢弃产生使用效果。丢空药水栏后，available_actions 不再包含 discard_potion。表中“选牌期间误调用”记录的是工具当前行为，不能视为符合原生能力的验收结论。
 
-## 待确认结论
+## 已确认契约
 
-建议参数继续使用 potion_slot 与 preset:default/full，不增加 summary。先修正选牌期间的丢弃支持，提示词简要说明“可能排队，完成当前选择后执行”；排队回执、重复提交、后续事件和可用操作一并设计。牌组等其他覆盖页、敌人回合和其他选择类型不能由本次技能药水的结论直接推广。
+输入参数继续使用 potion_slot 与 preset:default/full，不增加 summary。支持已暴露、原生药水槽允许操作的稳定选牌边界，仍禁止在未验证的牌组／牌堆／战斗地图覆盖、敌人回合或未知选择中提交。使用药水的阶段限制保持原有规则。提示词简要说明“可能排队，完成当前选择后执行”。
 
-建议增加明确的丢弃结果，而非依赖空事件列表猜测。以下是**候选字段片段，不是当前返回**：
+成功的 discard_potion 回执增加**顶层** potion_discard；该字段描述本次请求，transition.events 只记录实际发生的变化。字段片段：
 
 ```json
 {
@@ -59,4 +59,8 @@
 }
 ```
 
-排队时保留当前 choice_required，不生成尚未发生的 potion_discarded；真正执行后由后续回执记录。普通即时丢弃可标为 discarded；取消或无法确认的状态还需结合原生流程定稿，不能将“事件暂时没有出现”直接当作未执行。只增加这类结果说明，输入参数不变。
+排队时 status 为 queued，停在当前 choice_required，不生成尚未发生的 potion_discarded。完成选牌后的 select_card 等回执在 events 中记录实际丢弃，不附带顶层 potion_discard。立即成功丢弃时，顶层 status 为 discarded，events 同时保留 potion_discarded；战斗中通常为 player_ready，战斗外为 action_completed。
+
+取消且确认未丢弃时为 not_discarded；无法确认或执行异常而缺少公开移除证据时为 unknown。unknown 不提供继续玩法的许可，须重新读取；明确未提交的原有错误仍保留已有许可。一个槽位已有原生使用／丢弃等待标记时拒绝重复提交，可继续选牌或处理其他合法槽位，不凭请求成功预测未来移除。
+
+仅 discard_potion 自身的成功回执返回该顶层字段；use_potion、基础观察、选牌回执不携带它。字段在 default/full 中相同，不包含隐藏效果、随机结果或未来执行保证。实际支持和取消等边界须以本轮实现验证为准。
