@@ -37,12 +37,8 @@
 
 [奖励](rewards.md)、[休息处](rest-site.md)、[宝箱房](treasure.md)、[商店](shop.md)、[先古之民](ancients.md)、[通用事件及确认框](events.md)、[占卜](divination.md)、[建筑师与结算](run-ending.md)。
 
-## 延期事项与核验工作
+## 后续事项与核验记录
 
 - [用户后续待办](TODO.md)：只按用户明确要求维护，记录不等于授权实施。
-- [工具逐项核验清单及流程](../research/2026-11-02-mcp-tool-review.md)：本轮参数与摘要设计的阶段性工作记录；当前接口仍以本目录为准。
-- [工具共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)：第 1–2 阶段已完成，固定行为与 Python 共用输出链路见[实施记录](../research/2026-11-04-refactor-stages-1-2.md)；筛选、上下文和遗物悬停调整仍按后续阶段推进。
-
-工具共用链路重构的当前执行范围见[计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)、[第 1–2 阶段记录](../research/2026-11-04-refactor-stages-1-2.md)、[第 3–4 阶段记录](../research/2026-11-04-refactor-stages-3-4.md)与[第 5 阶段记录](../research/2026-11-04-refactor-stage-5.md)。
-
-展示与悬停读取共用入口见[架构说明](architecture.md#展示与悬停读取)。
+- [工具逐项核验清单及流程](../research/2026-11-02-mcp-tool-review.md)：共用链路重构后继续逐工具内容审阅；当前接口以本目录为准。
+- [工具共用链路重构验收](../research/2026-11-04-refactor-stage-7.md)：七阶段已完成，包含 RF-01–RF-14 对照、验证范围及[完整返回样例](../research/2026-11-04-refactor-contract-examples/README.md)；各阶段记录由[实施计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)索引。
