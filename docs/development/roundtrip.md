@@ -67,7 +67,7 @@ python3 -m tests.python.test_prepare_roundtrip
 | 基础观察 | 使用 `get_state`，对应 MCP 的 `get_observation` |
 | 游戏动作 | 调用方自行保存最新 `state.snapshot_id`，以 `expected_state` 提交；MCP 会话内部管理令牌 |
 | 详情及浏览页面 | 无须 `expected_state`，仍检查当前场景、遮挡、参数及原生合法性 |
-| 输出预设及筛选 | 不接受 MCP 的 `preset`、`card_ids`、`relic_indices` 或地图 `max_steps`；底层文件响应保留完整空值；牌组／牌堆 CLI 另支持共用 --preset 投影 |
+| 输出预设及筛选 | 不接受 MCP 的 `preset`、`card_ids`、`relic_indices` 或地图 `max_steps`；底层文件响应保留完整空值；牌组／牌堆 CLI 支持 --preset，牌组另支持 --card-ids，均只裁剪公开输出 |
 | 原生参数 | 牌堆 pile、牌组排序／升级模式，以及 `inspect_selection.view_upgrades` 按各工具定义传入 arguments；牌组／牌堆 CLI 的 --preset 只在 Python 投影，不传入 Mod |
 | 兼容操作 | `close_deck` 仅关闭牌组，不注册为 MCP；公开工具使用 `close_card_view` |
 | 截图 | 文件 `capture_screenshot` 返回图像载荷；可选 MCP 工具负责文件名和存盘，见[截图接口](screenshots.md)；普通 CLI 不公开此操作 |
@@ -75,9 +75,9 @@ python3 -m tests.python.test_prepare_roundtrip
 
 请求写入 `requests/<id>.json`，其中 `id` 是不带连字符的 UUID；先写临时文件再原子重命名为 `.json`。请求体包含 `id`、`operation`；动作另带 `expected_state`，有参数操作的选项放在 `arguments` 对象中。响应写入 `responses/<id>.json`，成功包含 `ok: true` 和 `state`，失败包含 `ok: false` 和 `error.code`、`error.message`。
 
-已审阅入口的明确拒绝可另带 `error.public_message`，表示经适配器确认可公开的原因；普通 message 仍可含私有诊断，不能直接转发。`play_card` 在提交和 UI 变化之前被拒绝时另带布尔 `error.action_submitted:false`；缺省不表示 false。MCP 校验这些字段，只在对应条件下保留已有许可，不把控制标记交给 LLM；完整语义见[MCP 错误处理](mcp.md#调用和错误语义)。观察 schema 的版本不因这些可选错误字段改变。 inspect_combatants 的文件请求另支持可选 level:summary/full，默认为 full；客户端的 preset/sources 与底层级别不同，详见[战斗对象入口](combatant-inspection.md#文件入口与验证)。
+已审阅入口的明确拒绝可另带 `error.public_message`，表示经适配器确认可公开的原因；普通 message 仍可含私有诊断，不能直接转发。`play_card` 在提交和 UI 变化之前被拒绝时另带布尔 `error.action_submitted:false`；inspect_deck 的显式拒绝可带 `error.ui_unchanged:true`，保证该请求未进行 UI 交互，不表示外部状态没有变化。缺省不提供保证，false 也不能解释为未知结果已恢复。MCP 只对登记工具应用保证，检查其类型及与执行／提交事实的矛盾；完整语义见[MCP 错误处理](mcp.md#调用和错误语义)。这些控制字段不进入 LLM JSON，观察 schema 不因可选错误字段单独改变。inspect_combatants 的文件请求另支持可选 level:summary/full，默认为 full；详见[战斗对象入口](combatant-inspection.md#文件入口与验证)。
 
-内部请求包装可带 `response_options:{"include_divination_image":false}`，它与游戏 `arguments` 分开，不是 MCP 工具参数。省略时仍按旧文件调用规则捕获可见占卜棋盘；显式布尔值控制是否附加该 PNG，不改变结构化采样、令牌或独立截图。未知选项、重复键和非布尔值会被拒绝。MCP 按最终输出是否需要棋盘传入：完整观察、summary、占卜详情及会返回棋盘的关闭页结果需要图片；动作回执和 actions_only/top_bar 不捕获图片。
+内部请求包装可带 `response_options:{"include_divination_image":false}`，它与游戏 `arguments` 分开，不是 MCP 工具参数。省略时仍按旧文件调用规则捕获可见占卜棋盘；显式布尔值控制是否附加该 PNG，不改变结构化采样、令牌或独立截图。未知选项、重复键和非布尔值会被拒绝。MCP 按最终输出是否需要棋盘传入：完整观察、summary、占卜详情及会返回棋盘的关闭页结果需要图片；动作回执和 actions_only/top_bar 不捕获图片。close_card_view 的最小结果也不请求棋盘，普通文件 CLI 同样省略；--raw 保留原始请求行为。
 
 适配器响应根部另有私有 `execution` 正向事实：`ui_interaction_started` 表示开始过 UI 交互，`action_submission_observed` 表示观察到原生动作提交，`state_captured` 表示完成过完整快照采样。后者不保证采样晚于最后一次动作或当前仍有效；所有 false 只表示未记录正向事实，不是“未执行”证明。异常、媒体或序列化失败保留已经记录的事实。MCP 会话校验这些控制字段，不转发给模型，也不据此自动重试或续权；矛盾的未提交标记作为坏响应拒绝。
 

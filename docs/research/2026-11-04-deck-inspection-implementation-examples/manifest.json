@@ -1,0 +1,193 @@
+{
+  "base_commit": "456ec34",
+  "working_tree_implementation": true,
+  "mod": "0.58.0",
+  "mcp": "0.60.0",
+  "schema": 39,
+  "mod_sha256": "40e3ba694e13236c862d8f80dff3c6c6294861ab5569eebd36e50125601c3ed6",
+  "samples": [
+    {
+      "file": "observation.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_combat/verify/evidence.json",
+      "entry": 3,
+      "source_sha256": "61c4458f32a9c33a115e0ebff9a6fa7295f36904ba86e72dce6224b56614d9e7",
+      "sha256": "f5ab800f445d57c734c091f565241d6121483f568085b316d0baa8126f161280"
+    },
+    {
+      "file": "observation.default.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "default"
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_combat/verify/evidence.json",
+      "entry": 4,
+      "source_sha256": "61c4458f32a9c33a115e0ebff9a6fa7295f36904ba86e72dce6224b56614d9e7",
+      "sha256": "f02ceb812d7abe98ca3369058294ad6403cccc7815ad9e232f9f3f795abda65f"
+    },
+    {
+      "file": "observation.summary.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "summary"
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_combat/verify/evidence.json",
+      "entry": 5,
+      "source_sha256": "61c4458f32a9c33a115e0ebff9a6fa7295f36904ba86e72dce6224b56614d9e7",
+      "sha256": "ec5db16c45d2ed20efc57b685f9104f83d300eb6e98ef6b5ccca15f7c4939bf8"
+    },
+    {
+      "file": "observation-upgraded.summary.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "summary"
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_combat/verify/evidence.json",
+      "entry": 20,
+      "source_sha256": "61c4458f32a9c33a115e0ebff9a6fa7295f36904ba86e72dce6224b56614d9e7",
+      "sha256": "56b5fc4126dd70336f18d20e3e3fd1ba5c1c02ad0b4c0ff493cb2466c0db00c6"
+    },
+    {
+      "file": "inspect.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full",
+        "view_upgrades": false,
+        "sort_by": "obtained"
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_combat/verify/evidence.json",
+      "entry": 1,
+      "source_sha256": "61c4458f32a9c33a115e0ebff9a6fa7295f36904ba86e72dce6224b56614d9e7",
+      "sha256": "f409d9a33d397b0158251f5ee97fcefacf51b90ee9062465d0e04e749824fbc1"
+    },
+    {
+      "file": "filtered.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full",
+        "card_ids": [
+          "deck:9",
+          "deck:999999",
+          "deck:9",
+          "deck:0"
+        ]
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_combat/verify/evidence.json",
+      "entry": 9,
+      "source_sha256": "61c4458f32a9c33a115e0ebff9a6fa7295f36904ba86e72dce6224b56614d9e7",
+      "sha256": "f61ea4d88b2d18970101ccbe01ec00f56c9e0328de482a1f91a27382a9bc1199"
+    },
+    {
+      "file": "filtered.summary.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "summary",
+        "card_ids": [
+          "deck:9",
+          "deck:999999",
+          "deck:9",
+          "deck:0"
+        ]
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_combat/verify/evidence.json",
+      "entry": 13,
+      "source_sha256": "61c4458f32a9c33a115e0ebff9a6fa7295f36904ba86e72dce6224b56614d9e7",
+      "sha256": "5a24b6eb0500ed665421cd8730d07fd81ec2c01fb5de43a2c94df11a7b9d6626"
+    },
+    {
+      "file": "empty.summary.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "summary",
+        "card_ids": []
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_combat/verify/evidence.json",
+      "entry": 14,
+      "source_sha256": "61c4458f32a9c33a115e0ebff9a6fa7295f36904ba86e72dce6224b56614d9e7",
+      "sha256": "709b35ddf34065f54eb638afdb004d20a2c46544e2cc7f94e06a8f94df4faf4b"
+    },
+    {
+      "file": "closed-visible.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_combat/verify/evidence.json",
+      "entry": 26,
+      "source_sha256": "61c4458f32a9c33a115e0ebff9a6fa7295f36904ba86e72dce6224b56614d9e7",
+      "sha256": "47c56f5ddeb7183dceb0ae52b16dee49c83b1e6872f85513c26713af52031d45"
+    },
+    {
+      "file": "closed-to-map.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_combat/verify/evidence.json",
+      "entry": 34,
+      "source_sha256": "61c4458f32a9c33a115e0ebff9a6fa7295f36904ba86e72dce6224b56614d9e7",
+      "sha256": "cf106d17abf27526b6f093a3439eaa634cc5c1387ce681a938476f298789147f"
+    },
+    {
+      "file": "event-observation.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_event/verify/evidence.json",
+      "entry": 3,
+      "source_sha256": "6a51d290b9ff847a7e889f1a51d7163bf9c8002273b92f48d358dcb5dbaead04",
+      "sha256": "041517c2b4a594a3d758f844196aeb5b72b1c94503f5c9a4b12378b1c8c3cd44"
+    },
+    {
+      "file": "epilogue-observation.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_epilogue/verify/evidence.json",
+      "entry": 5,
+      "source_sha256": "c5c96387ad1fe3d0fd8062fa16be7117d1547bd670cacf5332c70556094150ec",
+      "sha256": "76c68ad435f2ff730f86a447c36c538cd4857a1ddb404fd1b11d0c97a15a6b48"
+    },
+    {
+      "file": "selection-rejected.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_selection/verify/evidence.json",
+      "entry": 3,
+      "source_sha256": "4e77759cdd3d956b45a6ea60131c34d6faba392f2326c124a967612149ebbcbe",
+      "sha256": "44bb5833e5f9de7dd10d04143989c678b349fd875a097a7a7241e67a62a833b3"
+    },
+    {
+      "file": "selection-continued.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "selection_option",
+      "arguments": {
+        "option_id": "cancel"
+      },
+      "source": ".tmp/2026-11-04-deck-implementation/gui/deck_selection/verify/evidence.json",
+      "entry": 4,
+      "source_sha256": "4e77759cdd3d956b45a6ea60131c34d6faba392f2326c124a967612149ebbcbe",
+      "sha256": "a0fa8afc7f0bbd52dab578013a99726ff82c0a080a726316c0e9bbe4f0744958"
+    }
+  ]
+}

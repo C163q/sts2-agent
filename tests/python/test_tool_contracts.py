@@ -42,6 +42,9 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                 tools.snapshot_id = 'fixture-state'
                 result = await getattr(tools, case['tool'])(copy.deepcopy(case['arguments']))
                 want = copy.deepcopy(expected[case['expected_ref']])
+                if case['tool'] == 'close_card_view' and 'error' not in want:
+                    # The approved action contract replaces the frozen partial observation.
+                    want = {key: want[key] for key in ('scene', 'screen', 'available_actions')}
                 if 'unknown_field' in case['arguments']:
                     self.assertIn('unknown_field', result['error']['message'])
                     want['error']['message'] = result['error']['message']
@@ -55,6 +58,9 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(result, want)
                 self.assertEqual(getattr(result, 'image', None), case.get('expected_image'))
                 native_calls = copy.deepcopy(case['native_calls'])
+                if case['tool'] == 'inspect_deck':
+                    for call in native_calls:
+                        if call['arguments'] == {}: call['arguments'] = None
                 if case['tool'] == 'inspect_relics' and case['arguments'].get('preset') == 'summary':
                     for call in native_calls: call['arguments'] = {'level': 'summary'}
                 self.assertEqual(client.calls, native_calls)
@@ -88,6 +94,9 @@ class FileContractTests(unittest.TestCase):
                         patch.object(roundtrip_client.Client, 'call', return_value=raw) as call, \
                         contextlib.redirect_stdout(output):
                     roundtrip_client.main()
-                self.assertEqual(json.loads(output.getvalue()), expected[case['expected_ref']])
+                want = copy.deepcopy(expected[case['expected_ref']])
+                if case['tool'] == 'close_card_view':
+                    want = {key: want[key] for key in ('scene', 'screen', 'available_actions')}
+                self.assertEqual(json.loads(output.getvalue()), want)
                 self.assertEqual(call.call_args.kwargs.get('arguments'), case['native_arguments'])
                 self.assertEqual(raw, original)

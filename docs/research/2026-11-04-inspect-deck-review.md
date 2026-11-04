@@ -1,18 +1,18 @@
 # inspect_deck 场景与参数核验
 
-> 当前状态：场景与现有格式核验已记录，进入设计讨论；尚未定稿或修改工具行为。优先问题为具体拒绝原因、未操作 UI 的前置拒绝恢复，以及关闭牌组后基础观察丢字段；基础观察中的牌组内容仍是已登记的待设计范围。工具尚未核销。总流程见[工具核验清单](2026-11-02-mcp-tool-review.md)。
+> 当前状态：定稿已实施，核心、游戏验证及独立审查通过，inspect_deck 已核销。具体拒绝、明确未交互恢复、card_ids 筛选和基础观察已接入；关闭结果定为 actions_only。完整[实施记录](2026-11-04-deck-inspection-implementation.md)。下述现状与示例保留审阅基线，现行契约见[牌组指南](../development/deck-inspection.md)。核销范围及未穷举部分见实施记录。
 
 ## 优先关注的问题
 
 | 编号 | 优先级 | 问题与影响 | 依据及候选处理范围 |
 | --- | --- | --- | --- |
-| DECK-01 | 中；错误准确性 | 入口不可用、控件不可用、打开失败及读取期间页面变化，原生已有不同的 message，但未公开；MCP 均退化为 `The requested action is unavailable.` | [浏览请求](../../src/Sts2Agent/Adapter/GameAdapter.Views.cs)、[原生错误构建](../../src/Sts2Agent/Adapter/ResponseBuilder.cs)及[公开错误](../../src/sts2_mcp/output/error_output.py)。候选：公开经过选择的安全原因，区分前置拒绝与打开后的失败；不公开异常诊断 |
-| DECK-02 | 中；错误恢复 | 尚未操作 UI 的明确前置拒绝也清除旧许可，导致原本可执行的后续动作被 `observation_required` 阻挡 | 工具固定为 effect:view；[GameSession](../../src/sts2_mcp/game_session.py)的保留条件只覆盖纯读取与专门保证未执行的出牌拒绝。候选：原生明确证明前置拒绝且 UI 未改变，再由共用层保留旧许可；已有交互、过期或未知结果仍须重新读取 |
-| DECK-03 | 中；关闭后的观察完整性 | close_card_view 只投影八个基础字段，丢掉当前事件／火堆／宝箱／奖励／地图等内容；full 连缺少内容的 null 也不保留。在非战斗场景中，LLM 看不到关闭后应该出现的房间数据 | [closed_card_view](../../src/sts2_mcp/output/deck_details.py)使用旧字段白名单，未走完整 observation_details；真实事件、火堆、宝箱及奖励的关闭返回均确认缺失。候选：关闭结果接入现行基础观察校验／投影；不据此核销 close_card_view 的其余行为 |
+| DECK-01 | 中；错误准确性 | 入口不可用、控件不可用、打开失败及读取期间页面变化，原生已有不同的 message，但未公开；MCP 均退化为 `The requested action is unavailable.` | [浏览请求](../../src/Sts2Agent/Adapter/GameAdapter.Views.cs)、[原生错误构建](../../src/Sts2Agent/Adapter/ResponseBuilder.cs)及[公开错误](../../src/sts2_mcp/output/error_output.py)。已公开经过选择的安全原因，区分前置拒绝与打开后的失败；异常诊断仍私有 |
+| DECK-02 | 中；错误恢复 | 尚未操作 UI 的明确前置拒绝也清除旧许可，导致原本可执行的后续动作被 `observation_required` 阻挡 | 工具固定为 effect:view；[GameSession](../../src/sts2_mcp/game_session.py)的保留条件只覆盖纯读取与专门保证未执行的出牌拒绝。已采用原生显式未交互保证，由共用层保留旧许可；已有交互、过期或未知结果仍须重新读取 |
+| DECK-03 | 中；关闭后的观察完整性 | close_card_view 只投影八个基础字段，丢掉当前事件／火堆／宝箱／奖励／地图等内容；full 连缺少内容的 null 也不保留。在非战斗场景中，LLM 看不到关闭后应该出现的房间数据 | [closed_card_view](../../src/sts2_mcp/output/deck_details.py)使用旧字段白名单，未走完整 observation_details；真实事件、火堆、宝箱及奖励的关闭返回均确认缺失。最终采用现行观察校验后接 actions_only；不补房间正文，不据此核销 close_card_view 的其余行为 |
 
 DECK-02 不能靠将工具改成 read，或遇到 illegal_action 一律保留许可来处理。打开页面、排序及切换升级预览均会改变 UI；失败也可能发生在这些操作之后。`execution` 中的 false 只表示没有记录到相应证据，现有协议明确不将它定义为“确定没有执行”。需要补足实际保证，而非放宽所有浏览工具。
 
-另有一项**已登记、尚未实现的功能缺口**：打开牌组后，get_observation 仍只返回 `screen.view:deck` 和可见顶栏等基础内容，不返回牌组列表、排序或升级预览。其 summary 也仍是页面主体的 default 占位。该项属于[用户 TODO](../development/TODO.md)与[浏览覆盖约定](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)，应随本工具设计一并确定，不能当作已经解决。
+审阅基线另有一项**已登记的功能缺口，现已按定稿实现**：打开牌组后，当时 get_observation 只返回 `screen.view:deck` 和可见顶栏等基础内容，不返回牌组列表、排序或升级预览。其 summary 也仍是页面主体的 default 占位。该项属于[用户 TODO](../development/TODO.md)与[浏览覆盖约定](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)，已随本工具定稿处理，新的真实返回见[实施示例](2026-11-04-deck-inspection-implementation-examples/README.md)。
 
 没有发现新的牌组离屏截断：实现从原生网格完整排序列表读取，保留重复卡的独立身份；当前 summary 已复用共用卡牌摘要。原先浏览卡的附魔缺口已由[共享卡牌实现](2026-11-03-card-format-implementation.md)接入 CardAppearance.Preview，不能继续列为待修问题。
 
@@ -94,13 +94,13 @@ Open/reuse the native full-deck page when its entry is available and read the en
 7. 非法枚举、类型、未知参数和缺少 sort_by 的方向：本地 invalid_request；不发送游戏请求、不改变页面和已有许可。
 8. 等待期间关闭、覆盖、替换页面或更换玩家：原生重新核实后拒绝，不自动重开、恢复排序或关闭人的新页面；超时与取消不自动重试。
 
-## 候选设计，待用户确认
+## 输出定稿
 
-- **summary 保持现有共用卡牌摘要**。上下文、view_upgrades、sort 有助于理解实际页面，应保留；description、稀有度、卡池和所有悬停解释继续省略。没有证据支持另做一套牌组摘要字段。
-- **可选卡牌筛选**：若需要聚焦单张或少量牌，建议使用 `card_ids:["deck:3"]`；省略／null 全部、[] 为空，与其他工具的筛选约定一致。按原生排序输出，合并报告不在当前牌组的 ID，保留有效条目；共享提示也只保留所选牌的关联。已有稳定 ID，通常不再需要位置映射。这是新参数候选，尚未实现。
-- **基础观察的牌组内容**：推荐打开后读取同一完整网格，get_observation.full/default 使用共用完整卡牌格式，summary 使用共用卡牌摘要；包括当前升级模式及排序。专用工具和观察共用读取／投影，避免在基础观察中再次打开或切换页面。具体容器字段仍待决定；地图与三类牌堆的内容不能借此宣称已完成。
-- **先修正确性，再接参数与观察内容**：优先 DECK-01–03；以浏览请求的执行阶段和共用观察投影为边界做小范围重构。当前原生、Python 卡牌格式和共享提示已有明确分工，未发现再次进行大范围架构重构的必要。
-- **关闭结果复用完整观察**：DECK-03 的范围包括牌组和牌堆共用的关闭返回；应使用现行观察入口代替旧字段名单，保留关闭后的实际页面与遮挡规则，不补回仍被覆盖的内容。
+- inspect_deck.summary 保持共用卡牌摘要，保留上下文、view_upgrades 和 sort。新增 card_ids，使用 deck:N 字符串；省略／null 全部、[] 为空，去重按原生排序，合并无效 ID 并同步裁剪解释；不增加位置映射。
+- get_observation.full/default/summary 的牌组卡牌分别采用 face_full／face_default／summary，均不提供正文或悬停解释。顶层复用 deck、view_upgrades、sort.by/descending；只读当前 UI 设置，不重新打开页面，不继承上一次输出筛选。
+- close_card_view 是页面操作，成功应返回与 get_observation.actions_only 相同的内容。DECK-03 的最终处理为完整校验后采用共享最小投影，不补房间正文；所有公开 preset 一致，仍刷新许可。
+- DECK-01–02 分别公开安全具体原因、用原生显式未交互保证保留已有许可；已经交互、过期或未知结果不能恢复。实施以共用读取／校验和请求阶段做小范围重构，不进行大范围架构替换。
+- 完整实现、验证及未覆盖范围见[实施记录](2026-11-04-deck-inspection-implementation.md)。旧 27 份示例仍是重构前实际返回，不改写为新版本。
 
 ## 验证及尚未覆盖范围
 

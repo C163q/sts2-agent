@@ -25,11 +25,13 @@ internal static class ResponseBuilder
 
     public static string Success(string id, JsonObject state) => JsonSerializer.Serialize(new { id, ok = true, state });
 
-    public static string Error(string id, string code, string message, bool publicMessage = false, bool? actionSubmitted = null)
+    public static string Error(string id, string code, string message, bool publicMessage = false,
+        bool? actionSubmitted = null, bool? uiUnchanged = null)
     {
         var error = new JsonObject { ["code"] = code, ["message"] = message };
         if (publicMessage) error["public_message"] = message;
         if (actionSubmitted.HasValue) error["action_submitted"] = actionSubmitted.Value;
+        if (uiUnchanged.HasValue) error["ui_unchanged"] = uiUnchanged.Value;
         return JsonSerializer.Serialize(new { id, ok = false, error });
     }
 

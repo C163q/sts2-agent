@@ -99,7 +99,8 @@ internal sealed partial class GameAdapter
             try { options = DeckOptions.Parse(request.Arguments); }
             catch (Exception error) when (error is JsonException or InvalidOperationException)
             {
-                return FileMailbox.Error(request.Id, "invalid_request", "Invalid deck options.");
+                return ResponseBuilder.Error(request.Id, "invalid_request", "Invalid deck options: use view_upgrades, sort_by and descending; descending requires sort_by.",
+                    publicMessage: true, uiUnchanged: true);
             }
             return await InspectDeck(request, options);
         }

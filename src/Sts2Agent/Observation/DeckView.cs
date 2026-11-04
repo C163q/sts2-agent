@@ -36,18 +36,29 @@ internal static class DeckView
     public static bool Ready(NDeckViewScreen screen) => ReferenceEquals(Current, screen)
         && !Grid(screen).IsAnimatingOut && (Cards(screen).Length == 0 || Grid(screen).CurrentlyDisplayedCardHolders.Any());
 
-    public static void Apply(NDeckViewScreen screen, DeckOptions options)
+    public static string? ControlsUnavailableReason(NDeckViewScreen screen, DeckOptions options)
     {
-        if (!ReferenceEquals(Current, screen)) throw new InvalidOperationException("The deck screen changed.");
+        if (!ReferenceEquals(Current, screen)) return "The deck screen changed.";
         var tickbox = screen.GetNode<NTickbox>("%Upgrades");
         if (options.ViewUpgrades.HasValue && (!VisibleUi.OnScreen(tickbox) || !tickbox.IsEnabled))
-            throw new InvalidOperationException("The upgrade control is unavailable.");
+            return "The deck upgrade-preview control is hidden or disabled.";
         NCardViewSortButton? sorter = options.SortBy == null ? null : screen.GetNode<NCardViewSortButton>(options.SortBy switch
         {
             "obtained" => "%ObtainedSorter", "type" => "%CardTypeSorter", "cost" => "%CostSorter", _ => "%AlphabeticalSorter"
         });
         if (sorter != null && (!VisibleUi.OnScreen(sorter) || !sorter.IsEnabled))
-            throw new InvalidOperationException("The sorting control is unavailable.");
+            return "The requested deck sorting control is hidden or disabled.";
+        return null;
+    }
+
+    public static void Apply(NDeckViewScreen screen, DeckOptions options)
+    {
+        if (ControlsUnavailableReason(screen, options) is { } reason) throw new InvalidOperationException(reason);
+        var tickbox = screen.GetNode<NTickbox>("%Upgrades");
+        NCardViewSortButton? sorter = options.SortBy == null ? null : screen.GetNode<NCardViewSortButton>(options.SortBy switch
+        {
+            "obtained" => "%ObtainedSorter", "type" => "%CardTypeSorter", "cost" => "%CostSorter", _ => "%AlphabeticalSorter"
+        });
         if (sorter != null)
         {
             sorter.IsDescending = !(options.Descending ?? false);

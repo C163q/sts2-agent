@@ -35,6 +35,10 @@ def observation_preset(payload, preset):
     return result
 
 
+def actions_only_result(payload, preset='full'):
+    return payload if 'error' in payload else observation_preset(payload, 'actions_only')
+
+
 def observation_summary(payload):
     from sts2_mcp.output.card_format import card_summary
     from sts2_mcp.output.null_fields import apply_preset
@@ -90,5 +94,8 @@ def observation_summary(payload):
 
 
 def browsing_summary(payload):
-    # Page content stays at default; shared components are summarized before dispatch.
+    if payload['screen'].get('view') == 'deck' and payload.get('deck') is not None:
+        from sts2_mcp.output.card_format import card_summary
+        payload['deck'] = [card_summary(card) for card in payload['deck']]
+    # Map and combat pile content retain their pending review projection.
     return payload

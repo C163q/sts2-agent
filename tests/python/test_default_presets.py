@@ -34,7 +34,8 @@ REQUIRED_ARGUMENTS = {
 
 class BoundaryProbe(GameTools):
     """Record actual tool routing while isolating native I/O and response validation."""
-    payload = {'kept': 0, 'ordinary': None, 'transition': {'events': [
+    payload = {'scene': 'combat', 'screen': {'status': 'visible'}, 'available_actions': [],
+        'kept': 0, 'ordinary': None, 'transition': {'events': [
         {'sequence': 1, 'type': 'stars_changed', 'before': None, 'after': 1}]}}
 
     def __init__(self):
@@ -184,7 +185,9 @@ class DefaultToolTests(unittest.IsolatedAsyncioTestCase):
                     options = {**arguments, **({'preset': preset} if preset else {})}
                     result = await getattr(tools, definition.name)(options)
                     expected = copy.deepcopy(tools.payload)
-                    if preset != 'full':
+                    if definition.name == 'close_card_view':
+                        expected = {key: expected[key] for key in ('scene', 'screen', 'available_actions')}
+                    elif preset != 'full':
                         del expected['ordinary']
                     self.assertEqual(result, expected)
             self.assertEqual(len(tools.calls), 3)
@@ -282,7 +285,9 @@ class DefaultStdioTests(unittest.IsolatedAsyncioTestCase):
                             result = await session.call_tool(definition.name, options)
                             self.assertFalse(result.isError, result)
                             expected = copy.deepcopy(BoundaryProbe.payload)
-                            if preset != 'full':
+                            if definition.name == 'close_card_view':
+                                expected = {key: expected[key] for key in ('scene', 'screen', 'available_actions')}
+                            elif preset != 'full':
                                 del expected['ordinary']
                             self.assertEqual(result.structuredContent, expected)
                             self.assertEqual(json.loads(result.content[0].text), expected)

@@ -12,7 +12,7 @@ from sts2_mcp.output.potion_presets import POTION_SCHEMA as POTION_INSPECTION_SC
 from sts2_mcp.output.combatant_presets import COMBATANT_SCHEMA
 from sts2_mcp.output.run_ending_details import OPTION_SCHEMA as RESULT_OPTION_SCHEMA
 from sts2_mcp.output.map_details import MAP_SCHEMA, TRAVEL_SCHEMA
-from sts2_mcp.output.deck_details import DECK_SCHEMA
+from sts2_mcp.output.deck_presets import DECK_SCHEMA
 from sts2_mcp.output.pile_details import PILE_SCHEMA
 from sts2_mcp.output.selection_details import CARD_SCHEMA, OPTION_SCHEMA, VIEW_SCHEMA
 from sts2_mcp.output.card_play_details import PLAY_SCHEMA, TARGET_SCHEMA
@@ -62,6 +62,7 @@ class ToolSpec:
     refreshes_permission: bool = True
     media: bool = False
     unsubmitted_rejection_unchanged: bool = False
+    unchanged_view_rejections: bool = False
 
     def effect_for(self, native_arguments):
         return 'view' if self.changes_view_with_arguments and native_arguments else self.effect
@@ -537,7 +538,8 @@ SPECS = (
         name='inspect_deck',
         schema=DECK_SCHEMA,
         description="Open/reuse the native full-deck page when its entry is available and read the entire browsable deck. "
-            "Upgrade preview does not upgrade owned cards. Leaves the page open; close with close_card_view.",
+            "card_ids filters returned details only. Upgrade preview does not upgrade owned cards. "
+            "Leaves the page open; close with close_card_view.",
         annotations=view,
         category='view',
         effect='view',
@@ -545,9 +547,11 @@ SPECS = (
         returns_transition=False,
         records_events=False,
         reader='deck_details:deck_details',
-        parser='deck_details:deck_arguments',
+        parser='deck_presets:deck_arguments',
         parser_operation=False,
-        projector='card_format:browse_preset'),
+        projector='deck_presets:deck_preset',
+        native_keys=('view_upgrades', 'sort_by', 'descending'),
+        unchanged_view_rejections=True),
     ToolSpec(
         name='inspect_pile',
         schema=PILE_SCHEMA,
@@ -568,7 +572,7 @@ SPECS = (
     ToolSpec(
         name='close_card_view',
         schema=NO_ARGUMENTS,
-        description="Close the top deck/draw/discard/exhaust browsing page and return a basic observation. "
+        description="Close the top deck/draw/discard/exhaust browsing page and return actions_only context. "
             "Preserves an underlying map; cannot close card selections or other screens.",
         annotations=view,
         category='view',
@@ -576,7 +580,9 @@ SPECS = (
         requires_permission=False,
         returns_transition=False,
         records_events=False,
-        reader='deck_details:closed_card_view'),
+        reader='observation_details:observation_details',
+        projector='observation_presets:actions_only_result',
+        native_keys=()),
     ToolSpec(
         name='inspect_map',
         schema=MAP_SCHEMA,

@@ -118,14 +118,14 @@ class DeckMcpTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual((await tools.inspect_deck())["deck"], [])
             self.assertEqual((await tools.inspect_deck({"preset": "full"}))["hover_tips"], [])
 
-    async def test_close_only_returns_basic_observation_fields(self):
+    async def test_close_only_returns_actions_only_fields(self):
         with FakeGame() as game:
             tools = self.tools_type(Client(game.directory))
             await tools.inspect_deck()
-            game.close_payload.update(deck=[{"secret": 1}], detail_level="full", sort={}, view_upgrades=True,
+            game.close_payload.update(detail_level="full",
                                       hover_tips=[{"secret": 1}], slot_tip={}, relics=[{"secret": 1}], ui_generation=99)
             result = await tools.close_card_view()
-            self.assertEqual(set(result), {"scene", "screen", "turn", "player", "enemies", "top_bar", "buttons", "available_actions"})
+            self.assertEqual(set(result), {"scene", "screen", "available_actions"})
 
     async def test_close_preserves_underlying_map_and_rejects_combat_input(self):
         with FakeGame() as game:

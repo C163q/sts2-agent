@@ -49,7 +49,7 @@ def assemble_details(details, *, operation=None):
         result["potion_slots"], result["hover_tips"] = share_potion_tips(result["potion_slots"])
     if "relics" in result and result["relics"] is not None:
         result["relics"], result["hover_tips"] = share_indexed_tips(result["relics"], "relic_indices")
-    if "deck" in result:
+    if "deck" in result and operation in (None, 'inspect_deck'):
         result["deck"], result["hover_tips"] = share_hand_tips(result["deck"])
     if "pile" in result and result.get("cards") is not None:
         result["cards"], result["hover_tips"] = share_hand_tips(result["cards"])

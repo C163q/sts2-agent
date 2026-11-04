@@ -31,7 +31,7 @@ namespace Sts2Agent;
 internal sealed partial class GameAdapter(bool testMode)
 {
     private readonly GameObservation capture = new();
-    private readonly DeckInspection deckInspection = new();
+    private DeckInspection deckInspection => capture.Deck;
     private readonly PileInspection pileInspection = new();
     private CombatObservation observation => capture.Combat;
     private RewardInspection rewardInspection => capture.Rewards;

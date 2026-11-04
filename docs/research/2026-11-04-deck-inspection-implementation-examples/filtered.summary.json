@@ -1,0 +1,34 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "deck"
+  },
+  "view_upgrades": false,
+  "sort": {
+    "by": "obtained",
+    "descending": false
+  },
+  "deck": [
+    {
+      "id": "deck:0",
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1"
+    },
+    {
+      "id": "deck:9",
+      "name": "Bash",
+      "type": "Attack",
+      "energy_cost": "2"
+    }
+  ],
+  "errors": [
+    {
+      "code": "cards_not_in_deck",
+      "card_ids": [
+        "deck:999999"
+      ]
+    }
+  ]
+}

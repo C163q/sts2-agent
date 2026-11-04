@@ -72,36 +72,43 @@ internal sealed partial class GameAdapter
 
     private async Task<string> InspectDeck(Request request, DeckOptions options)
     {
+        bool interacted = false;
+        string Reject(string message) => ResponseBuilder.Error(request.Id, "illegal_action", message,
+            publicMessage: true, uiUnchanged: !interacted);
         var player = LocalPlayer;
-        if (player == null || !CanInspectDeck())
-            return FileMailbox.Error(request.Id, "illegal_action", "The local deck is unavailable in this screen.");
+        if (DeckUnavailableReason() is { } reason) return Reject(reason);
+        if (player == null) return Reject("No local player is available for deck browsing.");
         var screen = DeckView.Current;
         if (screen == null)
         {
             var button = NRun.Instance!.GlobalUi.TopBar.Deck;
-            if (!CanInspectDeck())
-                return FileMailbox.Error(request.Id, "illegal_action", "The deck button is unavailable.");
+            if (DeckUnavailableReason() is { } unavailable) return Reject(unavailable);
+            interacted = true;
             UiChanged();
             button.ForceClick();
             screen = NCapstoneContainer.Instance?.CurrentCapstoneScreen as NDeckViewScreen;
             if (screen == null)
-                return FileMailbox.Error(request.Id, "illegal_action", "The deck screen did not open.");
+                return Reject("The deck screen did not open. Read the current screen before continuing.");
         }
         await ObservationFrame();
         await WaitUntil(() => !ReferenceEquals(DeckView.Current, screen) || DeckView.Ready(screen));
         if (!ReferenceEquals(DeckView.Current, screen))
-            return FileMailbox.Error(request.Id, "illegal_action", "The deck screen changed while opening.");
+            return Reject("The deck screen changed while opening. Read the current screen before continuing.");
+        if (DeckView.ControlsUnavailableReason(screen, options) is { } controlReason) return Reject(controlReason);
         if (options.ViewUpgrades.HasValue || options.SortBy != null)
+        {
+            interacted = true;
             UiChanged();
+        }
         try { DeckView.Apply(screen, options); }
         catch (InvalidOperationException)
         {
-            return FileMailbox.Error(request.Id, "illegal_action", "The deck controls are unavailable.");
+            return Reject("The deck page changed or its controls became unavailable. Read the current screen before continuing.");
         }
         await ObservationFrame();
         await WaitUntil(() => !ReferenceEquals(DeckView.Current, screen) || DeckView.Ready(screen));
         if (!ReferenceEquals(DeckView.Current, screen) || !ReferenceEquals(LocalPlayer, player))
-            return FileMailbox.Error(request.Id, "illegal_action", "The deck screen changed while reading.");
+            return Reject("The deck screen changed while reading. Read the current screen before continuing.");
         using var snapshot = JsonDocument.Parse(Observe());
         var inspection = deckInspection.Read(screen, player,
             snapshot.RootElement.GetProperty("snapshot_id").GetString()!);

@@ -27,19 +27,33 @@ internal sealed partial class GameAdapter
             && (!CombatManager.Instance.IsInProgress || CanInspectViews(allowPause: map.IsOpen || cardOpen));
     }
 
-    private static bool CanInspectDeck()
+    private static bool CanInspectDeck() => DeckUnavailableReason() == null;
+
+    private static string? DeckUnavailableReason()
     {
-        if (LocalPlayer == null || !RunManager.Instance.IsInProgress || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
-            return false;
-        if (DeckView.Current is { } current) return DeckView.Ready(current);
-        var button = NRun.Instance!.GlobalUi.TopBar.Deck;
+        if (LocalPlayer == null || !RunManager.Instance.IsInProgress)
+            return "No local run is available for deck browsing.";
+        if (!RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
+            return "Deck browsing requires a local single-player run.";
+        if (DeckView.Current is { } current)
+            return DeckView.Ready(current) ? null : "The deck page is still preparing.";
+        var button = NRun.Instance?.GlobalUi.TopBar.Deck;
+        if (button == null) return "The deck entry is not ready.";
         bool cardOpen = CardView.Current != null;
-        bool mapOpen = NRun.Instance.GlobalUi.MapScreen.IsOpen;
+        bool mapOpen = NRun.Instance!.GlobalUi.MapScreen.IsOpen;
         bool exposed = CombatManager.Instance.IsInProgress
             ? CombatObservation.Status(allowCardView: cardOpen, allowMap: true) == "visible"
                 && CanInspectViews(allowPause: mapOpen || cardOpen)
             : RunUi.NonCombatVisible(allowCardView: true);
-        return exposed && VisibleUi.OnScreen(button) && button.IsEnabled;
+        if (!exposed)
+        {
+            if (CardSelection.Current is { Status: "visible" })
+                return "Return from the card selection before opening the deck.";
+            if (RunUi.Transitioning()) return "Wait for the screen transition before opening the deck.";
+            return "The deck entry is covered or combat is not ready for browsing.";
+        }
+        if (!VisibleUi.OnScreen(button)) return "The deck button is not visible.";
+        return button.IsEnabled ? null : "The deck button is disabled.";
     }
 
     private static bool CanInspectPiles()

@@ -758,7 +758,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertFalse(deck_tool.annotations.readOnlyHint)
                     self.assertFalse(deck_tool.annotations.destructiveHint)
                     self.assertFalse(deck_tool.annotations.idempotentHint)
-                    self.assertEqual(set(deck_tool.inputSchema["properties"]), {"preset", "view_upgrades", "sort_by", "descending"})
+                    self.assertEqual(set(deck_tool.inputSchema["properties"]), {"preset", "card_ids", "view_upgrades", "sort_by", "descending"})
                     pile_tool = next(tool for tool in listed.tools if tool.name == "inspect_pile")
                     self.assertFalse(pile_tool.annotations.readOnlyHint)
                     self.assertFalse(pile_tool.annotations.destructiveHint)

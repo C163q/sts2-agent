@@ -1,0 +1,93 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "deck"
+  },
+  "top_bar": {
+    "gold": 99,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1
+  },
+  "available_actions": [
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "close_card_view",
+    "inspect_map"
+  ],
+  "deck": [
+    {
+      "id": "deck:0",
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1"
+    },
+    {
+      "id": "deck:1",
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1"
+    },
+    {
+      "id": "deck:2",
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1"
+    },
+    {
+      "id": "deck:3",
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1"
+    },
+    {
+      "id": "deck:4",
+      "name": "Strike",
+      "type": "Attack",
+      "energy_cost": "1"
+    },
+    {
+      "id": "deck:5",
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1"
+    },
+    {
+      "id": "deck:6",
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1"
+    },
+    {
+      "id": "deck:7",
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1"
+    },
+    {
+      "id": "deck:8",
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1"
+    },
+    {
+      "id": "deck:9",
+      "name": "Bash",
+      "type": "Attack",
+      "energy_cost": "2"
+    }
+  ],
+  "view_upgrades": false,
+  "sort": {
+    "by": "obtained",
+    "descending": false
+  }
+}

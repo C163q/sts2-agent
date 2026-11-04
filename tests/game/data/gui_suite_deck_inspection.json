@@ -1,0 +1,8 @@
+[
+  {"name":"deck_combat","scenarios":{"play":"pommel_strike"},"steps":[{"name":"verify","verifier":"verify_deck_inspection.py","args":["--scenario","combat"]}]},
+  {"name":"deck_event","scenarios":{"event":"basic"},"steps":[{"name":"verify","verifier":"verify_deck_inspection.py","args":["--scenario","context"]}]},
+  {"name":"deck_rest","scenarios":{"rest":"smith"},"steps":[{"name":"verify","verifier":"verify_deck_inspection.py","args":["--scenario","context"]}]},
+  {"name":"deck_selection","scenarios":{"rest":"smith"},"steps":[{"name":"verify","verifier":"verify_deck_inspection.py","args":["--scenario","selection"]}]},
+  {"name":"deck_shop","scenarios":{"shop":"basic"},"steps":[{"name":"verify","verifier":"verify_deck_inspection.py","args":["--scenario","shop"]}]},
+  {"name":"deck_epilogue","scenarios":{"navigation":"boss3"},"steps":[{"name":"verify","verifier":"verify_deck_inspection.py","args":["--scenario","epilogue"]}]}
+]

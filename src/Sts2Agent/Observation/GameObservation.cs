@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Godot;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
@@ -54,6 +55,7 @@ internal sealed class GameObservation
     private readonly ShopInspection shopInspection = new();
     private readonly RunResultInspection runResultInspection = new();
     private readonly RewardInspection rewardInspection = new();
+    public DeckInspection Deck { get; } = new();
 
     public CombatObservation Combat => observation;
     public RewardInspection Rewards => rewardInspection;
@@ -132,9 +134,9 @@ internal sealed class GameObservation
         var screen = ObservationContext.Screen(scene, visibility, map != null);
         var combatants = scene == "combat" && CombatObservation.Status() == "visible"
             ? observation.Combatants(player) : null;
-        string body = JsonSerializer.Serialize(new
+        JsonObject body = JsonSerializer.SerializeToNode(new
         {
-            schema_version = 38, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 39, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -159,8 +161,15 @@ internal sealed class GameObservation
             epilogue = ending == null ? EpilogueInspection.Read() : null,
             run_result = runResultInspection.Read(),
             available_actions = actions
-        });
-        return ObservationSnapshot.Create(body, DivinationInspection.Current != null, combat, player, selection?.Key);
+        })!.AsObject();
+        if (player != null && DeckView.Current is { } deckScreen && DeckView.Ready(deckScreen))
+        {
+            var view = Deck.Read(deckScreen, player, full: false);
+            body["deck"] = JsonSerializer.SerializeToNode(view.deck);
+            body["view_upgrades"] = view.view_upgrades;
+            body["sort"] = JsonSerializer.SerializeToNode(view.sort);
+        }
+        return ObservationSnapshot.Create(body.ToJsonString(), DivinationInspection.Current != null, combat, player, selection?.Key);
     }
 
 }

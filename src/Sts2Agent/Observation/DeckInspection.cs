@@ -7,10 +7,12 @@ namespace Sts2Agent;
 
 internal sealed class DeckInspection
 {
+    internal sealed record View(string? snapshot_id, bool view_upgrades, DeckView.Sort sort,
+        Dictionary<string, object?>[] deck);
     private readonly CardIdentityMap<CardModel> ids = new();
     private object? run;
 
-    public object Read(NDeckViewScreen screen, Player player, string snapshotId)
+    public View Read(NDeckViewScreen screen, Player player, string? snapshotId = null, bool full = true)
     {
         if (!ReferenceEquals(run, player.RunState))
         {
@@ -18,12 +20,8 @@ internal sealed class DeckInspection
             ids.Clear();
         }
         bool upgrades = DeckView.Grid(screen).IsShowingUpgrades;
-        return EnglishCardText.Read(() => new
-        {
-            snapshot_id = snapshotId,
-            view_upgrades = upgrades, sort = DeckView.Sorting(screen),
-            deck = DeckView.Cards(screen).Select(card => BrowsedCard.Read(card, "deck:" + ids.Get(card),
-                PileType.Deck, upgrades, full: true, appearance: true)).ToArray()
-        });
+        return EnglishCardText.Read(() => new View(snapshotId, upgrades, DeckView.Sorting(screen),
+            DeckView.Cards(screen).Select(card => BrowsedCard.Read(card, "deck:" + ids.Get(card),
+                PileType.Deck, upgrades, full, appearance: true)).ToArray()));
     }
 }

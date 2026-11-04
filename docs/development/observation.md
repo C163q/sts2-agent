@@ -70,7 +70,9 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 审判（Trial）的 event.description 同样省略；确认框的 confirmation.description 保留，不能按字段名递归删掉后果说明。建筑师 epilogue 主体沿用 default。占卜 summary 另省略 divination.instructions，其余可见主体、工具按钮、当前完整对白、坐标 notes 和同次棋盘 PNG 保留；default/full 及 inspect_event 的说明不变。13–15 组完整规则、示例和验证见[专项核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md)。
 
-地图及牌组／牌堆浏览覆盖（`screen.view:map/deck/draw_pile/discard_pile/exhaust_pile`）的页面主体暂时沿用 default，由浏览摘要占位入口处理；顶栏先应用上述共用摘要。占位保留页面上下文和隐藏选择元数据，不对下层战斗再次压缩。当前基础观察仍不附浏览卡牌列表；后续核验 inspect_map、inspect_deck、inspect_pile 时再补充对应内容与摘要。分工依据见[共用顶栏记录](../research/2026-11-02-shared-top-bar-summary.md)。
+已就绪且未被更高层覆盖的牌组页提供完整 `deck`、`view_upgrades` 和 `sort.by/descending`，分别对应 UI 的升级模式、主排序与方向。full/default/summary 的牌组卡牌采用 face_full／face_default／共用卡牌摘要，均无正文和悬停解释；ID 和显示顺序与 inspect_deck 相同，后者的 card_ids 不会限制基础观察。关闭或被覆盖后不附缓存内容，详细边界见[牌组接口](deck-inspection.md)。actions_only/top_bar 不增加牌组数据。
+
+地图及战斗牌堆覆盖（`screen.view:map/draw_pile/discard_pile/exhaust_pile`）的页面主体仍暂时沿用 default，待对应工具核验后补内容与摘要。所有浏览页均先处理共用顶栏摘要，保留被覆盖选择的元数据，不对下层战斗再次压缩；分工依据见[共用顶栏记录](../research/2026-11-02-shared-top-bar-summary.md)。
 
 结算的 `run_result` 主体沿用 default，保留完整的当前页 texts、分数、徽章、发现、options 及空列表；已显示的 cards 复用卡牌摘要，保留字符串 card:N ID、名称、类型和费用等字段，省略正文、稀有度及卡池。需要正文或悬停说明时调用 inspect_run_result。full/default 的结算卡牌使用共用完整格式，包含逐牌悬停解释；结算页其他悬停帮助仍由专项详情提供。主菜单与 unrecognized 主体沿用 default；共用顶栏规则独立适用。约定及验证见[结算观察实施记录](../research/2026-11-03-result-observation-implementation.md)。
 
@@ -98,6 +100,7 @@ full/default 顶栏提供 `relic_count`，表示原生遗物栏登记的持有�
 | `hp`、`max_hp`、`hp_display` | 实际显示的生命数字，以及 `numeric/dead/infinite/hidden/unknown` 显示状态；用于角色和敌人 |
 | `block`、`energy`、`max_energy`、`stars` | 当前可见资源与计数 |
 | `player.hand[]` | 从左到右排列的当前可见手牌，包含稳定 ID、名称、固有属性、显示费用与标记，不含卡牌正文 |
+| `deck[]`、`view_upgrades`、`sort` | 仅在当前牌组页可读时出现；完整排序列表及 UI 实际设置，卡牌无正文／悬停解释 |
 | `player.orb_slots` | 按原生队列排列的充能球槽；整个字段 `null` 表示不可读，`[]` 表示没有槽位，数组项 `null` 表示空槽。非空项含 `name/passive/evoke`，数字仅取实际显示标签 |
 | `powers[]` | 实际显示状态图标的英语名称和可见计数，不枚举全部模型状态 |
 | `enemies[]` | 从左到右排列的可见敌人身份、定位 ID、生命、格挡、状态图标和当前意图 |

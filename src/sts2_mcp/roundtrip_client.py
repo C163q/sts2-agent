@@ -58,6 +58,7 @@ def main():
     parser.add_argument("--pile", choices=("draw", "discard", "exhaust"))
     parser.add_argument("--preset", choices=("default", "full", "summary"), help="牌组／牌堆默认 default；战斗对象／药水默认 full")
     parser.add_argument("--slot-indices", nargs="*", type=int, help="药水的原始槽位；省略取全部，空列表不取槽位")
+    parser.add_argument('--card-ids', nargs='*', help='牌组的 deck:N 实例 ID；省略取全部，空列表不取卡牌')
     parser.add_argument("--sources", nargs="*", help="战斗对象来源路径；省略取全部，空列表不取对象")
     parser.add_argument("--view-upgrades", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--sort-by", choices=("obtained", "type", "cost", "name"))
@@ -89,10 +90,15 @@ def main():
         if args.target_id is not None and args.target_id.isascii() and args.target_id.isdecimal():
             arguments["target_id"] = int(args.target_id)
         browsing = args.operation in {'inspect_deck', 'inspect_pile'}
+        closing = args.operation == 'close_card_view'
         combatants = args.operation == 'inspect_combatants'
         potions = args.operation == 'inspect_potions'
-        if args.preset is not None and not (browsing or combatants or potions):
-            raise ValueError('--preset is supported for inspect_deck, inspect_pile, inspect_combatants and inspect_potions.')
+        if args.preset is not None and not (browsing or closing or combatants or potions):
+            raise ValueError('--preset is supported for inspect_deck, inspect_pile, close_card_view, inspect_combatants and inspect_potions.')
+        if args.card_ids is not None:
+            if args.operation != 'inspect_deck':
+                raise ValueError('--card-ids is supported for inspect_deck.')
+            arguments['card_ids'] = args.card_ids
         if args.sources is not None and not combatants:
             raise ValueError('--sources is supported for inspect_combatants.')
         if args.slot_indices is not None and not potions:
@@ -110,11 +116,12 @@ def main():
                 'preset': args.preset or 'full', **({'sources': args.sources} if args.sources is not None else {})})
             settings = normalized.output_arguments
             arguments = normalized.native_arguments
-        if browsing:
+        if browsing or closing:
             normalized = normalize_request(NATIVE_TOOLS[args.operation], {**arguments, 'preset': args.preset or 'default'})
             arguments = normalized.native_arguments
         request_sent = True
-        result = Client(args.ipc_dir).call(args.operation, args.expected_state, arguments=arguments or None)
+        request_options = {'response_options': {'include_divination_image': False}} if closing and not args.raw else {}
+        result = Client(args.ipc_dir).call(args.operation, args.expected_state, arguments=arguments or None, **request_options)
         if not isinstance(result, dict) or type(result.get("ok")) is not bool:
             raise ValueError("Invalid game response.")
         if potions and result['ok'] and not args.raw:
@@ -125,18 +132,17 @@ def main():
             payload = decode_success(args.operation, result['state'], arguments, include_observation=True)
             payload = combatant_preset(payload, **settings)
             payload = apply_preset(payload, 'default' if args.preset == 'default' or settings['preset'] == 'summary' else 'full')
-        elif browsing and result['ok'] and not args.raw:
-            from sts2_mcp.output.browse_output import browse_result
-            payload = browse_result(result, args.operation, arguments, args.preset or 'default')
+        elif (browsing or closing) and result['ok'] and not args.raw:
+            payload = normalized.project(decode_success(args.operation, result['state'], arguments, include_observation=True))
         else:
             payload = result if args.raw else (
                 decode_success(args.operation, result['state'], arguments, include_observation=True)
                 if result['ok'] else player_result(result, operation=args.operation, arguments=arguments))
     except (OSError, RuntimeError, ValueError, KeyError, TypeError) as error:
-        local_combatant_error = args.operation in {'inspect_combatants', 'inspect_potions'} and not request_sent and isinstance(error, ValueError)
-        code = 'invalid_request' if local_combatant_error else 'timeout' if isinstance(error, TimeoutError) else 'transport_error'
+        local_argument_error = args.operation in {'inspect_deck', 'inspect_pile', 'close_card_view', 'inspect_combatants', 'inspect_potions'} and not request_sent and isinstance(error, ValueError)
+        code = 'invalid_request' if local_argument_error else 'timeout' if isinstance(error, TimeoutError) else 'transport_error'
         result = {"ok": False, "error": {"code": code, "message": str(error)}}
-        if local_combatant_error: result['error']['public_message'] = str(error)
+        if local_argument_error: result['error']['public_message'] = str(error)
         payload = result if args.raw else player_result(result)
     print(json.dumps(payload, indent=2, ensure_ascii=False))
     if not result["ok"]:

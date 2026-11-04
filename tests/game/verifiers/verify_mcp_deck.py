@@ -13,6 +13,7 @@ from mcp.client.stdio import stdio_client
 
 from sts2_mcp.roundtrip_client import Client, player_result
 from sts2_mcp.output.browse_output import browse_result
+from sts2_mcp.output.observation_presets import observation_preset
 
 
 async def verify(args):
@@ -36,7 +37,7 @@ async def verify(args):
                 tool = next(tool for tool in listed.tools if tool.name == name)
                 assert tool.annotations.readOnlyHint is False and tool.annotations.destructiveHint is False
             schema = next(tool for tool in listed.tools if tool.name == "inspect_deck").inputSchema
-            assert set(schema["properties"]) == {"preset", "view_upgrades", "sort_by", "descending"}, schema
+            assert set(schema["properties"]) == {"preset", "card_ids", "view_upgrades", "sort_by", "descending"}, schema
 
             async def call(name, arguments=None):
                 result = await session.call_tool(name, full_output_arguments(name, arguments or {}))
@@ -70,7 +71,7 @@ async def verify(args):
             covered = await call("get_observation")
             assert covered["screen"] == {"status": "covered", "view": "deck"} and "close_card_view" in covered["available_actions"] and not set(covered["available_actions"]) & GAME_ACTIONS, covered
             closed = await call("close_card_view")
-            assert closed == observed, "Closing changed gameplay data."
+            assert closed == observation_preset(observed, 'actions_only'), "Closing returned inconsistent action context."
             assert await call("get_observation") == observed, "Gameplay changed."
             assert {tool.name for tool in (await session.list_tools()).tools} == names, "Tool set changed with the UI."
     after = await asyncio.to_thread(client.call, "get_state")

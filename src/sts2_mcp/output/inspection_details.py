@@ -1,12 +1,12 @@
 from sts2_mcp.tool_registry import NATIVE_TOOLS, binding
 from sts2_mcp.output.scene_context import scene_context
 from sts2_mcp.output.ui_details import ui_details
-from sts2_mcp.output.deck_details import closed_card_view
+from sts2_mcp.output.view_details import legacy_view_observation
 from sts2_mcp.output.observation_details import observation_details
 
 
 # File-only operations remain outside the public tool catalog.
-READERS = {'start_test_combat': observation_details, 'close_deck': closed_card_view}
+READERS = {'start_test_combat': observation_details, 'close_deck': legacy_view_observation}
 
 
 def _read_details(operation, state, arguments=None):
@@ -21,7 +21,7 @@ def _read_details(operation, state, arguments=None):
 
 def inspection_details(operation, state, arguments=None):
     result = _read_details(operation, state, arguments)
-    if "scene" in result or state.get("schema_version") in (35, 36, 37, 38):
+    if "scene" in result or state.get("schema_version") in (35, 36, 37, 38, 39):
         result.update(scene_context(state))
     if "selection_view" in state:
         if state["selection_view"] not in {"visible", "battlefield", "covered", "unsupported"}:

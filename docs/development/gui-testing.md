@@ -38,6 +38,7 @@
 | 战斗、顶栏、附魔与观察预设 | [observation_presets](../../tests/game/data/gui_suite_observation_presets.json) |
 | 完整候选、附魔、描边及各种选择摘要 | [selection_observations](../../tests/game/data/gui_suite_selection_observations.json) |
 | 地图／牌组／牌堆覆盖时的顶栏 | [top_bar_views](../../tests/game/data/gui_suite_top_bar_views.json) |
+| 牌组筛选、静态观察、升级排序、最小关闭和拒绝续接 | [deck_inspection](../../tests/game/data/gui_suite_deck_inspection.json) |
 | 可浏览奖励、历史及原生滚动容器 | [browsable_content](../../tests/game/data/gui_suite_browsable_content.json) |
 
 套件各自拥有 IPC、日志、截图和测试存档，使用已准备的运行时，不使用 Steam、正式存档或 `.tmp/live/ipc`。同一套件的新局共享测试进度和进程缓存，不能替代要求全新进程／进度的结算解锁或 `--check-*` 检查；这些场景按[单实例指南](roundtrip.md)执行。

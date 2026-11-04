@@ -92,7 +92,7 @@ class GameSession:
                     retain = previous.token is not None and (
                         request.effect == 'read' and payload['error']['code'] in self.READ_REJECTIONS
                         and response.evidence not in {ExecutionEvidence.SUBMITTED, ExecutionEvidence.INTERACTION_STARTED}
-                        or request.requires_permission
+                        or (request.requires_permission or request.spec.unchanged_view_rejections)
                         and response.evidence is ExecutionEvidence.UNSUBMITTED_UNCHANGED)
                     if retain and self.permission.generation == generation:
                         self.permission.replace(previous.token)
@@ -161,6 +161,8 @@ class GameSession:
                         raise ValueError('Invalid game error message.')
                 if 'action_submitted' in error and type(error['action_submitted']) is not bool:
                     raise ValueError('Invalid action submission status.')
+                if 'ui_unchanged' in error and type(error['ui_unchanged']) is not bool:
+                    raise ValueError('Invalid unchanged UI guarantee.')
                 evidence = ExecutionEvidence.UNKNOWN
                 if facts and facts['ui_interaction_started']: evidence = ExecutionEvidence.INTERACTION_STARTED
                 if error.get('action_submitted') is True or facts and facts['action_submission_observed']:
@@ -168,6 +170,12 @@ class GameSession:
                 if error.get('action_submitted') is False and facts and (
                         facts['ui_interaction_started'] or facts['action_submission_observed']):
                     raise ValueError('Contradictory rejection evidence.')
+                if error.get('ui_unchanged') is True:
+                    if error.get('action_submitted') is True or facts and (
+                            facts['ui_interaction_started'] or facts['action_submission_observed']):
+                        raise ValueError('Contradictory unchanged UI guarantee.')
+                    if request.spec.unchanged_view_rejections and error['code'] in {'invalid_request', 'illegal_action'}:
+                        evidence = ExecutionEvidence.UNSUBMITTED_UNCHANGED
                 # Only play_card currently guarantees both no submission and no prior UI changes.
                 if (request.spec.unsubmitted_rejection_unchanged and expected_state is not None
                         and error['code'] in {'invalid_request', 'illegal_action'}
