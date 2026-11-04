@@ -1,0 +1,98 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "covered"
+  },
+  "top_bar": {
+    "gold": 99,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 2
+  },
+  "selection": {
+    "type": "bundle",
+    "status": "visible",
+    "prompt": "Choose a Pack",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [],
+    "options": [
+      {
+        "id": "bundle:0",
+        "text": "Choose bundle 1",
+        "enabled": true
+      },
+      {
+        "id": "bundle:1",
+        "text": "Choose bundle 2",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "bundles": [
+      {
+        "id": "bundle:0",
+        "cards": [
+          {
+            "id": 0,
+            "name": "Breakthrough",
+            "type": "Attack",
+            "energy_cost": "1"
+          },
+          {
+            "id": 1,
+            "name": "Havoc",
+            "type": "Skill",
+            "energy_cost": "1"
+          },
+          {
+            "id": 2,
+            "name": "Feel No Pain",
+            "type": "Power",
+            "energy_cost": "1"
+          }
+        ]
+      },
+      {
+        "id": "bundle:1",
+        "cards": [
+          {
+            "id": 3,
+            "name": "Thunderclap",
+            "type": "Attack",
+            "energy_cost": "1"
+          },
+          {
+            "id": 4,
+            "name": "Setup Strike",
+            "type": "Attack",
+            "energy_cost": "1"
+          },
+          {
+            "id": 5,
+            "name": "Ashen Strike",
+            "type": "Attack",
+            "energy_cost": "1"
+          }
+        ]
+      }
+    ]
+  },
+  "ancient": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "selection_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}

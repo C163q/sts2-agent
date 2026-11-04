@@ -1,0 +1,162 @@
+{
+  "scene": "ancient",
+  "selection": {
+    "type": "bundle",
+    "status": "visible",
+    "prompt": "Choose a Pack",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [],
+    "options": [
+      {
+        "id": "bundle:0",
+        "text": "Choose bundle 1",
+        "enabled": true
+      },
+      {
+        "id": "bundle:1",
+        "text": "Choose bundle 2",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "bundles": [
+      {
+        "id": "bundle:0",
+        "cards": [
+          {
+            "id": 0,
+            "name": "Breakthrough",
+            "type": "Attack",
+            "rarity": "common",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "star_cost": null,
+            "unplayable_markers": [],
+            "outline": "none",
+            "enchantment": null,
+            "affliction": null,
+            "description": "Lose 1 HP.\nDeal 9 damage to ALL enemies.",
+            "hover_tips": []
+          },
+          {
+            "id": 1,
+            "name": "Havoc",
+            "type": "Skill",
+            "rarity": "common",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "star_cost": null,
+            "unplayable_markers": [],
+            "outline": "none",
+            "enchantment": null,
+            "affliction": null,
+            "description": "Play the top card of your Draw Pile and Exhaust it.",
+            "hover_tips": [
+              {
+                "title": "Exhaust",
+                "description": "Removed until the end of combat."
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Feel No Pain",
+            "type": "Power",
+            "rarity": "uncommon",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "star_cost": null,
+            "unplayable_markers": [],
+            "outline": "none",
+            "enchantment": null,
+            "affliction": null,
+            "description": "Whenever a card is Exhausted, gain 3 Block.",
+            "hover_tips": [
+              {
+                "title": "Exhaust",
+                "description": "Removed until the end of combat."
+              },
+              {
+                "title": "Block",
+                "description": "Until next turn, prevents damage."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "bundle:1",
+        "cards": [
+          {
+            "id": 3,
+            "name": "Thunderclap",
+            "type": "Attack",
+            "rarity": "common",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "star_cost": null,
+            "unplayable_markers": [],
+            "outline": "none",
+            "enchantment": null,
+            "affliction": null,
+            "description": "Deal 4 damage and apply 1 Vulnerable to ALL enemies.",
+            "hover_tips": [
+              {
+                "title": "Vulnerable",
+                "description": "Vulnerable creatures take 50% more damage from Attacks."
+              }
+            ]
+          },
+          {
+            "id": 4,
+            "name": "Setup Strike",
+            "type": "Attack",
+            "rarity": "common",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "star_cost": null,
+            "unplayable_markers": [],
+            "outline": "none",
+            "enchantment": null,
+            "affliction": null,
+            "description": "Deal 7 damage.\nGain 2 Strength this turn.",
+            "hover_tips": [
+              {
+                "title": "Strength",
+                "description": "Strength adds additional damage to Attacks."
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "name": "Ashen Strike",
+            "type": "Attack",
+            "rarity": "uncommon",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "star_cost": null,
+            "unplayable_markers": [],
+            "outline": "none",
+            "enchantment": null,
+            "affliction": null,
+            "description": "Deal 6 damage.\nDeals 3 additional damage for each card in your Exhaust Pile.",
+            "hover_tips": [
+              {
+                "title": "Exhaust",
+                "description": "Removed until the end of combat."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": []
+}

@@ -1,0 +1,250 @@
+{
+  "scene": "ancient",
+  "map": null,
+  "screen": {
+    "status": "covered"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 2,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null,
+        "grayed_out": false,
+        "pulsing": false
+      },
+      {
+        "name": "Pandora's Box",
+        "counter": null,
+        "melted": null,
+        "grayed_out": false,
+        "pulsing": false
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": {
+    "type": "view_cards",
+    "status": "visible",
+    "prompt": "Cards transformed by Pandora's Box.",
+    "min_select": 0,
+    "max_select": 0,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 6,
+        "name": "Anger",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.\nAdd a copy of this card into your Discard Pile.",
+        "hover_tips": [],
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 7,
+        "name": "Aggression",
+        "type": "Power",
+        "rarity": "rare",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "At the start of your turn, put a random Attack from your Discard Pile into your Hand and Upgrade it.",
+        "hover_tips": [],
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 8,
+        "name": "Infernal Blade",
+        "type": "Skill",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Add a random Attack into your Hand. It's free to play this turn.\nExhaust.",
+        "hover_tips": [
+          {
+            "title": "Exhaust",
+            "description": "Removed until the end of combat."
+          }
+        ],
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 9,
+        "name": "Iron Wave",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block.\nDeal 5 damage.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Until next turn, prevents damage."
+          }
+        ],
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 10,
+        "name": "Spite",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 5 damage.\nIf you lost HP this turn,\nhits 2 times.",
+        "hover_tips": [],
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 11,
+        "name": "Spite",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 5 damage.\nIf you lost HP this turn,\nhits 2 times.",
+        "hover_tips": [],
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 12,
+        "name": "Dismantle",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 8 damage.\nIf the enemy is Vulnerable, hits twice.",
+        "hover_tips": [
+          {
+            "title": "Vulnerable",
+            "description": "Vulnerable creatures take 50% more damage from Attacks."
+          }
+        ],
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 13,
+        "name": "Stoke",
+        "type": "Skill",
+        "rarity": "rare",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Exhaust your Hand.\nAdd 1 random card into your Hand for each card Exhausted.",
+        "hover_tips": [],
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 14,
+        "name": "Fight Me!",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "2",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 5 damage twice.\nGain 3 Strength.\nThe enemy gains 1 Strength.",
+        "hover_tips": [
+          {
+            "title": "Strength",
+            "description": "Strength adds additional damage to Attacks."
+          }
+        ],
+        "outline": "none",
+        "unplayable_markers": []
+      }
+    ],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": true,
+    "view_upgrades": false
+  },
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": {
+    "status": "covered",
+    "name": null,
+    "epithet": null,
+    "description": null,
+    "dialogue": null,
+    "options": null,
+    "continue": null,
+    "proceed": null
+  },
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "selection_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}

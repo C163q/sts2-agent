@@ -1,0 +1,332 @@
+[
+  {
+    "file": "no_selection-01-inspect_selection-full.json",
+    "case": "no_selection",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "view_upgrades": false
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/no_selection/review/evidence.json",
+    "source_record": 1,
+    "sha256": "01b7756c76358ff6322b1cfc941d7664d9f919072589ac8f5ca9878d3d48c038",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "no_selection-02-end_turn-full.json",
+    "case": "no_selection",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/no_selection/review/evidence.json",
+    "source_record": 2,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "no_selection-04-inspect_selection-full.json",
+    "case": "no_selection",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/no_selection/review/evidence.json",
+    "source_record": 4,
+    "sha256": "57a511c83ae3c0fe14a8afea80387585e3f68833673fbcfcbb14eceb0ea9f452",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "no_selection-05-end_turn-full.json",
+    "case": "no_selection",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/no_selection/review/evidence.json",
+    "source_record": 5,
+    "sha256": "2626a956389472b7d9dc52c1244a31265d10ece0c54ddfcaf87d1342c6fe6b50",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "no_selection-08-inspect_selection-full.json",
+    "case": "no_selection",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "view_upgrades": false
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/no_selection/review/evidence.json",
+    "source_record": 8,
+    "sha256": "57a511c83ae3c0fe14a8afea80387585e3f68833673fbcfcbb14eceb0ea9f452",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "no_selection-09-end_turn-full.json",
+    "case": "no_selection",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/no_selection/review/evidence.json",
+    "source_record": 9,
+    "sha256": "6c7338d84f3d213d283c9a122a4f17f5277a22f6f19ac9abfcc8f258648bc506",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "covered-04-inspect_selection-full.json",
+    "case": "covered",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "view_upgrades": true
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/covered/review/evidence.json",
+    "source_record": 4,
+    "sha256": "93b41f046b1af288250035741deb1b1e35546691a86ba65ed5153e4bae7b718c",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "covered-07-inspect_selection-full.json",
+    "case": "covered",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/covered/review/evidence.json",
+    "source_record": 7,
+    "sha256": "90fe4dc786624161768830623074dab170d9d2f135d53ac6c5ebaf2f35ca9e47",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "hand_upgrade-03-inspect_selection-full.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/hand_upgrade/review/evidence.json",
+    "source_record": 3,
+    "sha256": "2d4de931231b95c16b4ca2904fab9b2fc65f06525bfd391c0d97971481a616db",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "hand_upgrade-04-inspect_selection-full.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "view_upgrades": true,
+      "card_ids": []
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/hand_upgrade/review/evidence.json",
+    "source_record": 4,
+    "sha256": "91ba584a6acf68e40a709a720a4957922432195f19e34c61d094d8bd6d8358d0",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "hand_upgrade-06-inspect_selection-full.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/hand_upgrade/review/evidence.json",
+    "source_record": 6,
+    "sha256": "c74c279a4f822ab0520d9c1a75b87a65b032f2286c420276bd713197dbead268",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "hand_upgrade-09-inspect_selection-full.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "view_upgrades": false
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/hand_upgrade/review/evidence.json",
+    "source_record": 9,
+    "sha256": "40fd38976c7d580e6ee7e936f3316137f655f67f18d942a81b072700fbc580d7",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "hand_upgrade-11-inspect_selection-full.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/hand_upgrade/review/evidence.json",
+    "source_record": 11,
+    "sha256": "c74c279a4f822ab0520d9c1a75b87a65b032f2286c420276bd713197dbead268",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "bundle-01-get_observation-full.json",
+    "case": "bundle",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/bundle/review/evidence.json",
+    "source_record": 1,
+    "sha256": "a76477209e7d80b32a7fa570f072699e3503725189f62f11c22229ba6204f2f3",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "bundle-03-get_observation-full.json",
+    "case": "bundle",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/bundle/review/evidence.json",
+    "source_record": 3,
+    "sha256": "e40294738df13d83647da0bd6229f342809a55022edc148b36feaf54315836c7",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "bundle-04-inspect_selection-full.json",
+    "case": "bundle",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/bundle/review/evidence.json",
+    "source_record": 4,
+    "sha256": "1b1713968a1675f9d17feb14870cf6d2d33ee63b24497b034316116806c7816c",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "bundle-05-get_observation-default.json",
+    "case": "bundle",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "default"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/bundle/review/evidence.json",
+    "source_record": 5,
+    "sha256": "4403cbefa68a20f421bd80c6b01940f1fd2886f972bba9bfcaf901997397dff8",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "bundle-06-inspect_selection-default.json",
+    "case": "bundle",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "default"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/bundle/review/evidence.json",
+    "source_record": 6,
+    "sha256": "df7ed14a795633cc219df28458c4a8f6a0a6cf8515c919563cf194a79de2f698",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "bundle-07-get_observation-summary.json",
+    "case": "bundle",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/bundle/review/evidence.json",
+    "source_record": 7,
+    "sha256": "902938c5e8718962a195065b7d9ac161f967ffe853d762d0c00c28de60a23850",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "bundle-08-inspect_selection-summary.json",
+    "case": "bundle",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/bundle/review/evidence.json",
+    "source_record": 8,
+    "sha256": "10168607fa7da2927b843d737fd7b6eda0709ede49520aaaf7304ecb2cb76a7d",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "view_cards-01-get_observation-full.json",
+    "case": "view_cards",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/view_cards/review/evidence.json",
+    "source_record": 1,
+    "sha256": "44cf9307e903d48a54b8969d453906442c4b211665925e868f627a22efe4beec",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "view_cards-03-get_observation-full.json",
+    "case": "view_cards",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/view_cards/review/evidence.json",
+    "source_record": 3,
+    "sha256": "0ce5566316d56104e88219efb6f2f2cc96aa38eee6dc5a49fdd265d835c4cfab",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "view_cards-04-inspect_selection-full.json",
+    "case": "view_cards",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/view_cards/review/evidence.json",
+    "source_record": 4,
+    "sha256": "592d0d01620475a9c58d16f53957828c61a482897e6252163ffcacbaf5a65932",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "view_cards-05-get_observation-default.json",
+    "case": "view_cards",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "default"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/view_cards/review/evidence.json",
+    "source_record": 5,
+    "sha256": "eb0037dee12ecb345396db8e354ef5cabe5454a0f1e65158dd9b2e61ef893b2b",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "view_cards-06-inspect_selection-default.json",
+    "case": "view_cards",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "default"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/view_cards/review/evidence.json",
+    "source_record": 6,
+    "sha256": "990bc241da76089924c87a5a8dc502f3111d9a47692125a183fc2d64f56f129d",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "view_cards-07-get_observation-summary.json",
+    "case": "view_cards",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/view_cards/review/evidence.json",
+    "source_record": 7,
+    "sha256": "71e79fd729da4a7fa3d0d50f9f0675c7bd174fb006b327b734c4952d9bc118dd",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  },
+  {
+    "file": "view_cards-08-inspect_selection-summary.json",
+    "case": "view_cards",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-selection-inspection-fixes/gui-focused/view_cards/review/evidence.json",
+    "source_record": 8,
+    "sha256": "839ee8dce96b5ee49f3fa09da5e59868b1ab81882c8befa2f4bbbd3313f84716",
+    "mod_sha256": "db6d8a1b47521ffb2955ca94138abf12a58b2f928c352cb08fa5b869087a462f"
+  }
+]

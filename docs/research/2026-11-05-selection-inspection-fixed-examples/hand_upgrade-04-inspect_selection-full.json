@@ -1,0 +1,29 @@
+{
+  "scene": "combat",
+  "selection": {
+    "type": "hand_upgrade",
+    "status": "visible",
+    "prompt": "Confirm Card to Upgrade",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [],
+    "options": [],
+    "can_view_battlefield": true,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "upgrade_preview": null
+  },
+  "errors": [
+    {
+      "code": "upgrade_view_unavailable"
+    }
+  ],
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [],
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

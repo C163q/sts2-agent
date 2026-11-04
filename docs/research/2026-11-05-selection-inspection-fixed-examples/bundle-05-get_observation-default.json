@@ -1,0 +1,139 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "covered"
+  },
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "deck_count": 10,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 2,
+    "relics": [
+      {
+        "name": "Burning Blood"
+      },
+      {
+        "name": "Scroll Boxes"
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "selection": {
+    "type": "bundle",
+    "status": "visible",
+    "prompt": "Choose a Pack",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [],
+    "options": [
+      {
+        "id": "bundle:0",
+        "text": "Choose bundle 1",
+        "enabled": true
+      },
+      {
+        "id": "bundle:1",
+        "text": "Choose bundle 2",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "bundles": [
+      {
+        "id": "bundle:0",
+        "cards": [
+          {
+            "id": 0,
+            "name": "Breakthrough",
+            "type": "Attack",
+            "rarity": "common",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "unplayable_markers": [],
+            "outline": "none"
+          },
+          {
+            "id": 1,
+            "name": "Havoc",
+            "type": "Skill",
+            "rarity": "common",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "unplayable_markers": [],
+            "outline": "none"
+          },
+          {
+            "id": 2,
+            "name": "Feel No Pain",
+            "type": "Power",
+            "rarity": "uncommon",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "unplayable_markers": [],
+            "outline": "none"
+          }
+        ]
+      },
+      {
+        "id": "bundle:1",
+        "cards": [
+          {
+            "id": 3,
+            "name": "Thunderclap",
+            "type": "Attack",
+            "rarity": "common",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "unplayable_markers": [],
+            "outline": "none"
+          },
+          {
+            "id": 4,
+            "name": "Setup Strike",
+            "type": "Attack",
+            "rarity": "common",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "unplayable_markers": [],
+            "outline": "none"
+          },
+          {
+            "id": 5,
+            "name": "Ashen Strike",
+            "type": "Attack",
+            "rarity": "uncommon",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "unplayable_markers": [],
+            "outline": "none"
+          }
+        ]
+      }
+    ]
+  },
+  "ancient": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "selection_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ]
+}

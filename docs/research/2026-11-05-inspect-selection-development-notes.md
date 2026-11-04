@@ -1,14 +1,14 @@
 # inspect_selection 开发核验记录
 
-> 当前状态：现状核验完成，进入设计讨论；20 类组合场景、70 项相关 Python 检查通过，采集 100 份完整公共返回。已确认三项问题，玩法实现未修改，工具未核销；暂无阻塞。用户决策说明见[审阅与建议](2026-11-05-inspect-selection-review.md)。
+> 当前状态：下文保留三项问题的审阅基线：20 类组合场景、70 项相关 Python 检查和 100 份公共返回。三项修复、28 组 GUI 组合、676 项 Python、124 项 C# 及一次独立审查已完成，工具核销；见[实施记录](2026-11-05-selection-inspection-implementation.md)。无遗留或阻塞。
 
-## 已确认问题
+## 审阅基线问题
 
 | 编号 | 优先级 | 原因、影响与证据 | 处理状态 |
 | --- | --- | --- | --- |
-| SELECTION-01 | 中；错误恢复 | ToolSpec.changes_view_with_arguments 使带 view_upgrades 的请求成为 view；SelectionRequest 在无选择或选择隐藏时返回普通 FileMailbox.Error，既没有 ui_unchanged 保证，也未登记 unchanged_view_rejections。GameSession 因此不保留已有许可，即使 execution 表明尚未交互。无选择场景已实测普通拒绝后 end_turn 成功、带 false 拒绝后 observation_required | 待实现；应复用明确未交互拒绝协议，只对原生前置检查保证安全的路径标记，不能仅按错误码或当前显示相同推断 |
-| SELECTION-02 | 中；错误说明 | GameAdapter.Selection.cs 的显式拒绝没有 publicMessage:true；error_output 只公开 public_message，不公开内部 message。原生具体诊断在 MCP 丢失。把泛化提示直接改成长文不能解决原因丢失 | 待实现；提供明确的前置拒绝原因及安全公开字段，不把任意异常 Message 暴露给调用方 |
-| SELECTION-03 | 中；静态信息完整性 | CardSelection.Prompt 除 reward/choose_one 外只读 Prefs.Prompt；bundle 不使用该 prefs，view_cards 使用基类 _infoText，因此两个原生可见文本始终丢失。共用 SelectionInspection 使 get_observation 同样受影响 | 待实现；实际可见时读取对应原生文字，提供英文文本并复用 prompt；覆盖或隐藏时不补全 |
+| SELECTION-01 | 中；错误恢复 | ToolSpec.changes_view_with_arguments 使带 view_upgrades 的请求成为 view；SelectionRequest 在无选择或选择隐藏时返回普通 FileMailbox.Error，既没有 ui_unchanged 保证，也未登记 unchanged_view_rejections。GameSession 因此不保留已有许可，即使 execution 表明尚未交互。无选择场景已实测普通拒绝后 end_turn 成功、带 false 拒绝后 observation_required | 已修复：复用明确未交互拒绝协议，只对原生前置检查保证安全的路径标记，不按错误码或当前显示相同推断 |
+| SELECTION-02 | 中；错误说明 | GameAdapter.Selection.cs 的显式拒绝没有 publicMessage:true；error_output 只公开 public_message，不公开内部 message。原生具体诊断在 MCP 丢失。把泛化提示直接改成长文不能解决原因丢失 | 已修复：提供明确的前置拒绝原因及安全公开字段，不把任意异常 Message 暴露给调用方 |
+| SELECTION-03 | 中；静态信息完整性 | CardSelection.Prompt 除 reward/choose_one 外只读 Prefs.Prompt；bundle 不使用该 prefs，view_cards 使用基类 _infoText，因此两个原生可见文本始终丢失。共用 SelectionInspection 使 get_observation 同样受影响 | 已修复：实际可见时读取对应原生文字，提供英文文本并复用 prompt；覆盖或隐藏时不补全 |
 
 ## 核对基线
 
