@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "slot_indices is not accepted; allowed fields: preset.",
+    "recovery": "correct_request"
+  }
+}

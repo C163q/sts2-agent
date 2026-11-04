@@ -1,0 +1,17 @@
+{
+  "slot_tip": {
+    "title": "Potion Slot",
+    "description": "Use potions during combat to gain bonuses or hinder enemies."
+  },
+  "potion_slots": [
+    null,
+    null,
+    null
+  ],
+  "scene": "epilogue",
+  "screen": {
+    "status": "visible",
+    "view": "epilogue"
+  },
+  "hover_tips": []
+}

@@ -1,0 +1,30 @@
+{
+  "slot_tip": {
+    "title": "Potion Slot",
+    "description": "Use potions during combat to gain bonuses or hinder enemies."
+  },
+  "potion_slots": [
+    {
+      "name": "Skill Potion",
+      "description": "Choose 1 of 3 random Skill cards to add into your Hand. It's free to play this turn."
+    },
+    null,
+    {
+      "name": "Block Potion",
+      "description": "Gain 12 Block."
+    }
+  ],
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "hover_tips": [
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "slot_indices": [
+        2
+      ]
+    }
+  ]
+}

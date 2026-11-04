@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "arguments must be object.",
+    "recovery": "correct_request"
+  }
+}

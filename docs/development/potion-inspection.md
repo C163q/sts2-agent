@@ -40,13 +40,9 @@ MCP 调用 `inspect_potions()` 除通用 preset 外无其他参数，成功时�
 
 ## 只读验证
 
-运行期间应避免手动改变游戏状态：
+`tests/game/verifiers/verify_potions.py` 和 `verify_mcp_potions.py` 仍断言旧返回结构，后者还固定旧工具清单；不能作为当前接口的通过标准，修复范围见[药水工具核验](../research/2026-11-04-inspect-potions-review.md#优先关注的问题)。现有组合验证的 `verify_display_readers.py` 覆盖地图和牌组页的药水成功读取，不能替代专项正文、共享提示和显隐边界验证；运行入口见[GUI 测试指南](gui-testing.md)。
 
-```sh
-python3 -m tests.game.verifiers.verify_potions --ipc-dir .tmp/live/ipc --output .tmp/live/potion-inspection.json --report .tmp/live/potion-inspection-check.json
-```
-
-脚本核对读取前、中、后的观察令牌一致、槽位位置及名称与基础观察对应、通用说明只出现一次，以及共享提示和所有槽位关联一致。
+专项验证须核对读取前、中、后的观察令牌一致、槽位位置及名称与基础观察对应、通用说明只出现一次，以及共享提示和所有槽位关联一致。
 
 已在中文独立实例验证满栏与重复 Block 提示，在正式战斗验证 Skill Potion 加空槽的排列；两次采样前后观察令牌均一致。正式场景还完成了真实 stdio MCP 读取，与文件输出一致且前后观察未变，见 [MCP 实施记录](../research/2026-10-29-mcp-potion-inspection.md)。旧详情专项验证仅覆盖上述战斗样本；新药水动作验证另覆盖战斗外页面。
 

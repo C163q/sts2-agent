@@ -1,0 +1,217 @@
+{
+  "review_code": "e01c91e",
+  "recorded_game_code": "00f8b12",
+  "mod_version": "0.55.0",
+  "mcp_version": "0.57.0",
+  "schema_version": 36,
+  "game_version": "v0.107.1",
+  "game_build": "59260271",
+  "ritsulib_version": "0.6.10",
+  "recorded_mod_sha256": "4a0b79dd4b7e5cb901ddf6f37f1b4f2d3b0b24972c3bc540e624c96bab98bae6",
+  "samples": [
+    {
+      "file": "map.full.json",
+      "kind": "recorded_game_response",
+      "tool": "inspect_potions",
+      "arguments": null,
+      "projection": "full-equivalent; array null slots preserved",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 28,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "9ca1200611e048d691a07de0ef445e95f295e5ee0edeadd41351a7b47fa011dc"
+    },
+    {
+      "file": "deck.full.json",
+      "kind": "recorded_game_response",
+      "tool": "inspect_potions",
+      "arguments": null,
+      "projection": "full-equivalent; array null slots preserved",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/display_readers/verify/evidence.json",
+      "source_entry": 33,
+      "source_sha256": "d3b092374d12136aaed61541c4714738252571d064ddf8fe894e7e7c531fdf0b",
+      "sha256": "33be149db780f161d4e50065e3e5e8d52156e876030b191b42e8a02bcd2c7fda"
+    },
+    {
+      "file": "ancient.full.json",
+      "kind": "recorded_game_response",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full"
+      },
+      "projection": "full-equivalent; array null slots preserved",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/ancient_selection/context/evidence.json",
+      "source_entry": 2,
+      "source_sha256": "1f4a3bc320eaf8a4776ca19b6f58f806ca52708f7cf06788672fe02d13680d4e",
+      "sha256": "6f7a30725f5068821e6ab1a913b8437eb7d0be205ac9279c13dc251ee5b070bd"
+    },
+    {
+      "file": "event-selection.full.json",
+      "kind": "recorded_game_response",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full"
+      },
+      "projection": "full-equivalent; array null slots preserved",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/event_selection/context_and_selection/evidence.json",
+      "source_entry": 3,
+      "source_sha256": "5e158765e13e737a8c2e4932d97269ab4bcb66864aaa066006e7bca4897675ef",
+      "sha256": "f997a9394122b88d68560acced5bbc292a09a304abce343644e05210d92d9dc1"
+    },
+    {
+      "file": "divination.full.json",
+      "kind": "recorded_game_response",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full"
+      },
+      "projection": "full-equivalent; array null slots preserved",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/divination_media/media/evidence.json",
+      "source_entry": 3,
+      "source_sha256": "2176080991834aa0603bfef5c54b278b4549c0e60944dbfa5fc4a1d4de6aa86b",
+      "sha256": "1d9a688cd461ef64bd3610472000607a4d60c732c40e25a7870de9eb340eb5ad"
+    },
+    {
+      "file": "epilogue.full.json",
+      "kind": "recorded_game_response",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full"
+      },
+      "projection": "full-equivalent; array null slots preserved",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/epilogue/context/evidence.json",
+      "source_entry": 2,
+      "source_sha256": "08fae42ba17d8167f6f992b9efd2a77ba17cab77b3d1869be380827fadc6687b",
+      "sha256": "173ca1c8068a16b0bbb7126c624b60476ef56c04ed8af59f83e47e1f19282afe"
+    },
+    {
+      "file": "rewards.full.json",
+      "kind": "recorded_game_response",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full"
+      },
+      "projection": "full-equivalent; array null slots preserved",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/rewards/context/evidence.json",
+      "source_entry": 2,
+      "source_sha256": "c478c01c7df45b1e27b83e9b85055f25e3f29b9da5140f39815344360e211540",
+      "sha256": "81ec1db70a1a3086f619b7efa7756aa8c610852c2c261d375accb5dc07b2350e"
+    },
+    {
+      "file": "shop.full.json",
+      "kind": "recorded_game_response",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full"
+      },
+      "projection": "full-equivalent; array null slots preserved",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/shop/context/evidence.json",
+      "source_entry": 2,
+      "source_sha256": "431189ed17ce75fae36e3504b459a9895272c8b365f057c3ba293706540b9749",
+      "sha256": "e3f93cd867f52cbcd62a15de74293808470da04c58342319dffcbf296a81592f"
+    },
+    {
+      "file": "rest-site.full.json",
+      "kind": "recorded_game_response",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full"
+      },
+      "projection": "full-equivalent; array null slots preserved",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/smith/context/evidence.json",
+      "source_entry": 2,
+      "source_sha256": "85b5c1345b745b1792b2977188de55fc19e580bb475202741d47e00867601651",
+      "sha256": "577db75bcbfb742dea1dd70e2abc28b3c4add8d2e880139ae1fde62f4f827148"
+    },
+    {
+      "file": "treasure.full.json",
+      "kind": "recorded_game_response",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full"
+      },
+      "projection": "full-equivalent; array null slots preserved",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/treasure/context/evidence.json",
+      "source_entry": 2,
+      "source_sha256": "404333514be0d8e43af6562b3491467e00e18249f114da6d2a259375f75ed498",
+      "sha256": "d9579f9bf0a4fb51c565a4d0493dc3e278a00822b05a7483ad09aa6bb9a630f4"
+    },
+    {
+      "file": "constructed-combat-mixed.full.json",
+      "kind": "implementation_constructed",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": "PotionInspection.Read; response_pipeline.decode_success; text copied from recorded map sample",
+      "sha256": "e1245a7472c641a570e66d62a27586fdc4512ca76e3dda1cb933c389bfb213a0"
+    },
+    {
+      "file": "constructed-combat-duplicate.full.json",
+      "kind": "implementation_constructed",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": "PotionInspection.Read; response_pipeline.decode_success; text copied from recorded map sample",
+      "sha256": "0320dc417ba5f6fea69138ba5c6cb95216160ca86c9e841d0cade50a60d5cb15"
+    },
+    {
+      "file": "constructed-combat-empty.full.json",
+      "kind": "implementation_constructed",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": "PotionInspection.Read; response_pipeline.decode_success; text copied from recorded map sample",
+      "sha256": "9f2eac4aee87861341d4ffb97ac0f884be7c6d1055d08588b8287942c28921d5"
+    },
+    {
+      "file": "simulated-error-unknown_field.json",
+      "kind": "simulated_transport_or_local_validation",
+      "tool": "inspect_potions",
+      "arguments": {
+        "slot_indices": [
+          0
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-inspect-potions-review/errors.json",
+      "source_key": "unknown_field",
+      "source_sha256": "83d30128d4d5bc0cff4b9dc9c847cbc66cfde1cbec834fe7bad66f8c5caac508",
+      "sha256": "c5a4cbdaba7db614cd2924f0a67a14e02dec72b93d74c8e3bfc5bd2a8a9865ec"
+    },
+    {
+      "file": "simulated-error-invalid_preset.json",
+      "kind": "simulated_transport_or_local_validation",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "summary"
+      },
+      "source_evidence": ".tmp/2026-11-04-inspect-potions-review/errors.json",
+      "source_key": "invalid_preset",
+      "source_sha256": "83d30128d4d5bc0cff4b9dc9c847cbc66cfde1cbec834fe7bad66f8c5caac508",
+      "sha256": "4d9fc2591fa95fd3be4aa5da9e9069924310da95773916f6dee00df473d4e31e"
+    },
+    {
+      "file": "simulated-error-invalid_object.json",
+      "kind": "simulated_transport_or_local_validation",
+      "tool": "inspect_potions",
+      "arguments": [],
+      "source_evidence": ".tmp/2026-11-04-inspect-potions-review/errors.json",
+      "source_key": "invalid_object",
+      "source_sha256": "83d30128d4d5bc0cff4b9dc9c847cbc66cfde1cbec834fe7bad66f8c5caac508",
+      "sha256": "fd5f51cf420ccfb7117d45120917cf0a22a51cb94dabb1eab8668728ca3fbe73"
+    },
+    {
+      "file": "simulated-error-native_rejection.json",
+      "kind": "simulated_transport_or_local_validation",
+      "tool": "inspect_potions",
+      "arguments": {
+        "preset": "full"
+      },
+      "source_evidence": ".tmp/2026-11-04-inspect-potions-review/errors.json",
+      "source_key": "native_rejection",
+      "source_sha256": "83d30128d4d5bc0cff4b9dc9c847cbc66cfde1cbec834fe7bad66f8c5caac508",
+      "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+    }
+  ]
+}
