@@ -11,7 +11,8 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 from sts2_mcp.roundtrip_client import Client, player_result
-from tests.game.verifiers.verify_combatants import assert_visible_subsequence
+from tests.game.support.relic_assertions import assert_relic_inspection
+from sts2_mcp.tool_registry import TOOLS
 
 
 async def verify(args):
@@ -30,8 +31,8 @@ async def verify(args):
             evidence["server"] = initialized.serverInfo.model_dump()
             listed = await session.list_tools()
             evidence["tools"] = [tool.model_dump(exclude_none=True) for tool in listed.tools]
-            assert {tool.name for tool in listed.tools} == {
-                "get_observation", "inspect_hand", "inspect_ui", "inspect_potions", "inspect_combatants", "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"}
+            names = {tool.name for tool in listed.tools}
+            assert set(TOOLS) - {'capture_screenshot'} <= names <= set(TOOLS), names
             tool = next(tool for tool in listed.tools if tool.name == "inspect_relics")
             assert tool.annotations.readOnlyHint is True
             assert set(tool.inputSchema['properties']) == {'preset', 'relic_indices'} and not tool.inputSchema['additionalProperties']
@@ -47,25 +48,8 @@ async def verify(args):
             observed = await call("get_observation")
             repeated = await call("inspect_relics")
             assert inspected == repeated == player_result(reference), "Relics changed or MCP differs from file inspection."
-            assert set(inspected) == {"relics", "hover_tips"}, inspected
-            relics = inspected["relics"]
-            assert_visible_subsequence([{key: item[key] for key in ("name", "counter")} for item in relics],
-                                       observed["top_bar"]["relics"])
-            for relic in relics:
-                assert set(relic) == {"name", "counter", "description"}, relic
-                assert isinstance(relic["description"], str), relic
-            tips = inspected["hover_tips"]
-            assert len(tips) == len({(tip["title"], tip["description"]) for tip in tips}), tips
-            raw_links = {(index, tip["title"], tip["description"])
-                         for index, relic in enumerate(reference["state"]["relics"])
-                         for tip in relic["hover_tips"]}
-            links = {(index, tip["title"], tip["description"]) for tip in tips for index in tip["relic_indices"]}
-            assert links == raw_links, (links, raw_links)
-            for tip in tips:
-                assert set(tip) == {"title", "description", "relic_indices"}, tip
-                indices = tip["relic_indices"]
-                assert indices and len(indices) == len(set(indices)), tip
-                assert all(type(index) is int and 0 <= index < len(relics) for index in indices), tip
+            assert_relic_inspection(inspected, reference['state'], observed)
+            relics, tips = inspected['relics'], inspected['hover_tips']
     after = await asyncio.to_thread(client.call, "get_state")
     assert after["ok"], after
     assert len({response["state"]["snapshot_id"] for response in (before, reference, after)}) == 1, "Observation changed."

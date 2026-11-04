@@ -61,6 +61,7 @@ internal sealed partial class GameAdapter
         if (RunManager.Instance.IsInProgress || NRun.Instance != null || CardSelection.Current != null)
             throw new InvalidOperationException("Native run cleanup is incomplete.");
         MediaFailureFixture.Enabled = false;
+        RelicDisplayFixture.Set("normal");
         RelicHoverFixture.SetEnabled(true);
         PotionDisplayFixture.Set("normal");
         SelectionFixture.Pending = null;

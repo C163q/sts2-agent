@@ -1,19 +1,19 @@
 # inspect_relics 场景与参数核验
 
-> 当前状态：场景与现状核验完成，进入设计讨论；工具尚未核销。已确认 2 项正确性／验证问题，另有遗物可见状态的字段缺口待确定设计。现有 summary 和筛选可继续沿用；尚未修改工具行为。暂无调查阻塞。
+> 当前状态：核验、定稿、实现与验证完成，inspect_relics 已核销。RELIC-01–03、共享图标状态与各预设规则已交付；原下标映射保留并经全预设验证。完整证据见[实施记录](2026-11-04-relic-inspection-implementation.md)，当前接口见[遗物指南](../development/relic-inspection.md)。下述场景和问题描述保留审阅基线。暂无阻塞。
 
 ## 优先关注的问题
 
 | 编号 | 优先级 | 问题与影响 | 证据、建议及状态 |
 | --- | --- | --- | --- |
-| RELIC-01 | 中；错误准确性 | 顶栏或遗物栏不可读时，原生仅返回内部 `message`，未设置 `public_message`；MCP 因而只给出 `The requested action is unavailable.`，不能说明是页面未暴露顶栏，还是遗物栏隐藏／未就绪 | `RequestDispatcher` 的 inspect_relics 分支、`RelicInspection.DisplayedHolders` 与模拟拒绝均确认。建议按实际门控公开安全、具体的拒绝原因，继续隐藏异常信息；待实现 |
-| RELIC-02 | 中；验证设施 | `verify_relics.py`、`verify_mcp_relics.py` 仍要求顶层只有 relics／hover_tips，条目只有 name／counter／description；当前已有 scene／screen、melted 和条件 note。stdio 脚本还固定旧的 12 工具清单，因此正确响应也会验证失败 | 已将完整真实响应与断言逐项对照。建议同步到当前契约，保留只读、英语、原下标、解释去重、两种传输一致性和状态不变检查；待实现。已有共用验证并未因此失效 |
+| RELIC-01 | 中；错误准确性 | 顶栏或遗物栏不可读时，原生仅返回内部 `message`，未设置 `public_message`；MCP 因而只给出 `The requested action is unavailable.`，不能说明是页面未暴露顶栏，还是遗物栏隐藏／未就绪 | 原生分支与模拟拒绝确认；已公开实际门控的安全具体原因，异常信息继续私有；GUI 及错误后直接行动验证通过 |
+| RELIC-02 | 中；验证设施 | `verify_relics.py`、`verify_mcp_relics.py` 仍要求顶层只有 relics／hover_tips，条目只有 name／counter／description；当前已有 scene／screen、melted 和条件 note。stdio 脚本还固定旧的 12 工具清单，因此正确响应也会验证失败 | 完整真实响应与旧断言确认；已改为共享当前契约断言，并在战斗／火堆的两种传输验收通过 |
 
-另有一项**UI 反馈缺口，是否扩展字段尚待确认**：
+另有一项 **UI 反馈缺口，已确认并修复**：
 
 | 编号 | 优先级 | 缺口及影响 | 证据与候选范围 |
 | --- | --- | --- | --- |
-| RELIC-03 | 中；静态字段候选 | 静态数据只有 name／counter／melted，不表达图标置灰或激活发光。full 的用尽正文有时可补充说明，但 summary 不读正文；激活发光也不一定有计数可以代替 | 目标程序集的 `NRelicInventoryHolder.RefreshStatus`、`RelicModel.UpdateTexture`。`VenerableTeaSet` 以 Active 表达已准备额外能量，没有可见计数；`LizardTail` 用后变 Disabled。建议依据实际图标着色／shader 补可见状态，并同步基础观察和详情的共享静态入口；不读取内部触发资格或隐藏旗标。尚未新增自然游戏样本 |
+| RELIC-03 | 中；静态字段 | 静态数据只有 name／counter／melted，不表达图标置灰或激活发光。full 的用尽正文有时可补充说明，但 summary 不读正文；激活发光也不一定有计数可以代替 | 目标程序集的 RefreshStatus／UpdateTexture 及 VenerableTeaSet／LizardTail 确认显示差异；已按实际着色／shader 补共享字段和局部精简，夹具边界及原生熔化 GUI 验证通过；不读取内部触发资格 |
 
 未发现新的观察前置要求问题：本地坏参数不清除旧许可；明确读取拒绝保留已有许可；成功的空筛选和部分成功也能授权后续合法动作。没有旧许可时，失败读取不会凭空授权。过期快照和未知结果仍须遵循共用恢复规则，不能当作明确未执行。
 
@@ -27,7 +27,7 @@
 - 完整真实返回复用[药水变更后的共用 GUI 回归](2026-11-04-potion-inspection-implementation.md)和[架构验收](2026-11-04-refactor-stage-7.md)，没有为这份审阅重新启动游戏。两批证据分别为 schema 37 和 36，采样 Mod DLL 的校验值及每份样本来源见[清单](2026-11-04-inspect-relics-examples/manifest.json)。遗物读取、英语格式、悬停判断、响应校验及遗物投影在这两个代码基线间没有变化。
 - 新执行的 19 项 Python 专项测试及 11 组模拟／本地探针见 `.tmp/2026-11-04-inspect-relics-review/python.log`、`probes.json`。模拟传输不代表新的 GUI 实测。
 
-## 现有参数与职责
+## 核验基线参数与职责
 
 ```json
 {"preset":"full","relic_indices":[2]}
@@ -52,7 +52,7 @@ Read displayed owned relics. Unavailable hover help is noted; summary keeps basi
 
 职责与内容相符，长度可接受。若沿用现有参数，不需要为改提示词而改提示词；可将 basic fields 明确为 name／counter／melted，若接受 RELIC-03 再统一命名。遗物栏静态数据和悬停能力已有独立入口，没有发现需要再次进行大范围结构重构的依据。
 
-## 现有字段与信息边界
+## 核验基线字段与信息边界
 
 | 字段 | full | default | summary |
 | --- | --- | --- | --- |
@@ -97,7 +97,7 @@ Read displayed owned relics. Unavailable hover help is noted; summary keeps basi
 - 没有独立的玩家回合、牌费或目标限制；动画期间仍受顶栏及当前控件状态限制。不同遗物内容和动态计数是条目变体，不另造协议。
 - 全部遗物、第三方悬停、多人与任意图层遮挡未穷举；没有利用内部状态补齐这些验证缺口。
 
-## 错误恢复与验证结果
+## 核验基线的错误恢复与验证结果
 
 - 新运行 `tests.python.test_relic_presets`、`tests.python.test_relic_display`，共 **19 项通过**：包含真实 stdio 配合模拟游戏传输、参数校验、摘要、原下标、共享解释、note 裁剪及全量响应校验。
 - 新运行 **11 组探针**：本地非法参数保留旧许可且不发读取；illegal_action／invalid_request／expired_request 明确拒绝后可直接 end_turn；没有旧许可时拒绝不授权；空筛选／部分成功／null 筛选成功后可直接行动。探针用模拟客户端，没有执行真实游戏动作。
@@ -105,15 +105,14 @@ Read displayed owned relics. Unavailable hover help is noted; summary keeps basi
 - RELIC-02 通过当前完整真实返回与旧字段断言对照确认；未将这两份过时脚本当作通过的 GUI 验证。较新的 verify_display_readers／verify_relic_presets 仍覆盖已列明的有效路径。
 - 没有改生产代码、运行构建或新增游戏内行为验证。已导出样本的来源、内容及文件校验值分别核对。
 
-## 设计候选与下一步
+## 输出定稿
 
-既有参数和摘要已经符合约定，建议继续保留：summary 使用共用静态字段，省略所有悬停正文、解释和对应缺失 note；筛选不重编号来源；不增加 available_actions 或 transition。
+保留既有参数和摘要职责：summary 使用共用静态字段，省略所有悬停正文、解释和对应缺失 note；筛选不重编号来源；不增加 available_actions 或 transition。
 
-可选范围：
+已授权修复 RELIC-01–03，不增加工具参数。新增 `grayed_out` 和 `pulsing` 两个可空布尔字段：从实际图标着色与 shader 参数读取，熔化独立表达；full 保留 false 和未知 null，default 与 summary 省略 false／null，true 保留。该精简仅作用于遗物栏的这两个字段，不能删除其他 false，也不能改期间事件。基础观察的 full/default 顶栏复用相同静态入口；基础观察 summary/top_bar 继续仅返回 relic_count，不额外附送遗物列表。
 
-1. **修复 RELIC-01／02，补可见状态（建议）**：原生错误补具体原因，修正过时验证；在 RelicInspection.Static 内根据真实图标表现读取置灰／激活状态，基础观察和各详情预设一起复用。需要先确定字段名、普通状态是否保留、熔化与状态是否可同时表达。
-2. **仅修复 RELIC-01／02**：维持所有条目字段；实现较小，但 RELIC-03 的静态 UI 信息缺口保留在本审阅，不能算作已修复。
+不能将模型 Status、IsUsedUp、触发准备旗标当作当前已显示状态，也不调用 UpdateTexture 刷新画面。没有可识别 shader／着色时保留未知，不能按未激活补 false。真实展示与控件可悬停性保持独立。
 
-若增加状态，优先考虑描述外观的 `grayed_out`／`pulsing` 条件字段，或一个明确描述图标表现的枚举。前者允许熔化着色、置灰和发光独立表达；后者更紧凑，但须核对能否互斥。不能直接将模型 Status、IsUsedUp、触发准备旗标当作当前已显示状态，也不调用 UpdateTexture 刷新画面。字段定稿后再修改工具，暂无实施授权。
+筛选已返回原位置对照，无须新增第二种映射；保留显式数组（含 []）时的顶层 relic_indices，省略／null 仍表示全部且不附映射。补充所有预设、空筛选、重复及部分越界情况下的位置验证和真实示例。
 
-文档核对另发现两处旧说明：遗物指南称底层文件调用无参数，实际已支持 level；MCP 概述仍把整个遗物集合限定为可悬停，实际已保留不能悬停的静态条目。说明已同步当前实现；专项验证入口标明 RELIC-02 的实际限制，未通过改文档宣告代码问题解决。
+文档核对另发现两处旧说明：遗物指南称底层文件调用无参数，实际已支持 level；MCP 概述仍把整个遗物集合限定为可悬停，实际已保留不能悬停的静态条目。说明已同步实现，RELIC-02 修复后恢复当前验收入口；实际验证证据见实施记录。

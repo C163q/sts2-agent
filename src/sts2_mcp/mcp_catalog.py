@@ -5,7 +5,8 @@ from sts2_mcp.tool_registry import SPECS, NO_ARGUMENTS
 SERVER_INSTRUCTIONS = (
     "Control a local Slay the Spire 2 game; output is English. "
     "Output preset defaults to default: full content with ordinary null object fields omitted. "
-    "Array positions, event nulls and card comparison sides remain; omission never means zero, false, empty or unchanged. "
+    "Array positions, event nulls and card comparison sides remain. "
+    "Relic grayed_out/pulsing false flags are also omitted in default/summary; other omissions never mean zero, false, empty or unchanged. "
     "Use full to preserve all existing nulls; other named presets retain their own behavior. "
     "Call tools sequentially and decide after each result. "
     "available_actions lists currently offered tool names; arguments and state are checked at call time. "

@@ -1,0 +1,21 @@
+{
+  "relics": [
+    {
+      "name": "Burning Blood"
+    },
+    {
+      "name": "Anchor"
+    },
+    {
+      "name": "Lantern"
+    },
+    {
+      "name": "Pen Nib",
+      "counter": 0
+    }
+  ],
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  }
+}

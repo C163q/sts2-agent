@@ -2,7 +2,8 @@
 from sts2_mcp.output.value_shapes import nullable, TEXT, NUMBER
 
 
-RELIC = {"name": TEXT, "counter": NUMBER, "melted": nullable(bool)}
+RELIC = {"name": TEXT, "counter": NUMBER, "melted": nullable(bool),
+         "grayed_out": nullable(bool), "pulsing": nullable(bool)}
 TOP_BAR = {
     "hp": NUMBER, "max_hp": NUMBER,
     "gold": NUMBER, "floor": NUMBER, "ascension": NUMBER, "deck_count": NUMBER,

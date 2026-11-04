@@ -1,0 +1,90 @@
+[
+  {
+    "name": "relic_readers",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "readers",
+        "verifier": "verify_display_readers.py",
+        "args": []
+      }
+    ]
+  },
+  {
+    "name": "relic_combat",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "presets",
+        "verifier": "verify_relic_inspection.py",
+        "args": [
+          "--scenario",
+          "combat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "relic_wax",
+    "scenarios": {
+      "play": "wax_melt"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_relic_presets.py",
+        "args": [
+          "--scenario",
+          "wax_melt"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "relic_shop",
+    "scenarios": {
+      "shop": "courier"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_relic_presets.py",
+        "args": [
+          "--scenario",
+          "shop"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "relic_rest",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_relic_inspection.py",
+        "args": [
+          "--scenario",
+          "context"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "relic_gates",
+    "scenarios": {},
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_native_dispatch.py",
+        "args": []
+      }
+    ]
+  }
+]

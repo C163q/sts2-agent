@@ -1,0 +1,24 @@
+{
+  "relics": [
+    {
+      "name": "Pen Nib",
+      "counter": 0
+    }
+  ],
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "relic_indices": [
+    3
+  ],
+  "errors": [
+    {
+      "code": "relic_indices_out_of_range",
+      "relic_indices": [
+        99,
+        98
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "relics": [
+    {
+      "name": "Pen Nib",
+      "counter": 0,
+      "description": "Every 10th Attack you play deals double damage.",
+      "melted": null,
+      "grayed_out": false,
+      "pulsing": true
+    }
+  ],
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "hover_tips": [],
+  "relic_indices": [
+    3
+  ]
+}

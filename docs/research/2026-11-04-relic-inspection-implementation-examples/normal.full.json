@@ -1,0 +1,56 @@
+{
+  "relics": [
+    {
+      "name": "Burning Blood",
+      "counter": null,
+      "description": "At the end of combat, heal 6 HP.",
+      "melted": null,
+      "grayed_out": false,
+      "pulsing": false
+    },
+    {
+      "name": "Anchor",
+      "counter": null,
+      "description": "Start each combat with 10 Block.",
+      "melted": null,
+      "grayed_out": false,
+      "pulsing": false
+    },
+    {
+      "name": "Lantern",
+      "counter": null,
+      "description": "Start each combat with an additional <Energy>.",
+      "melted": null,
+      "grayed_out": false,
+      "pulsing": false
+    },
+    {
+      "name": "Pen Nib",
+      "counter": 0,
+      "description": "Every 10th Attack you play deals double damage.",
+      "melted": null,
+      "grayed_out": false,
+      "pulsing": false
+    }
+  ],
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "hover_tips": [
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "relic_indices": [
+        1
+      ]
+    },
+    {
+      "title": "Energy",
+      "description": "Energy is used to play cards from your Hand.",
+      "relic_indices": [
+        2
+      ]
+    }
+  ]
+}

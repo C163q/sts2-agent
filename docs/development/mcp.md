@@ -141,15 +141,15 @@ approval_mode = "approve"
 
 | 预设 | 行为 |
 | --- | --- |
-| `default`（默认） | 与本工具 full 的内容范围一致，递归删除普通对象字段中的 `null` |
+| `default`（默认） | 与本工具 full 的内容范围一致，递归删除普通对象字段中的 `null`，以及下述指定图标字段的 false |
 | `full` | 保留本工具原有完整输出及其中的空值；动作仍返回精简回执，不附送完整观察 |
 | 专用预设 | summary 继承 default 后进一步精简；selectable、actions_only 按各工具契约返回 |
 
 过滤保留以下例外：所有数组的 `null` 元素；`transition.events` 中已有的全部空值；选牌已展开的升级、附魔、变牌比较中 before / after 两侧的全部内容与空值。后者包括随机变牌的 `after:null`，但未展开的整个 `upgrade_preview:null` 可以省略。宝箱房 `treasure.status:"visible"` 时，保留已有的 `relic:null`，明确当前没有展示可领取遗物；covered 时仍省略，不据此推断隐藏内容。
 
-`0`、`false`、空字符串、空数组、空对象均保留。数组长度、顺序和引用下标不变；过滤后为空的对象仍保留。省略不表示零、否或空集合，也不表示沿用上次值；结果不是状态增量。需要明确空值时使用 full。
+`0`、`false`、空字符串、空数组、空对象通常保留。仅在根 `relics[]` 和 `top_bar.relics[]` 的 `grayed_out/pulsing` 为 false 时省略这两个字段；其他 false（包括 melted）及期间事件不受影响。数组长度、顺序和引用下标不变；过滤后为空的对象仍保留。省略不表示沿用上次值；普通省略字段不表示零、否或空集合，但上述两个图标字段按专题契约精简。结果不是状态增量；需要明确空值和图标 false 时使用 full。
 
-例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。遗物 summary 同样省略普通空值。`inspect_deck` / `inspect_pile` 同样使用 full/default/summary，默认完整内容；旧 detail_level 已移除。
+例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。遗物 summary 同样省略普通空值与两个 false 图标字段。`inspect_deck` / `inspect_pile` 同样使用 full/default/summary，默认完整内容；旧 detail_level 已移除。
 
 各工具专用预设的完整字段规则由对应接口维护：`get_observation` 的 summary／top_bar 见[观察预设](observation.md#mcp-输出预设)，UI 帮助、手牌、选牌、药水和遗物摘要见各工具说明。不要把 default 保留空数组的公共规则套用到明确精简空列表的专用 summary。
 

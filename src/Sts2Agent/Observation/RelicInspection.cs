@@ -9,7 +9,13 @@ namespace Sts2Agent;
 internal static class RelicInspection
 {
     private static readonly EnglishText Names = new();
-    internal sealed record RelicText(string? name, int? counter, string? description, HoverTipText[] hover_tips, bool? melted);
+    internal record StaticText(string? name, int? counter, bool? melted)
+    {
+        public bool? grayed_out { get; init; }
+        public bool? pulsing { get; init; }
+    }
+    internal sealed record RelicText(string? name, int? counter, string? description, HoverTipText[] hover_tips, bool? melted)
+        : StaticText(name, counter, melted);
 
     internal static bool? Melted(NRelic relic)
     {
@@ -42,11 +48,37 @@ internal static class RelicInspection
             && Mathf.Abs(holder.Relic.Icon.GetGlobalTransformWithCanvas().Determinant()) > 0.000001f).ToArray();
     }
 
-    internal sealed record StaticText(string? name, int? counter, bool? melted);
     internal sealed record Result(RelicText[] relics, string[] unavailable_hover_sources);
 
     internal static StaticText Static(NRelicInventoryHolder holder) => new(
-        Names.RelicName(holder.Relic.Model), VisibleUi.DisplayedNumber(holder, "%AmountLabel"), Melted(holder.Relic));
+        Names.RelicName(holder.Relic.Model), VisibleUi.DisplayedNumber(holder, "%AmountLabel"), Melted(holder.Relic))
+    {
+        grayed_out = GrayedOut(holder.Relic.Icon),
+        pulsing = ShaderFlag(holder.Relic.Icon, "pulse")
+    };
+
+    private static bool? GrayedOut(TextureRect icon)
+    {
+        Color tint = new(icon.Modulate, 1);
+        return tint.IsEqualApprox(new Color("#808080")) ? true : tint.IsEqualApprox(Colors.White) ? false : null;
+    }
+
+    private static bool? ShaderFlag(TextureRect icon, string field)
+    {
+        if (icon.Material is not ShaderMaterial { Shader: { } shader } material
+            || !shader.GetShaderUniformList().Any(value => value.AsGodotDictionary()["name"].AsString() == field)) return null;
+        var flag = material.GetShaderParameter(field);
+        if (flag.VariantType is not (Variant.Type.Int or Variant.Type.Float)) return null;
+        return flag.AsDouble() switch { 0 => false, 1 => true, _ => null };
+    }
+
+    internal static string? UnavailableReason()
+    {
+        if (!RunUi.TopBarReadable())
+            return "The top bar is not exposed in the current screen, so owned relics cannot be inspected. Close the covering dialog or wait for the screen transition.";
+        return !VisibleUi.Shown(NRun.Instance!.GlobalUi.RelicInventory)
+            ? "The owned relic inventory is hidden or not ready. Wait until the relic bar is displayed." : null;
+    }
 
     internal static bool Hoverable(NRelicInventoryHolder holder) => HoverAccess.CanFocus(holder);
 
@@ -54,8 +86,9 @@ internal static class RelicInspection
         holders.Select(holder =>
         {
             var value = Static(holder);
-            return full && Hoverable(holder) ? Details(holder.Relic.Model, value.counter, value.melted)
+            var detail = full && Hoverable(holder) ? Details(holder.Relic.Model, value.counter, value.melted)
                 : new RelicText(value.name, value.counter, null, [], value.melted);
+            return detail with { grayed_out = value.grayed_out, pulsing = value.pulsing };
         }).ToArray());
 
     internal static Result Inspect(NRelicInventoryHolder[] holders, bool full = true) => new(Read(holders, full),

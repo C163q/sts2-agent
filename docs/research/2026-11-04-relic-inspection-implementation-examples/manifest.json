@@ -1,0 +1,190 @@
+{
+  "mod_version": "0.57.0",
+  "mcp_version": "0.59.0",
+  "schema_version": 38,
+  "game_version": "v0.107.1",
+  "game_build": "59260271",
+  "ritsulib_version": "0.6.10",
+  "mod_sha256": "4a735cf4bfb7a943ee6d9aeb5a9188344ad91dcb5ea6b8c973aa1a30e6804210",
+  "samples": [
+    {
+      "file": "normal.full.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "source_evidence": ".tmp/2026-11-04-relic-implementation/gui2/relic_combat/presets/evidence.json",
+      "source_entry": 2,
+      "source_sha256": "2a0aef8bc350c1baec5ccf0200d12714eafa8c66e5808f0da8678872e119178f",
+      "sha256": "addf4bec8c52dc378e23d4495761ec590a751afda85bf03f57dcb55bdd0acf1d"
+    },
+    {
+      "file": "normal.default.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "default"
+      },
+      "source_evidence": ".tmp/2026-11-04-relic-implementation/gui2/relic_combat/presets/evidence.json",
+      "source_entry": 7,
+      "source_sha256": "2a0aef8bc350c1baec5ccf0200d12714eafa8c66e5808f0da8678872e119178f",
+      "sha256": "9fc78ce8856266d57f3e4a6a47b7c64c3908a0aed1e0d58c4787fae773389f79"
+    },
+    {
+      "file": "normal.summary.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "summary"
+      },
+      "source_evidence": ".tmp/2026-11-04-relic-implementation/gui2/relic_combat/presets/evidence.json",
+      "source_entry": 11,
+      "source_sha256": "2a0aef8bc350c1baec5ccf0200d12714eafa8c66e5808f0da8678872e119178f",
+      "sha256": "74b0654740f7ca5a8d6eaf72fe7ff1aeba15edfa178d098f01d95ea261b5aeb3"
+    },
+    {
+      "file": "pulsing.filtered.full.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full",
+        "relic_indices": [
+          3
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-relic-implementation/gui2/relic_combat/presets/evidence.json",
+      "source_entry": 28,
+      "source_sha256": "2a0aef8bc350c1baec5ccf0200d12714eafa8c66e5808f0da8678872e119178f",
+      "sha256": "5697030a67da9159025d1cbd9d3d6d6882d9e3120a1e6c4c71b4d6b1e3a13d19",
+      "note": "Pulse rendering injected independently of model state."
+    },
+    {
+      "file": "pulsing.filtered.default.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "default",
+        "relic_indices": [
+          3
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-relic-implementation/gui2/relic_combat/presets/evidence.json",
+      "source_entry": 30,
+      "source_sha256": "2a0aef8bc350c1baec5ccf0200d12714eafa8c66e5808f0da8678872e119178f",
+      "sha256": "bb3ecaab125366acb8f7e0f07c551c423ed273203f0d71d2770e2a9d9a084573",
+      "note": "Pulse rendering injected independently of model state."
+    },
+    {
+      "file": "pulsing.filtered.summary.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "summary",
+        "relic_indices": [
+          3
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-relic-implementation/gui2/relic_combat/presets/evidence.json",
+      "source_entry": 31,
+      "source_sha256": "2a0aef8bc350c1baec5ccf0200d12714eafa8c66e5808f0da8678872e119178f",
+      "sha256": "d17232d5310c70beef54a62a04f8d5aea3aa4090ef3fb10248d9f31289865726",
+      "note": "Pulse rendering injected independently of model state."
+    },
+    {
+      "file": "grayed.filtered.default.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "default",
+        "relic_indices": [
+          3
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-relic-implementation/gui2/relic_combat/presets/evidence.json",
+      "source_entry": 20,
+      "source_sha256": "2a0aef8bc350c1baec5ccf0200d12714eafa8c66e5808f0da8678872e119178f",
+      "sha256": "d03e6a2d55a783babb601bd07ce5b9799266e62f953a0438e9c3edc82c09441d",
+      "note": "Gray rendering injected independently of model state."
+    },
+    {
+      "file": "unknown-shader.filtered.full.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full",
+        "relic_indices": [
+          3
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-relic-implementation/gui2/relic_combat/presets/evidence.json",
+      "source_entry": 58,
+      "source_sha256": "2a0aef8bc350c1baec5ccf0200d12714eafa8c66e5808f0da8678872e119178f",
+      "sha256": "0d429bfc7db2b172fbb1e2c333e649adf2d12b08c73decb52d2e3652b02678f2",
+      "note": "Material removed by a test-only fixture."
+    },
+    {
+      "file": "partial.filtered.summary.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "summary",
+        "relic_indices": [
+          99,
+          3,
+          98,
+          3,
+          99
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-relic-implementation/gui2/relic_combat/presets/evidence.json",
+      "source_entry": 13,
+      "source_sha256": "2a0aef8bc350c1baec5ccf0200d12714eafa8c66e5808f0da8678872e119178f",
+      "sha256": "faa77780fc339ba516ecb2f8a68a5a688ef1d288c3b54195246b8b8fb08c9c62"
+    },
+    {
+      "file": "empty.filtered.full.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full",
+        "relic_indices": []
+      },
+      "source_evidence": ".tmp/2026-11-04-relic-implementation/gui2/relic_combat/presets/evidence.json",
+      "source_entry": 6,
+      "source_sha256": "2a0aef8bc350c1baec5ccf0200d12714eafa8c66e5808f0da8678872e119178f",
+      "sha256": "b57199f0032126372ff24dbae3977a862fa7b08ed8025766440d17b91959f927"
+    },
+    {
+      "file": "error.hidden-inventory.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "source_evidence": ".tmp/2026-11-04-relic-implementation/gui2/relic_combat/presets/evidence.json",
+      "source_entry": 68,
+      "source_sha256": "2a0aef8bc350c1baec5ccf0200d12714eafa8c66e5808f0da8678872e119178f",
+      "sha256": "ca30c17941f6bf1a56c3b4627be4b7745a35feef87dbe2e1c862c2b52b81d87a",
+      "note": "Inventory visibility changed by a test-only fixture."
+    },
+    {
+      "file": "hover-unavailable.filtered.full.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full",
+        "relic_indices": [
+          3,
+          0,
+          3
+        ]
+      },
+      "source_evidence": ".tmp/2026-11-04-relic-implementation/gui2/relic_readers/readers/evidence.json",
+      "source_entry": 22,
+      "source_sha256": "2a68e2582a87367b85bba4f3f5fe9967a22ff921fe2e40f6e67726b9cce467a8",
+      "sha256": "bd128e229802b9979c2ad2fa5f0b3d61aeeac2dc96d195813b372f50131560b8",
+      "note": "Mouse and controller access disabled by a test-only fixture."
+    },
+    {
+      "file": "wax-after.full.json",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "source_evidence": ".tmp/2026-11-04-relic-implementation/gui2/relic_wax/verify/evidence.json",
+      "source_entry": 12,
+      "source_sha256": "0d8e0a3537f2941f988a5b22258225891fb7444364e283c19cae16f0c8ed9dc0",
+      "sha256": "afe6f461b97a92cd5b175e6ca6c6b175669c54210630107eda6439624e85d572",
+      "note": "Native card play and wax melt; not a rendering injection."
+    }
+  ]
+}

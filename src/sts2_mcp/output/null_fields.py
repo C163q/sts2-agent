@@ -20,6 +20,11 @@ def preserve_null(path, parent):
                and path[len(prefix)] in {'before', 'after'} for prefix in PREVIEW_PATHS)
 
 
+def omit_false(path):
+    return path[:-1] in {('relics', '*'), ('top_bar', 'relics', '*')} \
+        and path[-1] in {'grayed_out', 'pulsing'}
+
+
 def apply_preset(payload, preset, *, path=()):
     if preset != 'default' or 'error' in payload:
         return payload
@@ -27,7 +32,8 @@ def apply_preset(payload, preset, *, path=()):
     def compact(value, path=()):
         if isinstance(value, dict):
             return {key: compact(item, (*path, key)) for key, item in value.items()
-                    if item is not None or preserve_null((*path, key), value)}
+                    if (item is not None or preserve_null((*path, key), value))
+                    and not (item is False and omit_false((*path, key)))}
         if isinstance(value, list):
             return [compact(item, (*path, '*')) for item in value]
         return value

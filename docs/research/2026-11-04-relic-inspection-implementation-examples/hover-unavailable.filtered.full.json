@@ -1,0 +1,37 @@
+{
+  "relics": [
+    {
+      "name": "Burning Blood",
+      "counter": null,
+      "description": "At the end of combat, heal 6 HP.",
+      "melted": null,
+      "grayed_out": false,
+      "pulsing": false
+    },
+    {
+      "name": "Pen Nib",
+      "counter": 0,
+      "description": null,
+      "melted": null,
+      "grayed_out": false,
+      "pulsing": false
+    }
+  ],
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "hover_tips": [],
+  "notes": {
+    "hover_tips_unavailable": {
+      "message": "Hover help is currently unavailable for these displayed icons.",
+      "sources": [
+        "relics.3"
+      ]
+    }
+  },
+  "relic_indices": [
+    0,
+    3
+  ]
+}

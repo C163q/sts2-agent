@@ -1,5 +1,6 @@
 """Compare displayed relics with native labels and exercise fixture-only missing hover help."""
 from scripts._bootstrap import ROOT
+from tests.game.support.relic_assertions import STATIC_FIELDS
 import argparse
 import asyncio
 import json
@@ -43,7 +44,7 @@ async def verify(args):
             full = await call('inspect_relics', {'preset': 'full'})
             summary = await call('inspect_relics', {'preset': 'summary'})
             observation = await call('get_observation', {'preset': 'full'})
-            assert [{k: v for k, v in r.items() if k in {'name', 'counter', 'melted'}}
+            assert [{k: v for k, v in r.items() if k in STATIC_FIELDS}
                     for r in full['relics']] == observation['top_bar']['relics']
             assert len(summary['relics']) == len(full['relics'])
             assert 'notes' not in summary and 'hover_tips' not in summary

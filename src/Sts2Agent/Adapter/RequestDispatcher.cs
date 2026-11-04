@@ -178,9 +178,9 @@ internal sealed partial class GameAdapter
                     return FileMailbox.Error(request.Id, "invalid_request", "Relic level must be full or summary.", publicMessage: true);
                 if (options.TryGetProperty("level", out level)) full = level.GetString() != "summary";
             }
-            var holders = RelicInspection.VisibleHolders();
-            if (holders == null)
-                return FileMailbox.Error(request.Id, "illegal_action", "Relic details are unavailable in the current screen.");
+            if (RelicInspection.UnavailableReason() is { } reason)
+                return FileMailbox.Error(request.Id, "illegal_action", reason, publicMessage: true);
+            var holders = RelicInspection.VisibleHolders()!;
             string? checks = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_RELIC_CHECKS");
             if (testMode && checks != null && full)
                 RelicInspectionChecks.Run(checks);

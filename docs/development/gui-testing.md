@@ -24,6 +24,7 @@
 | --- | --- |
 | 架构组合回归与四项契约样例采集 | [architecture_refactor](../../tests/game/data/gui_suite_architecture_refactor.json) |
 | 药水静态／完整预设、原槽位筛选与显示边界 | [potion_inspection](../../tests/game/data/gui_suite_potion_inspection.json) |
+| 遗物静态图标状态、原下标对照、错误续接及专项验证 | [relic_inspection](../../tests/game/data/gui_suite_relic_inspection.json) |
 | 展示／悬停分离、共用读取及相关场景 | [display_readers](../../tests/game/data/gui_suite_display_readers.json) |
 | 原生上下文、媒体故障与跨场景响应 | [native_responses](../../tests/game/data/gui_suite_native_responses.json) |
 | 原生测试路由门控 | [native_dispatch](../../tests/game/data/gui_suite_native_dispatch.json) |

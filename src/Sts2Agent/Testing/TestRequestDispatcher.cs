@@ -46,6 +46,19 @@ internal sealed partial class GameAdapter
                 return FileMailbox.Error(request.Id, "invalid_request", "Expected a nonnegative test slot index.");
             return Success(request, JsonSerializer.Serialize(PotionDisplayFixture.Set(mode.GetString()!, index)));
         }
+        if (request.Operation == "set_test_relic_display" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
+        {
+            if (request.Arguments is not { } options
+                || options.EnumerateObject().Any(property => property.Name is not ("mode" or "index"))
+                || !options.TryGetProperty("mode", out var mode) || mode.ValueKind != JsonValueKind.String
+                || mode.GetString() is not ("normal" or "grayed" or "pulsing" or "both" or "unknown_tint" or "no_shader" or "hidden_inventory" or "hidden_top_bar"))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected a relic display fixture mode.");
+            int index = 0;
+            if (options.TryGetProperty("index", out var supplied) && (supplied.ValueKind != JsonValueKind.Number || !supplied.TryGetInt32(out index) || index < 0))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected a nonnegative test relic index.");
+            return Success(request, JsonSerializer.Serialize(RelicDisplayFixture.Set(mode.GetString()!, index)));
+        }
         if (request.Operation == "set_test_relic_hover" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
         {

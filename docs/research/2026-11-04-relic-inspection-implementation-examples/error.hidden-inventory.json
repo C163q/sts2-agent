@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The owned relic inventory is hidden or not ready. Wait until the relic bar is displayed.",
+    "recovery": "choose_legal_action"
+  }
+}

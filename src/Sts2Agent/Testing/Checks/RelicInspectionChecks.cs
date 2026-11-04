@@ -30,6 +30,35 @@ internal static class RelicInspectionChecks
         string originalTips = JsonSerializer.Serialize(lantern.HoverTips.Select(HoverTipText.From));
         energy.ColorPrefix = prefix;
         var before = RelicInspection.Read(holders);
+        bool Flag(string field, bool? expected)
+        {
+            var item = JsonSerializer.SerializeToElement(RelicInspection.Read([counterHolder])[0]);
+            return item.TryGetProperty(field, out var value) && (expected == null
+                ? value.ValueKind == JsonValueKind.Null
+                : value.ValueKind is JsonValueKind.True or JsonValueKind.False && value.GetBoolean() == expected);
+        }
+        Check("normal_icon_has_explicit_false_states", Flag("grayed_out", false) && Flag("pulsing", false));
+        var visualIcon = counterHolder.Relic.Icon;
+        var visualMaterial = visualIcon.Material;
+        var visualColor = visualIcon.Modulate;
+        var visualShader = (ShaderMaterial)visualMaterial;
+        var visualPulse = visualShader.GetShaderParameter("pulse");
+        try
+        {
+            visualIcon.Modulate = new Color("#808080");
+            visualShader.SetShaderParameter("pulse", 1);
+            Check("rendered_states_ignore_model_status", Flag("grayed_out", true) && Flag("pulsing", true));
+            visualIcon.Modulate = new Color("#ff0000");
+            Check("unknown_tint_is_not_normal", Flag("grayed_out", null));
+            visualIcon.Material = null;
+            Check("missing_shader_cannot_infer_pulse", Flag("pulsing", null));
+        }
+        finally
+        {
+            visualIcon.Material = visualMaterial;
+            visualIcon.Modulate = visualColor;
+            visualShader.SetShaderParameter("pulse", visualPulse);
+        }
         Check("english_burning_blood", before.Any(item => item.name == "Burning Blood"
             && item.description!.Contains("6") && item.counter == null));
         Check("anchor_native_keyword", before.Any(item => item.name == "Anchor"

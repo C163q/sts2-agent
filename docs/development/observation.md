@@ -110,6 +110,7 @@ full/default 顶栏提供 `relic_count`，表示原生遗物栏登记的持有�
 | `top_bar.bosses` | 实际显示的首领名称数组，例如 `["Ceremonial Beast"]`；未识别的可见图标以槽内 `null` 保留 |
 | `top_bar.potion_slots` | 按位置排列；槽内 `null` 是已确认空槽，非空为含 `name` 的对象，整个字段为 `null` 是未能观察槽位 |
 | `top_bar.relics[].melted` | 与[遗物详情](relic-inspection.md#格式)相同：蜡质未熔化／已熔化分别为 `false/true`，非蜡质不适用或图标不可读时为 `null` |
+| `top_bar.relics[].grayed_out/pulsing` | 与遗物详情共用实际图标置灰／激活发光读取；full 保留 false 和未知 null，default 省略这两字段的 false／null；summary/top_bar 不返回遗物列表 |
 | `top_bar.relic_count` | 原生遗物栏登记的持有数量，不按视口位置或能否悬停截断；遗物栏不可读时为 null，旧 Mod 可缺少此字段 |
 | `buttons.end_turn` | 当前按钮的英语文字与启用状态 |
 | `available_actions` | 当前场景可用的查看与操作工具名，不含参数；省略 `get_observation`、截图和测试入口。具体参数、状态和原生条件仍在调用时检查 |

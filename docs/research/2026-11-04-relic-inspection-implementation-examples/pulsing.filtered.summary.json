@@ -1,0 +1,16 @@
+{
+  "relics": [
+    {
+      "name": "Pen Nib",
+      "counter": 0,
+      "pulsing": true
+    }
+  ],
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "relic_indices": [
+    3
+  ]
+}

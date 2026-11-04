@@ -1,5 +1,6 @@
 """Verify relic summaries, original-index filters and action continuation over real MCP."""
 from scripts._bootstrap import ROOT
+from tests.game.support.relic_assertions import STATIC_FIELDS
 from tests.game.support.verification_actions import full_output_arguments
 import argparse
 import asyncio
@@ -46,8 +47,8 @@ async def verify(args):
                 full = await call('inspect_relics')
                 assert full == await call('inspect_relics', {'preset': 'full'})
                 summary = await call('inspect_relics', {'preset': 'summary'})
-                basic = [{k: v for k, v in r.items() if k in {'name', 'counter', 'melted'}} for r in full['relics']]
-                assert summary == {**{k: full[k] for k in ('scene', 'screen')}, 'relics': [{k: v for k, v in r.items() if v is not None} for r in basic]}, summary
+                basic = [{k: v for k, v in r.items() if k in STATIC_FIELDS} for r in full['relics']]
+                assert summary == {**{k: full[k] for k in ('scene', 'screen')}, 'relics': [{k: v for k, v in r.items() if v is not None and not (v is False and k in {'grayed_out', 'pulsing'})} for r in basic]}, summary
                 assert basic == observed['top_bar']['relics'], (basic, observed['top_bar']['relics'])
                 assert len(basic) >= 2, 'Fixture must exercise multiple relic positions.'
                 ordinary = [r for r in basic if r['name'] in {'Burning Blood', 'Anchor', 'Lantern', 'Pen Nib'}]

@@ -7,6 +7,61 @@ from sts2_mcp.tool_registry import TOOLS
 
 
 class RelicDisplayTests(unittest.TestCase):
+    def test_visible_flags_survive_full_and_summary_filters_with_original_mapping(self):
+        state = self.payload()
+        state['relics'][0].update(grayed_out=False, pulsing=False)
+        state['relics'][1].update(grayed_out=True, pulsing=False)
+        state['relics'][2].update(grayed_out=False, pulsing=True)
+        full = self.project({'preset': 'full', 'relic_indices': [2, 0, 2]}, state)
+        self.assertEqual(full['relic_indices'], [0, 2])
+        self.assertIs(full['relics'][0]['grayed_out'], False)
+        self.assertIs(full['relics'][0]['pulsing'], False)
+        self.assertIs(full['relics'][1]['pulsing'], True)
+        for preset in ('default', 'summary'):
+            compact = self.project({'preset': preset, 'relic_indices': [2, 1, 2]}, state)
+            self.assertEqual(compact['relic_indices'], [1, 2])
+            self.assertIs(compact['relics'][0]['grayed_out'], True)
+            self.assertIs(compact['relics'][1]['pulsing'], True)
+            self.assertNotIn('pulsing', compact['relics'][0])
+            self.assertNotIn('grayed_out', compact['relics'][1])
+
+    def test_observation_uses_same_flags_and_default_false_rule_is_scoped(self):
+        from tests.python.test_output_boundaries import observation
+        from sts2_mcp.output.null_fields import apply_preset
+        state = observation()
+        state['top_bar']['relics'][0].update(grayed_out=False, pulsing=True)
+        full = decode_success('get_state', state)
+        self.assertEqual(full['top_bar']['relics'][0],
+                         {'name': 'Anchor', 'counter': 0, 'grayed_out': False, 'pulsing': True})
+        default = apply_preset(full, 'default')
+        self.assertEqual(default['top_bar']['relics'][0], {'name': 'Anchor', 'counter': 0, 'pulsing': True})
+        unrelated = {'grayed_out': False, 'pulsing': False, 'enabled': False,
+                     'transition': {'events': [{'relic': {'grayed_out': False, 'pulsing': False}}]},
+                     'relics': [{'melted': False, 'grayed_out': False, 'pulsing': False}]}
+        compact = apply_preset(unrelated, 'default')
+        self.assertIs(compact['enabled'], False)
+        self.assertIs(compact['grayed_out'], False)
+        self.assertEqual(compact['transition'], unrelated['transition'])
+        self.assertEqual(compact['relics'], [{'melted': False}])
+
+    def test_unknown_flags_full_keeps_null_compact_omits_without_filling_old_responses(self):
+        state = self.payload()
+        state['relics'][0].update(grayed_out=None, pulsing=None)
+        full = self.project({'preset': 'full'}, state)
+        self.assertIsNone(full['relics'][0]['grayed_out'])
+        self.assertIsNone(full['relics'][0]['pulsing'])
+        self.assertNotIn('pulsing', full['relics'][1])
+        for preset in ('default', 'summary'):
+            self.assertNotIn('pulsing', self.project({'preset': preset}, state)['relics'][0])
+
+    def test_invalid_visual_flags_rejected_even_when_filter_is_empty(self):
+        for field in ('grayed_out', 'pulsing'):
+            for value in (0, 1, 'true', [], {}):
+                state = self.payload()
+                state['relics'][0][field] = value
+                with self.subTest(field=field, value=value), self.assertRaises(ValueError):
+                    self.project({'preset': 'summary', 'relic_indices': []}, state)
+
     def payload(self):
         return {
             'relics': [

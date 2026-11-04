@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 from sts2_mcp.roundtrip_client import Client, player_result
-from tests.game.verifiers.verify_combatants import assert_visible_subsequence
+from tests.game.support.relic_assertions import assert_relic_inspection
 
 
 def main():
@@ -23,22 +23,8 @@ def main():
     assert after["ok"], after
     assert len({response["state"]["snapshot_id"] for response in (before, inspected, repeated, after)}) == 1, "Observation changed."
     result = player_result(inspected)
-    assert set(result) == {"relics", "hover_tips"}, result
-    assert_visible_subsequence([{key: item[key] for key in ("name", "counter")} for item in result["relics"]],
-                               before["state"]["top_bar"]["relics"])
-    for item in result["relics"]:
-        assert set(item) == {"name", "counter", "description"}, item
-        assert isinstance(item["name"], str) and isinstance(item["description"], str), item
-        assert item["counter"] is None or type(item["counter"]) is int, item
-        assert "[img]" not in item["description"] and "[gold]" not in item["description"], item
-    tips = result["hover_tips"]
-    assert len(tips) == len({(tip["title"], tip["description"]) for tip in tips}), tips
-    for tip in tips:
-        assert set(tip) == {"title", "description", "relic_indices"}, tip
-        assert isinstance(tip["description"], str), tip
-        indices = tip["relic_indices"]
-        assert indices and len(indices) == len(set(indices)), tip
-        assert all(type(index) is int and 0 <= index < len(result["relics"]) for index in indices), tip
+    assert_relic_inspection(result, inspected['state'], player_result(before))
+    tips = result['hover_tips']
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
     args.report.parent.mkdir(parents=True, exist_ok=True)
