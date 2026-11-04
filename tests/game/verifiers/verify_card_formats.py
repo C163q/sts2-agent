@@ -59,10 +59,12 @@ async def verify_resources(call, raw, record):
     record({'native_resource_checks': checks})
     assert checks['ok'] and checks['state']['passed'], checks
     observation = await call('get_observation', {'preset': 'full'})
-    values = {key: observation['player'][key] for key in ('energy', 'max_energy', 'stars')}
+    values = {key: observation['player'][key] for key in (
+        'energy', 'max_energy', 'stars', 'draw_count', 'discard_count', 'exhaust_count')}
     assert values['energy'] == 20 and values['max_energy'] == 3, values
     compact = {'energy': '20/3'}
-    if values['stars'] is not None: compact['stars'] = values['stars']
+    compact.update({key: value for key, value in values.items()
+                    if key not in ('energy', 'max_energy') and value is not None})
     for preset in ('full', 'default', 'summary'):
         for ids in ([], [2147483647]):
             hand = await call('inspect_hand', {'preset': preset, 'card_ids': ids})

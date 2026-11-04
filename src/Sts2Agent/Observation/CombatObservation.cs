@@ -91,9 +91,9 @@ internal sealed class CombatObservation
             orb_slots = common.player.orb_slots,
             sovereign_blades = common.player.sovereign_blades,
             hand = VisibleUi.Shown(room.Ui.Hand) ? HandCards(room.Ui.Hand).Select(Card).ToArray() : null,
-            draw_count = VisibleUi.Number(room.Ui.DrawPile, "CountContainer/Count"),
-            discard_count = VisibleUi.Number(room.Ui.DiscardPile, "CountContainer/Count"),
-            exhaust_count = VisibleUi.Number(room.Ui.ExhaustPile, "CountContainer/Count")
+            draw_count = resources.DrawCount,
+            discard_count = resources.DiscardCount,
+            exhaust_count = resources.ExhaustCount
         };
     }
 

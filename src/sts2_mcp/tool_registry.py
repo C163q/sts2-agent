@@ -397,7 +397,7 @@ SPECS = (
     ToolSpec(
         name='inspect_hand',
         schema=HAND_SCHEMA,
-        description="Read current visible hand cards and HUD energy/stars, optionally filtering cards by card_ids. full includes effects and hover help; "
+        description="Read current visible hand cards, HUD energy/stars and pile counts, optionally filtering cards by card_ids. full includes effects and hover help; "
             "summary keeps identity, visible costs, enchantments, afflictions and UI markers. Unavailable IDs are grouped in errors; valid cards remain. "
             "Markers do not guarantee a legal play.",
         annotations=read_only,

@@ -1,0 +1,4 @@
+[
+  {"name":"pile_counts_ironclad","scenarios":{"play":"pommel_strike"},"steps":[{"name":"verify","verifier":"verify_card_formats.py","args":["--scenario","resources"]}]},
+  {"name":"pile_counts_regent","scenarios":{"play":"companions_blade"},"steps":[{"name":"verify","verifier":"verify_card_formats.py","args":["--scenario","resources"]}]}
+]

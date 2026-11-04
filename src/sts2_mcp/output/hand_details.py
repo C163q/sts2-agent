@@ -13,4 +13,5 @@ def hand_details(state):
         for tip in card["hover_tips"] or []:
             if set(tip) != set(TIP):
                 raise ValueError("Invalid hand hover tip.")
-    return {**project(state, {key: NUMBER for key in ('energy', 'max_energy', 'stars')}), "hand": hand}
+    return {**project(state, {key: NUMBER for key in (
+        'energy', 'max_energy', 'stars', 'draw_count', 'discard_count', 'exhaust_count')}), "hand": hand}

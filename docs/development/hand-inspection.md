@@ -38,6 +38,8 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 
 资源字段与卡牌筛选独立。full 提供顶层可空整数 `energy/max_energy/stars`，来自当前能量计和星星计；即使角色身体隐藏，也不影响独立可见的 HUD。default 省略普通空值；summary 将完整能量对合并为 `energy:"3/3"`，省略 max_energy，stars 可见时保留整数，包括 0。部分能量不可读时 summary 省略能量，不从模型补齐。
 
+顶层另提供可空整数 `draw_count/discard_count/exhaust_count`，分别对应当前抽牌堆／弃牌堆／消耗牌堆入口的可见计数标签，与 get_observation.player 复用同一 HUD 读取。full 保留 null，default／summary 省略普通 null，0 始终保留；隐藏入口或标签不从模型补齐为零。三项计数独立于 card_ids，空筛选和部分无效 ID 均不影响返回。
+
 筛选后的 `full` 仅保留命中卡牌及其共享提示关联；空结果为 `hand: []/hover_tips: []`，不附卡牌数值说明。摘要空结果保留 `hand: []` 及当前可读资源，可能另有下述错误或导航说明。full 的资源字段也不受空筛选或无效 ID 影响；省略 preset 则使用 default，过滤规则见[MCP 输出预设](mcp.md#输出预设)。
 
 不在当前可见手牌中的 ID 按请求首次出现的顺序合并报告，其他有效卡牌正常返回：
@@ -59,7 +61,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 
 ## 格式
 
-`full` 结果包含平级资源计数，以及 `hand` 和 `hover_tips` 数组。手牌顺序与基础观察一致，ID 也保持一致；每张牌复用 [基础手牌字段](observation.md#手牌与身份)，新增 `description`，不再内嵌提示集合：
+`full` 结果包含平级资源与牌堆计数，以及 `hand` 和 `hover_tips` 数组。手牌顺序与基础观察一致，ID 也保持一致；每张牌复用 [基础手牌字段](observation.md#手牌与身份)，新增 `description`，不再内嵌提示集合：
 
 | 字段 | 含义 |
 | --- | --- |
@@ -113,3 +115,5 @@ python3 -m tests.game.verifiers.verify_hand --ipc-dir .tmp/live/ipc --output .tm
 预设与筛选的单元、stdio 和独立图形验证见[手牌参数验证记录](../research/2026-11-01-hand-presets.md)。
 
 卡牌实节点与浏览克隆的职责及共享外观入口见[读取架构](architecture.md#展示与悬停读取)；克隆上下文不与半隐藏手牌读取合并。
+
+手牌牌堆计数的原生标签／隐藏边界及三预设验证见[补充实施记录](../research/2026-11-04-hand-pile-counts.md)。

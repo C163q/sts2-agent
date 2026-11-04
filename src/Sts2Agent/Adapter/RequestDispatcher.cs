@@ -230,6 +230,7 @@ internal sealed partial class GameAdapter
             var resources = CombatResources.Read();
             return InspectionSuccess(request, beforeState, new {
                 energy = resources.Energy, max_energy = resources.Maximum, stars = resources.Stars,
+                draw_count = resources.DrawCount, discard_count = resources.DiscardCount, exhaust_count = resources.ExhaustCount,
                 hand = CombatObservation.HandCards(hand).Select(reader.Card).ToArray() });
         }
         if (request.ExpectedState != beforeState.GetProperty("snapshot_id").GetString())
