@@ -40,5 +40,4 @@
 ## 后续事项与核验记录
 
 - [用户后续待办](TODO.md)：只按用户明确要求维护，记录不等于授权实施。
-- [工具逐项核验清单及流程](../research/2026-11-02-mcp-tool-review.md)：共用链路重构后继续逐工具内容审阅；当前接口以本目录为准。
-- [工具共用链路重构验收](../research/2026-11-04-refactor-stage-7.md)：七阶段已完成，包含 RF-01–RF-14 对照、验证范围及[完整返回样例](../research/2026-11-04-refactor-contract-examples/README.md)；各阶段记录由[实施计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)索引。
+- [工具逐项核验清单及流程](../research/2026-11-02-mcp-tool-review.md)：逐工具内容审阅的清单及工作流程；当前接口以本目录为准。
