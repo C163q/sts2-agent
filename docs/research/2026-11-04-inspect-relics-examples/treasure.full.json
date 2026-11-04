@@ -1,0 +1,15 @@
+{
+  "relics": [
+    {
+      "name": "Burning Blood",
+      "counter": null,
+      "description": "At the end of combat, heal 6 HP.",
+      "melted": null
+    }
+  ],
+  "scene": "treasure",
+  "screen": {
+    "status": "visible"
+  },
+  "hover_tips": []
+}

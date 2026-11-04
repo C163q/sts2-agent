@@ -1,0 +1,348 @@
+{
+  "review_code": "e62a1bc",
+  "review_date": "2026-11-04",
+  "mod_version": "0.56.0",
+  "mcp_version": "0.58.0",
+  "schema_version": 37,
+  "game_version": "v0.107.1",
+  "game_build": "59260271",
+  "ritsulib_version": "0.6.10",
+  "game_assembly_sha256": "d13f3f150b1413b24c3a9c5575cdf5398dc74270877d55dec9a556dd8150bd03",
+  "recorded_runs": [
+    {
+      "source_root": ".tmp/2026-11-04-potion-implementation/gui-regression",
+      "mod_version": "0.56.0",
+      "mcp_version": "0.58.0",
+      "schema_version": 37,
+      "mod_sha256": "3207b4eaea1933c01829cb015e7cda9a0448c81ce5b96dd9899418be9b285249"
+    },
+    {
+      "source_root": ".tmp/2026-11-04-refactor-stage-7/gui",
+      "mod_version": "0.55.0",
+      "mcp_version": "0.57.0",
+      "schema_version": 36,
+      "mod_sha256": "4a0b79dd4b7e5cb901ddf6f37f1b4f2d3b0b24972c3bc540e624c96bab98bae6"
+    }
+  ],
+  "samples": [
+    {
+      "file": "combat.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "d2c70c10318d7d94f8cdd02ea520b8592c20f7e4a34ddbf632ed2cd7b4f7e66f",
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui-regression/display_readers/verify/evidence.json",
+      "source_sha256": "544c0acc366048f4f327abc53f938e84828bdc66796790a95a80cff06a46a14d",
+      "source_entry": 1
+    },
+    {
+      "file": "combat.summary.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "summary"
+      },
+      "sha256": "74b0654740f7ca5a8d6eaf72fe7ff1aeba15edfa178d098f01d95ea261b5aeb3",
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui-regression/display_readers/verify/evidence.json",
+      "source_sha256": "544c0acc366048f4f327abc53f938e84828bdc66796790a95a80cff06a46a14d",
+      "source_entry": 2
+    },
+    {
+      "file": "filter-empty.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full",
+        "relic_indices": []
+      },
+      "sha256": "b57199f0032126372ff24dbae3977a862fa7b08ed8025766440d17b91959f927",
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui-regression/display_readers/verify/evidence.json",
+      "source_sha256": "544c0acc366048f4f327abc53f938e84828bdc66796790a95a80cff06a46a14d",
+      "source_entry": 6
+    },
+    {
+      "file": "filtered.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full",
+        "relic_indices": [
+          2
+        ]
+      },
+      "sha256": "02580662cf56c011c80577d030400aadee059ffd6e10ab2d7dbe523554bd902a",
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui-regression/display_readers/verify/evidence.json",
+      "source_sha256": "544c0acc366048f4f327abc53f938e84828bdc66796790a95a80cff06a46a14d",
+      "source_entry": 17
+    },
+    {
+      "file": "hover-unavailable.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "c1746ddca1ae2267de28c5867113521ee30b4c4180593bbc53f6b6e6a42e3666",
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui-regression/display_readers/verify/evidence.json",
+      "source_sha256": "544c0acc366048f4f327abc53f938e84828bdc66796790a95a80cff06a46a14d",
+      "source_entry": 19
+    },
+    {
+      "file": "hover-unavailable-filtered.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full",
+        "relic_indices": [
+          3,
+          0,
+          3
+        ]
+      },
+      "sha256": "438e08ba3061b28dfeed8138bc4b8025b481598c029fcb2bcd61f7d2a38a5ce9",
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui-regression/display_readers/verify/evidence.json",
+      "source_sha256": "544c0acc366048f4f327abc53f938e84828bdc66796790a95a80cff06a46a14d",
+      "source_entry": 22
+    },
+    {
+      "file": "ancient.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "e2244fd6038536e3dcf7d2930fcb694e1024b3862b8c5f8a394cc4665f253c73",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/ancient_selection/context/evidence.json",
+      "source_sha256": "1f4a3bc320eaf8a4776ca19b6f58f806ca52708f7cf06788672fe02d13680d4e",
+      "source_entry": 3
+    },
+    {
+      "file": "event-selection.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "78c0c8b161fb9a8dd86bf89dcc22e3dd6b2fc7f06eee8a2616b64c63e177c479",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/event_selection/context_and_selection/evidence.json",
+      "source_sha256": "5e158765e13e737a8c2e4932d97269ab4bcb66864aaa066006e7bca4897675ef",
+      "source_entry": 4
+    },
+    {
+      "file": "divination.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "9ee58e48d09c22e1bae17414479d318ced0288fcc6488e05dfaa40c6c3bad778",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/divination_media/media/evidence.json",
+      "source_sha256": "2176080991834aa0603bfef5c54b278b4549c0e60944dbfa5fc4a1d4de6aa86b",
+      "source_entry": 4
+    },
+    {
+      "file": "epilogue.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "49a585b57b09c59e4151043b76dc6d65f3934e42548bf9e3b6408db2895e802e",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/epilogue/context/evidence.json",
+      "source_sha256": "08fae42ba17d8167f6f992b9efd2a77ba17cab77b3d1869be380827fadc6687b",
+      "source_entry": 3
+    },
+    {
+      "file": "rewards.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "fdfda81fe7c4b1dfd4054f066ede97acd01243071e6c6982a335f3968dc069c9",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/rewards/context/evidence.json",
+      "source_sha256": "c478c01c7df45b1e27b83e9b85055f25e3f29b9da5140f39815344360e211540",
+      "source_entry": 3
+    },
+    {
+      "file": "shop.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "cf8c1acd8b6cbd1dee14955980aafa48729db4bdc0a9dd0b8d1c2796008f9770",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/shop/context/evidence.json",
+      "source_sha256": "431189ed17ce75fae36e3504b459a9895272c8b365f057c3ba293706540b9749",
+      "source_entry": 3
+    },
+    {
+      "file": "rest-site.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "315f79d55bfc50e916ed4ee23d313ae517ac4d6ff1fdca725d684762ef0fa93e",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/smith/context/evidence.json",
+      "source_sha256": "85b5c1345b745b1792b2977188de55fc19e580bb475202741d47e00867601651",
+      "source_entry": 3
+    },
+    {
+      "file": "treasure.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "a5f07610c85893953e939aa8d97a7d7a813647fb454464199f59b6ed18b2f780",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/treasure/context/evidence.json",
+      "source_sha256": "404333514be0d8e43af6562b3491467e00e18249f114da6d2a259375f75ed498",
+      "source_entry": 3
+    },
+    {
+      "file": "wax-before.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "2d3d8e6b2086ded7af4ead890d3098615bec835b701a6c50e46f78b433d1272c",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/wax/verify/evidence.json",
+      "source_sha256": "e3d2d1c35fa9d1935781cb8650d25f584fb8e5f12c20176268f38ff8837cd963",
+      "source_entry": 2
+    },
+    {
+      "file": "wax-after.full.json",
+      "kind": "recorded_mcp_response",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "efd7d6239ac5b434001bba125334962273b7ba069b3148114982c085c903d5b2",
+      "source_evidence": ".tmp/2026-11-04-refactor-stage-7/gui/wax/verify/evidence.json",
+      "source_sha256": "e3d2d1c35fa9d1935781cb8650d25f584fb8e5f12c20176268f38ff8837cd963",
+      "source_entry": 12
+    },
+    {
+      "file": "map.full.json",
+      "kind": "recorded_native_full_projection",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "744c0bb6b165f5124e2131194f344922e07cd499cdf12aa58e7a476c50d19ecc",
+      "original_public_arguments": null,
+      "native_schema": 37,
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui-regression/game/ipc/responses/a09109d171d548e3bbe52912f7e4b995.json",
+      "source_sha256": "1f515156d2648aecc29b97f21b2fe6cabae241ffd1d66dd23d9b2151baab856e"
+    },
+    {
+      "file": "deck.full.json",
+      "kind": "recorded_native_full_projection",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "9a84e5861c72c0e475ded25a91a73478db229427a9c4361306644cc9fd979bfd",
+      "original_public_arguments": null,
+      "native_schema": 37,
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui-regression/game/ipc/responses/acabe676489b4ca484940e7b246fb60b.json",
+      "source_sha256": "42697cb009983d7ebb6d43bb55e4b3654ed209eebfaebd810c89af85d89038d4"
+    },
+    {
+      "file": "filtered-partial.full.json",
+      "kind": "recorded_payload_projection",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full",
+        "relic_indices": [
+          2,
+          80,
+          70,
+          80
+        ]
+      },
+      "sha256": "261044185f59b9abbc6180105ad1da4a96924b08adf95946c70b2dfe084020f2",
+      "source_evidence": ".tmp/2026-11-04-potion-implementation/gui-regression/display_readers/verify/evidence.json",
+      "source_sha256": "544c0acc366048f4f327abc53f938e84828bdc66796790a95a80cff06a46a14d",
+      "source_entry": 1
+    },
+    {
+      "file": "constructed-empty.full.json",
+      "kind": "implementation_constructed",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "829b7e46724c51027848276b96352022450583df88771e7c74f9c6dac07dc750",
+      "explanation": "DisplayedHolders returns an empty array; not a new GUI sample."
+    },
+    {
+      "file": "simulated-error-unknown_field.json",
+      "kind": "simulated_transport_or_local_validation",
+      "tool": "inspect_relics",
+      "arguments": {
+        "relic_ids": [
+          0
+        ]
+      },
+      "sha256": "fe1be5b0c91a9eefe0f638d6c0ff7d0f084aecfb54153ec4a28ee9b96eea4e3b",
+      "source_key": "unknown_field",
+      "source_evidence": ".tmp/2026-11-04-inspect-relics-review/probes.json",
+      "source_sha256": "11e7e3779b1f1abbf5ce0ec2fe27bb7d74a143d19b3c25ea0297e1855a15ab81"
+    },
+    {
+      "file": "simulated-error-invalid_preset.json",
+      "kind": "simulated_transport_or_local_validation",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "brief"
+      },
+      "sha256": "d7675a476dab0cca4ee3d917749ea48787aaab1e8dfac35d668d76b7658d110c",
+      "source_key": "invalid_preset",
+      "source_evidence": ".tmp/2026-11-04-inspect-relics-review/probes.json",
+      "source_sha256": "11e7e3779b1f1abbf5ce0ec2fe27bb7d74a143d19b3c25ea0297e1855a15ab81"
+    },
+    {
+      "file": "simulated-error-invalid_index.json",
+      "kind": "simulated_transport_or_local_validation",
+      "tool": "inspect_relics",
+      "arguments": {
+        "relic_indices": [
+          true
+        ]
+      },
+      "sha256": "dd34e6e549fbedfd06f2205018f321582ce635981af03a8a73222c11f0fe4687",
+      "source_key": "invalid_index",
+      "source_evidence": ".tmp/2026-11-04-inspect-relics-review/probes.json",
+      "source_sha256": "11e7e3779b1f1abbf5ce0ec2fe27bb7d74a143d19b3c25ea0297e1855a15ab81"
+    },
+    {
+      "file": "simulated-error-native_illegal_action.json",
+      "kind": "simulated_transport_or_local_validation",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088",
+      "source_key": "native_illegal_action",
+      "source_evidence": ".tmp/2026-11-04-inspect-relics-review/probes.json",
+      "source_sha256": "11e7e3779b1f1abbf5ce0ec2fe27bb7d74a143d19b3c25ea0297e1855a15ab81"
+    },
+    {
+      "file": "simulated-error-rejection_without_permission.json",
+      "kind": "simulated_transport_or_local_validation",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc",
+      "source_key": "rejection_without_permission",
+      "source_evidence": ".tmp/2026-11-04-inspect-relics-review/probes.json",
+      "source_sha256": "11e7e3779b1f1abbf5ce0ec2fe27bb7d74a143d19b3c25ea0297e1855a15ab81"
+    }
+  ]
+}

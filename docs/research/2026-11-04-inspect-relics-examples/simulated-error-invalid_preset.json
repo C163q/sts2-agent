@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "preset must be one of: default, full, summary.",
+    "recovery": "correct_request"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "relic_indices[0] must be integer.",
+    "recovery": "correct_request"
+  }
+}

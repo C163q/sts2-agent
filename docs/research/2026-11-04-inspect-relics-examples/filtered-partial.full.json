@@ -1,0 +1,35 @@
+{
+  "relics": [
+    {
+      "name": "Lantern",
+      "counter": null,
+      "description": "Start each combat with an additional <Energy>.",
+      "melted": null
+    }
+  ],
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "hover_tips": [
+    {
+      "title": "Energy",
+      "description": "Energy is used to play cards from your Hand.",
+      "relic_indices": [
+        2
+      ]
+    }
+  ],
+  "relic_indices": [
+    2
+  ],
+  "errors": [
+    {
+      "code": "relic_indices_out_of_range",
+      "relic_indices": [
+        80,
+        70
+      ]
+    }
+  ]
+}

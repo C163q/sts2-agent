@@ -28,7 +28,7 @@ flowchart LR
 
 默认公开 42 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 43 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 列出当前可用的查看与操作工具名，不含参数；省略观察、截图和测试入口。完整语义与精简预设见[观察输出预设](observation.md#mcp-输出预设)。
 
-当前详情调用不返回 `available_actions`，可用 `get_observation({"preset":"actions_only"})` 获取。遗物查看遵循当前可见、可悬停的遗物栏，牌组查看也支持原生按钮可用的非战斗页面；适用范围见[遗物详情](relic-inspection.md)和[牌组页面](deck-inspection.md)。
+当前详情调用不返回 `available_actions`，可用 `get_observation({"preset":"actions_only"})` 获取。遗物查看读取当前已显示的遗物栏，不能悬停时保留静态字段并说明缺少帮助；牌组查看也支持原生按钮可用的非战斗页面。适用范围见[遗物详情](relic-inspection.md)和[牌组页面](deck-inspection.md)。
 
 | 工具 | 用途 |
 | --- | --- |

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "relic_ids is not accepted; allowed fields: preset, relic_indices.",
+    "recovery": "correct_request"
+  }
+}

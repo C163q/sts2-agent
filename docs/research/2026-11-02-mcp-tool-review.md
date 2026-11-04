@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 43 项，已核销 5 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions。药水的[边界修复、summary、槽位筛选及验证](2026-11-04-potion-inspection-implementation.md)已交付。get_observation 的浏览覆盖仍待对应工具，整体未核销；其余 37 项尚待逐项核验。其他工具的完整错误审阅继续留在用户 TODO。暂无阻塞。
+> 当前状态：工具核验进行中，共 43 项，已核销 5 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions。当前进行 inspect_relics 的设计讨论，已记录 2 项正确性／验证问题及 1 项可见状态字段候选，尚未修改工具行为。get_observation 的浏览覆盖仍待对应工具，整体未核销；另有 36 项尚待逐项核验。其他工具的完整错误审阅继续留在用户 TODO。暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -37,7 +37,7 @@
 - [x] `inspect_targets`：指定手牌或药水的可用性与目标范围。阶段：[核验及输出定稿](2026-11-03-inspect-targets-review.md)、[错误修复与验证](2026-11-03-inspection-error-recovery.md)完成；维持 default/full，不新增 summary，不改原生指示范围。AnyPlayer／AllAllies／Osty 卡牌分支保留源码核对边界，未新增实际调用样本。
 - [x] `inspect_combatants`：战斗对象、状态、意图、充能球及悬浮剑详情。[核验与定稿](2026-11-03-inspect-combatants-review.md)、[实现与验证](2026-11-03-combatants-implementation.md)完成：错误恢复、具体诊断、验证入口、公共 Summary/Full 读取、取消图标视口截断、静态 summary、对象及关联说明筛选。
 - [x] `inspect_potions`：药水详情。[核验与输出定稿](2026-11-04-inspect-potions-review.md)、[实现与验证](2026-11-04-potion-inspection-implementation.md)完成：五项问题修复、共用静态读取、取消离屏截断、summary、原槽位筛选／位置映射、提示与 note 同步裁剪。
-- [ ] `inspect_relics`：已拥有遗物的详情。
+- [ ] `inspect_relics`：已拥有遗物的详情。阶段：[场景与现状核验完成，进入设计讨论](2026-11-04-inspect-relics-review.md)；现有 summary／原下标筛选已核对，具体拒绝信息、过时专项验证及图标状态字段待处理或定稿；完整 full 样例已分类记录。
 
 ### 卡牌浏览（3 项）
 

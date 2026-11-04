@@ -17,7 +17,7 @@
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_relics > .tmp/live/relic-inspection.json
 ```
 
-MCP 调用 `inspect_relics()` 默认返回完整详情，也可传入以下预设与筛选参数，成功时刷新状态令牌；完整规则见 [MCP 调用语义](mcp.md#调用和错误语义)。底层文件调用仍无参数，不需要动作令牌，可用时列入 `available_actions`，不执行游戏动作。默认客户端移除控制信息；加 `--raw` 保留原始响应和状态令牌。
+MCP 调用 `inspect_relics()` 默认返回省略普通空值的完整详情，也可传入以下预设与筛选参数，成功时刷新状态令牌；完整规则见 [MCP 调用语义](mcp.md#调用和错误语义)。原生文件协议支持内部参数 `level: full/summary`，省略为 full；现有 CLI 入口不提供遗物预设或筛选选项。读取不需要动作令牌，可用时列入 `available_actions`，不执行游戏动作。默认客户端移除控制信息；加 `--raw` 保留原始响应和状态令牌。
 
 ## MCP 参数
 
@@ -75,12 +75,12 @@ MCP 调用 `inspect_relics()` 默认返回完整详情，也可传入以下预�
 
 扩大的非战斗查看范围及动作列表一致性见[可用工具修复记录](../research/2026-11-02-available-actions-fix.md)。
 
-运行脚本时避免手动改变游戏：
+`verify_relics.py` 与 `verify_mcp_relics.py` 的字段及目录断言尚未同步当前接口，不能作为当前验收入口，具体差异见[RELIC-02](../research/2026-11-04-inspect-relics-review.md#优先关注的问题)。其历史调用形式如下，运行脚本时避免手动改变游戏：
 
 ```sh
 python3 -m tests.game.verifiers.verify_relics --ipc-dir .tmp/live/ipc --output .tmp/live/relic-inspection.json --report .tmp/live/relic-inspection-check.json
 ```
 
-脚本检查重复读取一致、前后基础观察令牌不变、名称和计数与基础观察按顺序对应、共享解释去重及下标有效。令牌只覆盖已导出的基础观察，不是全部游戏内部状态的版本。
+这两份脚本原有检查包括重复读取一致、前后基础观察令牌不变、名称和计数与基础观察按顺序对应、共享解释去重及下标有效。当前契约的共用检查由 `verify_display_readers.py` 与 `verify_relic_presets.py` 覆盖，实测范围及完整输出见[遗物场景核验](../research/2026-11-04-inspect-relics-review.md)。令牌只覆盖已导出的基础观察，不是全部游戏内部状态的版本。
 
 独立中文实例可使用 `scripts/run_roundtrip.py --windowed --capture --check-relics` 准备原生遗物获取及读取检查，不能为正式游戏设置测试标志。历史样本和检查数量见[遗物实施记录](../research/2026-10-29-relic-inspection-plan.md)及[MCP 实施记录](../research/2026-10-29-mcp-relic-inspection.md)，后续预设、熔化及非战斗范围见上文专项记录；全部遗物、第三方悬停和多人尚未穷举验证。
