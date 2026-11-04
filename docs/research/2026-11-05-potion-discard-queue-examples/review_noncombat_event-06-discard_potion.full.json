@@ -1,0 +1,36 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "choose_event_option",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_targets",
+    "inspect_event"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "potion": {
+          "slot_index": 1,
+          "name": "Blood Potion"
+        },
+        "type": "potion_discarded",
+        "sequence": 1
+      }
+    ]
+  },
+  "potion_discard": {
+    "slot_index": 1,
+    "name": "Blood Potion",
+    "status": "discarded"
+  }
+}

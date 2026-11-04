@@ -1,0 +1,33 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "select_card",
+    "selection_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "set_selection_view",
+    "inspect_targets"
+  ],
+  "selection": {
+    "type": "choose_one",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": []
+  },
+  "potion_discard": {
+    "slot_index": 2,
+    "name": "Fairy in a Bottle",
+    "status": "queued"
+  },
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

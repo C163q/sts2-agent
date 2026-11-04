@@ -34,6 +34,7 @@
 | 公开批量出牌、逐张结果、原生选择续接与跨局清理 | [play_cards](../../tests/game/data/gui_suite_play_cards.json) |
 | 药水明确拒绝恢复、单槽交互、自动用药／获得事件与地图覆盖 | [potion_recovery](../../tests/game/data/gui_suite_potion_recovery.json)；[验证记录](../research/2026-11-05-potion-actions-implementation.md) |
 | 丢弃药水的槽位、自动药水、奖励腾槽、错误续接及覆盖边界 | [discard_potion_review](../../tests/game/data/gui_suite_discard_potion_review.json)；[核验记录](../research/2026-11-05-discard-potion-development-notes.md) |
+| 丢弃请求状态、选牌排队、防重复、后续事件及局间清理 | [potion_discard_queue](../../tests/game/data/gui_suite_potion_discard_queue.json) |
 | 药水使用回执、选择／战斗外边界、拒绝恢复与跨槽事件核验 | [use_potion_review](../../tests/game/data/gui_suite_use_potion_review.json)；现状证据及已知缺口见[审阅记录](../research/2026-11-04-use-potion-review.md) |
 | 卡牌 Affliction、附魔、手牌 HUD 与浏览预设 | [card_formats](../../tests/game/data/gui_suite_card_formats.json) |
 | 战斗对象静态／完整级别、对象筛选、不可悬停提示及错误续接 | [combatant_presets](../../tests/game/data/gui_suite_combatant_presets.json) |

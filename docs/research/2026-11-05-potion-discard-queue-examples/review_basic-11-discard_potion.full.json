@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "unknown is not accepted; allowed fields: potion_slot, preset.",
+    "recovery": "correct_request"
+  }
+}

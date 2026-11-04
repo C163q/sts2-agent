@@ -1,0 +1,39 @@
+{
+  "scene": "rest_site",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "select_card",
+    "selection_option",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "inspect_targets"
+  ],
+  "selection": {
+    "type": "deck_upgrade",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": [
+      {
+        "potion": {
+          "slot_index": 1,
+          "name": "Blood Potion"
+        },
+        "type": "potion_discarded",
+        "sequence": 1
+      }
+    ]
+  },
+  "potion_discard": {
+    "slot_index": 1,
+    "name": "Blood Potion",
+    "status": "discarded"
+  }
+}

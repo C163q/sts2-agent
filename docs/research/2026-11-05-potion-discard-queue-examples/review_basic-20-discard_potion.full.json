@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The specified potion slot is empty.",
+    "recovery": "choose_legal_action"
+  }
+}

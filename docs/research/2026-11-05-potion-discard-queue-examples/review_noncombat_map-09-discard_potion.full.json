@@ -1,0 +1,37 @@
+{
+  "scene": "rest_site",
+  "screen": {
+    "status": "covered",
+    "view": "map"
+  },
+  "available_actions": [
+    "travel_to_node",
+    "use_potion",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "potion": {
+          "slot_index": 0,
+          "name": "Fruit Juice"
+        },
+        "type": "potion_discarded",
+        "sequence": 1
+      }
+    ]
+  },
+  "potion_discard": {
+    "slot_index": 0,
+    "name": "Fruit Juice",
+    "status": "discarded"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "play_cards",
+    "use_potion",
+    "discard_potion",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "potion": {
+          "slot_index": 0,
+          "name": "Fruit Juice"
+        },
+        "type": "potion_discarded",
+        "sequence": 1
+      }
+    ]
+  },
+  "potion_discard": {
+    "slot_index": 0,
+    "name": "Fruit Juice",
+    "status": "discarded"
+  }
+}

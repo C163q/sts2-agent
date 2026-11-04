@@ -1,0 +1,33 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "select_card",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "set_selection_view",
+    "inspect_targets"
+  ],
+  "selection": {
+    "type": "combat_pile",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": []
+  },
+  "potion_discard": {
+    "slot_index": 1,
+    "name": "Block Potion",
+    "status": "queued"
+  },
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

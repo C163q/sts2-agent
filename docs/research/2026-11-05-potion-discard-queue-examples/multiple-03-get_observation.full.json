@@ -1,0 +1,149 @@
+{
+  "scene": "combat",
+  "map": null,
+  "screen": {
+    "status": "covered"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      {
+        "name": "Block Potion"
+      },
+      {
+        "name": "Fairy in a Bottle"
+      }
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null,
+        "grayed_out": false,
+        "pulsing": false
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": {
+    "type": "choose_one",
+    "status": "visible",
+    "prompt": "Choose a Card",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 8,
+        "name": "Stoke",
+        "type": "Skill",
+        "rarity": "rare",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Exhaust your Hand.\nAdd 1 random card into your Hand for each card Exhausted.",
+        "hover_tips": []
+      },
+      {
+        "id": 9,
+        "name": "Havoc",
+        "type": "Skill",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Play the top card of your Draw Pile and Exhaust it.",
+        "hover_tips": [
+          {
+            "title": "Exhaust",
+            "description": "Removed until the end of combat."
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "name": "Taunt",
+        "type": "Skill",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 7 Block.\nApply 1 Vulnerable.",
+        "hover_tips": [
+          {
+            "title": "Vulnerable",
+            "description": "Vulnerable creatures take 50% more damage from Attacks."
+          },
+          {
+            "title": "Block",
+            "description": "Until next turn, prevents damage."
+          }
+        ]
+      }
+    ],
+    "options": [
+      {
+        "id": "skip",
+        "text": "Skip",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": true,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "select_card",
+    "selection_option",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "set_selection_view",
+    "inspect_targets"
+  ],
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

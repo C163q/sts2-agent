@@ -60,7 +60,7 @@ flowchart LR
 | `inspect_ui(preset?, sources?)` | [可见顶栏与战斗通用悬停帮助](ui-inspection.md)，summary 省略正文，sources 精确筛选来源 |
 | `inspect_potions(preset?, slot_indices?)` | [药水完整／静态摘要及原槽位筛选](potion-inspection.md)，筛选同时裁剪关联提示并返回位置映射 |
 | `use_potion(potion_slot, target_id?)` | [使用药水](potion-actions.md)，遇到后续选择立即返回 |
-| `discard_potion(potion_slot)` | 原生丢弃，遵守禁止移除药水的限制 |
+| `discard_potion(potion_slot)` | [原生丢弃及选牌期间的排队](potion-actions.md#丢弃结果与排队)，顶层 potion_discard 报告本次结果 |
 | `inspect_combatants(preset?, sources?)` | [战斗对象、意图、球与悬浮剑；summary 为静态信息，sources 筛选对象](combatant-inspection.md) |
 | `inspect_relics(preset?, relic_indices?)` | [遗物完整／摘要与下标筛选](relic-inspection.md#mcp-参数)，默认保留正文、可见计数与共享解释 |
 | `inspect_deck(...)` | [打开或复用全牌组页面](deck-inspection.md)，支持预设、card_ids 筛选、升级预览和排序 |
@@ -179,6 +179,8 @@ approval_mode = "approve"
 
 连续出牌结果中，只要有一项 `status` 为 `unknown`，表示工具无法确认该牌的执行结果。此时须先用 `get_observation` 或相关查看工具读取当前状态，再提交下一次动作；如果选牌窗口已经显示，可以直接读 `inspect_selection`。正常的 `queued`（排队中）或 `resolving`（正在处理，可能等待选牌）不触发这条额外读取要求，可以按当前选牌界面继续操作。
 
+discard_potion 的顶层 potion_discard.status 为 queued 时，可以直接继续当前选择；unknown 或 not_discarded 不续接动作许可，须先读取。该结果与实际事件的关系见[丢弃结果与排队](potion-actions.md#丢弃结果与排队)。
+
 战斗外地图上的用药／丢弃成功返回 action_completed、complete:true 且仍有合法动作时，也可直接继续。此时 screen.status:covered 表示下层房间被地图覆盖；地图自身仍可操作，不要求额外读取。战斗中打开地图不因此允许出牌或用药。
 
 例如 `get_observation → play_card → play_card → end_turn`，或 `use_potion → inspect_selection → select_card`，中间无需为了取得许可再次读取相同观察。每一步根据上一返回结果重新决策，按需查询卡牌或目标。连续入队使用 play_cards 在一次已授权请求中逐项复查并提交；多个独立请求仍不能借用排队后才产生的新观察，同一连接的操作串行执行。
@@ -212,6 +214,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 | `scene`、`screen` | 当前场景、覆盖状态及已识别的查看页 |
 | `available_actions` | 当前可用的查看和操作工具名称 |
 | `transition` | 原有停止原因、完成标记及完整事件序列，字段见[期间事件](end-turn.md) |
+| `potion_discard` | 仅 discard_potion 提供本次请求的槽位、名称及结果；排队与实际事件的关系见[药水动作](potion-actions.md#丢弃结果与排队) |
 | `selection` | 仅有待处理选择时出现，只含 `type` 和 `status` |
 | `notes` | 仅在需要时提供选牌查看/返回或人工输入提示 |
 | `purchase_result`、`reward_result` | 原生流程有相应结果时保留，区分成功、失败及未获得 |

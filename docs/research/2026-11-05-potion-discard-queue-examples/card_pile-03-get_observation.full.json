@@ -1,0 +1,120 @@
+{
+  "scene": "combat",
+  "map": null,
+  "screen": {
+    "status": "covered"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      {
+        "name": "Fire Potion"
+      },
+      {
+        "name": "Block Potion"
+      },
+      {
+        "name": "Fairy in a Bottle"
+      }
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null,
+        "grayed_out": false,
+        "pulsing": false
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": {
+    "type": "combat_pile",
+    "status": "visible",
+    "prompt": "Choose a card to put on top of your Draw Pile.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 9,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.",
+        "hover_tips": [],
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 10,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Until next turn, prevents damage."
+          }
+        ],
+        "outline": "none",
+        "unplayable_markers": []
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": true,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "select_card",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "set_selection_view",
+    "inspect_targets"
+  ],
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

@@ -80,6 +80,8 @@
 
 两类动作使用当前观察许可，可以来自基础观察、专项详情、视图操作或满足续接条件的成功动作结果，具体条件见[MCP 动作许可](mcp.md#调用和错误语义)；失败后须重新观察。`inspect_selection` 成功时刷新状态令牌，可直接选择已读取的候选。原生滚动候选由工具先定位再点击，定位期间若选择已经改变则拒绝输入。选择实例代际参与底层令牌，防止外观相同的连续选择复用旧许可。
 
+当前可用操作包含 discard_potion 时，可在完成选择前请求丢弃药水；queued 不会自动完成选择。原生随后执行的丢弃会出现在选牌回执的 transition.events，选牌回执本身不返回顶层 potion_discard；详见[丢弃结果与排队](potion-actions.md#丢弃结果与排队)。
+
 ## 卡牌奖励替代按钮
 
 `selection.type: "reward"` 的替代按钮由原生奖励实际生成，在基础观察及 `inspect_selection` 的 `selection.options` 中提供相同的 `id/text/enabled`。除 `skip` 外使用 `alternative:N`，通过 `selection_option` 点击；编号是当前页面的位置，不代表固定效果，须结合本次 `text` 判断。

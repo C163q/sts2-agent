@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This potion slot cannot be interacted with; use another slot or wait for it to become available.",
+    "recovery": "choose_legal_action"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This potion is already queued for use or discard; resolve the current choice or wait for it to finish.",
+    "recovery": "choose_legal_action"
+  }
+}

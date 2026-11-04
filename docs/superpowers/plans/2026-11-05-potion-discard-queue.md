@@ -1,6 +1,6 @@
 # 丢弃药水排队实施计划
 
-> 当前状态：实施中，共 3 项，已完成 0 项；正在补充输出契约与失败测试，剩余原生接入、隔离实测、文档及最终审查。暂无阻塞。
+> 当前状态：实施中，共 3 项，已完成 2 项；原生接入与 33 类隔离场景、671 项 Python、124 项 C# 检查通过，正在处理文档、完整样例及最终审查。暂无阻塞。
 >
 > 执行方式：superpowers:executing-plans，当前会话逐项实现，最后进行一次独立代码审查；用户已确认设计和执行，不重复请求批准。
 
@@ -31,22 +31,22 @@
 
 ## 任务 1：请求结果与共用许可契约
 
-接口：PotionDiscardProgress 暴露 Submit/ObserveDiscard/Cancel/Finish/Abandon 和 Status；Python discard_potion_details(state, arguments) 输出已验证的 potion_discard；unknown_potion_discard(payload) 用于许可判断。
+接口：PotionDiscardProgress 暴露 Submit/ObserveDiscard/Cancel/Finish/Abandon 和 Status；Python discard_potion_details(state, arguments) 输出已验证的 potion_discard；potion_discard_requires_observation(payload) 用于许可判断。
 
-- [ ] 编写 C# 状态检查和 Python 回执测试，覆盖 queued、discarded、取消、异常、无可见证据、严格字段校验、slot 对照、default/full、后续选择不附带该字段、unknown 不续接，以及选择中的可用丢弃。
-- [ ] 运行失败测试，保留 RED 日志；仅 mock 游戏 I/O，不 mock 投影／许可实现。
-- [ ] 在 Actions/PotionDiscardProgress.cs 和 output/potion_discard_output.py 实现单次进度与专用读取；在 tool_registry.py、action_output.py、transition_details.py、game_session.py 接入。ResponseBuilder.WithTransition 增加可选 potionDiscard 参数。
-- [ ] 运行完整 Python 和 C# 检查并提交独立契约变更；暂不改正式运行时。
+- [x] 编写 C# 状态检查和 Python 回执测试，覆盖 queued、discarded、取消、异常、无可见证据、严格字段校验、slot 对照、default/full、后续选择不附带该字段、unknown 不续接，以及选择中的可用丢弃。
+- [x] 运行失败测试，保留 RED 日志；仅 mock 游戏 I/O，不 mock 投影／许可实现。
+- [x] 在 Actions/PotionDiscardProgress.cs 和 output/potion_discard_output.py 实现单次进度与专用读取；在 tool_registry.py、action_output.py、transition_details.py、game_session.py 接入。ResponseBuilder.WithTransition 增加可选 potionDiscard 参数。
+- [x] 运行完整 Python 和 C# 检查并提交独立契约变更；暂不改正式运行时。
 
 ## 任务 2：原生接入、阶段与防重复
 
 接口：PotionStageUnavailableReason 保留原使用判断；DiscardPotionStageUnavailableReason 提供丢弃判断；PotionInspection.Pending(holder) 读取已核对的原生等待标记；PotionJournal.DiscardObserved 只在公开记录成功时通知单次请求。
 
-- [ ] 新增 GUI 断言，先在旧 DLL 复现 choose_one 丢弃应 queued 却被拒绝；保存独立 RED 目录。
-- [ ] 修改 GameAdapter.Potions/PotionRules/AvailableTools，复用共同基础检查，允许稳定暴露的受支持选择；绑定确切 DiscardPotionGameAction 对象，防止匹配无关同玩家动作。只靠原生槽位标记跨请求防重复，监听器随本次请求释放。
-- [ ] 根据 PotionDiscardProgress、公开移除和最终状态生成结果；选择不由工具自动完成，未知结果不提供继续操作。原生日志和后续事件沿用共用 Journal。
-- [ ] 隔离实测 choose_one、手牌／牌堆选择、战斗外选择、立即丢弃、多个槽位、重复提交、skip／confirm、取消／隐藏见证、同名替换及局间清理；复用已有药水场景，新增必要的双重门控夹具。
-- [ ] 构建、运行 C#、完整 Python 和必要的用药／丢弃回归，采用新的证据目录，不覆盖审阅基线；提交已验证原生实现。
+- [x] 新增 GUI 断言，先在旧 DLL 复现 choose_one 丢弃应 queued 却被拒绝；保存独立 RED 目录。
+- [x] 修改 GameAdapter.Potions/PotionRules/AvailableTools，复用共同基础检查，允许稳定暴露的受支持选择；绑定确切 DiscardPotionGameAction 对象，防止匹配无关同玩家动作。只靠原生槽位标记跨请求防重复，监听器随本次请求释放。
+- [x] 根据 PotionDiscardProgress、公开移除和最终状态生成结果；选择不由工具自动完成，未知结果不提供继续操作。原生日志和后续事件沿用共用 Journal。
+- [x] 隔离实测 choose_one、手牌／牌堆选择、战斗外选择、立即丢弃、多个槽位、重复提交、skip／confirm、取消／隐藏见证、同名替换及局间清理；复用已有药水场景，新增必要的双重门控夹具。
+- [x] 构建、运行 C#、完整 Python 和必要的用药／丢弃回归，采用新的证据目录，不覆盖审阅基线；提交已验证原生实现。
 
 ## 任务 3：文档、完整样例与交付
 
