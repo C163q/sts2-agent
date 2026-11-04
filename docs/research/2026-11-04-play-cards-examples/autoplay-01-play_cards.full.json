@@ -1,0 +1,333 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "play_cards",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 19,
+        "after": 17,
+        "type": "energy_changed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Knife Trap"
+        },
+        "autoplay": false,
+        "source": null,
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "card_played",
+        "sequence": 2
+      },
+      {
+        "card": {
+          "id": 9,
+          "name": "Shiv"
+        },
+        "from_pile": "exhaust",
+        "to_pile": "play",
+        "type": "card_moved",
+        "sequence": 3
+      },
+      {
+        "card": {
+          "id": 9,
+          "name": "Shiv"
+        },
+        "autoplay": true,
+        "source": {
+          "kind": "card",
+          "name": "Knife Trap"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "card_played",
+        "sequence": 4
+      },
+      {
+        "hp_loss": 4,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Shiv"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "damage",
+        "sequence": 5
+      },
+      {
+        "card": {
+          "id": 9,
+          "name": "Shiv"
+        },
+        "type": "card_exhausted",
+        "sequence": 6
+      },
+      {
+        "card": {
+          "id": 10,
+          "name": "Shiv"
+        },
+        "autoplay": true,
+        "source": {
+          "kind": "card",
+          "name": "Knife Trap"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "card_played",
+        "sequence": 7
+      },
+      {
+        "hp_loss": 4,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Shiv"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "damage",
+        "sequence": 8
+      },
+      {
+        "card": {
+          "id": 10,
+          "name": "Shiv"
+        },
+        "type": "card_exhausted",
+        "sequence": 9
+      },
+      {
+        "card": {
+          "id": 11,
+          "name": "Shiv"
+        },
+        "autoplay": true,
+        "source": {
+          "kind": "card",
+          "name": "Knife Trap"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "card_played",
+        "sequence": 10
+      },
+      {
+        "hp_loss": 4,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Shiv"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "damage",
+        "sequence": 11
+      },
+      {
+        "card": {
+          "id": 11,
+          "name": "Shiv"
+        },
+        "type": "card_exhausted",
+        "sequence": 12
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Knife Trap"
+        },
+        "from_pile": "play",
+        "to_pile": "discard",
+        "type": "card_moved",
+        "sequence": 13
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 17,
+        "after": 16,
+        "type": "energy_changed",
+        "sequence": 14
+      },
+      {
+        "card": {
+          "id": 7,
+          "name": "Defend"
+        },
+        "autoplay": false,
+        "source": null,
+        "type": "card_played",
+        "sequence": 15
+      },
+      {
+        "before": 0,
+        "after": 5,
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "block_changed",
+        "sequence": 16
+      },
+      {
+        "card": {
+          "id": 7,
+          "name": "Defend"
+        },
+        "from_pile": "play",
+        "to_pile": "discard",
+        "type": "card_moved",
+        "sequence": 17
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 16,
+        "after": 15,
+        "type": "energy_changed",
+        "sequence": 18
+      },
+      {
+        "card": {
+          "id": 8,
+          "name": "Strike"
+        },
+        "autoplay": false,
+        "source": null,
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "card_played",
+        "sequence": 19
+      },
+      {
+        "hp_loss": 6,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Strike"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "damage",
+        "sequence": 20
+      },
+      {
+        "card": {
+          "id": 8,
+          "name": "Strike"
+        },
+        "from_pile": "play",
+        "to_pile": "discard",
+        "type": "card_moved",
+        "sequence": 21
+      }
+    ]
+  },
+  "card_plays": {
+    "batch_id": "973b7774fbd448e89ba2b661fbdd12f8",
+    "results": [
+      {
+        "index": 0,
+        "card_id": 5,
+        "target_id": 2,
+        "status": "played",
+        "reason": null
+      },
+      {
+        "index": 1,
+        "card_id": 7,
+        "target_id": null,
+        "status": "played",
+        "reason": null
+      },
+      {
+        "index": 2,
+        "card_id": 8,
+        "target_id": 2,
+        "status": "played",
+        "reason": null
+      }
+    ]
+  }
+}

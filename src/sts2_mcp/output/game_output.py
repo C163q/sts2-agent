@@ -16,9 +16,11 @@ from sts2_mcp.output.relic_details import relic_details
 from sts2_mcp.output.hand_details import hand_details
 from sts2_mcp.output.selection_details import selection_details
 from sts2_mcp.output.observation_details import observation_details
+from sts2_mcp.output.card_batch_output import BATCH, card_plays
 
 
 GAMEPLAY = {
+    'card_plays': BATCH,
     'energy': NUMBER, 'max_energy': NUMBER, 'stars': NUMBER,
     'reward_result': {'reward_id': int, 'status': str},
     'purchase_result': {'item_id': int, 'status': str},
@@ -42,6 +44,7 @@ GAMEPLAY = {
 
 def gameplay_fields(state, *, operation=None, arguments=None):
     shape = GAMEPLAY
+    batch_payload = {'card_plays': card_plays(state['card_plays'])} if 'card_plays' in state else {}
     relic_payload = relic_details(state, arguments) if 'unavailable_hover_sources' in state and state.get('relics') is not None else {}
     if relic_payload:
         shape = {**shape, 'relics': nullable([{**RELIC, 'description': TEXT, 'hover_tips': [TIP]}])}
@@ -69,5 +72,5 @@ def gameplay_fields(state, *, operation=None, arguments=None):
         shape = {**shape, 'event': {**ROOM_EVENT, 'options': nullable([{**ROOM_EVENT_OPTION, 'hover_tips': [TIP]}])}}
     if 'hover_tips' in (state.get('run_result') or {}):
         from sts2_mcp.output.run_ending_details import result_details
-        return {**format_game_cards({**project(state, shape), 'run_result': result_details(state['run_result'], full=True)}, shop_mode=shop_mode), **relic_payload}
-    return {**format_game_cards(project(state, shape), shop_mode=shop_mode), **relic_payload}
+        return {**format_game_cards({**project(state, shape), 'run_result': result_details(state['run_result'], full=True)}, shop_mode=shop_mode), **relic_payload, **batch_payload}
+    return {**format_game_cards(project(state, shape), shop_mode=shop_mode), **relic_payload, **batch_payload}

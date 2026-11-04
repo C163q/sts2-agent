@@ -1,0 +1,210 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "play_cards",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 20,
+        "after": 19,
+        "type": "energy_changed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Strike"
+        },
+        "autoplay": false,
+        "source": null,
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "card_played",
+        "sequence": 2
+      },
+      {
+        "hp_loss": 6,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Strike"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "damage",
+        "sequence": 3
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Strike"
+        },
+        "from_pile": "play",
+        "to_pile": "discard",
+        "type": "card_moved",
+        "sequence": 4
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 19,
+        "after": 18,
+        "type": "energy_changed",
+        "sequence": 5
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 3,
+        "after": 1,
+        "type": "stars_changed",
+        "sequence": 6
+      },
+      {
+        "card": {
+          "id": 6,
+          "name": "Defend"
+        },
+        "autoplay": false,
+        "source": null,
+        "type": "card_played",
+        "sequence": 7
+      },
+      {
+        "before": 0,
+        "after": 5,
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "block_changed",
+        "sequence": 8
+      },
+      {
+        "card": {
+          "id": 6,
+          "name": "Defend"
+        },
+        "from_pile": "play",
+        "to_pile": "discard",
+        "type": "card_moved",
+        "sequence": 9
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 18,
+        "after": 17,
+        "type": "energy_changed",
+        "sequence": 10
+      },
+      {
+        "card": {
+          "id": 8,
+          "name": "Defend"
+        },
+        "autoplay": false,
+        "source": null,
+        "type": "card_played",
+        "sequence": 11
+      },
+      {
+        "before": 5,
+        "after": 10,
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "block_changed",
+        "sequence": 12
+      },
+      {
+        "card": {
+          "id": 8,
+          "name": "Defend"
+        },
+        "from_pile": "play",
+        "to_pile": "discard",
+        "type": "card_moved",
+        "sequence": 13
+      }
+    ]
+  },
+  "card_plays": {
+    "batch_id": "0dba13f0e5ec405cb2d6e707f55dff6e",
+    "results": [
+      {
+        "index": 0,
+        "card_id": 5,
+        "target_id": 2,
+        "status": "played",
+        "reason": null
+      },
+      {
+        "index": 1,
+        "card_id": 6,
+        "target_id": null,
+        "status": "played",
+        "reason": null
+      },
+      {
+        "index": 2,
+        "card_id": 7,
+        "target_id": null,
+        "status": "not_played",
+        "reason": "The native card play was canceled."
+      },
+      {
+        "index": 3,
+        "card_id": 8,
+        "target_id": null,
+        "status": "played",
+        "reason": null
+      }
+    ]
+  }
+}

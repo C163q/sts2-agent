@@ -1,0 +1,64 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "select_card",
+    "selection_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "set_selection_view"
+  ],
+  "selection": {
+    "type": "choose_one",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 5,
+          "name": "Discovery"
+        },
+        "autoplay": false,
+        "source": null,
+        "type": "card_played",
+        "sequence": 1
+      }
+    ]
+  },
+  "card_plays": {
+    "batch_id": "818b8a0d51af4f7f8d110abaf6bea61f",
+    "results": [
+      {
+        "index": 0,
+        "card_id": 5,
+        "target_id": null,
+        "status": "resolving",
+        "reason": null
+      },
+      {
+        "index": 1,
+        "card_id": 6,
+        "target_id": null,
+        "status": "not_submitted",
+        "reason": "Resolve the current card selection before playing cards."
+      },
+      {
+        "index": 2,
+        "card_id": 7,
+        "target_id": null,
+        "status": "not_submitted",
+        "reason": "Resolve the current card selection before playing cards."
+      }
+    ]
+  },
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

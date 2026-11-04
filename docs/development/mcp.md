@@ -26,7 +26,7 @@ flowchart LR
 
 ## 工具范围
 
-默认公开 42 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 43 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 列出当前可用的查看与操作工具名，不含参数；省略观察、截图和测试入口。完整语义与精简预设见[观察输出预设](observation.md#mcp-输出预设)。
+默认公开 43 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 44 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 列出当前可用的查看与操作工具名，不含参数；省略观察、截图和测试入口。完整语义与精简预设见[观察输出预设](observation.md#mcp-输出预设)。
 
 当前详情调用不返回 `available_actions`，可用 `get_observation({"preset":"actions_only"})` 获取。遗物查看读取当前已显示的遗物栏，不能悬停时保留静态字段并说明缺少帮助；牌组查看也支持原生按钮可用的非战斗页面。适用范围见[遗物详情](relic-inspection.md)和[牌组页面](deck-inspection.md)。
 
@@ -56,6 +56,7 @@ flowchart LR
 | `inspect_hand({preset?, card_ids?})` | [手牌完整详情或摘要及当前能量／星星，可按 ID 筛选卡牌](hand-inspection.md) |
 | `inspect_targets(card_id 或 potion_slot)` | 查询[手牌](card-play.md)或[药水](potion-actions.md)可用性、是否须指定目标及范围，不进入瞄准或抽随机数 |
 | `play_card(card_id, target_id?)` | [提交一次原生手动出牌](card-play.md)，后续选牌单独操作 |
+| `play_cards(cards)` | [按顺序连续入队](card-play.md#连续出牌)，逐张结果及选择续接见 card_plays |
 | `inspect_ui(preset?, sources?)` | [可见顶栏与战斗通用悬停帮助](ui-inspection.md)，summary 省略正文，sources 精确筛选来源 |
 | `inspect_potions(preset?, slot_indices?)` | [药水完整／静态摘要及原槽位筛选](potion-inspection.md)，筛选同时裁剪关联提示并返回位置映射 |
 | `use_potion(potion_slot, target_id?)` | [使用药水](potion-actions.md)，遇到后续选择立即返回 |
@@ -137,7 +138,7 @@ approval_mode = "approve"
 
 ## 输出预设
 
-全部 42 个玩法 JSON 工具接受可选的 `preset`：
+全部 43 个玩法 JSON 工具接受可选的 `preset`：
 
 | 预设 | 行为 |
 | --- | --- |
@@ -176,7 +177,9 @@ approval_mode = "approve"
 - `transition.complete == true`，并且 `available_actions` 包含实际游戏动作；若该动作结果只列出详情或页面查看工具，则不续接动作许可。
 - 停止原因为 `player_ready` 或 `action_completed` 时，普通动作画面可见且没有待处理选择；`choice_required` 则要求受支持的选择界面可见。
 
-例如 `get_observation → play_card → play_card → end_turn`，或 `use_potion → inspect_selection → select_card`，中间无需为了取得许可再次读取相同观察。每一步都根据上一返回结果重新决策，按需查询卡牌或目标；不得把同一观察复用成预先排队的一组动作。服务拒绝用请求排队后才产生的新观察授权该请求；同一连接的操作仍串行执行。
+连续出牌结果中，只要有一项 `status` 为 `unknown`，表示工具无法确认该牌的执行结果。此时须先用 `get_observation` 或相关查看工具读取当前状态，再提交下一次动作；如果选牌窗口已经显示，可以直接读 `inspect_selection`。正常的 `queued`（排队中）或 `resolving`（正在处理，可能等待选牌）不触发这条额外读取要求，可以按当前选牌界面继续操作。
+
+例如 `get_observation → play_card → play_card → end_turn`，或 `use_potion → inspect_selection → select_card`，中间无需为了取得许可再次读取相同观察。每一步根据上一返回结果重新决策，按需查询卡牌或目标。连续入队使用 play_cards 在一次已授权请求中逐项复查并提交；多个独立请求仍不能借用排队后才产生的新观察，同一连接的操作串行执行。
 
 Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其他客户端使状态改变时返回 `stale_state`，不自动刷新或重试。坏响应、超时、游戏异常、取消、不完整结果、无可执行动作、未支持选择及胜负停止均不续接动作许可，须先重新读取当前状态再决定。取消不能撤回已提交给游戏的操作。状态令牌留在 MCP 内部，不增加模型参数，也不回放未收到的动作结果。
 
@@ -184,7 +187,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 `inspect_selection` 省略 `view_upgrades` 时属于纯读取；显式提供该参数则可能改变 UI，与地图、牌组、牌堆及查看页切换一样，不能仅凭明确拒绝的错误码恢复许可。inspect_deck／inspect_pile／close_card_view 的已审查拒绝另有原生“本请求未交互”保证；只有显式保证为 true、证据不矛盾且已有许可时保留，返回 choose_legal_action。缺少保证、已交互或未知结果仍要求观察；该例外不推广到其他页面工具。这些页面操作不要求已有动作许可。`set_divination_tool` 虽只切换占卜工具，仍须已有许可、记录事件并返回动作回执；MCP annotations 不代替执行策略。
 
-游戏动作仅在原生证明“未提交且 UI 未改变”时保留旧许可。`play_card` 与 `end_turn` 的已审查前置拒绝提供这一保证；费用、目标和结束回合的选择／覆盖／按钮状态会给具体提示，例如能量不足被拒后可直接结束回合，选牌期间误用 end_turn 被拒后可直接继续合法选择。缺少标记的旧 Mod、其他动作拒绝或执行结果未知时不恢复许可。占卜等操作返回 `screenshot_unavailable` 仍可能已经改变游戏，返回 `outcome:"unknown"` 并要求观察，不能把图像失败当作玩法未执行。
+游戏动作仅在原生证明“未提交且 UI 未改变”时保留旧许可。`play_card`、`play_cards` 与 `end_turn` 的已审查前置拒绝提供这一保证；费用、目标和选择／覆盖／按钮状态会给具体提示，例如能量不足被拒后可直接结束回合，选牌期间误用 end_turn 被拒后可直接继续合法选择。批量部分提交后的失败不具备整批未提交保证。缺少标记的旧 Mod、其他动作拒绝或执行结果未知时不恢复许可。占卜等操作返回 `screenshot_unavailable` 仍可能已经改变游戏，返回 `outcome:"unknown"` 并要求观察，不能把图像失败当作玩法未执行。
 
 许可同时记录令牌和代次。排队动作只能使用调用开始时已有的那一代许可，即使后来读取返回相同字符串，也不能借用；取消会使等待／在途请求无法重新发布已撤销的许可。执行证据与公开 JSON 分开保存，不向模型暴露控制字段。用户保存的实测记录尚未逐条对照，[两项待办](TODO.md#当前工具审阅结束后处理)仍保留。
 
@@ -210,6 +213,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 | `selection` | 仅有待处理选择时出现，只含 `type` 和 `status` |
 | `notes` | 仅在需要时提供选牌查看/返回或人工输入提示 |
 | `purchase_result`、`reward_result` | 原生流程有相应结果时保留，区分成功、失败及未获得 |
+| `card_plays` | 连续出牌及其未完成批次的后续动作返回逐张状态，通过 batch_id 关联；详见[逐张结果](card-play.md#逐张结果) |
 
 实现与单次结果体积对照见[动作回执精简验证](../research/2026-11-01-compact-actions.md)。
 

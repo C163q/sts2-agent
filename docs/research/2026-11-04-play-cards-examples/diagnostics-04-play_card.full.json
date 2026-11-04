@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Close the map before playing cards.",
+    "recovery": "choose_legal_action"
+  }
+}

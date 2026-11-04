@@ -12,7 +12,7 @@ TARGET_SCHEMA = {"type": "object", "properties": {"card_id": CARD_ID, "potion_sl
 PLAY_SCHEMA = {**CARD_TARGET_SCHEMA, "properties": {
     "card_id": CARD_ID, "target_id": {
         "type": "integer", "minimum": 0, "maximum": 4294967295,
-        "description": "A targets[].id from inspect_targets. Required when requires_target=true, even for one target; otherwise omit.",
+        "description": "Current target object ID from observations or inspect_targets. Required for a targeted card, even for one target; otherwise omit.",
     }}}
 TARGET_DETAILS = {"card": {"id": int, "name": TEXT}, "playable": bool, "target_type": str,
                   "requires_target": bool, "targets": [EVENT_ENTITY], "reason": TEXT}

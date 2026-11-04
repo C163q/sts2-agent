@@ -16,6 +16,7 @@ from sts2_mcp.output.deck_presets import DECK_SCHEMA
 from sts2_mcp.output.pile_presets import PILE_SCHEMA
 from sts2_mcp.output.selection_details import CARD_SCHEMA, OPTION_SCHEMA, VIEW_SCHEMA
 from sts2_mcp.output.card_play_details import PLAY_SCHEMA, TARGET_SCHEMA
+from sts2_mcp.output.card_batch_details import BATCH_SCHEMA
 from sts2_mcp.output.potion_action_details import POTION_SCHEMA, USE_SCHEMA
 from sts2_mcp.screenshot_tool import SCREENSHOT_SCHEMA
 from sts2_mcp.output.reward_details import CLAIM_SCHEMA
@@ -426,6 +427,21 @@ SPECS = (
         parser='card_play_details:card_play_arguments',
         parser_operation=True,
         reader_argument='request'),
+    ToolSpec(
+        name='play_cards',
+        schema=BATCH_SCHEMA,
+        description='Queue current hand cards in order using native rules. Invalidated plays may be skipped. '
+            'Stops at choices; already queued cards may resume after selection. Check card_plays for per-card status.',
+        annotations=action,
+        category='action',
+        effect='action',
+        requires_permission=True,
+        returns_transition=True,
+        records_events=True,
+        reader='card_batch_details:play_cards_details',
+        reader_argument='request',
+        parser='card_batch_details:batch_arguments',
+        unsubmitted_rejection_unchanged=True),
     ToolSpec(
         name='play_card',
         schema=PLAY_SCHEMA,

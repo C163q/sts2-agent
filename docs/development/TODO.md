@@ -1,6 +1,6 @@
 # 用户后续待办
 
-> 当前状态：共 7 项，已完成 1 项；其中错误恢复与错误信息两项已提前处理十一个工具及出牌前置拒绝，牌组／牌堆覆盖已实现；剩余范围仍在当前逐项审阅结束后处理。本清单不表示已授权立即实施其他事项。
+> 当前状态：共 7 项，已完成 1 项；其中错误恢复与错误信息两项已提前处理十三个工具的相关拒绝与诊断，牌组／牌堆覆盖已实现；剩余范围仍在当前逐项审阅结束后处理。本清单不表示已授权立即实施其他事项。
 
 本文件仅记录用户明确提出、留待后续处理的事项。Agent 不得擅自新增待办或扩大范围；调研建议、自行发现的问题和当前任务进度另记所属任务文档。仅按用户要求维护本清单。
 
@@ -14,5 +14,5 @@
 
 以下为用户实测反馈，详细记录由用户保存，后续处理时再对照。已按用户要求提前修复的部分见[查看错误与许可记录](../research/2026-11-03-inspection-error-recovery.md)、[战斗对象实施](../research/2026-11-03-combatants-implementation.md)、[药水实施](../research/2026-11-04-potion-inspection-implementation.md)及[遗物实施](../research/2026-11-04-relic-inspection-implementation.md)，尚未覆盖其他工具的完整审查，因此两项仍不勾销。
 
-- [ ] **工具报错后的观察前置要求**：已提前处理 get_observation、inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics 的本地参数错误与明确读取拒绝，inspect_deck／inspect_pile／close_card_view 显式保证未交互的拒绝，以及 end_turn 明确未提交／未交互拒绝；并验证 0 能量 play_card 被拒后可直接 end_turn。剩余工具仍需结合用户记录审查动作许可失效与恢复流程；未知结果与状态过期不能当作明确未执行。
-- [ ] **错误原因与恢复提示的准确性**：已为上述十一个工具及 play_card 前置拒绝补具体说明，原生公开原因与异常诊断分开；其他工具仍需结合用户记录逐项审查，让 LLM 能判断发生了什么、为何被拒绝，以及如何继续；共用层修复不代表全部工具的错误原因与恢复提示均已核验。
+- [ ] **工具报错后的观察前置要求**：已提前处理 get_observation、inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics 的本地参数错误与明确读取拒绝，inspect_deck／inspect_pile／close_card_view 显式保证未交互的拒绝，以及 end_turn 明确未提交／未交互拒绝；并完成 play_card／play_cards 的共用诊断与明确未提交恢复，验证 0 能量或原生最终拒绝后可直接选择合法动作。剩余工具仍需结合用户记录审查动作许可失效与恢复流程；未知结果与状态过期不能当作明确未执行。
+- [ ] **错误原因与恢复提示的准确性**：已为上述十三个工具的已审阅拒绝补具体说明，原生公开原因与异常诊断分开；其他工具仍需结合用户记录逐项审查，让 LLM 能判断发生了什么、为何被拒绝，以及如何继续；共用层修复不代表全部工具的错误原因与恢复提示均已核验。

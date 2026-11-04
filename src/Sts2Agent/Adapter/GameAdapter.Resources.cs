@@ -1,11 +1,12 @@
 using Godot;
+using System.Text.Json.Nodes;
 
 namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
 {
     private static readonly HashSet<string> RecordedActions = [
-        "play_card", "end_turn", "use_potion", "discard_potion", "select_card", "selection_option",
+        "play_card", "play_cards", "end_turn", "use_potion", "discard_potion", "select_card", "selection_option",
         "claim_reward", "proceed", "choose_rest_option", "loot_treasure", "open_shop", "close_shop", "buy_item",
         "choose_ancient_option", "advance_dialogue", "choose_event_option", "set_divination_tool", "divine",
         "respond_to_confirmation", "travel_to_node", "run_result_option"
@@ -15,12 +16,15 @@ internal sealed partial class GameAdapter
 
     public async Task<string> Execute(Request request)
     {
+        if (cardPlayBatch != null && !cardPlayBatch.SameContext)
+        { cardPlayBatch.Dispose(); cardPlayBatch = null; }
         var previous = execution;
         var current = new RequestExecution();
         execution = current;
         try { return ResponseBuilder.WithExecution(await ExecuteRecorded(request), current); }
         catch (Exception error)
         {
+            cardPlayBatch?.Dispose(); cardPlayBatch = null;
             GD.PushError("[Sts2Agent] Operation failed: " + error);
             return ResponseBuilder.WithExecution(ResponseBuilder.Failure(request.Id, error), current);
         }
@@ -38,6 +42,17 @@ internal sealed partial class GameAdapter
             ? CombatJournalScope.Begin(combatPlayer, observation) : null;
         string response = await ExecuteCore(request);
         enteringCombat?.Flush();
-        return events.Apply(response);
+        response = events.Apply(response);
+        if (cardPlayBatch is { } batch)
+        {
+            var result = JsonNode.Parse(response)!.AsObject();
+            if (result["ok"]?.GetValue<bool>() == true && result["state"]?["transition"] != null)
+            {
+                result["state"]!["card_plays"] = System.Text.Json.JsonSerializer.SerializeToNode(batch.Read());
+                response = result.ToJsonString();
+                if (!batch.Pending) { batch.Dispose(); cardPlayBatch = null; }
+            }
+        }
+        return response;
     }
 }

@@ -1,0 +1,127 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "select_card",
+    "selection_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "set_selection_view"
+  ],
+  "selection": {
+    "type": "choose_one",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": [
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 20,
+        "after": 19,
+        "type": "energy_changed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Strike"
+        },
+        "autoplay": false,
+        "source": null,
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "card_played",
+        "sequence": 2
+      },
+      {
+        "hp_loss": 6,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Strike"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "damage",
+        "sequence": 3
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Strike"
+        },
+        "from_pile": "play",
+        "to_pile": "discard",
+        "type": "card_moved",
+        "sequence": 4
+      },
+      {
+        "card": {
+          "id": 6,
+          "name": "Discovery"
+        },
+        "autoplay": false,
+        "source": null,
+        "type": "card_played",
+        "sequence": 5
+      }
+    ]
+  },
+  "card_plays": {
+    "batch_id": "dc9daf920e434835a05d65f0adb0f2f3",
+    "results": [
+      {
+        "index": 0,
+        "card_id": 5,
+        "target_id": 2,
+        "status": "played",
+        "reason": null
+      },
+      {
+        "index": 1,
+        "card_id": 6,
+        "target_id": null,
+        "status": "resolving",
+        "reason": null
+      },
+      {
+        "index": 2,
+        "card_id": 7,
+        "target_id": null,
+        "status": "queued",
+        "reason": null
+      },
+      {
+        "index": 3,
+        "card_id": 8,
+        "target_id": null,
+        "status": "queued",
+        "reason": null
+      }
+    ]
+  },
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

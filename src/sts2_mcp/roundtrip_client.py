@@ -67,6 +67,7 @@ def main():
     direction.add_argument("--ascending", dest="descending", action="store_const", const=False)
     parser.add_argument("--expected-state")
     parser.add_argument("--card-id", type=int)
+    parser.add_argument('--cards', type=json.loads, help='play_cards 的有序 JSON 数组，每项含 card_id 和可选 target_id')
     parser.add_argument("--potion-slot", type=int)
     parser.add_argument("--target-id", help="战斗生物整数 ID，或药水特殊目标 merchant")
     parser.add_argument("--reward-id", type=int)
@@ -90,11 +91,15 @@ def main():
         if args.target_id is not None and args.target_id.isascii() and args.target_id.isdecimal():
             arguments["target_id"] = int(args.target_id)
         browsing = args.operation in {'inspect_deck', 'inspect_pile'}
+        batch = args.operation == 'play_cards'
+        if args.cards is not None:
+            if not batch: raise ValueError('--cards is supported only for play_cards.')
+            arguments['cards'] = args.cards
         closing = args.operation == 'close_card_view'
         combatants = args.operation == 'inspect_combatants'
         potions = args.operation == 'inspect_potions'
-        if args.preset is not None and not (browsing or closing or combatants or potions):
-            raise ValueError('--preset is supported for inspect_deck, inspect_pile, close_card_view, inspect_combatants and inspect_potions.')
+        if args.preset is not None and not (browsing or closing or combatants or potions or batch):
+            raise ValueError('--preset is supported for inspect_deck, inspect_pile, close_card_view, inspect_combatants, inspect_potions and play_cards.')
         if args.card_ids is not None:
             if not browsing:
                 raise ValueError('--card-ids is supported for inspect_deck and inspect_pile.')
@@ -116,7 +121,7 @@ def main():
                 'preset': args.preset or 'full', **({'sources': args.sources} if args.sources is not None else {})})
             settings = normalized.output_arguments
             arguments = normalized.native_arguments
-        if browsing or closing:
+        if browsing or closing or batch:
             normalized = normalize_request(NATIVE_TOOLS[args.operation], {**arguments, 'preset': args.preset or 'default'})
             arguments = normalized.native_arguments
         request_sent = True
@@ -132,14 +137,14 @@ def main():
             payload = decode_success(args.operation, result['state'], arguments, include_observation=True)
             payload = combatant_preset(payload, **settings)
             payload = apply_preset(payload, 'default' if args.preset == 'default' or settings['preset'] == 'summary' else 'full')
-        elif (browsing or closing) and result['ok'] and not args.raw:
+        elif (browsing or closing or batch) and result['ok'] and not args.raw:
             payload = normalized.project(decode_success(args.operation, result['state'], arguments, include_observation=True))
         else:
             payload = result if args.raw else (
                 decode_success(args.operation, result['state'], arguments, include_observation=True)
                 if result['ok'] else player_result(result, operation=args.operation, arguments=arguments))
     except (OSError, RuntimeError, ValueError, KeyError, TypeError) as error:
-        local_argument_error = args.operation in {'inspect_deck', 'inspect_pile', 'close_card_view', 'inspect_combatants', 'inspect_potions'} and not request_sent and isinstance(error, ValueError)
+        local_argument_error = (args.operation in {'inspect_deck', 'inspect_pile', 'close_card_view', 'inspect_combatants', 'inspect_potions', 'play_cards'} or args.cards is not None) and not request_sent and isinstance(error, ValueError)
         code = 'invalid_request' if local_argument_error else 'timeout' if isinstance(error, TimeoutError) else 'transport_error'
         result = {"ok": False, "error": {"code": code, "message": str(error)}}
         if local_argument_error: result['error']['public_message'] = str(error)

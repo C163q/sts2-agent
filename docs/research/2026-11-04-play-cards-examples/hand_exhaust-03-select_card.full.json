@@ -1,0 +1,53 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "select_card",
+    "selection_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "set_selection_view"
+  ],
+  "selection": {
+    "type": "hand",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": []
+  },
+  "card_plays": {
+    "batch_id": "3232475011dd476a980448a99168616a",
+    "results": [
+      {
+        "index": 0,
+        "card_id": 5,
+        "target_id": null,
+        "status": "resolving",
+        "reason": null
+      },
+      {
+        "index": 1,
+        "card_id": 6,
+        "target_id": null,
+        "status": "not_played",
+        "reason": "The native card play was canceled."
+      },
+      {
+        "index": 2,
+        "card_id": 7,
+        "target_id": null,
+        "status": "not_played",
+        "reason": "The native card play was canceled."
+      }
+    ]
+  },
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

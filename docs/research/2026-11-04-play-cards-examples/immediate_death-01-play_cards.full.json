@@ -1,0 +1,87 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "available_actions": [
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics"
+  ],
+  "transition": {
+    "stop_reason": "combat_lost",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 5,
+          "name": "Offering"
+        },
+        "autoplay": false,
+        "source": null,
+        "type": "card_played",
+        "sequence": 1
+      },
+      {
+        "hp_loss": 1,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Offering"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 2
+      },
+      {
+        "source": {
+          "kind": "card",
+          "name": "Offering"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "died",
+        "sequence": 3
+      }
+    ]
+  },
+  "card_plays": {
+    "batch_id": "81e84023c69444d0a898a2bd71c01901",
+    "results": [
+      {
+        "index": 0,
+        "card_id": 5,
+        "target_id": null,
+        "status": "played",
+        "reason": null
+      },
+      {
+        "index": 1,
+        "card_id": 6,
+        "target_id": null,
+        "status": "not_submitted",
+        "reason": "Cards can be played only during combat."
+      },
+      {
+        "index": 2,
+        "card_id": 7,
+        "target_id": null,
+        "status": "not_submitted",
+        "reason": "Cards can be played only during combat."
+      }
+    ]
+  }
+}

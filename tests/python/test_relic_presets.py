@@ -159,7 +159,7 @@ class RelicPresetStdioTests(unittest.IsolatedAsyncioTestCase):
             async with ClientSession(read, write) as session:
                 await session.initialize()
                 tools = {t.name: t for t in (await session.list_tools()).tools}
-                self.assertEqual(len(tools), 42)
+                self.assertEqual(len(tools), 43)
                 self.assertEqual(set(tools['inspect_relics'].inputSchema['properties']), {'preset', 'relic_indices'})
                 self.assertTrue(tools['inspect_relics'].annotations.readOnlyHint)
                 for preset in ('full', 'summary'):

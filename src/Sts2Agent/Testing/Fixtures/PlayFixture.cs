@@ -53,6 +53,11 @@ internal static class PlayFixture
             await PowerCmd.Apply<ThornsPower>(new ThrowingPlayerChoiceContext(), player.Creature, 10, player.Creature, null);
         await CardPileCmd.RemoveFromCombat(state.AllCards.ToArray());
         state.Energy = scenario == "energy" ? 0 : scenario == "x_cost" ? 2 : scenario is "energy_chain" or "orb_chain" ? 3 : 20;
+        if (scenario.StartsWith("batch_", StringComparison.Ordinal))
+        {
+            await BatchPlayFixture.Configure(scenario[6..], player);
+            return;
+        }
         if (scenario.StartsWith("permanent_", StringComparison.Ordinal))
         {
             await PermanentCardFixture.Configure(scenario, player);

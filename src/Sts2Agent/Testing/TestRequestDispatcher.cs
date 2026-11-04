@@ -32,6 +32,16 @@ internal sealed partial class GameAdapter
 {
     private async Task<string?> TestRequestBeforeCapture(Request request)
     {
+        if (request.Operation == "arm_test_card_rejection" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
+        {
+            var inputs = CardPlayOptions.Parse(request.Arguments, false);
+            if (inputs[0].TargetId.HasValue || !CanPlayCards()
+                || new TargetInspection(observation).FindCard(inputs[0].CardId) is not { } card)
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected a current test hand card ID.");
+            CardPlayRejectionFixture.Arm(card);
+            return Success(request, JsonSerializer.Serialize(new { armed = true }));
+        }
         if (request.Operation == "check_test_play_queue" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
         {

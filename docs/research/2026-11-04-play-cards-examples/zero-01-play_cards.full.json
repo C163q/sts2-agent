@@ -1,0 +1,44 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "play_cards",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": []
+  },
+  "card_plays": {
+    "batch_id": "9e637fbb46b14846a4e93b682797252a",
+    "results": [
+      {
+        "index": 0,
+        "card_id": 5,
+        "target_id": 2,
+        "status": "not_submitted",
+        "reason": "I don't have\nenough Energy."
+      },
+      {
+        "index": 1,
+        "card_id": 6,
+        "target_id": null,
+        "status": "not_submitted",
+        "reason": "I don't have\nenough Energy."
+      }
+    ]
+  }
+}

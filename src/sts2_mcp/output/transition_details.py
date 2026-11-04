@@ -2,6 +2,7 @@ from sts2_mcp.output.observation_details import observation_details
 from sts2_mcp.output.value_shapes import project
 from sts2_mcp.output.contracts.transition import TRANSITION
 from sts2_mcp.output.available_tools import INSPECTIONS, VIEWS, TOOLS_WITHOUT_PERMISSION
+from sts2_mcp.output.card_batch_output import card_plays, uncertain_card_plays
 
 
 REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "run_won", "run_lost", "timeout", "interrupted", "selection_resolved", "action_canceled", "action_completed", 'manual_input_required'}
@@ -110,10 +111,16 @@ def end_turn_details(state):
         if kind == "power_changed" and event["change"] not in {"applied", "modified", "removed"}:
             raise ValueError("Invalid power change.")
     result["transition"] = transition
-    if transition["stop_reason"] not in {"player_ready", "action_completed"} or not transition["complete"]:
+    if 'card_plays' in state:
+        result['card_plays'] = card_plays(state['card_plays'])
+        if transition['complete'] and transition['stop_reason'] in {'player_ready', 'action_completed'} \
+                and any(row['status'] in {'queued', 'resolving'} for row in result['card_plays']['results']):
+            raise ValueError('A ready action boundary cannot contain pending card plays.')
+    uncertain = uncertain_card_plays(result)
+    if transition["stop_reason"] not in {"player_ready", "action_completed"} or not transition["complete"] or uncertain:
         result["available_actions"] = [action for action in result["available_actions"]
             if action in (INSPECTIONS | VIEWS) & TOOLS_WITHOUT_PERMISSION or transition["complete"]
-            and transition["stop_reason"] == "choice_required"
+            and not uncertain and transition["stop_reason"] == "choice_required"
             and (result.get("selection") or {}).get("status") == "visible"
             and action in {"select_card", "selection_option"}]
     return result

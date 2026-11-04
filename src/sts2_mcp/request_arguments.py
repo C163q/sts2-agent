@@ -19,11 +19,15 @@ def validate_schema(value, schema, field='arguments'):
         properties = schema.get('properties', {})
         extra = value.keys() - properties.keys()
         if extra and schema.get('additionalProperties') is False:
-            raise ValueError(f'{", ".join(sorted(extra))} is not accepted; allowed fields: {", ".join(properties) or "none"}.')
+            prefix = '' if field == 'arguments' else field + ': '
+            raise ValueError(f'{prefix}{", ".join(sorted(extra))} is not accepted; allowed fields: {", ".join(properties) or "none"}.')
         for key in schema.get('required', []):
-            if key not in value: raise ValueError(f'{key} is required.')
+            if key not in value:
+                name = key if field == 'arguments' else f'{field}.{key}'
+                raise ValueError(f'{name} is required.')
         for key, item in value.items():
-            if key in properties: validate_schema(item, properties[key], key)
+            if key in properties:
+                validate_schema(item, properties[key], key if field == 'arguments' else f'{field}.{key}')
         for key, required in schema.get('dependentRequired', {}).items():
             if key in value and any(name not in value for name in required):
                 raise ValueError(f'{key} requires {", ".join(required)}.')

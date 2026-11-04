@@ -25,7 +25,7 @@ REQUIRED_ARGUMENTS = {
     'choose_event_option': {'option_id': 0}, 'choose_ancient_option': {'option_id': 0},
     'buy_item': {'item_id': 0}, 'claim_reward': {'reward_id': 0},
     'choose_rest_option': {'option_id': 'smith'}, 'inspect_targets': {'card_id': 0},
-    'play_card': {'card_id': 0}, 'use_potion': {'potion_slot': 0},
+    'play_card': {'card_id': 0}, 'play_cards': {'cards': [{'card_id': 0}]}, 'use_potion': {'potion_slot': 0},
     'discard_potion': {'potion_slot': 0}, 'inspect_pile': {'pile': 'discard'},
     'select_card': {'card_id': 0}, 'selection_option': {'option_id': 'skip'},
     'set_selection_view': {'view': 'selection'},
@@ -105,7 +105,7 @@ class DefaultProjectionTests(unittest.TestCase):
 
     def test_all_gameplay_schemas_and_target_branches_offer_default_full(self):
         tools = tool_definitions(screenshots_enabled=True)
-        self.assertEqual(len(tools), 43)
+        self.assertEqual(len(tools), 44)
         for tool in tools:
             with self.subTest(tool=tool.name):
                 props = tool.inputSchema['properties']
@@ -266,7 +266,7 @@ class DefaultToolTests(unittest.IsolatedAsyncioTestCase):
 
 
 class DefaultStdioTests(unittest.IsolatedAsyncioTestCase):
-    async def test_all_42_tools_dispatch_presets_over_real_stdio(self):
+    async def test_all_43_tools_dispatch_presets_over_real_stdio(self):
         from pathlib import Path
         root = Path(__file__).resolve().parents[2]
         program = ('import anyio; from tests.python.test_default_presets import BoundaryProbe; '
@@ -276,7 +276,7 @@ class DefaultStdioTests(unittest.IsolatedAsyncioTestCase):
             async with ClientSession(read, write) as session:
                 await session.initialize()
                 definitions = (await session.list_tools()).tools
-                self.assertEqual(len(definitions), 42)
+                self.assertEqual(len(definitions), 43)
                 for definition in definitions:
                     args = REQUIRED_ARGUMENTS.get(definition.name, {})
                     for preset in (None, 'default', 'full'):

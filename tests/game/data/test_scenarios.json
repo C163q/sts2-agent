@@ -100,7 +100,21 @@
     "kill_chain",
     "delayed_ui",
     "choice_chain",
-    "afflictions"
+    "afflictions",
+    "batch_partial",
+    "batch_zero",
+    "batch_energy",
+    "batch_stars",
+    "batch_target",
+    "batch_random_exhaust",
+    "batch_hand_exhaust",
+    "batch_automatic_hand",
+    "batch_choose_one",
+    "batch_immediate_choice",
+    "batch_combat_pile",
+    "batch_victory",
+    "batch_death",
+    "batch_immediate_death"
   ],
   "selection": [
     "upgrade_enchantments",

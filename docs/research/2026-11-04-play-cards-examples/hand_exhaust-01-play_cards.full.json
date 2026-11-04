@@ -1,0 +1,85 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "select_card",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "set_selection_view"
+  ],
+  "selection": {
+    "type": "hand",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": [
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 20,
+        "after": 19,
+        "type": "energy_changed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "True Grit+"
+        },
+        "autoplay": false,
+        "source": null,
+        "type": "card_played",
+        "sequence": 2
+      },
+      {
+        "before": 0,
+        "after": 9,
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "block_changed",
+        "sequence": 3
+      }
+    ]
+  },
+  "card_plays": {
+    "batch_id": "3232475011dd476a980448a99168616a",
+    "results": [
+      {
+        "index": 0,
+        "card_id": 5,
+        "target_id": null,
+        "status": "resolving",
+        "reason": null
+      },
+      {
+        "index": 1,
+        "card_id": 6,
+        "target_id": null,
+        "status": "not_played",
+        "reason": "The native card play was canceled."
+      },
+      {
+        "index": 2,
+        "card_id": 7,
+        "target_id": null,
+        "status": "not_played",
+        "reason": "The native card play was canceled."
+      }
+    ]
+  },
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

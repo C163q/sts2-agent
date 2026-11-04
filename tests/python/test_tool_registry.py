@@ -65,12 +65,13 @@ class RegistryTests(unittest.TestCase):
         import copy
         from sts2_mcp.tool_registry import TOOLS
         from sts2_mcp.request_arguments import normalize_request
-        from tests.python.test_tool_contracts import DATA
+        from tests.python.test_tool_contracts import DATA, ADDED_TOOL_ARGUMENTS
         cases = json.loads((DATA / 'cases.json').read_text())
         good = {case['tool']: case['arguments'] for case in cases
                 if case['arguments'].get('preset') == 'full' and not case.get('error')
                 and 'unknown_field' not in case['arguments']}
         good['capture_screenshot'] = {}
+        good.update(ADDED_TOOL_ARGUMENTS)
         for name, spec in TOOLS.items():
             base = good[name]
             normalize_request(spec, base)

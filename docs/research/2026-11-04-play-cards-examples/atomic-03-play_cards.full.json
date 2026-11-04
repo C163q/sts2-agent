@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "cards[1]: target_id does not identify a current visible combat object.",
+    "recovery": "choose_legal_action"
+  }
+}

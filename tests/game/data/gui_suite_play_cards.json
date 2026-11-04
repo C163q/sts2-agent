@@ -1,0 +1,370 @@
+[
+  {
+    "name": "diagnostics",
+    "scenarios": {
+      "play": "hook"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "diagnostics"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ordered",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "ordered"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "atomic",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "atomic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "partial",
+    "scenarios": {
+      "play": "batch_partial"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "partial"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "zero",
+    "scenarios": {
+      "play": "batch_zero"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "zero"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "energy",
+    "scenarios": {
+      "play": "batch_energy"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "energy"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "stars",
+    "scenarios": {
+      "play": "batch_stars"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "stars"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "target",
+    "scenarios": {
+      "play": "batch_target"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "target"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "random_exhaust",
+    "scenarios": {
+      "play": "batch_random_exhaust"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "random_exhaust"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hand_exhaust",
+    "scenarios": {
+      "play": "batch_hand_exhaust"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "hand_exhaust"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "automatic_hand",
+    "scenarios": {
+      "play": "batch_automatic_hand"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "automatic_hand"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "choose_one",
+    "scenarios": {
+      "play": "batch_choose_one"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "choose_one"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "immediate_choice",
+    "scenarios": {
+      "play": "batch_immediate_choice"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "immediate_choice"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "combat_pile",
+    "scenarios": {
+      "play": "batch_combat_pile"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "combat_pile"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "victory",
+    "scenarios": {
+      "play": "batch_victory"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "victory"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "death",
+    "scenarios": {
+      "play": "batch_death"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "death"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "immediate_death",
+    "scenarios": {
+      "play": "batch_immediate_death"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "immediate_death"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "default",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "default"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "single_entry",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "single_entry"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "autoplay",
+    "scenarios": {
+      "play": "knife_trap"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "autoplay"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "pending_reset",
+    "scenarios": {
+      "play": "batch_choose_one"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "pending_reset"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "after_reset",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "after_reset"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "native_reject",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_play_cards.py",
+        "args": [
+          "--scenario",
+          "native_reject"
+        ]
+      }
+    ]
+  }
+]

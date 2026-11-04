@@ -95,7 +95,8 @@ internal sealed partial class GameAdapter
         List<string> actions = [];
         if (EndTurnUnavailableReason() == null)
             actions.Add("end_turn");
-        if (CanPlayCards() && STS2RitsuLib.RitsuLibFramework.IsActive) actions.Add("play_card");
+        if (CanPlayCards() && STS2RitsuLib.RitsuLibFramework.IsActive)
+        { actions.Add("play_card"); actions.Add("play_cards"); }
         if (testMode && scene == "main_menu" && !RunManager.Instance.IsInProgress)
             actions.Add("start_test_combat");
         if (scene == "combat" && CombatObservation.Status() != "visible")

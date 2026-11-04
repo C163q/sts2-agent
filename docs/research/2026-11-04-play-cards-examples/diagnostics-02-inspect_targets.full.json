@@ -1,0 +1,21 @@
+{
+  "card": {
+    "id": 8,
+    "name": "Defend"
+  },
+  "playable": false,
+  "target_type": "self",
+  "requires_target": false,
+  "targets": [
+    {
+      "id": 0,
+      "kind": "player",
+      "name": "The Ironclad"
+    }
+  ],
+  "reason": "I'm blocked\nby Normality.",
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  }
+}

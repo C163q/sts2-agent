@@ -20,7 +20,7 @@
 
 已接通[先古之民房间](docs/development/ancients.md)：逐句对话、选择遗物、后续选牌与前进。支持[通用问号事件](docs/development/events.md)的正文与选项、致死红框、后续选牌/奖励、战斗及返回事件；[占卜](docs/development/divination.md)支持棋盘图像、大小工具与逐格揭开。[Trial 确认弹窗](docs/development/events.md#事件确认弹窗)支持明确确认或取消；未知弹窗仍停在人工输入边界。
 
-默认提供 42 个 MCP 工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)。完整目录、输出预设和调用语义见 [MCP 接入](docs/development/mcp.md)；各工具与场景说明见[开发文档索引](docs/development/README.md)。
+默认提供 43 个 MCP 工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)。完整目录、输出预设和调用语义见 [MCP 接入](docs/development/mcp.md)；各工具与场景说明见[开发文档索引](docs/development/README.md)。
 
 ## 当前版本与前提
 
@@ -29,8 +29,8 @@
 | 项目 | 当前版本或要求 | 核对入口 |
 | --- | --- | --- |
 | 游戏 | Linux `v0.107.1`，release 分支，构建 `59260271` | [目标程序集核对与验证](docs/research/2026-11-03-result-observation-implementation.md) |
-| Mod | `0.62.0` | [Mod 清单](src/Sts2Agent/Sts2Agent.json) |
-| MCP server | `0.64.0` | [服务入口](src/sts2_mcp/mcp_server.py) |
+| Mod | `0.63.0` | [Mod 清单](src/Sts2Agent/Sts2Agent.json) |
+| MCP server | `0.65.0` | [服务入口](src/sts2_mcp/mcp_server.py) |
 | 底层观察 schema | `40` | [观察序列化](src/Sts2Agent/Observation/GameObservation.cs) |
 | RitsuLib | `0.6.10`，须使用游戏 `0.107.1` 兼容运行时 | [获取与构建](docs/development/roundtrip.md#前提与构建) |
 | .NET | 9 SDK；版本选择见 [global.json](global.json) | [构建指南](docs/development/roundtrip.md#前提与构建) |

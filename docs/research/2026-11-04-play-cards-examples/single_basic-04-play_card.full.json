@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This card requires target_id for a current target; inspect_targets can clarify its target range.",
+    "recovery": "choose_legal_action"
+  }
+}

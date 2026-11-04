@@ -1,16 +1,16 @@
 # play_card 核验与连续出牌调研
 
-> 当前状态：场景核验完成，处于设计讨论。已核验 29 项不同场景／门控并保存 33 份完整 full 返回及 12 种原生队列轨迹。已确定新增 play_cards 并遵循原生队列；参数和逐张回执仍待定稿，尚未修改公开工具行为。play_card 未核销，无阻塞。
+> 当前状态：约定范围已实现并验证，play_card／play_cards 已核销，见[实施记录](2026-11-04-play-cards-implementation.md)。下方初始问题、原生研究及 33 份 full 样本保留其 d46406c 基线；最终参数、逐张回执及 56 份新返回见实施记录与现行指南。无阻塞。
 
 ## 优先关注的问题
 
 | 编号 | 优先级 | 问题与影响 | 依据与建议 | 状态 |
 | --- | --- | --- | --- | --- |
-| PLAY-01 | 中 | 商店、地图／牌组覆盖、选择、非出牌阶段等拒绝统一为 `Normal card play is unavailable.`，无法据此判断应关闭页面、继续选牌还是等待。 | `GameAdapter.CardPlay.cs:35`；将阶段合法性与具体拒绝原因收敛到同一入口，供单张出牌、目标查询及连续出牌复用。保留已核实的未提交／未交互保证。 | 待定稿后修复；属于现有错误准确性 TODO 的提前覆盖。 |
-| PLAY-02 | 中 | `TargetInspection.Reason` 丢弃 preventer，将外部限制统一为 `This card cannot be played now.`，丢失原生拒绝气泡能显示的阻止来源名称。 | `NMouseCardPlay.StartAsync` 调用 `UnplayableReasonExtensions.GetPlayerDialogueLine(preventer)`；阻止来源使用牌／遗物／状态／附魔／Affliction 的公开标题。优先复用该 UI 文本，不公开内部 hook 标识或隐藏机制。 | 待定稿后修复；不可打出关键词与自身条件在原生 UI 中本就共用 UNPLAYABLE，不将其笼统描述列为缺陷。 |
-| PLAY-03 | 低 | 缺少目标的错误及参数说明只提 `inspect_targets.targets`，容易被理解为必须先调用该工具；实际可直接使用已知的当前敌人 `id`。 | `GameAdapter.CardPlay.cs:51`、`PLAY_SCHEMA` 与现行出牌指南。说明目标 ID 的统一含义，保留“未知目标要求时查询”的简短提示。 | 待修订文案；没有实际的 inspect_targets 前置门控。 |
+| PLAY-01 | 中 | 商店、地图／牌组覆盖、选择、非出牌阶段等拒绝统一为 `Normal card play is unavailable.`，无法据此判断应关闭页面、继续选牌还是等待。 | `GameAdapter.CardPlay.cs:35`；将阶段合法性与具体拒绝原因收敛到同一入口，供单张出牌、目标查询及连续出牌复用。保留已核实的未提交／未交互保证。 | 已按共用阶段原因修复，GUI 验证通过。 |
+| PLAY-02 | 中 | `TargetInspection.Reason` 丢弃 preventer，将外部限制统一为 `This card cannot be played now.`，丢失原生拒绝气泡能显示的阻止来源名称。 | `NMouseCardPlay.StartAsync` 调用 `UnplayableReasonExtensions.GetPlayerDialogueLine(preventer)`；阻止来源使用牌／遗物／状态／附魔／Affliction 的公开标题。优先复用该 UI 文本，不公开内部 hook 标识或隐藏机制。 | 已复用原生 UI 提示，Normality 查询与拒绝通过实测；原生 UNPLAYABLE 的笼统含义保留。 |
+| PLAY-03 | 低 | 缺少目标的错误及参数说明只提 `inspect_targets.targets`，容易被理解为必须先调用该工具；实际可直接使用已知的当前敌人 `id`。 | `GameAdapter.CardPlay.cs:51`、`PLAY_SCHEMA` 与现行出牌指南。说明目标 ID 的统一含义，保留“未知目标要求时查询”的简短提示。 | 已修订文案并实测直接使用观察 ID；没有 inspect_targets 前置门控。 |
 
-另有一个**已明确的许可设计边界**：`action_canceled` 即使 `complete:true`、原生画面已恢复可行动，MCP 仍过滤掉玩法动作，不续接许可，须先读取状态。这与当前文档及测试一致，不能当作实现偏差悄悄更改；是否允许有充分完成证据的取消直接续接，留待单张与批量回执一起定稿。
+另有一个**已明确的许可设计边界**：`action_canceled` 即使 `complete:true`、原生画面已恢复可行动，MCP 仍过滤掉玩法动作，不续接许可，须先读取状态。这与当前文档及测试一致，不能当作实现偏差悄悄更改；实施保留该策略；进一步调整不属于 PLAY-01–03 的修复范围。
 
 执行后取消目前也没有原因，但不能直接套用手动拖牌前的拒绝气泡规则：队列执行路径不一定显示相同气泡，也不能用事后状态反推当时唯一原因。可公开原因及逐张结果须单独设计取证，无法核实就保持未知。
 
@@ -111,9 +111,9 @@ RitsuLib 还可能把自定义次级资源不足标为 `BlockedByCardLogic`，�
 
 **已确认：新增 `play_cards`，采用原生连续入队，保留现有 `play_card` 单张契约。** 两个入口共用提交与记录器；逐张等待完整结算不能还原排队牌被选择、消耗或取消的行为，不作为当前方案。
 
-以下输入及校验规则为待确认草案，尚未实现。每张牌及其目标放在同一个对象中，数组顺序表示尝试提交的顺序。
+以下输入及校验规则已按[实施规格](2026-11-04-play-cards-design.md)实现，现行规则见[出牌指南](../development/card-play.md)。每张牌及其目标放在同一个对象中，数组顺序表示尝试提交的顺序。
 
-建议输入形状，**当前不能调用**：
+输入形状（示例 ID 须替换为当前手牌及目标 ID）：
 
 ```json
 {
@@ -148,7 +148,7 @@ RitsuLib 还可能把自定义次级资源不足标为 `BlockedByCardLogic`，�
 
 整批尚未进行 UI 交互或提交时，可以使用现有显式未提交保证；已有部分提交后，不能把某一项的未提交错误当作整批未执行，也不能自动回滚或重试。超时／断连不能撤销原生队列；未知结果仍须重新读取，不默默取消已经提交的牌。
 
-仍需定稿：上述参数及两层校验草案，尤其是单项无法提交后继续尝试后项的规则；逐张结果的字段及有证据的取消原因；跨选牌回执的状态更新；action_canceled 的许可续接。已确认原生取消后的既有队列继续，不等于所有这些接口问题都已确定。
+参数、动态拒绝继续、逐张及跨选牌回执已按实施规格落地；action_canceled 保留现行策略。源码整理后的架构及最终验证见实施记录。
 
 ## 建议的小范围重构
 

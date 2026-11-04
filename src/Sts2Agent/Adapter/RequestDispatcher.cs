@@ -36,7 +36,7 @@ internal sealed partial class GameAdapter
         var snapshot = Capture();
         string before = snapshot.Json;
         JsonElement beforeState = snapshot.State;
-        if (request.Operation is not ("set_test_capture_failure" or "inspect_potions" or "inspect_relics" or "inspect_combatants" or "inspect_deck" or "inspect_pile" or "inspect_selection" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
+        if (request.Operation is not ("set_test_capture_failure" or "inspect_potions" or "inspect_relics" or "inspect_combatants" or "inspect_deck" or "inspect_pile" or "inspect_selection" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "play_cards" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
             return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
@@ -89,7 +89,7 @@ internal sealed partial class GameAdapter
             return await RestSiteRequest(request, beforeState);
         if (request.Operation is "inspect_rewards" or "claim_reward" or "proceed")
             return await RewardRequest(request, beforeState);
-        if (request.Operation is "inspect_targets" or "play_card")
+        if (request.Operation is "inspect_targets" or "play_card" or "play_cards")
             return await CardPlayRequest(request, beforeState);
         if (request.Operation is "inspect_selection" or "set_selection_view" or "select_card" or "selection_option")
             return await SelectionRequest(request, beforeState);

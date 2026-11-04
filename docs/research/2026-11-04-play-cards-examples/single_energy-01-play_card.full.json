@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "I don't have\nenough Energy.",
+    "recovery": "choose_legal_action"
+  }
+}

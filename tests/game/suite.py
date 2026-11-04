@@ -16,6 +16,7 @@ from sts2_mcp.roundtrip_client import Client
 
 CATALOG = json.loads((ROOT / 'tests/game/data/test_scenarios.json').read_text())
 SUPPORTED_VERIFIERS = {
+    'verify_play_cards.py',
     'verify_play_card_review.py',
     'verify_turn_transitions.py',
     'verify_card_view_close.py',
@@ -100,6 +101,9 @@ def load_cases(path):
             if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
+                'verify_play_cards.py': ('ordered', 'native_reject', 'default', 'single_entry', 'autoplay', 'pending_reset', 'after_reset', 'diagnostics', 'atomic', 'partial', 'zero', 'energy', 'stars', 'target',
+                    'random_exhaust', 'hand_exhaust', 'automatic_hand', 'choose_one', 'immediate_choice',
+                    'combat_pile', 'victory', 'death', 'immediate_death'),
                 'verify_play_card_review.py': ('queue_ordered', 'queue_energy', 'queue_stars', 'queue_target',
                     'queue_random_exhaust', 'queue_hand_exhaust', 'queue_automatic_hand', 'queue_choose_one',
                     'queue_combat_pile', 'queue_victory', 'queue_death', 'queue_immediate_death', 'basic', 'energy', 'stars', 'unplayable',

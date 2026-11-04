@@ -1,0 +1,43 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "play_cards",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 8,
+          "name": "Evil Eye"
+        },
+        "pile": "hand",
+        "type": "card_added",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Discovery"
+        },
+        "type": "card_exhausted",
+        "sequence": 2
+      }
+    ]
+  }
+}

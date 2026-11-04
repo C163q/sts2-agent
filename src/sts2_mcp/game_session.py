@@ -8,6 +8,7 @@ from functools import partial
 import anyio
 
 from sts2_mcp.output.action_output import action_result
+from sts2_mcp.output.card_batch_output import uncertain_card_plays
 from sts2_mcp.output.available_tools import GAME_ACTIONS, public_tools
 from sts2_mcp.output.divination_details import attach_divination_image
 from sts2_mcp.output.error_output import error_result, retained_rejection
@@ -50,6 +51,8 @@ class GameResponse:
 
 
 def can_continue(payload):
+    if uncertain_card_plays(payload):
+        return False
     transition = payload.get('transition', {})
     reason = transition.get('stop_reason')
     selection = payload.get('selection')

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "I'm blocked\nby Normality.",
+    "recovery": "choose_legal_action"
+  }
+}

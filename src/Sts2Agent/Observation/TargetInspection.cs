@@ -31,7 +31,7 @@ internal sealed class TargetInspection(CombatObservation observation)
     // Self is a single-target potion type, but never an explicit card target.
     public static bool RequiresTarget(CardModel card) => card.TargetType is TargetType.AnyEnemy or TargetType.AnyAlly;
 
-    private static bool Visible(Creature creature)
+    public static bool Visible(Creature creature)
     {
         var node = NCombatRoom.Instance?.GetCreatureNode(creature);
         return creature.CombatId.HasValue && VisibleUi.Shown(node) && VisibleUi.OnScreen(node!.Body);
@@ -55,11 +55,8 @@ internal sealed class TargetInspection(CombatObservation observation)
 
     public static string? Reason(CardModel card, Creature[] targets)
     {
-        if (!card.CanPlay(out UnplayableReason reason, out _))
-            return reason.HasFlag(UnplayableReason.EnergyCostTooHigh) ? "Not enough Energy."
-                : reason.HasFlag(UnplayableReason.StarCostTooHigh) ? "Not enough Stars."
-                : reason.HasFlag(UnplayableReason.NoLivingAllies) ? "No living allies."
-                : "This card cannot be played now.";
+        if (!card.CanPlay(out UnplayableReason reason, out var preventer))
+            return CardPlayFailureText.Read(reason, preventer);
         return RequiresTarget(card) && targets.Length == 0 ? "No valid target." : null;
     }
 

@@ -1,0 +1,166 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_rewards"
+  ],
+  "transition": {
+    "stop_reason": "combat_won",
+    "complete": true,
+    "events": [
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 20,
+        "after": 19,
+        "type": "energy_changed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Thunderclap"
+        },
+        "autoplay": false,
+        "source": null,
+        "type": "card_played",
+        "sequence": 2
+      },
+      {
+        "hp_loss": 1,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Thunderclap"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 3
+      },
+      {
+        "hp_loss": 1,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Thunderclap"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "damage",
+        "sequence": 4
+      },
+      {
+        "hp_loss": 1,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Thunderclap"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 5
+      },
+      {
+        "source": {
+          "kind": "card",
+          "name": "Thunderclap"
+        },
+        "target": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "type": "died",
+        "sequence": 6
+      },
+      {
+        "source": {
+          "kind": "card",
+          "name": "Thunderclap"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "died",
+        "sequence": 7
+      },
+      {
+        "source": {
+          "kind": "card",
+          "name": "Thunderclap"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "died",
+        "sequence": 8
+      }
+    ]
+  },
+  "card_plays": {
+    "batch_id": "e0b61b2b9a6c4baa9103662f31558561",
+    "results": [
+      {
+        "index": 0,
+        "card_id": 5,
+        "target_id": null,
+        "status": "played",
+        "reason": null
+      },
+      {
+        "index": 1,
+        "card_id": 6,
+        "target_id": null,
+        "status": "not_played",
+        "reason": "The native card play was canceled."
+      },
+      {
+        "index": 2,
+        "card_id": 7,
+        "target_id": null,
+        "status": "not_played",
+        "reason": "The native card play was canceled."
+      }
+    ]
+  }
+}

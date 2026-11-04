@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "cards must be a nonempty array of card play objects.",
+    "recovery": "correct_request"
+  }
+}

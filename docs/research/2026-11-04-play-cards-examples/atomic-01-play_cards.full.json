@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "cards[1]: No supported visible hand card has that ID.",
+    "recovery": "choose_legal_action"
+  }
+}

@@ -18,7 +18,7 @@ SERVER_INSTRUCTIONS = (
     "No extra get_observation is needed when a result already provides the information needed to act. "
     "Close covering views before acting on the underlying screen. "
     "Follow error.recovery; choose_legal_action permits deciding from existing information, with inspections as needed. "
-    "After stale observations, timeouts or incomplete transitions, check current state before deciding; "
+    "After stale observations, timeouts, incomplete transitions or unknown card results, check current state before deciding; "
     "never automatically retry an action with unknown outcome."
 )
 

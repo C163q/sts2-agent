@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "cards[1].card_id duplicates an earlier hand card ID.",
+    "recovery": "correct_request"
+  }
+}

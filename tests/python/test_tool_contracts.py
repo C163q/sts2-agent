@@ -14,6 +14,7 @@ from sts2_mcp.mcp_catalog import tool_definitions
 
 
 DATA = Path(__file__).resolve().parents[1] / 'data/tool_contracts'
+ADDED_TOOL_ARGUMENTS = {'play_cards': {'cards': [{'card_id': 7, 'target_id': 3}], 'preset': 'full'}}
 
 
 class ContractReply:
@@ -72,8 +73,12 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
         cases = json.loads((DATA / 'cases.json').read_text())
         expected = json.loads((DATA / 'expected.json').read_text())
         catalog = tool_definitions()
-        self.assertEqual({case['tool'] for case in cases}, {tool.name for tool in catalog})
+        self.assertEqual({case['tool'] for case in cases} | ADDED_TOOL_ARGUMENTS.keys(), {tool.name for tool in catalog})
         for tool in catalog:
+            if tool.name in ADDED_TOOL_ARGUMENTS:
+                # New tools have independent contracts; the pre-refactor fixtures stay frozen.
+                self.assertTrue(Path(__file__).with_name('test_' + tool.name + '.py').is_file())
+                continue
             successful = [case for case in cases if case['tool'] == tool.name and 'error' not in expected[case['expected_ref']]]
             presets = {case['arguments'].get('preset') for case in successful}
             # Keep the refactor fixtures frozen; test_potion_presets covers the new summary.

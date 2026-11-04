@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 43 项，已核销 10 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、end_turn。[play_card 场景及原生连续出牌调研](2026-11-04-play-card-review.md)已完成，已选择新增 play_cards，当前讨论参数与逐张回执，尚未实现；get_observation 的地图覆盖仍待 inspect_map，整体未核销，其余 32 项尚未核销。暂无阻塞。
+> 当前状态：工具核验进行中，共 44 项，已核销 12 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、play_card、play_cards、end_turn。[连续出牌、PLAY-01–03 与共用提交重构](2026-11-04-play-cards-implementation.md)已实现并验证；get_observation 的地图覆盖仍待 inspect_map，整体未核销，其余 31 项尚未核销。暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -8,7 +8,7 @@
 
 - 核对基线：提交 `ef9f34e`，MCP `0.48.0`；工具名称与数量依据 [mcp_catalog.py](../../src/sts2_mcp/mcp_catalog.py)。后续以每项核验时的实现为准，工具增删时同步本清单及总数。
 - 逐项检查工具的适用场景、返回内容、参数及预设，目标是符合玩家实际可从 UI 获得的信息，并让 LLM 聚焦所关心的内容。遵循[可见信息边界](../observation.md)。
-- 42 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、药水、战斗对象、遗物的 `summary`、地图的 `selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆也已迁移为 full/default/summary，旧 detail_level 已移除。既有能力也须重新核验，不因此直接核销。
+- 43 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、药水、战斗对象、遗物的 `summary`、地图的 `selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆也已迁移为 full/default/summary，旧 detail_level 已移除。既有能力也须重新核验，不因此直接核销。
 - `capture_screenshot` 按配置启用，不支持 preset；核验其现有参数与返回。统一预设的现行契约见 [MCP 输出预设](../development/mcp.md#输出预设)。
 
 ## 逐项工作流程
@@ -45,9 +45,10 @@
 - [x] `inspect_pile`：打开并查看抽牌堆、弃牌堆或消耗堆。[核验及定稿](2026-11-04-inspect-pile-review.md)、[实现与验证](2026-11-04-pile-inspection-implementation.md)：具体拒绝／显式未交互恢复、card_ids、基础观察的静态卡牌、固定帮助精简、旧专项修复，以及选牌战场视图的当前页复用。
 - [x] `close_card_view`：关闭牌组或牌堆浏览界面。[审阅及定稿](2026-11-04-close-card-view-review.md)、[实现与验证](2026-11-04-close-card-view-implementation.md)完成：关闭原因与合法性统一、明确未交互拒绝保留已有许可，成功维持 default/full 的 actions_only；627 项 Python、91 项 C#、三局 GUI／30 次 MCP 及独立审查通过。
 
-### 战斗与药水操作（4 项）
+### 战斗与药水操作（5 项）
 
-- [ ] `play_card`：打出手牌。阶段：[现状及原生连续出牌调研](2026-11-04-play-card-review.md)完成，保存 33 份 full 返回及 12 种原生轨迹；已确定新增 play_cards 并遵循原生队列。PLAY-01–03、批量参数和逐张结果待定稿，暂不核销。
+- [x] `play_card`：单张手动出牌。[现状调研](2026-11-04-play-card-review.md)及[实现／验证](2026-11-04-play-cards-implementation.md)完成：PLAY-01–03、共用校验与原生提交追踪、最终拒绝恢复和单张回归；action_canceled 维持原策略。
+- [x] `play_cards`：按原生规则连续入队。[参数／行为](2026-11-04-play-cards-design.md)及[交付](2026-11-04-play-cards-implementation.md)完成：原子前置校验、动态失败继续、边界停止、逐张及跨选择回执、unknown 不直接接受后续动作。32 项不同场景／门控、653 项 Python、114 项 C# 及独立审查的重要修复通过；集成验证剩余范围见交付记录。
 - [x] `end_turn`：结束回合。[审阅](2026-11-04-end-turn-review.md)、[头槌补充核验](2026-11-04-headbutt-transition-review.md)及[实施／新返回](2026-11-04-turn-transitions-implementation.md)完成：TURN-01–03、无 position 的 card_moved、default 省略 autoplay:false；四张指定卡、手斧抽牌堆来源变体、错误直接续接及终态查看均已验证。636 项 Python、91 项 C#、最终十五局 GUI 通过；独立审查的重要问题已修复，低优先级生成预览牌名缓存限制留在实施记录。
 - [ ] `use_potion`：使用药水。
 - [ ] `discard_potion`：丢弃药水。

@@ -1,0 +1,162 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "select_card",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "set_selection_view"
+  ],
+  "selection": {
+    "type": "combat_pile",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": [
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 20,
+        "after": 19,
+        "type": "energy_changed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Strike"
+        },
+        "autoplay": false,
+        "source": null,
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "card_played",
+        "sequence": 2
+      },
+      {
+        "hp_loss": 6,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Strike"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "damage",
+        "sequence": 3
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Strike"
+        },
+        "from_pile": "play",
+        "to_pile": "discard",
+        "type": "card_moved",
+        "sequence": 4
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 19,
+        "after": 18,
+        "type": "energy_changed",
+        "sequence": 5
+      },
+      {
+        "card": {
+          "id": 6,
+          "name": "Headbutt"
+        },
+        "autoplay": false,
+        "source": null,
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "card_played",
+        "sequence": 6
+      },
+      {
+        "hp_loss": 9,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Headbutt"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "damage",
+        "sequence": 7
+      }
+    ]
+  },
+  "card_plays": {
+    "batch_id": "b29431864ac34e2aa5e231f032a6c41a",
+    "results": [
+      {
+        "index": 0,
+        "card_id": 5,
+        "target_id": 2,
+        "status": "played",
+        "reason": null
+      },
+      {
+        "index": 1,
+        "card_id": 6,
+        "target_id": 2,
+        "status": "resolving",
+        "reason": null
+      },
+      {
+        "index": 2,
+        "card_id": 7,
+        "target_id": null,
+        "status": "queued",
+        "reason": null
+      },
+      {
+        "index": 3,
+        "card_id": 8,
+        "target_id": null,
+        "status": "queued",
+        "reason": null
+      }
+    ]
+  },
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

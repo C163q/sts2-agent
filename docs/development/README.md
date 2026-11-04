@@ -18,7 +18,7 @@
 | --- | --- |
 | 信息允许读取到什么程度 | [可见信息边界](../observation.md) |
 | 基础字段、各场景 summary、actions_only 与 top_bar | [游戏基础观察 JSON](observation.md) |
-| 出牌合法性及目标查询 | [出牌](card-play.md) |
+| 单张／连续出牌、逐张回执及目标查询 | [出牌](card-play.md) |
 | 选择、预览、筛选及查看战场 | [选牌](card-selection.md) |
 | 使用、丢弃及药水目标查询 | [药水动作](potion-actions.md) |
 | 停止原因、画面稳定和共享 transition 事件 | [结束回合与期间事件](end-turn.md) |

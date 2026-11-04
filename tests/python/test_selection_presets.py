@@ -181,7 +181,7 @@ class SelectionPresetStdioTests(unittest.IsolatedAsyncioTestCase):
             async with ClientSession(read, write) as session:
                 await session.initialize()
                 tools = {t.name: t for t in (await session.list_tools()).tools}
-                self.assertEqual(len(tools), 42)
+                self.assertEqual(len(tools), 43)
                 self.assertEqual(set(tools['inspect_selection'].inputSchema['properties']), {'preset', 'card_ids', 'view_upgrades'})
                 self.assertFalse(tools['inspect_selection'].annotations.readOnlyHint)
                 for args in ({}, {'preset': 'full'}, {'preset': 'summary'}):

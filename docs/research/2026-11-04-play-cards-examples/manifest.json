@@ -1,0 +1,1239 @@
+{
+  "base_commit": "ecd071e",
+  "mod_version": "0.63.0",
+  "mcp_version": "0.65.0",
+  "schema_version": 40,
+  "cases": 32,
+  "selected_mcp_calls": 198,
+  "builds": [
+    {
+      "report": ".tmp/2026-11-04-play-cards-implementation/gui-first/report.json",
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d"
+    },
+    {
+      "report": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/report.json",
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d"
+    },
+    {
+      "report": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/report.json",
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba"
+    }
+  ],
+  "examples": [
+    {
+      "file": "diagnostics-01-play_card.full.json",
+      "case": "diagnostics",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/diagnostics/verify/evidence.json",
+      "source_row": 3,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "2b3b5e67d6741508d0b7c54f21226703383f0f95292278653f193ed80b40a81e",
+      "outcome": "Close the card browsing page before playing cards."
+    },
+    {
+      "file": "diagnostics-02-inspect_targets.full.json",
+      "case": "diagnostics",
+      "tool": "inspect_targets",
+      "arguments": {
+        "preset": "full",
+        "card_id": 8
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/diagnostics/verify/evidence.json",
+      "source_row": 8,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "c8eae6c6a14ed09bc971c8cfbfa58f2a340b96d4be0c20ec1619086f7a53d44b",
+      "outcome": "inspection"
+    },
+    {
+      "file": "diagnostics-03-play_card.full.json",
+      "case": "diagnostics",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 8
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/diagnostics/verify/evidence.json",
+      "source_row": 9,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "911ed37b83334c9a99b5a2ab798f9f85b05b07fccaa7b61b8aca538c162bc5c1",
+      "outcome": "I'm blocked\nby Normality."
+    },
+    {
+      "file": "diagnostics-04-play_card.full.json",
+      "case": "diagnostics",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 8
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/diagnostics/verify/evidence.json",
+      "source_row": 11,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "3da3dec7bee54e810d758d688d37c22b1b4ee4591a3812c158353654b5c38c02",
+      "outcome": "Close the map before playing cards."
+    },
+    {
+      "file": "ordered-01-play_cards.full.json",
+      "case": "ordered",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 6
+          },
+          {
+            "card_id": 7,
+            "target_id": 2
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/ordered/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "99da4bbf882dabaea35881fd92744f19cf02efc22956f2eb2814f3c33cdd056e",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "played",
+        "played"
+      ]
+    },
+    {
+      "file": "atomic-01-play_cards.full.json",
+      "case": "atomic",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 2147483647
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/atomic/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "a8ffdbebdf55ba2ec6ee91cc3baf0ae8040096ca26f9da3111b562fb83352cb9",
+      "outcome": "cards[1]: No supported visible hand card has that ID."
+    },
+    {
+      "file": "atomic-02-play_cards.full.json",
+      "case": "atomic",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 6,
+            "target_id": 2
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/atomic/verify/evidence.json",
+      "source_row": 3,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "8dd23769e34de029823c790d8592a8f9f918a50f6a6655091d81cad987b4dc19",
+      "outcome": "cards[1]: This card does not accept target_id; omit it."
+    },
+    {
+      "file": "atomic-03-play_cards.full.json",
+      "case": "atomic",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 7,
+            "target_id": 4294967295
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/atomic/verify/evidence.json",
+      "source_row": 4,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "bf5ed7e244b888181beacd3d6e0c15ba0579be94eb6b210f900c00f58aabb4f1",
+      "outcome": "cards[1]: target_id does not identify a current visible combat object."
+    },
+    {
+      "file": "atomic-04-play_cards.full.json",
+      "case": "atomic",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": []
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/atomic/verify/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "f2b6c4bdf4fbc744e7e3721a3c4215d8b66ec8b167443eadc43236993c9d7d4e",
+      "outcome": "cards must be a nonempty array of card play objects."
+    },
+    {
+      "file": "atomic-05-play_cards.full.json",
+      "case": "atomic",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 5,
+            "target_id": 2
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/atomic/verify/evidence.json",
+      "source_row": 6,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "5bc23a23cced560f99d12783c80c0c4331a998772e0aaff55f9ad5098284e318",
+      "outcome": "cards[1].card_id duplicates an earlier hand card ID."
+    },
+    {
+      "file": "atomic-06-play_cards.full.json",
+      "case": "atomic",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 6
+          },
+          {
+            "card_id": 7,
+            "target_id": 2
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/atomic/verify/evidence.json",
+      "source_row": 7,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "bb7aafa45a0c17c923afcc1a7cfb751285d6f3fca838148657936087e5624f16",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "played",
+        "played"
+      ]
+    },
+    {
+      "file": "partial-01-play_cards.full.json",
+      "case": "partial",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 6,
+            "target_id": 2
+          },
+          {
+            "card_id": 7
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/partial/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "de39e13c71ed8e5293bb22057e08f76bcf03528ca54c502bbc8f76aa5a6513ce",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "not_submitted",
+        "played"
+      ]
+    },
+    {
+      "file": "zero-01-play_cards.full.json",
+      "case": "zero",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 6
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/zero/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "2ca0b1a6583def68ce0c8fe13070cdb3f3ded12e5c912c5300708b0c948dbd1a",
+      "outcome": "player_ready",
+      "statuses": [
+        "not_submitted",
+        "not_submitted"
+      ]
+    },
+    {
+      "file": "energy-01-play_cards.full.json",
+      "case": "energy",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 6,
+            "target_id": 2
+          },
+          {
+            "card_id": 7,
+            "target_id": 2
+          },
+          {
+            "card_id": 8
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/energy/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "8050b64862c85a820e253345fe9e63d7403deecae383f7fd7f68b28c55ff6a3d",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "played",
+        "not_played",
+        "played"
+      ]
+    },
+    {
+      "file": "stars-01-play_cards.full.json",
+      "case": "stars",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 6
+          },
+          {
+            "card_id": 7
+          },
+          {
+            "card_id": 8
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/stars/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "6ce834019c593a21d2cfdc99609b165ad109ffa497cc945c22e6b017dc1cd93e",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "played",
+        "not_played",
+        "played"
+      ]
+    },
+    {
+      "file": "target-01-play_cards.full.json",
+      "case": "target",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 1
+          },
+          {
+            "card_id": 6,
+            "target_id": 1
+          },
+          {
+            "card_id": 7
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/target/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "70f5bf6650aa10ff6838e03983d0c567c88d9b6a339db7d04e5c55630c7157a8",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "not_played",
+        "played"
+      ]
+    },
+    {
+      "file": "random_exhaust-01-play_cards.full.json",
+      "case": "random_exhaust",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5
+          },
+          {
+            "card_id": 6
+          },
+          {
+            "card_id": 7
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/random_exhaust/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "43ecae6a5fe79f51110efe8c86537fec72cdf8dbce202d28b20aac57530a5547",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "not_played",
+        "played"
+      ]
+    },
+    {
+      "file": "hand_exhaust-01-play_cards.full.json",
+      "case": "hand_exhaust",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5
+          },
+          {
+            "card_id": 6
+          },
+          {
+            "card_id": 7
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/hand_exhaust/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "71ab4a31a6ebf3e491901b01b34cacffa500f6dcddebfd16262f54f572b93c6c",
+      "outcome": "choice_required",
+      "statuses": [
+        "resolving",
+        "not_played",
+        "not_played"
+      ]
+    },
+    {
+      "file": "hand_exhaust-02-play_cards.full.json",
+      "case": "hand_exhaust",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 7
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/hand_exhaust/verify/evidence.json",
+      "source_row": 4,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "ff8618f4d97458676b6f3ecd549bb99681d0ceae236b578433e64ff4c08a8f36",
+      "outcome": "Resolve the current card selection before playing cards."
+    },
+    {
+      "file": "hand_exhaust-03-select_card.full.json",
+      "case": "hand_exhaust",
+      "tool": "select_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/hand_exhaust/verify/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "e67e684b1461270f08979437f0a9f5620d803218e9621318f2361621eaf0883f",
+      "outcome": "choice_required",
+      "statuses": [
+        "resolving",
+        "not_played",
+        "not_played"
+      ]
+    },
+    {
+      "file": "hand_exhaust-04-selection_option.full.json",
+      "case": "hand_exhaust",
+      "tool": "selection_option",
+      "arguments": {
+        "preset": "full",
+        "option_id": "confirm"
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/hand_exhaust/verify/evidence.json",
+      "source_row": 7,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "352492c993ba9ad729eeb2b28afc71b6b5a28e211977b1faaa5a5036e105b6b2",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "not_played",
+        "not_played"
+      ]
+    },
+    {
+      "file": "automatic_hand-01-play_cards.full.json",
+      "case": "automatic_hand",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5
+          },
+          {
+            "card_id": 6
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/automatic_hand/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "7135e00123fada9eae9efe8f3bbadac9feffaf5c8571e5a77bf5578f110506a6",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "not_played"
+      ]
+    },
+    {
+      "file": "choose_one-01-play_cards.full.json",
+      "case": "choose_one",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 6
+          },
+          {
+            "card_id": 7
+          },
+          {
+            "card_id": 8
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/choose_one/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "052dfb924210d2bdb6537d3ebbde199d6e082644212dd13c7f5cf2551c0f0e83",
+      "outcome": "choice_required",
+      "statuses": [
+        "played",
+        "resolving",
+        "queued",
+        "queued"
+      ]
+    },
+    {
+      "file": "choose_one-02-play_cards.full.json",
+      "case": "choose_one",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 8
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/choose_one/verify/evidence.json",
+      "source_row": 4,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "ff8618f4d97458676b6f3ecd549bb99681d0ceae236b578433e64ff4c08a8f36",
+      "outcome": "Resolve the current card selection before playing cards."
+    },
+    {
+      "file": "choose_one-03-select_card.full.json",
+      "case": "choose_one",
+      "tool": "select_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 9
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/choose_one/verify/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "ef2b4eeabdc6adb9301a268c5f86c77432e6169efcb4fdcaa01f5489bfb07297",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "played",
+        "played",
+        "played"
+      ]
+    },
+    {
+      "file": "immediate_choice-01-play_cards.full.json",
+      "case": "immediate_choice",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5
+          },
+          {
+            "card_id": 6
+          },
+          {
+            "card_id": 7
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/immediate_choice/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "8f2bdef80fde2c2552d06be72c59e40187fd07febece8227c5606408b6c50cbe",
+      "outcome": "choice_required",
+      "statuses": [
+        "resolving",
+        "not_submitted",
+        "not_submitted"
+      ]
+    },
+    {
+      "file": "immediate_choice-02-play_cards.full.json",
+      "case": "immediate_choice",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 7
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/immediate_choice/verify/evidence.json",
+      "source_row": 4,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "ff8618f4d97458676b6f3ecd549bb99681d0ceae236b578433e64ff4c08a8f36",
+      "outcome": "Resolve the current card selection before playing cards."
+    },
+    {
+      "file": "immediate_choice-03-select_card.full.json",
+      "case": "immediate_choice",
+      "tool": "select_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 8
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/immediate_choice/verify/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "583015393989799c812919cf8273a55559825ae839be25de32e0d3ec446bc613",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "not_submitted",
+        "not_submitted"
+      ]
+    },
+    {
+      "file": "combat_pile-01-play_cards.full.json",
+      "case": "combat_pile",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 6,
+            "target_id": 2
+          },
+          {
+            "card_id": 7
+          },
+          {
+            "card_id": 8
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/combat_pile/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "148702156acb4e59613055aac714e3fc010fd8120aaa04b8e900f6f1bdc4dd1b",
+      "outcome": "choice_required",
+      "statuses": [
+        "played",
+        "resolving",
+        "queued",
+        "queued"
+      ]
+    },
+    {
+      "file": "combat_pile-02-play_cards.full.json",
+      "case": "combat_pile",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 8
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/combat_pile/verify/evidence.json",
+      "source_row": 4,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "ff8618f4d97458676b6f3ecd549bb99681d0ceae236b578433e64ff4c08a8f36",
+      "outcome": "Resolve the current card selection before playing cards."
+    },
+    {
+      "file": "combat_pile-03-select_card.full.json",
+      "case": "combat_pile",
+      "tool": "select_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 9
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/combat_pile/verify/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "efc3b9fd52cdda59bfb6a0c4f73f23e53834776f59a2033aae22093ffb770698",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "played",
+        "played",
+        "played"
+      ]
+    },
+    {
+      "file": "victory-01-play_cards.full.json",
+      "case": "victory",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5
+          },
+          {
+            "card_id": 6
+          },
+          {
+            "card_id": 7
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/victory/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "6249ccff8c706eacab4bc813017e8039695f58fcb582b909ad44060f58e85ec5",
+      "outcome": "combat_won",
+      "statuses": [
+        "played",
+        "not_played",
+        "not_played"
+      ]
+    },
+    {
+      "file": "death-01-play_cards.full.json",
+      "case": "death",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 6
+          },
+          {
+            "card_id": 7
+          },
+          {
+            "card_id": 8
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/death/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "5330749f529303ae5a272b8e3a827da7429e45c940387f549117a8c7a3a2a550",
+      "outcome": "combat_lost",
+      "statuses": [
+        "played",
+        "played",
+        "not_played",
+        "not_played"
+      ]
+    },
+    {
+      "file": "immediate_death-01-play_cards.full.json",
+      "case": "immediate_death",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5
+          },
+          {
+            "card_id": 6
+          },
+          {
+            "card_id": 7
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-first/immediate_death/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "335fa8c8765401708f7fac14b4a5970b656565c80d6cab11d52369125b2c3e7d",
+      "outcome": "combat_lost",
+      "statuses": [
+        "played",
+        "not_submitted",
+        "not_submitted"
+      ]
+    },
+    {
+      "file": "default-01-play_cards.default.json",
+      "case": "default",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "default",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 6
+          },
+          {
+            "card_id": 7,
+            "target_id": 2
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/default/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "9acaf83711342d20cb60053569605380e93141e2ca96492a61d7eec90fa5a27d",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "played",
+        "played"
+      ]
+    },
+    {
+      "file": "single_entry-01-play_cards.full.json",
+      "case": "single_entry",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 6
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_entry/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "2f5c9404add1533489e2be42df0545c6376b9ebc562a53202d1ca7388bda0fad",
+      "outcome": "player_ready",
+      "statuses": [
+        "played"
+      ]
+    },
+    {
+      "file": "autoplay-01-play_cards.full.json",
+      "case": "autoplay",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 7
+          },
+          {
+            "card_id": 8,
+            "target_id": 2
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/autoplay/verify/evidence.json",
+      "source_row": 8,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "0c86c9bde7f3d842669081df94187aa73d3aa870dfbb2b05e61854698b5320a9",
+      "outcome": "player_ready",
+      "statuses": [
+        "played",
+        "played",
+        "played"
+      ]
+    },
+    {
+      "file": "pending_reset-01-play_cards.full.json",
+      "case": "pending_reset",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 6
+          },
+          {
+            "card_id": 7
+          },
+          {
+            "card_id": 8
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/pending_reset/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "32d35e431911eb824df5aa14f952d79e985e05341851e30e179469c3e4004879",
+      "outcome": "choice_required",
+      "statuses": [
+        "played",
+        "resolving",
+        "queued",
+        "queued"
+      ]
+    },
+    {
+      "file": "single_basic-01-play_card.full.json",
+      "case": "single_basic",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": true
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_basic/verify/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "08f4c2875ccf29dbf838eb68f8fd791d863a7d4e86ad023718a565d40190f289",
+      "outcome": "card_id must be integer."
+    },
+    {
+      "file": "single_basic-02-play_card.full.json",
+      "case": "single_basic",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": null
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_basic/verify/evidence.json",
+      "source_row": 3,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "9f3ecd6186408719adbeebd5568487fdec144bf2e628188bf055bab0e545bb10",
+      "outcome": "target_id must be integer."
+    },
+    {
+      "file": "single_basic-03-play_card.full.json",
+      "case": "single_basic",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 2147483647
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_basic/verify/evidence.json",
+      "source_row": 4,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "ce5d3b66ad289436160e1fc9e25597fbba0189c151b60d8be7faabbd91085916",
+      "outcome": "No supported visible hand card has that ID."
+    },
+    {
+      "file": "single_basic-04-play_card.full.json",
+      "case": "single_basic",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_basic/verify/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "ccacfbf11ff31df88df7945b936e1dcb4b44a8d1a81765ac15d5620ba6b39756",
+      "outcome": "This card requires target_id for a current target; inspect_targets can clarify its target range."
+    },
+    {
+      "file": "single_basic-05-play_card.full.json",
+      "case": "single_basic",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 4294967295
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_basic/verify/evidence.json",
+      "source_row": 6,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "75c9814c575660da3cd1228ba84893e694cf8169313d7b0af1053f3ba41c514d",
+      "outcome": "target_id does not identify a current visible combat object."
+    },
+    {
+      "file": "single_basic-06-play_card.full.json",
+      "case": "single_basic",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6,
+        "target_id": 0
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_basic/verify/evidence.json",
+      "source_row": 12,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "46277c77f161cdec60d588b8cbd6d310021eb92ffc034165f86b160135e7e51f",
+      "outcome": "This card does not accept target_id; omit it."
+    },
+    {
+      "file": "single_energy-01-play_card.full.json",
+      "case": "single_energy",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_energy/verify/evidence.json",
+      "source_row": 3,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "beb864760e7ad4a5ac5fde3586190f6aecb336a131533c7a920069e1ace863b6",
+      "outcome": "I don't have\nenough Energy."
+    },
+    {
+      "file": "single_cancel-01-play_card.full.json",
+      "case": "single_cancel",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/single_cancel/verify/evidence.json",
+      "source_row": 3,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "440842d6249360af1470fd93be2874db62164744b85a0ef2c555b0000449115c",
+      "outcome": "action_canceled"
+    },
+    {
+      "file": "single_cancel-02-play_card.full.json",
+      "case": "single_cancel",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/single_cancel/verify/evidence.json",
+      "source_row": 4,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
+      "outcome": "Read current state with get_observation or a relevant inspection before acting."
+    },
+    {
+      "file": "single_hand_choice-01-play_card.full.json",
+      "case": "single_hand_choice",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 7
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_hand_choice/verify/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "ff8618f4d97458676b6f3ecd549bb99681d0ceae236b578433e64ff4c08a8f36",
+      "outcome": "Resolve the current card selection before playing cards."
+    },
+    {
+      "file": "single_hand_choice-02-select_card.full.json",
+      "case": "single_hand_choice",
+      "tool": "select_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_hand_choice/verify/evidence.json",
+      "source_row": 6,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "f398d75e0da224aa00d4009f25f25fd957c8002c1eb0b76de26de1791723836e",
+      "outcome": "choice_required"
+    },
+    {
+      "file": "single_hand_choice-03-selection_option.full.json",
+      "case": "single_hand_choice",
+      "tool": "selection_option",
+      "arguments": {
+        "preset": "full",
+        "option_id": "confirm"
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_hand_choice/verify/evidence.json",
+      "source_row": 8,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "9a70e43878268745e7225324d271bcf6e78e74c14a36b49996be1c6ea0fcc707",
+      "outcome": "player_ready"
+    },
+    {
+      "file": "single_choose_one-01-play_card.full.json",
+      "case": "single_choose_one",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 7
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_choose_one/verify/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "ff8618f4d97458676b6f3ecd549bb99681d0ceae236b578433e64ff4c08a8f36",
+      "outcome": "Resolve the current card selection before playing cards."
+    },
+    {
+      "file": "single_choose_one-02-select_card.full.json",
+      "case": "single_choose_one",
+      "tool": "select_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 8
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_choose_one/verify/evidence.json",
+      "source_row": 6,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "df9e1bb6d51b5938e4b91f7ff658290bc8f3e4b548c35de2d51a40d2b484e418",
+      "outcome": "player_ready"
+    },
+    {
+      "file": "single_combat_pile-01-play_card.full.json",
+      "case": "single_combat_pile",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 7
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_combat_pile/verify/evidence.json",
+      "source_row": 9,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "ff8618f4d97458676b6f3ecd549bb99681d0ceae236b578433e64ff4c08a8f36",
+      "outcome": "Resolve the current card selection before playing cards."
+    },
+    {
+      "file": "single_combat_pile-02-select_card.full.json",
+      "case": "single_combat_pile",
+      "tool": "select_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-regressions/single_combat_pile/verify/evidence.json",
+      "source_row": 10,
+      "mod_sha256": "581abcac30e08a85b9c5facd98bc73eb4cc042e0024eb7e217608bc5da005c8d",
+      "sha256": "3d80a4daf5cf1b3f54203212810cd4e19b5971792fecc0bb4c453e59f317b055",
+      "outcome": "player_ready"
+    },
+    {
+      "file": "native_reject-01-play_card.full.json",
+      "case": "native_reject",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/native_reject/verify/evidence.json",
+      "source_row": 3,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "0b9c6b806151db05e607848171a6399c7b86f184bffbce45f3298dc8fe395c77",
+      "outcome": "The game rejected this card play before submission."
+    },
+    {
+      "file": "native_reject-02-play_cards.full.json",
+      "case": "native_reject",
+      "tool": "play_cards",
+      "arguments": {
+        "preset": "full",
+        "cards": [
+          {
+            "card_id": 5,
+            "target_id": 2
+          },
+          {
+            "card_id": 6
+          },
+          {
+            "card_id": 7,
+            "target_id": 2
+          }
+        ]
+      },
+      "source": ".tmp/2026-11-04-play-cards-implementation/gui-delivery/native_reject/verify/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "2d66c65c5e84e514a19480c74b7df33f6316670c588652697d8456255ca37dba",
+      "sha256": "aad09ce2987d7901b68c66705373b03617f13b4e5f3e88cda00fb6fff210486d",
+      "outcome": "player_ready",
+      "statuses": [
+        "not_submitted",
+        "played",
+        "played"
+      ]
+    }
+  ]
+}
