@@ -11,6 +11,7 @@ DisplaySupportChecks.Run(Check);
 ObservationSnapshotChecks.Run(Check);
 NativeResponseChecks.Run(Check);
 CardPlayChecks.Run(Check);
+PotionDiscardChecks.Run(Check);
 
 Check(TurnBoundary.Decide(true, false, true, false, false) == "choice_required", "choice before next turn");
 Check(TurnBoundary.Decide(true, false, false, false, false) == null, "animations are not completion");

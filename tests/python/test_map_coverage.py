@@ -67,6 +67,11 @@ class MapPotionChainTests(unittest.IsolatedAsyncioTestCase):
                         return {'ok': False, 'error': {'code': 'stale_state'}}
                     self.state['snapshot_id'] += 'x'
                     self.state['transition'] = {'stop_reason': 'action_completed', 'complete': True, 'events': []}
+                    self.state.pop('potion_discard', None)
+                    if operation == 'discard_potion':
+                        self.state['potion_discard'] = {'slot_index': 1, 'name': 'Block Potion', 'status': 'discarded'}
+                        self.state['transition']['events'] = [{'sequence': 1, 'type': 'potion_discarded',
+                            'potion': {'slot_index': 1, 'name': 'Block Potion'}}]
                 return {'ok': True, 'state': copy.deepcopy(self.state)}
 
         client = Client(); tools = GameTools(client)

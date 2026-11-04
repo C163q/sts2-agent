@@ -15,6 +15,7 @@ from sts2_mcp.mcp_catalog import tool_definitions
 
 DATA = Path(__file__).resolve().parents[1] / 'data/tool_contracts'
 ADDED_TOOL_ARGUMENTS = {'play_cards': {'cards': [{'card_id': 7, 'target_id': 3}], 'preset': 'full'}}
+DISCARD_UNKNOWN = {'slot_index': 0, 'name': 'Block Potion', 'status': 'unknown'}
 
 
 class ContractReply:
@@ -41,11 +42,16 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                 # The approved map context changes status only; keep the historical JSON frozen.
                 if client.state.get('screen', {}).get('view') == 'map':
                     client.state['screen']['status'] = 'covered'
+                if case['tool'] == 'discard_potion':
+                    # The frozen generic action has no discard witness; the new contract must remain unknown.
+                    client.state['potion_discard'] = copy.deepcopy(DISCARD_UNKNOWN)
                 original = copy.deepcopy(client.state)
                 tools = GameTools(client)
                 tools.snapshot_id = 'fixture-state'
                 result = await getattr(tools, case['tool'])(copy.deepcopy(case['arguments']))
                 want = copy.deepcopy(expected[case['expected_ref']])
+                if case['tool'] == 'discard_potion' and 'error' not in want:
+                    want.update(potion_discard=copy.deepcopy(DISCARD_UNKNOWN), available_actions=[])
                 if want.get('screen', {}).get('view') == 'map':
                     want['screen']['status'] = 'covered'
                 if case['tool'] == 'close_card_view' and 'error' not in want:
@@ -102,6 +108,8 @@ class FileContractTests(unittest.TestCase):
                 raw = {'ok': True, 'state': copy.deepcopy(states[case['state']])}
                 if raw['state'].get('screen', {}).get('view') == 'map':
                     raw['state']['screen']['status'] = 'covered'
+                if case['tool'] == 'discard_potion':
+                    raw['state']['potion_discard'] = copy.deepcopy(DISCARD_UNKNOWN)
                 original = copy.deepcopy(raw)
                 output = io.StringIO()
                 with patch('sys.argv', ['roundtrip_client.py', *case['argv']]), \
@@ -109,6 +117,8 @@ class FileContractTests(unittest.TestCase):
                         contextlib.redirect_stdout(output):
                     roundtrip_client.main()
                 want = copy.deepcopy(expected[case['expected_ref']])
+                if case['tool'] == 'discard_potion':
+                    want.update(potion_discard=copy.deepcopy(DISCARD_UNKNOWN), available_actions=[])
                 if want.get('screen', {}).get('view') == 'map':
                     want['screen']['status'] = 'covered'
                 if case['tool'] == 'close_card_view':

@@ -82,6 +82,7 @@ class PotionBoundaryTests(unittest.TestCase):
 
     def test_potion_source_and_discard_event_filter_internal_fields(self):
         raw = combat()
+        raw['potion_discard'] = {'slot_index': 1, 'name': 'Fire Potion', 'status': 'discarded'}
         raw['transition'] = {'stop_reason': 'player_ready', 'complete': True, 'events': [
             {'sequence': 1, 'type': 'potion_discarded',
              'potion': {'slot_index': 1, 'name': 'Fire Potion', 'model_id': 'secret'}},
@@ -106,6 +107,10 @@ class Client:
             raw.pop('targets', None)
         if operation in {'use_potion', 'discard_potion'}:
             raw['transition'] = {'stop_reason': 'player_ready', 'complete': True, 'events': []}
+        if operation == 'discard_potion':
+            raw['potion_discard'] = {'slot_index': arguments['potion_slot'], 'name': 'Block Potion', 'status': 'discarded'}
+            raw['transition']['events'] = [{'sequence': 1, 'type': 'potion_discarded',
+                'potion': {'slot_index': arguments['potion_slot'], 'name': 'Block Potion'}}]
         return {'ok': True, 'state': raw}
 
 

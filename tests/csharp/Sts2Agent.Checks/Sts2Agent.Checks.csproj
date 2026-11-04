@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="../../../src/Sts2Agent/Actions/CardPlayOptions.cs" Link="CardPlayOptions.cs" />
     <Compile Include="../../../src/Sts2Agent/Actions/CardPlayProgress.cs" Link="CardPlayProgress.cs" />
+    <Compile Include="../../../src/Sts2Agent/Actions/PotionDiscardProgress.cs" Link="PotionDiscardProgress.cs" />
     <Compile Include="../../../src/Sts2Agent/Infrastructure/PrivateFields.cs" Link="PrivateFields.cs" />
     <Compile Include="../../../src/Sts2Agent/Localization/HoverTextSources.cs" Link="HoverTextSources.cs" />
     <Compile Include="../../../src/Sts2Agent/Infrastructure/Request.cs" Link="Request.cs" />

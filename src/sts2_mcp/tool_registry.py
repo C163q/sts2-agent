@@ -506,15 +506,16 @@ SPECS = (
     ToolSpec(
         name='discard_potion',
         schema=POTION_SCHEMA,
-        description="Discard one potion through the native action. "
-            "Allowed only when potions can be removed; automatic potions may be discarded.",
+        description="Discard one potion, including automatic potions, when removal is allowed. "
+            "During a choice it may queue until the choice is resolved; potion_discard reports this request's status.",
         annotations=action,
         category='action',
         effect='action',
         requires_permission=True,
         returns_transition=True,
         records_events=True,
-        reader='transition_details:end_turn_details',
+        reader='potion_discard_output:discard_potion_details',
+        reader_argument='request',
         parser='potion_action_details:potion_arguments',
         parser_operation=True,
         unsubmitted_rejection_unchanged=True),

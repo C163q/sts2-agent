@@ -47,6 +47,10 @@ class Client:
                 state.update(selection=selection(), screen={'status': 'covered'},
                              available_actions=['select_card', 'selection_option'])
             self.mutate_reply(state)
+            if operation == 'discard_potion':
+                state['potion_discard'] = {'slot_index': arguments['potion_slot'], 'name': 'Block Potion', 'status': 'discarded'}
+                state['transition']['events'].append({'sequence': len(state['transition']['events']) + 1,
+                    'type': 'potion_discarded', 'potion': {'slot_index': arguments['potion_slot'], 'name': 'Block Potion'}})
         return {'ok': True, 'state': state}
 
 
@@ -64,8 +68,14 @@ class ActionObservationTests(unittest.IsolatedAsyncioTestCase):
                 observed = await tools.get_observation()
                 self.assertIn('player', observed)
                 result = await getattr(tools, name)(arguments)
-                self.assertEqual(set(result), {'scene', 'screen', 'available_actions', 'transition'})
-                self.assertEqual(result['transition']['events'], [event])
+                keys = {'scene', 'screen', 'available_actions', 'transition'}
+                wanted = [event]
+                if name == 'discard_potion':
+                    keys.add('potion_discard')
+                    wanted.append({'sequence': 2, 'type': 'potion_discarded',
+                        'potion': {'slot_index': 0, 'name': 'Block Potion'}})
+                self.assertEqual(set(result), keys)
+                self.assertEqual(result['transition']['events'], wanted)
                 self.assertEqual(tools.snapshot_id, 'state-2')
 
     async def test_choice_receipt_omits_candidates_but_inspection_still_returns_them(self):

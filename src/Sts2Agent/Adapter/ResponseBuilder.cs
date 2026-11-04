@@ -14,12 +14,13 @@ internal static class ResponseBuilder
     }
 
     public static string WithTransition(string observation, object transition,
-        object? rewardResult = null, object? purchaseResult = null)
+        object? rewardResult = null, object? purchaseResult = null, object? potionDiscard = null)
     {
         var state = JsonNode.Parse(observation)!.AsObject();
         state["transition"] = JsonSerializer.SerializeToNode(transition);
         if (rewardResult != null) state["reward_result"] = JsonSerializer.SerializeToNode(rewardResult);
         if (purchaseResult != null) state["purchase_result"] = JsonSerializer.SerializeToNode(purchaseResult);
+        if (potionDiscard != null) state["potion_discard"] = JsonSerializer.SerializeToNode(potionDiscard);
         return state.ToJsonString();
     }
 

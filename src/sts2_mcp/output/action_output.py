@@ -7,7 +7,7 @@ def action_result(payload):
         return payload
     result = observation_preset(payload, 'actions_only')
     result['transition'] = payload['transition']
-    for key in ('purchase_result', 'reward_result', 'card_plays'):
+    for key in ('purchase_result', 'reward_result', 'card_plays', 'potion_discard'):
         if key in payload:
             result[key] = payload[key]
     notes = {key: value for key, value in payload.get('notes', {}).items()

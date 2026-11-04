@@ -122,5 +122,5 @@ def end_turn_details(state):
             if action in (INSPECTIONS | VIEWS) & TOOLS_WITHOUT_PERMISSION or transition["complete"]
             and not uncertain and transition["stop_reason"] == "choice_required"
             and (result.get("selection") or {}).get("status") == "visible"
-            and action in {"select_card", "selection_option"}]
+            and action in {"select_card", "selection_option", "discard_potion"}]
     return result

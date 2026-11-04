@@ -98,6 +98,8 @@ class DecodeSuccessTests(unittest.TestCase):
             raw = copy.deepcopy(states[case['state']])
             if raw.get('screen', {}).get('view') == 'map':
                 raw['screen']['status'] = 'covered'
+            if request['operation'] == 'discard_potion':
+                raw['potion_discard'] = {'slot_index': 0, 'name': 'Block Potion', 'status': 'unknown'}
             decorated = inject(raw)
             original = copy.deepcopy(decorated)
             with self.subTest(operation=request['operation'], state=case['state']):
