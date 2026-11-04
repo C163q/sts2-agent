@@ -1,0 +1,61 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "available_actions": [
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics"
+  ],
+  "transition": {
+    "stop_reason": "combat_lost",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 5,
+          "name": "Offering"
+        },
+        "autoplay": false,
+        "source": null,
+        "type": "card_played",
+        "sequence": 1
+      },
+      {
+        "hp_loss": 1,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Offering"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 2
+      },
+      {
+        "source": {
+          "kind": "card",
+          "name": "Offering"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "died",
+        "sequence": 3
+      }
+    ]
+  }
+}

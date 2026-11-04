@@ -1,0 +1,463 @@
+[
+  {
+    "name": "queue_ordered",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "queue_ordered"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "queue_energy",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "queue_energy"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "queue_stars",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "queue_stars"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "queue_target",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "queue_target"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "queue_random_exhaust",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "queue_random_exhaust"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "queue_hand_exhaust",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "queue_hand_exhaust"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "queue_automatic_hand",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "queue_automatic_hand"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "queue_choose_one",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "queue_choose_one"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "queue_combat_pile",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "queue_combat_pile"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "queue_victory",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "queue_victory"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "queue_death",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "queue_death"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "queue_immediate_death",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "queue_immediate_death"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_basic",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_energy",
+    "scenarios": {
+      "play": "energy"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "energy"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_stars",
+    "scenarios": {
+      "play": "stars"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "stars"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_unplayable",
+    "scenarios": {
+      "play": "unplayable"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "unplayable"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_card_logic",
+    "scenarios": {
+      "play": "card_logic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "card_logic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_cancel",
+    "scenarios": {
+      "play": "cancel"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "cancel"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_hand_choice",
+    "scenarios": {
+      "play": "armaments"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "hand_choice"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_choose_one",
+    "scenarios": {
+      "play": "discovery"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "choose_one"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_combat_pile",
+    "scenarios": {
+      "play": "headbutt"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "combat_pile"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_victory",
+    "scenarios": {
+      "play": "victory"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "victory"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_death",
+    "scenarios": {
+      "play": "death"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "death"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_covered",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "covered"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_random",
+    "scenarios": {
+      "play": "random"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "random"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_x_cost",
+    "scenarios": {
+      "play": "x_cost"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "x_cost"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public_noncombat",
+    "scenarios": {
+      "event": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "noncombat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "native_gate",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "gate",
+        "verifier": "verify_native_dispatch.py",
+        "args": []
+      }
+    ]
+  },
+  {
+    "name": "public_hook",
+    "scenarios": {
+      "play": "hook"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_play_card_review.py",
+        "args": [
+          "--scenario",
+          "hook"
+        ]
+      }
+    ]
+  }
+]

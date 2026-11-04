@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Normal card play is unavailable.",
+    "recovery": "choose_legal_action"
+  }
+}

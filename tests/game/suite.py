@@ -16,6 +16,7 @@ from sts2_mcp.roundtrip_client import Client
 
 CATALOG = json.loads((ROOT / 'tests/game/data/test_scenarios.json').read_text())
 SUPPORTED_VERIFIERS = {
+    'verify_play_card_review.py',
     'verify_turn_transitions.py',
     'verify_card_view_close.py',
     'verify_pile_inspection.py',
@@ -99,6 +100,11 @@ def load_cases(path):
             if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
+                'verify_play_card_review.py': ('queue_ordered', 'queue_energy', 'queue_stars', 'queue_target',
+                    'queue_random_exhaust', 'queue_hand_exhaust', 'queue_automatic_hand', 'queue_choose_one',
+                    'queue_combat_pile', 'queue_victory', 'queue_death', 'queue_immediate_death', 'basic', 'energy', 'stars', 'unplayable',
+                    'card_logic', 'cancel', 'hand_choice', 'choose_one', 'combat_pile', 'victory', 'death',
+                    'covered', 'noncombat', 'random', 'x_cost', 'hook'),
                 'verify_turn_transitions.py': ('headbutt_empty', 'headbutt_single', 'headbutt_multiple', 'shining', 'hatchet', 'hatchet_draw', 'knife', 'won', 'lost', 'checks', 'preflight', 'noncombat'),
                 'verify_card_view_close.py': ('combat', 'selection', 'battlefield'),
                 'verify_pile_inspection.py': ('draw', 'combat', 'selection', 'battlefield'),

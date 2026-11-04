@@ -32,6 +32,16 @@ internal sealed partial class GameAdapter
 {
     private async Task<string?> TestRequestBeforeCapture(Request request)
     {
+        if (request.Operation == "check_test_play_queue" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
+        {
+            if (LocalPlayer is not { } player || !CanPlayCards() || request.Arguments is not { } args
+                || args.EnumerateObject().Count() != 1 || !args.TryGetProperty("mode", out var mode)
+                || mode.ValueKind != JsonValueKind.String || !PlayQueueChecks.Modes.Contains(mode.GetString()))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected a native queue probe mode in a ready test combat.");
+            async Task Frame() { await ObservationFrame(); Observe(); }
+            return Success(request, JsonSerializer.Serialize(await PlayQueueChecks.Run(mode.GetString()!, player, observation, Frame, Observe)));
+        }
         if (request.Operation is "configure_test_run" or "reset_test_run" or "get_test_session")
             return await TestRunRequest(request);
         if (request.Operation == "set_test_potion_display" && testMode

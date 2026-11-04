@@ -1,0 +1,116 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 20,
+        "after": 19,
+        "type": "energy_changed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Sword Boomerang"
+        },
+        "autoplay": false,
+        "source": null,
+        "type": "card_played",
+        "sequence": 2
+      },
+      {
+        "hp_loss": 3,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Sword Boomerang"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 3
+      },
+      {
+        "hp_loss": 3,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Sword Boomerang"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 4
+      },
+      {
+        "hp_loss": 3,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Sword Boomerang"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 5
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Sword Boomerang"
+        },
+        "from_pile": "play",
+        "to_pile": "discard",
+        "type": "card_moved",
+        "sequence": 6
+      }
+    ]
+  }
+}

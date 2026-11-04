@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This card cannot be played now.",
+    "recovery": "choose_legal_action"
+  }
+}

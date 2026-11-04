@@ -1,0 +1,461 @@
+{
+  "base_commit": "d46406c",
+  "mod_version": "0.62.0",
+  "mcp_version": "0.64.0",
+  "schema_version": 40,
+  "builds": [
+    {
+      "report": ".tmp/2026-11-04-play-card-review/gui-final/report.json",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "report": ".tmp/2026-11-04-play-card-review/gui-supplement/report.json",
+      "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+    },
+    {
+      "report": ".tmp/2026-11-04-play-card-review/gui-delivery/report.json",
+      "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+    }
+  ],
+  "examples": [
+    {
+      "file": "basic-01.full.json",
+      "case": "public_basic",
+      "label": "card_id must be integer.",
+      "arguments": {
+        "preset": "full",
+        "card_id": true
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_basic/audit/evidence.json",
+      "source_row": 2,
+      "sha256": "08f4c2875ccf29dbf838eb68f8fd791d863a7d4e86ad023718a565d40190f289",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "basic-02.full.json",
+      "case": "public_basic",
+      "label": "target_id must be integer.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": null
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_basic/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "9f3ecd6186408719adbeebd5568487fdec144bf2e628188bf055bab0e545bb10",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "basic-03.full.json",
+      "case": "public_basic",
+      "label": "No supported visible hand card has that ID.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 2147483647
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_basic/audit/evidence.json",
+      "source_row": 4,
+      "sha256": "ce5d3b66ad289436160e1fc9e25597fbba0189c151b60d8be7faabbd91085916",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "basic-04.full.json",
+      "case": "public_basic",
+      "label": "This card requires target_id from inspect_targets.targets.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_basic/audit/evidence.json",
+      "source_row": 5,
+      "sha256": "8570b52514c633ae4fc68a301211891936c6100d84688fc78104b808baf6dc6f",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "basic-05.full.json",
+      "case": "public_basic",
+      "label": "The specified target is not currently available for this card.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 4294967295
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_basic/audit/evidence.json",
+      "source_row": 6,
+      "sha256": "631cdaa93ca23763ca9988a2c827636431df8362beacad73c0d37161ff543235",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "basic-06.full.json",
+      "case": "public_basic",
+      "label": "player_ready",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_basic/audit/evidence.json",
+      "source_row": 8,
+      "sha256": "fcd315aa00e105fa5b84beac0c513601c40e35f07c1a4e2486b1beecbc584d84",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "basic-07.full.json",
+      "case": "public_basic",
+      "label": "This card does not accept target_id; omit it.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6,
+        "target_id": 0
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_basic/audit/evidence.json",
+      "source_row": 12,
+      "sha256": "46277c77f161cdec60d588b8cbd6d310021eb92ffc034165f86b160135e7e51f",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "basic-08.full.json",
+      "case": "public_basic",
+      "label": "player_ready",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_basic/audit/evidence.json",
+      "source_row": 14,
+      "sha256": "dddd797d2f8471329ccc5cae6dfa83a2e6ca45cb6d7760876d593874fc27d267",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "energy-01.full.json",
+      "case": "public_energy",
+      "label": "Not enough Energy.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_energy/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "14cd70b0665d381aa841a4511f86d91883789c8e6ed9dace435192a54f747d61",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "stars-01.full.json",
+      "case": "public_stars",
+      "label": "Not enough Stars.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_stars/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "6197ae4513a0a7b38b6ec14a50dd978d68cb031f296b51d07c8b7ccdd39fffc3",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "unplayable-01.full.json",
+      "case": "public_unplayable",
+      "label": "This card cannot be played now.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_unplayable/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "3764122b49703147efe19686be31bb5058548ea30cd936b15ce2c28fc8653d47",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "card_logic-01.full.json",
+      "case": "public_card_logic",
+      "label": "This card cannot be played now.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_card_logic/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "3764122b49703147efe19686be31bb5058548ea30cd936b15ce2c28fc8653d47",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "cancel-01.full.json",
+      "case": "public_cancel",
+      "label": "action_canceled",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_cancel/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "440842d6249360af1470fd93be2874db62164744b85a0ef2c555b0000449115c",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "cancel-02.full.json",
+      "case": "public_cancel",
+      "label": "Read current state with get_observation or a relevant inspection before acting.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_cancel/audit/evidence.json",
+      "source_row": 4,
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "hand_choice-01.full.json",
+      "case": "public_hand_choice",
+      "label": "choice_required",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_hand_choice/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "b69019a492f0ac2ff1fa5acd5849580149e849c85715ee2ac357af0dccc688e9",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "hand_choice-02.full.json",
+      "case": "public_hand_choice",
+      "label": "Normal card play is unavailable.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 7
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_hand_choice/audit/evidence.json",
+      "source_row": 5,
+      "sha256": "33bf9336ac74a160e507d9a71cca561f499ff3d658e888ab1aabb53b6424ff57",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "choose_one-01.full.json",
+      "case": "public_choose_one",
+      "label": "choice_required",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_choose_one/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "3b819577ef87f6c8a2dfed526c9596b93ea68a266e935d5fa168569b364da8cc",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "choose_one-02.full.json",
+      "case": "public_choose_one",
+      "label": "Normal card play is unavailable.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 7
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_choose_one/audit/evidence.json",
+      "source_row": 5,
+      "sha256": "33bf9336ac74a160e507d9a71cca561f499ff3d658e888ab1aabb53b6424ff57",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "combat_pile-01.full.json",
+      "case": "public_combat_pile",
+      "label": "player_ready",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_combat_pile/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "68537159b86ccd1586682e39f3f7815fc8d01abe27f9083f177cc8582357e1ba",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "combat_pile-02.full.json",
+      "case": "public_combat_pile",
+      "label": "player_ready",
+      "arguments": {
+        "preset": "full",
+        "card_id": 7,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_combat_pile/audit/evidence.json",
+      "source_row": 5,
+      "sha256": "7eaa18881303f7707810e5d453612fc6b8f8598a235f9630ca13394f03102f67",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "combat_pile-03.full.json",
+      "case": "public_combat_pile",
+      "label": "choice_required",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_combat_pile/audit/evidence.json",
+      "source_row": 7,
+      "sha256": "287011a5ffeeca121120592e43ab67fb72549bca7f73be09bf9aa52c82c1075c",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "combat_pile-04.full.json",
+      "case": "public_combat_pile",
+      "label": "Normal card play is unavailable.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 7
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_combat_pile/audit/evidence.json",
+      "source_row": 9,
+      "sha256": "33bf9336ac74a160e507d9a71cca561f499ff3d658e888ab1aabb53b6424ff57",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "victory-01.full.json",
+      "case": "public_victory",
+      "label": "combat_won",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_victory/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "f7f328ffffd2e416a68db440c32a2206b289e842b88104e5bc36a4b16f7ea305",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "death-01.full.json",
+      "case": "public_death",
+      "label": "combat_lost",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-final/public_death/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "e1c98d4f3b42b1ef7eb0c64ae14d4271818886fc6333788bb607b334e9652719",
+      "mod_sha256": "c12f9d81207e352e283a70b0523ba65fdcf0746d50edcda9be7bdbd17aba502f"
+    },
+    {
+      "file": "covered-01.full.json",
+      "case": "public_covered",
+      "label": "Normal card play is unavailable.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-delivery/public_covered/audit/evidence.json",
+      "source_row": 4,
+      "sha256": "33bf9336ac74a160e507d9a71cca561f499ff3d658e888ab1aabb53b6424ff57",
+      "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+    },
+    {
+      "file": "covered-02.full.json",
+      "case": "public_covered",
+      "label": "Normal card play is unavailable.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-delivery/public_covered/audit/evidence.json",
+      "source_row": 9,
+      "sha256": "33bf9336ac74a160e507d9a71cca561f499ff3d658e888ab1aabb53b6424ff57",
+      "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+    },
+    {
+      "file": "random-01.full.json",
+      "case": "public_random",
+      "label": "player_ready",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-delivery/public_random/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "4f245e230c56727a63446aea42701a33a0e5cb5bab1ceb006ce76aa5e1dff0fe",
+      "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+    },
+    {
+      "file": "x_cost-01.full.json",
+      "case": "public_x_cost",
+      "label": "player_ready",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-delivery/public_x_cost/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "a618205c855de7bf6a02880270f6c5d389d3a915df377bcdab0c2af9ce42cf08",
+      "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+    },
+    {
+      "file": "noncombat-01.full.json",
+      "case": "public_noncombat",
+      "label": "Normal card play is unavailable.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 0
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-delivery/public_noncombat/audit/evidence.json",
+      "source_row": 1,
+      "sha256": "33bf9336ac74a160e507d9a71cca561f499ff3d658e888ab1aabb53b6424ff57",
+      "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+    },
+    {
+      "file": "hook-01.full.json",
+      "case": "public_hook",
+      "label": "player_ready",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-delivery/public_hook/audit/evidence.json",
+      "source_row": 3,
+      "sha256": "599937b588472942b19fb08f333f5dc1a2aa24ab358e4ef4da4bcd90aed78753",
+      "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+    },
+    {
+      "file": "hook-02.full.json",
+      "case": "public_hook",
+      "label": "player_ready",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-delivery/public_hook/audit/evidence.json",
+      "source_row": 5,
+      "sha256": "b7f4331943ac400c44524677749ba9eae85f2a082b749459bad5bf03f8712673",
+      "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+    },
+    {
+      "file": "hook-03.full.json",
+      "case": "public_hook",
+      "label": "player_ready",
+      "arguments": {
+        "preset": "full",
+        "card_id": 7
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-delivery/public_hook/audit/evidence.json",
+      "source_row": 7,
+      "sha256": "c437a20dd8efc16587362696ba7f6c622d65a7a84be9511cd52470fd667e7694",
+      "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+    },
+    {
+      "file": "hook-04.full.json",
+      "case": "public_hook",
+      "label": "This card cannot be played now.",
+      "arguments": {
+        "preset": "full",
+        "card_id": 8
+      },
+      "source": ".tmp/2026-11-04-play-card-review/gui-delivery/public_hook/audit/evidence.json",
+      "source_row": 9,
+      "sha256": "3764122b49703147efe19686be31bb5058548ea30cd936b15ce2c28fc8653d47",
+      "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+    }
+  ],
+  "native_trace_note": "Native test diagnostics, not a public MCP response."
+}

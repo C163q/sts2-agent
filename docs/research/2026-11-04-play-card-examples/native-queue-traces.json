@@ -1,0 +1,977 @@
+[
+  {
+    "mode": "ordered",
+    "submissions": [
+      {
+        "index": 0,
+        "card_id": 8,
+        "accepted": true,
+        "previous_first_state": null
+      },
+      {
+        "index": 1,
+        "card_id": 9,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 2,
+        "card_id": 10,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      }
+    ],
+    "paused": null,
+    "lifecycle": [
+      {
+        "index": 0,
+        "stage": "executing"
+      },
+      {
+        "index": 0,
+        "stage": "finished"
+      },
+      {
+        "index": 1,
+        "stage": "executing"
+      },
+      {
+        "index": 1,
+        "stage": "finished"
+      },
+      {
+        "index": 2,
+        "stage": "executing"
+      },
+      {
+        "index": 2,
+        "stage": "finished"
+      }
+    ],
+    "actions": [
+      {
+        "index": 0,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 1,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 2,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      }
+    ],
+    "source": ".tmp/2026-11-04-play-card-review/gui-supplement/queue_ordered/audit/evidence.json",
+    "source_row": 1,
+    "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+  },
+  {
+    "mode": "energy",
+    "submissions": [
+      {
+        "index": 0,
+        "card_id": 8,
+        "accepted": true,
+        "previous_first_state": null
+      },
+      {
+        "index": 1,
+        "card_id": 9,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 2,
+        "card_id": 10,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 3,
+        "card_id": 11,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      }
+    ],
+    "paused": null,
+    "lifecycle": [
+      {
+        "index": 0,
+        "stage": "executing"
+      },
+      {
+        "index": 0,
+        "stage": "finished"
+      },
+      {
+        "index": 1,
+        "stage": "executing"
+      },
+      {
+        "index": 1,
+        "stage": "finished"
+      },
+      {
+        "index": 2,
+        "stage": "executing"
+      },
+      {
+        "index": 2,
+        "stage": "canceled"
+      },
+      {
+        "index": 2,
+        "stage": "finished"
+      },
+      {
+        "index": 3,
+        "stage": "executing"
+      },
+      {
+        "index": 3,
+        "stage": "finished"
+      }
+    ],
+    "actions": [
+      {
+        "index": 0,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 1,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 2,
+        "state": "Finished",
+        "played": false,
+        "canceled": true
+      },
+      {
+        "index": 3,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      }
+    ],
+    "source": ".tmp/2026-11-04-play-card-review/gui-supplement/queue_energy/audit/evidence.json",
+    "source_row": 1,
+    "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+  },
+  {
+    "mode": "stars",
+    "submissions": [
+      {
+        "index": 0,
+        "card_id": 8,
+        "accepted": true,
+        "previous_first_state": null
+      },
+      {
+        "index": 1,
+        "card_id": 9,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 2,
+        "card_id": 10,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 3,
+        "card_id": 11,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      }
+    ],
+    "paused": null,
+    "lifecycle": [
+      {
+        "index": 0,
+        "stage": "executing"
+      },
+      {
+        "index": 0,
+        "stage": "finished"
+      },
+      {
+        "index": 1,
+        "stage": "executing"
+      },
+      {
+        "index": 1,
+        "stage": "finished"
+      },
+      {
+        "index": 2,
+        "stage": "executing"
+      },
+      {
+        "index": 2,
+        "stage": "canceled"
+      },
+      {
+        "index": 2,
+        "stage": "finished"
+      },
+      {
+        "index": 3,
+        "stage": "executing"
+      },
+      {
+        "index": 3,
+        "stage": "finished"
+      }
+    ],
+    "actions": [
+      {
+        "index": 0,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 1,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 2,
+        "state": "Finished",
+        "played": false,
+        "canceled": true
+      },
+      {
+        "index": 3,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      }
+    ],
+    "source": ".tmp/2026-11-04-play-card-review/gui-supplement/queue_stars/audit/evidence.json",
+    "source_row": 1,
+    "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+  },
+  {
+    "mode": "target",
+    "submissions": [
+      {
+        "index": 0,
+        "card_id": 8,
+        "accepted": true,
+        "previous_first_state": null
+      },
+      {
+        "index": 1,
+        "card_id": 9,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 2,
+        "card_id": 10,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      }
+    ],
+    "paused": null,
+    "lifecycle": [
+      {
+        "index": 0,
+        "stage": "executing"
+      },
+      {
+        "index": 0,
+        "stage": "finished"
+      },
+      {
+        "index": 1,
+        "stage": "executing"
+      },
+      {
+        "index": 1,
+        "stage": "canceled"
+      },
+      {
+        "index": 1,
+        "stage": "finished"
+      },
+      {
+        "index": 2,
+        "stage": "executing"
+      },
+      {
+        "index": 2,
+        "stage": "finished"
+      }
+    ],
+    "actions": [
+      {
+        "index": 0,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 1,
+        "state": "Finished",
+        "played": false,
+        "canceled": true
+      },
+      {
+        "index": 2,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      }
+    ],
+    "source": ".tmp/2026-11-04-play-card-review/gui-supplement/queue_target/audit/evidence.json",
+    "source_row": 1,
+    "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+  },
+  {
+    "mode": "random_exhaust",
+    "submissions": [
+      {
+        "index": 0,
+        "card_id": 8,
+        "accepted": true,
+        "previous_first_state": null
+      },
+      {
+        "index": 1,
+        "card_id": 9,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 2,
+        "card_id": 10,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      }
+    ],
+    "paused": null,
+    "lifecycle": [
+      {
+        "index": 0,
+        "stage": "executing"
+      },
+      {
+        "index": 0,
+        "stage": "finished"
+      },
+      {
+        "index": 1,
+        "stage": "executing"
+      },
+      {
+        "index": 1,
+        "stage": "finished"
+      },
+      {
+        "index": 2,
+        "stage": "executing"
+      },
+      {
+        "index": 2,
+        "stage": "finished"
+      }
+    ],
+    "actions": [
+      {
+        "index": 0,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 1,
+        "state": "Finished",
+        "played": false,
+        "canceled": false
+      },
+      {
+        "index": 2,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      }
+    ],
+    "source": ".tmp/2026-11-04-play-card-review/gui-supplement/queue_random_exhaust/audit/evidence.json",
+    "source_row": 1,
+    "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+  },
+  {
+    "mode": "hand_exhaust",
+    "submissions": [
+      {
+        "index": 0,
+        "card_id": 8,
+        "accepted": true,
+        "previous_first_state": null
+      },
+      {
+        "index": 1,
+        "card_id": 9,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 2,
+        "card_id": 10,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      }
+    ],
+    "paused": [
+      {
+        "card_id": 8,
+        "state": "GatheringPlayerChoice"
+      },
+      {
+        "card_id": 9,
+        "state": "Canceled"
+      },
+      {
+        "card_id": 10,
+        "state": "Canceled"
+      }
+    ],
+    "lifecycle": [
+      {
+        "index": 0,
+        "stage": "executing"
+      },
+      {
+        "index": 1,
+        "stage": "canceled"
+      },
+      {
+        "index": 2,
+        "stage": "canceled"
+      },
+      {
+        "index": 0,
+        "stage": "finished"
+      }
+    ],
+    "actions": [
+      {
+        "index": 0,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 1,
+        "state": "Canceled",
+        "played": false,
+        "canceled": true
+      },
+      {
+        "index": 2,
+        "state": "Canceled",
+        "played": false,
+        "canceled": true
+      }
+    ],
+    "source": ".tmp/2026-11-04-play-card-review/gui-supplement/queue_hand_exhaust/audit/evidence.json",
+    "source_row": 1,
+    "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+  },
+  {
+    "mode": "automatic_hand",
+    "submissions": [
+      {
+        "index": 0,
+        "card_id": 8,
+        "accepted": true,
+        "previous_first_state": null
+      },
+      {
+        "index": 1,
+        "card_id": 9,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      }
+    ],
+    "paused": null,
+    "lifecycle": [
+      {
+        "index": 0,
+        "stage": "executing"
+      },
+      {
+        "index": 0,
+        "stage": "finished"
+      },
+      {
+        "index": 1,
+        "stage": "executing"
+      },
+      {
+        "index": 1,
+        "stage": "finished"
+      }
+    ],
+    "actions": [
+      {
+        "index": 0,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 1,
+        "state": "Finished",
+        "played": false,
+        "canceled": false
+      }
+    ],
+    "source": ".tmp/2026-11-04-play-card-review/gui-supplement/queue_automatic_hand/audit/evidence.json",
+    "source_row": 1,
+    "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+  },
+  {
+    "mode": "choose_one",
+    "submissions": [
+      {
+        "index": 0,
+        "card_id": 8,
+        "accepted": true,
+        "previous_first_state": null
+      },
+      {
+        "index": 1,
+        "card_id": 9,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 2,
+        "card_id": 10,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 3,
+        "card_id": 11,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      }
+    ],
+    "paused": [
+      {
+        "card_id": 8,
+        "state": "Finished"
+      },
+      {
+        "card_id": 9,
+        "state": "GatheringPlayerChoice"
+      },
+      {
+        "card_id": 10,
+        "state": "WaitingForExecution"
+      },
+      {
+        "card_id": 11,
+        "state": "WaitingForExecution"
+      }
+    ],
+    "lifecycle": [
+      {
+        "index": 0,
+        "stage": "executing"
+      },
+      {
+        "index": 0,
+        "stage": "finished"
+      },
+      {
+        "index": 1,
+        "stage": "executing"
+      },
+      {
+        "index": 1,
+        "stage": "finished"
+      },
+      {
+        "index": 2,
+        "stage": "executing"
+      },
+      {
+        "index": 2,
+        "stage": "finished"
+      },
+      {
+        "index": 3,
+        "stage": "executing"
+      },
+      {
+        "index": 3,
+        "stage": "finished"
+      }
+    ],
+    "actions": [
+      {
+        "index": 0,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 1,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 2,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 3,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      }
+    ],
+    "source": ".tmp/2026-11-04-play-card-review/gui-supplement/queue_choose_one/audit/evidence.json",
+    "source_row": 1,
+    "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+  },
+  {
+    "mode": "combat_pile",
+    "submissions": [
+      {
+        "index": 0,
+        "card_id": 8,
+        "accepted": true,
+        "previous_first_state": null
+      },
+      {
+        "index": 1,
+        "card_id": 9,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 2,
+        "card_id": 10,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      }
+    ],
+    "paused": [
+      {
+        "card_id": 8,
+        "state": "GatheringPlayerChoice"
+      },
+      {
+        "card_id": 9,
+        "state": "WaitingForExecution"
+      },
+      {
+        "card_id": 10,
+        "state": "WaitingForExecution"
+      }
+    ],
+    "lifecycle": [
+      {
+        "index": 0,
+        "stage": "executing"
+      },
+      {
+        "index": 0,
+        "stage": "finished"
+      },
+      {
+        "index": 1,
+        "stage": "executing"
+      },
+      {
+        "index": 1,
+        "stage": "finished"
+      },
+      {
+        "index": 2,
+        "stage": "executing"
+      },
+      {
+        "index": 2,
+        "stage": "finished"
+      }
+    ],
+    "actions": [
+      {
+        "index": 0,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 1,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 2,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      }
+    ],
+    "source": ".tmp/2026-11-04-play-card-review/gui-supplement/queue_combat_pile/audit/evidence.json",
+    "source_row": 1,
+    "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+  },
+  {
+    "mode": "victory",
+    "submissions": [
+      {
+        "index": 0,
+        "card_id": 8,
+        "accepted": true,
+        "previous_first_state": null
+      },
+      {
+        "index": 1,
+        "card_id": 9,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 2,
+        "card_id": 10,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      }
+    ],
+    "paused": null,
+    "lifecycle": [
+      {
+        "index": 0,
+        "stage": "executing"
+      },
+      {
+        "index": 0,
+        "stage": "finished"
+      },
+      {
+        "index": 1,
+        "stage": "canceled"
+      },
+      {
+        "index": 2,
+        "stage": "canceled"
+      }
+    ],
+    "actions": [
+      {
+        "index": 0,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 1,
+        "state": "Canceled",
+        "played": false,
+        "canceled": true
+      },
+      {
+        "index": 2,
+        "state": "Canceled",
+        "played": false,
+        "canceled": true
+      }
+    ],
+    "source": ".tmp/2026-11-04-play-card-review/gui-delivery/queue_victory/audit/evidence.json",
+    "source_row": 1,
+    "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+  },
+  {
+    "mode": "death",
+    "submissions": [
+      {
+        "index": 0,
+        "card_id": 8,
+        "accepted": true,
+        "previous_first_state": null
+      },
+      {
+        "index": 1,
+        "card_id": 9,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 2,
+        "card_id": 10,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      },
+      {
+        "index": 3,
+        "card_id": 11,
+        "accepted": true,
+        "previous_first_state": "Executing"
+      }
+    ],
+    "paused": null,
+    "lifecycle": [
+      {
+        "index": 0,
+        "stage": "executing"
+      },
+      {
+        "index": 0,
+        "stage": "finished"
+      },
+      {
+        "index": 1,
+        "stage": "executing"
+      },
+      {
+        "index": 1,
+        "stage": "finished"
+      },
+      {
+        "index": 2,
+        "stage": "executing"
+      },
+      {
+        "index": 2,
+        "stage": "finished"
+      },
+      {
+        "index": 3,
+        "stage": "executing"
+      },
+      {
+        "index": 3,
+        "stage": "finished"
+      }
+    ],
+    "actions": [
+      {
+        "index": 0,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 1,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 2,
+        "state": "Finished",
+        "played": false,
+        "canceled": false
+      },
+      {
+        "index": 3,
+        "state": "Finished",
+        "played": false,
+        "canceled": false
+      }
+    ],
+    "source": ".tmp/2026-11-04-play-card-review/gui-delivery/queue_death/audit/evidence.json",
+    "source_row": 1,
+    "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+  },
+  {
+    "mode": "immediate_death",
+    "submissions": [
+      {
+        "index": 0,
+        "card_id": 8,
+        "accepted": true,
+        "previous_first_state": null
+      },
+      {
+        "index": 1,
+        "card_id": 9,
+        "accepted": true,
+        "previous_first_state": "Finished"
+      },
+      {
+        "index": 2,
+        "card_id": 10,
+        "accepted": true,
+        "previous_first_state": "Finished"
+      }
+    ],
+    "paused": null,
+    "lifecycle": [
+      {
+        "index": 0,
+        "stage": "executing"
+      },
+      {
+        "index": 0,
+        "stage": "finished"
+      },
+      {
+        "index": 1,
+        "stage": "executing"
+      },
+      {
+        "index": 1,
+        "stage": "finished"
+      },
+      {
+        "index": 2,
+        "stage": "executing"
+      },
+      {
+        "index": 2,
+        "stage": "finished"
+      }
+    ],
+    "actions": [
+      {
+        "index": 0,
+        "state": "Finished",
+        "played": true,
+        "canceled": false
+      },
+      {
+        "index": 1,
+        "state": "Finished",
+        "played": false,
+        "canceled": false
+      },
+      {
+        "index": 2,
+        "state": "Finished",
+        "played": false,
+        "canceled": false
+      }
+    ],
+    "source": ".tmp/2026-11-04-play-card-review/gui-delivery/queue_immediate_death/audit/evidence.json",
+    "source_row": 1,
+    "mod_sha256": "909767d134a3cdddebe62d07f740c988b8f6ca960bb87ec2f1fe0f8c78bd96a6"
+  }
+]

@@ -75,7 +75,7 @@ python3 -m tests.python.test_prepare_roundtrip
 
 请求写入 `requests/<id>.json`，其中 `id` 是不带连字符的 UUID；先写临时文件再原子重命名为 `.json`。请求体包含 `id`、`operation`；动作另带 `expected_state`，有参数操作的选项放在 `arguments` 对象中。响应写入 `responses/<id>.json`，成功包含 `ok: true` 和 `state`，失败包含 `ok: false` 和 `error.code`、`error.message`。
 
-已审阅入口的明确拒绝可另带 `error.public_message`，表示经适配器确认可公开的原因；普通 message 仍可含私有诊断，不能直接转发。`play_card` 在提交和 UI 变化之前被拒绝时另带布尔 `error.action_submitted:false`；inspect_deck／inspect_pile／close_card_view 的显式拒绝可带 `error.ui_unchanged:true`，保证该请求未进行 UI 交互，不表示外部状态没有变化。缺省不提供保证，false 也不能解释为未知结果已恢复。MCP 只对登记工具应用保证，检查其类型及与执行／提交事实的矛盾；完整语义见[MCP 错误处理](mcp.md#调用和错误语义)。这些控制字段不进入 LLM JSON，观察 schema 不因可选错误字段单独改变。inspect_combatants 的文件请求另支持可选 level:summary/full，默认为 full；详见[战斗对象入口](combatant-inspection.md#文件入口与验证)。
+已审阅入口的明确拒绝可另带 `error.public_message`，表示经适配器确认可公开的原因；普通 message 仍可含私有诊断，不能直接转发。`play_card`／`end_turn` 在提交和 UI 变化之前被拒绝时另带布尔 `error.action_submitted:false`；inspect_deck／inspect_pile／close_card_view 的显式拒绝可带 `error.ui_unchanged:true`，保证该请求未进行 UI 交互，不表示外部状态没有变化。缺省不提供保证，false 也不能解释为未知结果已恢复。MCP 只对登记工具应用保证，检查其类型及与执行／提交事实的矛盾；完整语义见[MCP 错误处理](mcp.md#调用和错误语义)。这些控制字段不进入 LLM JSON，观察 schema 不因可选错误字段单独改变。inspect_combatants 的文件请求另支持可选 level:summary/full，默认为 full；详见[战斗对象入口](combatant-inspection.md#文件入口与验证)。
 
 内部请求包装可带 `response_options:{"include_divination_image":false}`，它与游戏 `arguments` 分开，不是 MCP 工具参数。省略时仍按旧文件调用规则捕获可见占卜棋盘；显式布尔值控制是否附加该 PNG，不改变结构化采样、令牌或独立截图。未知选项、重复键和非布尔值会被拒绝。MCP 按最终输出是否需要棋盘传入：完整观察、summary、占卜详情及会返回棋盘的关闭页结果需要图片；动作回执和 actions_only/top_bar 不捕获图片。close_card_view 的最小结果也不请求棋盘，普通文件 CLI 同样省略；--raw 保留原始请求行为。
 
