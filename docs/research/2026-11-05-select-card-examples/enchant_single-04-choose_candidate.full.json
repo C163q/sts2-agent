@@ -1,0 +1,22 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "selection_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ],
+  "selection": {
+    "type": "deck_enchant",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": []
+  }
+}

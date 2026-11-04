@@ -1,0 +1,384 @@
+[
+  {
+    "name": "no_selection",
+    "scenarios": {},
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "no_selection"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "invalid_candidate",
+    "scenarios": {
+      "selection": "combat_pile"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "invalid_candidate"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "covered",
+    "scenarios": {
+      "selection": "combat_pile"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "covered"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "scroll_race",
+    "scenarios": {
+      "selection": "scroll_race"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "scroll_race"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "choose_one",
+    "scenarios": {
+      "play": "discovery"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "choose_one"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "reward",
+    "scenarios": {
+      "selection": "reward"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "reward"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "grid",
+    "scenarios": {
+      "selection": "grid_two"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "grid"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "scroll",
+    "scenarios": {
+      "selection": "grid_scroll"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "scroll"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hand",
+    "scenarios": {
+      "selection": "retain_one"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "hand"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hand_upgrade",
+    "scenarios": {
+      "play": "armaments"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "hand_upgrade"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "deck",
+    "scenarios": {
+      "selection": "deck"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "deck"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "smith",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "smith"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "multi_upgrade",
+    "scenarios": {
+      "selection": "upgrade_multi"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "multi_upgrade"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "enchant_single",
+    "scenarios": {
+      "event": "enchant"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "enchant_single"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "enchant_multi",
+    "scenarios": {
+      "ancient": "multi"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "enchant_multi"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "transform",
+    "scenarios": {
+      "ancient": "transform"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "transform"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "bundle",
+    "scenarios": {
+      "ancient": "bundle"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "bundle"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "view_cards",
+    "scenarios": {
+      "ancient": "pandora"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "view_cards"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "chain",
+    "scenarios": {
+      "selection": "chain"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "chain"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "death",
+    "scenarios": {
+      "selection": "retain_death"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "death"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "victory",
+    "scenarios": {
+      "selection": "retain_victory"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "victory"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "combat_entry",
+    "scenarios": {
+      "selection": "combat_entry"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "combat_entry"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "combat_pile",
+    "scenarios": {
+      "selection": "combat_pile"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "combat_pile"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "headbutt",
+    "scenarios": {
+      "play": "headbutt"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_turn_transitions.py",
+        "args": [
+          "--scenario",
+          "headbutt_multiple"
+        ]
+      }
+    ]
+  }
+]

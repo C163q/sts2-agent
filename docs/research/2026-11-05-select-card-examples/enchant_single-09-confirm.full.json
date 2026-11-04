@@ -1,0 +1,30 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "proceed",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 28,
+          "name": "Bash"
+        },
+        "pile": "deck",
+        "type": "card_enchantment_changed",
+        "sequence": 1
+      }
+    ]
+  }
+}

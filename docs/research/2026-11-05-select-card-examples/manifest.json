@@ -1,0 +1,1069 @@
+[
+  {
+    "file": "no_selection-01-no_permission.full.json",
+    "scenario": "no_selection",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 0
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/no_selection/verify/evidence.json",
+    "source_record": 1,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "no_selection-03-malformed.full.json",
+    "scenario": "no_selection",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": true
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/no_selection/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "08f4c2875ccf29dbf838eb68f8fd791d863a7d4e86ad023718a565d40190f289"
+  },
+  {
+    "file": "no_selection-04-after_malformed.full.json",
+    "scenario": "no_selection",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/no_selection/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "2626a956389472b7d9dc52c1244a31265d10ece0c54ddfcaf87d1342c6fe6b50"
+  },
+  {
+    "file": "no_selection-06-no_selection.full.json",
+    "scenario": "no_selection",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 0
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/no_selection/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "no_selection-07-after_unsubmitted_rejection.full.json",
+    "scenario": "no_selection",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/no_selection/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "invalid_candidate-02-candidates.full.json",
+    "scenario": "invalid_candidate",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/invalid_candidate/verify/evidence.json",
+    "source_record": 2,
+    "sha256": "90fe4dc786624161768830623074dab170d9d2f135d53ac6c5ebaf2f35ca9e47"
+  },
+  {
+    "file": "invalid_candidate-03-unknown_id.full.json",
+    "scenario": "invalid_candidate",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 2147483647
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/invalid_candidate/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "invalid_candidate-05-valid_card_after_rejection.full.json",
+    "scenario": "invalid_candidate",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 5
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/invalid_candidate/verify/evidence.json",
+    "source_record": 5,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "covered-02-candidates.full.json",
+    "scenario": "covered",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/covered/verify/evidence.json",
+    "source_record": 2,
+    "sha256": "90fe4dc786624161768830623074dab170d9d2f135d53ac6c5ebaf2f35ca9e47"
+  },
+  {
+    "file": "covered-04-battlefield.full.json",
+    "scenario": "covered",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 5
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/covered/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "covered-08-covered.full.json",
+    "scenario": "covered",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 5
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/covered/verify/evidence.json",
+    "source_record": 8,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "scroll_race-02-candidates.full.json",
+    "scenario": "scroll_race",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/scroll_race/verify/evidence.json",
+    "source_record": 2,
+    "sha256": "30a8c41d20030fabde71b71a12fb126029dcc80c6d89d615e11194ea87cc8319"
+  },
+  {
+    "file": "choose_one-03-candidates.full.json",
+    "scenario": "choose_one",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/choose_one/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "8303360e9b91c8f02e83f4b81a42c2ed4a81e3688a700f25b258ecc7006d7006"
+  },
+  {
+    "file": "choose_one-04-choose_candidate.full.json",
+    "scenario": "choose_one",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 10
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/choose_one/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "47df935137f2800f2caa84c1b02506c21cd1eb30f84d15749f82416f22fc667b"
+  },
+  {
+    "file": "reward-02-candidates.full.json",
+    "scenario": "reward",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/reward/verify/evidence.json",
+    "source_record": 2,
+    "sha256": "ff31dc68e150c112ca3d4bf3c9fc7cb08db1ba9ca86ee839a603fd81b71028a1"
+  },
+  {
+    "file": "reward-03-choose_candidate.full.json",
+    "scenario": "reward",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 0
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/reward/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "b4c2152fb9773f974f31e34018f4dab06a1b6c1c3cfe5f36664264cec7df802f"
+  },
+  {
+    "file": "grid-02-candidates.full.json",
+    "scenario": "grid",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/grid/verify/evidence.json",
+    "source_record": 2,
+    "sha256": "ad88280aad67fdac0904cc0fb0906529f8cc5f633b8bcdc92f64bbb24416b427"
+  },
+  {
+    "file": "grid-03-select_first.full.json",
+    "scenario": "grid",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 3
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/grid/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "d7b333871fa4ed1d7fefd0b418a01964cc8614117410590b5a794e0e29473cd3"
+  },
+  {
+    "file": "grid-05-deselect_without_read.full.json",
+    "scenario": "grid",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 3
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/grid/verify/evidence.json",
+    "source_record": 5,
+    "sha256": "d7b333871fa4ed1d7fefd0b418a01964cc8614117410590b5a794e0e29473cd3"
+  },
+  {
+    "file": "grid-07-choose_candidate.full.json",
+    "scenario": "grid",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 9
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/grid/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "d7b333871fa4ed1d7fefd0b418a01964cc8614117410590b5a794e0e29473cd3"
+  },
+  {
+    "file": "grid-09-choose_candidate.full.json",
+    "scenario": "grid",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 10
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/grid/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "90493fdbe728f0f9bc846c579b302ece1ddad9e858ef6dadbdbb04c7221d85ce"
+  },
+  {
+    "file": "scroll-02-candidates.full.json",
+    "scenario": "scroll",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/scroll/verify/evidence.json",
+    "source_record": 2,
+    "sha256": "0edb17abf9677e02e15ef9aaa4bfd0bfa5cd4524249f2b2179f5b1e6ee3bda86"
+  },
+  {
+    "file": "scroll-03-choose_candidate.full.json",
+    "scenario": "scroll",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 44
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/scroll/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "6b8e4ee91e26dec7743a9251b5d1783f5b5fe51468f32b2645e9a9296476821b"
+  },
+  {
+    "file": "hand-03-candidates.full.json",
+    "scenario": "hand",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/hand/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "807a69db52c06bea25747b3c075bc7f25662cde8b2b1661bcd8be21ce19e729e"
+  },
+  {
+    "file": "hand-04-select_first.full.json",
+    "scenario": "hand",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 0
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/hand/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "3e1f90148e7977dfcaa026355a309b9028331134baf070b49cdd8bd458449fe8"
+  },
+  {
+    "file": "hand-06-deselect_without_read.full.json",
+    "scenario": "hand",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 0
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/hand/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "3e1f90148e7977dfcaa026355a309b9028331134baf070b49cdd8bd458449fe8"
+  },
+  {
+    "file": "hand-08-choose_candidate.full.json",
+    "scenario": "hand",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 4
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/hand/verify/evidence.json",
+    "source_record": 8,
+    "sha256": "3e1f90148e7977dfcaa026355a309b9028331134baf070b49cdd8bd458449fe8"
+  },
+  {
+    "file": "hand-10-confirm.full.json",
+    "scenario": "hand",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/hand/verify/evidence.json",
+    "source_record": 10,
+    "sha256": "876aec2e1825d76f31a2aeb34d212eba5d5d9efb5f8c112d2305d61c69ce5b44"
+  },
+  {
+    "file": "hand_upgrade-03-candidates.full.json",
+    "scenario": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/hand_upgrade/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "2d4de931231b95c16b4ca2904fab9b2fc65f06525bfd391c0d97971481a616db"
+  },
+  {
+    "file": "hand_upgrade-04-select_first.full.json",
+    "scenario": "hand_upgrade",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 6
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/hand_upgrade/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "f398d75e0da224aa00d4009f25f25fd957c8002c1eb0b76de26de1791723836e"
+  },
+  {
+    "file": "hand_upgrade-06-deselect_without_read.full.json",
+    "scenario": "hand_upgrade",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 6
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/hand_upgrade/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "9476adf113030998e481cec802717d5c94bab66e97270505f1da157f940616bd"
+  },
+  {
+    "file": "hand_upgrade-08-choose_candidate.full.json",
+    "scenario": "hand_upgrade",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 7
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/hand_upgrade/verify/evidence.json",
+    "source_record": 8,
+    "sha256": "f398d75e0da224aa00d4009f25f25fd957c8002c1eb0b76de26de1791723836e"
+  },
+  {
+    "file": "hand_upgrade-10-confirm.full.json",
+    "scenario": "hand_upgrade",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/hand_upgrade/verify/evidence.json",
+    "source_record": 10,
+    "sha256": "9a70e43878268745e7225324d271bcf6e78e74c14a36b49996be1c6ea0fcc707"
+  },
+  {
+    "file": "deck-02-candidates.full.json",
+    "scenario": "deck",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/deck/verify/evidence.json",
+    "source_record": 2,
+    "sha256": "7f968579e8796792acb20e5126bd7f02c856e78020a511b458397ee6c799c618"
+  },
+  {
+    "file": "deck-03-choose_candidate.full.json",
+    "scenario": "deck",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 9
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/deck/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "9d29656c580522a7d72b367da5a88df03768b4b269b287a76a5ada754e8bd7a3"
+  },
+  {
+    "file": "deck-05-preview_rejection.full.json",
+    "scenario": "deck",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 9
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/deck/verify/evidence.json",
+    "source_record": 5,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "deck-06-confirm_after_preview_rejection.full.json",
+    "scenario": "deck",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/deck/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "deck-08-confirm.full.json",
+    "scenario": "deck",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-0/deck/verify/evidence.json",
+    "source_record": 8,
+    "sha256": "23664b630319a907ee4fb3fa8d4b470d0563cd579e7dbe942c4c842e1a74c90f"
+  },
+  {
+    "file": "smith-03-candidates.full.json",
+    "scenario": "smith",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/smith/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "795ef74c8b9018ca68b38c585b22d90d8e62a1a78909dc4c1998917158c46106"
+  },
+  {
+    "file": "smith-04-choose_candidate.full.json",
+    "scenario": "smith",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 9
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/smith/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "c97e5e6237f45c56ad39f0bcc95b04d1c21931ac6e0459b54d0386cabc811cf8"
+  },
+  {
+    "file": "smith-06-preview_rejection.full.json",
+    "scenario": "smith",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 9
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/smith/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "smith-07-confirm_after_preview_rejection.full.json",
+    "scenario": "smith",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/smith/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "smith-09-confirm.full.json",
+    "scenario": "smith",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/smith/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "f7158804ded9d60434c06b89a15026e71f2cb4ca798e88b0f9172384d86da96e"
+  },
+  {
+    "file": "multi_upgrade-02-candidates.full.json",
+    "scenario": "multi_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/multi_upgrade/verify/evidence.json",
+    "source_record": 2,
+    "sha256": "778af31dd22d60f378f7de99ee0ad8c661a2c3e4abedb1391bc931896576f6a0"
+  },
+  {
+    "file": "multi_upgrade-03-select_first.full.json",
+    "scenario": "multi_upgrade",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 11
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/multi_upgrade/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "cf628c99e186dbc5fef66a68f3e64579aa7aa9372dd354f82291a3226f4ce7c7"
+  },
+  {
+    "file": "multi_upgrade-05-deselect_without_read.full.json",
+    "scenario": "multi_upgrade",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 11
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/multi_upgrade/verify/evidence.json",
+    "source_record": 5,
+    "sha256": "cf628c99e186dbc5fef66a68f3e64579aa7aa9372dd354f82291a3226f4ce7c7"
+  },
+  {
+    "file": "multi_upgrade-07-choose_candidate.full.json",
+    "scenario": "multi_upgrade",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 19
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/multi_upgrade/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "cf628c99e186dbc5fef66a68f3e64579aa7aa9372dd354f82291a3226f4ce7c7"
+  },
+  {
+    "file": "multi_upgrade-09-choose_candidate.full.json",
+    "scenario": "multi_upgrade",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 20
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/multi_upgrade/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "d660dea4f382ee8a49cba24dab7a5c58da099557509e1c285c2e2b4f502714cb"
+  },
+  {
+    "file": "multi_upgrade-11-preview_rejection.full.json",
+    "scenario": "multi_upgrade",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 19
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/multi_upgrade/verify/evidence.json",
+    "source_record": 11,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "multi_upgrade-12-confirm_after_preview_rejection.full.json",
+    "scenario": "multi_upgrade",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/multi_upgrade/verify/evidence.json",
+    "source_record": 12,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "multi_upgrade-14-confirm.full.json",
+    "scenario": "multi_upgrade",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/multi_upgrade/verify/evidence.json",
+    "source_record": 14,
+    "sha256": "f5893bd165d11145f254059baad0f43a4851f6c5ce74f15d8fb17e54be390dc5"
+  },
+  {
+    "file": "enchant_single-03-candidates.full.json",
+    "scenario": "enchant_single",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_single/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "a7a0ded6f1156f1a37cb6c1660047fe071aac8da8ada134935b31d6e7e34b68a"
+  },
+  {
+    "file": "enchant_single-04-choose_candidate.full.json",
+    "scenario": "enchant_single",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 28
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_single/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "6aa834868f5a346fa3d2a487a3d8fdbaec286565e6a7d09961ab699427ed3194"
+  },
+  {
+    "file": "enchant_single-06-preview_rejection.full.json",
+    "scenario": "enchant_single",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 28
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_single/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "enchant_single-07-confirm_after_preview_rejection.full.json",
+    "scenario": "enchant_single",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_single/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "enchant_single-09-confirm.full.json",
+    "scenario": "enchant_single",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_single/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "1004d96e1a82358a6406ed24b9e9c92304e4050dc4c86b12237bff0429e7df37"
+  },
+  {
+    "file": "enchant_multi-04-candidates.full.json",
+    "scenario": "enchant_multi",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_multi/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "e94f69388292c5daf19ab81d01d30be9c3c1c1d85d338f42f61c2c82806708e4"
+  },
+  {
+    "file": "enchant_multi-05-select_first.full.json",
+    "scenario": "enchant_multi",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 30
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_multi/verify/evidence.json",
+    "source_record": 5,
+    "sha256": "f0ce0dd4f27d2b440a9606256d5503c9f98af3afa7c0e699dc4efcb6cc53321a"
+  },
+  {
+    "file": "enchant_multi-07-deselect_without_read.full.json",
+    "scenario": "enchant_multi",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 30
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_multi/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "f0ce0dd4f27d2b440a9606256d5503c9f98af3afa7c0e699dc4efcb6cc53321a"
+  },
+  {
+    "file": "enchant_multi-09-choose_candidate.full.json",
+    "scenario": "enchant_multi",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 33
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_multi/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "f0ce0dd4f27d2b440a9606256d5503c9f98af3afa7c0e699dc4efcb6cc53321a"
+  },
+  {
+    "file": "enchant_multi-11-choose_candidate.full.json",
+    "scenario": "enchant_multi",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 34
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_multi/verify/evidence.json",
+    "source_record": 11,
+    "sha256": "f0ce0dd4f27d2b440a9606256d5503c9f98af3afa7c0e699dc4efcb6cc53321a"
+  },
+  {
+    "file": "enchant_multi-13-choose_candidate.full.json",
+    "scenario": "enchant_multi",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 35
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_multi/verify/evidence.json",
+    "source_record": 13,
+    "sha256": "5a5408a982f647e74295acac7c69a7d8c389198a8049b1dfdbdf06e8fe496a20"
+  },
+  {
+    "file": "enchant_multi-15-preview_rejection.full.json",
+    "scenario": "enchant_multi",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 33
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_multi/verify/evidence.json",
+    "source_record": 15,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "enchant_multi-16-confirm_after_preview_rejection.full.json",
+    "scenario": "enchant_multi",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_multi/verify/evidence.json",
+    "source_record": 16,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "enchant_multi-18-confirm.full.json",
+    "scenario": "enchant_multi",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1/enchant_multi/verify/evidence.json",
+    "source_record": 18,
+    "sha256": "4ad66169872393e5f6c687e3900b3fa2910ad00fba00998746df0b6a241f677f"
+  },
+  {
+    "file": "transform-03-candidates.full.json",
+    "scenario": "transform",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/transform/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "f64842d3ee570a4af4941fbfef50ab62644816cc5cb408963c8a167809413650"
+  },
+  {
+    "file": "transform-04-choose_candidate.full.json",
+    "scenario": "transform",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 9
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/transform/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "2090b6698102f072fe05e0d387f379ab12af94bccf03f98799c4b74075f18f58"
+  },
+  {
+    "file": "transform-06-preview_rejection.full.json",
+    "scenario": "transform",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 9
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/transform/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "transform-07-confirm_after_preview_rejection.full.json",
+    "scenario": "transform",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/transform/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "transform-09-confirm.full.json",
+    "scenario": "transform",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/transform/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "ff7f8bc3787da38a3e8a99f4f50c45e7f1758101ec04c5422d37a51b69d4c9c7"
+  },
+  {
+    "file": "bundle-04-candidates.full.json",
+    "scenario": "bundle",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/bundle/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "71679f3309ad8be8a6242fd225f9d32d176228c373c10e034d2396d2de38c9ed"
+  },
+  {
+    "file": "bundle-05-not_individually_selectable.full.json",
+    "scenario": "bundle",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 11
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/bundle/verify/evidence.json",
+    "source_record": 5,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "bundle-06-valid_button_after_rejection.full.json",
+    "scenario": "bundle",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "bundle:0"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/bundle/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "view_cards-05-candidates.full.json",
+    "scenario": "view_cards",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/view_cards/verify/evidence.json",
+    "source_record": 5,
+    "sha256": "ff93325fd8f9da8edee38767d174c77899a54a8184f94f08308842e9b01fc869"
+  },
+  {
+    "file": "view_cards-06-not_individually_selectable.full.json",
+    "scenario": "view_cards",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 17
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/view_cards/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "view_cards-07-valid_button_after_rejection.full.json",
+    "scenario": "view_cards",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/view_cards/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "chain-02-candidates.full.json",
+    "scenario": "chain",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/chain/verify/evidence.json",
+    "source_record": 2,
+    "sha256": "d42af69b3a33b07da666a5cfbe40dfb3c6e454758f524540573f7917ef669e50"
+  },
+  {
+    "file": "chain-03-first_choice.full.json",
+    "scenario": "chain",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 5
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/chain/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "2a6beebe531df9f1376c2cbec88a9e1382e6378b34f5cfae0766f67f646184de"
+  },
+  {
+    "file": "chain-06-second_choice_without_read.full.json",
+    "scenario": "chain",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 5
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/chain/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "6b8e4ee91e26dec7743a9251b5d1783f5b5fe51468f32b2645e9a9296476821b"
+  },
+  {
+    "file": "death-03-candidates.full.json",
+    "scenario": "death",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/death/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "807a69db52c06bea25747b3c075bc7f25662cde8b2b1661bcd8be21ce19e729e"
+  },
+  {
+    "file": "death-04-choose_candidate.full.json",
+    "scenario": "death",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 4
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/death/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "3e1f90148e7977dfcaa026355a309b9028331134baf070b49cdd8bd458449fe8"
+  },
+  {
+    "file": "death-06-confirm.full.json",
+    "scenario": "death",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/death/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "89743a77d906bd92f1f5ec6e7cc88796c2c1a32c97205d8a0f891d9394a2dfbc"
+  },
+  {
+    "file": "victory-03-candidates.full.json",
+    "scenario": "victory",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/victory/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "807a69db52c06bea25747b3c075bc7f25662cde8b2b1661bcd8be21ce19e729e"
+  },
+  {
+    "file": "victory-04-choose_candidate.full.json",
+    "scenario": "victory",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 4
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/victory/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "3e1f90148e7977dfcaa026355a309b9028331134baf070b49cdd8bd458449fe8"
+  },
+  {
+    "file": "victory-06-confirm.full.json",
+    "scenario": "victory",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/victory/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "12097f95ae148fe39581f4f035bcf1c0436cecf32f0c9ee8f876d8dc09196352"
+  },
+  {
+    "file": "combat_entry-02-candidates.full.json",
+    "scenario": "combat_entry",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/combat_entry/verify/evidence.json",
+    "source_record": 2,
+    "sha256": "c768ce3cec0962b6bef52af0855f91b9a62abd43d6b0c90fe5b64fd2f95fb591"
+  },
+  {
+    "file": "combat_entry-03-choose_candidate.full.json",
+    "scenario": "combat_entry",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 1
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-1-corrected/combat_entry/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "67d485d6b5274854ac353b9ba32029e2b35ec34b78f634310dbbaa270364d7ef"
+  },
+  {
+    "file": "combat_pile-02-candidates.full.json",
+    "scenario": "combat_pile",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-combat-pile/combat_pile/verify/evidence.json",
+    "source_record": 2,
+    "sha256": "90fe4dc786624161768830623074dab170d9d2f135d53ac6c5ebaf2f35ca9e47"
+  },
+  {
+    "file": "combat_pile-03-choose_candidate.full.json",
+    "scenario": "combat_pile",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 6
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-combat-pile/combat_pile/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "6b8e4ee91e26dec7743a9251b5d1783f5b5fe51468f32b2645e9a9296476821b"
+  },
+  {
+    "file": "headbutt-09-candidates.full.json",
+    "scenario": "headbutt",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-headbutt/headbutt/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "f5506c24fe48cdda2191f81ff135542392a01d806bc0dc130de6cdbe01e83ffa"
+  },
+  {
+    "file": "headbutt-11-select_card.full.json",
+    "scenario": "headbutt",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 6
+    },
+    "source": ".tmp/2026-11-05-select-card-review/gui-headbutt/headbutt/verify/evidence.json",
+    "source_record": 11,
+    "sha256": "3d80a4daf5cf1b3f54203212810cd4e19b5971792fecc0bb4c453e59f317b055"
+  }
+]

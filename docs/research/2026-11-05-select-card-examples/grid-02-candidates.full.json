@@ -1,0 +1,164 @@
+{
+  "scene": "event",
+  "selection": {
+    "type": "grid",
+    "status": "visible",
+    "prompt": "Choose 2 Common Cards to Add to Your Deck.",
+    "min_select": 2,
+    "max_select": 2,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 3,
+        "name": "Breakthrough",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Lose 1 HP.\nDeal 9 damage to ALL enemies.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 4,
+        "name": "Havoc",
+        "type": "Skill",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Play the top card of your Draw Pile and Exhaust it.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 5,
+        "name": "Headbutt",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 9 damage.\nPut a card from your Discard Pile on top of your Draw Pile.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 6,
+        "name": "Thunderclap",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 4 damage and apply 1 Vulnerable to ALL enemies.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 7,
+        "name": "Setup Strike",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 7 damage.\nGain 2 Strength this turn.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 8,
+        "name": "Anger",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.\nAdd a copy of this card into your Discard Pile.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 9,
+        "name": "Shrug It Off",
+        "type": "Skill",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 8 Block.\nDraw 1 card.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 10,
+        "name": "Tremble",
+        "type": "Skill",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Apply 3 Vulnerable.\nExhaust.",
+        "outline": "none",
+        "unplayable_markers": []
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [
+    {
+      "title": "Exhaust",
+      "description": "Removed until the end of combat.",
+      "card_ids": [
+        4,
+        10
+      ]
+    },
+    {
+      "title": "Vulnerable",
+      "description": "Vulnerable creatures take 50% more damage from Attacks.",
+      "card_ids": [
+        6,
+        10
+      ]
+    },
+    {
+      "title": "Strength",
+      "description": "Strength adds additional damage to Attacks.",
+      "card_ids": [
+        7
+      ]
+    },
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        9
+      ]
+    }
+  ]
+}
