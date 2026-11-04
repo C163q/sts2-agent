@@ -32,7 +32,9 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_deck --sort-
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_card_view
 ```
 
-`close_card_view` 同时支持原生牌组、抽牌堆、弃牌堆和消耗牌堆查看页，返回关闭后的基础观察；MCP 可直接使用该成功结果继续操作当前界面，无需再次观察。调用不需要 `expected_state`；文件参数校验及当前页面复核仍然生效。当前没有受支持的卡牌查看页，或页面被卡牌详情等更高层界面覆盖时，`close_card_view` 返回 `illegal_action`，不会关闭其他页面。
+`close_card_view` 同时支持原生牌组、抽牌堆、弃牌堆和消耗牌堆查看页。成功会刷新 MCP 动作许可，已有足够信息时可直接继续合法操作。当前 MCP 关闭投影存在[基础观察漏字段问题 DECK-03](../research/2026-11-04-inspect-deck-review.md#优先关注的问题)：仅保留场景、页面、回合、玩家、敌人、顶栏、按钮和可用操作，缺少关闭后的房间、地图及选择内容；按需调用 get_observation 获取完整观察。底层文件响应不缺这些字段，完整基础观察仍是待修复的接口要求。
+
+调用不需要 `expected_state`；文件参数校验及当前页面复核仍然生效。当前没有受支持的卡牌查看页，或页面被卡牌详情等更高层界面覆盖时，`close_card_view` 返回 `illegal_action`，不会关闭其他页面。
 
 ## 参数
 

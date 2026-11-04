@@ -1,0 +1,153 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "covered",
+    "view": "deck"
+  },
+  "view_upgrades": false,
+  "sort": {
+    "by": "obtained",
+    "descending": false
+  },
+  "deck": [
+    {
+      "id": "deck:0",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": "deck:1",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": "deck:2",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": "deck:3",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": "deck:4",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": "deck:5",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "deck:6",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "deck:7",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "deck:8",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "deck:9",
+      "name": "Bash",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "2",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 8 damage.\nApply 2 Vulnerable."
+    }
+  ],
+  "hover_tips": [
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        "deck:5",
+        "deck:6",
+        "deck:7",
+        "deck:8"
+      ]
+    },
+    {
+      "title": "Vulnerable",
+      "description": "Vulnerable creatures take 50% more damage from Attacks.",
+      "card_ids": [
+        "deck:9"
+      ]
+    }
+  ]
+}

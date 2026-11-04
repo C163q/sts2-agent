@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "card_ids is not accepted; allowed fields: preset, view_upgrades, sort_by, descending.",
+    "recovery": "correct_request"
+  }
+}

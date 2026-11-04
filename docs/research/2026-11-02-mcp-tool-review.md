@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 43 项，已核销 6 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics。遗物的[正确性修复、共享图标状态及全预设筛选验证](2026-11-04-relic-inspection-implementation.md)已交付。get_observation 的浏览覆盖仍待对应工具，整体未核销；其余 36 项尚待逐项核验。其他工具的完整错误审阅继续留在用户 TODO。暂无阻塞。
+> 当前状态：工具核验进行中，共 43 项，已核销 6 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics。当前进入 [inspect_deck 的设计讨论](2026-11-04-inspect-deck-review.md)，发现三项正确性问题，尚未修改行为。get_observation 的浏览覆盖仍待对应工具，整体未核销；其余 35 项尚待逐项核验。其他工具的完整错误审阅继续留在用户 TODO。暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -41,7 +41,7 @@
 
 ### 卡牌浏览（3 项）
 
-- [ ] `inspect_deck`：打开并查看牌组。本轮共享卡牌改造已纳入[移除 detail_level、统一 preset](2026-11-03-card-format-coverage.md#牌组牌堆参数迁移范围)，已实现并验证，不因此视为本工具完整核验。后续同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)。
+- [ ] `inspect_deck`：打开并查看牌组。阶段：[场景与现有参数核验、完整示例及三项问题](2026-11-04-inspect-deck-review.md)已记录，正在设计讨论，尚未修改行为。共享卡牌及 full/default/summary 已实现；本项同时决定[基础观察的牌组内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)，先处理错误准确性、前置拒绝恢复及共用关闭观察漏字段。
 - [ ] `inspect_pile`：打开并查看抽牌堆、弃牌堆或消耗堆。本轮共享卡牌改造已纳入[统一 preset](2026-11-03-card-format-coverage.md#牌组牌堆参数迁移范围)，已实现并验证，不因此视为本工具完整核验。后续同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)。
 - [ ] `close_card_view`：关闭牌组或牌堆浏览界面。
 

@@ -1,0 +1,352 @@
+{
+  "baseline": {
+    "commit": "a9d729a",
+    "mod": "0.57.0",
+    "mcp": "0.59.0",
+    "schema": 38,
+    "game": "v0.107.1",
+    "game_build": "59260271",
+    "ritsu_lib": "0.6.10",
+    "mod_dll_sha256": "4a735cf4bfb7a943ee6d9aeb5a9188344ad91dcb5ea6b8c973aa1a30e6804210",
+    "game_dll_sha256": "d13f3f150b1413b24c3a9c5575cdf5398dc74270877d55dec9a556dd8150bd03"
+  },
+  "samples": [
+    {
+      "file": "combat.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/combat/evidence.json",
+      "entry": 2,
+      "source_sha256": "fbf87e95408ce4373b3f69c31b252212240ee8712431d999b47dce7c7ecaafc8",
+      "sha256": "f409d9a33d397b0158251f5ee97fcefacf51b90ee9062465d0e04e749824fbc1"
+    },
+    {
+      "file": "combat.default.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {},
+      "source": ".tmp/2026-11-04-inspect-deck-review/combat/evidence.json",
+      "entry": 6,
+      "source_sha256": "fbf87e95408ce4373b3f69c31b252212240ee8712431d999b47dce7c7ecaafc8",
+      "sha256": "cd32c7803a6a013f0d3d48b32495bcc9279d75bff72d8a625c551d3fd7c5621b"
+    },
+    {
+      "file": "combat.summary.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "summary"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/combat/evidence.json",
+      "entry": 5,
+      "source_sha256": "fbf87e95408ce4373b3f69c31b252212240ee8712431d999b47dce7c7ecaafc8",
+      "sha256": "00410a1c26873e5ad9d702f8c73f9e295e3d44ea6d8d9f3937f7ac58a919c38e"
+    },
+    {
+      "file": "upgraded.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full",
+        "view_upgrades": true
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/combat/evidence.json",
+      "entry": 7,
+      "source_sha256": "fbf87e95408ce4373b3f69c31b252212240ee8712431d999b47dce7c7ecaafc8",
+      "sha256": "294dffb8f60e0d224d61474019395370c67265095c22b9b95ea5ae5053872414"
+    },
+    {
+      "file": "sort-obtained.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full",
+        "sort_by": "obtained",
+        "descending": true
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/combat/evidence.json",
+      "entry": 9,
+      "source_sha256": "fbf87e95408ce4373b3f69c31b252212240ee8712431d999b47dce7c7ecaafc8",
+      "sha256": "e6eb008c610e0a8f2c295feb6baea9535dad6d979a163a9d8f2a52a3efd9709d"
+    },
+    {
+      "file": "sort-type.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full",
+        "sort_by": "type",
+        "descending": true
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/combat/evidence.json",
+      "entry": 10,
+      "source_sha256": "fbf87e95408ce4373b3f69c31b252212240ee8712431d999b47dce7c7ecaafc8",
+      "sha256": "ee313dd5b5a0306aa23a5375a8d9b0395ecf89471cf27b53de02a480847dba58"
+    },
+    {
+      "file": "sort-cost.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full",
+        "sort_by": "cost",
+        "descending": true
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/combat/evidence.json",
+      "entry": 11,
+      "source_sha256": "fbf87e95408ce4373b3f69c31b252212240ee8712431d999b47dce7c7ecaafc8",
+      "sha256": "55d1967456e541d51867296d29d8bf7c4c4345590ad04d3ced5ec4c4c23d55c5"
+    },
+    {
+      "file": "sort-name.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full",
+        "sort_by": "name",
+        "descending": true
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/combat/evidence.json",
+      "entry": 12,
+      "source_sha256": "fbf87e95408ce4373b3f69c31b252212240ee8712431d999b47dce7c7ecaafc8",
+      "sha256": "17a2b148a688236d258150b7314f5b2724501eedfe5d35a51d882d8283abfe6b"
+    },
+    {
+      "file": "deck-over-map.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/combat/evidence.json",
+      "entry": 18,
+      "source_sha256": "fbf87e95408ce4373b3f69c31b252212240ee8712431d999b47dce7c7ecaafc8",
+      "sha256": "f409d9a33d397b0158251f5ee97fcefacf51b90ee9062465d0e04e749824fbc1"
+    },
+    {
+      "file": "covered-observation.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/combat/evidence.json",
+      "entry": 4,
+      "source_sha256": "fbf87e95408ce4373b3f69c31b252212240ee8712431d999b47dce7c7ecaafc8",
+      "sha256": "1ac3f05a6b58ca97a952916d134fe02d8e88218b8bc9f45b80a261be14709ccd"
+    },
+    {
+      "file": "error-sort.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full",
+        "descending": true
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/combat/evidence.json",
+      "entry": 14,
+      "source_sha256": "fbf87e95408ce4373b3f69c31b252212240ee8712431d999b47dce7c7ecaafc8",
+      "sha256": "5a28b0409a812877c87e8a24a9bb31a30eb20f8ce81545c20fca17917cf19c85"
+    },
+    {
+      "file": "error-unsupported-filter.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full",
+        "card_ids": []
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/combat/evidence.json",
+      "entry": 15,
+      "source_sha256": "fbf87e95408ce4373b3f69c31b252212240ee8712431d999b47dce7c7ecaafc8",
+      "sha256": "edd2fed22ebe472e6f20e4c966a106017578d47f72b4a7268e152ca3c1164d0d"
+    },
+    {
+      "file": "error-main-menu.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/main_menu/evidence.json",
+      "entry": 1,
+      "source_sha256": "c79d5d6d004d66ed08af1d3402bb45f0189eb109ff90187c77de3ae61695769e",
+      "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+    },
+    {
+      "file": "event.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/event/evidence.json",
+      "entry": 2,
+      "source_sha256": "1ff0c21753dc0982fbf16e04da4b1220f781d21e2c2c0ee6d61d5f8680687107",
+      "sha256": "5c32bd82b96a07d5fd5fb8730d8cdec5e5752672afb572ecf7460828e3a41e59"
+    },
+    {
+      "file": "rest.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/rest/evidence.json",
+      "entry": 2,
+      "source_sha256": "0dc35f8312474328f0a3088fb0ad45df1f1e5f0e1e3f695bb3abcb4abcd92c2a",
+      "sha256": "28a5b729e22be137efde952410c46fa4db3325410b16c922b53ef60c0c640bec"
+    },
+    {
+      "file": "treasure.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/treasure/evidence.json",
+      "entry": 2,
+      "source_sha256": "85917c989aee99ff5d417a2746fb9fe05164e11808374054a818f9f3c1b0439f",
+      "sha256": "c1fcf96ab85ca2604451d1cfa3a8ae70c1ff3598dbe72751ca2aac9afc857065"
+    },
+    {
+      "file": "event-before.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/event/evidence.json",
+      "entry": 1,
+      "source_sha256": "1ff0c21753dc0982fbf16e04da4b1220f781d21e2c2c0ee6d61d5f8680687107",
+      "sha256": "9fb3bb30620908952dbb9ce6e28b011d73c7cee1b91f7376553c2f859fdf3bc5"
+    },
+    {
+      "file": "event-closed.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/event/evidence.json",
+      "entry": 6,
+      "source_sha256": "1ff0c21753dc0982fbf16e04da4b1220f781d21e2c2c0ee6d61d5f8680687107",
+      "sha256": "5e2266235acd3e6eb77dbc14956ed264740de19fd9c851efedbc4a02e9bc950b"
+    },
+    {
+      "file": "closed-to-map.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/combat/evidence.json",
+      "entry": 20,
+      "source_sha256": "fbf87e95408ce4373b3f69c31b252212240ee8712431d999b47dce7c7ecaafc8",
+      "sha256": "8ecf43375e20704a0f41b009d98402e330068b33f52752f3a0b436d5b266edef"
+    },
+    {
+      "file": "shop.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/final/shop/evidence.json",
+      "entry": 3,
+      "source_sha256": "d73ef1fb6f0fdcc285575e71f6b0bfebab5d59a3f58c8828b1ee4b900003678e",
+      "sha256": "9b48c33d8f9b805c9fdb8e8627f9ce2d4528f3d429e58a4685540c69244eff1b"
+    },
+    {
+      "file": "ancient.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/final/ancient/evidence.json",
+      "entry": 2,
+      "source_sha256": "dbdc9c10b6a8be8c4c71b2692678d34341600d47f191b33a0617201b4a77754b",
+      "sha256": "4f6d2f43921e2096903fe889072cb87738e5c0d1c84de72e6deb263e3b365e56"
+    },
+    {
+      "file": "divination.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/final/divination/evidence.json",
+      "entry": 2,
+      "source_sha256": "79b2b16828f7dc7aff388aa985fcc98efc3f3c23b18bd4539a0989685fa3c620",
+      "sha256": "5c32bd82b96a07d5fd5fb8730d8cdec5e5752672afb572ecf7460828e3a41e59"
+    },
+    {
+      "file": "epilogue.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/final/epilogue/evidence.json",
+      "entry": 3,
+      "source_sha256": "56c5c843966795cc65754869c1956b5277a352028c0ccc16f763ac10a42aea18",
+      "sha256": "c8f321f135bbafc27de1c01685e4c0d265a206956b0563d1ad515d3383a67f71"
+    },
+    {
+      "file": "rewards.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/final/rewards/evidence.json",
+      "entry": 2,
+      "source_sha256": "bfa7d51b603e968e1c5f5c78bed4aa45f7d824cb6aaf9979274d1301d0135d03",
+      "sha256": "5b1b22b8a6147e384bf70233492d627bc535b0e6705f460b6501e104ae8699c8"
+    },
+    {
+      "file": "error-selection.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/remaining/selection/evidence.json",
+      "entry": 3,
+      "source_sha256": "e09111c0154df48c8f9070ce8a49fd3da99847b778d05a1a1a1d7f87de26579f",
+      "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+    },
+    {
+      "file": "error-after-rejection.full.json",
+      "kind": "actual_stdio_mcp",
+      "tool": "selection_option",
+      "arguments": {
+        "option_id": "cancel",
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-inspect-deck-review/remaining/selection/evidence.json",
+      "entry": 4,
+      "source_sha256": "e09111c0154df48c8f9070ce8a49fd3da99847b778d05a1a1a1d7f87de26579f",
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
+      "note": "The call is selection_option immediately after inspect_deck was rejected; it demonstrates permission loss."
+    },
+    {
+      "file": "constructed-empty.full.json",
+      "kind": "constructed_from_contract",
+      "tool": "inspect_deck",
+      "arguments": {
+        "preset": "full"
+      },
+      "based_on": "combat.full.json",
+      "changes": {
+        "deck": [],
+        "hover_tips": []
+      },
+      "sha256": "1a28ae79fb306aec14c89a01011e9174a3488133543cc7e962cd15d8b870fa90"
+    }
+  ]
+}

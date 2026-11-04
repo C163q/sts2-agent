@@ -1,0 +1,14 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "deck"
+  },
+  "view_upgrades": false,
+  "sort": {
+    "by": "obtained",
+    "descending": false
+  },
+  "deck": [],
+  "hover_tips": []
+}
