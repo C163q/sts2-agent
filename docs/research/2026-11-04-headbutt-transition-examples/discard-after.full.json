@@ -1,0 +1,37 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "discard_pile"
+  },
+  "pile": "discard",
+  "status": "opened",
+  "message": "Cards here are shuffled into your draw pile when it runs out of cards.",
+  "cards": [
+    {
+      "id": "pile:1",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": "pile:2",
+      "name": "Headbutt",
+      "type": "Attack",
+      "rarity": "common",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 9 damage.\nPut a card from your Discard Pile on top of your Draw Pile."
+    }
+  ],
+  "hover_tips": []
+}

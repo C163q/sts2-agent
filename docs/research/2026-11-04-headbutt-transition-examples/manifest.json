@@ -1,0 +1,115 @@
+{
+  "base_commit": "ca96b78",
+  "working_tree": "Only adds a test-only headbutt scenario; production journals unchanged.",
+  "mod": "0.61.0",
+  "mcp": "0.63.0",
+  "schema": 40,
+  "mod_sha256": "c48321d25316460196960c5e1025ec69b87d0f6fe1f5282591929c6710407820",
+  "examples": [
+    {
+      "file": "empty-play.full.json",
+      "purpose": "空弃牌堆，只有费用／出牌／伤害，没有移动也不应虚构移动",
+      "kind": "real_stdio",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-headbutt-review/empty/evidence.json",
+      "source_index": 2,
+      "sha256": "fd2d6248cdec6cb21e84ffa135aa95df3062ff4acf526e46861a7498c5b3c9ee"
+    },
+    {
+      "file": "single-play.full.json",
+      "purpose": "唯一弃牌自动放回；当前没有该牌移动事件",
+      "kind": "real_stdio",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-headbutt-review/single/evidence.json",
+      "source_index": 3,
+      "sha256": "be50e5d5f2c9a40094fac5955c6d7c5d13daf70e301ae2cb57dbcd80a5da191d"
+    },
+    {
+      "file": "multiple-play.full.json",
+      "purpose": "先完成伤害，再停在选牌边界",
+      "kind": "real_stdio",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-headbutt-review/multiple/evidence.json",
+      "source_index": 4,
+      "sha256": "287011a5ffeeca121120592e43ab67fb72549bca7f73be09bf9aa52c82c1075c"
+    },
+    {
+      "file": "selection.full.json",
+      "purpose": "真实候选及明确的抽牌堆顶提示",
+      "kind": "real_stdio",
+      "tool": "inspect_selection",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-headbutt-review/multiple/evidence.json",
+      "source_index": 6,
+      "sha256": "f5506c24fe48cdda2191f81ff135542392a01d806bc0dc130de6cdbe01e83ffa"
+    },
+    {
+      "file": "select-card.full.json",
+      "purpose": "完成选牌及移动，但当前 events 为空",
+      "kind": "real_stdio",
+      "tool": "select_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6
+      },
+      "source": ".tmp/2026-11-04-headbutt-review/multiple/evidence.json",
+      "source_index": 7,
+      "sha256": "58bb43729955388b4f9ff43ea5ba0f3c34bf6a7c42c5cbad13eb19d276627f64"
+    },
+    {
+      "file": "after.full.json",
+      "purpose": "移动后可见抽牌堆 1、弃牌堆 2",
+      "kind": "real_stdio",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-headbutt-review/multiple/evidence.json",
+      "source_index": 9,
+      "sha256": "871863f2d526881f48f5c52afd455ef9f6e400dee0f8b963c355bd7d76a87b75"
+    },
+    {
+      "file": "draw-after.full.json",
+      "purpose": "原生抽牌堆仅有防御",
+      "kind": "real_stdio",
+      "tool": "inspect_pile",
+      "arguments": {
+        "preset": "full",
+        "pile": "draw"
+      },
+      "source": ".tmp/2026-11-04-headbutt-review/multiple/evidence.json",
+      "source_index": 10,
+      "sha256": "9468ee1d768311c3042674897e945280623a122aa7d6002f8e747fb227a4f8b3"
+    },
+    {
+      "file": "discard-after.full.json",
+      "purpose": "原生弃牌堆只有头槌和打击",
+      "kind": "real_stdio",
+      "tool": "inspect_pile",
+      "arguments": {
+        "preset": "full",
+        "pile": "discard"
+      },
+      "source": ".tmp/2026-11-04-headbutt-review/multiple/evidence.json",
+      "source_index": 12,
+      "sha256": "75e6d840187b5e298652a5f921a216559df2a0bc6d84bf6950c44b5cd2b92fcb"
+    }
+  ]
+}
