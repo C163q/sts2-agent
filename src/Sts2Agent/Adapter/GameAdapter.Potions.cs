@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Potions;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace Sts2Agent;
@@ -30,7 +31,10 @@ internal sealed partial class GameAdapter
             return Reject("invalid_request", "target_id must be an integer from 0 to 4294967295 or merchant; omit it when no target is required.");
         if (!query && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read current state before using or discarding a potion.");
-        if (PotionStageUnavailableReason() is { } stage) return Reject("illegal_action", stage);
+        string? useStage = PotionStageUnavailableReason(), discardStage = DiscardPotionStageUnavailableReason();
+        string? stage = query ? useStage == null || discardStage == null ? null : useStage
+            : use ? useStage : discardStage;
+        if (stage != null) return Reject("illegal_action", stage);
         var holders = PotionInspection.ExposedHolders();
         if (holders == null) return Reject("illegal_action", "The potion bar is hidden or not ready in the current screen.");
         if (slot >= holders.Length) return Reject("illegal_action", $"potion_slot {slot} is out of range; the belt has {holders.Length} slots.");
@@ -42,7 +46,8 @@ internal sealed partial class GameAdapter
         if (potion == null || potion.Owner != player || player.GetPotionSlotIndex(potion) != slot
             || PotionActions.Type(potion) == null)
             return Reject("illegal_action", "The potion in that slot is no longer owned by the local player or has an unsupported target type.");
-        if (query) return InspectionSuccess(request, before, PotionActions.Read(potion, slot, before.GetProperty("snapshot_id").GetString()!));
+        if (query) return InspectionSuccess(request, before, PotionActions.Read(potion, slot,
+            before.GetProperty("snapshot_id").GetString()!, useStage));
         if ((use ? PotionActions.Reason(potion) : PotionActions.RemovalReason(potion)) is { } unavailable)
             return Reject("illegal_action", unavailable);
         MegaCrit.Sts2.Core.Entities.Creatures.Creature? target = null;
@@ -54,6 +59,14 @@ internal sealed partial class GameAdapter
         var run = player.RunState;
         var journal = CombatJournalScope.Current!;
         GameAction? submitted = null;
+        var discardAction = use ? null : new DiscardPotionGameAction(player, (uint)slot, inCombat);
+        var progress = use ? null : new PotionDiscardProgress();
+        var discardResult = use ? null : JsonSerializer.SerializeToNode(PotionActions.Reference(potion, slot))!.AsObject();
+        var potionJournal = PotionJournal.Current!;
+        void DiscardObserved(PotionModel removed)
+        {
+            if (ReferenceEquals(removed, potion)) progress?.ObserveDiscard();
+        }
         bool canceled = false;
         void Canceled(GameAction _) => canceled = true;
         var actionExecution = execution;
@@ -61,22 +74,24 @@ internal sealed partial class GameAdapter
         {
             if (submitted != null) return;
             if (use ? action is not UsePotionAction played || played.Player != player || played.PotionIndex != slot
-                : action is not DiscardPotionGameAction || action.OwnerId != player.NetId) return;
+                : !ReferenceEquals(action, discardAction)) return;
             submitted = action;
+            progress?.Submit();
             actionExecution?.ActionSubmitted();
             action.BeforeCancelled += Canceled;
         }
         RunManager.Instance.ActionQueueSet.ActionEnqueued += Enqueued;
+        if (progress != null) potionJournal.DiscardObserved += DiscardObserved;
         try
         {
             UiChanged();
             holder!.DisableUntilPotionRemoved();
             if (use) potion.EnqueueManualUse(potion.TargetType == TargetType.Self ? player.Creature : target);
-            else RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(new DiscardPotionGameAction(player, (uint)slot, inCombat));
+            else RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(discardAction!);
             var (after, reason) = await ActionObservation(() =>
             {
                 bool finished = submitted?.State is GameActionState.Finished or GameActionState.Canceled;
-                bool ready = finished && CanHandlePotions();
+                bool ready = finished && (use ? CanHandlePotions() : CanDiscardPotions());
                 string? boundary = journal.StopReason(ready);
                 if (!inCombat)
                     boundary = !ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState()) ? "interrupted"
@@ -86,11 +101,24 @@ internal sealed partial class GameAdapter
                 return boundary is "player_ready" or "action_completed" && canceled ? "action_canceled" : boundary;
             });
             object transition = journal.Result(reason);
-            return Success(request, ResponseBuilder.WithTransition(after, transition));
+            if (progress != null)
+            {
+                bool sameRun = ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState());
+                bool stillVisible = sameRun && ReferenceEquals(PotionInspection.DisplayedAt(slot)?.Potion?.Model, potion);
+                if (canceled && stillVisible) progress.Cancel();
+                if (submitted?.State is GameActionState.Finished or GameActionState.Canceled)
+                    progress.Finish(submitted.Exception != null);
+                if (!sameRun || reason is "timeout" or "interrupted" || ActionEventScope.Current?.Buffer.Truncated == true
+                    || progress.Status == "queued" && (reason != "choice_required" || !stillVisible
+                        || submitted?.State != GameActionState.WaitingForExecution)) progress.Abandon();
+                discardResult!["status"] = progress.Status;
+            }
+            return Success(request, ResponseBuilder.WithTransition(after, transition, potionDiscard: discardResult));
         }
         finally
         {
             RunManager.Instance.ActionQueueSet.ActionEnqueued -= Enqueued;
+            if (progress != null) potionJournal.DiscardObserved -= DiscardObserved;
             if (submitted != null) submitted.BeforeCancelled -= Canceled;
         }
     }

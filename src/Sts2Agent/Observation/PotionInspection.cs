@@ -51,6 +51,7 @@ internal static class PotionInspection
 
     internal static bool Hoverable(NPotionHolder holder) => HoverAccess.CanFocus(holder);
     internal static bool Interactive(NPotionHolder holder) => Displayed(holder) && holder.IsEnabled && Hoverable(holder);
+    internal static bool Pending(NPotionHolder holder) => PrivateFields.Read(holder, "_disabledUntilPotionRemoved") is true;
 
     private static TextureRect? Icon(NPotionHolder holder) => holder.HasPotion
         ? holder.Potion!.GetNodeOrNull<TextureRect>("%Image") : holder.GetNodeOrNull<TextureRect>("%EmptyIcon");

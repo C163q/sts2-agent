@@ -507,7 +507,8 @@ SPECS = (
         name='discard_potion',
         schema=POTION_SCHEMA,
         description="Discard one potion, including automatic potions, when removal is allowed. "
-            "During a choice it may queue until the choice is resolved; potion_discard reports this request's status.",
+            "During a choice it may queue until the choice is resolved; potion_discard reports this request's status. "
+            "Read current state after unknown or not_discarded.",
         annotations=action,
         category='action',
         effect='action',

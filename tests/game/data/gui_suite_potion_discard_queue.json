@@ -1,0 +1,240 @@
+[
+  {
+    "name": "choose_one",
+    "scenarios": {
+      "play": "basic",
+      "potion": "skill"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "choose_one"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hand",
+    "scenarios": {
+      "play": "basic",
+      "potion": "gamblers"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "hand"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "pile",
+    "scenarios": {
+      "play": "basic",
+      "potion": "memories"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "pile"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "noncombat_upgrade",
+    "scenarios": {
+      "rest": "smith",
+      "potion": "fruit_combat"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "noncombat_upgrade"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "immediate",
+    "scenarios": {
+      "play": "basic",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "immediate"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "cancel",
+    "scenarios": {
+      "play": "basic",
+      "potion": "discard_cancel"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "cancel"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hidden",
+    "scenarios": {
+      "play": "basic",
+      "potion": "discard_hidden"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "hidden"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "multiple",
+    "scenarios": {
+      "play": "basic",
+      "potion": "skill"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "multiple"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "skip",
+    "scenarios": {
+      "play": "basic",
+      "potion": "skill"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "skip"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "pending_reset",
+    "scenarios": {
+      "play": "basic",
+      "potion": "skill"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "pending_reset"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "after_reset",
+    "scenarios": {
+      "play": "basic",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "after_reset"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "card_choice",
+    "scenarios": {
+      "play": "discovery",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "card_choice"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "card_pile",
+    "scenarios": {
+      "play": "batch_combat_pile",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "card_pile"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hand_upgrade",
+    "scenarios": {
+      "play": "armaments",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "hand_upgrade"
+        ]
+      }
+    ]
+  }
+]

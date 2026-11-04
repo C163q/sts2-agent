@@ -9,6 +9,7 @@ namespace Sts2Agent;
 internal sealed class PotionJournal : IDisposable
 {
     public static PotionJournal? Current { get; private set; }
+    public event Action<PotionModel>? DiscardObserved;
     private readonly bool subscribed;
     private readonly Player player;
     private readonly Action<string, object> record;
@@ -35,11 +36,16 @@ internal sealed class PotionJournal : IDisposable
             slots[potion] = slot;
     }
     private void Used(PotionModel potion) => Record("potion_used", potion);
-    private void Discarded(PotionModel potion) => Record("potion_discarded", potion);
-    private void Record(string type, PotionModel potion)
+    private void Discarded(PotionModel potion)
     {
-        if (RunResourceJournal.Current is { TopBarVisible: false }) return;
-        if (slots.Remove(potion, out int slot) && SlotVisible(slot)) record(type, PotionActions.Reference(potion, slot));
+        if (Record("potion_discarded", potion)) DiscardObserved?.Invoke(potion);
+    }
+    private bool Record(string type, PotionModel potion)
+    {
+        if (RunResourceJournal.Current is { TopBarVisible: false }) return false;
+        if (!slots.Remove(potion, out int slot) || !SlotVisible(slot)) return false;
+        record(type, PotionActions.Reference(potion, slot));
+        return !buffer.Truncated;
     }
 
     // Native removal can clear the image before notifying this journal. The known identity

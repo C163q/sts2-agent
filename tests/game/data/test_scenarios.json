@@ -22,6 +22,8 @@
     "fairy_rescue",
     "blocked",
     "cancel",
+    "discard_cancel",
+    "discard_hidden",
     "replace",
     "unhittable",
     "entropic",

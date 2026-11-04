@@ -1,4 +1,5 @@
 using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes;
@@ -9,8 +10,12 @@ namespace Sts2Agent;
 internal sealed partial class GameAdapter
 {
     private static bool CanHandlePotions() => PotionStageUnavailableReason() == null;
+    private static bool CanDiscardPotions() => DiscardPotionStageUnavailableReason() == null;
 
-    private static string? PotionStageUnavailableReason()
+    private static string? PotionStageUnavailableReason() => PotionStageUnavailableReason(allowDiscardAtChoice: false);
+    private static string? DiscardPotionStageUnavailableReason() => PotionStageUnavailableReason(allowDiscardAtChoice: true);
+
+    private static string? PotionStageUnavailableReason(bool allowDiscardAtChoice)
     {
         if (LocalPlayer == null || !RunManager.Instance.IsInProgress)
             return "No local run is available for potion actions.";
@@ -18,8 +23,6 @@ internal sealed partial class GameAdapter
             return "Potion actions require a local single-player run.";
         if (!LocalPlayer.Creature.IsAlive || LocalPlayer.RunState.IsGameOver)
             return "The run or combat is over; potion actions are unavailable.";
-        if (CardSelection.Current != null)
-            return "Resolve the current card selection before using or discarding a potion.";
         if (CardView.Current != null)
             return "Close the card browsing page before using or discarding a potion.";
         if (CombatManager.Instance.IsInProgress && NRun.Instance?.GlobalUi.MapScreen.IsOpen == true)
@@ -28,6 +31,19 @@ internal sealed partial class GameAdapter
             return "Wait for the screen transition before using or discarding a potion.";
         if (NTargetManager.Instance.IsInSelection)
             return "Finish or cancel target selection before using or discarding another potion.";
+        if (CardSelection.Current is { } selection)
+        {
+            if (!allowDiscardAtChoice)
+                return "Resolve the current card selection before using a potion.";
+            if (!selection.Supported || selection.Kind == "view_cards" || selection.Status != "visible"
+                || selection.InPreview || !CardSelection.AwaitingInput)
+                return "Return to a ready card selection before discarding a potion.";
+            if (CombatManager.Instance.IsInProgress && (CombatManager.Instance.IsOverOrEnding
+                || LocalPlayer.PlayerCombatState?.Phase != PlayerTurnPhase.Play))
+                return "The player turn is not ready for a potion discard.";
+            // The native queue waits behind the choice. Do not require that queue to be empty.
+            return null;
+        }
         if (!RunManager.Instance.ActionQueueSet.IsEmpty)
             return "Wait for the current action to finish before using or discarding a potion.";
         bool childRewardsReady = RewardInspection.Current is { } rewards && RewardInspection.Ready(rewards);

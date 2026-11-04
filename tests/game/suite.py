@@ -18,6 +18,7 @@ CATALOG = json.loads((ROOT / 'tests/game/data/test_scenarios.json').read_text())
 SUPPORTED_VERIFIERS = {
     'verify_potion_recovery.py',
     'verify_discard_potion_review.py',
+    'verify_potion_discard_queue.py',
     'verify_use_potion_review.py',
     'verify_play_cards.py',
     'verify_play_card_review.py',
@@ -104,6 +105,8 @@ def load_cases(path):
             if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
+                'verify_potion_discard_queue.py': ('choose_one', 'hand', 'pile', 'noncombat_upgrade', 'immediate',
+                    'cancel', 'hidden', 'multiple', 'skip', 'pending_reset', 'after_reset', 'card_choice', 'card_pile', 'hand_upgrade'),
                 'verify_discard_potion_review.py': ('basic', 'default', 'automatic', 'fruit', 'blocked',
                     'replace', 'covered', 'display', 'skill', 'noncombat_event', 'noncombat_rest',
                     'noncombat_shop', 'noncombat_map', 'noncombat_reward', 'merchant_inventory'),

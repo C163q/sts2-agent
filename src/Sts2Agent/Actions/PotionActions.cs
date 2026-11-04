@@ -36,6 +36,8 @@ internal static class PotionActions
         var holder = Find(slot);
         if (holder == null || !ReferenceEquals(holder.Potion!.Model, potion))
             return "This potion slot is hidden or not ready.";
+        if (PotionInspection.Pending(holder))
+            return "This potion is already queued for use or discard; resolve the current choice or wait for it to finish.";
         return PotionInspection.Interactive(holder) ? null
             : "This potion slot cannot be interacted with; use another slot or wait for it to become available.";
     }
@@ -74,9 +76,10 @@ internal static class PotionActions
         && button.IsInsideTree() && button.IsVisibleInTree()
         && VisibleUi.Descendants<Godot.CanvasItem>(button).Any(VisibleUi.OnScreen);
 
-    public static string? Reason(PotionModel potion)
+    public static string? Reason(PotionModel potion, string? stageReason = null)
     {
         if (RemovalReason(potion) is { } removal) return removal;
+        if (stageReason != null) return stageReason;
         if (potion.Usage == PotionUsage.Automatic) return "This potion is used automatically.";
         if (potion.Usage is not (PotionUsage.AnyTime or PotionUsage.CombatOnly)
             || Type(potion) == null) return "This potion is unsupported.";
@@ -106,7 +109,7 @@ internal static class PotionActions
 
     public static object Reference(PotionModel potion, int slot) => new { slot_index = slot, name = English.Name(potion.Title) };
 
-    public static object Read(PotionModel potion, int slot, string snapshotId)
+    public static object Read(PotionModel potion, int slot, string snapshotId, string? useStageReason = null)
     {
         List<object> targets = Targets(potion).Select(creature => (object)new { id = (object)creature.CombatId!.Value,
             kind = creature.IsPlayer ? "player" : creature.IsEnemy ? "enemy" : "ally",
@@ -115,7 +118,7 @@ internal static class PotionActions
             && potion.Owner.Creature.IsAlive)
             targets.Add(new { id = "self", kind = "player", name = English.Name(potion.Owner.Character.Title) });
         if (MerchantVisible(potion)) targets.Add(new { id = "merchant", kind = "merchant", name = "Merchant" });
-        string? reason = Reason(potion);
+        string? reason = Reason(potion, useStageReason);
         return new { snapshot_id = snapshotId, potion = Reference(potion, slot), usable = reason == null,
             discardable = Discardable(potion), target_type = Type(potion),
             requires_target = RequiresTarget(potion), targets, reason };

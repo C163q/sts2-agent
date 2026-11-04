@@ -157,10 +157,13 @@ async def verify(args):
                 result = await call('use_potion', {'potion_slot': 0})
                 assert result['transition']['stop_reason'] == 'choice_required', result
                 selection = await call('inspect_selection')
-                await unchanged_rejection({'potion_slot': 1}, 'selection')
+                pending = await call('discard_potion', {'potion_slot': 1})
+                assert pending['potion_discard']['status'] == 'queued', pending
                 chosen = await call('select_card', {'card_id': selection['selection']['cards'][0]['id']})
                 assert chosen['transition']['stop_reason'] == 'player_ready', chosen
-                await discard(1)
+                assert any(e['type'] == 'potion_discarded' and e['potion']['slot_index'] == 1
+                    for e in chosen['transition']['events']), chosen
+                await discard(2)
             elif scenario == 'noncombat_reward':
                 reward = (await call('inspect_rewards'))['rewards']['items'][0]['id']
                 await call('claim_reward', {'reward_id': reward})

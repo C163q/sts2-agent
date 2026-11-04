@@ -22,6 +22,15 @@ namespace Sts2Agent;
 
 internal static class PotionFixture
 {
+    private static Action<GameAction>? pendingEnqueue;
+
+    public static void Reset()
+    {
+        if (pendingEnqueue != null) RunManager.Instance.ActionQueueSet.ActionEnqueued -= pendingEnqueue;
+        pendingEnqueue = null;
+        PotionDiscardCancelFixture.Reset();
+    }
+
     public static async Task Configure(string scenario, Player player)
     {
         foreach (var potion in player.Potions.ToArray()) await PotionCmd.Discard(potion);
@@ -77,14 +86,22 @@ internal static class PotionFixture
         if (scenario == "blocked") player.CanRemovePotions = false;
         if (scenario == "unhittable")
             await PowerCmd.Apply<MockUnhittablePower>(new ThrowingPlayerChoiceContext(), player.Creature.CombatState!.Enemies.First(), 1, player.Creature, null);
-        if (scenario == "cancel")
+        if (scenario == "discard_cancel") PotionDiscardCancelFixture.Arm(player.NetId);
+        if (scenario is "cancel" or "discard_hidden")
         {
             void Enqueued(GameAction action)
             {
-                if (action is not UsePotionAction) return;
+                if (scenario == "cancel" ? action is not UsePotionAction : action is not DiscardPotionGameAction) return;
                 RunManager.Instance.ActionQueueSet.ActionEnqueued -= Enqueued;
-                player.PotionSlots[0]!.Discard();
+                pendingEnqueue = null;
+                if (scenario == "cancel") player.PotionSlots[0]!.Discard();
+                else
+                {
+                    PotionDisplayFixture.Set("hidden");
+                    PotionJournal.Current?.SampleVisibility();
+                }
             }
+            pendingEnqueue = Enqueued;
             RunManager.Instance.ActionQueueSet.ActionEnqueued += Enqueued;
         }
     }
