@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "potion_slot must be an integer from 0 to 2147483647.",
+    "recovery": "correct_request"
+  }
+}

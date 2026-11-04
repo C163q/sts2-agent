@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "observation_required",
+    "message": "Read current state with get_observation or a relevant inspection before acting.",
+    "recovery": "get_observation"
+  }
+}

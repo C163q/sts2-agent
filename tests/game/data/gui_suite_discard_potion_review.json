@@ -1,0 +1,257 @@
+[
+  {
+    "name": "basic",
+    "scenarios": {
+      "play": "basic",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "default",
+    "scenarios": {
+      "play": "basic",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "default"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "automatic",
+    "scenarios": {
+      "play": "basic",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "automatic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "fruit",
+    "scenarios": {
+      "play": "basic",
+      "potion": "fruit_combat"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "fruit"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "blocked",
+    "scenarios": {
+      "play": "basic",
+      "potion": "blocked"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "blocked"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "replace",
+    "scenarios": {
+      "play": "basic",
+      "potion": "replace"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "replace"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "covered",
+    "scenarios": {
+      "play": "basic",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "covered"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "display",
+    "scenarios": {
+      "play": "basic",
+      "potion": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "display"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "skill",
+    "scenarios": {
+      "play": "basic",
+      "potion": "skill"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "skill"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "noncombat_event",
+    "scenarios": {
+      "play": "basic",
+      "potion": "noncombat_event"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "noncombat_event"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "noncombat_rest",
+    "scenarios": {
+      "play": "basic",
+      "potion": "noncombat_rest"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "noncombat_rest"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "noncombat_shop",
+    "scenarios": {
+      "play": "basic",
+      "potion": "noncombat_shop"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "noncombat_shop"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "noncombat_map",
+    "scenarios": {
+      "play": "basic",
+      "potion": "noncombat_map"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "noncombat_map"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "noncombat_reward",
+    "scenarios": {
+      "play": "basic",
+      "potion": "noncombat_reward"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "noncombat_reward"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "merchant_inventory",
+    "scenarios": {
+      "play": "basic",
+      "potion": "merchant_inventory"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_discard_potion_review.py",
+        "args": [
+          "--scenario",
+          "merchant_inventory"
+        ]
+      }
+    ]
+  }
+]

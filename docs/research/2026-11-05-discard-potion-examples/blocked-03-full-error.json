@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Potions cannot be removed now.",
+    "recovery": "choose_legal_action"
+  }
+}

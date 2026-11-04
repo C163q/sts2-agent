@@ -53,6 +53,8 @@
 
 药水触发选择时立即返回 `choice_required`；使用 [选牌工具](card-selection.md) 继续，可通过原生眼睛查看战场。查看期间仍禁止使用和丢弃药水。技能/攻击/能力/无色药水的候选只在实际生成后通过观察或 `inspect_selection` 提供；液态记忆和赌徒佳酿分别沿用牌堆、手牌选择。
 
+已知限制：discard_potion 尚不支持原生在选牌期间排队丢弃、完成选择后执行的行为，相关阶段与回执待完善，见[丢弃药水审阅](../research/2026-11-05-discard-potion-review.md)。
+
 结果采用[精简动作回执](mcp.md#动作返回格式)，包含 [transition](end-turn.md)。战斗中停止于 `player_ready/choice_required/combat_won/combat_lost`；战斗外已完成动作时为 `action_completed`。原生取消后恢复可行动为 `action_canceled`；超时或中断不代表动作没有执行，不能自动重发。
 
 `potion_used/potion_discarded` 记录已见药水的槽位和名称，使用事件表示药水已被原生使用流程移除，不代表所有后续效果已完成。记录依据此前已显示的药水身份与仍暴露的槽位，不要求已移除的旧图标还在，也不要求其他槽位能点击；隐藏期间不补记用药，恢复显示后不回放。伤害等沿用现有战报；药水自动触发也可出现在结束回合等其他动作的记录中。不声称提供完整资源变化或因果树。

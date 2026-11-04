@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "potion_slot 99 is out of range; the belt has 3 slots.",
+    "recovery": "choose_legal_action"
+  }
+}

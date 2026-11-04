@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "potion_slot is required.",
+    "recovery": "correct_request"
+  }
+}
