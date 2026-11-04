@@ -39,4 +39,4 @@
 | `journal_boundary` | [end_turn → player_ready](journal_boundary-04-end_turn.full.json) |
 | `fake_merchant` | [use_potion → observation_required](fake_merchant-01-use_potion.json)、[use_potion → player_ready](fake_merchant-04-use_potion.full.json) |
 
-其他文件包含目标查询、完整选择候选及继续／确认回执，用于核对边界，而非增加 use_potion 的返回字段。USE-01/02 的错误现状按原样保留，不能把这些基线样例当作修复结果。
+其他文件包含目标查询、完整选择候选及继续／确认回执，用于核对边界，而非增加 use_potion 的返回字段。错误处理现状按原样保留，不能把这些基线样例当作修复结果。

@@ -50,7 +50,7 @@
 - [x] `play_card`：单张手动出牌。[现状调研](2026-11-04-play-card-review.md)及[实现／验证](2026-11-04-play-cards-implementation.md)完成：PLAY-01–03、共用校验与原生提交追踪、最终拒绝恢复和单张回归；action_canceled 维持原策略。
 - [x] `play_cards`：按原生规则连续入队。[参数／行为](2026-11-04-play-cards-design.md)及[交付](2026-11-04-play-cards-implementation.md)完成：原子前置校验、动态失败继续、边界停止、逐张及跨选择回执、unknown 不直接接受后续动作。32 项不同场景／门控、653 项 Python、114 项 C# 及独立审查的重要修复通过；集成验证剩余范围见交付记录。
 - [x] `end_turn`：结束回合。[审阅](2026-11-04-end-turn-review.md)、[头槌补充核验](2026-11-04-headbutt-transition-review.md)及[实施／新返回](2026-11-04-turn-transitions-implementation.md)完成：TURN-01–03、无 position 的 card_moved、default 省略 autoplay:false；四张指定卡、手斧抽牌堆来源变体、错误直接续接及终态查看均已验证。636 项 Python、91 项 C#、最终十五局 GUI 通过；独立审查的重要问题已修复，低优先级生成预览牌名缓存限制留在实施记录。
-- [ ] `use_potion`：使用药水。阶段：[现状核验与设计讨论](2026-11-04-use-potion-review.md)；30 类场景／边界、120 份完整返回已采集，USE-01–05 的错误、恢复、参数说明及跨槽读取问题待确认实现；关联 MAP-CONTEXT-01 留待 inspect_map。
+- [ ] `use_potion`：使用药水。阶段：[现状核验与设计讨论](2026-11-04-use-potion-review.md)；30 类场景／边界、120 份完整返回已采集，错误说明、失败后继续操作、槽位编号、目标提示及其他槽位影响这五项问题待确认实现；地图显示状态的差异留待 inspect_map。
 - [ ] `discard_potion`：丢弃药水。
 
 ### 卡牌选择（4 项）
@@ -62,7 +62,7 @@
 
 ### 地图（3 项）
 
-- [ ] `inspect_map`：打开并查看地图。核验时同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)，并处理 [MAP-CONTEXT-01 的地图可见状态含义](2026-11-04-use-potion-review.md#关联发现地图上下文)。
+- [ ] `inspect_map`：打开并查看地图。核验时同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)，并处理[地图显示状态含义的差异](2026-11-04-use-potion-review.md#地图与牌组显示状态的差异)。
 - [ ] `close_map`：关闭地图。
 - [ ] `travel_to_node`：前往可选节点。
 

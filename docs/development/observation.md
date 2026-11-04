@@ -28,7 +28,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 - `scene` 表示当前战斗、房间或结算场景，取值为 `combat/rewards/rest_site/treasure/shop/ancient/event/epilogue/run_result/main_menu/unrecognized`。不能根据工具名称或读到战斗背景就改为 combat。
 - `screen.status` 表示该场景的可见／覆盖状态，取值为 `visible/covered/hidden/not_ready/not_applicable`；`screen.view` 在识别到覆盖或专项页面时提供。没有已识别查看页时省略 view。
-- 地图存在待统一的历史例外：已展开地图时返回 `screen:{status:visible,view:map}`，即使下层是战斗。此时 visible 表示地图可见，不能据此认为战斗可操作；须结合 view 与 available_actions。差异及待核验范围见[地图上下文记录](../research/2026-11-04-use-potion-review.md#关联发现地图上下文)。
+- 地图存在待统一的历史例外：已展开地图时返回 `screen:{status:visible,view:map}`，即使下层是战斗。此时 visible 表示地图可见，不能据此认为战斗可操作；须结合 view 与 available_actions。差异及待核验范围见[地图上下文记录](../research/2026-11-04-use-potion-review.md#地图与牌组显示状态的差异)。
 - `view` 包括 `map/deck/draw_pile/discard_pile/exhaust_pile/divination/confirmation/epilogue/run_result`。地图、牌组和牌堆不会将 scene 改为页面类型；牌堆本次请求是否打开页面另看其 status。
 - 详情读取使用其状态令牌对应的快照上下文；会打开或修改页面的工具，使用修改后的快照。因此，同一画面的 scene/screen 与 get_observation 一致；不因 summary 或筛选改变。
 
