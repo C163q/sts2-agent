@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Resolve the current card selection before ending the turn.",
+    "recovery": "choose_legal_action"
+  }
+}

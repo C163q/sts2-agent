@@ -1,0 +1,14 @@
+[
+  {"name":"headbutt_empty","scenarios":{"play":"headbutt"},"steps":[{"name":"verify","verifier":"verify_turn_transitions.py","args":["--scenario","headbutt_empty"]}]},
+  {"name":"headbutt_single","scenarios":{"play":"headbutt"},"steps":[{"name":"verify","verifier":"verify_turn_transitions.py","args":["--scenario","headbutt_single"]}]},
+  {"name":"headbutt_multiple","scenarios":{"play":"headbutt"},"steps":[{"name":"verify","verifier":"verify_turn_transitions.py","args":["--scenario","headbutt_multiple"]}]},
+  {"name":"shining","scenarios":{"play":"shining_strike"},"steps":[{"name":"verify","verifier":"verify_turn_transitions.py","args":["--scenario","shining"]}]},
+  {"name":"hatchet","scenarios":{"play":"thrumming_hatchet"},"steps":[{"name":"verify","verifier":"verify_turn_transitions.py","args":["--scenario","hatchet"]}]},
+  {"name":"hatchet_draw","scenarios":{"play":"thrumming_hatchet"},"steps":[{"name":"verify","verifier":"verify_turn_transitions.py","args":["--scenario","hatchet_draw"]}]},
+  {"name":"knife","scenarios":{"play":"knife_trap"},"steps":[{"name":"verify","verifier":"verify_turn_transitions.py","args":["--scenario","knife"]}]},
+  {"name":"won","scenarios":{"turn":"boulder"},"steps":[{"name":"verify","verifier":"verify_turn_transitions.py","args":["--scenario","won"]}]},
+  {"name":"lost","scenarios":{"turn":"wither_death"},"steps":[{"name":"verify","verifier":"verify_turn_transitions.py","args":["--scenario","lost"]}]},
+  {"name":"checks","scenarios":{"play":"headbutt"},"steps":[{"name":"verify","verifier":"verify_turn_transitions.py","args":["--scenario","checks"]}]},
+  {"name":"preflight","scenarios":{"play":"headbutt"},"steps":[{"name":"verify","verifier":"verify_turn_transitions.py","args":["--scenario","preflight"]}]},
+  {"name":"noncombat","scenarios":{"event":"basic"},"steps":[{"name":"verify","verifier":"verify_turn_transitions.py","args":["--scenario","noncombat"]}]}
+]

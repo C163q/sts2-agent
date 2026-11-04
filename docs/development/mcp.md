@@ -141,13 +141,13 @@ approval_mode = "approve"
 
 | 预设 | 行为 |
 | --- | --- |
-| `default`（默认） | 与本工具 full 的内容范围一致，递归删除普通对象字段中的 `null`，以及下述指定图标字段的 false |
+| `default`（默认） | 与本工具 full 的内容范围一致，递归删除普通对象字段中的 `null`，以及下述指定字段的 false |
 | `full` | 保留本工具原有完整输出及其中的空值；动作仍返回精简回执，不附送完整观察 |
 | 专用预设 | summary 继承 default 后进一步精简；selectable、actions_only 按各工具契约返回 |
 
 过滤保留以下例外：所有数组的 `null` 元素；`transition.events` 中已有的全部空值；选牌已展开的升级、附魔、变牌比较中 before / after 两侧的全部内容与空值。后者包括随机变牌的 `after:null`，但未展开的整个 `upgrade_preview:null` 可以省略。宝箱房 `treasure.status:"visible"` 时，保留已有的 `relic:null`，明确当前没有展示可领取遗物；covered 时仍省略，不据此推断隐藏内容。
 
-`0`、`false`、空字符串、空数组、空对象通常保留。仅在根 `relics[]` 和 `top_bar.relics[]` 的 `grayed_out/pulsing` 为 false 时省略这两个字段；其他 false（包括 melted）及期间事件不受影响。数组长度、顺序和引用下标不变；过滤后为空的对象仍保留。省略不表示沿用上次值；普通省略字段不表示零、否或空集合，但上述两个图标字段按专题契约精简。结果不是状态增量；需要明确空值和图标 false 时使用 full。
+`0`、`false`、空字符串、空数组、空对象通常保留。仅省略根 `relics[]` 和 `top_bar.relics[]` 的 `grayed_out/pulsing:false`，以及 `transition.events[]` 中 `type:card_played` 的 `autoplay:false`；自动出牌的 true、其他 false（包括 melted）及事件 null 不受影响。数组长度、顺序和引用下标不变；过滤后为空的对象仍保留。省略不表示沿用上次值；普通省略字段不表示零、否或空集合，上述局部字段按各自契约解释。结果不是状态增量；需要明确空值和上述 false 时使用 full。
 
 例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。遗物 summary 同样省略普通空值与两个 false 图标字段。`inspect_deck` / `inspect_pile` 同样使用 full/default/summary，默认完整内容；旧 detail_level 已移除。
 
@@ -184,7 +184,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 `inspect_selection` 省略 `view_upgrades` 时属于纯读取；显式提供该参数则可能改变 UI，与地图、牌组、牌堆及查看页切换一样，不能仅凭明确拒绝的错误码恢复许可。inspect_deck／inspect_pile／close_card_view 的已审查拒绝另有原生“本请求未交互”保证；只有显式保证为 true、证据不矛盾且已有许可时保留，返回 choose_legal_action。缺少保证、已交互或未知结果仍要求观察；该例外不推广到其他页面工具。这些页面操作不要求已有动作许可。`set_divination_tool` 虽只切换占卜工具，仍须已有许可、记录事件并返回动作回执；MCP annotations 不代替执行策略。
 
-游戏动作仅在原生证明“未提交且 UI 未改变”时保留旧许可。目前只有 `play_card` 的已审查前置拒绝提供这一保证；费用不足、缺少／多余目标和目标不在当前范围会给出具体提示，例如能量不足被拒后可以直接决定结束回合。缺少标记的旧 Mod、其他动作拒绝或执行结果未知时不恢复许可。占卜等操作返回 `screenshot_unavailable` 仍可能已经改变游戏，返回 `outcome:"unknown"` 并要求观察，不能把图像失败当作玩法未执行。
+游戏动作仅在原生证明“未提交且 UI 未改变”时保留旧许可。`play_card` 与 `end_turn` 的已审查前置拒绝提供这一保证；费用、目标和结束回合的选择／覆盖／按钮状态会给具体提示，例如能量不足被拒后可直接结束回合，选牌期间误用 end_turn 被拒后可直接继续合法选择。缺少标记的旧 Mod、其他动作拒绝或执行结果未知时不恢复许可。占卜等操作返回 `screenshot_unavailable` 仍可能已经改变游戏，返回 `outcome:"unknown"` 并要求观察，不能把图像失败当作玩法未执行。
 
 许可同时记录令牌和代次。排队动作只能使用调用开始时已有的那一代许可，即使后来读取返回相同字符串，也不能借用；取消会使等待／在途请求无法重新发布已撤销的许可。执行证据与公开 JSON 分开保存，不向模型暴露控制字段。用户保存的实测记录尚未逐条对照，[两项待办](TODO.md#当前工具审阅结束后处理)仍保留。
 

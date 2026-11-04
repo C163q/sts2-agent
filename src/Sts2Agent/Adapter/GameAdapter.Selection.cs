@@ -102,6 +102,7 @@ internal sealed partial class GameAdapter
         UiChanged();
         if (model != null)
         {
+            CardMovementJournal.Choose(model);
             try { await SelectionActions.Click(selection, model, ObservationFrame); }
             catch (InvalidOperationException error) { return FileMailbox.Error(request.Id, "illegal_action", error.Message); }
         }

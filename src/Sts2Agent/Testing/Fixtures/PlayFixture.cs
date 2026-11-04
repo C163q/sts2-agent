@@ -70,6 +70,9 @@ internal static class PlayFixture
         else if (scenario is "blade_dance" or "blade_dance_full") Add<BladeDance>();
         else if (scenario == "pommel_strike") Add<PommelStrike>();
         else if (scenario == "headbutt") Add<Headbutt>();
+        else if (scenario == "shining_strike") Add<ShiningStrike>();
+        else if (scenario == "thrumming_hatchet") { Add<ThrummingHatchet>(); Add<Headbutt>(); }
+        else if (scenario == "knife_trap") { Add<KnifeTrap>(); Add<BladeDance>(); }
         else if (scenario == "bloodletting") Add<Bloodletting>();
         else if (scenario == "gather_light") Add<GatherLight>();
         else if (scenario.StartsWith("charge", StringComparison.Ordinal)) Add<Charge>();

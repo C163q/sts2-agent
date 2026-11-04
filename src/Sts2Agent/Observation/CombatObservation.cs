@@ -26,6 +26,9 @@ internal sealed class CombatObservation
 {
     private readonly EnglishText english = new();
     private readonly CardIdentityMap<CardModel> cardIds = new();
+    private readonly Dictionary<CardModel, string> publicCardNames = [];
+    internal string? KnownCardName(CardModel card) => publicCardNames.GetValueOrDefault(card);
+    internal void RememberCardName(CardModel card, string name) => publicCardNames[card] = name;
     private CombatState? identityCombat;
     internal int CardId(CardModel card) => cardIds.Get(card);
 
@@ -35,6 +38,7 @@ internal sealed class CombatObservation
         {
             identityCombat = combat;
             cardIds.Clear();
+            publicCardNames.Clear();
         }
         if (combat == null || player == null)
             return;
@@ -183,6 +187,7 @@ internal sealed class CombatObservation
     {
         bool identified = card.Visibility == ModelVisibility.Visible;
         string? name = english.CardName(card);
+        if (identified && name != null && card.Model is { } model && CardVisible(card)) RememberCardName(model, name);
         var highlight = card.CardHighlight;
         bool glow = VisibleUi.OnScreen(highlight) && highlight.Material is ShaderMaterial shader
             && shader.GetShaderParameter("width").AsSingle() > 0;

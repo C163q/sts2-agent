@@ -1,0 +1,34 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 6,
+          "name": "Defend"
+        },
+        "from_pile": "discard",
+        "to_pile": "draw",
+        "type": "card_moved",
+        "sequence": 1
+      }
+    ]
+  }
+}

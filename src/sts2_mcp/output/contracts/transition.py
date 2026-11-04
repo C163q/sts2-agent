@@ -13,5 +13,6 @@ EVENT = {
     "name": TEXT, "autoplay": bool, "change": str, "potion": POTION_REF,
     "relic": {"name": TEXT}, "pile": TEXT,
     "orb": {"name": str}, "slot_index": int,
+    "from_pile": str, "to_pile": str,
 }
 TRANSITION = {"stop_reason": str, "complete": bool, "events": [EVENT]}

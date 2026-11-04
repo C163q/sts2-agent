@@ -111,7 +111,7 @@ internal sealed class CombatJournalScope : IDisposable
             marker = buffer.Reserve("combat_started");
             markerFrame = VisibleUi.FrameNumber;
         }
-        journal = new TurnJournal(state, player, observation.CardId);
+        journal = new TurnJournal(state, player, observation.CardId, observation.KnownCardName, observation.RememberCardName);
         journals.Add(journal);
         hadCombat = true;
         lastReason = null;

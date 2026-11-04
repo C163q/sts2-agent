@@ -1,12 +1,12 @@
 # 头槌的牌堆移动事件核验
 
-> 当前状态：核验完成，MOVE-01 已复现，提供 8 份完整真实返回。新增一个仅测试用的 headbutt 场景；生产记录器及公开事件格式未修改。TURN-01–03 的修复方案已确认，已有牌移动事件的字段及覆盖范围仍待定稿，两个范围分别跟进。暂无阻塞。
+> 当前状态：核验、实现及验证完成，MOVE-01 已与 TURN-01–03 合并交付，见[实施记录及新返回](2026-11-04-turn-transitions-implementation.md)。下述 8 份旧返回保留缺口基线；定稿明确不提供 position。暂无阻塞。
 
 ## 优先关注的问题
 
 | 编号 | 优先级 | 已核实问题 | 影响与处理状态 |
 | --- | --- | --- | --- |
-| MOVE-01 | 中；可见事件缺失 | 头槌确实把已有牌从弃牌堆放回抽牌堆，但 transition.events 不记录这次移动；多候选时，选牌并结算后的 select_card 甚至直接返回 events:[]；只有一张弃牌、原生自动选择时同样缺失 | 回执无法表达已在 UI 中发生的牌堆移动。不是 card_added 目的地报错，也不是 end_turn 本身漏掉后来才发生的事情。属于 play_card／选牌复用的共用战斗日志缺口，尚未修复 |
+| MOVE-01 | 中；可见事件缺失 | 头槌确实把已有牌从弃牌堆放回抽牌堆，但 transition.events 不记录这次移动；多候选时，选牌并结算后的 select_card 甚至直接返回 events:[]；只有一张弃牌、原生自动选择时同样缺失 | 审阅基线问题；已接入共用 card_moved 修复，最终结果见实施记录。不是 card_added 目的地报错，也不是 end_turn 本身漏掉后来才发生的事情 |
 
 ## 基线及证据
 
@@ -22,7 +22,7 @@
 
 `FromCombatPile` 在零候选时直接返回空集合；当不要求人工确认且候选数不超过最少选择数时直接选择，故只有一张弃牌时没有选择界面。多候选时才显示原生战斗牌堆选择。
 
-实测多候选的原生提示为“选择一张牌放到你的抽牌堆顶。”，inspect_selection 对应的英语 prompt 为 `Choose a card to put on top of your Draw Pile.`。截图已人工核对，位置 `.tmp/2026-11-04-headbutt-review/multiple/selection.png`。这里的“堆顶”有明确的公开 UI 依据，不能把它和偷读抽牌堆真实顺序混为一谈。
+实测多候选的原生提示为“选择一张牌放到你的抽牌堆顶。”，inspect_selection 对应的英语 prompt 为 `Choose a card to put on top of your Draw Pile.`。截图已人工核对，位置 `.tmp/2026-11-04-headbutt-review/multiple/selection.png`。提示仍作为选择文字返回；移动事件只表达实际可感知方向，不能把文字中的位置机制转换为动画直接证明的 position。
 
 移动动画经当前 `CardPileCmd.Add` 源码核对：对已有的堆内牌，根据实际 NCard 是否仍在场景中，使用牌节点与 NCardFlyVfx，或以 NCardFlyShuffleVfx 从旧牌堆到新牌堆播放移动。实测读取动画前后的可见计数与显式打开的原生牌堆内容；没有另外录制完整逐帧动画，不将源码核对写成逐帧目测。
 
@@ -58,9 +58,9 @@
 
 已有移动回执也没有通用来源／目的地表示。源码判断，同一缺口可能影响弃牌回手、手牌放回抽牌堆、消耗堆回手等未被现有专用事件覆盖的移动；这些只确认共用记录器缺少对应通道，未逐张卡实测。不能为头槌写死一条事件，或把所有 CardPile.CardAdded 都改报 card_added。
 
-## 候选事件设计
+## 输出定稿
 
-推荐在共用日志增加 `card_moved`，表达已有牌的公开移动；保留 card_added 表示新增牌，不重复发已有 card_drawn／card_discarded／card_exhausted 已经表达的同一次事实。下面是候选示例，不是当前实测返回：
+共用日志增加 `card_moved`，表达已有牌的公开移动；保留 card_added 表示新增牌，不重复发已有 card_drawn／card_discarded／card_exhausted 及手牌进入出牌区的 card_played 已表达的同次移动。下面是定稿字段示意；新的完整实际返回见实施记录，不能将旧的空 events 样本当作修复结果：
 
 ```json
 {
@@ -68,16 +68,13 @@
   "type": "card_moved",
   "card": {"id": 6, "name": "Defend"},
   "from_pile": "discard",
-  "to_pile": "draw",
-  "position": "top"
+  "to_pile": "draw"
 }
 ```
 
-from_pile／to_pile 与已有 hand、draw、discard、exhaust、play 的牌堆术语一致。position 仅在期间公开提示或牌面明确给出且对应实际移动时提供 top／bottom，否则为 null；不把内部索引、随机插入位置、洗牌结果或整个抽牌顺序输出为已观察事实。头槌手动选择分支已有明确堆顶提示；其他路径仍须分别建立公开证据，不能只读取 CardPileCmd 的 position 参数就宣称玩家看到了它。
+from_pile／to_pile 与已有 hand、draw、discard、exhaust、play 的牌堆术语一致。不添加 position，连 null 字段也不生成；不返回内部索引、随机插入位置、洗牌结果或整个抽牌顺序。牌名只复用实际公开身份，不能从多个匿名牌背中读取身份。
 
-另一个更小的方案是先只增加 from_pile／to_pile，将堆顶语义继续留在原生选择提示中；能够表达动画方向，但回执仍无法直接说明明确公开的放置位置。相比扩展 card_added 含义，单独新增 card_moved 更容易保持“新增”与“移动”的语义准确。
-
-拟覆盖共用移动记录、实际展示取证、跨 play_card／选牌回执的生命周期、公开校验与去重；不按内部牌堆差量无条件补全历史，不公开洗牌内部顺序。字段、位置规则及是否一并覆盖其他移动尚未定稿，因此未改生产代码。
+范围为共用移动记录、实际展示取证、跨 play_card／选牌回执的生命周期、公开校验与去重；并核验明耀打击、无休手斧、刀刃陷阱。不按内部牌堆差量无条件补全历史。default 还省略 card_played.autoplay:false，full 保留；这项局部精简不改变事件空值或其他 false。
 
 ## 验证与交付范围
 

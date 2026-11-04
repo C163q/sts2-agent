@@ -1,7 +1,7 @@
 from sts2_mcp.output.observation_details import observation_details
 from sts2_mcp.output.value_shapes import project
 from sts2_mcp.output.contracts.transition import TRANSITION
-from sts2_mcp.output.available_tools import INSPECTIONS, VIEWS
+from sts2_mcp.output.available_tools import INSPECTIONS, VIEWS, TOOLS_WITHOUT_PERMISSION
 
 
 REASONS = {"player_ready", "choice_required", "combat_won", "combat_lost", "run_won", "run_lost", "timeout", "interrupted", "selection_resolved", "action_canceled", "action_completed", 'manual_input_required'}
@@ -24,6 +24,7 @@ FIELDS = {
     "card_played": {"card", "autoplay"}, "card_drawn": {"card"},
     "card_discarded": {"card"}, "card_exhausted": {"card"},
     "card_added": {"card", "pile"},
+    "card_moved": {"card", "from_pile", "to_pile"},
     "potion_used": {"potion"}, "potion_discarded": {"potion"},
     "potion_obtained": {"potion"},
     "relic_obtained": {"relic"}, "relic_removed": {"relic"}, "relic_melted": {"relic"},
@@ -74,6 +75,12 @@ def end_turn_details(state):
         if "potion" in event and (set(event["potion"]) != {"slot_index", "name"}
                                   or not 0 <= event["potion"]["slot_index"] <= 2147483647):
             raise ValueError("Invalid event potion.")
+        if kind == 'card_moved':
+            piles = {'hand', 'draw', 'discard', 'exhaust', 'play'}
+            if (set(event) != {'sequence', 'type', 'card', 'from_pile', 'to_pile'}
+                    or event['from_pile'] not in piles or event['to_pile'] not in piles
+                    or event['from_pile'] == event['to_pile']):
+                raise ValueError('Invalid public card movement.')
         if kind == 'card_added':
             if event['pile'] not in {None, 'deck', 'hand', 'draw', 'discard', 'exhaust', 'play'}:
                 raise ValueError('Invalid public card destination.')
@@ -105,7 +112,8 @@ def end_turn_details(state):
     result["transition"] = transition
     if transition["stop_reason"] not in {"player_ready", "action_completed"} or not transition["complete"]:
         result["available_actions"] = [action for action in result["available_actions"]
-            if transition["complete"] and transition["stop_reason"] == "choice_required"
+            if action in (INSPECTIONS | VIEWS) & TOOLS_WITHOUT_PERMISSION or transition["complete"]
+            and transition["stop_reason"] == "choice_required"
             and (result.get("selection") or {}).get("status") == "visible"
-            and action in INSPECTIONS | VIEWS | {"select_card", "selection_option"}]
+            and action in {"select_card", "selection_option"}]
     return result

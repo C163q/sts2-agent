@@ -693,7 +693,8 @@ SPECS = (
         requires_permission=True,
         returns_transition=True,
         records_events=True,
-        reader='transition_details:end_turn_details'),
+        reader='transition_details:end_turn_details',
+        unsubmitted_rejection_unchanged=True),
     ToolSpec(
         name='capture_screenshot',
         schema=SCREENSHOT_SCHEMA,

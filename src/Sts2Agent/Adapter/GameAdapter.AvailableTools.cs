@@ -93,7 +93,7 @@ internal sealed partial class GameAdapter
         EpilogueInspection.Context? epilogue, RunResultInspection.Context? ending, CardSelection? selection)
     {
         List<string> actions = [];
-        if (CanEndTurn() && CanPlayCards() && STS2RitsuLib.RitsuLibFramework.IsActive)
+        if (EndTurnUnavailableReason() == null)
             actions.Add("end_turn");
         if (CanPlayCards() && STS2RitsuLib.RitsuLibFramework.IsActive) actions.Add("play_card");
         if (testMode && scene == "main_menu" && !RunManager.Instance.IsInProgress)

@@ -20,9 +20,10 @@ def preserve_null(path, parent):
                and path[len(prefix)] in {'before', 'after'} for prefix in PREVIEW_PATHS)
 
 
-def omit_false(path):
-    return path[:-1] in {('relics', '*'), ('top_bar', 'relics', '*')} \
+def omit_false(path, parent):
+    return (path[:-1] in {('relics', '*'), ('top_bar', 'relics', '*')}
         and path[-1] in {'grayed_out', 'pulsing'}
+        or path == ('transition', 'events', '*', 'autoplay') and parent.get('type') == 'card_played')
 
 
 def apply_preset(payload, preset, *, path=()):
@@ -33,7 +34,7 @@ def apply_preset(payload, preset, *, path=()):
         if isinstance(value, dict):
             return {key: compact(item, (*path, key)) for key, item in value.items()
                     if (item is not None or preserve_null((*path, key), value))
-                    and not (item is False and omit_false((*path, key)))}
+                    and not (item is False and omit_false((*path, key), value))}
         if isinstance(value, list):
             return [compact(item, (*path, '*')) for item in value]
         return value

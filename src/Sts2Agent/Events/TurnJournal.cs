@@ -31,6 +31,9 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     private readonly Dictionary<CardModel, object?> autoSources = [];
     private readonly List<(DamageResult result, Dictionary<string, object?> entry)> damageResults = [];
     private readonly CardAdditionJournal additions;
+    private readonly CardMovementJournal movements;
+    private readonly Func<CardModel, string?>? knownName;
+    private readonly Action<CardModel, string>? rememberName;
     private readonly HashSet<CardModel> handCards = [];
     private readonly Dictionary<CardModel, string?> knownCards = [];
     private readonly Dictionary<Creature, VisibleResourceChange> companionHealth = [];
@@ -42,11 +45,14 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     public int LifecycleEvents { get; private set; }
     public bool Pending => companionHealth.Values.Any(health => health.Pending) || pendingCreatures.Count > 0;
 
-    public TurnJournal(CombatState combat, Player player, Func<CardModel, int> cardId)
+    public TurnJournal(CombatState combat, Player player, Func<CardModel, int> cardId,
+        Func<CardModel, string?>? knownName = null, Action<CardModel, string>? rememberName = null)
     {
         this.combat = combat;
         this.player = player;
         this.cardId = cardId;
+        this.knownName = knownName;
+        this.rememberName = rememberName;
         if (TurnCapture.Journal != null) throw new InvalidOperationException("A turn is already being recorded.");
         try
         {
@@ -62,11 +68,15 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
             CombatManager.Instance.History.Changed += HistoryChanged;
             SubscribeCreatures();
             // Selected cards leave the hand holders but remain visible when confirmation starts a new journal.
-            foreach (var node in VisibleUi.Descendants<NCard>(NCombatRoom.Instance!.Ui))
+            var visibleCards = CardSelection.Current is { Status: "visible" } selection ? selection.Owner
+                : CombatObservation.Status() == "visible" ? (Node)NCombatRoom.Instance!.Ui : null;
+            foreach (var node in visibleCards == null ? [] : VisibleUi.Descendants<NCard>(visibleCards))
                 if (node.Model is { } card && node.Visibility == ModelVisibility.Visible
                     && CombatObservation.CardVisible(node) && english.CardName(node) is { } name)
-                    knownCards[card] = name;
+                { knownCards[card] = name; rememberName?.Invoke(card, name); }
             SubscribePiles();
+            movements = new CardMovementJournal(combat, player, buffer, cardId, CardName);
+            cleanup.Add(movements.Dispose);
             var resources = new CombatResourceJournal(combat, player, buffer);
             cleanup.Add(resources.Dispose);
             var orbs = new OrbJournal(combat, player, buffer);
@@ -236,8 +246,8 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         var node = NCard.FindOnTable(card);
         if (CombatObservation.CardVisible(node) && node!.Visibility == ModelVisibility.Visible
             && english.CardName(node) is { } name)
-            knownCards[card] = name;
-        return knownCards.GetValueOrDefault(card);
+        { knownCards[card] = name; rememberName?.Invoke(card, name); }
+        return knownCards.GetValueOrDefault(card) ?? knownName?.Invoke(card);
     }
 
     public void Damage(DamageResult result, TurnCapture.Origin origin)
@@ -286,6 +296,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
     {
         if (disposed) return;
         additions.SampleVisibility();
+        movements.SampleVisibility();
         foreach (var (creature, health) in companionHealth) health.Sample(MaximumHealthDisplay(creature));
         if (CombatObservation.Status() != "visible") { pendingCreatures.Clear(); return; }
         foreach (var pending in pendingCreatures.ToArray())

@@ -1,0 +1,289 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_rewards"
+  ],
+  "transition": {
+    "stop_reason": "combat_won",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 0,
+          "name": "Bash"
+        },
+        "type": "card_discarded",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 1,
+          "name": "Strike"
+        },
+        "type": "card_discarded",
+        "sequence": 2
+      },
+      {
+        "card": {
+          "id": 2,
+          "name": "Defend"
+        },
+        "type": "card_discarded",
+        "sequence": 3
+      },
+      {
+        "card": {
+          "id": 3,
+          "name": "Defend"
+        },
+        "type": "card_discarded",
+        "sequence": 4
+      },
+      {
+        "card": {
+          "id": 4,
+          "name": "Strike"
+        },
+        "type": "card_discarded",
+        "sequence": 5
+      },
+      {
+        "hp_loss": 3,
+        "blocked": 0,
+        "source": null,
+        "actor": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 6
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Slimed"
+        },
+        "pile": "discard",
+        "type": "card_added",
+        "sequence": 7
+      },
+      {
+        "card": {
+          "id": 6,
+          "name": "Slimed"
+        },
+        "pile": "discard",
+        "type": "card_added",
+        "sequence": 8
+      },
+      {
+        "hp_loss": 4,
+        "blocked": 0,
+        "source": null,
+        "actor": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 9
+      },
+      {
+        "card": {
+          "id": 7,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 10
+      },
+      {
+        "card": {
+          "id": 8,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 11
+      },
+      {
+        "card": {
+          "id": 9,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 12
+      },
+      {
+        "card": {
+          "id": 10,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 13
+      },
+      {
+        "card": {
+          "id": 11,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 14
+      },
+      {
+        "hp_loss": 15,
+        "blocked": 0,
+        "source": {
+          "kind": "power",
+          "name": "Rolling Boulder"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 15
+      },
+      {
+        "source": {
+          "kind": "power",
+          "name": "Rolling Boulder"
+        },
+        "target": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "type": "died",
+        "sequence": 16
+      },
+      {
+        "hp_loss": 34,
+        "blocked": 0,
+        "source": {
+          "kind": "power",
+          "name": "Rolling Boulder"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "damage",
+        "sequence": 17
+      },
+      {
+        "source": {
+          "kind": "power",
+          "name": "Rolling Boulder"
+        },
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Leaf Slime (M)"
+        },
+        "type": "died",
+        "sequence": 18
+      },
+      {
+        "hp_loss": 10,
+        "blocked": 0,
+        "source": {
+          "kind": "power",
+          "name": "Rolling Boulder"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 19
+      },
+      {
+        "source": {
+          "kind": "power",
+          "name": "Rolling Boulder"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "died",
+        "sequence": 20
+      },
+      {
+        "name": "Rolling Boulder",
+        "change": "modified",
+        "before": 999,
+        "after": 1004,
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "power_changed",
+        "sequence": 21
+      },
+      {
+        "name": "Rolling Boulder",
+        "change": "removed",
+        "before": 1004,
+        "after": null,
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "power_changed",
+        "sequence": 22
+      },
+      {
+        "before": 73,
+        "after": 79,
+        "source": null,
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "hp_changed",
+        "sequence": 23
+      }
+    ]
+  }
+}

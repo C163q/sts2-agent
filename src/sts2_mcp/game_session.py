@@ -176,7 +176,7 @@ class GameSession:
                         raise ValueError('Contradictory unchanged UI guarantee.')
                     if request.spec.unchanged_view_rejections and error['code'] in {'invalid_request', 'illegal_action'}:
                         evidence = ExecutionEvidence.UNSUBMITTED_UNCHANGED
-                # Only play_card currently guarantees both no submission and no prior UI changes.
+                # Registered action preflights guarantee no submission and no prior UI changes.
                 if (request.spec.unsubmitted_rejection_unchanged and expected_state is not None
                         and error['code'] in {'invalid_request', 'illegal_action'}
                         and error.get('action_submitted') is False):

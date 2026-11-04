@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 43 项，已核销 9 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view。end_turn 的 TURN-01–03 方案已确认、待实施；补充[头槌移动事件核验](2026-11-04-headbutt-transition-review.md)发现 MOVE-01，事件设计待定稿。get_observation 的地图覆盖仍待 inspect_map，整体未核销；其余 32 项尚待逐项核验。暂无阻塞。
+> 当前状态：工具核验进行中，共 43 项，已核销 10 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、end_turn。[结束回合与可见移动修复](2026-11-04-turn-transitions-implementation.md)已交付；get_observation 的地图覆盖仍待 inspect_map，整体未核销，其余 32 项尚待逐项核验。暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -48,7 +48,7 @@
 ### 战斗与药水操作（4 项）
 
 - [ ] `play_card`：打出手牌。
-- [ ] `end_turn`：结束回合。[现状核验与设计](2026-11-04-end-turn-review.md)、[36 份完整返回](2026-11-04-end-turn-examples/README.md)已交付；TURN-01–03 范围已确认、待实施，生产行为未修改。补充[头槌共享移动缺口](2026-11-04-headbutt-transition-review.md)及 [8 份真实返回](2026-11-04-headbutt-transition-examples/README.md)，新事件尚待定稿。
+- [x] `end_turn`：结束回合。[审阅](2026-11-04-end-turn-review.md)、[头槌补充核验](2026-11-04-headbutt-transition-review.md)及[实施／新返回](2026-11-04-turn-transitions-implementation.md)完成：TURN-01–03、无 position 的 card_moved、default 省略 autoplay:false；四张指定卡、手斧抽牌堆来源变体、错误直接续接及终态查看均已验证。636 项 Python、91 项 C#、最终十五局 GUI 通过；独立审查的重要问题已修复，低优先级生成预览牌名缓存限制留在实施记录。
 - [ ] `use_potion`：使用药水。
 - [ ] `discard_potion`：丢弃药水。
 

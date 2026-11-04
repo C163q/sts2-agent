@@ -1,0 +1,330 @@
+{
+  "base_commit": "bc62b0d",
+  "mod": "0.62.0",
+  "mcp": "0.64.0",
+  "schema": 40,
+  "mod_sha256": "e120f0945cc392a37d6e9cd937f5cfb93e02a93ac2ab47a5ab68bacf627b058a",
+  "examples": [
+    {
+      "file": "headbutt_empty-play.full.json",
+      "purpose": "头槌出牌，按实际候选停止并记录可见移动",
+      "kind": "real_stdio",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/headbutt_empty/verify/evidence.json",
+      "source_index": 3,
+      "sha256": "beb8ae840f35d79b406aa98222e4e231ee395a3763e112f90e4ad1730a48b387"
+    },
+    {
+      "file": "headbutt_single-play.full.json",
+      "purpose": "头槌出牌，按实际候选停止并记录可见移动",
+      "kind": "real_stdio",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/headbutt_single/verify/evidence.json",
+      "source_index": 5,
+      "sha256": "419e303d37553a13c9cbe7929cb3d2841a08a112bcc89b3628a8558939c27d2b"
+    },
+    {
+      "file": "headbutt_multiple-play.full.json",
+      "purpose": "头槌出牌，按实际候选停止并记录可见移动",
+      "kind": "real_stdio",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/headbutt_multiple/verify/evidence.json",
+      "source_index": 7,
+      "sha256": "287011a5ffeeca121120592e43ab67fb72549bca7f73be09bf9aa52c82c1075c"
+    },
+    {
+      "file": "headbutt-select.full.json",
+      "purpose": "选择防御后的 discard→draw，无 position",
+      "kind": "real_stdio",
+      "tool": "select_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/headbutt_multiple/verify/evidence.json",
+      "source_index": 10,
+      "sha256": "b7fd05405cbc32d30fc1dd49dc1103901acbf20acdbab2fb7818d207ca35d01c"
+    },
+    {
+      "file": "headbutt-selection.full.json",
+      "purpose": "完整候选及原生选择文字，文字不转换为移动位置",
+      "kind": "real_stdio",
+      "tool": "inspect_selection",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/headbutt_multiple/verify/evidence.json",
+      "source_index": 8,
+      "sha256": "f5506c24fe48cdda2191f81ff135542392a01d806bc0dc130de6cdbe01e83ffa"
+    },
+    {
+      "file": "manual.default.json",
+      "purpose": "default 省略手动出牌的 autoplay:false",
+      "kind": "real_stdio",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "default",
+        "card_id": 6
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/headbutt_single/verify/evidence.json",
+      "source_index": 3,
+      "sha256": "3eee2232c9820ebf081323beeac1156f475e8d3935b2f39c325c2b9989a88062"
+    },
+    {
+      "file": "manual.full.json",
+      "purpose": "full 保留手动出牌的 autoplay:false",
+      "kind": "real_stdio",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 9,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/knife/verify/evidence.json",
+      "source_index": 6,
+      "sha256": "7b56a5ebd65c907a0ec0357b195b85dd22586802be50d04aa114c557b5b1474b"
+    },
+    {
+      "file": "shining.full.json",
+      "purpose": "明耀打击回抽牌堆，伤害／星星变化保留",
+      "kind": "real_stdio",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/shining/verify/evidence.json",
+      "source_index": 3,
+      "sha256": "daaaca45af3d4b8cccf3bef784ad85d5b6d2c78c65010486103b013790ee8974"
+    },
+    {
+      "file": "hatchet-play.full.json",
+      "purpose": "无休手斧出牌后进入弃牌",
+      "kind": "real_stdio",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/hatchet/verify/evidence.json",
+      "source_index": 3,
+      "sha256": "e12a95065220f9cab7505ab742a775effba629e1f4e4b4e32a0c38deea9c488b"
+    },
+    {
+      "file": "hatchet-turn.full.json",
+      "purpose": "无休手斧从原来的堆回手，不能按来源误报成抽牌",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/hatchet/verify/evidence.json",
+      "source_index": 4,
+      "sha256": "15ce86e2f76d43700e763c1baa8f17751f21dd29d346ff456f0d7f190725871c"
+    },
+    {
+      "file": "hatchet_draw-play.full.json",
+      "purpose": "无休手斧出牌后进入弃牌",
+      "kind": "real_stdio",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/hatchet_draw/verify/evidence.json",
+      "source_index": 3,
+      "sha256": "e12a95065220f9cab7505ab742a775effba629e1f4e4b4e32a0c38deea9c488b"
+    },
+    {
+      "file": "hatchet_draw-turn.full.json",
+      "purpose": "无休手斧从原来的堆回手，不能按来源误报成抽牌",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/hatchet_draw/verify/evidence.json",
+      "source_index": 6,
+      "sha256": "aeb670112851f53b19b2db0c6fb6e3ea91b265f476a4f61d11533269bebad1e0"
+    },
+    {
+      "file": "hatchet-headbutt.full.json",
+      "purpose": "头槌将无休手斧从弃牌放回抽牌堆，为来源变体准备",
+      "kind": "real_stdio",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 6,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/hatchet_draw/verify/evidence.json",
+      "source_index": 5,
+      "sha256": "ee3279f8c26d9197a1f58fc79535af15591ce552dd4d1e9ae907afb5c0bbb8d4"
+    },
+    {
+      "file": "knife.default.json",
+      "purpose": "刀刃陷阱及自动小刀，true 和来源保留，消耗不重复",
+      "kind": "real_stdio",
+      "tool": "play_card",
+      "arguments": {
+        "preset": "default",
+        "card_id": 5,
+        "target_id": 2
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/knife/verify/evidence.json",
+      "source_index": 12,
+      "sha256": "8fca8751903830ab4311dfb3a34b9eef8db1d115c9fec67ebb0b66ba7bcf1241"
+    },
+    {
+      "file": "end-turn-won.full.json",
+      "purpose": "胜负回执保留无需许可的查看工具",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/won/verify/evidence.json",
+      "source_index": 1,
+      "sha256": "eb04f2177f8876f2f53acb644925261acf9d8496bae6dde5be1416300ccc8ea3"
+    },
+    {
+      "file": "direct-relics-won.full.json",
+      "purpose": "不重新观察直接查看遗物",
+      "kind": "real_stdio",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/won/verify/evidence.json",
+      "source_index": 3,
+      "sha256": "a4ffb6e01a24b9111fc0f8500f7bd29a316950b1f4e8efc39c82797d80a26ffa"
+    },
+    {
+      "file": "no-action-permission-won.json",
+      "purpose": "查看工具列表不表示游戏动作许可已续接",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/won/verify/evidence.json",
+      "source_index": 2,
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+    },
+    {
+      "file": "end-turn-lost.full.json",
+      "purpose": "胜负回执保留无需许可的查看工具",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/lost/verify/evidence.json",
+      "source_index": 1,
+      "sha256": "0e0160c29d764b01780bd78a6ca75a48567f8fc2943f969418da1df2ff255818"
+    },
+    {
+      "file": "direct-relics-lost.full.json",
+      "purpose": "不重新观察直接查看遗物",
+      "kind": "real_stdio",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/lost/verify/evidence.json",
+      "source_index": 3,
+      "sha256": "2e05f09fa7b1d355683520b6d6df3a1192857b0e0e34e9cdd61d35c7adff2a92"
+    },
+    {
+      "file": "no-action-permission-lost.json",
+      "purpose": "查看工具列表不表示游戏动作许可已续接",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/lost/verify/evidence.json",
+      "source_index": 2,
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+    },
+    {
+      "file": "rejected-selection.json",
+      "purpose": "具体原因且保留已有许可，可按已知信息继续合法操作",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/headbutt_multiple/verify/evidence.json",
+      "source_index": 9,
+      "sha256": "c9033abb6d41c5da387cfbc59af5bedf07319bf5eb34769f3a98acdad5101059"
+    },
+    {
+      "file": "rejected-deck.json",
+      "purpose": "具体原因且保留已有许可，可按已知信息继续合法操作",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/preflight/verify/evidence.json",
+      "source_index": 3,
+      "sha256": "420c6efcde0c85cf710f25eb5b33c49cb9e40270208e87d88d42d7de99c76dc2"
+    },
+    {
+      "file": "rejected-map.json",
+      "purpose": "具体原因且保留已有许可，可按已知信息继续合法操作",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/preflight/verify/evidence.json",
+      "source_index": 8,
+      "sha256": "8e6dae12ae7b0a5182a9e1faec6b7c451fa075cb1a3f40f7cebdc82192ad9440"
+    },
+    {
+      "file": "rejected-event.json",
+      "purpose": "具体原因且保留已有许可，可按已知信息继续合法操作",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/noncombat/verify/evidence.json",
+      "source_index": 1,
+      "sha256": "9d87aedcc2305b2df848e0be91337888c49e933f8566e03c7abdb9dbc88ee183"
+    },
+    {
+      "file": "direct-event-option.full.json",
+      "purpose": "误结束回合被拒后直接执行合法事件选项",
+      "kind": "real_stdio",
+      "tool": "choose_event_option",
+      "arguments": {
+        "preset": "full",
+        "option_id": 0
+      },
+      "source": ".tmp/2026-11-04-turn-transitions/gui-delivery/noncombat/verify/evidence.json",
+      "source_index": 4,
+      "sha256": "0f648198e6904dc1a013a9281d43bc9b78f09762ea6c6453ac0e20793d193806"
+    }
+  ]
+}

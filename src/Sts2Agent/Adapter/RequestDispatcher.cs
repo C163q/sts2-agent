@@ -235,27 +235,12 @@ internal sealed partial class GameAdapter
         }
         if (request.ExpectedState != beforeState.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read current state before submitting an action.");
+        if (request.Operation == "end_turn") return await EndTurnRequest(request);
         if (!beforeState.GetProperty("available_actions").EnumerateArray()
                 .Any(action => action.GetString() == request.Operation))
             return FileMailbox.Error(request.Id, "illegal_action", "Action is not available in this state.");
 
 
-        if (request.Operation == "end_turn")
-        {
-            Player player = LocalPlayer!;
-            int turn = player.PlayerCombatState!.TurnNumber;
-            if (!STS2RitsuLib.RitsuLibFramework.IsActive)
-                return FileMailbox.Error(request.Id, "illegal_action", "RitsuLib is unavailable; no action was submitted.");
-            var journal = CombatJournalScope.Current!;
-            RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(new EndPlayerTurnAction(player, turn));
-            execution?.ActionSubmitted();
-            var (state, reason) = await ActionObservation(() =>
-            {
-                return journal.StopReason(player.PlayerCombatState?.TurnNumber > turn && CanEndTurn()
-                    && RunManager.Instance.ActionQueueSet.IsEmpty, requireTurnStarted: true);
-            });
-            return Success(request, ResponseBuilder.WithTransition(state, journal.Result(reason)));
-        }
         return Success(request, await SettledObservation());
     }
 

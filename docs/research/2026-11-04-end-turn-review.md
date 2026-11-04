@@ -1,6 +1,6 @@
 # end_turn 场景与参数核验
 
-> 当前状态：现状核验完成，提供 36 份完整真实返回；TURN-01–03 的修复范围及维持 default/full、不增加 summary 已确认，尚未实施。另完成[头槌移动事件补充核验](2026-11-04-headbutt-transition-review.md)，MOVE-01 新事件设计待定稿。工具尚未核销。暂无阻塞。
+> 当前状态：现状核验、实现与验证完成，end_turn 已核销。TURN-01–03 已与[头槌移动事件](2026-11-04-headbutt-transition-review.md)合并交付，见[实施记录及新返回](2026-11-04-turn-transitions-implementation.md)。下述 36 份旧返回保留审阅基线，不替代修复结果。暂无阻塞。
 
 ## 优先关注的问题
 
@@ -10,7 +10,7 @@
 | TURN-02 | 中；错误恢复 | 上述前置拒绝没有提交动作，也没有 UI 交互，却清除已有许可；原来合法的选牌、事件选项等随后被 observation_required 阻挡。覆盖拒绝前后完整观察相同 | [会话](../../src/sts2_mcp/game_session.py)、[工具注册](../../src/sts2_mcp/tool_registry.py)、专项真实调用。建议只为已审查的提交前拒绝提供“未提交且未交互”保证，沿用 play_card 的机制保留旧许可；不扩展到 stale_state、超时、异常或未知结果 |
 | TURN-03 | 中；可用工具准确性 | 胜负停止时把 available_actions 全部清空，连无需动作许可的详情／页面工具也一起删除；未重新观察就能直接 inspect_relics，同一画面的基础观察也仍列出它。胜负不续接动作许可与查看工具是否可用是两件事 | [共用动作解码](../../src/sts2_mcp/output/transition_details.py)、[许可判断](../../src/sts2_mcp/game_session.py)、[战胜后直接查看](2026-11-04-end-turn-examples/terminal-won-direct-relics.full.json)和[战败后直接查看](2026-11-04-end-turn-examples/terminal-lost-direct-relics.full.json)。建议在清除动作许可的同时保留当前快照中仍合法且无需许可的查看工具；这是所有使用 end_turn_details 的动作共用问题，应在共用出口修正，不能只改 end_turn 的 JSON |
 
-TURN-01–02 属于用户既有“错误原因与恢复提示”“工具报错后的观察前置要求”范围；TURN-03 是本项核对发现的共用返回问题。三项均未修复，不因完成审阅而核销工具或扩大用户 TODO。
+TURN-01–02 属于用户既有“错误原因与恢复提示”“工具报错后的观察前置要求”范围；TURN-03 是本项核对发现的共用返回问题。上表保留原审阅事实；三项已接入修复，验证及新返回以实施记录为准，不扩大用户 TODO。
 
 ## 核对基线与证据
 
@@ -87,7 +87,7 @@ MCP 成功返回 `scene/screen/available_actions/transition`，有待处理选�
 
 TURN-03 在共用动作解码层处理：停止边界与许可由会话独立判断，查看工具从当前已校验的快照中保留；胜负／未知结果仍不能借此续接游戏动作。候选保守范围为保留仍可用且不要求许可的详情和页面工具，不把 claim_reward、proceed 等需许可动作未经讨论就开放；不把 get_observation 人为塞进 available_actions。需要同步核对其他复用此出口的动作，不另建一份 end_turn 专属裁剪。
 
-TURN-01–03 以上范围已确认，尚未实施。错误恢复、明确拒绝、安全原因、终态查看列表、旧 Mod 缺少保证、stale_state、超时、取消、矛盾证据与无旧许可均须纳入实现验证。[头槌的 MOVE-01](2026-11-04-headbutt-transition-review.md) 是另一个共用事件缺口，核验结果已记录，新增事件字段及覆盖范围仍待定稿，不将候选格式写成已确认接口。
+TURN-01–03 以上范围已确认并接入实现。错误恢复、明确拒绝、安全原因、终态查看列表、旧 Mod 缺少保证、stale_state、超时、取消、矛盾证据与无旧许可均纳入验证。[头槌的 MOVE-01](2026-11-04-headbutt-transition-review.md) 同时定稿为不带 position 的 card_moved；另加入 default 省略 card_played.autoplay:false。新实现与原审阅样本分开保存。
 
 ## 验证与限制
 

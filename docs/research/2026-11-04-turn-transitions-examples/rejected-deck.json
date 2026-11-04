@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Close the card browsing page before ending the turn.",
+    "recovery": "choose_legal_action"
+  }
+}

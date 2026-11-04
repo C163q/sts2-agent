@@ -82,6 +82,16 @@ internal sealed partial class GameAdapter
 
     private async Task<string?> TestRequestAfterCapture(Request request, JsonElement before)
     {
+        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
+        {
+            if (request.Operation == "check_test_end_turn")
+                return Success(request, JsonSerializer.Serialize(TurnTransitionChecks.EndTurn(EndTurnUnavailableReason, Observe)));
+            if (request.Operation == "check_test_card_movements" && LocalPlayer is { } movementPlayer)
+            {
+                async Task Frame() { await ObservationFrame(); Observe(); }
+                return Success(request, JsonSerializer.Serialize(await TurnTransitionChecks.Movements(movementPlayer, observation, Frame)));
+            }
+        }
         if (request.Operation == "set_test_capture_failure" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
         {

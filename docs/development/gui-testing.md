@@ -29,6 +29,7 @@
 | 原生上下文、媒体故障与跨场景响应 | [native_responses](../../tests/game/data/gui_suite_native_responses.json) |
 | 原生测试路由门控 | [native_dispatch](../../tests/game/data/gui_suite_native_dispatch.json) |
 | 手牌的牌堆计数与 HUD 标签／隐藏边界 | [hand_pile_counts](../../tests/game/data/gui_suite_hand_pile_counts.json) |
+| 结束回合拒绝恢复、已有牌可见移动、洗牌隐私与自动出牌 | [turn_transitions](../../tests/game/data/gui_suite_turn_transitions.json) |
 | 卡牌 Affliction、附魔、手牌 HUD 与浏览预设 | [card_formats](../../tests/game/data/gui_suite_card_formats.json) |
 | 战斗对象静态／完整级别、对象筛选、不可悬停提示及错误续接 | [combatant_presets](../../tests/game/data/gui_suite_combatant_presets.json) |
 | 查看错误说明、已有许可保留及零能量出牌拒绝后结束回合 | [inspection_errors](../../tests/game/data/gui_suite_inspection_errors.json) |

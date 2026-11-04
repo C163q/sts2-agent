@@ -162,28 +162,13 @@ internal sealed class CardAdditionJournal : IDisposable
                 || flight.Node.Visibility != ModelVisibility.Visible)
                 flights.Remove(flight);
             else if (additions.TryGetValue(flight.Card, out var entry) && CombatObservation.CardVisible(flight.Node)
-                && TargetVisible(flight.Pile))
+                && CombatCardPiles.Visible(flight.Pile))
             {
                 Destination(entry, flight.Pile);
                 flights.Remove(flight);
             }
             // The exhaust button can first animate into view when the card reaches it.
         }
-    }
-
-    private static bool TargetVisible(PileType pile)
-    {
-        var ui = NCombatRoom.Instance!.Ui;
-        return pile switch
-        {
-            PileType.Draw => VisibleUi.OnScreen(ui.DrawPile),
-            PileType.Discard => VisibleUi.OnScreen(ui.DiscardPile),
-            PileType.Exhaust => VisibleUi.OnScreen(ui.ExhaustPile),
-            PileType.Deck => VisibleUi.OnScreen(NRun.Instance!.GlobalUi.TopBar),
-            PileType.Hand => VisibleUi.Shown(ui.Hand),
-            PileType.Play => VisibleUi.Shown(ui.PlayContainer),
-            _ => false
-        };
     }
 
     private static void Destination(Addition entry, PileType pile)
