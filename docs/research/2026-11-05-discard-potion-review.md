@@ -1,6 +1,6 @@
 # discard_potion 审阅与建议
 
-> 当前状态：已确认契约并完成实现，35 类组合场景、673 项 Python 与 124 项 C# 检查通过；独立审查及两项重要修复已完成，待合入后核销。下述 15 类现状及 [62 份返回](2026-11-05-discard-potion-examples/README.md)保留审阅基线；修复后见 [126 份完整返回](2026-11-05-potion-discard-queue-examples/README.md)与[实施记录](2026-11-05-potion-discard-implementation.md)。
+> 当前状态：已完成实现、独立审查并合入 main，工具已核销；35 类组合场景、673 项 Python 与 124 项 C# 检查通过，两项重要审查发现已修复，一项低优先级清理事项记录于实施记录。下述 15 类现状及 [62 份返回](2026-11-05-discard-potion-examples/README.md)保留审阅基线；修复后见 [126 份完整返回](2026-11-05-potion-discard-queue-examples/README.md)与[实施记录](2026-11-05-potion-discard-implementation.md)。
 
 ## 优先关注的问题
 

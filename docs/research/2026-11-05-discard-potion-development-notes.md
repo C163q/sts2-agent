@@ -1,6 +1,6 @@
 # discard_potion 开发核验记录
 
-> 当前状态：审阅任务共 3 项，已完成 3 项；下述内容保存修复前基线。DISCARD-01 已按确认契约实现并通过 33 类组合场景，最终独立审查及核销由[实施记录](2026-11-05-potion-discard-implementation.md)跟进。用户说明见[审阅与建议](2026-11-05-discard-potion-review.md)。
+> 当前状态：审阅任务共 3 项，已完成 3 项；下述内容保存修复前基线。DISCARD-01 已按确认契约实现、完成独立审查并合入 main，35 类组合场景通过，工具已核销；验证与低优先级遗留见[实施记录](2026-11-05-potion-discard-implementation.md)。用户说明见[审阅与建议](2026-11-05-discard-potion-review.md)。
 
 ## 已确认问题与核验边界
 
@@ -29,7 +29,7 @@
 - 本轮重新反编译证据位于 .tmp/2026-11-05-discard-potion-review/source/：NPotionPopup._Ready/RefreshButtons/OnDiscardButtonPressed、DiscardPotionGameAction.ExecuteAction/CancelAction、PotionCmd.Discard、ActionQueueSet.GetReadyAction/PauseActionForPlayerChoice、ActionExecutor.ExecuteActions、NPotionContainer、NTopBar。类型名通过程序集列表核对，types.txt 保留。
 - PotionModel.Discard 与 Player.DiscardPotionInternal 沿用同一程序集的 .tmp/decompiled/MegaCrit.Sts2.Core.Models.PotionModel.decompiled.cs 及 .tmp/2026-10-30-potions/Player.cs；先清除原槽位，再通知 PotionDiscarded，不移动其他槽位。PotionCmd.Discard 维护原生日志并调用 AfterPotionDiscarded，不执行 OnUse。
 
-## 当前链路
+## 审阅基线链路
 
 tool_registry 中 discard_potion 使用 POTION_SCHEMA 与通用 default/full，登记 unsubmitted_rejection_unchanged。potion_action_details.potion_arguments 仅接受 potion_slot；结构错误不发往游戏。
 
