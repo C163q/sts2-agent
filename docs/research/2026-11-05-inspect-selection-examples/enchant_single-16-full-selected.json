@@ -1,0 +1,89 @@
+{
+  "scene": "event",
+  "selection": {
+    "type": "deck_enchant",
+    "status": "visible",
+    "prompt": "Choose a card to Enchant.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [
+      26
+    ],
+    "cards": [],
+    "options": [
+      {
+        "id": "cancel_preview",
+        "text": "Back",
+        "enabled": true
+      },
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "enchantment": {
+      "title": "Sharp",
+      "description": "Increases damage on this card by 2."
+    },
+    "enchant_previews": [
+      {
+        "before": {
+          "id": 26,
+          "name": "Bash",
+          "type": "Attack",
+          "rarity": "basic",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "2",
+          "star_cost": null,
+          "unplayable_markers": [],
+          "outline": "none",
+          "enchantment": null,
+          "affliction": null,
+          "description": "Deal 8 damage.\nApply 2 Vulnerable.",
+          "hover_tips": [
+            {
+              "title": "Vulnerable",
+              "description": "Vulnerable creatures take 50% more damage from Attacks."
+            }
+          ]
+        },
+        "after": {
+          "id": 26,
+          "name": "Bash",
+          "type": "Attack",
+          "rarity": "basic",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "2",
+          "star_cost": null,
+          "unplayable_markers": [],
+          "outline": "none",
+          "enchantment": {
+            "name": "Sharp",
+            "dimmed": false,
+            "amount": 2
+          },
+          "affliction": null,
+          "description": "Deal 10 damage.\nApply 2 Vulnerable.",
+          "hover_tips": [
+            {
+              "title": "Vulnerable",
+              "description": "Vulnerable creatures take 50% more damage from Attacks."
+            },
+            {
+              "title": "Sharp",
+              "description": "Increases damage on this card by 2."
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": []
+}

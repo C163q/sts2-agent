@@ -1,0 +1,86 @@
+{
+  "scene": "rest_site",
+  "selection": {
+    "type": "deck_upgrade",
+    "status": "visible",
+    "prompt": "Choose a card to Upgrade.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 10,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 11,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 12,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 13,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 14,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 15,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 16,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 17,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 18,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 19,
+        "name": "Bash",
+        "type": "Attack",
+        "energy_cost": "2"
+      }
+    ],
+    "options": [
+      {
+        "id": "cancel",
+        "text": "Cancel",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": true,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  }
+}

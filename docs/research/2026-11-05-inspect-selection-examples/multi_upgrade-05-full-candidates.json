@@ -1,0 +1,180 @@
+{
+  "scene": "event",
+  "selection": {
+    "type": "deck_upgrade",
+    "status": "visible",
+    "prompt": "Choose 2 cards to Upgrade.",
+    "min_select": 2,
+    "max_select": 2,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 0,
+        "name": "Strike+",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 9 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 1,
+        "name": "Strike+",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 9 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 2,
+        "name": "Strike+",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 9 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 3,
+        "name": "Strike+",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 9 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 4,
+        "name": "Strike+",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 9 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 5,
+        "name": "Defend+",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 8 Block.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 6,
+        "name": "Defend+",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 8 Block.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 7,
+        "name": "Defend+",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 8 Block.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 8,
+        "name": "Defend+",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 8 Block.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 9,
+        "name": "Bash+",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "2",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 10 damage.\nApply 3 Vulnerable.",
+        "outline": "none",
+        "unplayable_markers": []
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": false,
+    "can_view_upgrades": true,
+    "view_upgrades": true,
+    "upgrade_previews": []
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "title": "Vulnerable",
+      "description": "Vulnerable creatures take 50% more damage from Attacks.",
+      "card_ids": [
+        9
+      ]
+    }
+  ]
+}

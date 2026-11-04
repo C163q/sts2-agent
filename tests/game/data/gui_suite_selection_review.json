@@ -1,0 +1,17 @@
+[
+  {
+    "name": "no_selection",
+    "scenarios": {},
+    "steps": [{"name": "review", "verifier": "verify_selection_review.py", "args": ["--scenario", "no_selection"]}]
+  },
+  {
+    "name": "covered",
+    "scenarios": {"selection": "combat_pile"},
+    "steps": [{"name": "review", "verifier": "verify_selection_review.py", "args": ["--scenario", "covered"]}]
+  },
+  {
+    "name": "hand_upgrade",
+    "scenarios": {"play": "armaments"},
+    "steps": [{"name": "review", "verifier": "verify_selection_review.py", "args": ["--scenario", "hand_upgrade"]}]
+  }
+]

@@ -1,0 +1,64 @@
+{
+  "scene": "combat",
+  "selection": {
+    "type": "hand",
+    "status": "visible",
+    "prompt": "Choose a card to Retain.",
+    "min_select": 0,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 0,
+        "name": "Bash",
+        "type": "Attack",
+        "energy_cost": "2",
+        "outline": "cyan"
+      },
+      {
+        "id": 1,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1",
+        "outline": "cyan"
+      },
+      {
+        "id": 2,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1",
+        "outline": "cyan"
+      },
+      {
+        "id": 3,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1",
+        "outline": "cyan"
+      },
+      {
+        "id": 4,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1",
+        "outline": "cyan"
+      }
+    ],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": true,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

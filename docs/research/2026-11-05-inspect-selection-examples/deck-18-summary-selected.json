@@ -1,0 +1,39 @@
+{
+  "scene": "event",
+  "selection": {
+    "type": "deck",
+    "status": "visible",
+    "prompt": "Choose a card to Remove.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [
+      9
+    ],
+    "cards": [
+      {
+        "id": 9,
+        "name": "Bash",
+        "type": "Attack",
+        "energy_cost": "2"
+      }
+    ],
+    "options": [
+      {
+        "id": "cancel_preview",
+        "text": "Back",
+        "enabled": true
+      },
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  }
+}

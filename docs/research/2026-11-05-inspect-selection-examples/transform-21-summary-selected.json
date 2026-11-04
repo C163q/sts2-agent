@@ -1,0 +1,46 @@
+{
+  "scene": "ancient",
+  "selection": {
+    "type": "deck_transform",
+    "status": "visible",
+    "prompt": "Choose a card to Transform.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [
+      43
+    ],
+    "cards": [],
+    "options": [
+      {
+        "id": "cancel_preview",
+        "text": "Back",
+        "enabled": true
+      },
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "transform_previews": [
+      {
+        "before": {
+          "id": 43,
+          "name": "Bash",
+          "type": "Attack",
+          "energy_cost": "2",
+          "enchantment": null,
+          "affliction": null
+        },
+        "after": null,
+        "random": true
+      }
+    ]
+  },
+  "screen": {
+    "status": "covered"
+  }
+}

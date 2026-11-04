@@ -1,0 +1,72 @@
+{
+  "scene": "event",
+  "selection": {
+    "type": "grid",
+    "status": "visible",
+    "prompt": "Choose 2 Common Cards to Add to Your Deck.",
+    "min_select": 2,
+    "max_select": 2,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 0,
+        "name": "Breakthrough",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Lose 1 HP.\nDeal 9 damage to ALL enemies.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 7,
+        "name": "Tremble",
+        "type": "Skill",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Apply 3 Vulnerable.\nExhaust.",
+        "outline": "none",
+        "unplayable_markers": []
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [
+    {
+      "title": "Exhaust",
+      "description": "Removed until the end of combat.",
+      "card_ids": [
+        7
+      ]
+    },
+    {
+      "title": "Vulnerable",
+      "description": "Vulnerable creatures take 50% more damage from Attacks.",
+      "card_ids": [
+        7
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": "cards_not_in_selection",
+      "card_ids": [
+        100007
+      ]
+    }
+  ]
+}

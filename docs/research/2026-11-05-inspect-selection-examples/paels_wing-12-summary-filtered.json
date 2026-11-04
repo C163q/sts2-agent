@@ -1,0 +1,51 @@
+{
+  "scene": "rewards",
+  "selection": {
+    "type": "reward",
+    "status": "visible",
+    "prompt": "Choose a Card",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 0,
+        "name": "Anger",
+        "type": "Attack",
+        "energy_cost": "0"
+      },
+      {
+        "id": 2,
+        "name": "Shrug It Off",
+        "type": "Skill",
+        "energy_cost": "1"
+      }
+    ],
+    "options": [
+      {
+        "id": "skip",
+        "text": "Skip",
+        "enabled": true
+      },
+      {
+        "id": "alternative:1",
+        "text": "Sacrifice",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "errors": [
+    {
+      "code": "cards_not_in_selection",
+      "card_ids": [
+        100002
+      ]
+    }
+  ]
+}

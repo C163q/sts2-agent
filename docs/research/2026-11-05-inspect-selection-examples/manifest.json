@@ -1,0 +1,1417 @@
+[
+  {
+    "file": "choose_one-04-full-candidates.json",
+    "case": "choose_one",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/choose_one/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "8303360e9b91c8f02e83f4b81a42c2ed4a81e3688a700f25b258ecc7006d7006",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "choose_one-07-summary-candidates.json",
+    "case": "choose_one",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/choose_one/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "94ab6dbf2fa06806b11f2d11e859f04a3967923f331d78188b3896f4fb442707",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "choose_one-09-full-filtered.json",
+    "case": "choose_one",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        10,
+        8,
+        8,
+        100010,
+        100010
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/choose_one/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "d9b59b88d9cafbcfb965e4a8ff5674ed5d96f04525b1e235257a9b7e6240dd3f",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "choose_one-11-summary-filtered.json",
+    "case": "choose_one",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        10,
+        8,
+        8,
+        100010,
+        100010
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/choose_one/verify/evidence.json",
+    "source_record": 11,
+    "sha256": "d3e0ebe1ef22dcd1366a242297b28ced01feeb199677d4aad3b040e001e05dff",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand-04-full-candidates.json",
+    "case": "hand",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/hand/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "807a69db52c06bea25747b3c075bc7f25662cde8b2b1661bcd8be21ce19e729e",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand-07-summary-candidates.json",
+    "case": "hand",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/hand/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "1ae3da89bbd4cdffa878b344d46edaff3ec6cc0b29b37b4cb6db1df60fa34127",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand-09-full-filtered.json",
+    "case": "hand",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        4,
+        0,
+        0,
+        100004,
+        100004
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/hand/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "01f79eb87c49136fb90b62138b7b1cb355298c84f41c70e9df06cdca932e44a9",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand-11-summary-filtered.json",
+    "case": "hand",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        4,
+        0,
+        0,
+        100004,
+        100004
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/hand/verify/evidence.json",
+    "source_record": 11,
+    "sha256": "806b7e13bbefffeac6dbc3fb498b9548a479ecca2f49372c9ba26b8a9af8e168",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand-16-full-selected.json",
+    "case": "hand",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/hand/verify/evidence.json",
+    "source_record": 16,
+    "sha256": "ab0bb2bef5d93642380920d04dbbaa288e2cca11ec230cb48a83f95711549aa9",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand-19-summary-selected.json",
+    "case": "hand",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/hand/verify/evidence.json",
+    "source_record": 19,
+    "sha256": "cfd68cab53c252c38e0887bbd3f70ce04600a199259ae2f65bd37f87009ebd1c",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand_upgrade-04-full-candidates.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/hand_upgrade/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "2d4de931231b95c16b4ca2904fab9b2fc65f06525bfd391c0d97971481a616db",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand_upgrade-07-summary-candidates.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/hand_upgrade/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "9afad686d8e0f96463e6aad57562533f5354dde894d1e42807bec4a9ab321184",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand_upgrade-09-full-filtered.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        7,
+        6,
+        6,
+        100007,
+        100007
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/hand_upgrade/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "8f63697af310b2ff7624170996db34ce42aaba65dabaf52ec191f3892689f531",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand_upgrade-11-summary-filtered.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        7,
+        6,
+        6,
+        100007,
+        100007
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/hand_upgrade/verify/evidence.json",
+    "source_record": 11,
+    "sha256": "82826c766414e9ae49e9b1fd5938953ad92bda6a1427479300799adf797da360",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand_upgrade-16-full-selected.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/hand_upgrade/verify/evidence.json",
+    "source_record": 16,
+    "sha256": "939527c862b0459ef75d0b43b60b2adb921ab16bc236de57abec4976bb23823c",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand_upgrade-19-summary-selected.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/hand_upgrade/verify/evidence.json",
+    "source_record": 19,
+    "sha256": "cca9d48d33a347a83e39b7bfe2ccdc6b020a62ce5518b91ec701307ff3e271f3",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand_upgrade-27-summary-error.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/hand_upgrade/verify/evidence.json",
+    "source_record": 27,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "grid-03-full-candidates.json",
+    "case": "grid",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/grid/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "ee0c2d36308d08aacac50e8ae34daf3b400b7b4b92e0ef71b9d23c6b08d4bd38",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "grid-06-summary-candidates.json",
+    "case": "grid",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/grid/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "7d86301ba56f884649766c6d3ca9d7d7e6e91697b513cc776b7294117a6aae6a",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "grid-08-full-filtered.json",
+    "case": "grid",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        7,
+        0,
+        0,
+        100007,
+        100007
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/grid/verify/evidence.json",
+    "source_record": 8,
+    "sha256": "7c5c3dfbe55bbfd9a56f648ea9f48ebd8be0d4848b063121f9c3633d8665769d",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "grid-10-summary-filtered.json",
+    "case": "grid",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        7,
+        0,
+        0,
+        100007,
+        100007
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/grid/verify/evidence.json",
+    "source_record": 10,
+    "sha256": "fe33cf4ab360cb643604bb836f962f1785602234d525704a77875280d69821be",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "combat_pile-03-full-candidates.json",
+    "case": "combat_pile",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/combat_pile/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "90fe4dc786624161768830623074dab170d9d2f135d53ac6c5ebaf2f35ca9e47",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "combat_pile-06-summary-candidates.json",
+    "case": "combat_pile",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/combat_pile/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "5583f067242a5d54e2fa1dbb4d8c52e8b6b1d820f6e33450912cb65790cc5fce",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "combat_pile-08-full-filtered.json",
+    "case": "combat_pile",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        6,
+        5,
+        5,
+        100006,
+        100006
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/combat_pile/verify/evidence.json",
+    "source_record": 8,
+    "sha256": "0f73c904101ce39623483e050f5d7130e5558d629410dfe834e23c4fa638f22d",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "combat_pile-10-summary-filtered.json",
+    "case": "combat_pile",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        6,
+        5,
+        5,
+        100006,
+        100006
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/combat_pile/verify/evidence.json",
+    "source_record": 10,
+    "sha256": "f0b74a8f13c0ad0b9b654ba4f6dcbd775b726498b9a89b7bc9f6bda50b2f5468",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "deck-03-full-candidates.json",
+    "case": "deck",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/deck/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "7f968579e8796792acb20e5126bd7f02c856e78020a511b458397ee6c799c618",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "deck-06-summary-candidates.json",
+    "case": "deck",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/deck/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "7fa7bb1bd3be746553fac4075f747477537abfb12fe459c6514d8f7ce2af3ab3",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "deck-08-full-filtered.json",
+    "case": "deck",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        9,
+        0,
+        0,
+        100009,
+        100009
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/deck/verify/evidence.json",
+    "source_record": 8,
+    "sha256": "55fe4eeb9cd064bc5925e2454d9ebc8e686426ed5e92ea65da98b3104101bed3",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "deck-10-summary-filtered.json",
+    "case": "deck",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        9,
+        0,
+        0,
+        100009,
+        100009
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/deck/verify/evidence.json",
+    "source_record": 10,
+    "sha256": "ec47c394c80cc2b3bc223759e191ac5528338a45f0b94a088293029ed33aeac4",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "deck-15-full-selected.json",
+    "case": "deck",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/deck/verify/evidence.json",
+    "source_record": 15,
+    "sha256": "650ab292cc39473fd69b4c26ad3fdf794f57bfcdb0394a4c41c5449350ea3101",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "deck-18-summary-selected.json",
+    "case": "deck",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/deck/verify/evidence.json",
+    "source_record": 18,
+    "sha256": "3c3404bdea9b453667bf5b8382902ccb960f7ada7838c632f18df09ad7300d61",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "smith-04-full-candidates.json",
+    "case": "smith",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/smith/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "4159a9168a2ca5cd14b6d15d5cac4a7af85358134ffb41e9139b230f4e66df71",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "smith-07-summary-candidates.json",
+    "case": "smith",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/smith/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "030c05d6d5889e867bcb1e7e6ae1c19b867253ba048c68f9c0d51244a39923cf",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "smith-09-full-filtered.json",
+    "case": "smith",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        19,
+        10,
+        10,
+        100019,
+        100019
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/smith/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "c633f4fc6b93a920bdd9f1b76e839fda4c4da10bedf8790c199b78c5e5e3b668",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "smith-11-summary-filtered.json",
+    "case": "smith",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        19,
+        10,
+        10,
+        100019,
+        100019
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/smith/verify/evidence.json",
+    "source_record": 11,
+    "sha256": "cf7b45881f314e532fb92d139de24fe7a328451321b86fb35832e83f24368590",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "smith-16-full-selected.json",
+    "case": "smith",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/smith/verify/evidence.json",
+    "source_record": 16,
+    "sha256": "8137d2b2e3fb6f8687f91c846a26189076d7534f7110503f8e369d91997d6b65",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "smith-19-summary-selected.json",
+    "case": "smith",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/smith/verify/evidence.json",
+    "source_record": 19,
+    "sha256": "aeec48f2387377b811449a3a64cdc2e88302990ed4b3eb57086842cdcd2cced2",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "enchant_single-04-full-candidates.json",
+    "case": "enchant_single",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/enchant_single/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "f4137b69f5e9999064a32fc9277d1e8a6092ffcd155f85623437788c55eb1a12",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "enchant_single-07-summary-candidates.json",
+    "case": "enchant_single",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/enchant_single/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "aa38f94b766a80526a5e05aba3f6396d3d59f2c8446aa016f0d826ac17ed7267",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "enchant_single-09-full-filtered.json",
+    "case": "enchant_single",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        26,
+        21,
+        21,
+        100026,
+        100026
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/enchant_single/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "09bcb53188d5daaa4a663e301d5d0406609c24b5d091711dbe311b9b7d4020cb",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "enchant_single-11-summary-filtered.json",
+    "case": "enchant_single",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        26,
+        21,
+        21,
+        100026,
+        100026
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/enchant_single/verify/evidence.json",
+    "source_record": 11,
+    "sha256": "f6047482e3e7af74b19b30b2a5de16a04e5854e97e880c706060f762dbc4ce90",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "enchant_single-16-full-selected.json",
+    "case": "enchant_single",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/enchant_single/verify/evidence.json",
+    "source_record": 16,
+    "sha256": "162ca019cd9c457fef1d85fe1c2e8b7f46a4cede141656db6cb56d928dbe0087",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "enchant_single-19-summary-selected.json",
+    "case": "enchant_single",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/enchant_single/verify/evidence.json",
+    "source_record": 19,
+    "sha256": "ade2a47cd30b1839a7d271d9b26c58ccb7bc7290c49f7b30f171f45268282960",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "enchant_multi-06-full-candidates.json",
+    "case": "enchant_multi",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/enchant_multi/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "c67ab4a443b8a4cb6fa611e554a4f5b40b1e1737f6c1cc50c3e1fe7531149368",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "enchant_multi-09-summary-candidates.json",
+    "case": "enchant_multi",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/enchant_multi/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "27a2c8b2b25aac9e1ac6c68352f33989c9cf5c73e5c1746d791d9b1fef5c7271",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "enchant_multi-11-full-filtered.json",
+    "case": "enchant_multi",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        33,
+        28,
+        28,
+        100033,
+        100033
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/enchant_multi/verify/evidence.json",
+    "source_record": 11,
+    "sha256": "799e31c6f9cf67b08da1cb64d5f738dbf7f761420010ecef9fce9fa0730046d1",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "enchant_multi-13-summary-filtered.json",
+    "case": "enchant_multi",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        33,
+        28,
+        28,
+        100033,
+        100033
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/enchant_multi/verify/evidence.json",
+    "source_record": 13,
+    "sha256": "2217255d1b1059057b90c136c1cb1ff2c6ac02bba766d0edc77df520f5a8c0ec",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "enchant_multi-20-full-selected.json",
+    "case": "enchant_multi",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/enchant_multi/verify/evidence.json",
+    "source_record": 20,
+    "sha256": "b75762b8f2331182558b4de467f255690b3212ee61ea22e046f03fa516134c94",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "enchant_multi-23-summary-selected.json",
+    "case": "enchant_multi",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/enchant_multi/verify/evidence.json",
+    "source_record": 23,
+    "sha256": "216502344a0ee707a875828d1f6ab08957e0b8819f31b01f1d131b9e4a771399",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "transform-06-full-candidates.json",
+    "case": "transform",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/transform/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "bf6d9dc84aa299af275c1de3722666c6f79a05e0f28dfe6b9e6978e2dc47496c",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "transform-09-summary-candidates.json",
+    "case": "transform",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/transform/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "5c5f208aac0662635732bad1d6c8e7e71d5948e8a09715a1aadbdd3014387bb5",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "transform-11-full-filtered.json",
+    "case": "transform",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        43,
+        34,
+        34,
+        100043,
+        100043
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/transform/verify/evidence.json",
+    "source_record": 11,
+    "sha256": "bb3f99409959544faffdda6942f2c68839a397ce2af6f170554a10669057b1a2",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "transform-13-summary-filtered.json",
+    "case": "transform",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        43,
+        34,
+        34,
+        100043,
+        100043
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/transform/verify/evidence.json",
+    "source_record": 13,
+    "sha256": "09fdb15f1e39fe00982d4260d0ac943c3eb08a88eb3cc9ee9128e6e5e95a4a71",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "transform-18-full-selected.json",
+    "case": "transform",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/transform/verify/evidence.json",
+    "source_record": 18,
+    "sha256": "d18a178247c83af25a87abed70b8cc221a36eed53814197b845e5d4559b4abb0",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "transform-21-summary-selected.json",
+    "case": "transform",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/transform/verify/evidence.json",
+    "source_record": 21,
+    "sha256": "9945bdd181c1a123711e89e4db601735af6c3c2258922360300d15522e8412ea",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "bundle-04-full-candidates.json",
+    "case": "bundle",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/bundle/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "b3cf983ee7bfee6859fc9d4302b5d45037dbfe4766d949d53787e3b26f330484",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "bundle-07-summary-candidates.json",
+    "case": "bundle",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/bundle/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "ed4033991a0ff73fc2b3fd61842e00e793483c47d676163c523cb8b25b3c35a0",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "bundle-09-full-filtered.json",
+    "case": "bundle",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        50,
+        45,
+        45,
+        100050,
+        100050
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/bundle/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "ed2fa5b352958ded968cab34e973bbd5f4051271140e12656780f98fb14ff7d6",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "bundle-11-summary-filtered.json",
+    "case": "bundle",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        50,
+        45,
+        45,
+        100050,
+        100050
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/bundle/verify/evidence.json",
+    "source_record": 11,
+    "sha256": "3a629232aba95d7c6e7b8cdd831a7bff28dfd2aeb4f784d36e368528f7652e63",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "bundle-16-full-selected.json",
+    "case": "bundle",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/bundle/verify/evidence.json",
+    "source_record": 16,
+    "sha256": "4921d775b8395628c85ac7cfc089073a30f52f8125baf4e97c8e02795a116630",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "bundle-19-summary-selected.json",
+    "case": "bundle",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/bundle/verify/evidence.json",
+    "source_record": 19,
+    "sha256": "ef324cb1e20748d8cfa58e63757a14de3e80e69e314055cec319dafd0802e66d",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "view_cards-04-full-candidates.json",
+    "case": "view_cards",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/view_cards/verify/evidence.json",
+    "source_record": 4,
+    "sha256": "eee4b33d4b0254b309ff968764df2c83ab084106578c124e6d1a0858f00e75e3",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "view_cards-07-summary-candidates.json",
+    "case": "view_cards",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/view_cards/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "5e77f6dbc7ce78ad2c3734d3aa9088d7ee22c2f0e55215e995b31e714b4a5d19",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "view_cards-09-full-filtered.json",
+    "case": "view_cards",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        59,
+        51,
+        51,
+        100059,
+        100059
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/view_cards/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "b1bfbc24a7a41de6a11582c4b90badd462a6e6ff7c72252bd75cb50e38285bb8",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "view_cards-11-summary-filtered.json",
+    "case": "view_cards",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        59,
+        51,
+        51,
+        100059,
+        100059
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/view_cards/verify/evidence.json",
+    "source_record": 11,
+    "sha256": "1755e46853958366de0a5add2625f9a1f73bccbda6528d9cbc0d6e532919de81",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "paels_wing-05-full-candidates.json",
+    "case": "paels_wing",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/paels_wing/verify/evidence.json",
+    "source_record": 5,
+    "sha256": "2f86ac763caed133dcc815f3c0c4c7aeaccee4842260ed2ffffdf8be51f6cf13",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "paels_wing-08-summary-candidates.json",
+    "case": "paels_wing",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/paels_wing/verify/evidence.json",
+    "source_record": 8,
+    "sha256": "d42ab41ae86b6fc3c49e51dea50ea1d2145d521e26bed264fdf35b19d95a1a2f",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "paels_wing-10-full-filtered.json",
+    "case": "paels_wing",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        2,
+        0,
+        0,
+        100002,
+        100002
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/paels_wing/verify/evidence.json",
+    "source_record": 10,
+    "sha256": "7afb04379146f4500adf95eb5bfce6d7df869d5c33c286a7512f046b29f9dab5",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "paels_wing-12-summary-filtered.json",
+    "case": "paels_wing",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        2,
+        0,
+        0,
+        100002,
+        100002
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/paels_wing/verify/evidence.json",
+    "source_record": 12,
+    "sha256": "862c9abcb9d98d4243c564bdf147d3d1f508718f70f8aa4dff947eaf025f5565",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "paels_wing-19-full-candidates.json",
+    "case": "paels_wing",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/paels_wing/verify/evidence.json",
+    "source_record": 19,
+    "sha256": "cfbb217e9970e1a035133c0880881936547ae35cffb1ddfd20833e69e1cd1312",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "paels_wing-22-summary-candidates.json",
+    "case": "paels_wing",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/paels_wing/verify/evidence.json",
+    "source_record": 22,
+    "sha256": "ffaa5eab5a8b5900782a1fcaf68b85fceef8f46e72f5fe5db7cd64d15bb40d02",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "driftwood-05-full-candidates.json",
+    "case": "driftwood",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/driftwood/verify/evidence.json",
+    "source_record": 5,
+    "sha256": "4ed1a65678f38c8422d56e47c5ffbe5af9a23f191d08c14bc81f3e069806111d",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "driftwood-08-summary-candidates.json",
+    "case": "driftwood",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/driftwood/verify/evidence.json",
+    "source_record": 8,
+    "sha256": "e0ff891b59fa1b7662fb79eb9635c3dcb503d783cfb255e5d09e3608f44e12bd",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "driftwood-10-full-filtered.json",
+    "case": "driftwood",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "card_ids": [
+        2,
+        0,
+        0,
+        100002,
+        100002
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/driftwood/verify/evidence.json",
+    "source_record": 10,
+    "sha256": "535497727803be93219ba4d7bb75d00b6ff26d8c66e9201212e9a95842d08e2d",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "driftwood-12-summary-filtered.json",
+    "case": "driftwood",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        2,
+        0,
+        0,
+        100002,
+        100002
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/driftwood/verify/evidence.json",
+    "source_record": 12,
+    "sha256": "85144de0aaab773750c8a5f6b0bb63ce7b00aa93afe5c3ade4c965545e7c0af6",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "driftwood-17-full-candidates.json",
+    "case": "driftwood",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/driftwood/verify/evidence.json",
+    "source_record": 17,
+    "sha256": "c60d72509c2f7d3646cf200d512cd6ced7d6412f18f72d8b3ad99b1433e0296c",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "driftwood-20-summary-candidates.json",
+    "case": "driftwood",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/driftwood/verify/evidence.json",
+    "source_record": 20,
+    "sha256": "4bbd71faccba054967296dd271508825748c71562ae46a5e8647fcf223c1af07",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "driftwood-31-full-candidates.json",
+    "case": "driftwood",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/driftwood/verify/evidence.json",
+    "source_record": 31,
+    "sha256": "ac8c0f4f7188c66831c56ab82e87bd5f15a64fca378a3e5682f4f4980d77f40d",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "driftwood-34-summary-candidates.json",
+    "case": "driftwood",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-baseline/driftwood/verify/evidence.json",
+    "source_record": 34,
+    "sha256": "0d4f3d1bb1eb813c2e6ecad9bad064c864608381972fefeb4c3c5680cc8b2afb",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "no_selection-02-full-error.json",
+    "case": "no_selection",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-errors-corrected/no_selection/review/evidence.json",
+    "source_record": 2,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "no_selection-06-full-error.json",
+    "case": "no_selection",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "view_upgrades": false
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-errors-corrected/no_selection/review/evidence.json",
+    "source_record": 6,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "no_selection-07-full-error.json",
+    "case": "no_selection",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-errors-corrected/no_selection/review/evidence.json",
+    "source_record": 7,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "covered-04-full-error.json",
+    "case": "covered",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-errors-corrected/covered/review/evidence.json",
+    "source_record": 4,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "covered-07-full-candidates.json",
+    "case": "covered",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-errors-corrected/covered/review/evidence.json",
+    "source_record": 7,
+    "sha256": "90fe4dc786624161768830623074dab170d9d2f135d53ac6c5ebaf2f35ca9e47",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand_upgrade-03-full-candidates.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-errors-corrected/hand_upgrade/review/evidence.json",
+    "source_record": 3,
+    "sha256": "2d4de931231b95c16b4ca2904fab9b2fc65f06525bfd391c0d97971481a616db",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand_upgrade-04-full-filtered.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "view_upgrades": true,
+      "card_ids": []
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-errors-corrected/hand_upgrade/review/evidence.json",
+    "source_record": 4,
+    "sha256": "91ba584a6acf68e40a709a720a4957922432195f19e34c61d094d8bd6d8358d0",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand_upgrade-06-full-selected.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-errors-corrected/hand_upgrade/review/evidence.json",
+    "source_record": 6,
+    "sha256": "c74c279a4f822ab0520d9c1a75b87a65b032f2286c420276bd713197dbead268",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "hand_upgrade-09-full-error.json",
+    "case": "hand_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-errors-corrected/hand_upgrade/review/evidence.json",
+    "source_record": 9,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "multi_upgrade-02-full-candidates.json",
+    "case": "multi_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-boundaries/multi_upgrade/verify/evidence.json",
+    "source_record": 2,
+    "sha256": "d0d2d55cd66f1cb478ca65cc39716f6bf799b5b62c437e0d0103312cc742e590",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "multi_upgrade-05-full-candidates.json",
+    "case": "multi_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "view_upgrades": true
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-boundaries/multi_upgrade/verify/evidence.json",
+    "source_record": 5,
+    "sha256": "abfb0a7058d2aa12fd0c77f75406c7924fe51e7dfde03b9c7a15ed9476281905",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "multi_upgrade-07-summary-candidates.json",
+    "case": "multi_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-boundaries/multi_upgrade/verify/evidence.json",
+    "source_record": 7,
+    "sha256": "f2acb83caf6daae830c6b245ba6c6881e0ce3c81bbc929cd543b833bf3162c48",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "multi_upgrade-08-summary-filtered.json",
+    "case": "multi_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "view_upgrades": true,
+      "card_ids": [
+        0,
+        100009
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-boundaries/multi_upgrade/verify/evidence.json",
+    "source_record": 8,
+    "sha256": "3d32829bab28f1f857150d7462bd0c1ab32247320e0c6f59d063a268aa993a75",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "multi_upgrade-16-full-selected.json",
+    "case": "multi_upgrade",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full",
+      "view_upgrades": true
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-boundaries/multi_upgrade/verify/evidence.json",
+    "source_record": 16,
+    "sha256": "8760010c125529f133d5bd625b0aedf5cb4c1876123290d00fdfcf04f77d7dcb",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "large_grid-03-full-candidates.json",
+    "case": "large_grid",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-boundaries/large_grid/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "f64e10d2d8b939f6ecab64fa0991a430fb05dd7eb9d439b7884fcdcf0cd8693a",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "large_grid-05-summary-candidates.json",
+    "case": "large_grid",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-boundaries/large_grid/verify/evidence.json",
+    "source_record": 5,
+    "sha256": "09abefbd3d591842398924230d5d3cd7ac7eba5b9d19f1b4c764771c5333c7e9",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "large_grid-16-summary-filtered.json",
+    "case": "large_grid",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        44,
+        1000000
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-boundaries/large_grid/verify/evidence.json",
+    "source_record": 16,
+    "sha256": "fc4fdf6644edc5023b1f5cfe5ef7d23945f72cc91b4e0ee9615458623b85280f",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "large_upgrades-03-full-candidates.json",
+    "case": "large_upgrades",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-boundaries/large_upgrades/verify/evidence.json",
+    "source_record": 3,
+    "sha256": "d812257fb2207b1395615625fe999b70b1307ece0bedf01d6a7267d7efc884e4",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "large_upgrades-05-summary-candidates.json",
+    "case": "large_upgrades",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-boundaries/large_upgrades/verify/evidence.json",
+    "source_record": 5,
+    "sha256": "b9a5cfa1472308b73d1dd0b4eff50279d0ea57cb3500d07201172692214d6e11",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "large_upgrades-06-summary-candidates.json",
+    "case": "large_upgrades",
+    "tool": "inspect_selection",
+    "arguments": {
+      "view_upgrades": true,
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-boundaries/large_upgrades/verify/evidence.json",
+    "source_record": 6,
+    "sha256": "aa40242889bf0d7dfae8c11cf2579cab4aea8fba1e3c669cab248313ad79dcfc",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  },
+  {
+    "file": "large_upgrades-09-summary-filtered.json",
+    "case": "large_upgrades",
+    "tool": "inspect_selection",
+    "arguments": {
+      "preset": "summary",
+      "card_ids": [
+        39,
+        1000000
+      ]
+    },
+    "source": ".tmp/2026-11-05-inspect-selection-review/gui-boundaries/large_upgrades/verify/evidence.json",
+    "source_record": 9,
+    "sha256": "b5d17209222f98178a15673deb9830d67b64cb6212f32622e17812f74b7ad47a",
+    "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+  }
+]

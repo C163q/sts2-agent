@@ -1,0 +1,629 @@
+{
+  "scene": "combat",
+  "selection": {
+    "type": "grid",
+    "status": "visible",
+    "prompt": "Choose 2 cards to Exhaust.",
+    "min_select": 2,
+    "max_select": 2,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 5,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": {
+          "name": "Sharp",
+          "dimmed": false,
+          "amount": 3
+        },
+        "affliction": null,
+        "description": "Deal 9 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 6,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": {
+          "name": "Swift",
+          "dimmed": true,
+          "amount": 2
+        },
+        "affliction": null,
+        "description": "Gain 5 Block.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 7,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": {
+          "name": "Clone",
+          "dimmed": false
+        },
+        "affliction": null,
+        "description": "Deal 6 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 8,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": {
+          "name": "Spiral",
+          "dimmed": false
+        },
+        "affliction": null,
+        "description": "Gain 5 Block.\nReplay 1.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 9,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 10,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 11,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 12,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 13,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 14,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 15,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 16,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 17,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 18,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 19,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 20,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 21,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 22,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 23,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 24,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 25,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 26,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 27,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 28,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 29,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 30,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 31,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 32,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 33,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 34,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 35,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 36,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 37,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 38,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 39,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 40,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 41,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": {
+          "name": "Sharp",
+          "dimmed": false,
+          "amount": 3
+        },
+        "affliction": null,
+        "description": "Deal 9 damage."
+      },
+      {
+        "id": 42,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": {
+          "name": "Swift",
+          "dimmed": true,
+          "amount": 2
+        },
+        "affliction": null,
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 43,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": {
+          "name": "Clone",
+          "dimmed": false
+        },
+        "affliction": null,
+        "description": "Deal 6 damage."
+      },
+      {
+        "id": 44,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": {
+          "name": "Spiral",
+          "dimmed": false
+        },
+        "affliction": null,
+        "description": "Gain 5 Block.\nReplay 1."
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": true,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [
+    {
+      "title": "Sharp",
+      "description": "Increases damage on this card by 3.",
+      "card_ids": [
+        5,
+        41
+      ]
+    },
+    {
+      "title": "Swift",
+      "description": "The first time you play this card, draw 2 cards.",
+      "card_ids": [
+        6,
+        42
+      ]
+    },
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30,
+        32,
+        34,
+        36,
+        38,
+        40,
+        42,
+        44
+      ]
+    },
+    {
+      "title": "Clone",
+      "description": "This card can be duplicated at Rest Sites.",
+      "card_ids": [
+        7,
+        43
+      ]
+    },
+    {
+      "title": "Spiral",
+      "description": "This card gains Replay 1.",
+      "card_ids": [
+        8,
+        44
+      ]
+    },
+    {
+      "title": "Replay",
+      "description": "Plays this card an additional time.",
+      "card_ids": [
+        8,
+        44
+      ]
+    }
+  ],
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

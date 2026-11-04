@@ -1,0 +1,49 @@
+{
+  "scene": "combat",
+  "selection": {
+    "type": "choose_one",
+    "status": "visible",
+    "prompt": "Choose a Card",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 8,
+        "name": "Evil Eye",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 10,
+        "name": "Second Wind",
+        "type": "Skill",
+        "energy_cost": "1"
+      }
+    ],
+    "options": [
+      {
+        "id": "skip",
+        "text": "Skip",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": true,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  },
+  "errors": [
+    {
+      "code": "cards_not_in_selection",
+      "card_ids": [
+        100010
+      ]
+    }
+  ]
+}

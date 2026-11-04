@@ -1,0 +1,45 @@
+{
+  "scene": "combat",
+  "selection": {
+    "type": "hand_upgrade",
+    "status": "visible",
+    "prompt": "Confirm Card to Upgrade",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 6,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1",
+        "outline": "cyan"
+      },
+      {
+        "id": 7,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1",
+        "outline": "cyan"
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": true,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  },
+  "errors": [
+    {
+      "code": "cards_not_in_selection",
+      "card_ids": [
+        100007
+      ]
+    }
+  ]
+}

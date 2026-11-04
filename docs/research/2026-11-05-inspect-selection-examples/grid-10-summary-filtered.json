@@ -1,0 +1,40 @@
+{
+  "scene": "event",
+  "selection": {
+    "type": "grid",
+    "status": "visible",
+    "prompt": "Choose 2 Common Cards to Add to Your Deck.",
+    "min_select": 2,
+    "max_select": 2,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 0,
+        "name": "Breakthrough",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 7,
+        "name": "Tremble",
+        "type": "Skill",
+        "energy_cost": "1"
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "errors": [
+    {
+      "code": "cards_not_in_selection",
+      "card_ids": [
+        100007
+      ]
+    }
+  ]
+}

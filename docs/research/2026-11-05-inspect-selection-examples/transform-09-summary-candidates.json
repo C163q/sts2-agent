@@ -1,0 +1,80 @@
+{
+  "scene": "ancient",
+  "selection": {
+    "type": "deck_transform",
+    "status": "visible",
+    "prompt": "Choose a card to Transform.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 34,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 35,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 36,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 37,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 38,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 39,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 40,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 41,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 42,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 43,
+        "name": "Bash",
+        "type": "Attack",
+        "energy_cost": "2"
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": false,
+    "can_view_upgrades": true,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  }
+}

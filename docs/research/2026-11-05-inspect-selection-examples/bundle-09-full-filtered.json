@@ -1,0 +1,86 @@
+{
+  "scene": "ancient",
+  "selection": {
+    "type": "bundle",
+    "status": "visible",
+    "prompt": null,
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [],
+    "options": [
+      {
+        "id": "bundle:0",
+        "text": "Choose bundle 1",
+        "enabled": true
+      },
+      {
+        "id": "bundle:1",
+        "text": "Choose bundle 2",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "bundles": [
+      {
+        "id": "bundle:0",
+        "cards": [
+          {
+            "id": 45,
+            "name": "Breakthrough",
+            "type": "Attack",
+            "rarity": "common",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "star_cost": null,
+            "unplayable_markers": [],
+            "outline": "none",
+            "enchantment": null,
+            "affliction": null,
+            "description": "Lose 1 HP.\nDeal 9 damage to ALL enemies.",
+            "hover_tips": []
+          }
+        ]
+      },
+      {
+        "id": "bundle:1",
+        "cards": [
+          {
+            "id": 50,
+            "name": "Ashen Strike",
+            "type": "Attack",
+            "rarity": "uncommon",
+            "visual_card_pool": "ironclad",
+            "energy_cost": "1",
+            "star_cost": null,
+            "unplayable_markers": [],
+            "outline": "none",
+            "enchantment": null,
+            "affliction": null,
+            "description": "Deal 6 damage.\nDeals 3 additional damage for each card in your Exhaust Pile.",
+            "hover_tips": [
+              {
+                "title": "Exhaust",
+                "description": "Removed until the end of combat."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [],
+  "errors": [
+    {
+      "code": "cards_not_in_selection",
+      "card_ids": [
+        100050
+      ]
+    }
+  ]
+}

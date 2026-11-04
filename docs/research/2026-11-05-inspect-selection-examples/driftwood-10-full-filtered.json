@@ -1,0 +1,76 @@
+{
+  "scene": "rewards",
+  "selection": {
+    "type": "reward",
+    "status": "visible",
+    "prompt": "Choose a Card",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 0,
+        "name": "Anger",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.\nAdd a copy of this card into your Discard Pile."
+      },
+      {
+        "id": 2,
+        "name": "Shrug It Off",
+        "type": "Skill",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 8 Block.\nDraw 1 card."
+      }
+    ],
+    "options": [
+      {
+        "id": "skip",
+        "text": "Skip",
+        "enabled": true
+      },
+      {
+        "id": "alternative:1",
+        "text": "Reroll",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        2
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": "cards_not_in_selection",
+      "card_ids": [
+        100002
+      ]
+    }
+  ]
+}

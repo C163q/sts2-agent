@@ -1,0 +1,71 @@
+{
+  "scene": "event",
+  "selection": {
+    "type": "deck",
+    "status": "visible",
+    "prompt": "Choose a card to Remove.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 0,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 9,
+        "name": "Bash",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "2",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 8 damage.\nApply 2 Vulnerable.",
+        "outline": "none",
+        "unplayable_markers": []
+      }
+    ],
+    "options": [
+      {
+        "id": "cancel",
+        "text": "Cancel",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [
+    {
+      "title": "Vulnerable",
+      "description": "Vulnerable creatures take 50% more damage from Attacks.",
+      "card_ids": [
+        9
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": "cards_not_in_selection",
+      "card_ids": [
+        100009
+      ]
+    }
+  ]
+}

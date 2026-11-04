@@ -1,0 +1,52 @@
+{
+  "scene": "ancient",
+  "selection": {
+    "type": "bundle",
+    "status": "visible",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [
+      45,
+      46,
+      47
+    ],
+    "cards": [
+      {
+        "id": 45,
+        "name": "Breakthrough",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 46,
+        "name": "Havoc",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 47,
+        "name": "Feel No Pain",
+        "type": "Power",
+        "energy_cost": "1"
+      }
+    ],
+    "options": [
+      {
+        "id": "cancel_preview",
+        "text": "Back",
+        "enabled": true
+      },
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  }
+}

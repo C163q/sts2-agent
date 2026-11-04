@@ -1,0 +1,61 @@
+{
+  "scene": "ancient",
+  "selection": {
+    "type": "bundle",
+    "status": "visible",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [],
+    "options": [
+      {
+        "id": "bundle:0",
+        "text": "Choose bundle 1",
+        "enabled": true
+      },
+      {
+        "id": "bundle:1",
+        "text": "Choose bundle 2",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "bundles": [
+      {
+        "id": "bundle:0",
+        "cards": [
+          {
+            "id": 45,
+            "name": "Breakthrough",
+            "type": "Attack",
+            "energy_cost": "1"
+          }
+        ]
+      },
+      {
+        "id": "bundle:1",
+        "cards": [
+          {
+            "id": 50,
+            "name": "Ashen Strike",
+            "type": "Attack",
+            "energy_cost": "1"
+          }
+        ]
+      }
+    ]
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "errors": [
+    {
+      "code": "cards_not_in_selection",
+      "card_ids": [
+        100050
+      ]
+    }
+  ]
+}

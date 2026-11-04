@@ -1,0 +1,71 @@
+{
+  "scene": "ancient",
+  "selection": {
+    "type": "view_cards",
+    "status": "visible",
+    "prompt": null,
+    "min_select": 0,
+    "max_select": 0,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 51,
+        "name": "Anger",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.\nAdd a copy of this card into your Discard Pile.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 59,
+        "name": "Fight Me!",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "2",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 5 damage twice.\nGain 3 Strength.\nThe enemy gains 1 Strength.",
+        "outline": "none",
+        "unplayable_markers": []
+      }
+    ],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": true,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [
+    {
+      "title": "Strength",
+      "description": "Strength adds additional damage to Attacks.",
+      "card_ids": [
+        59
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": "cards_not_in_selection",
+      "card_ids": [
+        100059
+      ]
+    }
+  ]
+}

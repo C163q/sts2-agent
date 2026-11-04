@@ -1,0 +1,112 @@
+# inspect_selection 审阅基线完整返回
+
+这些是提交 `50e0ad6` 的真实 MCP 返回，保留当前缺陷；不是建议输出或修复后的示例。仅导出公共 JSON，没有加入内部快照令牌。
+
+共 100 份；覆盖十二种已支持类型、已展开比较、筛选、升级开关及拒绝。来源、实际参数、源记录序号和 DLL／样例哈希见 [manifest.json](manifest.json)。原始报告保存在仓库忽略的 `.tmp/2026-11-05-inspect-selection-review/`。
+
+既有验证器会为省略 preset 的调用补 `full`；表格按实际传给 MCP 的参数记录。未另外采集 default 的游戏样本。原始报告中的 native 检查和截图不混入公共 JSON。
+
+问题与建议见[用户说明](../2026-11-05-inspect-selection-review.md)，版本、验证及限制见[开发核验记录](../2026-11-05-inspect-selection-development-notes.md)。
+
+| 场景 | 调用参数 | 完整返回 |
+| --- | --- | --- |
+| choose_one | `inspect_selection({"preset":"full"})` | [choose_one-04-full-candidates.json](choose_one-04-full-candidates.json) |
+| choose_one | `inspect_selection({"preset":"summary"})` | [choose_one-07-summary-candidates.json](choose_one-07-summary-candidates.json) |
+| choose_one | `inspect_selection({"preset":"full","card_ids":[10,8,8,100010,100010]})` | [choose_one-09-full-filtered.json](choose_one-09-full-filtered.json) |
+| choose_one | `inspect_selection({"preset":"summary","card_ids":[10,8,8,100010,100010]})` | [choose_one-11-summary-filtered.json](choose_one-11-summary-filtered.json) |
+| hand | `inspect_selection({"preset":"full"})` | [hand-04-full-candidates.json](hand-04-full-candidates.json) |
+| hand | `inspect_selection({"preset":"summary"})` | [hand-07-summary-candidates.json](hand-07-summary-candidates.json) |
+| hand | `inspect_selection({"preset":"full","card_ids":[4,0,0,100004,100004]})` | [hand-09-full-filtered.json](hand-09-full-filtered.json) |
+| hand | `inspect_selection({"preset":"summary","card_ids":[4,0,0,100004,100004]})` | [hand-11-summary-filtered.json](hand-11-summary-filtered.json) |
+| hand | `inspect_selection({"preset":"full"})` | [hand-16-full-selected.json](hand-16-full-selected.json) |
+| hand | `inspect_selection({"preset":"summary"})` | [hand-19-summary-selected.json](hand-19-summary-selected.json) |
+| hand_upgrade | `inspect_selection({"preset":"full"})` | [hand_upgrade-04-full-candidates.json](hand_upgrade-04-full-candidates.json) |
+| hand_upgrade | `inspect_selection({"preset":"summary"})` | [hand_upgrade-07-summary-candidates.json](hand_upgrade-07-summary-candidates.json) |
+| hand_upgrade | `inspect_selection({"preset":"full","card_ids":[7,6,6,100007,100007]})` | [hand_upgrade-09-full-filtered.json](hand_upgrade-09-full-filtered.json) |
+| hand_upgrade | `inspect_selection({"preset":"summary","card_ids":[7,6,6,100007,100007]})` | [hand_upgrade-11-summary-filtered.json](hand_upgrade-11-summary-filtered.json) |
+| hand_upgrade | `inspect_selection({"preset":"full"})` | [hand_upgrade-16-full-selected.json](hand_upgrade-16-full-selected.json) |
+| hand_upgrade | `inspect_selection({"preset":"summary"})` | [hand_upgrade-19-summary-selected.json](hand_upgrade-19-summary-selected.json) |
+| hand_upgrade | `inspect_selection({"preset":"summary"})` | [hand_upgrade-27-summary-error.json](hand_upgrade-27-summary-error.json) |
+| grid | `inspect_selection({"preset":"full"})` | [grid-03-full-candidates.json](grid-03-full-candidates.json) |
+| grid | `inspect_selection({"preset":"summary"})` | [grid-06-summary-candidates.json](grid-06-summary-candidates.json) |
+| grid | `inspect_selection({"preset":"full","card_ids":[7,0,0,100007,100007]})` | [grid-08-full-filtered.json](grid-08-full-filtered.json) |
+| grid | `inspect_selection({"preset":"summary","card_ids":[7,0,0,100007,100007]})` | [grid-10-summary-filtered.json](grid-10-summary-filtered.json) |
+| combat_pile | `inspect_selection({"preset":"full"})` | [combat_pile-03-full-candidates.json](combat_pile-03-full-candidates.json) |
+| combat_pile | `inspect_selection({"preset":"summary"})` | [combat_pile-06-summary-candidates.json](combat_pile-06-summary-candidates.json) |
+| combat_pile | `inspect_selection({"preset":"full","card_ids":[6,5,5,100006,100006]})` | [combat_pile-08-full-filtered.json](combat_pile-08-full-filtered.json) |
+| combat_pile | `inspect_selection({"preset":"summary","card_ids":[6,5,5,100006,100006]})` | [combat_pile-10-summary-filtered.json](combat_pile-10-summary-filtered.json) |
+| deck | `inspect_selection({"preset":"full"})` | [deck-03-full-candidates.json](deck-03-full-candidates.json) |
+| deck | `inspect_selection({"preset":"summary"})` | [deck-06-summary-candidates.json](deck-06-summary-candidates.json) |
+| deck | `inspect_selection({"preset":"full","card_ids":[9,0,0,100009,100009]})` | [deck-08-full-filtered.json](deck-08-full-filtered.json) |
+| deck | `inspect_selection({"preset":"summary","card_ids":[9,0,0,100009,100009]})` | [deck-10-summary-filtered.json](deck-10-summary-filtered.json) |
+| deck | `inspect_selection({"preset":"full"})` | [deck-15-full-selected.json](deck-15-full-selected.json) |
+| deck | `inspect_selection({"preset":"summary"})` | [deck-18-summary-selected.json](deck-18-summary-selected.json) |
+| smith | `inspect_selection({"preset":"full"})` | [smith-04-full-candidates.json](smith-04-full-candidates.json) |
+| smith | `inspect_selection({"preset":"summary"})` | [smith-07-summary-candidates.json](smith-07-summary-candidates.json) |
+| smith | `inspect_selection({"preset":"full","card_ids":[19,10,10,100019,100019]})` | [smith-09-full-filtered.json](smith-09-full-filtered.json) |
+| smith | `inspect_selection({"preset":"summary","card_ids":[19,10,10,100019,100019]})` | [smith-11-summary-filtered.json](smith-11-summary-filtered.json) |
+| smith | `inspect_selection({"preset":"full"})` | [smith-16-full-selected.json](smith-16-full-selected.json) |
+| smith | `inspect_selection({"preset":"summary"})` | [smith-19-summary-selected.json](smith-19-summary-selected.json) |
+| enchant_single | `inspect_selection({"preset":"full"})` | [enchant_single-04-full-candidates.json](enchant_single-04-full-candidates.json) |
+| enchant_single | `inspect_selection({"preset":"summary"})` | [enchant_single-07-summary-candidates.json](enchant_single-07-summary-candidates.json) |
+| enchant_single | `inspect_selection({"preset":"full","card_ids":[26,21,21,100026,100026]})` | [enchant_single-09-full-filtered.json](enchant_single-09-full-filtered.json) |
+| enchant_single | `inspect_selection({"preset":"summary","card_ids":[26,21,21,100026,100026]})` | [enchant_single-11-summary-filtered.json](enchant_single-11-summary-filtered.json) |
+| enchant_single | `inspect_selection({"preset":"full"})` | [enchant_single-16-full-selected.json](enchant_single-16-full-selected.json) |
+| enchant_single | `inspect_selection({"preset":"summary"})` | [enchant_single-19-summary-selected.json](enchant_single-19-summary-selected.json) |
+| enchant_multi | `inspect_selection({"preset":"full"})` | [enchant_multi-06-full-candidates.json](enchant_multi-06-full-candidates.json) |
+| enchant_multi | `inspect_selection({"preset":"summary"})` | [enchant_multi-09-summary-candidates.json](enchant_multi-09-summary-candidates.json) |
+| enchant_multi | `inspect_selection({"preset":"full","card_ids":[33,28,28,100033,100033]})` | [enchant_multi-11-full-filtered.json](enchant_multi-11-full-filtered.json) |
+| enchant_multi | `inspect_selection({"preset":"summary","card_ids":[33,28,28,100033,100033]})` | [enchant_multi-13-summary-filtered.json](enchant_multi-13-summary-filtered.json) |
+| enchant_multi | `inspect_selection({"preset":"full"})` | [enchant_multi-20-full-selected.json](enchant_multi-20-full-selected.json) |
+| enchant_multi | `inspect_selection({"preset":"summary"})` | [enchant_multi-23-summary-selected.json](enchant_multi-23-summary-selected.json) |
+| transform | `inspect_selection({"preset":"full"})` | [transform-06-full-candidates.json](transform-06-full-candidates.json) |
+| transform | `inspect_selection({"preset":"summary"})` | [transform-09-summary-candidates.json](transform-09-summary-candidates.json) |
+| transform | `inspect_selection({"preset":"full","card_ids":[43,34,34,100043,100043]})` | [transform-11-full-filtered.json](transform-11-full-filtered.json) |
+| transform | `inspect_selection({"preset":"summary","card_ids":[43,34,34,100043,100043]})` | [transform-13-summary-filtered.json](transform-13-summary-filtered.json) |
+| transform | `inspect_selection({"preset":"full"})` | [transform-18-full-selected.json](transform-18-full-selected.json) |
+| transform | `inspect_selection({"preset":"summary"})` | [transform-21-summary-selected.json](transform-21-summary-selected.json) |
+| bundle | `inspect_selection({"preset":"full"})` | [bundle-04-full-candidates.json](bundle-04-full-candidates.json) |
+| bundle | `inspect_selection({"preset":"summary"})` | [bundle-07-summary-candidates.json](bundle-07-summary-candidates.json) |
+| bundle | `inspect_selection({"preset":"full","card_ids":[50,45,45,100050,100050]})` | [bundle-09-full-filtered.json](bundle-09-full-filtered.json) |
+| bundle | `inspect_selection({"preset":"summary","card_ids":[50,45,45,100050,100050]})` | [bundle-11-summary-filtered.json](bundle-11-summary-filtered.json) |
+| bundle | `inspect_selection({"preset":"full"})` | [bundle-16-full-selected.json](bundle-16-full-selected.json) |
+| bundle | `inspect_selection({"preset":"summary"})` | [bundle-19-summary-selected.json](bundle-19-summary-selected.json) |
+| view_cards | `inspect_selection({"preset":"full"})` | [view_cards-04-full-candidates.json](view_cards-04-full-candidates.json) |
+| view_cards | `inspect_selection({"preset":"summary"})` | [view_cards-07-summary-candidates.json](view_cards-07-summary-candidates.json) |
+| view_cards | `inspect_selection({"preset":"full","card_ids":[59,51,51,100059,100059]})` | [view_cards-09-full-filtered.json](view_cards-09-full-filtered.json) |
+| view_cards | `inspect_selection({"preset":"summary","card_ids":[59,51,51,100059,100059]})` | [view_cards-11-summary-filtered.json](view_cards-11-summary-filtered.json) |
+| paels_wing | `inspect_selection({"preset":"full"})` | [paels_wing-05-full-candidates.json](paels_wing-05-full-candidates.json) |
+| paels_wing | `inspect_selection({"preset":"summary"})` | [paels_wing-08-summary-candidates.json](paels_wing-08-summary-candidates.json) |
+| paels_wing | `inspect_selection({"preset":"full","card_ids":[2,0,0,100002,100002]})` | [paels_wing-10-full-filtered.json](paels_wing-10-full-filtered.json) |
+| paels_wing | `inspect_selection({"preset":"summary","card_ids":[2,0,0,100002,100002]})` | [paels_wing-12-summary-filtered.json](paels_wing-12-summary-filtered.json) |
+| paels_wing | `inspect_selection({"preset":"full"})` | [paels_wing-19-full-candidates.json](paels_wing-19-full-candidates.json) |
+| paels_wing | `inspect_selection({"preset":"summary"})` | [paels_wing-22-summary-candidates.json](paels_wing-22-summary-candidates.json) |
+| driftwood | `inspect_selection({"preset":"full"})` | [driftwood-05-full-candidates.json](driftwood-05-full-candidates.json) |
+| driftwood | `inspect_selection({"preset":"summary"})` | [driftwood-08-summary-candidates.json](driftwood-08-summary-candidates.json) |
+| driftwood | `inspect_selection({"preset":"full","card_ids":[2,0,0,100002,100002]})` | [driftwood-10-full-filtered.json](driftwood-10-full-filtered.json) |
+| driftwood | `inspect_selection({"preset":"summary","card_ids":[2,0,0,100002,100002]})` | [driftwood-12-summary-filtered.json](driftwood-12-summary-filtered.json) |
+| driftwood | `inspect_selection({"preset":"full"})` | [driftwood-17-full-candidates.json](driftwood-17-full-candidates.json) |
+| driftwood | `inspect_selection({"preset":"summary"})` | [driftwood-20-summary-candidates.json](driftwood-20-summary-candidates.json) |
+| driftwood | `inspect_selection({"preset":"full"})` | [driftwood-31-full-candidates.json](driftwood-31-full-candidates.json) |
+| driftwood | `inspect_selection({"preset":"summary"})` | [driftwood-34-summary-candidates.json](driftwood-34-summary-candidates.json) |
+| no_selection | `inspect_selection({"preset":"full"})` | [no_selection-02-full-error.json](no_selection-02-full-error.json) |
+| no_selection | `inspect_selection({"preset":"full","view_upgrades":false})` | [no_selection-06-full-error.json](no_selection-06-full-error.json) |
+| no_selection | `end_turn({"preset":"full"})` | [no_selection-07-full-error.json](no_selection-07-full-error.json) |
+| covered | `inspect_selection({"preset":"full"})` | [covered-04-full-error.json](covered-04-full-error.json) |
+| covered | `inspect_selection({"preset":"full"})` | [covered-07-full-candidates.json](covered-07-full-candidates.json) |
+| hand_upgrade | `inspect_selection({"preset":"full"})` | [hand_upgrade-03-full-candidates.json](hand_upgrade-03-full-candidates.json) |
+| hand_upgrade | `inspect_selection({"preset":"full","view_upgrades":true,"card_ids":[]})` | [hand_upgrade-04-full-filtered.json](hand_upgrade-04-full-filtered.json) |
+| hand_upgrade | `inspect_selection({"preset":"full"})` | [hand_upgrade-06-full-selected.json](hand_upgrade-06-full-selected.json) |
+| hand_upgrade | `inspect_selection({"preset":"full"})` | [hand_upgrade-09-full-error.json](hand_upgrade-09-full-error.json) |
+| multi_upgrade | `inspect_selection({"preset":"full"})` | [multi_upgrade-02-full-candidates.json](multi_upgrade-02-full-candidates.json) |
+| multi_upgrade | `inspect_selection({"preset":"full","view_upgrades":true})` | [multi_upgrade-05-full-candidates.json](multi_upgrade-05-full-candidates.json) |
+| multi_upgrade | `inspect_selection({"preset":"summary"})` | [multi_upgrade-07-summary-candidates.json](multi_upgrade-07-summary-candidates.json) |
+| multi_upgrade | `inspect_selection({"preset":"summary","view_upgrades":true,"card_ids":[0,100009]})` | [multi_upgrade-08-summary-filtered.json](multi_upgrade-08-summary-filtered.json) |
+| multi_upgrade | `inspect_selection({"preset":"full","view_upgrades":true})` | [multi_upgrade-16-full-selected.json](multi_upgrade-16-full-selected.json) |
+| large_grid | `inspect_selection({"preset":"full"})` | [large_grid-03-full-candidates.json](large_grid-03-full-candidates.json) |
+| large_grid | `inspect_selection({"preset":"summary"})` | [large_grid-05-summary-candidates.json](large_grid-05-summary-candidates.json) |
+| large_grid | `inspect_selection({"preset":"summary","card_ids":[44,1000000]})` | [large_grid-16-summary-filtered.json](large_grid-16-summary-filtered.json) |
+| large_upgrades | `inspect_selection({"preset":"full"})` | [large_upgrades-03-full-candidates.json](large_upgrades-03-full-candidates.json) |
+| large_upgrades | `inspect_selection({"preset":"summary"})` | [large_upgrades-05-summary-candidates.json](large_upgrades-05-summary-candidates.json) |
+| large_upgrades | `inspect_selection({"view_upgrades":true,"preset":"summary"})` | [large_upgrades-06-summary-candidates.json](large_upgrades-06-summary-candidates.json) |
+| large_upgrades | `inspect_selection({"preset":"summary","card_ids":[39,1000000]})` | [large_upgrades-09-summary-filtered.json](large_upgrades-09-summary-filtered.json) |

@@ -1,0 +1,41 @@
+{
+  "scene": "event",
+  "selection": {
+    "type": "deck_upgrade",
+    "status": "visible",
+    "prompt": "Choose a card to Upgrade.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 39,
+        "name": "Body Slam+",
+        "type": "Attack",
+        "energy_cost": "0",
+        "energy_cost_color": "green"
+      }
+    ],
+    "options": [
+      {
+        "id": "cancel",
+        "text": "Cancel",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": true,
+    "view_upgrades": true
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "errors": [
+    {
+      "code": "cards_not_in_selection",
+      "card_ids": [
+        1000000
+      ]
+    }
+  ]
+}

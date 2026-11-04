@@ -1,0 +1,299 @@
+{
+  "scene": "combat",
+  "selection": {
+    "type": "grid",
+    "status": "visible",
+    "prompt": "Choose 2 cards to Exhaust.",
+    "min_select": 2,
+    "max_select": 2,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 5,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1",
+        "enchantment": {
+          "name": "Sharp",
+          "dimmed": false,
+          "amount": 3
+        }
+      },
+      {
+        "id": 6,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1",
+        "enchantment": {
+          "name": "Swift",
+          "dimmed": true,
+          "amount": 2
+        }
+      },
+      {
+        "id": 7,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1",
+        "enchantment": {
+          "name": "Clone",
+          "dimmed": false
+        }
+      },
+      {
+        "id": 8,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1",
+        "enchantment": {
+          "name": "Spiral",
+          "dimmed": false
+        }
+      },
+      {
+        "id": 9,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 10,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 11,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 12,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 13,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 14,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 15,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 16,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 17,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 18,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 19,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 20,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 21,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 22,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 23,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 24,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 25,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 26,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 27,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 28,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 29,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 30,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 31,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 32,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 33,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 34,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 35,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 36,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 37,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 38,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 39,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 40,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 41,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1",
+        "enchantment": {
+          "name": "Sharp",
+          "dimmed": false,
+          "amount": 3
+        }
+      },
+      {
+        "id": 42,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1",
+        "enchantment": {
+          "name": "Swift",
+          "dimmed": true,
+          "amount": 2
+        }
+      },
+      {
+        "id": 43,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1",
+        "enchantment": {
+          "name": "Clone",
+          "dimmed": false
+        }
+      },
+      {
+        "id": 44,
+        "name": "Defend",
+        "type": "Skill",
+        "energy_cost": "1",
+        "enchantment": {
+          "name": "Spiral",
+          "dimmed": false
+        }
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": true,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

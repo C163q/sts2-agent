@@ -1,0 +1,79 @@
+{
+  "scene": "ancient",
+  "selection": {
+    "type": "view_cards",
+    "status": "visible",
+    "min_select": 0,
+    "max_select": 0,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 51,
+        "name": "Anger",
+        "type": "Attack",
+        "energy_cost": "0"
+      },
+      {
+        "id": 52,
+        "name": "Aggression",
+        "type": "Power",
+        "energy_cost": "1"
+      },
+      {
+        "id": 53,
+        "name": "Infernal Blade",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 54,
+        "name": "Iron Wave",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 55,
+        "name": "Spite",
+        "type": "Attack",
+        "energy_cost": "0"
+      },
+      {
+        "id": 56,
+        "name": "Spite",
+        "type": "Attack",
+        "energy_cost": "0"
+      },
+      {
+        "id": 57,
+        "name": "Dismantle",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 58,
+        "name": "Stoke",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 59,
+        "name": "Fight Me!",
+        "type": "Attack",
+        "energy_cost": "2"
+      }
+    ],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": true,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  }
+}

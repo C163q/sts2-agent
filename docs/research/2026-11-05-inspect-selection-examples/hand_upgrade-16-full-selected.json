@@ -1,0 +1,100 @@
+{
+  "scene": "combat",
+  "selection": {
+    "type": "hand_upgrade",
+    "status": "visible",
+    "prompt": "Confirm Card to Upgrade",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [
+      7
+    ],
+    "cards": [
+      {
+        "id": 6,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "cyan",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block."
+      },
+      {
+        "id": 7,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage."
+      }
+    ],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": true,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "upgrade_preview": {
+      "before": {
+        "id": 7,
+        "name": "Strike",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.",
+        "hover_tips": []
+      },
+      "after": {
+        "id": 7,
+        "name": "Strike+",
+        "type": "Attack",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 9 damage.",
+        "hover_tips": []
+      }
+    }
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        6
+      ]
+    }
+  ],
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

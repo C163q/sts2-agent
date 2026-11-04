@@ -1,0 +1,80 @@
+{
+  "scene": "event",
+  "selection": {
+    "type": "deck_upgrade",
+    "status": "visible",
+    "prompt": "Choose 2 cards to Upgrade.",
+    "min_select": 2,
+    "max_select": 2,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 0,
+        "name": "Strike+",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 1,
+        "name": "Strike+",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 2,
+        "name": "Strike+",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 3,
+        "name": "Strike+",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 4,
+        "name": "Strike+",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 5,
+        "name": "Defend+",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 6,
+        "name": "Defend+",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 7,
+        "name": "Defend+",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 8,
+        "name": "Defend+",
+        "type": "Skill",
+        "energy_cost": "1"
+      },
+      {
+        "id": 9,
+        "name": "Bash+",
+        "type": "Attack",
+        "energy_cost": "2"
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": false,
+    "can_view_upgrades": true,
+    "view_upgrades": true
+  },
+  "screen": {
+    "status": "covered"
+  }
+}

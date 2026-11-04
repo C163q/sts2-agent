@@ -1,0 +1,182 @@
+{
+  "scene": "ancient",
+  "selection": {
+    "type": "view_cards",
+    "status": "visible",
+    "prompt": null,
+    "min_select": 0,
+    "max_select": 0,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 51,
+        "name": "Anger",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 6 damage.\nAdd a copy of this card into your Discard Pile.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 52,
+        "name": "Aggression",
+        "type": "Power",
+        "rarity": "rare",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "At the start of your turn, put a random Attack from your Discard Pile into your Hand and Upgrade it.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 53,
+        "name": "Infernal Blade",
+        "type": "Skill",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Add a random Attack into your Hand. It's free to play this turn.\nExhaust.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 54,
+        "name": "Iron Wave",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Gain 5 Block.\nDeal 5 damage.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 55,
+        "name": "Spite",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 5 damage.\nIf you lost HP this turn,\nhits 2 times.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 56,
+        "name": "Spite",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 5 damage.\nIf you lost HP this turn,\nhits 2 times.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 57,
+        "name": "Dismantle",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 8 damage.\nIf the enemy is Vulnerable, hits twice.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 58,
+        "name": "Stoke",
+        "type": "Skill",
+        "rarity": "rare",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Exhaust your Hand.\nAdd 1 random card into your Hand for each card Exhausted.",
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 59,
+        "name": "Fight Me!",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "2",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 5 damage twice.\nGain 3 Strength.\nThe enemy gains 1 Strength.",
+        "outline": "none",
+        "unplayable_markers": []
+      }
+    ],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": true,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [
+    {
+      "title": "Exhaust",
+      "description": "Removed until the end of combat.",
+      "card_ids": [
+        53
+      ]
+    },
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        54
+      ]
+    },
+    {
+      "title": "Vulnerable",
+      "description": "Vulnerable creatures take 50% more damage from Attacks.",
+      "card_ids": [
+        57
+      ]
+    },
+    {
+      "title": "Strength",
+      "description": "Strength adds additional damage to Attacks.",
+      "card_ids": [
+        59
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "scene": "event",
+  "selection": {
+    "type": "deck_enchant",
+    "status": "visible",
+    "prompt": "Choose a card to Enchant.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 21,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 22,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 23,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 24,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 25,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 26,
+        "name": "Bash",
+        "type": "Attack",
+        "energy_cost": "2"
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "enchantment": {
+      "title": "Sharp",
+      "description": "Increases damage on this card by 2."
+    }
+  },
+  "screen": {
+    "status": "covered"
+  }
+}

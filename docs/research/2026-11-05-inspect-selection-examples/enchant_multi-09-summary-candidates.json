@@ -1,0 +1,60 @@
+{
+  "scene": "ancient",
+  "selection": {
+    "type": "deck_enchant",
+    "status": "visible",
+    "prompt": "Choose 3 cards to Enchant.",
+    "min_select": 3,
+    "max_select": 3,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 28,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 29,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 30,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 31,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 32,
+        "name": "Strike",
+        "type": "Attack",
+        "energy_cost": "1"
+      },
+      {
+        "id": 33,
+        "name": "Bash",
+        "type": "Attack",
+        "energy_cost": "2"
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "enchantment": {
+      "title": "Instinct",
+      "description": "This card's attack damage is doubled."
+    }
+  },
+  "screen": {
+    "status": "covered"
+  }
+}
