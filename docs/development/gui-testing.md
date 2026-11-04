@@ -105,4 +105,4 @@ native_responses 的媒体故障夹具仅在 testMode 与 suite 同时开启时�
 
 `display_readers` 的不可悬停遗物通过双重测试门控夹具关闭鼠标与控制器入口，恢复后继续原生页面读取；这是人为注入的验证条件，不表示已观察到自然游玩中的同类遗物。
 
-架构组合的本轮验收见[第 7 阶段记录](../research/2026-11-04-refactor-stage-7.md)。其主批与药水补充批使用同一构建；完整胜利解锁按进程隔离要求单独运行。筛选、上下文和不可悬停的完整公开返回见[JSON 样例](../research/2026-11-04-refactor-contract-examples/README.md)。
+架构组合的验证证据与适用范围见[验收记录](../research/2026-11-04-refactor-stage-7.md)，筛选、上下文和不可悬停的完整公开返回见[JSON 样例](../research/2026-11-04-refactor-contract-examples/README.md)。

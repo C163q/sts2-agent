@@ -100,4 +100,4 @@ python3 -m tests.game.verifiers.verify_piles --ipc-dir .tmp/live/ipc --output-di
 
 独立实例用 `run_roundtrip.py --windowed --capture --check-piles` 开启原生测试场景，再运行 `verify_piles.py --ipc-dir .tmp/roundtrip/ipc --output-dir .tmp/roundtrip/piles --exercise-cases`。原生检查覆盖空堆、隐藏入口、非空消耗、整堆及顺序、原卡/RNG/语言不变、跨页替换、同页复用、地图遮挡和异步期间人的操作。测试场景仅允许独立目录，不能在 Steam 正式游戏设置测试标志。
 
-源码依据及历史独立／正式游戏采样见[牌堆实施记录](../research/2026-10-29-pile-inspection.md)，后续可用性范围见[工具可用性修复](../research/2026-11-02-available-actions-fix.md)。历史样本及检查数量不代表本次重新验证。
+源码依据及历史独立／正式游戏采样见[牌堆实施记录](../research/2026-10-29-pile-inspection.md)，后续可用性范围见[工具可用性修复](../research/2026-11-02-available-actions-fix.md)。验证记录仅覆盖其注明的代码基线和测试场景。

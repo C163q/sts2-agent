@@ -31,7 +31,7 @@ summary 可先列出可查询来源，再用 default 加 sources 读取所需正
 
 ## 返回格式
 
-成功结果包含 `scene`、`screen`、`hover_tips`，场景与页面遵循[统一上下文](observation.md#场景上下文)，与同一画面的基础观察一致。选牌切回战场时另有 `notes.selection`，提示返回选择界面完成选牌。以下仅为单条帮助的结构片段，完整实测示例见[本轮核验与修复记录](../research/2026-11-03-inspect-ui-review.md#修复后示例与验证入口)：
+成功结果包含 `scene`、`screen`、`hover_tips`，场景与页面遵循[统一上下文](observation.md#场景上下文)，与同一画面的基础观察一致。选牌切回战场时另有 `notes.selection`，提示返回选择界面完成选牌。以下仅为单条帮助的结构片段，完整实测示例见[界面工具核验记录](../research/2026-11-03-inspect-ui-review.md#修复后示例与验证入口)：
 
 ```json
 {

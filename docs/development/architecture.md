@@ -103,4 +103,4 @@ GameResponse 在内部保存成功、已提交、未知或“未提交且 UI 未
 
 通用反射读取由 `PrivateFields` 负责：`Read` 缺少必需字段时明确失败，字段值本身可合法为 null。`Optional` 仅用于选牌多类型界面的 prefs／已选卡／完成源、动画字段探测及结算多类型按钮的提示探测；这些调用的类型差异仍由领域代码负责。不得用 Optional 掩盖目标 API 绑定缺失。实节点与浏览克隆继续分别通过 CardPresentation／BrowsedCard 读取，共用 CardAppearance 的外观组装，保留克隆牌堆及目标上下文和比较侧别。
 
-本轮共用链路的验收映射见[架构重构验收](../research/2026-11-04-refactor-stage-7.md)，四项已确认接口调整的完整实测返回见[JSON 样例](../research/2026-11-04-refactor-contract-examples/README.md)。历史样例不替代当前接口定义。
+共用链路的验证证据与适用范围见[架构验收记录](../research/2026-11-04-refactor-stage-7.md)，四项已确认接口调整的完整实测返回见[JSON 样例](../research/2026-11-04-refactor-contract-examples/README.md)。历史样例不替代当前接口定义。

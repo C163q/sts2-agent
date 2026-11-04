@@ -33,7 +33,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 例如在事件中打开牌组，get_observation 与 inspect_deck 都返回 `scene:event`、`screen:{status:covered,view:deck}`；建筑师的 inspect_ui/inspect_combatants 返回 `scene:epilogue`。空牌堆没有打开页面，仍返回实际战斗画面的 screen，而非伪造一个牌堆页。
 
-原生 [ObservationContext](../../src/Sts2Agent/Observation/ObservationContext.cs) 负责场景、遮挡与页面判定，详情响应由共用入口复制对应快照的上下文；[Python 场景校验](../../src/sts2_mcp/output/scene_context.py)统一检查与投影。未返回 scene 的专门工具不因本次统一而新增整个观察；可用操作仍由 get_observation 提供。
+原生 [ObservationContext](../../src/Sts2Agent/Observation/ObservationContext.cs) 负责场景、遮挡与页面判定，详情响应由共用入口复制对应快照的上下文；[Python 场景校验](../../src/sts2_mcp/output/scene_context.py)统一检查与投影。专门工具返回自身领域数据及场景上下文；可用操作由 get_observation 提供。
 
 ## MCP 输出预设
 

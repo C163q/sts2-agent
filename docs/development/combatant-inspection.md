@@ -100,4 +100,4 @@ python3 -m tests.game.verifiers.verify_combatants --ipc-dir .tmp/live/ipc --outp
 
 完整预设、对象筛选、球／剑／同伴、错误续接及不可悬停 note 使用[combatant_presets 清单](../../tests/game/data/gui_suite_combatant_presets.json)，执行方法见[图形测试](gui-testing.md)。set_test_combatant_hover 仅在测试模式与套件双门控下开放文件请求，测试脚本 finally 恢复，不属于 MCP 玩法工具。
 
-历史核验与样本见[工具审阅](../research/2026-11-03-inspect-combatants-review.md)，本次实现、证据及未验证范围见[实施记录](../research/2026-11-03-combatants-implementation.md)。历史全部状态模板、第三方悬停、真正多人和任意动画组合的验证不能由本轮覆盖推断。
+源码核对与验证证据见[工具审阅](../research/2026-11-03-inspect-combatants-review.md)和[实施记录](../research/2026-11-03-combatants-implementation.md)，适用范围以各记录注明的基线与用例为准。全部状态模板、第三方悬停、多人模式及任意动画组合尚未穷举验证。
