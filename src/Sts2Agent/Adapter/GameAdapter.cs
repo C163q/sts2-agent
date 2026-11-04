@@ -32,7 +32,7 @@ internal sealed partial class GameAdapter(bool testMode)
 {
     private readonly GameObservation capture = new();
     private DeckInspection deckInspection => capture.Deck;
-    private readonly PileInspection pileInspection = new();
+    private PileInspection pileInspection => capture.Piles;
     private CombatObservation observation => capture.Combat;
     private RewardInspection rewardInspection => capture.Rewards;
     private ShopInspection shopInspection => capture.Shop;

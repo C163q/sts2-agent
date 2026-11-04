@@ -72,7 +72,9 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 已就绪且未被更高层覆盖的牌组页提供完整 `deck`、`view_upgrades` 和 `sort.by/descending`，分别对应 UI 的升级模式、主排序与方向。full/default/summary 的牌组卡牌采用 face_full／face_default／共用卡牌摘要，均无正文和悬停解释；ID 和显示顺序与 inspect_deck 相同，后者的 card_ids 不会限制基础观察。关闭或被覆盖后不附缓存内容，详细边界见[牌组接口](deck-inspection.md)。actions_only/top_bar 不增加牌组数据。
 
-地图及战斗牌堆覆盖（`screen.view:map/draw_pile/discard_pile/exhaust_pile`）的页面主体仍暂时沿用 default，待对应工具核验后补内容与摘要。所有浏览页均先处理共用顶栏摘要，保留被覆盖选择的元数据，不对下层战斗再次压缩；分工依据见[共用顶栏记录](../research/2026-11-02-shared-top-bar-summary.md)。
+已就绪且未被更高层覆盖的战斗牌堆页提供 pile、cards、message；full/default/summary 的卡牌分别采用 face_full／face_default／共用摘要，均无正文或悬停解释，底部固定 message 在 summary 省略。原生显示顺序及 ID 与 inspect_pile 一致，不继承 card_ids 筛选，不读取真实抽取顺序；关闭或覆盖后不附缓存，actions_only/top_bar 不增加这些字段。详见[牌堆接口](pile-inspection.md#已打开牌堆的基础观察)。
+
+地图覆盖（`screen.view:map`）的页面主体仍暂时沿用 default，待 inspect_map 核验后补内容与摘要。所有浏览页均先处理共用顶栏摘要，保留被覆盖选择的元数据，不对下层战斗再次压缩；分工依据见[共用顶栏记录](../research/2026-11-02-shared-top-bar-summary.md)。
 
 结算的 `run_result` 主体沿用 default，保留完整的当前页 texts、分数、徽章、发现、options 及空列表；已显示的 cards 复用卡牌摘要，保留字符串 card:N ID、名称、类型和费用等字段，省略正文、稀有度及卡池。需要正文或悬停说明时调用 inspect_run_result。full/default 的结算卡牌使用共用完整格式，包含逐牌悬停解释；结算页其他悬停帮助仍由专项详情提供。主菜单与 unrecognized 主体沿用 default；共用顶栏规则独立适用。约定及验证见[结算观察实施记录](../research/2026-11-03-result-observation-implementation.md)。
 

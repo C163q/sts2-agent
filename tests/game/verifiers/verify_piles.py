@@ -45,7 +45,7 @@ def main():
         elif summary["status"] == "empty":
             assert summary["cards"] == [] and summary["screen"] == {"status": "visible"}
         else:
-            assert summary["status"] == "unavailable" and summary["cards"] is None
+            assert summary["status"] == "unavailable" and "cards" not in summary
         (args.output_dir / (pile + "-summary.json")).write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n")
     assert call("get_state") == before, "Pile browsing changed gameplay."
     if args.exercise_cases:

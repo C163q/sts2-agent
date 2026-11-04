@@ -1,0 +1,6 @@
+[
+  {"name":"pile_draw","scenarios":{"play":"pommel_strike"},"steps":[{"name":"verify","verifier":"verify_pile_inspection.py","args":["--scenario","draw"]}]},
+  {"name":"pile_combat","scenarios":{"play":"blade_dance"},"steps":[{"name":"verify","verifier":"verify_pile_inspection.py","args":["--scenario","combat"]}]},
+  {"name":"pile_selection","scenarios":{"rest":"smith"},"steps":[{"name":"verify","verifier":"verify_pile_inspection.py","args":["--scenario","selection"]}]},
+  {"name":"pile_battlefield","scenarios":{"selection":"combat_pile"},"steps":[{"name":"verify","verifier":"verify_pile_inspection.py","args":["--scenario","battlefield"]}]}
+]

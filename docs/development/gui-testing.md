@@ -38,6 +38,7 @@
 | 战斗、顶栏、附魔与观察预设 | [observation_presets](../../tests/game/data/gui_suite_observation_presets.json) |
 | 完整候选、附魔、描边及各种选择摘要 | [selection_observations](../../tests/game/data/gui_suite_selection_observations.json) |
 | 地图／牌组／牌堆覆盖时的顶栏 | [top_bar_views](../../tests/game/data/gui_suite_top_bar_views.json) |
+| 牌堆筛选、静态观察、空堆反馈和拒绝续接 | [pile_inspection](../../tests/game/data/gui_suite_pile_inspection.json) |
 | 牌组筛选、静态观察、升级排序、最小关闭和拒绝续接 | [deck_inspection](../../tests/game/data/gui_suite_deck_inspection.json) |
 | 可浏览奖励、历史及原生滚动容器 | [browsable_content](../../tests/game/data/gui_suite_browsable_content.json) |
 

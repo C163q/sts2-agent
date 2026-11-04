@@ -56,18 +56,37 @@ internal sealed partial class GameAdapter
         return button.IsEnabled ? null : "The deck button is disabled.";
     }
 
-    private static bool CanInspectPiles()
+    private static bool CanInspectPiles() => PileUnavailableReason() == null;
+
+    private static string? PileUnavailableReason()
     {
+        if (LocalPlayer == null || !RunManager.Instance.IsInProgress)
+            return "No local run is available for combat pile browsing.";
+        if (!RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
+            return "Combat pile browsing requires a local single-player run.";
         bool cardOpen = CardView.Current != null;
-        if (LocalPlayer == null || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer
-            || CombatObservation.Status(allowCardView: cardOpen) != "visible" || !CanInspectViews(allowPause: cardOpen)) return false;
+        if (CombatObservation.Status(allowCardView: cardOpen) != "visible" || !CanInspectViews(allowPause: cardOpen))
+        {
+            if (CardSelection.Current is { Status: "visible" })
+                return "Return from the card selection before opening a combat pile.";
+            if (NRun.Instance?.GlobalUi.MapScreen.IsOpen == true)
+                return "Close the map before opening a combat pile.";
+            if (!CombatManager.Instance.IsInProgress)
+                return "Combat piles are available only during combat.";
+            if (RunUi.Transitioning()) return "Wait for the screen transition before opening a combat pile.";
+            return "Combat pile entries are covered or combat is not ready for browsing.";
+        }
+        // An exposed pile page remains readable when the pending choice hides its entry buttons.
+        if (CardView.Current is MegaCrit.Sts2.Core.Nodes.Screens.NCardPileScreen current && CardView.Ready(current))
+            return null;
         var ui = NCombatRoom.Instance!.Ui;
-        return new[] { "draw", "discard", "exhaust" }.Any(pile =>
+        bool available = new[] { "draw", "discard", "exhaust" }.Any(pile =>
         {
             var button = SelectionPileButton(new PileOptions(pile))
                 ?? (pile == "draw" ? ui.DrawPile : pile == "discard" ? ui.DiscardPile : ui.ExhaustPile);
             return VisibleUi.OnScreen(button) && (button.IsEnabled || cardOpen && CardView.CanClose(CardView.Current!));
         });
+        return available ? null : "No combat pile entry is visible and enabled for browsing.";
     }
 
     private List<string> AvailableTools(string scene, object? map,

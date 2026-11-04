@@ -1,0 +1,47 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "draw_pile"
+  },
+  "top_bar": {
+    "gold": 99,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1
+  },
+  "available_actions": [
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "close_card_view",
+    "inspect_map"
+  ],
+  "pile": "draw",
+  "cards": [
+    {
+      "id": "pile:0",
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1"
+    },
+    {
+      "id": "pile:1",
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1"
+    },
+    {
+      "id": "pile:2",
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1"
+    }
+  ]
+}

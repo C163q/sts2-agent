@@ -51,7 +51,7 @@ def assemble_details(details, *, operation=None):
         result["relics"], result["hover_tips"] = share_indexed_tips(result["relics"], "relic_indices")
     if "deck" in result and operation in (None, 'inspect_deck'):
         result["deck"], result["hover_tips"] = share_hand_tips(result["deck"])
-    if "pile" in result and result.get("cards") is not None:
+    if "pile" in result and result.get("cards") is not None and operation in (None, 'inspect_pile'):
         result["cards"], result["hover_tips"] = share_hand_tips(result["cards"])
     if operation == "inspect_selection":
         result["selection"]["cards"], result["hover_tips"] = share_hand_tips(result["selection"]["cards"])

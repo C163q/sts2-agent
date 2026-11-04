@@ -1,0 +1,137 @@
+{
+  "scene": "combat",
+  "map": null,
+  "screen": {
+    "status": "covered",
+    "view": "draw_pile"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null,
+        "grayed_out": false,
+        "pulsing": false
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": {
+    "type": "combat_pile",
+    "status": "covered",
+    "prompt": null,
+    "min_select": null,
+    "max_select": null,
+    "selected_ids": null,
+    "cards": null,
+    "options": [],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": null
+  },
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "close_card_view",
+    "inspect_map"
+  ],
+  "pile": "draw",
+  "cards": [
+    {
+      "id": "pile:0",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    },
+    {
+      "id": "pile:1",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    },
+    {
+      "id": "pile:2",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    },
+    {
+      "id": "pile:3",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    },
+    {
+      "id": "pile:4",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    }
+  ],
+  "message": "Cards are drawn from here at the start of each turn.\n(Cards shown are sorted by rarity)",
+  "notes": {
+    "selection": "Selection pending; close this view to return."
+  }
+}

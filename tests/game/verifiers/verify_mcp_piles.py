@@ -13,6 +13,7 @@ from mcp.client.stdio import stdio_client
 
 from sts2_mcp.roundtrip_client import Client, player_result
 from sts2_mcp.output.browse_output import browse_result
+from sts2_mcp.output.observation_presets import observation_preset
 
 
 async def verify(args):
@@ -33,7 +34,7 @@ async def verify(args):
                              "inspect_relics", "inspect_deck", "inspect_pile", "close_card_view", "inspect_map", "close_map", "end_turn"}, names
             tool = next(tool for tool in listed.tools if tool.name == "inspect_pile")
             assert tool.annotations.readOnlyHint is False and tool.annotations.destructiveHint is False
-            assert set(tool.inputSchema["properties"]) == {"preset", "pile"} and tool.inputSchema["required"] == ["pile"]
+            assert set(tool.inputSchema["properties"]) == {"preset", "pile", "card_ids"} and tool.inputSchema["required"] == ["pile"]
             evidence["tools"] = [tool.model_dump(exclude_none=True) for tool in listed.tools]
 
             async def call(name, arguments=None):
@@ -54,7 +55,7 @@ async def verify(args):
                     assert reference["ok"] and result == browse_result(reference, "inspect_pile", {"pile": pile}, level), (result, reference)
                     assert result["pile"] == pile and "detail_level" not in result
                     assert "snapshot_id" not in result and "available_actions" not in result and "notes" not in result
-                    if result["cards"] is not None:
+                    if result.get("cards") is not None:
                         ids = [card["id"] for card in result["cards"]]
                         assert len(ids) == len(set(ids)) and all(identifier.startswith("pile:") for identifier in ids)
                         if level == "full":
@@ -70,7 +71,7 @@ async def verify(args):
                 if result["status"] == "opened":
                     assert [card["id"] for card in samples[pile + "-summary"]["cards"]] == ids
                     assert await call("inspect_pile", {"pile": pile, "preset": "summary"}) == samples[pile + "-summary"]
-                    assert await call("close_card_view") == observed
+                    assert await call("close_card_view") == observation_preset(observed, 'actions_only')
                 assert await call("get_observation") == observed
             assert {tool.name for tool in (await session.list_tools()).tools} == names
     after = await asyncio.to_thread(client.call, "get_state")

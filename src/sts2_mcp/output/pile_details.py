@@ -1,26 +1,6 @@
 from sts2_mcp.output.scene_context import scene_context
 from sts2_mcp.output.deck_details import browsed_cards
-
-
-PILES = ("draw", "discard", "exhaust")
-PILE_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "pile": {"type": "string", "enum": list(PILES), "description": "The combat pile to inspect."},
-        "preset": {"type": "string", "enum": ["full", "summary"], "default": "full",
-                   "description": "full includes card effects and shared hover help; summary keeps the shared compact card fields."},
-    },
-    "required": ["pile"],
-    "additionalProperties": False,
-}
-
-
-def pile_arguments(arguments):
-    if (not isinstance(arguments, dict) or set(arguments) - set(PILE_SCHEMA["properties"])
-            or arguments.get("pile") not in PILES
-            or arguments.get("preset", "full") not in ("summary", "full")):
-        raise ValueError("Invalid pile arguments.")
-    return dict(arguments)
+from sts2_mcp.output.pile_presets import PILES
 
 
 def pile_details(state, pile):
@@ -50,3 +30,15 @@ def pile_details(state, pile):
             raise ValueError("Invalid empty pile.")
         result["cards"] = browsed_cards(state["cards"], "pile")
     return result
+
+
+def pile_observation(state):
+    values = ('pile', 'cards', 'message')
+    if not any(key in state for key in values):
+        return {}
+    if (not all(key in state for key in values) or state['pile'] not in PILES
+            or state['scene'] != 'combat' or not isinstance(state['message'], str)
+            or state['screen'] != {'status': 'covered', 'view': state['pile'] + '_pile'}):
+        raise ValueError('Invalid observed pile page.')
+    return {'pile': state['pile'], 'cards': browsed_cards(state['cards'], 'pile', full=False),
+            'message': state['message']}

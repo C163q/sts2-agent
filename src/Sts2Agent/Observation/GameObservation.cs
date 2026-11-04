@@ -56,6 +56,7 @@ internal sealed class GameObservation
     private readonly RunResultInspection runResultInspection = new();
     private readonly RewardInspection rewardInspection = new();
     public DeckInspection Deck { get; } = new();
+    public PileInspection Piles { get; } = new();
 
     public CombatObservation Combat => observation;
     public RewardInspection Rewards => rewardInspection;
@@ -136,7 +137,7 @@ internal sealed class GameObservation
             ? observation.Combatants(player) : null;
         JsonObject body = JsonSerializer.SerializeToNode(new
         {
-            schema_version = 39, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 40, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,
@@ -168,6 +169,15 @@ internal sealed class GameObservation
             body["deck"] = JsonSerializer.SerializeToNode(view.deck);
             body["view_upgrades"] = view.view_upgrades;
             body["sort"] = JsonSerializer.SerializeToNode(view.sort);
+        }
+        if (player != null && CardView.Current is MegaCrit.Sts2.Core.Nodes.Screens.NCardPileScreen pileScreen
+            && CardView.Ready(pileScreen) && PileInspection.InformationVisible(pileScreen))
+        {
+            var options = new PileOptions(pileScreen.Pile.Type.ToString().ToLowerInvariant());
+            var view = Piles.Read(pileScreen, options, full: false);
+            body["pile"] = view.pile;
+            body["cards"] = JsonSerializer.SerializeToNode(view.cards);
+            body["message"] = view.message;
         }
         return ObservationSnapshot.Create(body.ToJsonString(), DivinationInspection.Current != null, combat, player, selection?.Key);
     }

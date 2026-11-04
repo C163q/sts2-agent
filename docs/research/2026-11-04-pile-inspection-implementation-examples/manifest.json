@@ -1,0 +1,268 @@
+{
+  "base_commit": "f076c0c",
+  "working_tree_implementation": true,
+  "mod": "0.59.0",
+  "mcp": "0.61.0",
+  "schema": 40,
+  "mod_sha256": "09e9ea505f49b918b20ae3b558ea55628753a588d2097e8251d4116dc5ed7788",
+  "samples": [
+    {
+      "file": "observation.full.json",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_draw/verify/evidence.json",
+      "source_index": 3,
+      "purpose": "已打开抽牌页的基础观察：full",
+      "sha256": "e32f86dcc665ce862020f40dbe52512f81a1187cd18ca6e6e11ac7b8533c3b81"
+    },
+    {
+      "file": "inspect.full.json",
+      "tool": "inspect_pile",
+      "arguments": {
+        "pile": "draw",
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_draw/verify/evidence.json",
+      "source_index": 1,
+      "purpose": "抽牌详情：full",
+      "sha256": "1547a517b82e3d7cd99a306eea68afd74a640aab76b7c8a549ae2d849fcd0806"
+    },
+    {
+      "file": "filtered.full.json",
+      "tool": "inspect_pile",
+      "arguments": {
+        "pile": "draw",
+        "preset": "full",
+        "card_ids": [
+          "pile:2",
+          "pile:999999",
+          "pile:2"
+        ]
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_draw/verify/evidence.json",
+      "source_index": 9,
+      "purpose": "筛选、重复及缺失 ID：full",
+      "sha256": "070653becc6c9474fe2ff0160edb10a3ff76bee607f6eaef3ed1d5a41d63414c"
+    },
+    {
+      "file": "observation.default.json",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "default"
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_draw/verify/evidence.json",
+      "source_index": 4,
+      "purpose": "已打开抽牌页的基础观察：default",
+      "sha256": "942bd14e2d105fd8ab1d7782b4c6f1e2d7e969cabbfb86110d6f6817b439f186"
+    },
+    {
+      "file": "filtered.default.json",
+      "tool": "inspect_pile",
+      "arguments": {
+        "pile": "draw",
+        "preset": "default",
+        "card_ids": [
+          "pile:2",
+          "pile:999999",
+          "pile:2"
+        ]
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_draw/verify/evidence.json",
+      "source_index": 11,
+      "purpose": "筛选、重复及缺失 ID：default",
+      "sha256": "10f9665ce0541e27cf001439723f81e276aa24848f39ae298c33ece2e76a49fa"
+    },
+    {
+      "file": "observation.summary.json",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "summary"
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_draw/verify/evidence.json",
+      "source_index": 5,
+      "purpose": "已打开抽牌页的基础观察：summary",
+      "sha256": "96ee779f73a560454580ebc8771527bbe91079bf8f456bb954bfdd08d111c7fd"
+    },
+    {
+      "file": "filtered.summary.json",
+      "tool": "inspect_pile",
+      "arguments": {
+        "pile": "draw",
+        "preset": "summary",
+        "card_ids": [
+          "pile:2",
+          "pile:999999",
+          "pile:2"
+        ]
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_draw/verify/evidence.json",
+      "source_index": 13,
+      "purpose": "筛选、重复及缺失 ID：summary",
+      "sha256": "d24d1609fd15b7c673a05500f531126629e1f59837d97ebfe02edc9f717732ba"
+    },
+    {
+      "file": "empty-filter.summary.json",
+      "tool": "inspect_pile",
+      "arguments": {
+        "pile": "draw",
+        "preset": "summary",
+        "card_ids": []
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_draw/verify/evidence.json",
+      "source_index": 14,
+      "purpose": "只裁剪输出，页面仍为 opened",
+      "sha256": "876d70da5b31dead74c037cafa13a1fe4d9473913494914e67f0306b6bae18a3"
+    },
+    {
+      "file": "discard.full.json",
+      "tool": "inspect_pile",
+      "arguments": {
+        "pile": "discard",
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_combat/verify/evidence.json",
+      "source_index": 11,
+      "purpose": "非空discard：full",
+      "sha256": "63aa7d6fb6e88231356a8ba755a495bc58ad5f92232f9beeda23751f1a73145f"
+    },
+    {
+      "file": "discard.summary.json",
+      "tool": "inspect_pile",
+      "arguments": {
+        "pile": "discard",
+        "preset": "summary",
+        "card_ids": [
+          "pile:0",
+          "pile:999999",
+          "pile:0"
+        ]
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_combat/verify/evidence.json",
+      "source_index": 23,
+      "purpose": "非空discard：summary",
+      "sha256": "5b09d8c0a3da5615ad9c0ad885cd552fbc158b601e32b82047b9401c5e539ef1"
+    },
+    {
+      "file": "exhaust.full.json",
+      "tool": "inspect_pile",
+      "arguments": {
+        "pile": "exhaust",
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_combat/verify/evidence.json",
+      "source_index": 36,
+      "purpose": "非空exhaust：full",
+      "sha256": "f6b4e958997a1f2bb3912a278fede572e164f36c2d1d7b8d28f50619aaf94782"
+    },
+    {
+      "file": "exhaust.summary.json",
+      "tool": "inspect_pile",
+      "arguments": {
+        "pile": "exhaust",
+        "preset": "summary",
+        "card_ids": [
+          "pile:1",
+          "pile:999999",
+          "pile:1"
+        ]
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_combat/verify/evidence.json",
+      "source_index": 48,
+      "purpose": "非空exhaust：summary",
+      "sha256": "a016c02426e1b4a1b88e641493b1218b162c62d0d7f8b2422310a8c0595ea007"
+    },
+    {
+      "file": "empty-pile.summary.json",
+      "tool": "inspect_pile",
+      "arguments": {
+        "pile": "draw",
+        "preset": "summary",
+        "card_ids": [
+          "pile:999999"
+        ]
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_combat/verify/evidence.json",
+      "source_index": 2,
+      "purpose": "空堆保留原生反馈，并报告缺失 ID",
+      "sha256": "0a96aea5b20cf6366fb5e17083b324390be6ddd1dd26abdd12eb134489a5a3f9"
+    },
+    {
+      "file": "unavailable.summary.json",
+      "tool": "inspect_pile",
+      "arguments": {
+        "pile": "exhaust",
+        "preset": "summary",
+        "card_ids": [
+          "pile:999999"
+        ]
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_combat/verify/evidence.json",
+      "source_index": 6,
+      "purpose": "隐藏消耗入口：保留原因，不假报成员缺失",
+      "sha256": "91279aaff0b172527327416633d6a5d2e0a1e15b367d8b11c831d2c68106c1df"
+    },
+    {
+      "file": "closed.full.json",
+      "tool": "close_card_view",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_draw/verify/evidence.json",
+      "source_index": 24,
+      "purpose": "成功关闭返回 actions_only",
+      "sha256": "47c56f5ddeb7183dceb0ae52b16dee49c83b1e6872f85513c26713af52031d45"
+    },
+    {
+      "file": "selection-rejected.json",
+      "tool": "inspect_pile",
+      "arguments": {
+        "pile": "draw"
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_selection/verify/evidence.json",
+      "source_index": 3,
+      "purpose": "具体前置拒绝且保留旧许可",
+      "sha256": "0895ea248d0561c34aefc861e549fe7407b95f6ac9dea1cd0295f622e78d9b04"
+    },
+    {
+      "file": "selection-continued.full.json",
+      "tool": "selection_option",
+      "arguments": {
+        "option_id": "cancel"
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_selection/verify/evidence.json",
+      "source_index": 4,
+      "purpose": "无额外观察直接操作成功",
+      "sha256": "a0fa8afc7f0bbd52dab578013a99726ff82c0a080a726316c0e9bbe4f0744958"
+    },
+    {
+      "file": "battlefield-observation.full.json",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_battlefield/verify/evidence.json",
+      "source_index": 4,
+      "purpose": "待处理选择被牌堆覆盖，静态列表及选择上下文并存",
+      "sha256": "f6cd782e5e5ac1c07193959805908dacc781882dd7018cb8084dd05fe9d03672"
+    },
+    {
+      "file": "battlefield-repeat.full.json",
+      "tool": "inspect_pile",
+      "arguments": {
+        "pile": "draw",
+        "preset": "full",
+        "card_ids": [
+          "pile:4",
+          "pile:999999",
+          "pile:4"
+        ]
+      },
+      "source": ".tmp/2026-11-04-pile-implementation/gui-final/pile_battlefield/verify/evidence.json",
+      "source_index": 10,
+      "purpose": "下层按钮隐藏，当前页仍可重复查看",
+      "sha256": "1048cefca4e9def3a5c3d9211f8b1d3c69dbf543eadb95456357f1054b6cd1b6"
+    }
+  ]
+}

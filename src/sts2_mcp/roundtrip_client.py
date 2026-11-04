@@ -58,7 +58,7 @@ def main():
     parser.add_argument("--pile", choices=("draw", "discard", "exhaust"))
     parser.add_argument("--preset", choices=("default", "full", "summary"), help="牌组／牌堆默认 default；战斗对象／药水默认 full")
     parser.add_argument("--slot-indices", nargs="*", type=int, help="药水的原始槽位；省略取全部，空列表不取槽位")
-    parser.add_argument('--card-ids', nargs='*', help='牌组的 deck:N 实例 ID；省略取全部，空列表不取卡牌')
+    parser.add_argument('--card-ids', nargs='*', help='牌组 deck:N 或战斗牌堆 pile:N 实例 ID；省略取全部，空列表不取卡牌')
     parser.add_argument("--sources", nargs="*", help="战斗对象来源路径；省略取全部，空列表不取对象")
     parser.add_argument("--view-upgrades", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--sort-by", choices=("obtained", "type", "cost", "name"))
@@ -96,8 +96,8 @@ def main():
         if args.preset is not None and not (browsing or closing or combatants or potions):
             raise ValueError('--preset is supported for inspect_deck, inspect_pile, close_card_view, inspect_combatants and inspect_potions.')
         if args.card_ids is not None:
-            if args.operation != 'inspect_deck':
-                raise ValueError('--card-ids is supported for inspect_deck.')
+            if not browsing:
+                raise ValueError('--card-ids is supported for inspect_deck and inspect_pile.')
             arguments['card_ids'] = args.card_ids
         if args.sources is not None and not combatants:
             raise ValueError('--sources is supported for inspect_combatants.')

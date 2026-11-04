@@ -764,7 +764,7 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     self.assertFalse(pile_tool.annotations.destructiveHint)
                     self.assertFalse(pile_tool.annotations.idempotentHint)
                     self.assertEqual(pile_tool.inputSchema["required"], ["pile"])
-                    self.assertEqual(set(pile_tool.inputSchema["properties"]), {"preset", "pile"})
+                    self.assertEqual(set(pile_tool.inputSchema["properties"]), {"preset", "pile", "card_ids"})
                     close_tool = next(tool for tool in listed.tools if tool.name == "close_card_view")
                     self.assertFalse(close_tool.annotations.readOnlyHint)
                     self.assertEqual(set(close_tool.inputSchema["properties"]), {"preset"})

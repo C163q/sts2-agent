@@ -45,6 +45,8 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                 if case['tool'] == 'close_card_view' and 'error' not in want:
                     # The approved action contract replaces the frozen partial observation.
                     want = {key: want[key] for key in ('scene', 'screen', 'available_actions')}
+                if case['tool'] == 'inspect_pile' and case['arguments'].get('preset') == 'summary' and want.get('status') == 'opened':
+                    want.pop('message', None)
                 if 'unknown_field' in case['arguments']:
                     self.assertIn('unknown_field', result['error']['message'])
                     want['error']['message'] = result['error']['message']
@@ -97,6 +99,8 @@ class FileContractTests(unittest.TestCase):
                 want = copy.deepcopy(expected[case['expected_ref']])
                 if case['tool'] == 'close_card_view':
                     want = {key: want[key] for key in ('scene', 'screen', 'available_actions')}
+                if case['tool'] == 'inspect_pile' and '--preset' in case['argv'] and 'summary' in case['argv'] and want.get('status') == 'opened':
+                    want.pop('message', None)
                 self.assertEqual(json.loads(output.getvalue()), want)
                 self.assertEqual(call.call_args.kwargs.get('arguments'), case['native_arguments'])
                 self.assertEqual(raw, original)

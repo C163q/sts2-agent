@@ -1,0 +1,38 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "draw_pile"
+  },
+  "pile": "draw",
+  "status": "opened",
+  "message": "Cards are drawn from here at the start of each turn.\n(Cards shown are sorted by rarity)",
+  "cards": [
+    {
+      "id": "pile:2",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "description": "Gain 5 Block."
+    }
+  ],
+  "hover_tips": [
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        "pile:2"
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": "cards_not_in_pile",
+      "card_ids": [
+        "pile:999999"
+      ]
+    }
+  ]
+}

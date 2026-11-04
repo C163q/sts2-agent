@@ -29,7 +29,7 @@
 | 手中卡牌 | [手牌详情](development/hand-inspection.md)显式提供正文及共享悬停解释，沿用基础观察的稳定 ID |
 | 界面与战斗对象 | [界面帮助](development/ui-inspection.md)、[生物、充能球与悬浮剑](development/combatant-inspection.md)仅提供当前可见且原生可悬停对象的说明；不读后续招式 |
 | 药水与遗物 | [药水详情](development/potion-inspection.md)保留槽位，full/default 固定提供一份通用槽位帮助；[遗物详情](development/relic-inspection.md)不附送风味文本或隐藏计数 |
-| 牌组与牌堆 | [牌组](development/deck-inspection.md)、[战斗牌堆](development/pile-inspection.md)真实打开原生页面；已打开牌组的基础观察仅给静态牌面，正文与解释由专用工具提供；抽牌堆只返回原生展示顺序，空堆保留真实反馈 |
+| 牌组与牌堆 | [牌组](development/deck-inspection.md)、[战斗牌堆](development/pile-inspection.md)真实打开原生页面；已打开牌组／牌堆的基础观察仅给静态牌面，正文与解释由专用工具提供；抽牌堆只返回原生展示顺序，空堆保留真实反馈 |
 | 地图 | [地图查看](development/map-inspection.md)只读当前幕；已走路线和当前候选与绘制连线分别表达，不提前揭晓问号或其他幕 |
 | 卡牌选择 | [选牌](development/card-selection.md)保留当前模式及实际展开的比较；眼睛与覆盖页隐藏候选，不自动切换视图，随机轮换预览不当作确定结果 |
 | 奖励、休息处与宝箱 | [奖励](development/rewards.md)、[休息处](development/rest-site.md)、[宝箱](development/treasure.md)只提供当前已展示内容；未打开奖励候选、未开箱宝藏及挖掘结果不提前公开 |

@@ -13,7 +13,7 @@ from sts2_mcp.output.combatant_presets import COMBATANT_SCHEMA
 from sts2_mcp.output.run_ending_details import OPTION_SCHEMA as RESULT_OPTION_SCHEMA
 from sts2_mcp.output.map_details import MAP_SCHEMA, TRAVEL_SCHEMA
 from sts2_mcp.output.deck_presets import DECK_SCHEMA
-from sts2_mcp.output.pile_details import PILE_SCHEMA
+from sts2_mcp.output.pile_presets import PILE_SCHEMA
 from sts2_mcp.output.selection_details import CARD_SCHEMA, OPTION_SCHEMA, VIEW_SCHEMA
 from sts2_mcp.output.card_play_details import PLAY_SCHEMA, TARGET_SCHEMA
 from sts2_mcp.output.potion_action_details import POTION_SCHEMA, USE_SCHEMA
@@ -557,7 +557,8 @@ SPECS = (
         schema=PILE_SCHEMA,
         description="Open/reuse a combat draw, discard or exhaust page, replacing another card page. "
             "Returns the entire pile in display order, never draw order. "
-            "Leaves an opened page until close_card_view. Empty piles return cards=[]; unavailable entries return cards=null.",
+            "card_ids filters returned details only. Leaves opened pages until close_card_view; "
+            "status distinguishes opened, empty and unavailable entries.",
         annotations=view,
         category='view',
         effect='view',
@@ -565,10 +566,12 @@ SPECS = (
         returns_transition=False,
         records_events=False,
         reader='pile_details:pile_details',
-        parser='pile_details:pile_arguments',
+        parser='pile_presets:pile_arguments',
         parser_operation=False,
-        projector='card_format:browse_preset',
-        reader_argument='pile'),
+        projector='pile_presets:pile_preset',
+        native_keys=('pile',),
+        reader_argument='pile',
+        unchanged_view_rejections=True),
     ToolSpec(
         name='close_card_view',
         schema=NO_ARGUMENTS,

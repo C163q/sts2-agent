@@ -120,11 +120,12 @@ internal sealed partial class GameAdapter
 
     private async Task<string> InspectPile(Request request, PileOptions options)
     {
+        bool interacted = false;
+        string Reject(string message) => ResponseBuilder.Error(request.Id, "illegal_action", message,
+            publicMessage: true, uiUnchanged: !interacted);
         var player = LocalPlayer;
         var combat = CombatManager.Instance.DebugOnlyGetState();
-        bool cardOpen = CardView.Current != null;
-        if (!CanInspectPiles())
-            return FileMailbox.Error(request.Id, "illegal_action", "Pile viewing is unavailable in the current screen.");
+        if (PileUnavailableReason() is { } reason) return Reject(reason);
         var screen = PileInspection.Current(options);
         if (screen == null)
         {
@@ -134,14 +135,15 @@ internal sealed partial class GameAdapter
             if (VisibleUi.OnScreen(button) && CardView.Current is { } previous)
             {
                 if (!CardView.CanClose(previous))
-                    return FileMailbox.Error(request.Id, "illegal_action", "The current card page cannot be replaced.");
+                    return Reject("Close the current card page before opening another combat pile; its return button is unavailable.");
                 // Native screen context disables combat pile buttons while any card page is open.
+                interacted = true;
                 UiChanged();
                 CardView.Close(previous);
                 await ObservationFrame();
                 if (CombatObservation.Status() != "visible" || !CanInspectViews() || !ReferenceEquals(player, LocalPlayer)
                     || !ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState()))
-                    return FileMailbox.Error(request.Id, "illegal_action", "The screen changed while switching piles.");
+                    return Reject("The screen changed while switching combat piles. Read the current screen before continuing.");
             }
             if (!VisibleUi.OnScreen(button) || !button.IsEnabled)
             {
@@ -154,7 +156,8 @@ internal sealed partial class GameAdapter
             }
             var emptyTip = PileInspection.EmptyTip(button);
             if (VisibleUi.Number(button, "CountContainer/Count") == 0 && emptyTip == null)
-                return FileMailbox.Error(request.Id, "illegal_action", "The empty pile has no native inspection feedback.");
+                return Reject("This empty pile entry has no native inspection feedback and cannot be opened.");
+            interacted = true;
             UiChanged();
             button.ForceClick();
             screen = PileInspection.Current(options);
@@ -163,7 +166,7 @@ internal sealed partial class GameAdapter
                 await ObservationFrame();
                 if (!ReferenceEquals(player, LocalPlayer) || !ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState())
                     || CombatObservation.Status() != "visible" || VisibleUi.Number(button, "CountContainer/Count") != 0 || emptyTip == null)
-                    return FileMailbox.Error(request.Id, "illegal_action", "The pile screen did not open or the screen changed.");
+                    return Reject("The combat pile page did not open or the screen changed. Read the current screen before continuing.");
                 using var snapshot = JsonDocument.Parse(Observe());
                 return InspectionSuccess(request, snapshot.RootElement, PileInspection.Result(options, "empty",
                     snapshot.RootElement.GetProperty("snapshot_id").GetString()!,
@@ -175,7 +178,9 @@ internal sealed partial class GameAdapter
         if (!ReferenceEquals(PileInspection.Current(options), screen) || !ReferenceEquals(player, LocalPlayer)
             || !ReferenceEquals(combat, CombatManager.Instance.DebugOnlyGetState())
             || CombatObservation.Status(allowCardView: true) != "visible" || !CanInspectViews(allowPause: true))
-            return FileMailbox.Error(request.Id, "illegal_action", "The pile screen changed while reading.");
+            return Reject("The combat pile page changed while reading. Read the current screen before continuing.");
+        if (!PileInspection.InformationVisible(screen))
+            return Reject("The combat pile page information is hidden or not ready.");
         using var observed = JsonDocument.Parse(Observe());
         var inspection = pileInspection.Read(screen, options, observed.RootElement.GetProperty("snapshot_id").GetString()!);
         return InspectionSuccess(request, observed.RootElement, inspection);

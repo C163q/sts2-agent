@@ -94,8 +94,11 @@ def observation_summary(payload):
 
 
 def browsing_summary(payload):
+    from sts2_mcp.output.card_format import card_summary
     if payload['screen'].get('view') == 'deck' and payload.get('deck') is not None:
-        from sts2_mcp.output.card_format import card_summary
         payload['deck'] = [card_summary(card) for card in payload['deck']]
-    # Map and combat pile content retain their pending review projection.
+    if payload['screen'].get('view') in {'draw_pile', 'discard_pile', 'exhaust_pile'} and payload.get('cards') is not None:
+        payload['cards'] = [card_summary(card) for card in payload['cards']]
+        payload.pop('message', None)
+    # Map content retains its pending review projection.
     return payload

@@ -17,6 +17,8 @@ def observation_details(state):
     result.update(scene_context(state))
     from sts2_mcp.output.deck_details import deck_observation
     result.update(deck_observation(state))
+    from sts2_mcp.output.pile_details import pile_observation
+    result.update(pile_observation(state))
     result['available_actions'] = public_tools(result['available_actions'])
     count = (result.get('top_bar') or {}).get('relic_count')
     if count is not None and count < 0:
@@ -97,4 +99,4 @@ def observation_details(state):
           or result['screen'] == {'status': 'visible', 'view': 'confirmation'}):
         raise ValueError('Missing event confirmation.')
     from sts2_mcp.output.run_ending_details import validate_ending
-    return format_game_cards(validate_ending(result), shop_mode="face_full", deck_mode='face_full')
+    return format_game_cards(validate_ending(result), shop_mode="face_full", deck_mode='face_full', pile_mode='face_full')

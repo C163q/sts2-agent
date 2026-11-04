@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 43 项，已核销 7 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck。[inspect_pile](2026-11-04-inspect-pile-review.md)场景核验完成，进入设计讨论；五项问题及筛选／基础观察接入尚未定稿。get_observation 的地图及牌堆浏览覆盖仍待对应工具，整体未核销；其余 34 项尚待逐项核验。其他工具的完整错误审阅继续留在用户 TODO。暂无阻塞。
+> 当前状态：工具核验进行中，共 43 项，已核销 8 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile。[牌堆筛选、基础观察及拒绝恢复](2026-11-04-pile-inspection-implementation.md)已实现；最终专项验证及审查结果见该记录。get_observation 仅剩地图浏览覆盖待 inspect_map，整体未核销；其余 34 项尚待逐项核验。其他工具的完整错误审阅继续留在用户 TODO。暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -31,7 +31,7 @@
 
 ### 基础观察与战斗详情（7 项）
 
-- [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：[07–09 组奖励、火堆与宝箱](2026-11-02-get-observation-rooms.md)现状核验和 summary 已交付，[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)现状核验及 summary 已交付，[13–15 组](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状及完整 full 已交付，summary 已交付；[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)的初次摘要占位已交付，[牌组内容与摘要](2026-11-04-deck-inspection-implementation.md)已实现，地图和战斗牌堆仍待核验；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
+- [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：[07–09 组奖励、火堆与宝箱](2026-11-02-get-observation-rooms.md)现状核验和 summary 已交付，[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)现状核验及 summary 已交付，[13–15 组](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状及完整 full 已交付，summary 已交付；[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)的初次摘要占位已交付，[牌组内容与摘要](2026-11-04-deck-inspection-implementation.md)已实现，[牌堆内容与摘要](2026-11-04-pile-inspection-implementation.md)已实现，地图仍待核验；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
 - [x] `inspect_ui`：可见顶栏、战斗 UI、资源及空充能球槽帮助。阶段：[修复与核验完成](2026-11-03-inspect-ui-review.md)，[统一上下文、summary、sources 筛选及验证](2026-11-03-ui-context-implementation.md)已交付；部分条件变体保留源码／历史核对边界。
 - [x] `inspect_hand`：手牌详情。阶段：[核验及定稿](2026-11-03-inspect-hand-review.md)、[覆盖清单](2026-11-03-card-format-coverage.md)和[实现／验证](2026-11-03-card-format-implementation.md)已完成；新增可见 Affliction、统一附魔空值、资源计数及共用卡牌格式。
 - [x] `inspect_targets`：指定手牌或药水的可用性与目标范围。阶段：[核验及输出定稿](2026-11-03-inspect-targets-review.md)、[错误修复与验证](2026-11-03-inspection-error-recovery.md)完成；维持 default/full，不新增 summary，不改原生指示范围。AnyPlayer／AllAllies／Osty 卡牌分支保留源码核对边界，未新增实际调用样本。
@@ -42,7 +42,7 @@
 ### 卡牌浏览（3 项）
 
 - [x] `inspect_deck`：打开并查看牌组。[定稿](2026-11-04-inspect-deck-review.md#输出定稿)及[实现／游戏验证](2026-11-04-deck-inspection-implementation.md)已完成，615 项 Python、91 项 C#、六局 GUI 及独立审查通过；包含 card_ids、明确拒绝恢复、最小关闭以及基础观察的静态牌面和当前排序／升级设置。
-- [ ] `inspect_pile`：打开并查看抽牌堆、弃牌堆或消耗堆。阶段：[场景核验完成，设计讨论中](2026-11-04-inspect-pile-review.md)，31 份完整示例、27 项 Python、四局 GUI／54 次 stdio 调用及 30 项原生检查已记录；错误原因／恢复、基础观察缺口、旧验证断言与提示词共五项待处理。card_ids 及 face_full／face_default／summary 的基础观察接入为候选，尚未定稿。
+- [x] `inspect_pile`：打开并查看抽牌堆、弃牌堆或消耗堆。[核验及定稿](2026-11-04-inspect-pile-review.md)、[实现与验证](2026-11-04-pile-inspection-implementation.md)：具体拒绝／显式未交互恢复、card_ids、基础观察的静态卡牌、固定帮助精简、旧专项修复，以及选牌战场视图的当前页复用。
 - [ ] `close_card_view`：关闭牌组或牌堆浏览界面。成功输出已随[牌组定稿](2026-11-04-inspect-deck-review.md#输出定稿)改为 actions_only 并验证；其余错误与生命周期仍待单独审阅。
 
 ### 战斗与药水操作（4 项）

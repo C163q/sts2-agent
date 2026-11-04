@@ -1,0 +1,25 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "exhaust_pile"
+  },
+  "pile": "exhaust",
+  "status": "opened",
+  "cards": [
+    {
+      "id": "pile:1",
+      "name": "Blade Dance",
+      "type": "Skill",
+      "energy_cost": "1"
+    }
+  ],
+  "errors": [
+    {
+      "code": "cards_not_in_pile",
+      "card_ids": [
+        "pile:999999"
+      ]
+    }
+  ]
+}

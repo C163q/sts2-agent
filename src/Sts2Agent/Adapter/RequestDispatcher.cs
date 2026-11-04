@@ -110,7 +110,8 @@ internal sealed partial class GameAdapter
             try { options = PileOptions.Parse(request.Arguments); }
             catch (Exception error) when (error is JsonException or InvalidOperationException)
             {
-                return FileMailbox.Error(request.Id, "invalid_request", "Invalid pile options.");
+                return ResponseBuilder.Error(request.Id, "invalid_request", "Invalid combat pile options: specify pile as draw, discard or exhaust.",
+                    publicMessage: true, uiUnchanged: true);
             }
             return await InspectPile(request, options);
         }

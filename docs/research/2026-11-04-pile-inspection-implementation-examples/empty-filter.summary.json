@@ -1,0 +1,10 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "draw_pile"
+  },
+  "pile": "draw",
+  "status": "opened",
+  "cards": []
+}

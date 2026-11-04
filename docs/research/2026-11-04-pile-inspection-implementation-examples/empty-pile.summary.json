@@ -1,0 +1,18 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "pile": "draw",
+  "status": "empty",
+  "message": "My Draw Pile is empty.",
+  "cards": [],
+  "errors": [
+    {
+      "code": "cards_not_in_pile",
+      "card_ids": [
+        "pile:999999"
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # inspect_pile 场景与参数核验
 
-> 当前状态：场景核验完成，进入设计讨论；27 项 Python 检查、四局 GUI／54 次 stdio 调用和 30 项原生检查完成，已导出 31 份完整示例。五项问题及候选参数／基础观察接入尚未定稿，未修改工具行为。inspect_pile 未核销，暂无阻塞。
+> 当前状态：定稿已实施，验证及独立审查完成，inspect_pile 已核销。完整[实施记录](2026-11-04-pile-inspection-implementation.md)包含六项正确性问题处理、筛选、静态基础观察及固定帮助规则；下述 31 份旧示例保留审阅基线。现行契约见[牌堆指南](../development/pile-inspection.md)，暂无阻塞。
 
 ## 优先关注的问题
 
@@ -12,7 +12,7 @@
 | PILE-04 | 中；验证设施 | verify_mcp_piles 仍断言 close_card_view 返回完整 observed，但该工具已按定稿返回 actions_only，正确返回也会使旧脚本失败 | [旧断言](../../tests/game/verifiers/verify_mcp_piles.py)。应同步到共用 actions_only 投影，并继续验证关闭后的页面与合法行动；不能据此恢复旧生产输出 |
 | PILE-05 | 低；工具提示词 | 工具正文承诺不可用入口返回 cards:null，但默认 default 会省略 cards，summary 也一样；提示与最常用返回不一致 | 真实 hidden-exhaust 三预设样本及公共空值规则确认。建议正文改为说明 status:empty／unavailable，null 细节放到 full 契约，不改变已有默认空值规则 |
 
-五项均尚未修复；不把参数设计或修改文档算作问题解决。没有发现新的卡牌离屏截断：读取来自完整原生网格列表。附魔与 Affliction 已由共用 BrowsedCard／CardAppearance 接入，不再重复登记历史缺口。
+下列场景与返回保留审阅基线；修复状态和新增同页复用问题集中见[实施记录](2026-11-04-pile-inspection-implementation.md)，不以历史样本判断当前行为。没有发现新的卡牌离屏截断：读取来自完整原生网格列表。附魔与 Affliction 已由共用 BrowsedCard／CardAppearance 接入，不再重复登记历史缺口。
 
 ## 核对基线与来源
 
@@ -24,7 +24,7 @@
 - 从上述目标程序集重新反编译 NCardPileScreen、NCombatCardPile、NDrawPileButton、NDiscardPileButton、NExhaustPileButton，证据位于 `.tmp/2026-11-04-inspect-pile-review/source/`，不纳入 Git。重点核对 OnPileContentsChanged、OnRelease、空堆气泡、消耗入口展示及原生页面控件。
 - 当前接口唯一说明见[战斗牌堆指南](../development/pile-inspection.md)。下述为核验基线的实际行为与候选设计，不能替代现行接口。
 
-## 当前参数与职责
+## 核验基线参数与职责
 
 ```json
 {"pile":"draw","preset":"full"}
@@ -35,7 +35,7 @@
 | pile | 必填；draw／discard／exhaust，仅战斗牌堆 |
 | preset | default／full／summary，省略为 default；每次只影响输出，不改变页面状态 |
 
-目前没有 card_ids，传入会在 IPC 前以 invalid_request 拒绝。旧 detail_level、sort_by、descending、view_upgrades 也都拒绝。牌堆 ID 是 `pile:N` 字符串，不能套用 inspect_hand 的整数或 inspect_deck 的 `deck:N`。
+核验基线没有 card_ids，传入会在 IPC 前以 invalid_request 拒绝。旧 detail_level、sort_by、descending、view_upgrades 也都拒绝。牌堆 ID 是 `pile:N` 字符串，不能套用 inspect_hand 的整数或 inspect_deck 的 `deck:N`。
 
 调用真实打开／复用原生页面，属于 view，不要求预先观察；成功结果会刷新许可。成功查看不表示能穿透覆盖页出牌：非空页面保持打开，须先 close_card_view；空堆点击显示原生气泡，页面不打开。整体门控允许浏览时，隐藏／禁用的目标入口是成功的 unavailable 结果，不读取内部牌堆补齐内容；所有入口都不可用时整体拒绝，而非返回 unavailable。
 
@@ -43,7 +43,7 @@
 
 原生 NCardPileScreen 没有牌组页的升级预览或四类排序控件。抽牌堆按稀有度及模型条目名重排，绝不返回真实抽取顺序；弃牌及消耗堆沿用各自原生浏览列表顺序。不要为接口一致而给牌堆增加 UI 中不存在的排序或升级模式。
 
-当前提示词：
+核验基线提示词：
 
 ```text
 Open/reuse a combat draw, discard or exhaust page, replacing another card page. Returns the entire pile in display order, never draw order. Leaves an opened page until close_card_view. Empty piles return cards=[]; unavailable entries return cards=null.
@@ -51,7 +51,7 @@ Open/reuse a combat draw, discard or exhaust page, replacing another card page. 
 
 职责基本准确，但 cards:null 只适用于 full；default／summary 会省略普通 null。后续应将末句改成描述 status:empty／unavailable，避免与默认输出矛盾。card_ids 若采用，只在参数说明及一句简短的输出筛选提示中表达。
 
-## 当前返回与信息边界
+## 核验基线返回与信息边界
 
 | 字段 | full | default | summary |
 | --- | --- | --- | --- |
@@ -95,17 +95,15 @@ pile ID 在本场战斗的牌堆实例间稳定，换战斗清空；分配来源
 
 场景 3 的禁用入口、场景 5 的待处理选择、特殊卡面和异常可见空消耗入口仍须区分源码核对与真实样本，不能把其存在推演成已自然实测。
 
-## 候选设计，尚未定稿
+## 输出定稿
 
-建议保持已实现三种状态和 summary 卡牌格式，先处理 PILE-01–05，再补以下范围：
-
-- **card_ids**：沿用牌组规则，取当前目标页的 `pile:N`；省略／null 全部、[] 为空，去重后按原生列表顺序返回，关联解释一起裁剪。合法但不在目标堆的 ID 合并为 errors，例如 cards_not_in_pile；一个 ID 在另一堆存在也不能穿透读取。筛选不能用于出牌，也不改变 UI 或后续基础观察。
-- **空／不可用组合**：建议保留 pile／status／message／reason。成功空堆的已知集合为 []，筛选非空 ID 时可明确报不在该堆；不可用入口的集合未知，不能把请求 ID 全部伪报不存在。建议 unavailable 不执行成员判断、不生成假卡或 not_found 错误，先以 status／reason 表达当前不可检查。非法 ID 语法仍在操作前拒绝。
-- **基础观察**：只读当前暴露且就绪的牌堆页，full/default/summary 分别走 face_full／face_default／共用 summary，无正文或悬停解释；复用同一 PileInspection 身份表、完整网格顺序及 pile 标识，不包含不存在的升级／排序控件。关闭／遮挡后不附缓存，不继承 inspect_pile 的输出筛选；actions_only／top_bar 维持原契约。
-- **字段组织**：优先复用专门工具的 pile＋cards，页面状态仍由 screen 表达；是否把原生帮助 message 放入基础观察及是否从专门工具 summary 省略，留待讨论。直接嵌入专门工具完整对象会重复 scene／screen／status，也会夹带悬停正文，不推荐。
-- **小范围重构**：让快照与专门查看共用牌堆读取／身份表，增加明确的静态／完整读取参数；滤选和预设投影留在 Python。前置原因与 available_actions 复用同一门控入口；未交互保证沿用已落地的牌组机制，不把整个 inspect_pile 改成 read。
-
-不建议将 ID 筛选写成新的游戏页面操作，或仅因 status 为 illegal_action 就保留许可；切换牌堆可能已经关闭旧页或点击目标。
+- 保留 pile、default/full/summary 及 opened／empty／unavailable；先处理 PILE-01–05，再补筛选和基础观察。游戏验证发现的同页复用缺口 PILE-06 同步修复，依据见[实施记录](2026-11-04-pile-inspection-implementation.md)。
+- card_ids 使用目标堆的严格 `pile:N` 字符串；省略／null 全部、[] 为空、去重后按原生顺序返回。缺失 ID 合并为 `errors:[{code:"cards_not_in_pile",card_ids:[...]}]`，有效项保留；解释同步筛选，引用不重编号。先完整校验，再裁剪输出；不改变页面或后续观察。
+- empty 是已知空集合，指定 ID 可以明确报不在该堆；unavailable 的成员未知，不检查成员、不附缺失错误。非法 ID 语法／类型仍在操作前拒绝。
+- 基础观察仅只读已暴露、就绪的原生牌堆页，顶层采用 pile／cards／message；full/default/summary 卡牌分别使用 face_full／face_default／共用摘要，无正文和悬停解释。与专用工具共用读取／身份表和完整原生显示顺序；不输出真实抽取顺序、不附升级／排序控件、不继承前次筛选，关闭／遮挡后不附缓存，actions_only/top_bar 不增加牌堆内容。
+- 两入口的页面底部固定 message 在 full/default 保留、summary 省略；专门工具 empty／unavailable 的气泡／原因在 summary 仍保留。其余 summary 卡牌字段保持共用格式。
+- 具体原因与 available_actions 走同一门控；显式未交互保证沿用牌组机制，关闭旧页或点击目标后不能保留旧许可。未知结果、格式异常、过期及无旧许可均不能据此授权。
+- 参数／筛选与响应校验分开，快照与专门工具共用原生读取器，静态／完整内容由参数选择，不将 inspect_pile 改成 read，不进行无关架构调整。版本、实际结果及未覆盖范围见实施记录，旧 31 份样本保留审阅基线。
 
 ## 验证记录
 
