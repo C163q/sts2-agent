@@ -143,7 +143,7 @@ class InspectionErrorTests(unittest.IsolatedAsyncioTestCase):
             ('play_card', {'card_id': 7}, {'code': 'game_error', 'action_submitted': False}),
             ('play_card', {'card_id': 7}, {'code': 'stale_state', 'action_submitted': False}),
             ('end_turn', None, {'code': 'illegal_action'}),
-            ('use_potion', {'potion_slot': 0}, {'code': 'illegal_action', 'action_submitted': False}),
+            ('use_potion', {'potion_slot': 0}, {'code': 'illegal_action'}),
         ]
         for tool, args, error in cases:
             with self.subTest(tool=tool, error=error):

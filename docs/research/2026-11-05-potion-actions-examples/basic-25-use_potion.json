@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This potion does not require target_id; omit it.",
+    "recovery": "choose_legal_action"
+  }
+}

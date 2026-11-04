@@ -65,7 +65,7 @@ async def verify(args):
                 assert "available_actions" not in sample and "notes" not in sample and "snapshot_id" not in sample
                 assert await call("inspect_map") == sample
                 covered = await call("get_observation")
-                assert covered["screen"] == {"status": "visible", "view": "map"} and "close_map" in covered["available_actions"] and not set(covered["available_actions"]) & GAME_ACTIONS
+                assert covered["screen"] == {"status": "covered", "view": "map"} and "close_map" in covered["available_actions"] and not set(covered["available_actions"]) & GAME_ACTIONS
                 assert covered['map']['selectable_nodes'] == sample['selectable_nodes']
                 await call("close_map", {"force": True}, error="invalid_request")
                 assert await call("get_observation") == covered

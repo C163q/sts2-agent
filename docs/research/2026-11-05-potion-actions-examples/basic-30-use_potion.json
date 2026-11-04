@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This potion is used automatically.",
+    "recovery": "choose_legal_action"
+  }
+}

@@ -28,7 +28,7 @@ internal static class ObservationContext
         if (scene == "event") status = EventInspection.Exposed(EventInspection.Current!) ? "visible" : "covered";
         if (DivinationInspection.Current is { } board && DivinationInspection.Exposed(board)) status = "visible";
         if (EventConfirmation.Current is { } dialog && EventConfirmation.Exposed(dialog)) status = "visible";
-        if (map != null) status = "visible";
+        if (map != null) status = "covered";
         if (epilogue != null && map == null) status = EpilogueInspection.Exposed(epilogue) ? "visible" : "covered";
         if (ending != null) status = RunResultInspection.Exposed(ending) ? "visible" : "covered";
         return status;

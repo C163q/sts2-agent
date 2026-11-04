@@ -20,35 +20,49 @@ internal static class PotionInspection
     internal sealed record PotionText(string? name, string? description, HoverTipText[] hover_tips) : StaticText(name);
     internal sealed record Result(HoverTipText? slot_tip, PotionText?[] potion_slots, string[] unavailable_hover_sources);
 
-    public static NPotionHolder[]? VisibleHolders() => RunUi.TopBarReadable()
-        ? DisplayedHolders(NRun.Instance!.GlobalUi.TopBar.PotionContainer) : null;
+    internal static NPotionHolder[]? ExposedHolders() => RunUi.TopBarReadable()
+        ? ExposedHolders(NRun.Instance!.GlobalUi.TopBar.PotionContainer) : null;
+
+    private static NPotionHolder[]? ExposedHolders(NPotionContainer container)
+    {
+        var layout = container.GetNodeOrNull<Control>("MarginContainer/PotionHolders");
+        return VisibleUi.Displayed(container) && VisibleUi.Displayed(layout)
+            ? layout!.GetChildren().OfType<NPotionHolder>().ToArray() : null;
+    }
+
+    public static NPotionHolder[]? VisibleHolders()
+    {
+        var holders = ExposedHolders();
+        return holders != null && holders.All(Displayed) ? holders : null;
+    }
+
+    internal static NPotionHolder? ExposedAt(int slot)
+    {
+        var holders = ExposedHolders();
+        return holders != null && slot >= 0 && slot < holders.Length && VisibleUi.Displayed(holders[slot])
+            ? holders[slot] : null;
+    }
+
+    internal static NPotionHolder? DisplayedAt(int slot)
+    {
+        var holder = ExposedAt(slot);
+        return holder != null && Displayed(holder) ? holder : null;
+    }
 
     internal static bool Hoverable(NPotionHolder holder) => HoverAccess.CanFocus(holder);
-
-    internal static NPotionHolder[]? OnScreenHolders()
-    {
-        var holders = VisibleHolders();
-        return holders == null || holders.Any(holder => !VisibleUi.OnScreen(holder) || !holder.IsEnabled
-            || !VisibleUi.OnScreen(Icon(holder))) ? null : holders;
-    }
-
-    internal static NPotionHolder[]? InteractiveHolders()
-    {
-        var holders = OnScreenHolders();
-        return holders == null || holders.Any(holder => !Hoverable(holder)) ? null : holders;
-    }
+    internal static bool Interactive(NPotionHolder holder) => Displayed(holder) && holder.IsEnabled && Hoverable(holder);
 
     private static TextureRect? Icon(NPotionHolder holder) => holder.HasPotion
         ? holder.Potion!.GetNodeOrNull<TextureRect>("%Image") : holder.GetNodeOrNull<TextureRect>("%EmptyIcon");
 
+    internal static bool Displayed(NPotionHolder holder) => VisibleUi.Displayed(holder)
+        && Icon(holder) is { } icon && VisibleUi.Displayed(icon) && icon.Texture != null
+        && Mathf.Abs(icon.GetGlobalTransformWithCanvas().Determinant()) > 0.000001f;
+
     internal static NPotionHolder[]? DisplayedHolders(NPotionContainer container)
     {
-        var layout = container.GetNodeOrNull<Control>("MarginContainer/PotionHolders");
-        if (!VisibleUi.Displayed(container) || !VisibleUi.Displayed(layout)) return null;
-        var holders = layout!.GetChildren().OfType<NPotionHolder>().ToArray();
-        return holders.Any(holder => !VisibleUi.Displayed(holder) || Icon(holder) is not { } icon
-            || !VisibleUi.Displayed(icon) || icon.Texture == null
-            || Mathf.Abs(icon.GetGlobalTransformWithCanvas().Determinant()) <= 0.000001f) ? null : holders;
+        var holders = ExposedHolders(container);
+        return holders != null && holders.All(Displayed) ? holders : null;
     }
 
     internal static string? UnavailableReason()

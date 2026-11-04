@@ -103,7 +103,7 @@ def map_details(state):
     screen = context["screen"]
     act = state["act"]
     if (not isinstance(screen, dict)
-            or screen.get("status") != "visible" or screen.get("view") != "map"
+            or screen.get("status") != "covered" or screen.get("view") != "map"
             or type(act) is not int or act < 1 or type(state["can_travel"]) is not bool
             or not isinstance(state["nodes"], list) or not state["nodes"]):
         raise ValueError("Invalid map details.")

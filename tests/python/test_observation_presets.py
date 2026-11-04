@@ -103,7 +103,7 @@ class AvailableToolOutputTests(unittest.TestCase):
 
     def test_exposed_map_accepts_only_its_current_views_and_travel(self):
         raw = observation()
-        raw.update(screen={'status': 'visible', 'view': 'map'}, player=None, enemies=None, turn=None, buttons=None,
+        raw.update(screen={'status': 'covered', 'view': 'map'}, player=None, enemies=None, turn=None, buttons=None,
                    map={'status': 'visible', 'act': 1, 'current_node': None, 'can_travel': True,
                         'selectable_nodes': ['map:1:1:0']}, available_actions=['inspect_map', 'close_map', 'inspect_deck',
                         'inspect_potions', 'inspect_relics', 'travel_to_node'])

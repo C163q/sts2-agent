@@ -105,7 +105,7 @@ async def verify(args):
             inspected = await call('inspect_map')
             data = await call('get_observation')
             assert data.get('map') is not None, 'Missing get_observation map summary.'
-            assert data['screen'] == {'status': 'visible', 'view': 'map'}, data
+            assert data['screen'] == {'status': 'covered', 'view': 'map'}, data
             assert data['map']['selectable_nodes'] == inspected['selectable_nodes'], data
             assert data['rewards']['status'] == 'covered', data
             assert set(data['available_actions']) & GAME_ACTIONS == {'travel_to_node'}, data

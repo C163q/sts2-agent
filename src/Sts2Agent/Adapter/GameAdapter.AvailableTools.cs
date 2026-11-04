@@ -190,9 +190,9 @@ internal sealed partial class GameAdapter
             return actions.Distinct().ToList();
         }
         if ((!CombatManager.Instance.IsInProgress || STS2RitsuLib.RitsuLibFramework.IsActive)
-            && CanHandlePotions() && PotionInspection.InteractiveHolders() is { } holders)
+            && CanHandlePotions() && PotionInspection.ExposedHolders() is { } holders)
         {
-            var visiblePotions = holders.Where(h => h.HasPotion && PotionActions.Type(h.Potion!.Model) != null).Select(h => h.Potion!.Model).ToArray();
+            var visiblePotions = holders.Where(h => PotionInspection.Displayed(h) && h.HasPotion && PotionActions.Type(h.Potion!.Model) != null).Select(h => h.Potion!.Model).ToArray();
             if (visiblePotions.Any(p => PotionActions.Reason(p) == null)) actions.Add("use_potion");
             if (visiblePotions.Any(PotionActions.Discardable)) actions.Add("discard_potion");
         }
@@ -213,8 +213,8 @@ internal sealed partial class GameAdapter
         }
         if (CanPlayCards() && NPlayerHand.Instance!.ActiveHolders.Any(holder => CardSelection.Clickable(holder)
                 && TargetInspection.Type(holder.CardModel!) != null)
-            || CanHandlePotions() && PotionInspection.InteractiveHolders() is { } targetHolders
-                && targetHolders.Any(h => h.HasPotion && PotionActions.Type(h.Potion!.Model) != null)) actions.Add("inspect_targets");
+            || CanHandlePotions() && PotionInspection.ExposedHolders() is { } targetHolders
+                && targetHolders.Any(h => PotionInspection.Displayed(h) && h.HasPotion && PotionActions.Type(h.Potion!.Model) != null)) actions.Add("inspect_targets");
         if (RewardInspection.Current is { } rewardPage && RewardInspection.Ready(rewardPage)
             && RunManager.Instance.IsSingleplayerOrFakeMultiplayer) actions.Add("inspect_rewards");
         if (RestSiteInspection.Current is { } restPage && RestSiteInspection.Ready(restPage)

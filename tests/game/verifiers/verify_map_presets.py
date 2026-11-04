@@ -74,7 +74,7 @@ async def verify(args):
             full = await call('inspect_map')
             before = await asyncio.to_thread(raw.call, 'get_state')
             assert before['ok'], before
-            assert before['state']['screen'] == {'status': 'visible', 'view': 'map'}, before
+            assert before['state']['screen'] == {'status': 'covered', 'view': 'map'}, before
             summary = before['state']['map']
             assert summary['status'] == 'visible', before
             assert all(summary[key] == full[key] for key in ('act', 'current_node', 'can_travel', 'selectable_nodes')), before

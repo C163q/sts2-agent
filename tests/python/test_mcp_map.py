@@ -145,7 +145,7 @@ class MapProjectionTests(unittest.TestCase):
 
     def test_invalid_graph_types_ids_paths_and_choices_are_rejected(self):
         from sts2_mcp.output.map_details import map_details
-        cases = [(("scene",), "map"), (("screen",), {"status": "covered", "view": "map"}),
+        cases = [(("scene",), "map"), (("screen",), {"status": "visible", "view": "map"}),
                  (("act",), True), (("act",), 0), (("nodes",), []), (("nodes",), None),
                  (("nodes", 1, "id"), "map:1:01:2"), (("nodes", 1, "row"), True),
                  (("nodes", 1, "column"), -1), (("nodes", 1, "id"), "map:2:1:2"),

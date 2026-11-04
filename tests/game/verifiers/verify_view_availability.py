@@ -149,7 +149,7 @@ async def verify(args):
                 assert over_map['screen']['view'] == 'deck', over_map
                 assert over_map.get('map') is None, over_map
                 closed = await call('close_card_view')
-                assert closed['screen'] == {'status': 'visible', 'view': 'map'}, closed
+                assert closed['screen'] == {'status': 'covered', 'view': 'map'}, closed
                 # Opening the map from a deck page must replace the covering page natively.
                 await call('inspect_deck')
                 await call('inspect_map')

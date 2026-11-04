@@ -3,12 +3,12 @@ from sts2_mcp.output.contracts.transition import POTION_REF, TARGET_ENTITY
 
 
 POTION_SLOT = {"type": "integer", "minimum": 0, "maximum": 2147483647,
-               "description": "Zero-based occupied slot in top_bar.potion_slots or inspect_potions.potion_slots; count empty slots."}
+               "description": "Original zero-based belt slot, counting empty slots. For filtered inspect_potions results, use slot_indices, not the returned array position."}
 POTION_SCHEMA = {"type": "object", "properties": {"potion_slot": POTION_SLOT},
                  "required": ["potion_slot"], "additionalProperties": False}
 USE_SCHEMA = {**POTION_SCHEMA, "properties": {
     "potion_slot": POTION_SLOT, "target_id": {
-        "description": "A targets[].id from inspect_targets, including merchant when offered. Required when requires_target=true, even for one target; otherwise omit.",
+        "description": "Current creature ID, or merchant for a merchant. Required for a targeted potion, even for one target; otherwise omit.",
         "oneOf": [
         {"type": "integer", "minimum": 0, "maximum": 4294967295}, {"type": "string", "enum": ["merchant"]}]}}}
 POTION_TARGET_DETAILS = {"potion": POTION_REF, "usable": bool, "discardable": bool,
@@ -25,7 +25,7 @@ def potion_arguments(operation, arguments):
     if "target_id" in arguments:
         target = arguments["target_id"]
         if not (type(target) is int and 0 <= target <= 4294967295 or type(target) is str and target == "merchant"):
-            raise ValueError("Invalid potion target.")
+            raise ValueError("target_id must be an integer from 0 to 4294967295 or merchant; omit it when no target is required.")
     return dict(arguments)
 
 

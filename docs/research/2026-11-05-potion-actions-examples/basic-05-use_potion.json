@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "target_id must match one allowed type/value: [{'type': 'integer', 'minimum': 0, 'maximum': 4294967295}, {'type': 'string', 'enum': ['merchant']}].",
+    "recovery": "correct_request"
+  }
+}

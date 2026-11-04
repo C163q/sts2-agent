@@ -13,7 +13,7 @@ class InspectionContextTests(unittest.TestCase):
         data['scene'] = 'event'
         result = map_details(data)
         self.assertEqual(result['scene'], 'event')
-        self.assertEqual(result['screen'], {'status': 'visible', 'view': 'map'})
+        self.assertEqual(result['screen'], {'status': 'covered', 'view': 'map'})
         self.assertEqual(map_preset(result, 'selectable', 0)['scene'], 'event')
 
     def test_deck_uses_underlying_epilogue(self):

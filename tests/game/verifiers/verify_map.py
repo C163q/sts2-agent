@@ -28,7 +28,7 @@ def main():
     before = call("get_state")
     assert before["scene"] == "combat" and before["screen"] == {"status": "visible"}, before
     viewed = call("inspect_map")
-    assert viewed["scene"] == before["scene"] and viewed["screen"] == {"status": "visible", "view": "map"}, viewed
+    assert viewed["scene"] == before["scene"] and viewed["screen"] == {"status": "covered", "view": "map"}, viewed
     assert viewed["nodes"] and not viewed["can_travel"] and viewed["selectable_nodes"] == [], viewed
     ids = [node["id"] for node in viewed["nodes"]]
     assert len(ids) == len(set(ids))

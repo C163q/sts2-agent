@@ -30,8 +30,9 @@ internal sealed class PotionJournal : IDisposable
 
     private void Remember(PotionModel potion)
     {
-        if (PotionInspection.OnScreenHolders()?.Any(holder => ReferenceEquals(holder.Potion?.Model, potion)) == true)
-            slots[potion] = player.GetPotionSlotIndex(potion);
+        int slot = player.GetPotionSlotIndex(potion);
+        if (ReferenceEquals(PotionInspection.DisplayedAt(slot)?.Potion?.Model, potion))
+            slots[potion] = slot;
     }
     private void Used(PotionModel potion) => Record("potion_used", potion);
     private void Discarded(PotionModel potion) => Record("potion_discarded", potion);
@@ -41,14 +42,9 @@ internal sealed class PotionJournal : IDisposable
         if (slots.Remove(potion, out int slot) && SlotVisible(slot)) record(type, PotionActions.Reference(potion, slot));
     }
 
-    private static bool SlotVisible(int slot)
-    {
-        var container = NRun.Instance?.GlobalUi.TopBar.PotionContainer;
-        var layout = container?.GetNodeOrNull<Control>("MarginContainer/PotionHolders");
-        var holders = layout?.GetChildren().OfType<NPotionHolder>().ToArray();
-        return VisibleUi.OnScreen(container) && VisibleUi.Shown(layout) && holders != null
-            && slot >= 0 && slot < holders.Length && VisibleUi.OnScreen(holders[slot]);
-    }
+    // Native removal can clear the image before notifying this journal. The known identity
+    // comes from an earlier displayed icon; the holder must still be exposed.
+    private static bool SlotVisible(int slot) => PotionInspection.ExposedAt(slot) != null;
 
     public void SampleVisibility()
     {
@@ -56,7 +52,7 @@ internal sealed class PotionJournal : IDisposable
         else
         {
             foreach (var potion in slots.Keys.ToArray())
-                if (!SlotVisible(slots[potion])) slots.Remove(potion);
+                if (!ReferenceEquals(PotionInspection.DisplayedAt(slots[potion])?.Potion?.Model, potion)) slots.Remove(potion);
             foreach (var potion in player.Potions) Remember(potion);
         }
     }

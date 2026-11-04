@@ -415,7 +415,7 @@ SPECS = (
     ToolSpec(
         name='inspect_targets',
         schema=TARGET_SCHEMA,
-        description="Query exactly one hand card or potion for usability, requires_target and targeting range. "
+        description="Show targeting hints and usability for a hand card or potion. "
             "Does not enter aiming or resolve randomness; targets do not predict every effect.",
         annotations=read_only,
         category='inspection',
@@ -501,7 +501,8 @@ SPECS = (
         records_events=True,
         reader='transition_details:end_turn_details',
         parser='potion_action_details:potion_arguments',
-        parser_operation=True),
+        parser_operation=True,
+        unsubmitted_rejection_unchanged=True),
     ToolSpec(
         name='discard_potion',
         schema=POTION_SCHEMA,
@@ -515,7 +516,8 @@ SPECS = (
         records_events=True,
         reader='transition_details:end_turn_details',
         parser='potion_action_details:potion_arguments',
-        parser_operation=True),
+        parser_operation=True,
+        unsubmitted_rejection_unchanged=True),
     ToolSpec(
         name='inspect_combatants',
         schema=COMBATANT_SCHEMA,

@@ -56,8 +56,11 @@ def can_continue(payload):
     transition = payload.get('transition', {})
     reason = transition.get('stop_reason')
     selection = payload.get('selection')
+    screen = payload.get('screen', {})
+    exposed_map = payload.get('scene') != 'combat' and screen == {'status': 'covered', 'view': 'map'} \
+        and (payload.get('map') or {}).get('status') == 'visible'
     ready = reason in {'player_ready', 'action_completed'} and not selection \
-        and payload.get('screen', {}).get('status') == 'visible'
+        and (screen.get('status') == 'visible' or reason == 'action_completed' and exposed_map)
     choosing = reason == 'choice_required' and selection is not None \
         and selection.get('status') == 'visible' and selection.get('type') != 'unsupported'
     return transition.get('complete') is True and (ready or choosing) \

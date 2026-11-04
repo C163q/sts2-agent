@@ -1,0 +1,42 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "open_shop",
+    "proceed",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "potion": {
+          "slot_index": 0,
+          "name": "Foul Potion"
+        },
+        "type": "potion_used",
+        "sequence": 1
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 99,
+        "after": 199,
+        "type": "gold_changed",
+        "sequence": 2
+      }
+    ]
+  }
+}

@@ -9,7 +9,7 @@ from tests.python.test_output_boundaries import observation
 
 def map_observation():
     state = observation()
-    state.update(scene='unrecognized', screen={'status': 'visible', 'view': 'map'},
+    state.update(scene='unrecognized', screen={'status': 'covered', 'view': 'map'},
                  turn=None, player=None, enemies=None, buttons=None, snapshot_id='map-token',
                  map={'status': 'visible', 'act': 1, 'current_node': 'map:1:1:2',
                       'can_travel': True, 'selectable_nodes': ['map:1:2:1', 'map:1:2:5']},

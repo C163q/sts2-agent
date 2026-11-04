@@ -1,10 +1,10 @@
 # use_potion 审阅与待确认事项
 
-> 当前状态：现状检查完成，等待确定修改方案，工具尚未修改。已检查 30 类情况，整理了 [120 份完整返回](2026-11-04-use-potion-examples/README.md)。源码、问题编号及测试细节另放在[开发核验记录](2026-11-04-use-potion-development-notes.md)。
+> 当前状态：五项用药问题及地图 covered 已实现并验证，use_potion 已完成审阅。已检查 30 类情况，整理了 [120 份完整返回](2026-11-04-use-potion-examples/README.md)。源码、问题编号及测试细节另放在[开发核验记录](2026-11-04-use-potion-development-notes.md)。
 
-## 建议的修改范围
+## 已确认的修改范围
 
-现有参数已经够用：选择药水槽位，需要时指定目标；保留 default/full。成功返回也已经很短，暂时没有增加 summary 的必要。建议先处理下面五项。
+现有参数已经够用：选择药水槽位，需要时指定目标；保留 default/full。成功返回也已经很短，暂时没有增加 summary 的必要。已确认处理下面五项。以下说明修复前的表现及确定的处理方向，实现及验证见[实施记录](2026-11-05-potion-actions-implementation.md)。
 
 ### 1. 出错时说明具体原因
 
@@ -38,7 +38,7 @@
 简洁表达可以是：**“提示卡牌或药水可指定的目标。”** 英文提示词可写为：
 
 ```text
-Show targeting hints for a hand card or potion.
+Show targeting hints and usability for a hand card or potion.
 ```
 
 如果 LLM 已经知道当前可用的目标 ID，就能直接使用；不确定时再调用 inspect_targets。用药的 target_id 参数只需说明“需要指定目标时填写，否则省略”，不要把它写成只能来自某个查看工具的结果。
@@ -53,7 +53,7 @@ Show targeting hints for a hand card or potion.
 
 ## 地图与牌组显示状态的差异
 
-两个场景都是：**正在战斗，然后打开另一个页面，战斗被挡在下面。** 以下是实测返回中 scene 和 screen 两个字段的摘录，其他字段未展示。
+两个场景都是：**正在战斗，然后打开另一个页面，战斗被挡在下面。** 以下是修复前实测返回中 scene 和 screen 两个字段的摘录，其他字段未展示。
 
 打开牌组时：
 
@@ -95,8 +95,14 @@ Show targeting hints for a hand card or potion.
 }
 ```
 
-这是待确认的建议，尚未修改返回。该问题留到 inspect_map 审阅时一起处理；这里只展示差异，供判断。开发依据见[地图相关记录](2026-11-04-use-potion-development-notes.md#关联发现地图上下文)。
+地图的 screen.status 已统一为 covered；inspect_map 的其他设计及 get_observation.map 内容仍待后续审阅。开发依据见[地图相关记录](2026-11-04-use-potion-development-notes.md#关联发现地图上下文)。
 
-## 后续实施建议
+## 实施范围
 
 先处理上述五项用药问题，参数和成功返回结构保持现有设计。内部需要让“能否使用”“错误原因”和“能否记录已发生的变化”各自使用合适的判断，避免重复且互相干扰的检查；具体修改位置与验证要求见[开发核验记录](2026-11-04-use-potion-development-notes.md#当前输出与设计建议)。
+
+## 处理结果
+
+五项用药问题已修复，未新增 summary。战斗外地图可正常连续用药、丢弃，无须在中间重新查看；若游戏状态实际变化导致过期，仍须按提示读取。地图移动中暂时无法读取内容时，map:null 的原有行为保留。
+
+34 类用药情形和三组既有工具回归已完成。修复后的字段示例见[完整返回](2026-11-05-potion-actions-examples/README.md)，开发验证与未覆盖范围见[实施记录](2026-11-05-potion-actions-implementation.md)。

@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def map_payload():
-    return {"scene": "combat", "screen": {"status": "visible", "view": "map"}, "act": 1,
+    return {"scene": "combat", "screen": {"status": "covered", "view": "map"}, "act": 1,
             "current_node": "map:1:1:2", "visited_path": ["map:1:0:3", "map:1:1:2"],
             "can_travel": False, "selectable_nodes": [], "nodes": [
                 {"id": "map:1:0:3", "row": 0, "column": 3, "type": "ancient", "name": "Neow", "next": ["map:1:1:2"]},

@@ -1,0 +1,22 @@
+{
+  "potion": {
+    "slot_index": 1,
+    "name": "Block Potion"
+  },
+  "usable": false,
+  "discardable": false,
+  "target_type": "any_player",
+  "requires_target": false,
+  "targets": [
+    {
+      "id": 0,
+      "kind": "player",
+      "name": "The Ironclad"
+    }
+  ],
+  "reason": "This potion slot cannot be interacted with; use another slot or wait for it to become available.",
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  }
+}

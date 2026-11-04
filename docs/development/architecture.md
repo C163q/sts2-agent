@@ -95,7 +95,7 @@ Mod 构建需要自行安装游戏程序集，见[构建前提](roundtrip.md#前
 
 GameTools 仅负责公开入口、参数拒绝与规范化请求；GameSession.execute 统一控制锁、串行请求、成功校验、媒体、投影和许可更新，transport Client 仍独立等待文件。PermissionState 的令牌／代次在请求开始时捕获，动作不能借用排队后产生的许可；取消撤销许可并阻止在途结果重新授权。
 
-GameResponse 在内部保存成功、已提交、未知或“未提交且 UI 未变”的证据。登记表仅为已核实的 play_card／play_cards／end_turn 前置拒绝声明后者，不从 illegal_action 或 readOnlyHint 推测。所有成功投影完成后才发布许可，错误保留／失效规则统一见[MCP 调用语义](mcp.md#调用和错误语义)。原生正向事实与显式媒体需求已经接入，缺失或 false 仍不代表未执行。
+GameResponse 在内部保存成功、已提交、未知或“未提交且 UI 未变”的证据。登记表仅为已核实的 play_card／play_cards／end_turn／use_potion／discard_potion 前置拒绝声明后者，不从 illegal_action 或 readOnlyHint 推测。所有成功投影完成后才发布许可，错误保留／失效规则统一见[MCP 调用语义](mcp.md#调用和错误语义)。原生正向事实与显式媒体需求已经接入，缺失或 false 仍不代表未执行。
 
 ## 展示与悬停读取
 

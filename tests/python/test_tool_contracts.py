@@ -38,11 +38,16 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
         for index, case in enumerate(cases):
             with self.subTest(index=index, tool=case['tool'], arguments=case['arguments'], error=case.get('error')):
                 client = ContractReply(states[case['state']], case.get('error'))
+                # The approved map context changes status only; keep the historical JSON frozen.
+                if client.state.get('screen', {}).get('view') == 'map':
+                    client.state['screen']['status'] = 'covered'
                 original = copy.deepcopy(client.state)
                 tools = GameTools(client)
                 tools.snapshot_id = 'fixture-state'
                 result = await getattr(tools, case['tool'])(copy.deepcopy(case['arguments']))
                 want = copy.deepcopy(expected[case['expected_ref']])
+                if want.get('screen', {}).get('view') == 'map':
+                    want['screen']['status'] = 'covered'
                 if case['tool'] == 'close_card_view' and 'error' not in want:
                     # The approved action contract replaces the frozen partial observation.
                     want = {key: want[key] for key in ('scene', 'screen', 'available_actions')}
@@ -95,6 +100,8 @@ class FileContractTests(unittest.TestCase):
         for case in json.loads((DATA / 'cli_cases.json').read_text()):
             with self.subTest(tool=case['tool'], argv=case['argv']):
                 raw = {'ok': True, 'state': copy.deepcopy(states[case['state']])}
+                if raw['state'].get('screen', {}).get('view') == 'map':
+                    raw['state']['screen']['status'] = 'covered'
                 original = copy.deepcopy(raw)
                 output = io.StringIO()
                 with patch('sys.argv', ['roundtrip_client.py', *case['argv']]), \
@@ -102,6 +109,8 @@ class FileContractTests(unittest.TestCase):
                         contextlib.redirect_stdout(output):
                     roundtrip_client.main()
                 want = copy.deepcopy(expected[case['expected_ref']])
+                if want.get('screen', {}).get('view') == 'map':
+                    want['screen']['status'] = 'covered'
                 if case['tool'] == 'close_card_view':
                     want = {key: want[key] for key in ('scene', 'screen', 'available_actions')}
                 if case['tool'] == 'inspect_pile' and '--preset' in case['argv'] and 'summary' in case['argv'] and want.get('status') == 'opened':

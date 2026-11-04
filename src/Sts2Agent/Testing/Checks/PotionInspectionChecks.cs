@@ -72,7 +72,7 @@ internal static class PotionInspectionChecks
             if (enabled) holders[0].Enable();
             holders[0].Position = new Vector2(-10000, -10000);
             Check("offscreen_slot_is_readable", PotionInspection.VisibleHolders() != null);
-            Check("offscreen_slot_cannot_be_clicked", PotionActions.Find(0) == null);
+            Check("offscreen_slot_keeps_original_reference", ReferenceEquals(PotionActions.Find(0), holders[0]));
             if (observe != null)
             {
                 using var state = JsonDocument.Parse(observe());

@@ -11,50 +11,46 @@ namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
 {
-    private static bool CanHandlePotions() => RunManager.Instance.IsInProgress
-        && RunManager.Instance.IsSingleplayerOrFakeMultiplayer && LocalPlayer?.Creature.IsAlive == true
-        && !LocalPlayer.RunState.IsGameOver
-        && (!AncientInspection.Busy || RewardInspection.Current is { } ancientRewards && RewardInspection.Ready(ancientRewards))
-        && (CombatManager.Instance.IsInProgress || !EventTaskTracker.Pending || RewardInspection.Current is { } eventRewards && RewardInspection.Ready(eventRewards))
-        && (!ShopTransactions.Pending || RewardInspection.Current is { } rewards && RewardInspection.Ready(rewards))
-        && (ShopInspection.Current is not { } shop || !ShopInspection.Exposed(shop) || ShopInspection.Ready(shop)) && CardSelection.Current == null
-        && RunManager.Instance.ActionQueueSet.IsEmpty && !NTargetManager.Instance.IsInSelection
-        && (CombatManager.Instance.IsInProgress ? CanPlayCards() : RunUi.NonCombatVisible());
-
     private async Task<string> PotionRequest(Request request, JsonElement before)
     {
         bool query = request.Operation == "inspect_targets", use = request.Operation == "use_potion";
+        string Reject(string code, string message) => query
+            ? FileMailbox.Error(request.Id, code, message, publicMessage: true)
+            : FileMailbox.RejectedBeforeSubmission(request.Id, code, message);
         var arguments = request.Arguments;
-        if (arguments == null || !arguments.Value.TryGetProperty("potion_slot", out var suppliedSlot)
+        if (arguments == null || arguments.Value.ValueKind != JsonValueKind.Object || !arguments.Value.TryGetProperty("potion_slot", out var suppliedSlot)
             || suppliedSlot.ValueKind != JsonValueKind.Number || !suppliedSlot.TryGetInt32(out int slot) || slot < 0
             || arguments.Value.EnumerateObject().Any(p => p.Name != "potion_slot" && (!use || p.Name != "target_id"))
             || arguments.Value.EnumerateObject().Select(p => p.Name).Distinct().Count() != arguments.Value.EnumerateObject().Count())
-            return FileMailbox.Error(request.Id, "invalid_request", "Invalid potion arguments.", publicMessage: query);
+            return Reject("invalid_request", "Pass potion_slot as a nonnegative integer; only use_potion accepts optional target_id.");
         bool suppliedTarget = arguments.Value.TryGetProperty("target_id", out var targetId);
         uint creatureId = 0;
         bool merchant = suppliedTarget && targetId.ValueKind == JsonValueKind.String && targetId.GetString() == "merchant";
         if (suppliedTarget && !merchant && (targetId.ValueKind != JsonValueKind.Number || !targetId.TryGetUInt32(out creatureId)))
-            return FileMailbox.Error(request.Id, "invalid_request", "Invalid potion target.");
+            return Reject("invalid_request", "target_id must be an integer from 0 to 4294967295 or merchant; omit it when no target is required.");
         if (!query && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read current state before using or discarding a potion.");
-        if (!CanHandlePotions()) return FileMailbox.Error(request.Id, "illegal_action", "Potion actions are unavailable in this screen.", publicMessage: query);
+        if (PotionStageUnavailableReason() is { } stage) return Reject("illegal_action", stage);
+        var holders = PotionInspection.ExposedHolders();
+        if (holders == null) return Reject("illegal_action", "The potion bar is hidden or not ready in the current screen.");
+        if (slot >= holders.Length) return Reject("illegal_action", $"potion_slot {slot} is out of range; the belt has {holders.Length} slots.");
+        if (!PotionInspection.Displayed(holders[slot])) return Reject("illegal_action", "The specified potion slot is hidden or not ready.");
+        if (!holders[slot].HasPotion) return Reject("illegal_action", "The specified potion slot is empty.");
         NPotionHolder? holder = PotionActions.Find(slot);
         var potion = holder?.Potion?.Model;
         var player = LocalPlayer!;
         if (potion == null || potion.Owner != player || player.GetPotionSlotIndex(potion) != slot
             || PotionActions.Type(potion) == null)
-            return FileMailbox.Error(request.Id, "illegal_action", "No supported visible potion occupies that slot.", publicMessage: query);
+            return Reject("illegal_action", "The potion in that slot is no longer owned by the local player or has an unsupported target type.");
         if (query) return InspectionSuccess(request, before, PotionActions.Read(potion, slot, before.GetProperty("snapshot_id").GetString()!));
-        var target = suppliedTarget && !merchant ? PotionActions.Targets(potion).FirstOrDefault(c => c.CombatId == creatureId) : null;
-        if (!PotionActions.Discardable(potion) || use && (PotionActions.Reason(potion) != null
-            || suppliedTarget != PotionActions.RequiresTarget(potion)
-            || suppliedTarget && (merchant ? !PotionActions.MerchantVisible(potion) : target == null)
-            || merchant != (potion.TargetType == TargetType.TargetedNoCreature)
-            || suppliedTarget && !potion.IsValidTarget(target)))
-            return FileMailbox.Error(request.Id, "illegal_action", "The potion or specified target cannot be used or discarded now.");
+        if ((use ? PotionActions.Reason(potion) : PotionActions.RemovalReason(potion)) is { } unavailable)
+            return Reject("illegal_action", unavailable);
+        MegaCrit.Sts2.Core.Entities.Creatures.Creature? target = null;
+        if (use && PotionActions.TargetReason(potion, suppliedTarget, merchant, creatureId, out target) is { } targetReason)
+            return Reject("illegal_action", targetReason);
         bool inCombat = CombatManager.Instance.IsInProgress;
         if (inCombat && !STS2RitsuLib.RitsuLibFramework.IsActive)
-            return FileMailbox.Error(request.Id, "illegal_action", "RitsuLib is unavailable; no potion action was submitted.");
+            return Reject("illegal_action", "RitsuLib is unavailable; no potion action was submitted.");
         var run = player.RunState;
         var journal = CombatJournalScope.Current!;
         GameAction? submitted = null;

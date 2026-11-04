@@ -1,0 +1,667 @@
+{
+  "base_commit": "cfa02a2",
+  "mod_version": "0.64.0",
+  "mcp_version": "0.66.0",
+  "schema_version": 40,
+  "builds": [
+    {
+      "report": ".tmp/2026-11-05-potion-actions/gui-complete/report.json",
+      "status": "passed",
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875"
+    },
+    {
+      "report": ".tmp/2026-11-05-potion-actions/gui-supplement/report.json",
+      "status": "failed",
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875"
+    },
+    {
+      "report": ".tmp/2026-11-05-potion-actions/gui-regressions/report.json",
+      "status": "passed",
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875"
+    }
+  ],
+  "examples": [
+    {
+      "file": "journal_boundary-01-get_observation.full.json",
+      "case": "journal_boundary",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/journal_boundary/audit/evidence.json",
+      "source_row": 0,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "3c283783dde74b73c0e4b85247fae3a0503ed79dfaf356bd73ff1cd24a294994",
+      "outcome": "read"
+    },
+    {
+      "file": "journal_boundary-03-get_observation.full.json",
+      "case": "journal_boundary",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/journal_boundary/audit/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "3c283783dde74b73c0e4b85247fae3a0503ed79dfaf356bd73ff1cd24a294994",
+      "outcome": "read"
+    },
+    {
+      "file": "journal_boundary-04-end_turn.full.json",
+      "case": "journal_boundary",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/journal_boundary/audit/evidence.json",
+      "source_row": 3,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "637cb3d76d727b9322fcfee87f145127f9dacb1d50367b347d410e3ce02b65e1",
+      "outcome": "player_ready"
+    },
+    {
+      "file": "journal_boundary-05-get_observation.full.json",
+      "case": "journal_boundary",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/journal_boundary/audit/evidence.json",
+      "source_row": 4,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "2a6b7f002e788e57776134f9bf5e7d4201c507cff471216134b85404d298b702",
+      "outcome": "read"
+    },
+    {
+      "file": "map_context-03-get_observation.full.json",
+      "case": "map_context",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/map_context/audit/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "4d84cac655849afb003d7eb72c8b3988f88271741f9e56b95865708fec82829d",
+      "outcome": "read"
+    },
+    {
+      "file": "obtained_boundary-04-use_potion.full.json",
+      "case": "obtained_boundary",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/obtained_boundary/audit/evidence.json",
+      "source_row": 3,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "b1fecb214d4327ba1ab48c798d79de719cde768b3591519a5122d04390fcd44b",
+      "outcome": "player_ready"
+    },
+    {
+      "file": "journal_hidden-01-get_observation.full.json",
+      "case": "journal_hidden",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/journal_hidden/audit/evidence.json",
+      "source_row": 0,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "3c283783dde74b73c0e4b85247fae3a0503ed79dfaf356bd73ff1cd24a294994",
+      "outcome": "read"
+    },
+    {
+      "file": "journal_hidden-03-get_observation.full.json",
+      "case": "journal_hidden",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/journal_hidden/audit/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "320ca42cff04329d6c1a22adede00fc4ac205a930fcb6fa42f7f7bee97960e9a",
+      "outcome": "read"
+    },
+    {
+      "file": "journal_hidden-04-end_turn.full.json",
+      "case": "journal_hidden",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/journal_hidden/audit/evidence.json",
+      "source_row": 3,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "9af665175b0dc19e4aca7129f944cc00a9c0b323bada249b94af1e1174949261",
+      "outcome": "player_ready"
+    },
+    {
+      "file": "journal_hidden-06-get_observation.full.json",
+      "case": "journal_hidden",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/journal_hidden/audit/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "2a6b7f002e788e57776134f9bf5e7d4201c507cff471216134b85404d298b702",
+      "outcome": "read"
+    },
+    {
+      "file": "basic-03-use_potion.json",
+      "case": "basic",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": true
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/basic/audit/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "fe38f512492a552810090689711db62594897341b9210ba4edaeac9b7af5e0c6",
+      "outcome": "invalid_request"
+    },
+    {
+      "file": "basic-04-use_potion.json",
+      "case": "basic",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": -1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/basic/audit/evidence.json",
+      "source_row": 3,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "14622395b8b10e0cf12279cef4886e77a7345f6caafb1cbc679a80edec6aab98",
+      "outcome": "invalid_request"
+    },
+    {
+      "file": "basic-05-use_potion.json",
+      "case": "basic",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0,
+        "target_id": null
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/basic/audit/evidence.json",
+      "source_row": 4,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "267cf69e071a034c1119b69090ac3968598a1307981e356fa50693928cb8ed5a",
+      "outcome": "invalid_request"
+    },
+    {
+      "file": "basic-06-use_potion.json",
+      "case": "basic",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0,
+        "unknown": true
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/basic/audit/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "f7a17afa6d6e197905e2cb6211ecc89b77ccee2e437ab09a083cd50529216c28",
+      "outcome": "invalid_request"
+    },
+    {
+      "file": "basic-07-use_potion.json",
+      "case": "basic",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "summary",
+        "potion_slot": 0
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/basic/audit/evidence.json",
+      "source_row": 6,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "4d9fc2591fa95fd3be4aa5da9e9069924310da95773916f6dee00df473d4e31e",
+      "outcome": "invalid_request"
+    },
+    {
+      "file": "basic-10-use_potion.json",
+      "case": "basic",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 99
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/basic/audit/evidence.json",
+      "source_row": 9,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "87424c5ed2d6a4cfcdfa21f6393b58fc9e63d9ae72f44381a2d67ecda797d54e",
+      "outcome": "illegal_action"
+    },
+    {
+      "file": "basic-15-use_potion.json",
+      "case": "basic",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/basic/audit/evidence.json",
+      "source_row": 14,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "72905d980ba15a1969078079df3530f8b07062cbd7b120b17ba9ed4ef9dbf39a",
+      "outcome": "illegal_action"
+    },
+    {
+      "file": "basic-20-use_potion.json",
+      "case": "basic",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0,
+        "target_id": 4294967295
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/basic/audit/evidence.json",
+      "source_row": 19,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "bfcf5a79622f1dff91dd3244f5ee08735915173308dcd8772c9196cef5edc88f",
+      "outcome": "illegal_action"
+    },
+    {
+      "file": "basic-25-use_potion.json",
+      "case": "basic",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 1,
+        "target_id": 1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/basic/audit/evidence.json",
+      "source_row": 24,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "913bbd6f6eb8f63894f889b28cb0b55356384b0705e7e0fb897116e215b7b746",
+      "outcome": "illegal_action"
+    },
+    {
+      "file": "basic-30-use_potion.json",
+      "case": "basic",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 2
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/basic/audit/evidence.json",
+      "source_row": 29,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "fde240422c4bffb9caa4ad99d37bc42f27906ddd26bd4542a2e0438b78c06380",
+      "outcome": "illegal_action"
+    },
+    {
+      "file": "basic-33-end_turn.full.json",
+      "case": "basic",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/basic/audit/evidence.json",
+      "source_row": 32,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "dcad6219a5d2353dc88012f5d1708870d12607e930fc626f38d51223dbdfeaf7",
+      "outcome": "player_ready"
+    },
+    {
+      "file": "basic-35-use_potion.full.json",
+      "case": "basic",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0,
+        "target_id": 1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/basic/audit/evidence.json",
+      "source_row": 34,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "e544f125336d2585a2635ebd1304c00d66398092ba7921904fbce0d217a25c53",
+      "outcome": "player_ready"
+    },
+    {
+      "file": "basic-36-use_potion.full.json",
+      "case": "basic",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/basic/audit/evidence.json",
+      "source_row": 35,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "10c3d4eeee62cf620169e9439434683070a725a6ca525f6d165ee301714f5806",
+      "outcome": "player_ready"
+    },
+    {
+      "file": "covered-06-use_potion.json",
+      "case": "covered",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/covered/audit/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "6e970a2fde2ce57fd741f72368d121d7352c40cd6a16bc53c0a702acb2dedef7",
+      "outcome": "illegal_action"
+    },
+    {
+      "file": "covered-07-end_turn.json",
+      "case": "covered",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/covered/audit/evidence.json",
+      "source_row": 6,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "420c6efcde0c85cf710f25eb5b33c49cb9e40270208e87d88d42d7de99c76dc2",
+      "outcome": "illegal_action"
+    },
+    {
+      "file": "covered-16-use_potion.json",
+      "case": "covered",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/covered/audit/evidence.json",
+      "source_row": 15,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "9dbc09287115af558783e85468f3add858f3375950c7a382369afac67df37acb",
+      "outcome": "illegal_action"
+    },
+    {
+      "file": "covered-17-end_turn.json",
+      "case": "covered",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/covered/audit/evidence.json",
+      "source_row": 16,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "8e6dae12ae7b0a5182a9e1faec6b7c451fa075cb1a3f40f7cebdc82192ad9440",
+      "outcome": "illegal_action"
+    },
+    {
+      "file": "skill-03-use_potion.full.json",
+      "case": "skill",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/skill/audit/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "4dac75a8f8a4ddd42502ae0c3ef06f6b08aac9d5e8cd63526da44c70cd3774a3",
+      "outcome": "choice_required"
+    },
+    {
+      "file": "skill-05-use_potion.json",
+      "case": "skill",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/skill/audit/evidence.json",
+      "source_row": 4,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "c26814ade9ed6542d593657268ec66b958edaf7500ec26bdb9231e7fba8208e2",
+      "outcome": "illegal_action"
+    },
+    {
+      "file": "skill-06-select_card.full.json",
+      "case": "skill",
+      "tool": "select_card",
+      "arguments": {
+        "preset": "full",
+        "card_id": 8
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/skill/audit/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "fce7478a4961df509e46f4222c72574db2ff4699f510429f6b55148ce39b8c19",
+      "outcome": "player_ready"
+    },
+    {
+      "file": "cancel-03-use_potion.full.json",
+      "case": "cancel",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0,
+        "target_id": 1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/cancel/audit/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "26d8a67ca8e0e3478713f018b59bfa9f5ade3b2bcc26f908182c870a3687f6c7",
+      "outcome": "action_canceled"
+    },
+    {
+      "file": "cancel-04-use_potion.json",
+      "case": "cancel",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/cancel/audit/evidence.json",
+      "source_row": 3,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
+      "outcome": "observation_required"
+    },
+    {
+      "file": "noncombat_map-01-get_observation.full.json",
+      "case": "noncombat_map",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-regressions/noncombat_map/audit/evidence.json",
+      "source_row": 0,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "dba97dce20fe6cb709805d0dc8690af42f9c46875a259b88b4208390f879e5cd",
+      "outcome": "read"
+    },
+    {
+      "file": "noncombat_map-08-get_observation.full.json",
+      "case": "noncombat_map",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-regressions/noncombat_map/audit/evidence.json",
+      "source_row": 7,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "12baa00dba63c1fca1aa68522080fc2472dc82cb264b5aac6664d532054984c6",
+      "outcome": "read"
+    },
+    {
+      "file": "noncombat_map-10-use_potion.full.json",
+      "case": "noncombat_map",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-regressions/noncombat_map/audit/evidence.json",
+      "source_row": 9,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "128ac540e2ecfa1bba7690be9367eeae60d2056b6b3ca000c8c9e11d2aeb4d29",
+      "outcome": "action_completed"
+    },
+    {
+      "file": "noncombat_map-11-use_potion.full.json",
+      "case": "noncombat_map",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-regressions/noncombat_map/audit/evidence.json",
+      "source_row": 10,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "4f99b64b8805dbfe22e89a1437602345ff736cb99313fa04ecb1abed8f10f64c",
+      "outcome": "action_completed"
+    },
+    {
+      "file": "noncombat_map-12-discard_potion.full.json",
+      "case": "noncombat_map",
+      "tool": "discard_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 2
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-regressions/noncombat_map/audit/evidence.json",
+      "source_row": 11,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "b8acc3ee873accfe03e7759d743b6a49160ae04eacffbc7301c49d8ca9c9fed6",
+      "outcome": "action_completed"
+    },
+    {
+      "file": "noncombat_map-13-get_observation.full.json",
+      "case": "noncombat_map",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-regressions/noncombat_map/audit/evidence.json",
+      "source_row": 12,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "28ad4eb347aec11c24ce75198ac94f583885072634de3ea4a2ee6dcef9296b26",
+      "outcome": "read"
+    },
+    {
+      "file": "merchant-03-use_potion.full.json",
+      "case": "merchant",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0,
+        "target_id": "merchant"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/merchant/audit/evidence.json",
+      "source_row": 2,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "7aed01796f1b569101635acc1d19b8579d58f3723d05bfef1e2741fb8267e72c",
+      "outcome": "action_completed"
+    },
+    {
+      "file": "fake_merchant-01-use_potion.json",
+      "case": "fake_merchant",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0,
+        "target_id": "merchant"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/fake_merchant/audit/evidence.json",
+      "source_row": 0,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
+      "outcome": "observation_required"
+    },
+    {
+      "file": "fake_merchant-04-use_potion.full.json",
+      "case": "fake_merchant",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0,
+        "target_id": "merchant"
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-complete/fake_merchant/audit/evidence.json",
+      "source_row": 3,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "5a62cd7d3d61f90ae34d3275a64ba7d541a3649368d1df1336d47319085d6ffc",
+      "outcome": "player_ready"
+    },
+    {
+      "file": "slot_interaction-04-inspect_targets.full.json",
+      "case": "slot_interaction",
+      "tool": "inspect_targets",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-supplement/slot_interaction/audit/evidence.json",
+      "source_row": 3,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "69c42550c1fef5c37e8a6c4338edbc6cc2c56bfcbf3778b9e6d52b65d9fc8686",
+      "outcome": "read"
+    },
+    {
+      "file": "slot_interaction-05-use_potion.json",
+      "case": "slot_interaction",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-supplement/slot_interaction/audit/evidence.json",
+      "source_row": 4,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "f9094f2a23065f323f0e105c5d9ed95bd70aa4fb943ef8c80b677dec87834646",
+      "outcome": "illegal_action"
+    },
+    {
+      "file": "slot_interaction-06-use_potion.full.json",
+      "case": "slot_interaction",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0,
+        "target_id": 1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-supplement/slot_interaction/audit/evidence.json",
+      "source_row": 5,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "276fc1b1cae9357c6953f9d14901f78155c516390e23d4b0c9171895e6d49f57",
+      "outcome": "player_ready"
+    },
+    {
+      "file": "slot_interaction-10-inspect_targets.json",
+      "case": "slot_interaction",
+      "tool": "inspect_targets",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-supplement/slot_interaction/audit/evidence.json",
+      "source_row": 9,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "29433b13b66584e241361c7182cdf12b67b3731632f2e2abdea37adc5481715b",
+      "outcome": "illegal_action"
+    },
+    {
+      "file": "slot_interaction-11-use_potion.full.json",
+      "case": "slot_interaction",
+      "tool": "use_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 1
+      },
+      "source": ".tmp/2026-11-05-potion-actions/gui-supplement/slot_interaction/audit/evidence.json",
+      "source_row": 10,
+      "mod_sha256": "7f04d0ee3ba6588e69e250bdeb8445f1f48f44f48470a84015d53dfad6582875",
+      "sha256": "70136df7dcaa08d4534b46cad454dec9d3da1bed7a68d7fc1261dcfc598b5b6a",
+      "outcome": "player_ready"
+    }
+  ],
+  "runs": 38,
+  "evidence_mcp_calls": 347,
+  "cases": 37
+}

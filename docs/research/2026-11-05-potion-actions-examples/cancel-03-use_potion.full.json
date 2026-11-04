@@ -1,0 +1,31 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "action_canceled",
+    "complete": true,
+    "events": [
+      {
+        "potion": {
+          "slot_index": 0,
+          "name": "Fire Potion"
+        },
+        "type": "potion_discarded",
+        "sequence": 1
+      }
+    ]
+  }
+}

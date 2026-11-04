@@ -1,0 +1,184 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "play_cards",
+    "use_potion",
+    "discard_potion",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 5,
+          "name": "Strike"
+        },
+        "type": "card_discarded",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 6,
+          "name": "Defend"
+        },
+        "type": "card_discarded",
+        "sequence": 2
+      },
+      {
+        "card": {
+          "id": 7,
+          "name": "Strike"
+        },
+        "type": "card_discarded",
+        "sequence": 3
+      },
+      {
+        "hp_loss": 1,
+        "blocked": 0,
+        "source": null,
+        "actor": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 4
+      },
+      {
+        "potion": {
+          "slot_index": 2,
+          "name": "Fairy in a Bottle"
+        },
+        "type": "potion_used",
+        "sequence": 5
+      },
+      {
+        "before": 0,
+        "after": 24,
+        "source": null,
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "hp_changed",
+        "sequence": 6
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "revived",
+        "sequence": 7
+      },
+      {
+        "card": {
+          "id": 8,
+          "name": "Slimed"
+        },
+        "pile": "discard",
+        "type": "card_added",
+        "sequence": 8
+      },
+      {
+        "card": {
+          "id": 9,
+          "name": "Slimed"
+        },
+        "pile": "discard",
+        "type": "card_added",
+        "sequence": 9
+      },
+      {
+        "hp_loss": 4,
+        "blocked": 0,
+        "source": null,
+        "actor": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 10
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 20,
+        "after": 3,
+        "type": "energy_changed",
+        "sequence": 11
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 12
+      },
+      {
+        "card": {
+          "id": 9,
+          "name": "Slimed"
+        },
+        "type": "card_drawn",
+        "sequence": 13
+      },
+      {
+        "card": {
+          "id": 8,
+          "name": "Slimed"
+        },
+        "type": "card_drawn",
+        "sequence": 14
+      },
+      {
+        "card": {
+          "id": 6,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 15
+      },
+      {
+        "card": {
+          "id": 7,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 16
+      }
+    ]
+  }
+}

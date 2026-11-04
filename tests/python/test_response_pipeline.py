@@ -95,7 +95,9 @@ class DecodeSuccessTests(unittest.TestCase):
             if case['arguments'].get('preset') != 'full' or case.get('error') or 'unknown_field' in case['arguments']:
                 continue
             request = case['native_calls'][0]
-            raw = states[case['state']]
+            raw = copy.deepcopy(states[case['state']])
+            if raw.get('screen', {}).get('view') == 'map':
+                raw['screen']['status'] = 'covered'
             decorated = inject(raw)
             original = copy.deepcopy(decorated)
             with self.subTest(operation=request['operation'], state=case['state']):

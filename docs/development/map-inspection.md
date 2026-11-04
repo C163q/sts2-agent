@@ -47,7 +47,7 @@
 ```json
 {
   "scene": "combat",
-  "screen": {"status": "visible", "view": "map"},
+  "screen": {"status": "covered", "view": "map"},
   "act": 1,
   "current_node": "map:1:1:2",
   "visited_path": ["map:1:0:3", "map:1:1:2"],
@@ -95,7 +95,7 @@
 
 ```json
 {
-  "screen": {"status":"visible","view":"map"},
+  "screen": {"status":"covered","view":"map"},
   "map": {
     "status":"visible","act":1,"current_node":"map:1:1:2",
     "can_travel":true,"selectable_nodes":["map:1:2:1","map:1:2:3"]

@@ -38,10 +38,11 @@ def observation_details(state):
         map_tools = {'travel_to_node', 'inspect_map', 'close_map', 'inspect_deck', 'inspect_relics', 'inspect_potions', 'inspect_ui'}
         if result['scene'] != 'combat':
             map_tools |= {'inspect_targets', 'use_potion', 'discard_potion'}
-        if (result['screen'] != {'status': 'visible', 'view': 'map'}
+        if (result['screen'] != {'status': 'covered', 'view': 'map'}
                 or any(a not in map_tools for a in result['available_actions'])
                 or ('travel_to_node' in result['available_actions']) != result['map']['can_travel']):
             raise ValueError('Map is not the exposed action screen.')
+    # During native travel the map page can still be identified without a readable summary.
     elif 'travel_to_node' in result['available_actions'] or result['screen'] == {'status': 'visible', 'view': 'map'}:
         raise ValueError('Missing map summary.')
     if result.get("selection") is not None:

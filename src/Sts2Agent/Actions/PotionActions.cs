@@ -19,15 +19,28 @@ internal static class PotionActions
 
     public static NPotionHolder? Find(int slot)
     {
-        var holders = PotionInspection.InteractiveHolders();
-        return holders != null && slot < holders.Length && holders[slot].HasPotion ? holders[slot] : null;
+        var holder = PotionInspection.DisplayedAt(slot);
+        return holder?.HasPotion == true ? holder : null;
     }
 
     public static bool RequiresTarget(PotionModel potion) => potion.TargetType is TargetType.AnyEnemy or TargetType.TargetedNoCreature
         || potion.CanThrowAtAlly();
 
-    public static bool Discardable(PotionModel potion) => potion.Owner.CanRemovePotions
-        && potion.Owner.Creature.IsAlive && !potion.IsQueued && !potion.HasBeenRemovedFromState;
+    public static string? RemovalReason(PotionModel potion)
+    {
+        if (!potion.Owner.Creature.IsAlive) return "The potion's owner is no longer alive.";
+        if (potion.HasBeenRemovedFromState) return "This potion is no longer in the belt.";
+        if (potion.IsQueued) return "This potion is already queued; wait for its current action to finish.";
+        if (!potion.Owner.CanRemovePotions) return "Potions cannot be removed now.";
+        int slot = potion.Owner.GetPotionSlotIndex(potion);
+        var holder = Find(slot);
+        if (holder == null || !ReferenceEquals(holder.Potion!.Model, potion))
+            return "This potion slot is hidden or not ready.";
+        return PotionInspection.Interactive(holder) ? null
+            : "This potion slot cannot be interacted with; use another slot or wait for it to become available.";
+    }
+
+    public static bool Discardable(PotionModel potion) => RemovalReason(potion) == null;
 
     public static Creature[] Targets(PotionModel potion)
     {
@@ -63,7 +76,7 @@ internal static class PotionActions
 
     public static string? Reason(PotionModel potion)
     {
-        if (!Discardable(potion)) return "Potions cannot be removed now.";
+        if (RemovalReason(potion) is { } removal) return removal;
         if (potion.Usage == PotionUsage.Automatic) return "This potion is used automatically.";
         if (potion.Usage is not (PotionUsage.AnyTime or PotionUsage.CombatOnly)
             || Type(potion) == null) return "This potion is unsupported.";
@@ -73,6 +86,22 @@ internal static class PotionActions
         if (RequiresTarget(potion) && (potion.TargetType == TargetType.TargetedNoCreature
             ? !MerchantVisible(potion) : Targets(potion).Length == 0)) return "No valid target.";
         return null;
+    }
+
+    public static string? TargetReason(PotionModel potion, bool supplied, bool merchant, uint creatureId, out Creature? target)
+    {
+        target = null;
+        if (RequiresTarget(potion) && !supplied)
+            return "This potion requires target_id; inspect_targets can show current targets.";
+        if (!RequiresTarget(potion) && supplied)
+            return "This potion does not require target_id; omit it.";
+        if (!supplied) return null;
+        if (potion.TargetType == TargetType.TargetedNoCreature)
+            return merchant && MerchantVisible(potion) ? null : "This potion requires the currently exposed merchant as its target.";
+        if (merchant) return "This potion requires a creature target, not merchant.";
+        target = Targets(potion).FirstOrDefault(creature => creature.CombatId == creatureId);
+        return target != null && potion.IsValidTarget(target) ? null
+            : "The specified target is not currently available for this potion.";
     }
 
     public static object Reference(PotionModel potion, int slot) => new { slot_index = slot, name = English.Name(potion.Title) };

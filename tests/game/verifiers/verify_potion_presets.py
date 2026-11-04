@@ -112,8 +112,8 @@ async def verify(args):
                 try:
                     assert (await call('inspect_potions'))['potion_slots'][2]['name'] == 'Block Potion'
                     assert (await call('get_observation'))['top_bar']['potion_slots'][2]['name'] == 'Block Potion'
-                    failure = await call('inspect_targets', {'potion_slot': 2}, error='illegal_action')
-                    assert failure['error']['message'] != 'The requested action is unavailable.'
+                    target = await call('inspect_targets', {'potion_slot': 2})
+                    assert target['usable'] and target['discardable'], target
                 finally:
                     await native('set_test_potion_display', {'mode': 'normal'})
                 for tool, arguments in (('inspect_deck', {}),
