@@ -1,0 +1,408 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "draw_pile"
+  },
+  "pile": "draw",
+  "status": "opened",
+  "message": "Cards are drawn from here at the start of each turn.\n(Cards shown are sorted by rarity)",
+  "cards": [
+    {
+      "id": "pile:5",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "pile:0",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "pile:6",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "pile:1",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "pile:7",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "pile:8",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "pile:9",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "pile:10",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "pile:11",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "pile:12",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "pile:13",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "pile:14",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Gain 5 Block."
+    },
+    {
+      "id": "pile:2",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": "pile:15",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "0",
+      "star_cost": "2",
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": "pile:4",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": "pile:3",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 6 damage."
+    },
+    {
+      "id": "pile:16",
+      "name": "Ascender's Bane",
+      "type": "Curse",
+      "rarity": "curse",
+      "visual_card_pool": "curse",
+      "energy_cost": null,
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Unplayable.\nEthereal.\nEternal."
+    },
+    {
+      "id": "pile:17",
+      "name": "Ascender's Bane",
+      "type": "Curse",
+      "rarity": "curse",
+      "visual_card_pool": "curse",
+      "energy_cost": null,
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Unplayable.\nEthereal.\nEternal."
+    },
+    {
+      "id": "pile:18",
+      "name": "Ascender's Bane",
+      "type": "Curse",
+      "rarity": "curse",
+      "visual_card_pool": "curse",
+      "energy_cost": null,
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Unplayable.\nEthereal.\nEternal."
+    },
+    {
+      "id": "pile:19",
+      "name": "Ascender's Bane",
+      "type": "Curse",
+      "rarity": "curse",
+      "visual_card_pool": "curse",
+      "energy_cost": null,
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Unplayable.\nEthereal.\nEternal."
+    },
+    {
+      "id": "pile:20",
+      "name": "Ascender's Bane",
+      "type": "Curse",
+      "rarity": "curse",
+      "visual_card_pool": "curse",
+      "energy_cost": null,
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Unplayable.\nEthereal.\nEternal."
+    },
+    {
+      "id": "pile:21",
+      "name": "Ascender's Bane",
+      "type": "Curse",
+      "rarity": "curse",
+      "visual_card_pool": "curse",
+      "energy_cost": null,
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Unplayable.\nEthereal.\nEternal."
+    },
+    {
+      "id": "pile:22",
+      "name": "Ascender's Bane",
+      "type": "Curse",
+      "rarity": "curse",
+      "visual_card_pool": "curse",
+      "energy_cost": null,
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Unplayable.\nEthereal.\nEternal."
+    },
+    {
+      "id": "pile:23",
+      "name": "Ascender's Bane",
+      "type": "Curse",
+      "rarity": "curse",
+      "visual_card_pool": "curse",
+      "energy_cost": null,
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Unplayable.\nEthereal.\nEternal."
+    },
+    {
+      "id": "pile:24",
+      "name": "Ascender's Bane",
+      "type": "Curse",
+      "rarity": "curse",
+      "visual_card_pool": "curse",
+      "energy_cost": null,
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Unplayable.\nEthereal.\nEternal."
+    },
+    {
+      "id": "pile:25",
+      "name": "Ascender's Bane",
+      "type": "Curse",
+      "rarity": "curse",
+      "visual_card_pool": "curse",
+      "energy_cost": null,
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Unplayable.\nEthereal.\nEternal."
+    }
+  ],
+  "hover_tips": [
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        "pile:5",
+        "pile:0",
+        "pile:6",
+        "pile:1",
+        "pile:7",
+        "pile:8",
+        "pile:9",
+        "pile:10",
+        "pile:11",
+        "pile:12",
+        "pile:13",
+        "pile:14"
+      ]
+    },
+    {
+      "title": "Eternal",
+      "description": "Cannot be removed or transformed from your Deck.",
+      "card_ids": [
+        "pile:16",
+        "pile:17",
+        "pile:18",
+        "pile:19",
+        "pile:20",
+        "pile:21",
+        "pile:22",
+        "pile:23",
+        "pile:24",
+        "pile:25"
+      ]
+    },
+    {
+      "title": "Unplayable",
+      "description": "Unplayable cards cannot be played.",
+      "card_ids": [
+        "pile:16",
+        "pile:17",
+        "pile:18",
+        "pile:19",
+        "pile:20",
+        "pile:21",
+        "pile:22",
+        "pile:23",
+        "pile:24",
+        "pile:25"
+      ]
+    },
+    {
+      "title": "Ethereal",
+      "description": "If this card is in your Hand at the end of this turn, it is Exhausted.",
+      "card_ids": [
+        "pile:16",
+        "pile:17",
+        "pile:18",
+        "pile:19",
+        "pile:20",
+        "pile:21",
+        "pile:22",
+        "pile:23",
+        "pile:24",
+        "pile:25"
+      ]
+    },
+    {
+      "title": "Exhaust",
+      "description": "Removed until the end of combat.",
+      "card_ids": [
+        "pile:16",
+        "pile:17",
+        "pile:18",
+        "pile:19",
+        "pile:20",
+        "pile:21",
+        "pile:22",
+        "pile:23",
+        "pile:24",
+        "pile:25"
+      ]
+    }
+  ]
+}

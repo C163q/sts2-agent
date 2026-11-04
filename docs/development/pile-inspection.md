@@ -37,7 +37,7 @@ scene/screen 遵循[统一上下文](observation.md#场景上下文)；打开页
 | `empty` | 确实点击了可见且启用的空堆入口，产生原生角色气泡，未打开卡牌页；`cards: []` |
 | `unavailable` | 入口不在画面或禁用，未点击目标入口；`cards: null`，`reason` 为 `entry_not_visible/entry_disabled` |
 
-这三种情况均是成功的查看结果，不使用 `error` 包装。其他非法场景、打开失败或等待期间界面变化仍返回结构化错误。隐藏的消耗入口只表示无法查看，不读取内部牌堆来补成空列表；在另一个卡牌页中请求隐藏入口时，也保留当前页。
+这三种情况均是整体允许牌堆浏览时的成功查看结果，不使用 `error` 包装；整体门控还要求至少一个牌堆入口可用或能在关闭当前页后操作。所有入口都不可用、其他非法场景、打开失败或等待期间界面变化仍返回结构化错误。隐藏的消耗入口只表示无法查看，不读取内部牌堆来补成空列表；在另一个卡牌页中请求隐藏入口时，也保留当前页。
 
 空抽牌堆与空弃牌堆沿用原生点击气泡；如果此前开着其他卡牌页，先原生返回再点击空堆，结果停在战斗画面。正常空消耗入口隐藏，无须额外 UI 反馈；目标版本没有为空消耗按钮配置气泡，若异常出现可见空消耗入口则拒绝，避免原生空引用错误。
 
@@ -92,7 +92,7 @@ UI 操作在游戏线程执行，异步等待不阻塞游戏。等待期间被�
 python3 -m tests.game.verifiers.verify_piles --ipc-dir .tmp/live/ipc --output-dir .tmp/live/piles
 ```
 
-真实 stdio MCP 验证：
+`verify_mcp_piles` 的真实 stdio 检查仍包含过时的关闭结果断言：它期待完整基础观察，而 close_card_view 已返回 actions_only。因此以下脚本会在该断言处失败，修复前不能作为当前验收通过的依据；问题及实际复现见[PILE-04](../research/2026-11-04-inspect-pile-review.md#优先关注的问题)。
 
 ```sh
 .tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_mcp_piles --ipc-dir .tmp/live/ipc --output-dir .tmp/live/mcp-piles

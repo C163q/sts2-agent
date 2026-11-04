@@ -1,0 +1,11 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "pile": "draw",
+  "status": "empty",
+  "message": "My Draw Pile is empty.",
+  "cards": [],
+  "hover_tips": []
+}

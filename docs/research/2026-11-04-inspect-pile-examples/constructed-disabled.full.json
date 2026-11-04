@@ -1,0 +1,11 @@
+{
+  "scene": "combat",
+  "pile": "discard",
+  "status": "unavailable",
+  "screen": {
+    "status": "visible"
+  },
+  "message": "The pile button is disabled.",
+  "cards": null,
+  "reason": "entry_disabled"
+}

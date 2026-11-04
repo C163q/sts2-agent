@@ -1,0 +1,30 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "draw_pile"
+  },
+  "pile": "draw",
+  "status": "opened",
+  "message": "Cards are drawn from here at the start of each turn.\n(Cards shown are sorted by rarity)",
+  "cards": [
+    {
+      "id": "pile:0",
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1"
+    },
+    {
+      "id": "pile:1",
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1"
+    },
+    {
+      "id": "pile:2",
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1"
+    }
+  ]
+}

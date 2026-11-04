@@ -1,0 +1,24 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "exhaust_pile"
+  },
+  "pile": "exhaust",
+  "status": "opened",
+  "message": "These cards were exhausted this combat.",
+  "cards": [
+    {
+      "id": "pile:1",
+      "name": "Blade Dance",
+      "type": "Skill",
+      "energy_cost": "1"
+    },
+    {
+      "id": "pile:2",
+      "name": "Shiv",
+      "type": "Attack",
+      "energy_cost": "0"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "pile": "exhaust",
+  "status": "unavailable",
+  "message": "The pile button is not visible.",
+  "reason": "entry_not_visible"
+}

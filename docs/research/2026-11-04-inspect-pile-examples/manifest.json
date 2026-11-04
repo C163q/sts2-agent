@@ -1,0 +1,376 @@
+{
+  "base_commit": "e8a0b18",
+  "mod": "0.58.0",
+  "mcp": "0.60.0",
+  "schema": 39,
+  "mod_sha256": "40e3ba694e13236c862d8f80dff3c6c6294861ab5569eebd36e50125601c3ed6",
+  "game_dll_sha256": "d13f3f150b1413b24c3a9c5575cdf5398dc74270877d55dec9a556dd8150bd03",
+  "samples": [
+    {
+      "file": "draw.full.json",
+      "kind": "real_stdio",
+      "purpose": "非空draw；full",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/draw/evidence.json",
+      "source_index": 1,
+      "arguments": {
+        "pile": "draw",
+        "preset": "full"
+      },
+      "sha256": "1547a517b82e3d7cd99a306eea68afd74a640aab76b7c8a549ae2d849fcd0806"
+    },
+    {
+      "file": "draw.default.json",
+      "kind": "real_stdio",
+      "purpose": "非空draw；default",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/draw/evidence.json",
+      "source_index": 3,
+      "arguments": {
+        "pile": "draw",
+        "preset": "default"
+      },
+      "sha256": "cd412cda0b4a2ec66d7ad9edcb41ae3f2c0069959787a5e4d3e36903f1d1d6be"
+    },
+    {
+      "file": "draw.summary.json",
+      "kind": "real_stdio",
+      "purpose": "非空draw；summary",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/draw/evidence.json",
+      "source_index": 5,
+      "arguments": {
+        "pile": "draw",
+        "preset": "summary"
+      },
+      "sha256": "e930d224cf00810de1eef451b89c6783d0de69144fa15b9d2548cc2ae3dd4afc"
+    },
+    {
+      "file": "discard.full.json",
+      "kind": "real_stdio",
+      "purpose": "非空discard；full",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 21,
+      "arguments": {
+        "pile": "discard",
+        "preset": "full"
+      },
+      "sha256": "63aa7d6fb6e88231356a8ba755a495bc58ad5f92232f9beeda23751f1a73145f"
+    },
+    {
+      "file": "discard.default.json",
+      "kind": "real_stdio",
+      "purpose": "非空discard；default",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 22,
+      "arguments": {
+        "pile": "discard",
+        "preset": "default"
+      },
+      "sha256": "a5ea7260ac902d2397e1f17612057c7f7955b56930c41fa9084c27efedb9a6ba"
+    },
+    {
+      "file": "discard.summary.json",
+      "kind": "real_stdio",
+      "purpose": "非空discard；summary",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 23,
+      "arguments": {
+        "pile": "discard",
+        "preset": "summary"
+      },
+      "sha256": "feb0f46c1bad04e6acd4da8955972e5d5c15b612e4538c06d30c685363550243"
+    },
+    {
+      "file": "exhaust.full.json",
+      "kind": "real_stdio",
+      "purpose": "非空exhaust；full",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 25,
+      "arguments": {
+        "pile": "exhaust",
+        "preset": "full"
+      },
+      "sha256": "21737052bafae9e2becfb2878f8f347c3cafd008daa5e563d2723f5332103f30"
+    },
+    {
+      "file": "exhaust.default.json",
+      "kind": "real_stdio",
+      "purpose": "非空exhaust；default",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 26,
+      "arguments": {
+        "pile": "exhaust",
+        "preset": "default"
+      },
+      "sha256": "215e7579150868870ba5b33f943dbffba6475d8e0961863d2981f5b82d5dee46"
+    },
+    {
+      "file": "exhaust.summary.json",
+      "kind": "real_stdio",
+      "purpose": "非空exhaust；summary",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 27,
+      "arguments": {
+        "pile": "exhaust",
+        "preset": "summary"
+      },
+      "sha256": "9461cc184863d66fac4aaa53510140347958ec2ba4d3e1d50d38e1f1aa8365b6"
+    },
+    {
+      "file": "empty-draw.full.json",
+      "kind": "real_stdio",
+      "purpose": "实际点击空抽牌入口和气泡",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 1,
+      "arguments": {
+        "pile": "draw",
+        "preset": "full"
+      },
+      "sha256": "a46e781be4558025c82f7cb0959ccf6e4edcac3261bfee86d177ac0db2bd6b23"
+    },
+    {
+      "file": "empty-discard.full.json",
+      "kind": "real_stdio",
+      "purpose": "实际点击空弃牌入口和气泡",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 4,
+      "arguments": {
+        "pile": "discard",
+        "preset": "full"
+      },
+      "sha256": "2019b4ebcf9a7f6dcfbe9ccc7e9524fd3c4bc133ea7030bbffb8b736d7a20936"
+    },
+    {
+      "file": "hidden-keeps-deck.full.json",
+      "kind": "real_stdio",
+      "purpose": "隐藏目标保留已有牌组页",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 11,
+      "arguments": {
+        "pile": "exhaust",
+        "preset": "full"
+      },
+      "sha256": "7f16e343664d50d8f8591d41a2fe059d739c7914aa9c2cb938cad6de099a97ad"
+    },
+    {
+      "file": "error-filter.json",
+      "kind": "real_stdio",
+      "purpose": "card_ids 目前不受支持，本地拒绝",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 30,
+      "arguments": {
+        "pile": "draw",
+        "card_ids": [],
+        "preset": "full"
+      },
+      "sha256": "387312c996150d6c226b57ac6e70f31afdacd27a8f705d86be750ca2aea95288"
+    },
+    {
+      "file": "error-map.json",
+      "kind": "real_stdio",
+      "purpose": "地图挡住入口时拒绝",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 32,
+      "arguments": {
+        "pile": "draw",
+        "preset": "full"
+      },
+      "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+    },
+    {
+      "file": "observation-discard.full.json",
+      "kind": "real_stdio",
+      "purpose": "牌堆已打开，基础观察尚无列表",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 24,
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "4361c7dade4bf6a4eade4c3d39968ba78cb563e15e41bdfb5950b5d722e51998"
+    },
+    {
+      "file": "observation-exhaust.full.json",
+      "kind": "real_stdio",
+      "purpose": "消耗页已打开，基础观察尚无列表",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 28,
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "ab9c9b9f03f8f21f64667fc8fa5147e841969939edc3e2374177994d8a26471f"
+    },
+    {
+      "file": "hidden-exhaust.full.json",
+      "kind": "real_stdio",
+      "purpose": "隐藏入口；full",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 7,
+      "arguments": {
+        "pile": "exhaust",
+        "preset": "full"
+      },
+      "sha256": "e8ef516597429fc4c086048db68ff55d073d595057787f7a97a2a14491fb3595"
+    },
+    {
+      "file": "observation-draw.full.json",
+      "kind": "real_stdio",
+      "purpose": "已打开抽牌页的基础观察；full",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/draw/evidence.json",
+      "source_index": 2,
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "d3a2c1e9e7267b433a780976a8e420571b43bcf3c4fc87f397ef8d781d638108"
+    },
+    {
+      "file": "hidden-exhaust.default.json",
+      "kind": "real_stdio",
+      "purpose": "隐藏入口；default",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 8,
+      "arguments": {
+        "pile": "exhaust",
+        "preset": "default"
+      },
+      "sha256": "91279aaff0b172527327416633d6a5d2e0a1e15b367d8b11c831d2c68106c1df"
+    },
+    {
+      "file": "observation-draw.default.json",
+      "kind": "real_stdio",
+      "purpose": "已打开抽牌页的基础观察；default",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/draw/evidence.json",
+      "source_index": 4,
+      "arguments": {
+        "preset": "default"
+      },
+      "sha256": "8cc3cdf93d79ae3f40748ad8e3b9d028f3e398492ecdf524e254b018195c5e00"
+    },
+    {
+      "file": "hidden-exhaust.summary.json",
+      "kind": "real_stdio",
+      "purpose": "隐藏入口；summary",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 9,
+      "arguments": {
+        "pile": "exhaust",
+        "preset": "summary"
+      },
+      "sha256": "91279aaff0b172527327416633d6a5d2e0a1e15b367d8b11c831d2c68106c1df"
+    },
+    {
+      "file": "observation-draw.summary.json",
+      "kind": "real_stdio",
+      "purpose": "已打开抽牌页的基础观察；summary",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/draw/evidence.json",
+      "source_index": 6,
+      "arguments": {
+        "preset": "summary"
+      },
+      "sha256": "365c65594d19743f56b19d5f1d1e86bb1c58ac82d67155fb8deccdce34e8bf26"
+    },
+    {
+      "file": "draw-replaces-deck.full.json",
+      "kind": "real_stdio",
+      "purpose": "非空抽牌页替换牌组",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/draw/evidence.json",
+      "source_index": 8,
+      "arguments": {
+        "pile": "draw",
+        "preset": "full"
+      },
+      "sha256": "1547a517b82e3d7cd99a306eea68afd74a640aab76b7c8a549ae2d849fcd0806"
+    },
+    {
+      "file": "empty-closes-draw.full.json",
+      "kind": "real_stdio",
+      "purpose": "空弃牌关闭已有抽牌页",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/draw/evidence.json",
+      "source_index": 9,
+      "arguments": {
+        "pile": "discard",
+        "preset": "full"
+      },
+      "sha256": "2019b4ebcf9a7f6dcfbe9ccc7e9524fd3c4bc133ea7030bbffb8b736d7a20936"
+    },
+    {
+      "file": "error-main-menu.json",
+      "kind": "real_stdio",
+      "purpose": "主菜单拒绝",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/main_menu/evidence.json",
+      "source_index": 1,
+      "arguments": {
+        "pile": "draw",
+        "preset": "full"
+      },
+      "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+    },
+    {
+      "file": "error-event.json",
+      "kind": "real_stdio",
+      "purpose": "非战斗事件拒绝",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/event/evidence.json",
+      "source_index": 1,
+      "arguments": {
+        "pile": "draw",
+        "preset": "full"
+      },
+      "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+    },
+    {
+      "file": "error-selection.json",
+      "kind": "real_stdio",
+      "purpose": "显示选牌时拒绝",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/selection/evidence.json",
+      "source_index": 3,
+      "arguments": {
+        "pile": "draw",
+        "preset": "full"
+      },
+      "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+    },
+    {
+      "file": "error-after-rejection.json",
+      "kind": "real_stdio",
+      "purpose": "明确前置拒绝后，旧许可丢失",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/selection/evidence.json",
+      "source_index": 4,
+      "arguments": {
+        "option_id": "cancel"
+      },
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+    },
+    {
+      "file": "closed.full.json",
+      "kind": "real_stdio",
+      "purpose": "成功关闭是 actions_only",
+      "source": ".tmp/2026-11-04-inspect-pile-review/verified/combat/evidence.json",
+      "source_index": 29,
+      "arguments": {
+        "preset": "full"
+      },
+      "sha256": "47c56f5ddeb7183dceb0ae52b16dee49c83b1e6872f85513c26713af52031d45"
+    },
+    {
+      "file": "constructed-disabled.full.json",
+      "kind": "constructed",
+      "purpose": "实现整理的禁用入口，非自然实测",
+      "source": "src/Sts2Agent/Adapter/GameAdapter.Views.cs:InspectPile",
+      "source_index": null,
+      "arguments": {
+        "pile": "discard",
+        "preset": "full"
+      },
+      "sha256": "0f52ad36b8a3bc1cbb17b9189a15b8c8a333c90725b78a536f3c6619cce18b81"
+    },
+    {
+      "file": "long-draw.full.json",
+      "kind": "native_projected",
+      "purpose": "原生测试夹具生成的长列表及上下文费用，由当前公开 full 投影",
+      "source": ".tmp/2026-11-04-inspect-pile-review/native/projected.json",
+      "source_index": 3,
+      "arguments": {
+        "pile": "draw",
+        "preset": "full"
+      },
+      "sha256": "3d7f38a074b6be105841d0ba5b673d7dff76f9cc3a2fb468ccbf631d075ebcde"
+    }
+  ]
+}

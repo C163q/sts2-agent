@@ -1,0 +1,53 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "exhaust_pile"
+  },
+  "pile": "exhaust",
+  "status": "opened",
+  "message": "These cards were exhausted this combat.",
+  "cards": [
+    {
+      "id": "pile:1",
+      "name": "Blade Dance",
+      "type": "Skill",
+      "rarity": "common",
+      "visual_card_pool": "silent",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Add 3 Shiv into your Hand.\nExhaust."
+    },
+    {
+      "id": "pile:2",
+      "name": "Shiv",
+      "type": "Attack",
+      "rarity": "token",
+      "visual_card_pool": "token",
+      "energy_cost": "0",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null,
+      "description": "Deal 4 damage.\nExhaust."
+    }
+  ],
+  "hover_tips": [
+    {
+      "title": "Shiv",
+      "description": "Deal 4 damage.\nExhaust.",
+      "card_ids": [
+        "pile:1"
+      ]
+    },
+    {
+      "title": "Exhaust",
+      "description": "Removed until the end of combat.",
+      "card_ids": [
+        "pile:1",
+        "pile:2"
+      ]
+    }
+  ]
+}

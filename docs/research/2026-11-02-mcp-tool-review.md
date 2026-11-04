@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 43 项，已核销 7 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck。[牌组筛选、基础观察与最小关闭](2026-11-04-deck-inspection-implementation.md)已完成实现、验证及独立审查。get_observation 的地图及牌堆浏览覆盖仍待对应工具，整体未核销；其余 35 项尚待逐项核验。其他工具的完整错误审阅继续留在用户 TODO。暂无阻塞。
+> 当前状态：工具核验进行中，共 43 项，已核销 7 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck。[inspect_pile](2026-11-04-inspect-pile-review.md)场景核验完成，进入设计讨论；五项问题及筛选／基础观察接入尚未定稿。get_observation 的地图及牌堆浏览覆盖仍待对应工具，整体未核销；其余 34 项尚待逐项核验。其他工具的完整错误审阅继续留在用户 TODO。暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -42,7 +42,7 @@
 ### 卡牌浏览（3 项）
 
 - [x] `inspect_deck`：打开并查看牌组。[定稿](2026-11-04-inspect-deck-review.md#输出定稿)及[实现／游戏验证](2026-11-04-deck-inspection-implementation.md)已完成，615 项 Python、91 项 C#、六局 GUI 及独立审查通过；包含 card_ids、明确拒绝恢复、最小关闭以及基础观察的静态牌面和当前排序／升级设置。
-- [ ] `inspect_pile`：打开并查看抽牌堆、弃牌堆或消耗堆。本轮共享卡牌改造已纳入[统一 preset](2026-11-03-card-format-coverage.md#牌组牌堆参数迁移范围)，已实现并验证，不因此视为本工具完整核验。后续同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)。
+- [ ] `inspect_pile`：打开并查看抽牌堆、弃牌堆或消耗堆。阶段：[场景核验完成，设计讨论中](2026-11-04-inspect-pile-review.md)，31 份完整示例、27 项 Python、四局 GUI／54 次 stdio 调用及 30 项原生检查已记录；错误原因／恢复、基础观察缺口、旧验证断言与提示词共五项待处理。card_ids 及 face_full／face_default／summary 的基础观察接入为候选，尚未定稿。
 - [ ] `close_card_view`：关闭牌组或牌堆浏览界面。成功输出已随[牌组定稿](2026-11-04-inspect-deck-review.md#输出定稿)改为 actions_only 并验证；其余错误与生命周期仍待单独审阅。
 
 ### 战斗与药水操作（4 项）

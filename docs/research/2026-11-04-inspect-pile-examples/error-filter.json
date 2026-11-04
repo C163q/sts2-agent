@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "card_ids is not accepted; allowed fields: pile, preset.",
+    "recovery": "correct_request"
+  }
+}

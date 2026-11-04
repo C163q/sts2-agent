@@ -1,0 +1,18 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "discard_pile"
+  },
+  "pile": "discard",
+  "status": "opened",
+  "message": "Cards here are shuffled into your draw pile when it runs out of cards.",
+  "cards": [
+    {
+      "id": "pile:0",
+      "name": "Defend",
+      "type": "Skill",
+      "energy_cost": "1"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "pile": "discard",
+  "status": "empty",
+  "message": "My Discard Pile is empty.",
+  "cards": [],
+  "hover_tips": []
+}

@@ -1,0 +1,12 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered",
+    "view": "deck"
+  },
+  "pile": "exhaust",
+  "status": "unavailable",
+  "message": "The pile button is not visible.",
+  "cards": null,
+  "reason": "entry_not_visible"
+}
