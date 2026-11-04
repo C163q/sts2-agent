@@ -1,0 +1,212 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 0,
+          "name": "Bash"
+        },
+        "type": "card_discarded",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 1,
+          "name": "Strike"
+        },
+        "type": "card_discarded",
+        "sequence": 2
+      },
+      {
+        "card": {
+          "id": 2,
+          "name": "Defend"
+        },
+        "type": "card_discarded",
+        "sequence": 3
+      },
+      {
+        "card": {
+          "id": 3,
+          "name": "Defend"
+        },
+        "type": "card_discarded",
+        "sequence": 4
+      },
+      {
+        "card": {
+          "id": 4,
+          "name": "Strike"
+        },
+        "type": "card_discarded",
+        "sequence": 5
+      },
+      {
+        "hp_loss": 3,
+        "blocked": 0,
+        "source": null,
+        "actor": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 6
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Slimed"
+        },
+        "pile": "discard",
+        "type": "card_added",
+        "sequence": 7
+      },
+      {
+        "card": {
+          "id": 6,
+          "name": "Slimed"
+        },
+        "pile": "discard",
+        "type": "card_added",
+        "sequence": 8
+      },
+      {
+        "hp_loss": 4,
+        "blocked": 0,
+        "source": null,
+        "actor": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 9
+      },
+      {
+        "card": {
+          "id": 7,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 10
+      },
+      {
+        "card": {
+          "id": 8,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 11
+      },
+      {
+        "card": {
+          "id": 9,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 12
+      },
+      {
+        "card": {
+          "id": 10,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 13
+      },
+      {
+        "card": {
+          "id": 11,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 14
+      },
+      {
+        "type": "combat_started",
+        "sequence": 15
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 0,
+        "after": 3,
+        "type": "energy_changed",
+        "sequence": 16
+      },
+      {
+        "card": {
+          "id": 0,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 17
+      },
+      {
+        "card": {
+          "id": 1,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 18
+      },
+      {
+        "card": {
+          "id": 2,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 19
+      },
+      {
+        "card": {
+          "id": 3,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 20
+      },
+      {
+        "card": {
+          "id": 4,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 21
+      }
+    ]
+  }
+}

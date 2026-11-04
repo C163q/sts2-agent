@@ -1,0 +1,47 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "available_actions": [],
+  "transition": {
+    "stop_reason": "combat_lost",
+    "complete": true,
+    "events": [
+      {
+        "hp_loss": 1,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Wither"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 1
+      },
+      {
+        "source": {
+          "kind": "card",
+          "name": "Wither"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "died",
+        "sequence": 2
+      }
+    ]
+  }
+}

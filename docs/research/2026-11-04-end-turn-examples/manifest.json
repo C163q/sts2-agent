@@ -1,0 +1,441 @@
+{
+  "base_commit": "ff60dc3",
+  "mod": "0.61.0",
+  "mcp": "0.63.0",
+  "schema": 40,
+  "mod_sha256": "4504a65c32e0d03fe3068cf13307a5642da3945cc3c6bab01cb8572d46565d14",
+  "examples": [
+    {
+      "file": "normal.full.json",
+      "purpose": "普通回合",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/normal/evidence.json",
+      "source_index": 4,
+      "sha256": "df99a9862cc7c8d014d482e2938a407ac018cec255241ae4186b729a3bc82338"
+    },
+    {
+      "file": "normal-next-turn.default.json",
+      "purpose": "无需重新观察，直接结束下一回合；不是同一回合的预设对比",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "default"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/normal/evidence.json",
+      "source_index": 5,
+      "sha256": "f24bd295d06b86acd463f5d474dd4b8e93836c17af44d314018b2b712d215dcc"
+    },
+    {
+      "file": "wither.full.json",
+      "purpose": "结束回合时卡牌损血",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/wither/evidence.json",
+      "source_index": 1,
+      "sha256": "e533f994640ca854b2fbffac1281900aa84bc0704c04b655610cd2879c62a230"
+    },
+    {
+      "file": "wither_death.full.json",
+      "purpose": "卡牌损血导致战败",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/wither_death/evidence.json",
+      "source_index": 1,
+      "sha256": "0881172372073723d250b8c7debfb53f8da8b1a340a64ebccd2574aad12e0499"
+    },
+    {
+      "file": "enemy_death.full.json",
+      "purpose": "敌方攻击导致战败",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/enemy_death/evidence.json",
+      "source_index": 1,
+      "sha256": "f96ecfec6e1d8979bc85a57c386f650f12be848b199258a3f708e51ce47346aa"
+    },
+    {
+      "file": "tyranny.full.json",
+      "purpose": "下回合开始时选牌",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/tyranny/evidence.json",
+      "source_index": 1,
+      "sha256": "2e5e9febe337a2bb2993de6ece8d9e4c6f3ff92c471e98a714d5489a1102438f"
+    },
+    {
+      "file": "retain_choice.full.json",
+      "purpose": "结束回合时保留选牌",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/retain_choice/evidence.json",
+      "source_index": 1,
+      "sha256": "3e1f90148e7977dfcaa026355a309b9028331134baf070b49cdd8bd458449fe8"
+    },
+    {
+      "file": "boulder.full.json",
+      "purpose": "结束回合效果导致战胜",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/boulder/evidence.json",
+      "source_index": 1,
+      "sha256": "dec724eb4221fd8f20ebbd92661d6cefc638b56d1a8dab1054dfea2333b9c6dd"
+    },
+    {
+      "file": "doom.full.json",
+      "purpose": "灾厄处决导致战胜",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/doom/evidence.json",
+      "source_index": 1,
+      "sha256": "1c4854dad3ca4813acf6698334cdfd285e8cf5677d7f93237502d512b059272e"
+    },
+    {
+      "file": "stampede.full.json",
+      "purpose": "自动出牌导致战胜",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/stampede/evidence.json",
+      "source_index": 1,
+      "sha256": "5fe0d5a99af9d52be6b315c82beffcc9b57e2ed8381b40314d2b1b8f3aca1b3e"
+    },
+    {
+      "file": "revive.full.json",
+      "purpose": "死亡后等待复活的普通回合",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/revive/evidence.json",
+      "source_index": 1,
+      "sha256": "6fe0d0a25ee08bf1ac697de25b3be91f7057ae1198d6c30eb16f4e00213b6a19"
+    },
+    {
+      "file": "revive-following-3.full.json",
+      "purpose": "后续回合中的复活",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/revive/evidence.json",
+      "source_index": 3,
+      "sha256": "fb1dda76212ca8d5b5aed6970aff8c0c1dd399f504706161b5d8f30ed91b0485"
+    },
+    {
+      "file": "blocked.full.json",
+      "purpose": "格挡抵消伤害",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/blocked/evidence.json",
+      "source_index": 1,
+      "sha256": "5a978ef34d09788cc2ebabfb5df1b8775864ffd4adac1a8c9d55a6adfe6b4301"
+    },
+    {
+      "file": "hellraiser.full.json",
+      "purpose": "回合开始抽牌并自动出牌",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/hellraiser/evidence.json",
+      "source_index": 1,
+      "sha256": "00cf469444fa7d4977345f041e9390e067d83f74d834e18cb9f07dd76d5dba55"
+    },
+    {
+      "file": "exhaust_block.full.json",
+      "purpose": "消耗牌触发格挡",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/exhaust_block/evidence.json",
+      "source_index": 1,
+      "sha256": "44b259612405ef74c3892c97920c8c56c2f53538b382a68dd6a34728a5f03e04"
+    },
+    {
+      "file": "hidden_hp.full.json",
+      "purpose": "无限生命显示的敌人",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/hidden_hp/evidence.json",
+      "source_index": 1,
+      "sha256": "d1d16f652e1cf5a3e90e28761462ee8342566e907d03d6dacd37a1d8db662767"
+    },
+    {
+      "file": "thieving_hopper.full.json",
+      "purpose": "偷窃草蜢首回合",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/thieving_hopper/evidence.json",
+      "source_index": 1,
+      "sha256": "8f39254dfdd85e46df99f715b19ed8682572a3708bce8c5a281164671044cdb0"
+    },
+    {
+      "file": "handoff.full.json",
+      "purpose": "同一动作切换战斗",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/handoff/evidence.json",
+      "source_index": 1,
+      "sha256": "68550e2d06e95153af3b6b9f2444fff4a4135356b5d3f8950024e51817a8d8d1"
+    },
+    {
+      "file": "eye.full.json",
+      "purpose": "佩尔之眼额外回合",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/terminal/eye.json",
+      "source_index": 8,
+      "sha256": "45762bb231eeaa8a77fa343e6a3ee6814a68bb2339f0d118fdebb799d2813e75"
+    },
+    {
+      "file": "error-no-observation.json",
+      "purpose": "首次没有观察许可",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/main_menu/evidence.json",
+      "source_index": 0,
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+    },
+    {
+      "file": "error-main-menu.json",
+      "purpose": "主菜单不能结束回合",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/main_menu/evidence.json",
+      "source_index": 2,
+      "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+    },
+    {
+      "file": "error-deck.json",
+      "purpose": "牌组覆盖拒绝",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/normal/evidence.json",
+      "source_index": 8,
+      "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+    },
+    {
+      "file": "error-draw.json",
+      "purpose": "抽牌堆覆盖拒绝",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/normal/evidence.json",
+      "source_index": 14,
+      "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+    },
+    {
+      "file": "error-map.json",
+      "purpose": "地图覆盖拒绝",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/normal/evidence.json",
+      "source_index": 20,
+      "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+    },
+    {
+      "file": "error-rejection-loses-permission.json",
+      "purpose": "明确拒绝后仍要求重新观察",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/normal/evidence.json",
+      "source_index": 9,
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+    },
+    {
+      "file": "error-event.json",
+      "purpose": "非战斗事件不能结束回合",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/event/evidence.json",
+      "source_index": 1,
+      "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+    },
+    {
+      "file": "error-event-next-action.json",
+      "purpose": "事件合法选项被观察前置阻挡",
+      "kind": "real_stdio",
+      "tool": "choose_event_option",
+      "arguments": {
+        "option_id": 0
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/event/evidence.json",
+      "source_index": 2,
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+    },
+    {
+      "file": "error-choice.json",
+      "purpose": "选牌期间不能结束回合",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/tyranny/evidence.json",
+      "source_index": 3,
+      "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+    },
+    {
+      "file": "error-choice-next-action.json",
+      "purpose": "合法选牌被观察前置阻挡",
+      "kind": "real_stdio",
+      "tool": "select_card",
+      "arguments": {
+        "card_id": 7
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/tyranny/evidence.json",
+      "source_index": 4,
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+    },
+    {
+      "file": "error-summary.json",
+      "purpose": "本地参数错误，不发 IPC",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "summary"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/normal/evidence.json",
+      "source_index": 1,
+      "sha256": "4d9fc2591fa95fd3be4aa5da9e9069924310da95773916f6dee00df473d4e31e"
+    },
+    {
+      "file": "error-extra-field.json",
+      "purpose": "本地参数错误，不发 IPC",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "count": 2
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/normal/evidence.json",
+      "source_index": 2,
+      "sha256": "753a56e3e2d54365df94fc8f56c0ae6138202fd29868b8baf41a24d03e7bb6ad"
+    },
+    {
+      "file": "error-null-preset.json",
+      "purpose": "本地参数错误，不发 IPC",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": null
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/normal/evidence.json",
+      "source_index": 3,
+      "sha256": "21f71ae82d206d2a8c803067553b5fd7807a67acb839c685655cd9281b0ce89a"
+    },
+    {
+      "file": "terminal-won-turn.full.json",
+      "purpose": "胜负回执清空可用工具，但未重新观察也能查看遗物",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/terminal/won.json",
+      "source_index": 1,
+      "sha256": "dec724eb4221fd8f20ebbd92661d6cefc638b56d1a8dab1054dfea2333b9c6dd"
+    },
+    {
+      "file": "terminal-won-direct-relics.full.json",
+      "purpose": "胜负回执清空可用工具，但未重新观察也能查看遗物",
+      "kind": "real_stdio",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/terminal/won.json",
+      "source_index": 3,
+      "sha256": "a4ffb6e01a24b9111fc0f8500f7bd29a316950b1f4e8efc39c82797d80a26ffa"
+    },
+    {
+      "file": "terminal-lost-turn.full.json",
+      "purpose": "胜负回执清空可用工具，但未重新观察也能查看遗物",
+      "kind": "real_stdio",
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/terminal/lost.json",
+      "source_index": 1,
+      "sha256": "0881172372073723d250b8c7debfb53f8da8b1a340a64ebccd2574aad12e0499"
+    },
+    {
+      "file": "terminal-lost-direct-relics.full.json",
+      "purpose": "胜负回执清空可用工具，但未重新观察也能查看遗物",
+      "kind": "real_stdio",
+      "tool": "inspect_relics",
+      "arguments": {
+        "preset": "full"
+      },
+      "source": ".tmp/2026-11-04-end-turn-review/terminal/lost.json",
+      "source_index": 3,
+      "sha256": "2e05f09fa7b1d355683520b6d6df3a1192857b0e0e34e9cdd61d35c7adff2a92"
+    }
+  ]
+}

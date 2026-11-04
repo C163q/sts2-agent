@@ -1,0 +1,271 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 0,
+          "name": "Bash"
+        },
+        "type": "card_discarded",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 1,
+          "name": "Strike"
+        },
+        "type": "card_discarded",
+        "sequence": 2
+      },
+      {
+        "card": {
+          "id": 2,
+          "name": "Defend"
+        },
+        "type": "card_discarded",
+        "sequence": 3
+      },
+      {
+        "card": {
+          "id": 3,
+          "name": "Defend"
+        },
+        "type": "card_discarded",
+        "sequence": 4
+      },
+      {
+        "card": {
+          "id": 4,
+          "name": "Strike"
+        },
+        "type": "card_discarded",
+        "sequence": 5
+      },
+      {
+        "hp_loss": 3,
+        "blocked": 0,
+        "source": null,
+        "actor": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 6
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Slimed"
+        },
+        "pile": "discard",
+        "type": "card_added",
+        "sequence": 7
+      },
+      {
+        "card": {
+          "id": 6,
+          "name": "Slimed"
+        },
+        "pile": "discard",
+        "type": "card_added",
+        "sequence": 8
+      },
+      {
+        "hp_loss": 4,
+        "blocked": 0,
+        "source": null,
+        "actor": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 9
+      },
+      {
+        "card": {
+          "id": 7,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 10
+      },
+      {
+        "card": {
+          "id": 7,
+          "name": "Strike"
+        },
+        "autoplay": true,
+        "source": {
+          "kind": "power",
+          "name": "Hellraiser"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "card_played",
+        "sequence": 11
+      },
+      {
+        "hp_loss": 0,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Strike"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 12
+      },
+      {
+        "card": {
+          "id": 6,
+          "name": "Slimed"
+        },
+        "type": "card_drawn",
+        "sequence": 13
+      },
+      {
+        "card": {
+          "id": 4,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 14
+      },
+      {
+        "card": {
+          "id": 4,
+          "name": "Strike"
+        },
+        "autoplay": true,
+        "source": {
+          "kind": "power",
+          "name": "Hellraiser"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "card_played",
+        "sequence": 15
+      },
+      {
+        "hp_loss": 0,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Strike"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 16
+      },
+      {
+        "card": {
+          "id": 1,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 17
+      },
+      {
+        "card": {
+          "id": 1,
+          "name": "Strike"
+        },
+        "autoplay": true,
+        "source": {
+          "kind": "power",
+          "name": "Hellraiser"
+        },
+        "target": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "type": "card_played",
+        "sequence": 18
+      },
+      {
+        "hp_loss": 0,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Strike"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Leaf Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 19
+      },
+      {
+        "card": {
+          "id": 2,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 20
+      }
+    ]
+  }
+}

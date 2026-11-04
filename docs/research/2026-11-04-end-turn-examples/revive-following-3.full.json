@@ -1,0 +1,187 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 5,
+          "name": "Strike"
+        },
+        "type": "card_discarded",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 6,
+          "name": "Strike"
+        },
+        "type": "card_discarded",
+        "sequence": 2
+      },
+      {
+        "card": {
+          "id": 7,
+          "name": "Defend"
+        },
+        "type": "card_discarded",
+        "sequence": 3
+      },
+      {
+        "card": {
+          "id": 8,
+          "name": "Strike"
+        },
+        "type": "card_discarded",
+        "sequence": 4
+      },
+      {
+        "card": {
+          "id": 9,
+          "name": "Defend"
+        },
+        "type": "card_discarded",
+        "sequence": 5
+      },
+      {
+        "target": {
+          "id": 1,
+          "kind": "enemy",
+          "name": "Decimillipede"
+        },
+        "type": "revived",
+        "sequence": 6
+      },
+      {
+        "hp_loss": 6,
+        "blocked": 0,
+        "source": null,
+        "actor": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Decimillipede"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 7
+      },
+      {
+        "name": "Strength",
+        "change": "applied",
+        "before": null,
+        "after": 2,
+        "target": {
+          "id": 2,
+          "kind": "enemy",
+          "name": "Decimillipede"
+        },
+        "type": "power_changed",
+        "sequence": 8
+      },
+      {
+        "hp_loss": 8,
+        "blocked": 0,
+        "source": null,
+        "actor": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Decimillipede"
+        },
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "damage",
+        "sequence": 9
+      },
+      {
+        "name": "Weak",
+        "change": "modified",
+        "before": 1,
+        "after": 2,
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "power_changed",
+        "sequence": 10
+      },
+      {
+        "name": "Weak",
+        "change": "modified",
+        "before": 2,
+        "after": 1,
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "power_changed",
+        "sequence": 11
+      },
+      {
+        "card": {
+          "id": 1,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 12
+      },
+      {
+        "card": {
+          "id": 4,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 13
+      },
+      {
+        "card": {
+          "id": 2,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 14
+      },
+      {
+        "card": {
+          "id": 6,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 15
+      },
+      {
+        "card": {
+          "id": 5,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 16
+      }
+    ]
+  }
+}
