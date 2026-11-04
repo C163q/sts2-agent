@@ -41,7 +41,7 @@
 | 查看错误说明、已有许可保留及零能量出牌拒绝后结束回合 | [inspection_errors](../../tests/game/data/gui_suite_inspection_errors.json) |
 | 跨场景上下文、顶栏帮助、UI 来源筛选与摘要 | [ui_context](../../tests/game/data/gui_suite_ui_context.json) |
 | 候选升级模式与不支持反馈 | [selection_upgrades](../../tests/game/data/gui_suite_selection_upgrades.json) |
-| 选牌查看的拒绝、已有许可与覆盖边界（审阅基线） | [selection_review](../../tests/game/data/gui_suite_selection_review.json)；[问题与核验范围](../research/2026-11-05-inspect-selection-development-notes.md) |
+| 选牌查看的具体拒绝、安全续接、覆盖边界及卡包／结果说明 | [selection_review](../../tests/game/data/gui_suite_selection_review.json)；[核验与实施](../research/2026-11-05-selection-inspection-implementation.md) |
 | 生成牌、奖励牌及公开加入去向 | [card_additions](../../tests/game/data/gui_suite_card_additions.json) |
 | default 公共空值规则及图片 | [default_presets](../../tests/game/data/gui_suite_default_presets.json) |
 | 战斗、顶栏、附魔与观察预设 | [observation_presets](../../tests/game/data/gui_suite_observation_presets.json) |

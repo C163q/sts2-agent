@@ -13,5 +13,15 @@
     "name": "hand_upgrade",
     "scenarios": {"play": "armaments"},
     "steps": [{"name": "review", "verifier": "verify_selection_review.py", "args": ["--scenario", "hand_upgrade"]}]
+  },
+  {
+    "name": "bundle",
+    "scenarios": {"ancient": "bundle"},
+    "steps": [{"name": "review", "verifier": "verify_selection_review.py", "args": ["--scenario", "bundle"]}]
+  },
+  {
+    "name": "view_cards",
+    "scenarios": {"ancient": "pandora"},
+    "steps": [{"name": "review", "verifier": "verify_selection_review.py", "args": ["--scenario", "view_cards"]}]
   }
 ]

@@ -131,9 +131,7 @@ internal sealed class CardSelection(Control owner, string kind, object key)
         : Kind == "combat_pile" ? (Math.Min(Prefs.MinSelect, Cards.Length), Math.Min(Prefs.MaxSelect, Cards.Length))
         : (Prefs.MinSelect, Prefs.MaxSelect);
 
-    public string? Prompt => Kind is "choose_one" or "reward"
-        ? EnglishCardText.Read(() => EnglishCardText.Plain(new MegaCrit.Sts2.Core.Localization.LocString("gameplay_ui", "CHOOSE_CARD_HEADER").GetFormattedText()))
-        : Prefs.Prompt == null ? null : EnglishCardText.Read(() => EnglishCardText.Plain(Prefs.Prompt.GetFormattedText()));
+    public string? Prompt => SelectionText.Prompt(this);
 
     public IEnumerable<(string id, string? text, NButton button)> Options()
     {

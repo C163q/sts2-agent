@@ -1,9 +1,10 @@
-"""Capture selection inspection rejections on the pre-fix review baseline."""
+"""Verify readable selection rejections and safe continuation without another read."""
 from scripts._bootstrap import ROOT
 import argparse
 import asyncio
 import json
 import sys
+import time
 from pathlib import Path
 
 from mcp import ClientSession, StdioServerParameters
@@ -35,25 +36,55 @@ async def verify(args):
                 assert response.isError == bool(error), response
                 return data
 
-            state = await call('get_observation')
             if args.scenario == 'no_selection':
-                await call('inspect_selection', error='illegal_action')
+                await call('inspect_selection', {'view_upgrades': False}, error='illegal_action')
+                await call('end_turn', error='observation_required')
+            state = await call('get_observation')
+            if args.scenario in ('bundle', 'view_cards'):
+                deadline = time.monotonic() + 15
+                while not {'advance_dialogue', 'choose_ancient_option'} & set(state['available_actions']):
+                    assert time.monotonic() < deadline, state
+                    await asyncio.sleep(.1)
+                    state = await call('get_observation')
+                while 'advance_dialogue' in state['available_actions']:
+                    await call('advance_dialogue')
+                    state = await call('get_observation')
+                option = next(o for o in state['ancient']['options'] if o['enabled'])
+                await call('choose_ancient_option', {'option_id': option['id']})
+                prompt = None
+                for preset in ('full', 'default', 'summary'):
+                    for tool in ('get_observation', 'inspect_selection'):
+                        details = await call(tool, {'preset': preset})
+                        choice = details['selection']
+                        assert choice['type'] == args.scenario, choice
+                        text = choice.get('prompt')
+                        assert isinstance(text, str) and text.strip(), details
+                        assert ('pack' if args.scenario == 'bundle' else 'pandora') in text.lower(), text
+                        prompt = text if prompt is None else prompt
+                        assert text == prompt, (prompt, text)
+                native = await asyncio.to_thread(raw.call, 'check_test_selection_prompt')
+                evidence.append({'native_prompt_checks': native})
+                args.report.write_text(json.dumps(evidence, indent=2) + '\n')
+                assert native['ok'] and native['state']['passed'], native
+            elif args.scenario == 'no_selection':
+                rejected = await call('inspect_selection', error='illegal_action')
+                assert 'selection' in rejected['error']['message'].lower(), rejected
                 # A read-only rejection retains the existing observation.
                 await call('end_turn')
                 await call('get_observation')
                 native = await asyncio.to_thread(raw.call, 'inspect_selection',
                                                 arguments={'view_upgrades': False})
                 evidence.append({'native_rejection': native})
-                await call('inspect_selection', {'view_upgrades': False}, error='illegal_action')
-                # This is the known review defect: the request never clicked anything.
-                await call('end_turn', error='observation_required')
-                await call('get_observation')
+                rejected = await call('inspect_selection', {'view_upgrades': False}, error='illegal_action')
+                assert rejected['error']['recovery'] == 'choose_legal_action', rejected
+                # An explicit unchanged-UI rejection retains the earlier observation.
                 await call('end_turn')
             elif args.scenario == 'covered':
                 assert state['selection']['type'] == 'combat_pile', state
                 await call('set_selection_view', {'view': 'battlefield'})
                 await call('inspect_deck')
-                await call('inspect_selection', error='illegal_action')
+                rejected = await call('inspect_selection', {'view_upgrades': True}, error='illegal_action')
+                assert 'cover' in rejected['error']['message'].lower(), rejected
                 await call('close_card_view')
                 await call('set_selection_view', {'view': 'selection'})
                 await call('inspect_selection')
@@ -68,7 +99,8 @@ async def verify(args):
                 await call('set_selection_view', {'view': 'battlefield'})
                 native = await asyncio.to_thread(raw.call, 'inspect_selection')
                 evidence.append({'native_rejection': native})
-                await call('inspect_selection', error='illegal_action')
+                rejected = await call('inspect_selection', {'view_upgrades': False}, error='illegal_action')
+                assert 'battlefield' in rejected['error']['message'].lower(), rejected
                 await call('set_selection_view', {'view': 'selection'})
                 await call('inspect_selection')
                 await call('selection_option', {'option_id': 'confirm'})

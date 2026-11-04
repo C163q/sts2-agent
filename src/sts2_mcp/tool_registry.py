@@ -656,7 +656,8 @@ SPECS = (
         parser_operation=False,
         projector='selection_presets:selection_preset',
         native_keys=('view_upgrades',),
-        changes_view_with_arguments=True),
+        changes_view_with_arguments=True,
+        unchanged_view_rejections=True),
     ToolSpec(
         name='select_card',
         schema=CARD_SCHEMA,

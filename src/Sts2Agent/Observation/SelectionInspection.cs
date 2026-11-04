@@ -2,11 +2,28 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.UI;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Nodes.Cards;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace Sts2Agent;
 
 internal sealed class SelectionInspection(CombatObservation observation)
 {
+    public static string? UnavailableReason(CardSelection? selection)
+    {
+        if (selection == null) return "No card selection is open.";
+        if (!RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
+            return "Card selection inspection is supported only in single-player.";
+        if (!selection.Supported)
+            return "This card selection is not supported; use manual input.";
+        return selection.Status switch
+        {
+            "battlefield" => "The selection is hidden while viewing the battlefield. Return with set_selection_view(view=\"selection\") before inspecting its candidates.",
+            "covered" => "The card selection is covered or hidden. Close the covering screen or wait for the transition before inspecting its candidates.",
+            "visible" => null,
+            _ => "The card selection is not ready for inspection."
+        };
+    }
+
     private static readonly System.Reflection.MethodInfo CardVisibility = HarmonyLib.AccessTools.Method(
         typeof(NCardGrid), "GetCardVisibility");
 

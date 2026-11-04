@@ -13,7 +13,7 @@ internal static class TestDispatchChecks
         "check_test_star_reveal", "check_test_inventory", "check_test_resources", "check_test_resource_masks",
         "external_back_test_result", "reopen_test_timeline", "close_test_timeline", "inspect_test_browsing_containers",
         "prepare_test_browsable_result", "prepare_test_browsable_history", "check_test_browsable_content", "check_test_top_bar",
-        "check_test_selection_observation", "check_test_afflictions", "check_test_hand_resources", "check_test_enchantments",
+        "check_test_selection_observation", "check_test_selection_prompt", "check_test_afflictions", "check_test_hand_resources", "check_test_enchantments",
         "capture_test_power_tips", "capture_test_gas_bomb_intent", "check_test_confirmation", "open_test_unowned_confirmation",
         "cancel_test_confirmation", "reopen_test_confirmation", "check_test_divination", "check_test_event",
         "check_test_event_english", "prepare_test_event_victory", "check_test_ancient", "start_test_ancient_combat",

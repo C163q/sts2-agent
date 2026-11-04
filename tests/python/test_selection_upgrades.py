@@ -41,6 +41,63 @@ class UpgradeClient(SelectionClient):
 
 
 class SelectionUpgradeTests(unittest.IsolatedAsyncioTestCase):
+    async def test_unchanged_upgrade_rejection_allows_a_legal_action_without_another_read(self):
+        class RejectionClient(SelectionClient):
+            def call(self, operation, expected_state=None, arguments=None, response_options=None):
+                if operation == 'inspect_selection':
+                    return {'ok': False, 'error': {'code': 'illegal_action',
+                        'public_message': 'No card selection is open.', 'ui_unchanged': True},
+                        'execution': {'ui_interaction_started': False,
+                                      'action_submission_observed': False, 'state_captured': True}}
+                return super().call(operation, expected_state, arguments, response_options)
+
+        tools = GameTools(RejectionClient())
+        await tools.get_observation()
+        rejected = await tools.inspect_selection({'view_upgrades': False})
+        self.assertEqual(rejected['error']['recovery'], 'choose_legal_action')
+        self.assertIn('selection', rejected['error']['message'])
+        self.assertNotIn('error', await tools.end_turn())
+
+    async def test_upgrade_rejection_cannot_create_permission_or_hide_uncertain_execution(self):
+        class RejectionClient(SelectionClient):
+            response = None
+
+            def call(self, operation, expected_state=None, arguments=None, response_options=None):
+                if operation == 'inspect_selection':
+                    return copy.deepcopy(self.response)
+                return super().call(operation, expected_state, arguments, response_options)
+
+        for observed, code, unchanged, interacted in (
+                (False, 'illegal_action', True, False),
+                (True, 'illegal_action', False, True),
+                (True, 'stale_state', False, False),
+                (True, 'game_error', False, False)):
+            with self.subTest(observed=observed, code=code, interacted=interacted):
+                client = RejectionClient()
+                client.response = {'ok': False, 'error': {'code': code},
+                    'execution': {'ui_interaction_started': interacted,
+                                  'action_submission_observed': False, 'state_captured': True}}
+                if unchanged:
+                    client.response['error']['ui_unchanged'] = True
+                tools = GameTools(client)
+                if observed:
+                    await tools.get_observation()
+                await tools.inspect_selection({'view_upgrades': True})
+                self.assertEqual((await tools.end_turn())['error']['code'], 'observation_required')
+
+    async def test_summary_preserves_prompt_text_and_uses_normal_null_filtering(self):
+        client = SelectionClient()
+        tools = GameTools(client)
+        for prompt in ('Choose a Pack', None):
+            client.choice['prompt'] = prompt
+            for preset in ('full', 'default', 'summary'):
+                with self.subTest(prompt=prompt, preset=preset):
+                    choice = (await tools.inspect_selection({'preset': preset}))['selection']
+                    if prompt is None and preset != 'full':
+                        self.assertNotIn('prompt', choice)
+                    else:
+                        self.assertEqual(choice['prompt'], prompt)
+
     async def test_upgrade_request_forwards_only_native_option_and_keeps_summary_identity(self):
         client = UpgradeClient()
         tools = GameTools(client)

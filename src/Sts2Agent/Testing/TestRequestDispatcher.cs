@@ -242,6 +242,9 @@ internal sealed partial class GameAdapter
             && request.Operation == "check_test_top_bar")
             return Success(request, JsonSerializer.Serialize(TopBarVisibilityChecks.Run(observation, Observe)));
         if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+            && request.Operation == "check_test_selection_prompt")
+            return Success(request, JsonSerializer.Serialize(SelectionPromptChecks.Run(observation, Observe)));
+        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
             && testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO") is "grid_enchantments" or "upgrade_enchantments"
             && request.Operation == "check_test_selection_observation")
             return Success(request, JsonSerializer.Serialize(SelectionObservationChecks.Run(observation, Observe)));
