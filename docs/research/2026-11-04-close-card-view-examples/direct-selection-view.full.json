@@ -1,0 +1,89 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered"
+  },
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "deck_count": 10,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood"
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "selection": {
+    "type": "combat_pile",
+    "status": "visible",
+    "prompt": "Choose a card to Exhaust.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 5,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "description": "Gain 5 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Until next turn, prevents damage."
+          }
+        ],
+        "outline": "none",
+        "unplayable_markers": []
+      },
+      {
+        "id": 6,
+        "name": "Defend",
+        "type": "Skill",
+        "rarity": "basic",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "0",
+        "description": "Gain 5 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Until next turn, prevents damage."
+          }
+        ],
+        "outline": "none",
+        "unplayable_markers": []
+      }
+    ],
+    "options": [],
+    "can_view_battlefield": true,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "available_actions": [
+    "select_card",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "set_selection_view"
+  ],
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ]
+}

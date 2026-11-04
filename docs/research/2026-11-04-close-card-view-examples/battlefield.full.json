@@ -1,0 +1,21 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "set_selection_view"
+  ],
+  "selection": {
+    "type": "combat_pile",
+    "status": "battlefield"
+  }
+}

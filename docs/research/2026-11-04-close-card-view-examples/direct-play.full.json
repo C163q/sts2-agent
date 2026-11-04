@@ -1,0 +1,57 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 20,
+        "after": 19,
+        "type": "energy_changed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 6,
+          "name": "Defend"
+        },
+        "autoplay": false,
+        "source": null,
+        "type": "card_played",
+        "sequence": 2
+      },
+      {
+        "before": 0,
+        "after": 5,
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "block_changed",
+        "sequence": 3
+      }
+    ]
+  }
+}

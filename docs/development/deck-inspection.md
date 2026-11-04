@@ -34,7 +34,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_card_view
 
 `close_card_view` 同时支持原生牌组、抽牌堆、弃牌堆和消耗牌堆查看页。成功返回与 `get_observation.actions_only` 相同的上下文：scene、screen、available_actions，以及存在待处理选择时的 selection.type/status；不返回牌面、房间正文、顶栏、notes 或 transition。通用 default/full 均保持该最小结构。MCP 与普通文件 CLI 共用投影，底层 `--raw` 仍保留完整快照。成功刷新 MCP 动作许可，已有足够信息时可直接继续合法操作。
 
-调用不需要 `expected_state`；文件参数校验及当前页面复核仍然生效。当前没有受支持的卡牌查看页，或页面被卡牌详情等更高层界面覆盖时，`close_card_view` 返回 `illegal_action`，不会关闭其他页面。
+调用不需要 `expected_state`；文件参数校验及当前页面复核仍然生效。当前没有受支持的卡牌查看页，或页面被卡牌详情等更高层界面覆盖时，`close_card_view` 返回 `illegal_action`，不会关闭其他页面。关闭的前置拒绝目前仍使用通用原因并清除已有 MCP 许可，属于待修缺口，见[CLOSE-01–02](../research/2026-11-04-close-card-view-review.md#优先关注的问题)。
 
 ## 参数
 
@@ -77,11 +77,13 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_card_view
 
 非战斗查看及可用工具一致性的实现与验证范围见[修复记录](../research/2026-11-02-available-actions-fix.md)。
 
-操作发生在游戏线程，等待页面及帧绘制采用异步流程。等待期间页面被关闭、覆盖或替换会返回 `illegal_action`，不重开页面、不撤销人的操作，也不自动关闭新页面。公开拒绝说明区分入口、升级／排序控件与页面变化；异常诊断仍私有。原生明确保证该请求未交互的拒绝可保留已有 MCP 许可，已打开／修改页面、未知结果、过期或坏响应不能按此恢复，详见[MCP 恢复规则](mcp.md#调用和错误语义)。
+操作发生在游戏线程，等待页面及帧绘制采用异步流程。牌组查看请求等待期间页面被关闭、覆盖或替换会返回 `illegal_action`，不重开页面、不撤销人的操作，也不自动关闭新页面。公开拒绝说明区分入口、升级／排序控件与页面变化；异常诊断仍私有。原生明确保证该请求未交互的拒绝可保留已有 MCP 许可，已打开／修改页面、未知结果、过期或坏响应不能按此恢复，详见[MCP 恢复规则](mcp.md#调用和错误语义)。
 
 原生牌组页就绪且未受更高层覆盖时，基础 `get_state` 提供同一完整列表、view_upgrades 与 sort；MCP get_observation.full/default/summary 的卡牌分别使用 face_full／face_default／summary，不附正文及悬停解释。ID、排序、费用及升级模式与专用详情一致；读取不打开／切换页面，不受之前 inspect_deck 的输出筛选影响。关闭、覆盖或尚未就绪时不返回缓存牌组。screen.status:covered 表示下层房间被覆盖，仍可查看当前牌组；顶栏及下层详情的边界见[观察预设](observation.md#mcp-输出预设)。
 
 基础观察在 `screen.view` 标记 `deck/draw_pile/discard_pile/exhaust_pile/map` 等受支持查看页。只关闭最上面的卡牌页：战斗叠地图叠牌组时，返回地图；地图单独打开时调用通用关闭会拒绝。当前版本原生容器关闭会调用 `Unpause`，即使地图仍打开；本项目不增加自定义暂停计数，地图仍按遮挡页面处理，不能据此执行战斗动作。
+
+关闭请求在首个异步等待前点击原生返回并移除当前页，之后仅等待／采样实际画面；这与查看请求必须继续读取原目标页不同。反馈等待期间若出现新页面，返回所采样的当前上下文，不再次关闭新页面。
 
 旧文件操作 `close_deck` 仅为兼容保留，仍只关闭牌组，不注册为 MCP 工具。
 

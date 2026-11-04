@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "unexpected is not accepted; allowed fields: preset.",
+    "recovery": "correct_request"
+  }
+}

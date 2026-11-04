@@ -1,0 +1,15 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "choose_event_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible",
+    "view": "map"
+  },
+  "available_actions": [
+    "travel_to_node",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map"
+  ]
+}
