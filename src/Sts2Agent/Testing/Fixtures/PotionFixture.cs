@@ -29,6 +29,7 @@ internal static class PotionFixture
         if (pendingEnqueue != null) RunManager.Instance.ActionQueueSet.ActionEnqueued -= pendingEnqueue;
         pendingEnqueue = null;
         PotionDiscardCancelFixture.Reset();
+        PotionDiscardFaultFixture.Reset();
     }
 
     public static async Task Configure(string scenario, Player player)
@@ -87,14 +88,15 @@ internal static class PotionFixture
         if (scenario == "unhittable")
             await PowerCmd.Apply<MockUnhittablePower>(new ThrowingPlayerChoiceContext(), player.Creature.CombatState!.Enemies.First(), 1, player.Creature, null);
         if (scenario == "discard_cancel") PotionDiscardCancelFixture.Arm(player.NetId);
-        if (scenario is "cancel" or "discard_hidden")
+        if (scenario == "discard_fault") PotionDiscardFaultFixture.Arm(player.NetId);
+        if (scenario is "cancel" or "discard_hidden" or "discard_foreign")
         {
             void Enqueued(GameAction action)
             {
                 if (scenario == "cancel" ? action is not UsePotionAction : action is not DiscardPotionGameAction) return;
                 RunManager.Instance.ActionQueueSet.ActionEnqueued -= Enqueued;
                 pendingEnqueue = null;
-                if (scenario == "cancel") player.PotionSlots[0]!.Discard();
+                if (scenario is "cancel" or "discard_foreign") player.PotionSlots[0]!.Discard();
                 else
                 {
                     PotionDisplayFixture.Set("hidden");

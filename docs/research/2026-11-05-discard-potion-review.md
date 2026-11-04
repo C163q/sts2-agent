@@ -1,6 +1,6 @@
 # discard_potion 审阅与建议
 
-> 当前状态：已确认契约并完成实现，33 类组合场景、671 项 Python 与 124 项 C# 检查通过，待最终独立审查后核销。下述 15 类现状及 [62 份返回](2026-11-05-discard-potion-examples/README.md)保留审阅基线；修复后见 [116 份完整返回](2026-11-05-potion-discard-queue-examples/README.md)与[实施记录](2026-11-05-potion-discard-implementation.md)。
+> 当前状态：已确认契约并完成实现，35 类组合场景、673 项 Python 与 124 项 C# 检查通过；独立审查及两项重要修复已完成，待合入后核销。下述 15 类现状及 [62 份返回](2026-11-05-discard-potion-examples/README.md)保留审阅基线；修复后见 [126 份完整返回](2026-11-05-potion-discard-queue-examples/README.md)与[实施记录](2026-11-05-potion-discard-implementation.md)。
 
 ## 优先关注的问题
 
@@ -64,3 +64,5 @@
 取消且确认未丢弃时为 not_discarded；无法确认或执行异常而缺少公开移除证据时为 unknown。unknown 不提供继续玩法的许可，须重新读取；明确未提交的原有错误仍保留已有许可。一个槽位已有原生使用／丢弃等待标记时拒绝重复提交，可继续选牌或处理其他合法槽位，不凭请求成功预测未来移除。
 
 仅 discard_potion 自身的成功回执返回该顶层字段；use_potion、基础观察、选牌回执不携带它。字段在 default/full 中相同，不包含隐藏效果、随机结果或未来执行保证。实际支持和取消等边界须以本轮实现验证为准。
+
+其他效果先移除同一瓶药水时，实际变化仍进入 events，但不能当作本次请求成功的证据。实际丢弃后若后续效果处理异常，保留 discarded 和已发生的事件，同时以 interrupted、complete:false 停止，不允许直接继续玩法。

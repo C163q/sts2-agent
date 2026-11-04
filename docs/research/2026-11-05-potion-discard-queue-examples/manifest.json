@@ -2,12 +2,12 @@
   "source_baseline": "210b2b8",
   "mod_version": "0.65.0",
   "mcp_version": "0.67.0",
-  "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1",
+  "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385",
   "examples": [
     {
-      "file": "cancel-00-get_observation.full.json",
-      "case": "cancel",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/cancel/actions/evidence.json",
+      "file": "fault-00-get_observation.full.json",
+      "case": "fault",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/fault/actions/evidence.json",
       "row_index": 0,
       "tool": "get_observation",
       "arguments": {
@@ -15,12 +15,118 @@
       },
       "result": "read",
       "sha256": "832a92ba6cb4fa4120d154abfeec36737729273f7164d9cae07fdc4acfd85746",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+    },
+    {
+      "file": "fault-01-discard_potion.full.json",
+      "case": "fault",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/fault/actions/evidence.json",
+      "row_index": 1,
+      "tool": "discard_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0
+      },
+      "result": "discarded",
+      "sha256": "bf93b773a0f1f7278e47b56293d8207634b0fa96c4764bb0af5fb5c73e1057d4",
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+    },
+    {
+      "file": "fault-02-end_turn.full.json",
+      "case": "fault",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/fault/actions/evidence.json",
+      "row_index": 2,
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "result": "error",
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+    },
+    {
+      "file": "fault-03-get_observation.full.json",
+      "case": "fault",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/fault/actions/evidence.json",
+      "row_index": 3,
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "result": "read",
+      "sha256": "655f6ca4ac1cbf507a3c679991aae62d0977ad238270513678b046ecff91d2cd",
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+    },
+    {
+      "file": "foreign-00-get_observation.full.json",
+      "case": "foreign",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/foreign/actions/evidence.json",
+      "row_index": 0,
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "result": "read",
+      "sha256": "832a92ba6cb4fa4120d154abfeec36737729273f7164d9cae07fdc4acfd85746",
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+    },
+    {
+      "file": "foreign-01-discard_potion.full.json",
+      "case": "foreign",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/foreign/actions/evidence.json",
+      "row_index": 1,
+      "tool": "discard_potion",
+      "arguments": {
+        "preset": "full",
+        "potion_slot": 0
+      },
+      "result": "unknown",
+      "sha256": "4c5c8084d3d8fedf09dac85c8619be660b085e7abf7b2882373300510e67f884",
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+    },
+    {
+      "file": "foreign-02-end_turn.full.json",
+      "case": "foreign",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/foreign/actions/evidence.json",
+      "row_index": 2,
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "result": "error",
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+    },
+    {
+      "file": "foreign-03-get_observation.full.json",
+      "case": "foreign",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/foreign/actions/evidence.json",
+      "row_index": 3,
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "result": "read",
+      "sha256": "655f6ca4ac1cbf507a3c679991aae62d0977ad238270513678b046ecff91d2cd",
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+    },
+    {
+      "file": "cancel-00-get_observation.full.json",
+      "case": "cancel",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/cancel/actions/evidence.json",
+      "row_index": 0,
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "result": "read",
+      "sha256": "832a92ba6cb4fa4120d154abfeec36737729273f7164d9cae07fdc4acfd85746",
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "cancel-01-discard_potion.full.json",
       "case": "cancel",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/cancel/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/cancel/actions/evidence.json",
       "row_index": 1,
       "tool": "discard_potion",
       "arguments": {
@@ -29,12 +135,25 @@
       },
       "result": "not_discarded",
       "sha256": "ccb7a313f670b7b7005250a3367b16026733fcb0e6009d36ed89253052de9fa6",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+    },
+    {
+      "file": "cancel-02-end_turn.full.json",
+      "case": "cancel",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/cancel/actions/evidence.json",
+      "row_index": 2,
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "result": "error",
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "cancel-03-get_observation.full.json",
       "case": "cancel",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/cancel/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/cancel/actions/evidence.json",
       "row_index": 3,
       "tool": "get_observation",
       "arguments": {
@@ -42,12 +161,12 @@
       },
       "result": "read",
       "sha256": "832a92ba6cb4fa4120d154abfeec36737729273f7164d9cae07fdc4acfd85746",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "cancel-04-discard_potion.full.json",
       "case": "cancel",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/cancel/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/cancel/actions/evidence.json",
       "row_index": 4,
       "tool": "discard_potion",
       "arguments": {
@@ -56,12 +175,12 @@
       },
       "result": "discarded",
       "sha256": "0777ba22e415c31d2d0e18254a2745d3af3d5e68bc517287880f62d2a3155d71",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "hidden-00-get_observation.full.json",
       "case": "hidden",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/hidden/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/hidden/actions/evidence.json",
       "row_index": 0,
       "tool": "get_observation",
       "arguments": {
@@ -69,12 +188,12 @@
       },
       "result": "read",
       "sha256": "832a92ba6cb4fa4120d154abfeec36737729273f7164d9cae07fdc4acfd85746",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "hidden-01-discard_potion.full.json",
       "case": "hidden",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/hidden/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/hidden/actions/evidence.json",
       "row_index": 1,
       "tool": "discard_potion",
       "arguments": {
@@ -83,12 +202,25 @@
       },
       "result": "unknown",
       "sha256": "6be9ea7e5aa795a9bc378d0a43114b4e2c23211ba6c1cf2a37f9e1432988c1ed",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
+    },
+    {
+      "file": "hidden-02-end_turn.full.json",
+      "case": "hidden",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/hidden/actions/evidence.json",
+      "row_index": 2,
+      "tool": "end_turn",
+      "arguments": {
+        "preset": "full"
+      },
+      "result": "error",
+      "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "hidden-04-get_observation.full.json",
       "case": "hidden",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/hidden/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/hidden/actions/evidence.json",
       "row_index": 4,
       "tool": "get_observation",
       "arguments": {
@@ -96,12 +228,12 @@
       },
       "result": "read",
       "sha256": "655f6ca4ac1cbf507a3c679991aae62d0977ad238270513678b046ecff91d2cd",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "card_choice-04-discard_potion.full.json",
       "case": "card_choice",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/card_choice/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/card_choice/actions/evidence.json",
       "row_index": 4,
       "tool": "discard_potion",
       "arguments": {
@@ -110,12 +242,12 @@
       },
       "result": "queued",
       "sha256": "18bea87423dd9cda1b6afa746d0a6f48595610a7cd92d21f2c9cf1b8dbfd0bd1",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "card_choice-05-discard_potion.full.json",
       "case": "card_choice",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/card_choice/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/card_choice/actions/evidence.json",
       "row_index": 5,
       "tool": "discard_potion",
       "arguments": {
@@ -124,12 +256,12 @@
       },
       "result": "error",
       "sha256": "f4e0389d1a90a8b38b828c3a85857648f1200cbd672f83eb989c8ec9906e142d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "card_pile-00-get_observation.full.json",
       "case": "card_pile",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/card_pile/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/card_pile/actions/evidence.json",
       "row_index": 0,
       "tool": "get_observation",
       "arguments": {
@@ -137,12 +269,12 @@
       },
       "result": "read",
       "sha256": "a67228d852e5b8f67acff3c575c0e0e9e948f846e4561100cfabaf434c72a2da",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "card_pile-03-get_observation.full.json",
       "case": "card_pile",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/card_pile/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/card_pile/actions/evidence.json",
       "row_index": 3,
       "tool": "get_observation",
       "arguments": {
@@ -150,12 +282,12 @@
       },
       "result": "read",
       "sha256": "b85f8aba8173690964c29dcb285c48d997015c012c745aaf33532b2abad5afae",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "card_pile-04-discard_potion.full.json",
       "case": "card_pile",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/card_pile/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/card_pile/actions/evidence.json",
       "row_index": 4,
       "tool": "discard_potion",
       "arguments": {
@@ -164,12 +296,12 @@
       },
       "result": "queued",
       "sha256": "df818bae404e5fd58b2a9343cb9274de5ac56a71fa1aacba971ba9cc1afc4855",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "card_pile-05-discard_potion.full.json",
       "case": "card_pile",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/card_pile/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/card_pile/actions/evidence.json",
       "row_index": 5,
       "tool": "discard_potion",
       "arguments": {
@@ -178,12 +310,12 @@
       },
       "result": "error",
       "sha256": "f4e0389d1a90a8b38b828c3a85857648f1200cbd672f83eb989c8ec9906e142d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "card_pile-07-select_card.full.json",
       "case": "card_pile",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/card_pile/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/card_pile/actions/evidence.json",
       "row_index": 7,
       "tool": "select_card",
       "arguments": {
@@ -192,12 +324,12 @@
       },
       "result": "player_ready",
       "sha256": "e589a15e220f1687eebe1ef96f09094763fae1a61c8b4180af69f5f92431c00a",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "card_pile-08-get_observation.full.json",
       "case": "card_pile",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/card_pile/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/card_pile/actions/evidence.json",
       "row_index": 8,
       "tool": "get_observation",
       "arguments": {
@@ -205,12 +337,12 @@
       },
       "result": "read",
       "sha256": "a479ac28b684e5dcc074f48dc22e1bea5a4482d8e681410680ef2f1bcd677ab0",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "hand_upgrade-00-get_observation.full.json",
       "case": "hand_upgrade",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/hand_upgrade/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/hand_upgrade/actions/evidence.json",
       "row_index": 0,
       "tool": "get_observation",
       "arguments": {
@@ -218,12 +350,12 @@
       },
       "result": "read",
       "sha256": "8546f0e9a1a1405bad17d96c0ad45a2ce852f4772aef26a2eeb9ac05c07e8e7f",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "hand_upgrade-03-get_observation.full.json",
       "case": "hand_upgrade",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/hand_upgrade/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/hand_upgrade/actions/evidence.json",
       "row_index": 3,
       "tool": "get_observation",
       "arguments": {
@@ -231,12 +363,12 @@
       },
       "result": "read",
       "sha256": "e63a416e0092a38d2eeddf6fb9af3e88032198be7e92578fd99c540ff09eded0",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "hand_upgrade-04-discard_potion.full.json",
       "case": "hand_upgrade",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/hand_upgrade/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/hand_upgrade/actions/evidence.json",
       "row_index": 4,
       "tool": "discard_potion",
       "arguments": {
@@ -245,12 +377,12 @@
       },
       "result": "queued",
       "sha256": "1a33923f24d0d2174df22abdb2fe5c334d509339540a24a35f9dadff8062c785",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "hand_upgrade-05-discard_potion.full.json",
       "case": "hand_upgrade",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/hand_upgrade/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/hand_upgrade/actions/evidence.json",
       "row_index": 5,
       "tool": "discard_potion",
       "arguments": {
@@ -259,12 +391,12 @@
       },
       "result": "error",
       "sha256": "f4e0389d1a90a8b38b828c3a85857648f1200cbd672f83eb989c8ec9906e142d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "hand_upgrade-07-select_card.full.json",
       "case": "hand_upgrade",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/hand_upgrade/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/hand_upgrade/actions/evidence.json",
       "row_index": 7,
       "tool": "select_card",
       "arguments": {
@@ -273,12 +405,12 @@
       },
       "result": "choice_required",
       "sha256": "97f9d1073730ff2e2377c82d531f8e3438008bd916eeef1cd98d0fdbdf8a93d8",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "hand_upgrade-09-selection_option.full.json",
       "case": "hand_upgrade",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/hand_upgrade/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/hand_upgrade/actions/evidence.json",
       "row_index": 9,
       "tool": "selection_option",
       "arguments": {
@@ -287,12 +419,12 @@
       },
       "result": "player_ready",
       "sha256": "ea4d3e2d377f38049e5e6337d132fbdd423ede8fb93c76da849bea72543da21a",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "hand_upgrade-10-get_observation.full.json",
       "case": "hand_upgrade",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/hand_upgrade/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/hand_upgrade/actions/evidence.json",
       "row_index": 10,
       "tool": "get_observation",
       "arguments": {
@@ -300,12 +432,12 @@
       },
       "result": "read",
       "sha256": "8a20b35297b1052ee9b4500d8ec8d43f2798dc7bc96daae9d632396e3cdc3ae1",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "immediate-01-discard_potion.default.json",
       "case": "immediate",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/immediate/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/immediate/actions/evidence.json",
       "row_index": 1,
       "tool": "discard_potion",
       "arguments": {
@@ -314,12 +446,12 @@
       },
       "result": "discarded",
       "sha256": "0f066bcf3a55d5e7efe61eb78f49f84e9ad09eedc7e20911d07e5e26c9571b5d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "immediate-03-discard_potion.full.json",
       "case": "immediate",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/immediate/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/immediate/actions/evidence.json",
       "row_index": 3,
       "tool": "discard_potion",
       "arguments": {
@@ -328,12 +460,12 @@
       },
       "result": "discarded",
       "sha256": "18f77361987b3f93312a7ca33b0496da3a15e3de385dc25b7c7dc48dafc815de",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "choose_one-00-get_observation.full.json",
       "case": "choose_one",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/choose_one/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/choose_one/actions/evidence.json",
       "row_index": 0,
       "tool": "get_observation",
       "arguments": {
@@ -341,12 +473,12 @@
       },
       "result": "read",
       "sha256": "6eabcd032e5bdd135f369e36bce7ad17f5d8c968f15bfe0d0dae2d259e9c5365",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "choose_one-03-get_observation.full.json",
       "case": "choose_one",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/choose_one/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/choose_one/actions/evidence.json",
       "row_index": 3,
       "tool": "get_observation",
       "arguments": {
@@ -354,12 +486,12 @@
       },
       "result": "read",
       "sha256": "b1626f3c121e6efb1cdc5e357f576028297ffc4ade65fe1675a7680c45116ff0",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "choose_one-05-discard_potion.full.json",
       "case": "choose_one",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/choose_one/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/choose_one/actions/evidence.json",
       "row_index": 5,
       "tool": "discard_potion",
       "arguments": {
@@ -368,12 +500,12 @@
       },
       "result": "queued",
       "sha256": "18bea87423dd9cda1b6afa746d0a6f48595610a7cd92d21f2c9cf1b8dbfd0bd1",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "choose_one-06-discard_potion.full.json",
       "case": "choose_one",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/choose_one/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/choose_one/actions/evidence.json",
       "row_index": 6,
       "tool": "discard_potion",
       "arguments": {
@@ -382,12 +514,12 @@
       },
       "result": "error",
       "sha256": "f4e0389d1a90a8b38b828c3a85857648f1200cbd672f83eb989c8ec9906e142d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "choose_one-08-select_card.full.json",
       "case": "choose_one",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/choose_one/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/choose_one/actions/evidence.json",
       "row_index": 8,
       "tool": "select_card",
       "arguments": {
@@ -396,12 +528,12 @@
       },
       "result": "player_ready",
       "sha256": "13478b9420f0e4c3065c432f090c410e697b2e73c11ca2149f6dfbd84a644399",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "choose_one-09-get_observation.full.json",
       "case": "choose_one",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/choose_one/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/choose_one/actions/evidence.json",
       "row_index": 9,
       "tool": "get_observation",
       "arguments": {
@@ -409,12 +541,12 @@
       },
       "result": "read",
       "sha256": "23bdd28b82bfb463e86eb447990fefa6101f6cd237d0ece309c9edb66c712d91",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "hand-04-discard_potion.full.json",
       "case": "hand",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/hand/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/hand/actions/evidence.json",
       "row_index": 4,
       "tool": "discard_potion",
       "arguments": {
@@ -423,12 +555,12 @@
       },
       "result": "queued",
       "sha256": "22584b81dcc9d7ca95122d06872f27bccf03c9a570cb40d56669b497bf1641d3",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "hand-05-discard_potion.full.json",
       "case": "hand",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/hand/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/hand/actions/evidence.json",
       "row_index": 5,
       "tool": "discard_potion",
       "arguments": {
@@ -437,12 +569,12 @@
       },
       "result": "error",
       "sha256": "f4e0389d1a90a8b38b828c3a85857648f1200cbd672f83eb989c8ec9906e142d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "pile-04-discard_potion.full.json",
       "case": "pile",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/pile/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/pile/actions/evidence.json",
       "row_index": 4,
       "tool": "discard_potion",
       "arguments": {
@@ -451,12 +583,12 @@
       },
       "result": "queued",
       "sha256": "df818bae404e5fd58b2a9343cb9274de5ac56a71fa1aacba971ba9cc1afc4855",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "pile-05-discard_potion.full.json",
       "case": "pile",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/pile/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/pile/actions/evidence.json",
       "row_index": 5,
       "tool": "discard_potion",
       "arguments": {
@@ -465,12 +597,12 @@
       },
       "result": "error",
       "sha256": "f4e0389d1a90a8b38b828c3a85857648f1200cbd672f83eb989c8ec9906e142d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "noncombat_upgrade-00-get_observation.full.json",
       "case": "noncombat_upgrade",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/noncombat_upgrade/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/noncombat_upgrade/actions/evidence.json",
       "row_index": 0,
       "tool": "get_observation",
       "arguments": {
@@ -478,12 +610,12 @@
       },
       "result": "read",
       "sha256": "f2f1ed1ff644e2398cd0af8a6f63e204521bf673eac87e91a05a5ed3812b75a6",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "noncombat_upgrade-03-get_observation.full.json",
       "case": "noncombat_upgrade",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/noncombat_upgrade/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/noncombat_upgrade/actions/evidence.json",
       "row_index": 3,
       "tool": "get_observation",
       "arguments": {
@@ -491,12 +623,12 @@
       },
       "result": "read",
       "sha256": "d7260700c38fae85f1298981a0a3e242b4ba67e3b3a5eeb162d9cbd826598271",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "noncombat_upgrade-04-discard_potion.full.json",
       "case": "noncombat_upgrade",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/noncombat_upgrade/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/noncombat_upgrade/actions/evidence.json",
       "row_index": 4,
       "tool": "discard_potion",
       "arguments": {
@@ -505,12 +637,12 @@
       },
       "result": "discarded",
       "sha256": "7bbce320a15a25c22edbd1f757f5341041a424249664d2538416b00c9def5be0",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "noncombat_upgrade-05-select_card.full.json",
       "case": "noncombat_upgrade",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/noncombat_upgrade/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/noncombat_upgrade/actions/evidence.json",
       "row_index": 5,
       "tool": "select_card",
       "arguments": {
@@ -519,12 +651,12 @@
       },
       "result": "choice_required",
       "sha256": "c97e5e6237f45c56ad39f0bcc95b04d1c21931ac6e0459b54d0386cabc811cf8",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "noncombat_upgrade-07-selection_option.full.json",
       "case": "noncombat_upgrade",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/noncombat_upgrade/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/noncombat_upgrade/actions/evidence.json",
       "row_index": 7,
       "tool": "selection_option",
       "arguments": {
@@ -533,12 +665,12 @@
       },
       "result": "action_completed",
       "sha256": "dad6fdc6baa9f89ea9fe18a749d1762e565bb6abdddcf3cf56e7a678353cf492",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "noncombat_upgrade-08-get_observation.full.json",
       "case": "noncombat_upgrade",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/noncombat_upgrade/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/noncombat_upgrade/actions/evidence.json",
       "row_index": 8,
       "tool": "get_observation",
       "arguments": {
@@ -546,12 +678,12 @@
       },
       "result": "read",
       "sha256": "924553df01e878264b73feb43af20318285703717ed683456c7d888c831e0c3c",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "multiple-00-get_observation.full.json",
       "case": "multiple",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/multiple/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/multiple/actions/evidence.json",
       "row_index": 0,
       "tool": "get_observation",
       "arguments": {
@@ -559,12 +691,12 @@
       },
       "result": "read",
       "sha256": "6eabcd032e5bdd135f369e36bce7ad17f5d8c968f15bfe0d0dae2d259e9c5365",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "multiple-03-get_observation.full.json",
       "case": "multiple",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/multiple/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/multiple/actions/evidence.json",
       "row_index": 3,
       "tool": "get_observation",
       "arguments": {
@@ -572,12 +704,12 @@
       },
       "result": "read",
       "sha256": "b1626f3c121e6efb1cdc5e357f576028297ffc4ade65fe1675a7680c45116ff0",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "multiple-04-discard_potion.full.json",
       "case": "multiple",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/multiple/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/multiple/actions/evidence.json",
       "row_index": 4,
       "tool": "discard_potion",
       "arguments": {
@@ -586,12 +718,12 @@
       },
       "result": "queued",
       "sha256": "18bea87423dd9cda1b6afa746d0a6f48595610a7cd92d21f2c9cf1b8dbfd0bd1",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "multiple-05-discard_potion.full.json",
       "case": "multiple",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/multiple/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/multiple/actions/evidence.json",
       "row_index": 5,
       "tool": "discard_potion",
       "arguments": {
@@ -600,12 +732,12 @@
       },
       "result": "error",
       "sha256": "f4e0389d1a90a8b38b828c3a85857648f1200cbd672f83eb989c8ec9906e142d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "multiple-07-discard_potion.full.json",
       "case": "multiple",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/multiple/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/multiple/actions/evidence.json",
       "row_index": 7,
       "tool": "discard_potion",
       "arguments": {
@@ -614,12 +746,12 @@
       },
       "result": "queued",
       "sha256": "ce64ac39cfb8572cc98fa7ededc591b3c5b292434094f989150666814518109d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "multiple-08-select_card.full.json",
       "case": "multiple",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/multiple/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/multiple/actions/evidence.json",
       "row_index": 8,
       "tool": "select_card",
       "arguments": {
@@ -628,12 +760,12 @@
       },
       "result": "player_ready",
       "sha256": "c912c3a6728b2451428ee6ba1cb7b26e733a53e3315f74925d6f61d44c4262de",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "multiple-09-get_observation.full.json",
       "case": "multiple",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/multiple/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/multiple/actions/evidence.json",
       "row_index": 9,
       "tool": "get_observation",
       "arguments": {
@@ -641,12 +773,12 @@
       },
       "result": "read",
       "sha256": "d52cbb586fbfa799a48cb95b9e8569c1e3edc8caf04192fa3026814c8d10b629",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "skip-04-discard_potion.full.json",
       "case": "skip",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/skip/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/skip/actions/evidence.json",
       "row_index": 4,
       "tool": "discard_potion",
       "arguments": {
@@ -655,12 +787,12 @@
       },
       "result": "queued",
       "sha256": "18bea87423dd9cda1b6afa746d0a6f48595610a7cd92d21f2c9cf1b8dbfd0bd1",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "skip-05-discard_potion.full.json",
       "case": "skip",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/skip/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/skip/actions/evidence.json",
       "row_index": 5,
       "tool": "discard_potion",
       "arguments": {
@@ -669,12 +801,12 @@
       },
       "result": "error",
       "sha256": "f4e0389d1a90a8b38b828c3a85857648f1200cbd672f83eb989c8ec9906e142d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "pending_reset-04-discard_potion.full.json",
       "case": "pending_reset",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/pending_reset/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/pending_reset/actions/evidence.json",
       "row_index": 4,
       "tool": "discard_potion",
       "arguments": {
@@ -683,12 +815,12 @@
       },
       "result": "queued",
       "sha256": "18bea87423dd9cda1b6afa746d0a6f48595610a7cd92d21f2c9cf1b8dbfd0bd1",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "pending_reset-05-discard_potion.full.json",
       "case": "pending_reset",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/pending_reset/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/pending_reset/actions/evidence.json",
       "row_index": 5,
       "tool": "discard_potion",
       "arguments": {
@@ -697,12 +829,12 @@
       },
       "result": "error",
       "sha256": "f4e0389d1a90a8b38b828c3a85857648f1200cbd672f83eb989c8ec9906e142d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "after_reset-01-discard_potion.default.json",
       "case": "after_reset",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/after_reset/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/after_reset/actions/evidence.json",
       "row_index": 1,
       "tool": "discard_potion",
       "arguments": {
@@ -711,12 +843,12 @@
       },
       "result": "discarded",
       "sha256": "0f066bcf3a55d5e7efe61eb78f49f84e9ad09eedc7e20911d07e5e26c9571b5d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "after_reset-03-discard_potion.full.json",
       "case": "after_reset",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/after_reset/actions/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/after_reset/actions/evidence.json",
       "row_index": 3,
       "tool": "discard_potion",
       "arguments": {
@@ -725,12 +857,12 @@
       },
       "result": "discarded",
       "sha256": "18f77361987b3f93312a7ca33b0496da3a15e3de385dc25b7c7dc48dafc815de",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-00-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -739,12 +871,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-02-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 2,
       "tool": "discard_potion",
       "arguments": {
@@ -752,12 +884,12 @@
       },
       "result": "error",
       "sha256": "436cbb0ade2af67ac387353a653a2800e5b20ecbf3adf22dcc8a5e6009f4475b",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-03-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 3,
       "tool": "discard_potion",
       "arguments": {
@@ -766,12 +898,12 @@
       },
       "result": "error",
       "sha256": "fe38f512492a552810090689711db62594897341b9210ba4edaeac9b7af5e0c6",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-04-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 4,
       "tool": "discard_potion",
       "arguments": {
@@ -780,12 +912,12 @@
       },
       "result": "error",
       "sha256": "14622395b8b10e0cf12279cef4886e77a7345f6caafb1cbc679a80edec6aab98",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-05-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 5,
       "tool": "discard_potion",
       "arguments": {
@@ -794,12 +926,12 @@
       },
       "result": "error",
       "sha256": "fe38f512492a552810090689711db62594897341b9210ba4edaeac9b7af5e0c6",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-06-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 6,
       "tool": "discard_potion",
       "arguments": {
@@ -808,12 +940,12 @@
       },
       "result": "error",
       "sha256": "fe38f512492a552810090689711db62594897341b9210ba4edaeac9b7af5e0c6",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-07-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 7,
       "tool": "discard_potion",
       "arguments": {
@@ -822,12 +954,12 @@
       },
       "result": "error",
       "sha256": "fe38f512492a552810090689711db62594897341b9210ba4edaeac9b7af5e0c6",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-08-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 8,
       "tool": "discard_potion",
       "arguments": {
@@ -836,12 +968,12 @@
       },
       "result": "error",
       "sha256": "14622395b8b10e0cf12279cef4886e77a7345f6caafb1cbc679a80edec6aab98",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-09-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 9,
       "tool": "discard_potion",
       "arguments": {
@@ -851,12 +983,12 @@
       },
       "result": "error",
       "sha256": "538acfad0b793e29f8ecf19bc5e39deb9eb43be4deabaebaa905838489bbdbac",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-10-discard_potion.summary.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 10,
       "tool": "discard_potion",
       "arguments": {
@@ -865,12 +997,12 @@
       },
       "result": "error",
       "sha256": "4d9fc2591fa95fd3be4aa5da9e9069924310da95773916f6dee00df473d4e31e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-11-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 11,
       "tool": "discard_potion",
       "arguments": {
@@ -880,12 +1012,12 @@
       },
       "result": "error",
       "sha256": "1a0d5eecef35dfa17ba500d7ba97106cc4f51461ac8a8573e70382d89f0af755",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-13-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 13,
       "tool": "discard_potion",
       "arguments": {
@@ -894,12 +1026,12 @@
       },
       "result": "error",
       "sha256": "87424c5ed2d6a4cfcdfa21f6393b58fc9e63d9ae72f44381a2d67ecda797d54e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-17-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 17,
       "tool": "discard_potion",
       "arguments": {
@@ -908,12 +1040,12 @@
       },
       "result": "discarded",
       "sha256": "0f066bcf3a55d5e7efe61eb78f49f84e9ad09eedc7e20911d07e5e26c9571b5d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-20-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 20,
       "tool": "discard_potion",
       "arguments": {
@@ -922,12 +1054,12 @@
       },
       "result": "error",
       "sha256": "f3428f36a17cd87b6074ebabc183332eacb3bda689ab3a475939d994d67520e2",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-23-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 23,
       "tool": "discard_potion",
       "arguments": {
@@ -936,12 +1068,12 @@
       },
       "result": "discarded",
       "sha256": "0e962475cf00a539e285f4bb04029aaf11054c1ac0b015b84a7f58c10d69f78c",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_basic-26-discard_potion.full.json",
       "case": "review_basic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_basic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-0/review_basic/audit/evidence.json",
       "row_index": 26,
       "tool": "discard_potion",
       "arguments": {
@@ -950,12 +1082,12 @@
       },
       "result": "discarded",
       "sha256": "573e448703294c6f389f2b62cc93fd800c54ff8178f3a08a1529fca6738c756e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_default-00-discard_potion.full.json",
       "case": "review_default",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_default/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_default/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -964,12 +1096,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_default-03-discard_potion.default.json",
       "case": "review_default",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_default/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_default/audit/evidence.json",
       "row_index": 3,
       "tool": "discard_potion",
       "arguments": {
@@ -978,12 +1110,12 @@
       },
       "result": "discarded",
       "sha256": "0777ba22e415c31d2d0e18254a2745d3af3d5e68bc517287880f62d2a3155d71",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_default-06-discard_potion.full.json",
       "case": "review_default",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_default/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_default/audit/evidence.json",
       "row_index": 6,
       "tool": "discard_potion",
       "arguments": {
@@ -992,12 +1124,12 @@
       },
       "result": "discarded",
       "sha256": "fb470ac194fc57722d319195d4688041c0cb588fb4a66a12f29397479407b785",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_automatic-00-discard_potion.full.json",
       "case": "review_automatic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_automatic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_automatic/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -1006,12 +1138,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_automatic-03-discard_potion.full.json",
       "case": "review_automatic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_automatic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_automatic/audit/evidence.json",
       "row_index": 3,
       "tool": "discard_potion",
       "arguments": {
@@ -1020,12 +1152,12 @@
       },
       "result": "discarded",
       "sha256": "18f77361987b3f93312a7ca33b0496da3a15e3de385dc25b7c7dc48dafc815de",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_automatic-06-discard_potion.full.json",
       "case": "review_automatic",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_automatic/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_automatic/audit/evidence.json",
       "row_index": 6,
       "tool": "discard_potion",
       "arguments": {
@@ -1034,12 +1166,12 @@
       },
       "result": "discarded",
       "sha256": "0f066bcf3a55d5e7efe61eb78f49f84e9ad09eedc7e20911d07e5e26c9571b5d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_fruit-00-discard_potion.full.json",
       "case": "review_fruit",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_fruit/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_fruit/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -1048,12 +1180,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_fruit-03-discard_potion.full.json",
       "case": "review_fruit",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_fruit/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_fruit/audit/evidence.json",
       "row_index": 3,
       "tool": "discard_potion",
       "arguments": {
@@ -1062,12 +1194,12 @@
       },
       "result": "discarded",
       "sha256": "97bfab7408fad64c73d898293266cb6b49ca40bc43244f4abba80f95278c88bb",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_fruit-06-discard_potion.full.json",
       "case": "review_fruit",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_fruit/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_fruit/audit/evidence.json",
       "row_index": 6,
       "tool": "discard_potion",
       "arguments": {
@@ -1076,12 +1208,12 @@
       },
       "result": "discarded",
       "sha256": "13dfa2f331bae2b0564e2cf6a71685b4648d921fd3b2af4acafdb4494c22a81c",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_blocked-00-discard_potion.full.json",
       "case": "review_blocked",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_blocked/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_blocked/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -1090,12 +1222,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_blocked-03-discard_potion.full.json",
       "case": "review_blocked",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_blocked/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_blocked/audit/evidence.json",
       "row_index": 3,
       "tool": "discard_potion",
       "arguments": {
@@ -1104,12 +1236,12 @@
       },
       "result": "error",
       "sha256": "5178d68a75642b22ee17d949bc5203528c02e6cf086e5f7058c283e4ccf51efd",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_replace-00-discard_potion.full.json",
       "case": "review_replace",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_replace/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_replace/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -1118,12 +1250,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_replace-05-discard_potion.full.json",
       "case": "review_replace",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_replace/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_replace/audit/evidence.json",
       "row_index": 5,
       "tool": "discard_potion",
       "arguments": {
@@ -1132,12 +1264,12 @@
       },
       "result": "error",
       "sha256": "42a71b30fd7304b95d71e071e2d2c183c103a658fa8a8f2cba2d7b84ebec4a60",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_replace-09-discard_potion.full.json",
       "case": "review_replace",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_replace/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_replace/audit/evidence.json",
       "row_index": 9,
       "tool": "discard_potion",
       "arguments": {
@@ -1146,12 +1278,12 @@
       },
       "result": "discarded",
       "sha256": "0777ba22e415c31d2d0e18254a2745d3af3d5e68bc517287880f62d2a3155d71",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_covered-00-discard_potion.full.json",
       "case": "review_covered",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_covered/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_covered/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -1160,12 +1292,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_covered-06-discard_potion.full.json",
       "case": "review_covered",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_covered/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_covered/audit/evidence.json",
       "row_index": 6,
       "tool": "discard_potion",
       "arguments": {
@@ -1174,12 +1306,12 @@
       },
       "result": "error",
       "sha256": "6e970a2fde2ce57fd741f72368d121d7352c40cd6a16bc53c0a702acb2dedef7",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_covered-12-discard_potion.full.json",
       "case": "review_covered",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_covered/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_covered/audit/evidence.json",
       "row_index": 12,
       "tool": "discard_potion",
       "arguments": {
@@ -1188,12 +1320,12 @@
       },
       "result": "error",
       "sha256": "6e970a2fde2ce57fd741f72368d121d7352c40cd6a16bc53c0a702acb2dedef7",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_covered-18-discard_potion.full.json",
       "case": "review_covered",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_covered/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_covered/audit/evidence.json",
       "row_index": 18,
       "tool": "discard_potion",
       "arguments": {
@@ -1202,12 +1334,12 @@
       },
       "result": "error",
       "sha256": "9dbc09287115af558783e85468f3add858f3375950c7a382369afac67df37acb",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_display-00-discard_potion.full.json",
       "case": "review_display",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_display/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_display/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -1216,12 +1348,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_display-05-discard_potion.full.json",
       "case": "review_display",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_display/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_display/audit/evidence.json",
       "row_index": 5,
       "tool": "discard_potion",
       "arguments": {
@@ -1230,12 +1362,12 @@
       },
       "result": "error",
       "sha256": "f9094f2a23065f323f0e105c5d9ed95bd70aa4fb943ef8c80b677dec87834646",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_display-11-discard_potion.full.json",
       "case": "review_display",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_display/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_display/audit/evidence.json",
       "row_index": 11,
       "tool": "discard_potion",
       "arguments": {
@@ -1244,12 +1376,12 @@
       },
       "result": "error",
       "sha256": "f9094f2a23065f323f0e105c5d9ed95bd70aa4fb943ef8c80b677dec87834646",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_display-17-discard_potion.full.json",
       "case": "review_display",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_display/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_display/audit/evidence.json",
       "row_index": 17,
       "tool": "discard_potion",
       "arguments": {
@@ -1258,12 +1390,12 @@
       },
       "result": "error",
       "sha256": "29433b13b66584e241361c7182cdf12b67b3731632f2e2abdea37adc5481715b",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_display-19-discard_potion.full.json",
       "case": "review_display",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_display/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_display/audit/evidence.json",
       "row_index": 19,
       "tool": "discard_potion",
       "arguments": {
@@ -1272,12 +1404,12 @@
       },
       "result": "discarded",
       "sha256": "509d16238a5fdcd562267293fa83562efa954075ef0fe4b052890584e4287922",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_display-24-discard_potion.full.json",
       "case": "review_display",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_display/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_display/audit/evidence.json",
       "row_index": 24,
       "tool": "discard_potion",
       "arguments": {
@@ -1286,12 +1418,12 @@
       },
       "result": "discarded",
       "sha256": "18f77361987b3f93312a7ca33b0496da3a15e3de385dc25b7c7dc48dafc815de",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_display-29-discard_potion.full.json",
       "case": "review_display",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_display/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_display/audit/evidence.json",
       "row_index": 29,
       "tool": "discard_potion",
       "arguments": {
@@ -1300,12 +1432,12 @@
       },
       "result": "discarded",
       "sha256": "67a3725d9b136b256f2e75799d75013ebbd5f4ea4f9479f0eb5fd1427e67319e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_skill-00-discard_potion.full.json",
       "case": "review_skill",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_skill/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_skill/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -1314,12 +1446,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_skill-04-discard_potion.full.json",
       "case": "review_skill",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_skill/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_skill/audit/evidence.json",
       "row_index": 4,
       "tool": "discard_potion",
       "arguments": {
@@ -1328,12 +1460,12 @@
       },
       "result": "queued",
       "sha256": "18bea87423dd9cda1b6afa746d0a6f48595610a7cd92d21f2c9cf1b8dbfd0bd1",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_skill-07-discard_potion.full.json",
       "case": "review_skill",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_skill/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_skill/audit/evidence.json",
       "row_index": 7,
       "tool": "discard_potion",
       "arguments": {
@@ -1342,12 +1474,12 @@
       },
       "result": "discarded",
       "sha256": "573e448703294c6f389f2b62cc93fd800c54ff8178f3a08a1529fca6738c756e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_event-00-discard_potion.full.json",
       "case": "review_noncombat_event",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_event/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_event/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -1356,12 +1488,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_event-03-discard_potion.full.json",
       "case": "review_noncombat_event",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_event/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_event/audit/evidence.json",
       "row_index": 3,
       "tool": "discard_potion",
       "arguments": {
@@ -1370,12 +1502,12 @@
       },
       "result": "discarded",
       "sha256": "e60bea2b1f58fc835b4a63b53375f0da556715edc630a60ba223bb3221a3349c",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_event-06-discard_potion.full.json",
       "case": "review_noncombat_event",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_event/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_event/audit/evidence.json",
       "row_index": 6,
       "tool": "discard_potion",
       "arguments": {
@@ -1384,12 +1516,12 @@
       },
       "result": "discarded",
       "sha256": "d28ed820a45d50582f7fa7a00dba91dc451d05e2364caade064ea7aa42f7ef6c",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_rest-00-discard_potion.full.json",
       "case": "review_noncombat_rest",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_rest/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_rest/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -1398,12 +1530,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_rest-03-discard_potion.full.json",
       "case": "review_noncombat_rest",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_rest/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_rest/audit/evidence.json",
       "row_index": 3,
       "tool": "discard_potion",
       "arguments": {
@@ -1412,12 +1544,12 @@
       },
       "result": "discarded",
       "sha256": "bad09a29bf310b18742886153f4a1b577a6b3d19ca7a54dbb6d432f9522a5ab2",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_rest-06-discard_potion.full.json",
       "case": "review_noncombat_rest",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_rest/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_rest/audit/evidence.json",
       "row_index": 6,
       "tool": "discard_potion",
       "arguments": {
@@ -1426,12 +1558,12 @@
       },
       "result": "discarded",
       "sha256": "b24d74f751021cc019b5d2917e08ef6d5afcf7cbb31574f215d9868018506799",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_shop-00-discard_potion.full.json",
       "case": "review_noncombat_shop",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_shop/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_shop/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -1440,12 +1572,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_shop-03-discard_potion.full.json",
       "case": "review_noncombat_shop",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_shop/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_shop/audit/evidence.json",
       "row_index": 3,
       "tool": "discard_potion",
       "arguments": {
@@ -1454,12 +1586,12 @@
       },
       "result": "discarded",
       "sha256": "9d8a93c6e4d31bbd3021f4db232b953c9a8fe8aebebaea5c84dac2261443883d",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_shop-06-discard_potion.full.json",
       "case": "review_noncombat_shop",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_shop/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_shop/audit/evidence.json",
       "row_index": 6,
       "tool": "discard_potion",
       "arguments": {
@@ -1468,12 +1600,12 @@
       },
       "result": "discarded",
       "sha256": "77f881703fb2afa1a6d2aeba3efda4271a62e9f07a20ad407b1cf43c0bcc2f98",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_map-00-discard_potion.full.json",
       "case": "review_noncombat_map",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_map/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_map/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -1482,12 +1614,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_map-09-discard_potion.full.json",
       "case": "review_noncombat_map",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_map/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_map/audit/evidence.json",
       "row_index": 9,
       "tool": "discard_potion",
       "arguments": {
@@ -1496,12 +1628,12 @@
       },
       "result": "discarded",
       "sha256": "493ee81ddc055f42bb7d92e96c7326ff89a94372b2d40a37fb21e1ee0935c5f7",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_map-12-discard_potion.full.json",
       "case": "review_noncombat_map",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_map/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_map/audit/evidence.json",
       "row_index": 12,
       "tool": "discard_potion",
       "arguments": {
@@ -1510,12 +1642,12 @@
       },
       "result": "discarded",
       "sha256": "bb7301b99e73393770c6e240c4490e2f166f556a43a05a830467677b9fe5f925",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_map-15-discard_potion.full.json",
       "case": "review_noncombat_map",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_map/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_map/audit/evidence.json",
       "row_index": 15,
       "tool": "discard_potion",
       "arguments": {
@@ -1524,12 +1656,12 @@
       },
       "result": "discarded",
       "sha256": "3628427c0caf004bd27513b4a06438451ca3425ee43cfa85f099769a190abfcc",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_reward-00-discard_potion.full.json",
       "case": "review_noncombat_reward",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_reward/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_reward/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -1538,12 +1670,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_noncombat_reward-06-discard_potion.full.json",
       "case": "review_noncombat_reward",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_noncombat_reward/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_noncombat_reward/audit/evidence.json",
       "row_index": 6,
       "tool": "discard_potion",
       "arguments": {
@@ -1552,12 +1684,12 @@
       },
       "result": "discarded",
       "sha256": "19e8f191791fdf1ade9247042f29174e9b1276cbc6ac4a122443b69566514065",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_merchant_inventory-00-discard_potion.full.json",
       "case": "review_merchant_inventory",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_merchant_inventory/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_merchant_inventory/audit/evidence.json",
       "row_index": 0,
       "tool": "discard_potion",
       "arguments": {
@@ -1566,12 +1698,12 @@
       },
       "result": "error",
       "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_merchant_inventory-03-discard_potion.full.json",
       "case": "review_merchant_inventory",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_merchant_inventory/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_merchant_inventory/audit/evidence.json",
       "row_index": 3,
       "tool": "discard_potion",
       "arguments": {
@@ -1580,12 +1712,12 @@
       },
       "result": "discarded",
       "sha256": "58cb0bd8da30174e2fe2dba89015dcfa0a2fea130afffcb1b5d6d8d86f27410f",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "review_merchant_inventory-06-discard_potion.full.json",
       "case": "review_merchant_inventory",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/review_merchant_inventory/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/review_merchant_inventory/audit/evidence.json",
       "row_index": 6,
       "tool": "discard_potion",
       "arguments": {
@@ -1594,12 +1726,12 @@
       },
       "result": "discarded",
       "sha256": "827b376881f272fbf04b26aae948ef5c4ceef19c052672cc7858e3b687583b51",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     },
     {
       "file": "use_noncombat_map-11-discard_potion.full.json",
       "case": "use_noncombat_map",
-      "source": ".tmp/2026-11-05-potion-discard-queue/gui-final/use_noncombat_map/audit/evidence.json",
+      "source": ".tmp/2026-11-05-potion-discard-queue/gui-review-final-1/use_noncombat_map/audit/evidence.json",
       "row_index": 11,
       "tool": "discard_potion",
       "arguments": {
@@ -1608,7 +1740,7 @@
       },
       "result": "discarded",
       "sha256": "3628427c0caf004bd27513b4a06438451ca3425ee43cfa85f099769a190abfcc",
-      "mod_sha256": "a0c8ea33e1f97447d927f6f3d223614c70da580119a3f998fd5521abf364e6d1"
+      "mod_sha256": "2cc9d5d3ecee7c3dc5298dcf45c6dc2b1d3eb7edf526a5b12ee82239bb9af385"
     }
   ]
 }

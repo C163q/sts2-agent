@@ -106,13 +106,13 @@ def load_cases(path):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
                 'verify_potion_discard_queue.py': ('choose_one', 'hand', 'pile', 'noncombat_upgrade', 'immediate',
-                    'cancel', 'hidden', 'multiple', 'skip', 'pending_reset', 'after_reset', 'card_choice', 'card_pile', 'hand_upgrade'),
+                    'cancel', 'hidden', 'multiple', 'skip', 'pending_reset', 'after_reset', 'card_choice', 'card_pile', 'hand_upgrade', 'fault', 'foreign'),
                 'verify_discard_potion_review.py': ('basic', 'default', 'automatic', 'fruit', 'blocked',
                     'replace', 'covered', 'display', 'skill', 'noncombat_event', 'noncombat_rest',
                     'noncombat_shop', 'noncombat_map', 'noncombat_reward', 'merchant_inventory'),
-                'verify_potion_recovery.py': tuple(mode for mode in CATALOG['potion'] if mode != 'inspection')
+                'verify_potion_recovery.py': tuple(mode for mode in CATALOG['potion'] if mode != 'inspection' and not mode.startswith('discard_'))
                     + ('default', 'covered', 'slot_boundary', 'journal_boundary', 'fake_merchant', 'obtained_boundary', 'journal_hidden', 'map_context', 'slot_interaction'),
-                'verify_use_potion_review.py': tuple(mode for mode in CATALOG['potion'] if mode != 'inspection')
+                'verify_use_potion_review.py': tuple(mode for mode in CATALOG['potion'] if mode != 'inspection' and not mode.startswith('discard_'))
                     + ('default', 'covered', 'slot_boundary', 'journal_boundary', 'fake_merchant'),
                 'verify_play_cards.py': ('ordered', 'native_reject', 'default', 'single_entry', 'autoplay', 'pending_reset', 'after_reset', 'diagnostics', 'atomic', 'partial', 'zero', 'energy', 'stars', 'target',
                     'random_exhaust', 'hand_exhaust', 'automatic_hand', 'choose_one', 'immediate_choice',

@@ -68,6 +68,8 @@ discard_potion 的成功回执额外返回顶层 potion_discard，default/full �
 
 queued 停在当前 choice_required，可以继续选牌或丢弃其他合法槽位；原生槽位等待标记阻止重复提交同一瓶。选择完成后，原生队列才执行丢弃，事件记录在后续 select_card／selection_option 等回执中，这些调用不附带顶层 potion_discard。基础观察和 use_potion 也不携带该字段。
 
+公开移除见证还须属于本次动作的执行阶段；其他效果先移除同一瓶，事件保留，但本次结果仍可能 unknown。若药水确已丢弃、后续处理却报错，保留 discarded 和实际事件，同时返回 interrupted、complete:false；先读取当前状态再操作。
+
 选牌界面不一定使丢弃排队：例如火堆的选择没有占用原生动作队列时，丢弃会立即执行，此时返回 discarded、实际事件及仍待处理的 choice_required。普通即时丢弃通常停在 player_ready 或 action_completed；complete:true 表示当前停止边界的记录完整，不表示 queued 已执行。没有额外 summary 预设，不预测队列后续结果。
 
 结果采用[精简动作回执](mcp.md#动作返回格式)，包含 [transition](end-turn.md)。战斗中停止于 `player_ready/choice_required/combat_won/combat_lost`；战斗外已完成动作时为 `action_completed`。原生取消后恢复可行动为 `action_canceled`；超时或中断不代表动作没有执行，不能自动重发。

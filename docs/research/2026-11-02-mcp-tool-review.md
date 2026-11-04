@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 44 项，已核销 13 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、play_card、play_cards、end_turn、use_potion。discard_potion 已确认契约并实现，33 类组合场景通过，待最终独立审查后核销；get_observation 的地图覆盖仍待 inspect_map，整体未核销，其余 30 项尚未核销。暂无阻塞。
+> 当前状态：工具核验进行中，共 44 项，已核销 13 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、play_card、play_cards、end_turn、use_potion。discard_potion 已确认契约并实现，35 类组合场景及独立审查通过，待合入后核销；get_observation 的地图覆盖仍待 inspect_map，整体未核销，其余 30 项尚未核销。暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -51,7 +51,7 @@
 - [x] `play_cards`：按原生规则连续入队。[参数／行为](2026-11-04-play-cards-design.md)及[交付](2026-11-04-play-cards-implementation.md)完成：原子前置校验、动态失败继续、边界停止、逐张及跨选择回执、unknown 不直接接受后续动作。32 项不同场景／门控、653 项 Python、114 项 C# 及独立审查的重要修复通过；集成验证剩余范围见交付记录。
 - [x] `end_turn`：结束回合。[审阅](2026-11-04-end-turn-review.md)、[头槌补充核验](2026-11-04-headbutt-transition-review.md)及[实施／新返回](2026-11-04-turn-transitions-implementation.md)完成：TURN-01–03、无 position 的 card_moved、default 省略 autoplay:false；四张指定卡、手斧抽牌堆来源变体、错误直接续接及终态查看均已验证。636 项 Python、91 项 C#、最终十五局 GUI 通过；独立审查的重要问题已修复，低优先级生成预览牌名缓存限制留在实施记录。
 - [x] `use_potion`：使用药水。[现状审阅](2026-11-04-use-potion-review.md)及[实现／验证](2026-11-05-potion-actions-implementation.md)完成：五项问题、单槽判断、事件可见性及地图 covered；34 类药水情形与三组既有工具回归通过，保持 default/full，不新增 summary。
-- [ ] `discard_potion`：丢弃药水。阶段：实现与验证；[确认契约](2026-11-05-discard-potion-review.md#已确认契约)及[实施记录](2026-11-05-potion-discard-implementation.md)包含原生排队、防重复、顶层结果与选择续接；33 类组合场景通过，已整理 [116 份完整返回](2026-11-05-potion-discard-queue-examples/README.md)，待独立审查后核销。参数与 default/full 保留，无 summary。
+- [ ] `discard_potion`：丢弃药水。阶段：实现与验证；[确认契约](2026-11-05-discard-potion-review.md#已确认契约)及[实施记录](2026-11-05-potion-discard-implementation.md)包含原生排队、防重复、顶层结果与选择续接；35 类组合场景及独立审查通过，已整理 [126 份完整返回](2026-11-05-potion-discard-queue-examples/README.md)，待合入后核销。参数与 default/full 保留，无 summary；一项低优先级监听清理事项单列于实施记录。
 
 ### 卡牌选择（4 项）
 

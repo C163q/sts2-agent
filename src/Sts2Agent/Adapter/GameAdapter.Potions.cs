@@ -63,12 +63,15 @@ internal sealed partial class GameAdapter
         var progress = use ? null : new PotionDiscardProgress();
         var discardResult = use ? null : JsonSerializer.SerializeToNode(PotionActions.Reference(potion, slot))!.AsObject();
         var potionJournal = PotionJournal.Current!;
+        bool discardExecuting = false;
         void DiscardObserved(PotionModel removed)
         {
-            if (ReferenceEquals(removed, potion)) progress?.ObserveDiscard();
+            if (discardExecuting && submitted?.State == GameActionState.Executing
+                && ReferenceEquals(removed, potion)) progress?.ObserveDiscard();
         }
         bool canceled = false;
         void Canceled(GameAction _) => canceled = true;
+        void Executed(GameAction _) => discardExecuting = true;
         var actionExecution = execution;
         void Enqueued(GameAction action)
         {
@@ -79,6 +82,7 @@ internal sealed partial class GameAdapter
             progress?.Submit();
             actionExecution?.ActionSubmitted();
             action.BeforeCancelled += Canceled;
+            if (progress != null) action.BeforeExecuted += Executed;
         }
         RunManager.Instance.ActionQueueSet.ActionEnqueued += Enqueued;
         if (progress != null) potionJournal.DiscardObserved += DiscardObserved;
@@ -90,6 +94,7 @@ internal sealed partial class GameAdapter
             else RunManager.Instance.ActionQueueSynchronizer.RequestEnqueue(discardAction!);
             var (after, reason) = await ActionObservation(() =>
             {
+                if (!use && submitted?.Exception != null) return "interrupted";
                 bool finished = submitted?.State is GameActionState.Finished or GameActionState.Canceled;
                 bool ready = finished && (use ? CanHandlePotions() : CanDiscardPotions());
                 string? boundary = journal.StopReason(ready);
@@ -120,6 +125,7 @@ internal sealed partial class GameAdapter
             RunManager.Instance.ActionQueueSet.ActionEnqueued -= Enqueued;
             if (progress != null) potionJournal.DiscardObserved -= DiscardObserved;
             if (submitted != null) submitted.BeforeCancelled -= Canceled;
+            if (progress != null && submitted != null) submitted.BeforeExecuted -= Executed;
         }
     }
 }

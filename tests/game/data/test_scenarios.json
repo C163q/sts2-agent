@@ -24,6 +24,8 @@
     "cancel",
     "discard_cancel",
     "discard_hidden",
+    "discard_fault",
+    "discard_foreign",
     "replace",
     "unhittable",
     "entropic",

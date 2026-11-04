@@ -236,5 +236,39 @@
         ]
       }
     ]
+  },
+  {
+    "name": "fault",
+    "scenarios": {
+      "play": "basic",
+      "potion": "discard_fault"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "fault"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "foreign",
+    "scenarios": {
+      "play": "basic",
+      "potion": "discard_foreign"
+    },
+    "steps": [
+      {
+        "name": "actions",
+        "verifier": "verify_potion_discard_queue.py",
+        "args": [
+          "--scenario",
+          "foreign"
+        ]
+      }
+    ]
   }
 ]

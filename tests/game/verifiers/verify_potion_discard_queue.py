@@ -13,7 +13,7 @@ from tests.game.support.verification_runtime import ensure_run, ipc_directory
 
 
 SCENARIOS = ('choose_one', 'hand', 'pile', 'noncombat_upgrade', 'immediate', 'cancel',
-             'hidden', 'multiple', 'skip', 'pending_reset', 'after_reset', 'card_choice', 'card_pile', 'hand_upgrade')
+             'hidden', 'multiple', 'skip', 'pending_reset', 'after_reset', 'card_choice', 'card_pile', 'hand_upgrade', 'fault', 'foreign')
 
 
 async def verify(args):
@@ -51,6 +51,22 @@ async def verify(args):
                 return result
 
             before = await call('get_observation')
+            if args.scenario == 'foreign':
+                result = await call('discard_potion', {'potion_slot': 0})
+                assert any(e['type'] == 'potion_discarded' for e in result['transition']['events']), result
+                assert result['potion_discard']['status'] == 'unknown', result
+                await call('end_turn', error='observation_required')
+                assert (await call('get_observation'))['top_bar']['potion_slots'][0] is None
+                return
+            if args.scenario == 'fault':
+                result = await call('discard_potion', {'potion_slot': 0})
+                assert result['potion_discard']['status'] == 'discarded', result
+                assert any(e['type'] == 'potion_discarded' for e in result['transition']['events']), result
+                assert result['transition']['stop_reason'] == 'interrupted', result
+                assert not result['transition']['complete'], result
+                await call('end_turn', error='observation_required')
+                assert (await call('get_observation'))['top_bar']['potion_slots'][0] is None
+                return
             if args.scenario in {'immediate', 'after_reset'}:
                 result = await call('discard_potion', {'potion_slot': 1, 'preset': 'default'})
                 assert result['potion_discard'] == {'slot_index': 1, 'name': 'Block Potion', 'status': 'discarded'}, result

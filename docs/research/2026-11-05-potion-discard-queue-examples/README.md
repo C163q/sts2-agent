@@ -4,12 +4,22 @@
 
 | 场景 | 调用 | 结果 | 完整 JSON |
 | --- | --- | --- | --- |
+| fault | get_observation | read | [fault-00-get_observation.full.json](fault-00-get_observation.full.json) |
+| fault | discard_potion | discarded | [fault-01-discard_potion.full.json](fault-01-discard_potion.full.json) |
+| fault | end_turn | error | [fault-02-end_turn.full.json](fault-02-end_turn.full.json) |
+| fault | get_observation | read | [fault-03-get_observation.full.json](fault-03-get_observation.full.json) |
+| foreign | get_observation | read | [foreign-00-get_observation.full.json](foreign-00-get_observation.full.json) |
+| foreign | discard_potion | unknown | [foreign-01-discard_potion.full.json](foreign-01-discard_potion.full.json) |
+| foreign | end_turn | error | [foreign-02-end_turn.full.json](foreign-02-end_turn.full.json) |
+| foreign | get_observation | read | [foreign-03-get_observation.full.json](foreign-03-get_observation.full.json) |
 | cancel | get_observation | read | [cancel-00-get_observation.full.json](cancel-00-get_observation.full.json) |
 | cancel | discard_potion | not_discarded | [cancel-01-discard_potion.full.json](cancel-01-discard_potion.full.json) |
+| cancel | end_turn | error | [cancel-02-end_turn.full.json](cancel-02-end_turn.full.json) |
 | cancel | get_observation | read | [cancel-03-get_observation.full.json](cancel-03-get_observation.full.json) |
 | cancel | discard_potion | discarded | [cancel-04-discard_potion.full.json](cancel-04-discard_potion.full.json) |
 | hidden | get_observation | read | [hidden-00-get_observation.full.json](hidden-00-get_observation.full.json) |
 | hidden | discard_potion | unknown | [hidden-01-discard_potion.full.json](hidden-01-discard_potion.full.json) |
+| hidden | end_turn | error | [hidden-02-end_turn.full.json](hidden-02-end_turn.full.json) |
 | hidden | get_observation | read | [hidden-04-get_observation.full.json](hidden-04-get_observation.full.json) |
 | card_choice | discard_potion | queued | [card_choice-04-discard_potion.full.json](card_choice-04-discard_potion.full.json) |
 | card_choice | discard_potion | error | [card_choice-05-discard_potion.full.json](card_choice-05-discard_potion.full.json) |

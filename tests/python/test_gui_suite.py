@@ -38,6 +38,12 @@ class SessionDouble:
 
 
 class GuiSuiteTests(unittest.TestCase):
+    def test_discard_fixture_names_are_not_use_verifier_arguments(self):
+        for verifier in ('verify_potion_recovery.py', 'verify_use_potion_review.py'):
+            with self.subTest(verifier=verifier), self.assertRaises(ValueError):
+                self.load([{'name': 'discard_fixture', 'scenarios': {'potion': 'discard_fault'},
+                    'steps': [{'name': 'check', 'verifier': verifier, 'args': ['--scenario', 'discard_fault']}]}])
+
     def fake_verifier(self, root, name, source):
         directory = root / 'tests/game/verifiers'
         directory.mkdir(parents=True)

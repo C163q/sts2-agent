@@ -136,3 +136,13 @@ class PotionDiscardPermissionTests(unittest.IsolatedAsyncioTestCase):
         client.mutate = lambda s: s.pop('potion_discard', None)
         self.assertIn('error', await tools.discard_potion({'potion_slot': 1}))
         self.assertIsNone(tools.snapshot_id)
+
+    async def test_visible_discard_with_interrupted_effects_keeps_fact_but_drops_permission(self):
+        client = DiscardClient(); tools = GameTools(client)
+        await tools.get_observation()
+        client.mutate = lambda state: state['transition'].update(stop_reason='interrupted', complete=False)
+        result = await tools.discard_potion({'potion_slot': 1})
+        self.assertEqual(result['potion_discard']['status'], 'discarded')
+        self.assertEqual(result['transition']['events'], [event()])
+        self.assertIsNone(tools.snapshot_id)
+        self.assertEqual((await tools.end_turn())['error']['code'], 'observation_required')
