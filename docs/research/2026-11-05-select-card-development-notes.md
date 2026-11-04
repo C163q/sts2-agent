@@ -1,6 +1,6 @@
 # select_card 开发核验记录
 
-> 当前状态：场景核验完成，24 类组合场景、58 项相关 Python 检查通过，91 份公共返回已归档。两项正确性问题待确认修复；工具行为未改，未核销。用户说明见[审阅与建议](2026-11-05-select-card-review.md)。
+> 当前状态：场景核验完成，24 类组合场景、58 项相关 Python 检查通过，91 份公共返回已归档。两项错误处理问题及选中反馈缺口共三项待处理，事件方案待确认；工具行为未改，未核销。用户说明见[审阅与建议](2026-11-05-select-card-review.md)。
 
 ## 优先问题
 
@@ -8,6 +8,7 @@
 | --- | --- | --- | --- |
 | SELECT-01 | 中；错误恢复 | `SelectionRequest` 的点击前拒绝使用普通 `FileMailbox.Error`，没有 `ui_unchanged:true`。`GameSession` 对动作仅在明确未提交且 UI 未变的证据下保留旧许可，因此无效 ID 等无交互拒绝也清掉许可 | 已复现，待确认修复。不能给整个异常捕获统一加未交互保证，因为 `SelectionActions.Click` 可能已经滚动并等待帧 |
 | SELECT-02 | 中；错误原因 | 没有选择、覆盖及候选／按钮不可用的拒绝没有 `publicMessage:true`，具体内部原因被公共输出的统一提示替换；候选检查本身也把多种情况合并 | 已复现，待确认修复。公开固定且准确的前置原因，不公开任意异常 Message |
+| SELECT-03 | 中；UI 反馈 | `action_output` 将 selection 投影为 type/status；选中／取消没有日志来源，完整状态中的 selected_ids 也不随回执公开。现有 grid、hand、hand_upgrade 的连续选中和取消均返回空 events | 已有实测证据；候选方案为新增 card_selected/card_deselected，待确认，不改动历史样例 |
 
 ## 核对基线
 
@@ -53,7 +54,7 @@
 
 [91 份 full 样例](2026-11-05-select-card-examples/README.md)逐份从通过场景的原始公共结果提取；`manifest.json` 记录精确参数、证据位置、记录序号及文件哈希。没有将内部快照、内部检查或测试事件伪装成公开返回。火堆示例在用户报告中的 JSON 与对应样本一致。
 
-交付检查 `verify_delivery.py` 验证 91 份样例与原始记录完全一致、24 例套件与通过证据逐项对应、226 个相对文档链接存在、44 项工具中仍为 15 项核销，以及 DLL 哈希未变；结果保存在 `verification.json`。`git diff --check` 通过。
+交付检查 `verify_delivery.py` 验证 91 份样例与原始记录完全一致、24 例套件与通过证据逐项对应、227 个相对文档链接存在、44 项工具中仍为 15 项核销，以及 DLL 哈希未变；结果保存在 `verification.json`。选中反馈方案补充后重新执行此资料检查及 `git diff --check`，未重复运行玩法测试。
 
 ## 复现与修复范围
 
@@ -64,3 +65,11 @@
 - 仅审阅 `select_card`；涉及 `selection_option` 的调用用于验证预览边界、有效动作被错误阻断和后续实际事件，不代替该工具未来的完整审阅。
 
 未实测控制器交互、第三方未支持页面和真实跨局竞争；滚动竞争使用现有双重门控的原生测试检查，验证有外部选择后停止第二次点击，不把该内部检查作为公开 MCP 错误样本。没有重新编译或正式安装 Mod，没有扩大用户 TODO 范围。
+
+## 选中反馈的补充核对
+
+现有 `gui-0/grid`、`gui-0/hand`、`gui-0/hand_upgrade` 已验证 native_action_state 的 selected_ids 在选中和取消时确实变化，而公开回执 events 为空；不需要通过新的测试改变状态才能确认缺口。原生证据沿用上文相同程序集：`NSimpleCardSelectScreen.OnCardClicked` 先更新选中集合，达到数量时可能立即 `CompleteSelection`；`NDeckUpgradeSelectScreen.OnCardClicked` 可能立即打开预览；`NPlayerHand.SelectCardInSimpleMode/SelectCardInUpgradeMode` 还会先取消旧牌再加入新牌。
+
+候选实现应独立负责同一原生选择实例内的真实选中／取消记录，与现有有界事件缓冲及公开卡牌身份读取协作。不能仅用最终 `CardSelection.Current` 的差集生成事件：自动提交会移除原页面，连续选择可能复用同一批牌，手牌替换也会一次改变两个项目。采集点及 UI 可见发布时机仍须在实施时核对；记录原生实际接受的变化，不记录预览克隆、拒绝请求或页面生命周期清理。
+
+待确认的公开格式与边界集中在[用户说明的设计范围](2026-11-05-select-card-review.md#建议的设计范围)，不在此重复定义。这里只补充设计调研，尚未新增日志、测试断言或修改当前接口；既有 24 例／58 项验证及 91 份样例仍对应 `7237b78` 的原始行为。
