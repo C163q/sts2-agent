@@ -51,6 +51,30 @@ internal static class MapView
         && VisibleUi.Descendants<NMapPoint>(screen).Any(VisibleUi.Shown);
 
     public static NButton? Back(NMapScreen screen) => screen.GetNodeOrNull<NButton>("Back");
-    public static bool CanClose(NMapScreen screen) => Ready(screen)
-        && Back(screen) is { IsEnabled: true } button && VisibleUi.OnScreen(button);
+    public static bool CanClose(NMapScreen screen) => CloseUnavailableReason(screen) == null;
+
+    public static string? CloseUnavailableReason(NMapScreen? screen)
+    {
+        if (!RunManager.Instance.IsInProgress || RunManager.Instance.DebugOnlyGetState() == null)
+            return "No local run is available for map closing.";
+        if (!RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
+            return "Map closing requires a local single-player run.";
+        if (screen == null || !GodotObject.IsInstanceValid(screen) || !screen.IsNodeReady())
+            return "The map is not ready.";
+        if (!screen.IsOpen)
+            return VisibleUi.Shown(screen) ? "The map is still closing. Wait for it to finish." : "No map is open.";
+        if (screen.IsTraveling) return "Wait for map travel to finish before closing the map.";
+        if (!Clear())
+        {
+            if (CardPage != null)
+                return "Close the covering card page with close_card_view before closing the map.";
+            if (RunUi.Transitioning()) return "Wait for the screen transition before closing the map.";
+            return "The map is covered by a dialog, selection or another detail page.";
+        }
+        if (!Ready(screen)) return "The map is still preparing. Wait before closing it.";
+        var button = Back(screen);
+        if (button == null) return "The map has no return button.";
+        if (!button.IsEnabled) return "The map return button is disabled.";
+        return VisibleUi.OnScreen(button) ? null : "The map return button is not visible.";
+    }
 }

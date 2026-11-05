@@ -1,0 +1,101 @@
+[
+  {
+    "file": "combat.full.json",
+    "source": ".tmp/2026-11-05-close-map-results/gui-production-decoder/combat/verify/evidence.json",
+    "index": 6,
+    "tool": "close_map",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "2b03940e2892b8b307edf5e8485346f07dab60023c485220d9c3c274e3eeb9d7"
+  },
+  {
+    "file": "combat.default.json",
+    "source": ".tmp/2026-11-05-close-map-results/gui-production-decoder/combat/verify/evidence.json",
+    "index": 9,
+    "tool": "close_map",
+    "arguments": {
+      "preset": "default"
+    },
+    "image_count": 0,
+    "sha256": "2b03940e2892b8b307edf5e8485346f07dab60023c485220d9c3c274e3eeb9d7"
+  },
+  {
+    "file": "event.full.json",
+    "source": ".tmp/2026-11-05-close-map-results/gui-production-decoder/event/verify/evidence.json",
+    "index": 2,
+    "tool": "close_map",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "bdddf7542b8d575f7d8bb011df7650256d8be23526df0d8c1556f5ac22fb95cb"
+  },
+  {
+    "file": "selection.full.json",
+    "source": ".tmp/2026-11-05-close-map-results/gui-production-decoder/selection/verify/evidence.json",
+    "index": 8,
+    "tool": "close_map",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "76a5bd0162a4272c3ba66162b9868beecb3740c272fbace76c34f5be2d34d24a"
+  },
+  {
+    "file": "divination.full.json",
+    "source": ".tmp/2026-11-05-close-map-results/gui-production-decoder/divination/verify/evidence.json",
+    "index": 4,
+    "tool": "close_map",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "10773dbcd90a3e8a2437f892c62f2e3d0b6fcd093e2c57983bddd121dff1bd27"
+  },
+  {
+    "file": "no-permission.full.json",
+    "source": ".tmp/2026-11-05-close-map-results/gui/no_map/verify/evidence.json",
+    "index": 0,
+    "tool": "close_map",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "7a503b9cd77984d701a99bc49c58f8db4019b6afa5b0cc9c9698ca68cb9883a8"
+  },
+  {
+    "file": "retained.full.json",
+    "source": ".tmp/2026-11-05-close-map-results/gui/no_map/verify/evidence.json",
+    "index": 5,
+    "tool": "close_map",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "eae4d94bc8661e25985a9adc7f8527bf48c0d97a71f597671a839664fa73cf61"
+  },
+  {
+    "file": "covered.full.json",
+    "source": ".tmp/2026-11-05-close-map-results/gui-production-decoder/selection/verify/evidence.json",
+    "index": 5,
+    "tool": "close_map",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "40eda6b83eb5929c7fd0e66c40d98c5ed41010d757786005695e6c138ac450eb"
+  },
+  {
+    "file": "mandatory.full.json",
+    "source": ".tmp/2026-11-05-close-map-results/gui-production-decoder/entry/verify/evidence.json",
+    "index": 3,
+    "tool": "close_map",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "ea3d32cd63aca94103f58944f41111a43bda87c3af8340d1622ccef0ae869f8b"
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The map return button is disabled.",
+    "recovery": "choose_legal_action"
+  }
+}

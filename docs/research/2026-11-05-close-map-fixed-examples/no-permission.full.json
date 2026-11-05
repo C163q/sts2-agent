@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "No map is open.",
+    "recovery": "get_observation"
+  }
+}

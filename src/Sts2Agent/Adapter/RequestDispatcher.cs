@@ -118,39 +118,7 @@ internal sealed partial class GameAdapter
         if (request.Operation == "inspect_map")
             return await InspectMap(request);
         if (request.Operation == "close_map")
-        {
-            var map = NRun.Instance?.GlobalUi.MapScreen;
-            if (map == null || !MapView.CanClose(map))
-                return FileMailbox.Error(request.Id, "illegal_action", "The current map cannot be closed.");
-            var run = RunManager.Instance.DebugOnlyGetState();
-            var graph = run?.Map;
-            int? act = run?.CurrentActIndex;
-            var underlyingOverlay = NRun.Instance!.GlobalUi.Overlays.Peek();
-            bool reopened = false;
-            void Opened() => reopened = true;
-            UiChanged();
-            bool SameMap() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
-                && ReferenceEquals(graph, run?.Map) && act == run?.CurrentActIndex && GodotObject.IsInstanceValid(map)
-                && ReferenceEquals(underlyingOverlay, NRun.Instance?.GlobalUi.Overlays.Peek())
-                && ReferenceEquals(NRun.Instance?.GlobalUi.MapScreen, map);
-            map.Opened += Opened;
-            try
-            {
-                MapView.Back(map)!.ForceClick();
-                await ObservationFrame();
-                await WaitUntil(() => !SameMap() || reopened || map.IsOpen || !MapView.Clear() || !VisibleUi.Shown(map));
-                if (!SameMap() || reopened || map.IsOpen || !MapView.Clear())
-                    return FileMailbox.Error(request.Id, "illegal_action", "The map changed while closing.");
-                string after = await SettledObservation();
-                if (!SameMap() || reopened || map.IsOpen || !MapView.Clear())
-                    return FileMailbox.Error(request.Id, "illegal_action", "The map changed while closing.");
-                return Success(request, after);
-            }
-            finally
-            {
-                if (GodotObject.IsInstanceValid(map)) map.Opened -= Opened;
-            }
-        }
+            return await CloseMap(request);
         if (request.Operation == "close_card_view")
         {
             var screen = CardView.Current;

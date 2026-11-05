@@ -68,7 +68,7 @@ flowchart LR
 | `close_card_view()` | 关闭顶层牌组/牌堆查看页，保留下层地图，返回 actions_only 上下文并刷新许可 |
 | `inspect_map(preset?, max_steps?)` | [打开或复用当前幕地图](map-inspection.md)，可返回全图、前瞻子图、按类型分类的节点 ID 或实际可选节点详情 |
 | `travel_to_node(node_id)` | [按当前候选选路](map-inspection.md#地图选路)，离开房间并放弃未领取奖励；飞鞋由原生流程处理 |
-| `close_map()` | 通过可用的原生返回入口关闭地图，不穿透卡牌页 |
+| `close_map()` | 通过可用原生返回入口关闭地图，返回 actions_only 内容，不穿透卡牌页 |
 | `inspect_selection(preset?, card_ids?, view_upgrades?)` | [整个可浏览候选及详情](card-selection.md#mcp-输出预设)，默认完整，摘要与 ID 筛选统一作用于候选、包内与预览卡牌，可显式切换原生升级复选框 |
 | `select_card(card_id)` | 点击一张候选，保留原生多选和确认流程 |
 | `selection_option(option_id)` | 点击选择页面列出的启用按钮 |
@@ -189,7 +189,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 所有工具的本地参数错误都在发送前拒绝，保留此前已有许可，不生成新许可。纯读取（基础观察及不改变 UI 的详情）遇到原生明确的 `invalid_request/illegal_action/expired_request` 也保留已有许可；首次读取失败不会生成许可。外部状态改变后，下一动作仍须通过 Mod 的 stale_state 校验。控制器冲突、坏响应、连接失败、超时、异常或取消清除许可。
 
-`inspect_selection` 省略 `view_upgrades` 时属于纯读取；显式提供该参数则可能改变 UI，与地图、牌组、牌堆及查看页切换一样，不能仅凭明确拒绝的错误码恢复许可。inspect_deck／inspect_pile／inspect_map／close_card_view／set_selection_view 的已审查拒绝另有原生“本请求未交互”保证；只有显式保证为 true、证据不矛盾且已有许可时保留，返回 choose_legal_action。缺少保证、已交互或未知结果仍要求观察；该例外不推广到其他页面工具。这些页面操作不要求已有动作许可。`set_divination_tool` 虽只切换占卜工具，仍须已有许可、记录事件并返回动作回执；MCP annotations 不代替执行策略。
+`inspect_selection` 省略 `view_upgrades` 时属于纯读取；显式提供该参数则可能改变 UI，与地图、牌组、牌堆及查看页切换一样，不能仅凭明确拒绝的错误码恢复许可。inspect_deck／inspect_pile／inspect_map／close_card_view／close_map／set_selection_view 的已审查拒绝另有原生“本请求未交互”保证；只有显式保证为 true、证据不矛盾且已有许可时保留，返回 choose_legal_action。缺少保证、已交互或未知结果仍要求观察；该例外不推广到其他页面工具。这些页面操作不要求已有动作许可。`set_divination_tool` 虽只切换占卜工具，仍须已有许可、记录事件并返回动作回执；MCP annotations 不代替执行策略。
 
 游戏动作仅在原生证明“未提交且 UI 未改变”时保留旧许可。`play_card`、`play_cards`、`end_turn`、`use_potion`、`discard_potion`、`select_card` 与 `selection_option` 的已审查前置拒绝提供这一保证；费用、目标和选择／覆盖／按钮状态会给具体提示，例如能量不足被拒后可直接结束回合，选牌期间误用 end_turn 被拒后可直接继续合法选择，无效候选或按钮被拒后可直接改用有效候选或按钮。批量部分提交后的失败不具备整批未提交保证。缺少标记的旧 Mod、其他动作拒绝或执行结果未知时不恢复许可。占卜等操作返回 `screenshot_unavailable` 仍可能已经改变游戏，返回 `outcome:"unknown"` 并要求观察，不能把图像失败当作玩法未执行。
 

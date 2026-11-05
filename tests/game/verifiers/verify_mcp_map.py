@@ -12,7 +12,10 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 from sts2_mcp.output.map_details import map_details
-from sts2_mcp.roundtrip_client import Client, player_result
+from sts2_mcp.output.observation_presets import observation_preset
+from sts2_mcp.mcp_catalog import tool_definitions
+from sts2_mcp.roundtrip_client import Client
+from sts2_mcp.output.response_pipeline import decode_success
 
 
 async def verify(args):
@@ -31,7 +34,7 @@ async def verify(args):
                 evidence.update(protocol_version=initialized.protocolVersion, server=initialized.serverInfo.model_dump())
                 listed = await session.list_tools()
                 names = {tool.name for tool in listed.tools}
-                assert len(names - {'capture_screenshot'}) == 42 and {'get_observation', 'inspect_map', 'close_map', 'end_turn'} <= names, names
+                assert names == {tool.name for tool in tool_definitions(screenshots_enabled="capture_screenshot" in names)}, names
                 for tool in listed.tools:
                     if tool.name in {"inspect_map", "close_map"}:
                         if tool.name == 'inspect_map':
@@ -53,13 +56,13 @@ async def verify(args):
                     return result.structuredContent
 
                 observed = await call("get_observation")
-                assert observed == player_result(before)
+                assert observed == decode_success("get_state", before["state"])
                 for name in ("inspect_map", "close_map"):
                     await call(name, {"act": 2}, error="invalid_request")
                 sample = await call("inspect_map")
                 reference = await asyncio.to_thread(client.call, "inspect_map")
                 evidence["references"].append(reference)
-                assert reference["ok"] and sample == player_result(reference), (sample, reference)
+                assert reference["ok"] and sample == decode_success("inspect_map", reference["state"]), (sample, reference)
                 assert sample == map_details(reference["state"])
                 assert not sample["can_travel"] and sample["selectable_nodes"] == []
                 assert "available_actions" not in sample and "notes" not in sample and "snapshot_id" not in sample
@@ -69,19 +72,19 @@ async def verify(args):
                 assert covered['map']['selectable_nodes'] == sample['selectable_nodes']
                 await call("close_map", {"force": True}, error="invalid_request")
                 assert await call("get_observation") == covered
-                assert await call("close_map") == observed
+                assert await call("close_map") == observation_preset(observed, "actions_only")
                 assert await call("get_observation") == observed
                 assert {tool.name for tool in (await session.list_tools()).tools} == names
         after = await asyncio.to_thread(client.call, "get_state")
         evidence["after"] = after
-        assert after["ok"] and player_result(after) == player_result(before)
+        assert after["ok"] and decode_success("get_state", after["state"]) == decode_success("get_state", before["state"])
         assert after["state"]["snapshot_id"] != before["state"]["snapshot_id"]
         evidence["completed"] = True
     finally:
         if sample is not None:
             (args.output_dir / "map-inspection.json").write_text(json.dumps(sample, ensure_ascii=False, indent=2) + "\n")
         (args.output_dir / "mcp-map-evidence.json").write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + "\n")
-    print("PASS: real stdio MCP, full map, file JSON parity, repeat, argument rejection and explicit close; gameplay unchanged.")
+    print("PASS: real stdio MCP, full map, file JSON parity, repeat, argument rejection and compact explicit close; gameplay unchanged.")
 
 
 def main():

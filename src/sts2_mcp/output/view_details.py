@@ -4,7 +4,7 @@ from sts2_mcp.output.scene_context import scene_context
 
 
 def legacy_view_observation(state):
-    """Keep the file close_deck and map adapter contracts separate from card closes."""
+    """Keep the legacy file-only close_deck contract separate from public closes."""
     from sts2_mcp.output.contracts.observation import OBSERVATION
     from sts2_mcp.output.value_shapes import project
     from sts2_mcp.output.card_format import format_game_cards
@@ -16,9 +16,7 @@ def legacy_view_observation(state):
 
 
 def closed_map(state):
-    result = legacy_view_observation(state)
-    if result['screen'].get('view') in {'divination', 'epilogue'}:
-        return observation_details(state)
-    if "view" in result["screen"]:
+    result = observation_details(state)
+    if result['screen'].get('view') not in (None, 'divination', 'epilogue') or result.get('map') is not None:
         raise ValueError("Map close left a browsing page open.")
     return result

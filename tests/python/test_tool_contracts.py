@@ -54,7 +54,7 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                     want.update(potion_discard=copy.deepcopy(DISCARD_UNKNOWN), available_actions=[])
                 if want.get('screen', {}).get('view') == 'map':
                     want['screen']['status'] = 'covered'
-                if case['tool'] == 'close_card_view' and 'error' not in want:
+                if case['tool'] in {'close_card_view', 'close_map'} and 'error' not in want:
                     # The approved action contract replaces the frozen partial observation.
                     want = {key: want[key] for key in ('scene', 'screen', 'available_actions')}
                 if case['tool'] == 'set_selection_view' and 'error' not in want:

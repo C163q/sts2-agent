@@ -28,6 +28,14 @@
           "--scenario",
           "combat"
         ]
+      },
+      {
+        "name": "legacy",
+        "verifier": "verify_close_map_review.py",
+        "args": [
+          "--scenario",
+          "legacy"
+        ]
       }
     ]
   },

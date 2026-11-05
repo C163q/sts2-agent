@@ -69,7 +69,7 @@ class NativeMediaTests(unittest.IsolatedAsyncioTestCase):
             ('get_observation', {}, True), ('get_observation', {'preset': 'full'}, True),
             ('get_observation', {'preset': 'summary'}, True), ('get_observation', {'preset': 'actions_only'}, False),
             ('get_observation', {'preset': 'top_bar'}, False), ('inspect_event', {}, True),
-            ('close_map', {}, True), ('close_card_view', {}, False),
+            ('close_map', {}, False), ('close_card_view', {}, False),
             ('divine', {'x': 1, 'y': 2}, False), ('set_divination_tool', {'tool': 'small'}, False)]:
             with self.subTest(tool=tool, arguments=arguments):
                 raw = copy.deepcopy(states['divination'])

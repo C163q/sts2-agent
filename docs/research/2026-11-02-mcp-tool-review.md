@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 44 项，已核销 20 项。get_observation 与 inspect_map 的约定内容、地图分类摘要、错误恢复及 MapRoom 场景补齐均已完成并合入 main；698 项 Python、124 项 C#、九种 GUI 组合与一次独立审查完成。close_map 已完成现状核验（六类 GUI、24 项测试及典型完整 JSON），正在讨论返回格式与四项问题；剩余 24 项尚未核销，暂无阻塞。
+> 当前状态：工具核验进行中，共 44 项，已核销 20 项。get_observation 与 inspect_map 的约定内容、地图分类摘要、错误恢复及 MapRoom 场景补齐均已完成并合入 main；698 项 Python、124 项 C#、九种 GUI 组合与一次独立审查完成。close_map 的四项修复已完成约定验证（703 项 Python、124 项 C#、六类 GUI／七步骤），等待终审及合入；剩余 24 项尚未核销，暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -63,7 +63,7 @@
 ### 地图（3 项）
 
 - [x] `inspect_map`：打开并查看地图。[定稿](2026-11-05-inspect-map-review.md)与[实施／验证](2026-11-05-map-summary-implementation.md)已完成并合入 main：分类 summary、原深度与 selectable 行为、两项拒绝修复、基础观察地图主体与 note，以及[原生 MapRoom 场景](2026-11-05-act-entry-scene.md)。698 项 Python、124 项 C#、九种 GUI 组合与一次独立审查完成，提供 [13 份典型完整返回](2026-11-05-map-summary-examples/README.md)，包含一份明确的修复前对照。
-- [ ] `close_map`：关闭地图。阶段：设计讨论；[审阅与建议](2026-11-05-close-map-review.md)、[开发核验](2026-11-05-close-map-development-notes.md)。六类 GUI 与 24 项测试完成，提供 [6 份典型完整 JSON](2026-11-05-close-map-examples/README.md)。四项问题及精简成功返回待定稿，尚未修改工具行为。
+- [ ] `close_map`：关闭地图。阶段：实现与验证；[定稿](2026-11-05-close-map-review.md)、[实施与约定验证](2026-11-05-close-map-results-implementation.md)已完成，等待一次独立审查及合入；提供 [9 份新返回](2026-11-05-close-map-fixed-examples/README.md)。原[6 份审阅 JSON](2026-11-05-close-map-examples/README.md)保持为基线。
 - [ ] `travel_to_node`：前往可选节点。
 
 ### 奖励、宝箱与流程推进（5 项）

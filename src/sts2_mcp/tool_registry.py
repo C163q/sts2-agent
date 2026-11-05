@@ -629,7 +629,7 @@ SPECS = (
     ToolSpec(
         name='close_map',
         schema=NO_ARGUMENTS,
-        description="Close the exposed map using its enabled native back button; return a basic observation. "
+        description="Close the exposed map using its enabled native back button; return actions_only context. "
             "Cannot close through card pages or force a mandatory map closed.",
         annotations=view,
         category='view',
@@ -638,7 +638,9 @@ SPECS = (
         returns_transition=False,
         records_events=False,
         reader='view_details:closed_map',
-        media=True),
+        projector='observation_presets:actions_only_result',
+        native_keys=(),
+        unchanged_view_rejections=True),
     ToolSpec(
         name='inspect_selection',
         schema=SELECTION_SCHEMA,
