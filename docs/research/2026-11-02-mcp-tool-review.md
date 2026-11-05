@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 44 项，已核销 24 项。inspect_treasure 的三项修复与 summary 已确认并实施，724 项 Python、124 项 C# 和构建通过，正在图形验证。剩余 20 项尚未核销，暂无阻塞。
+> 当前状态：工具核验进行中，共 44 项，已核销 25 项。inspect_treasure 的三项修复、summary、724 项 Python、124 项 C#、八类 GUI 与三类回归及一次独立审查均完成，2862318 已合入 main。剩余 19 项尚未核销，暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -8,7 +8,7 @@
 
 - 核对基线：提交 `ef9f34e`，MCP `0.48.0`；工具名称与数量依据 [mcp_catalog.py](../../src/sts2_mcp/mcp_catalog.py)。后续以每项核验时的实现为准，工具增删时同步本清单及总数。
 - 逐项检查工具的适用场景、返回内容、参数及预设，目标是符合玩家实际可从 UI 获得的信息，并让 LLM 聚焦所关心的内容。遵循[可见信息边界](../observation.md)。
-- 43 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、药水、战斗对象、遗物、奖励详情的 `summary`、地图的 `summary/selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆也已迁移为 full/default/summary，旧 detail_level 已移除。既有能力也须重新核验，不因此直接核销。
+- 43 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、药水、战斗对象、遗物、奖励及宝箱详情的 `summary`、地图的 `summary/selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆也已迁移为 full/default/summary，旧 detail_level 已移除。既有能力也须重新核验，不因此直接核销。
 - `capture_screenshot` 按配置启用，不支持 preset；核验其现有参数与返回。统一预设的现行契约见 [MCP 输出预设](../development/mcp.md#输出预设)。
 
 ## 逐项工作流程
@@ -70,7 +70,7 @@
 
 - [x] `inspect_rewards`：查看奖励列表。[定稿](2026-11-05-inspect-rewards-review.md)与[实施／验证](2026-11-05-reward-inspection-presets-implementation.md)完成并合入 main：summary 复用基础观察静态奖励格式、reward_ids 按稳定 ID 筛选、具体拒绝与上下文一致性、旧领取验证器更新。713 项 Python、124 项 C#、九类 GUI 与一次独立审查通过；[11 份新返回](2026-11-05-reward-presets-examples/README.md)和原[9 份审阅样本](2026-11-05-inspect-rewards-examples/README.md)保留来源。
 - [x] `claim_reward`：领取一项奖励。阶段：完成；[定稿](2026-11-05-claim-reward-review.md)与[实施记录](2026-11-05-claim-reward-recovery-implementation.md)完成明确拒绝恢复、具体原因、回执 ID 核对及滚动边界；保留 reward_id、default/full 与精简动作回执。718 项 Python、124 项 C#、十一类 GUI、三类回归及一次独立审查通过，提供[18 份新返回](2026-11-05-claim-reward-fixed-examples/README.md)，原[15 份审阅返回](2026-11-05-claim-reward-examples/README.md)保持为基线。
-- [ ] `inspect_treasure`：查看宝箱房及已展示遗物。阶段：实现与验证；[定稿](2026-11-06-inspect-treasure-review.md)与[实施记录](2026-11-06-treasure-inspection-presets-implementation.md)覆盖具体诊断、上下文及悬停边界修复，summary 复用静态宝箱格式；原[14 份完整返回](2026-11-06-inspect-treasure-examples/README.md)保持为审阅基线。
+- [x] `inspect_treasure`：查看宝箱房及已展示遗物。[定稿](2026-11-06-inspect-treasure-review.md)与[实施记录](2026-11-06-treasure-inspection-presets-implementation.md)完成具体诊断、上下文、悬停边界及显示／点击分离，summary 复用静态宝箱格式。724 项 Python、124 项 C#、八类 GUI、三类回归及一次独立审查通过，提供[17 份新返回](2026-11-06-treasure-presets-examples/README.md)，原[14 份返回](2026-11-06-inspect-treasure-examples/README.md)保持为基线。
 - [ ] `loot_treasure`：打开宝箱或领取遗物。
 - [ ] `proceed`：点击当前界面的跳过或继续按钮。
 

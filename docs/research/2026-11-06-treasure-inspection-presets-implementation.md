@@ -1,6 +1,6 @@
 # 宝箱详情边界与 summary 实施记录
 
-> 当前状态：实施中，共 1 项，已完成 0 项。三项修复、summary、完整 Python 与 C# 检查及构建已完成，图形验证与旧流程回归已通过，正在独立审查与集成。无阻塞。
+> 当前状态：已完成，共 1 项，已完成 1 项。三项修复、summary、约定验证及一次独立审查全部完成，2862318 已合入 main，临时分支已删除，无遗留实现任务。
 
 规格见[已确认方案](2026-11-06-inspect-treasure-review.md)，步骤见[计划](../superpowers/plans/2026-11-06-treasure-inspection-presets.md)；原问题与证据见[审阅开发依据](2026-11-06-inspect-treasure-development-notes.md)。
 
@@ -36,7 +36,15 @@
 - gui-regression/report.json：旧 basic/open 宝箱流程与原生测试门控三例全部通过，59.560 秒，39 次 MCP；两个禁用模式各 78 项均拒绝。
 - 总计 211 次真实 MCP；主套件另含 12 次文件测试控制请求。自有 PID 172701、178050、178765 均已退出。
 - [17 份新完整返回](2026-11-06-treasure-presets-examples/README.md)与原 14 份样本共 31 项来源／哈希通过，链接与产物一致性见证据根 verification.json。
-- 一次独立审查尚未完成。
+- 一次独立审查通过：Critical 0、Important 0、Minor 0，无需追加修复。
+
+## 独立审查与集成
+
+审查者 /root/review_treasure_presets，gpt-6.1-sol/high，fresh context，只读审查 fac27bf..2862318，五项关注均通过；没有修改工作树、重跑构建或游戏。完整结论保存在证据根 review-result.md。
+
+审查未判断多人、第三方宝箱及所有遗物组合的普遍兼容性；维持当前单人原型与明确实测范围，其他组合需要新增原生验证后才能声明兼容。测试设施提前构建只用于保留旧行为完成原生 RED，成本为额外一次 4.23 秒构建，需求与最终生产范围保持。
+
+main 已快进合入 2862318，feat/treasure-inspection-summary 已删除；合并后交付校验通过，产物与实际游戏核验一致。本计划临时工作区按文件哈希核对后归档至证据根 inline-workspace/，原工作区已清理。
 
 ## 验证范围
 
