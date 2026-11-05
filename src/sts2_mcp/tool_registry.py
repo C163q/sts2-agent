@@ -23,6 +23,7 @@ from sts2_mcp.output.reward_details import CLAIM_SCHEMA
 from sts2_mcp.output.reward_presets import REWARD_SCHEMA
 from sts2_mcp.output.rest_site_details import REST_OPTION_SCHEMA
 from sts2_mcp.output.treasure_details import LOOT_SCHEMA
+from sts2_mcp.output.treasure_presets import TREASURE_SCHEMA
 from sts2_mcp.output.shop_details import BUY_SCHEMA
 from sts2_mcp.output.ancient_details import ANCIENT_OPTION_SCHEMA
 from sts2_mcp.output.event_details import EVENT_OPTION_SCHEMA
@@ -368,15 +369,17 @@ SPECS = (
         parser_operation=False),
     ToolSpec(
         name='inspect_treasure',
-        schema=NO_ARGUMENTS,
-        description='Read the exposed treasure room and visible relic hover help. Closed chests reveal no contents.',
+        schema=TREASURE_SCHEMA,
+        description='Read the exposed chest and displayed relic help. summary keeps static room data without hover text.',
         annotations=read_only,
         category='inspection',
         effect='read',
         requires_permission=False,
         returns_transition=False,
         records_events=False,
-        reader='treasure_details:inspect_treasure_details'),
+        reader='treasure_details:inspect_treasure_details',
+        projector='treasure_presets:treasure_preset',
+        native_keys=()),
     ToolSpec(
         name='inspect_rest_site',
         schema=NO_ARGUMENTS,

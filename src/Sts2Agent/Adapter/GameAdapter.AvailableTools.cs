@@ -236,7 +236,7 @@ internal sealed partial class GameAdapter
         if (RewardInspection.InspectionUnavailableReason(RewardInspection.Current) == null) actions.Add("inspect_rewards");
         if (RestSiteInspection.Current is { } restPage && RestSiteInspection.Ready(restPage)
             && RunManager.Instance.IsSingleplayerOrFakeMultiplayer) actions.Add("inspect_rest_site");
-        if (TreasureInspection.Current is { } treasurePage && TreasureInspection.Exposed(treasurePage)) actions.Add("inspect_treasure");
+        if (TreasureInspection.InspectionUnavailableReason(TreasureInspection.Current) == null) actions.Add("inspect_treasure");
         if (ShopInspection.Current is { } shopPage && ShopInspection.Exposed(shopPage) && RunContext.Singleplayer
             && shopPage.Inventory.IsOpen && !ShopInspection.Animating(shopPage)) actions.Add("inspect_shop");
         if (AncientInspection.Current is { } ancientPage && AncientInspection.Exposed(ancientPage)

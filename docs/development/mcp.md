@@ -49,7 +49,7 @@ flowchart LR
 | `claim_reward(reward_id)` | 逐项点击奖励，后续选牌复用现有选择工具 |
 | `proceed()` | 点击奖励页跳过/前进、宝箱房跳过/前进、休息处、已完成事件、先古之民或关闭商品页后的商店、建筑师前进按钮；保留原生返回父事件等行为 |
 | `loot_treasure(open_only?)` | [宝箱房开箱并领取](treasure.md)，可先开后决定；不自动前进 |
-| `inspect_treasure()` | 当前可见宝箱遗物及悬停说明 |
+| `inspect_treasure(preset?)` | 当前可见宝箱遗物及悬停说明 |
 | `inspect_rest_site()` | [当前休息处选项及动态悬停说明](rest-site.md) |
 | `choose_rest_option(option_id)` | 点击一个启用的休息处选项，后续选牌单独处理 |
 | `get_observation(preset?)` | 默认 `default`；`full` 保留空值；`summary` 精简战斗、卡牌、事件、占卜说明与顶栏；`actions_only` 仅返回上下文与工具名；`top_bar` 再附顶栏和遗物数量，各预设均刷新动作令牌 |

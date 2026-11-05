@@ -1,0 +1,26 @@
+{
+  "scene": "treasure",
+  "screen": {
+    "status": "visible"
+  },
+  "treasure": {
+    "status": "visible",
+    "chest": "open",
+    "relic": {
+      "name": "Anchor",
+      "enabled": false,
+      "description": "Start each combat with 10 Block.",
+      "hover_tips": [
+        {
+          "title": "Block",
+          "description": "Until next turn, prevents damage."
+        }
+      ]
+    },
+    "proceed": {
+      "text": "Skip",
+      "enabled": false,
+      "skips_remaining": true
+    }
+  }
+}

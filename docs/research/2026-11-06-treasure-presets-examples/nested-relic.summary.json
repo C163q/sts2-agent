@@ -1,0 +1,19 @@
+{
+  "scene": "treasure",
+  "screen": {
+    "status": "visible"
+  },
+  "treasure": {
+    "status": "visible",
+    "chest": "open",
+    "relic": {
+      "name": "Calling Bell",
+      "enabled": true
+    },
+    "proceed": {
+      "text": "Skip",
+      "enabled": true,
+      "skips_remaining": true
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "scene": "treasure",
+  "screen": {
+    "status": "visible"
+  },
+  "treasure": {
+    "status": "visible",
+    "chest": "open",
+    "relic": {
+      "name": "Anchor",
+      "enabled": false,
+      "description": null,
+      "hover_tips": []
+    },
+    "proceed": {
+      "text": "Skip",
+      "enabled": false,
+      "skips_remaining": true
+    }
+  },
+  "notes": {
+    "hover_tips_unavailable": {
+      "message": "Hover help is currently unavailable for these displayed icons.",
+      "sources": [
+        "treasure.relic"
+      ]
+    }
+  }
+}

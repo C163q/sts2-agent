@@ -45,7 +45,7 @@
 | 点击候选的选中／取消、替换、自动提交、预览、未知身份、滚动及拒绝恢复 | [select_card_review](../../tests/game/data/gui_suite_select_card_review.json)；[实施与验证](../research/2026-11-05-selection-feedback-implementation.md) |
 | 选择按钮的确认、返回、放弃、跳过、整包、奖励替代及明确拒绝后续接 | [selection_option_review](../../tests/game/data/gui_suite_selection_option_review.json)；[审阅](../research/2026-11-05-selection-option-review.md)。grid_manual 包含双重门控的禁用按钮／过期优先检查，人工扰动只用于验证拒绝，不代表自然游玩出现过同类静止按钮 |
 | 奖励预设与 ID 筛选、基础观察对照、拒绝续接及旧领取流程 | [reward_inspection_review](../../tests/game/data/gui_suite_reward_inspection_review.json)；[实施与验证](../research/2026-11-05-reward-inspection-presets-implementation.md) |
-| 宝箱详情、空值、覆盖拒绝与纯读取续接的现状核验 | [treasure_inspection_review](../../tests/game/data/gui_suite_treasure_inspection_review.json)；[开发依据](../research/2026-11-06-inspect-treasure-development-notes.md)。当前保留笼统错误的基线断言，修复时同步 |
+| 宝箱预设、空值、覆盖拒绝、纯读取续接与显示／悬停边界 | [treasure_inspection_review](../../tests/game/data/gui_suite_treasure_inspection_review.json)；[实施验证](../research/2026-11-06-treasure-inspection-presets-implementation.md)。显示扰动双重门控，finally 和局间重置恢复 |
 | 领取结果、满槽、互斥、嵌套、追回、拒绝续接与滚动失败边界 | [claim_reward_review](../../tests/game/data/gui_suite_claim_reward_review.json)；[修复记录](../research/2026-11-05-claim-reward-recovery-implementation.md)。滚动失败使用双重门控的原生按钮禁用扰动，finally 与局间重置恢复 |
 | 地图旅行的到达回执、拒绝续接、滚动后失败与赐福鹿角 | [travel_review](../../tests/game/data/gui_suite_travel_review.json)；[修复与验证](../research/2026-11-05-travel-recovery-implementation.md) |
 | 地图关闭的最小结果、具体拒绝与许可续接、占卜无图像依赖及旧独立检查 | [close_map_review](../../tests/game/data/gui_suite_close_map_review.json)；[关闭结果实施](../research/2026-11-05-close-map-results-implementation.md)。combat 的第二步在同一就绪战斗中运行旧独立验证器 |

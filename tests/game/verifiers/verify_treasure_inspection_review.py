@@ -11,7 +11,7 @@ from mcp.client.stdio import stdio_client
 from sts2_mcp.roundtrip_client import Client
 from tests.game.support.verification_runtime import ensure_run, ipc_directory
 
-SCENARIOS = ('basic', 'empty', 'extra', 'nested', 'choice', 'no_treasure', 'map_pending')
+SCENARIOS = ('basic', 'empty', 'extra', 'nested', 'choice', 'no_treasure', 'map_pending', 'display_red', 'display')
 
 
 async def verify(args):
@@ -48,9 +48,18 @@ async def verify(args):
                 assert result.get('error', {}).get('code') == error, result
                 return result
 
+            async def native(operation, arguments=None):
+                result = await asyncio.to_thread(raw.call, operation, arguments=arguments)
+                record({'native_operation': operation, 'arguments': arguments, 'result': result})
+                assert result['ok'], result
+                return result['state']
+
             async def reject(label, *, permission=True):
                 result = await call('inspect_treasure', error='illegal_action', label=label)
-                assert result['error']['message'] == 'The requested action is unavailable.', result
+                expected = ('close_card_view' if 'deck' in label else 'close_map' if 'map' in label
+                    else 'inspect_selection' if 'selection' in label else 'inspect_rewards' if 'rewards' in label
+                    else 'No treasure room')
+                assert expected in result['error']['message'], result
                 assert result['error']['recovery'] == ('choose_legal_action' if permission else 'get_observation'), result
                 return result
 
@@ -74,6 +83,8 @@ async def verify(args):
             assert await inspect('repeat_closed_full') == closed
             compact = await call('inspect_treasure', {'preset': 'default'}, label='closed_default')
             assert compact['treasure'] == {'status': 'visible', 'chest': 'closed', 'relic': None}, compact
+            empty_summary = await call('inspect_treasure', {'preset': 'summary'}, label='closed_summary')
+            assert empty_summary == compact, empty_summary
             observed = await call('get_observation')
             assert observed['treasure'] == closed['treasure'], observed
 
@@ -87,7 +98,7 @@ async def verify(args):
                 # Reaching the native refusal proves the read kept existing permission.
                 await call('loot_treasure', error='illegal_action', label='native_action_after_read_refusal')
                 await call('close_map')
-                await call('inspect_treasure', {'preset': 'summary'}, 'invalid_request', 'summary_not_supported')
+                await call('inspect_treasure', {'preset': 'bad'}, 'invalid_request', 'invalid_preset')
 
             receipt = await call('loot_treasure', {'open_only': True})
             if args.scenario == 'extra':
@@ -99,6 +110,48 @@ async def verify(args):
                     await call('proceed')
 
             opened = await inspect('opened_full')
+            if args.scenario == 'display_red':
+                checks = []
+                for mode in ('no_hover', 'offscreen'):
+                    await native('set_test_treasure_display', {'mode': mode})
+                    try:
+                        value = await native('inspect_treasure')
+                        relic = value['treasure']['relic']
+                        checks.append(relic is not None and (mode != 'no_hover' or relic['description'] is None))
+                    finally:
+                        await native('set_test_treasure_display', {'mode': 'normal'})
+                record({'native_boundary_checks': checks})
+                assert all(checks), checks
+                return
+            if args.scenario == 'display':
+                for mode in ('no_hover', 'disabled', 'offscreen', 'hidden', 'transparent', 'clipped'):
+                    await native('set_test_treasure_display', {'mode': mode})
+                    try:
+                        value = await call('inspect_treasure', label=mode + '_full')
+                        compact = await call('inspect_treasure', {'preset': 'default'}, label=mode + '_default')
+                        summary = await call('inspect_treasure', {'preset': 'summary'}, label=mode + '_summary')
+                        relic = value['treasure']['relic']
+                        if mode in {'hidden', 'transparent', 'clipped'}:
+                            assert relic is None and compact['treasure']['relic'] is None and summary['treasure']['relic'] is None, value
+                        else:
+                            assert relic['name'] == 'Anchor' and relic['enabled'] is False, value
+                            if mode in {'no_hover', 'disabled'}:
+                                assert relic['description'] is None and relic['hover_tips'] == [], value
+                                assert value['notes']['hover_tips_unavailable']['sources'] == ['treasure.relic'], value
+                                assert 'description' not in compact['treasure']['relic'] and 'notes' not in summary, (compact, summary)
+                            else:
+                                assert relic['description'] and 'notes' not in value, value
+                            assert summary['treasure']['relic'] == {'name': 'Anchor', 'enabled': False}, summary
+                        for preset in ('full', 'default', 'summary'):
+                            observation = await call('get_observation', {'preset': preset}, label=mode + '_observation_' + preset)
+                            assert observation['treasure'] == summary['treasure'], observation
+                            assert 'inspect_treasure' in observation['available_actions'] and 'loot_treasure' not in observation['available_actions'], observation
+                        await call('loot_treasure', error='illegal_action', label=mode + '_cannot_loot')
+                    finally:
+                        await native('set_test_treasure_display', {'mode': 'normal'})
+                assert await inspect('restored_full') == opened
+
+            open_summary = await call('inspect_treasure', {'preset': 'summary'}, label='opened_summary')
             if args.scenario == 'empty':
                 assert opened['treasure']['relic'] is None and opened['treasure']['proceed']['enabled'], opened
                 value = await call('inspect_treasure', {'preset': 'default'}, label='empty_default')
@@ -111,6 +164,7 @@ async def verify(args):
                 for preset in ('full', 'default', 'summary'):
                     observation = await call('get_observation', {'preset': preset}, label='observation_' + preset)
                     assert observation['treasure']['relic'] == {'name': relic['name'], 'enabled': True}, observation
+                    assert observation['treasure'] == open_summary['treasure'], observation
                 await call('inspect_treasure', {'preset': 'default'}, label='opened_default')
                 receipt = await call('loot_treasure')
                 if args.scenario == 'nested':

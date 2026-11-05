@@ -110,5 +110,21 @@
         ]
       }
     ]
+  },
+  {
+    "name": "display",
+    "scenarios": {
+      "treasure": "open"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_treasure_inspection_review.py",
+        "args": [
+          "--scenario",
+          "display"
+        ]
+      }
+    ]
   }
 ]

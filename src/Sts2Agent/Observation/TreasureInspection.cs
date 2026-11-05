@@ -19,16 +19,37 @@ internal static class TreasureInspection
         && NRun.Instance?.GlobalUi.Overlays.ScreenCount == 0 && !RunUi.CardPreviewsPending()
         && !VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen) && VisibleUi.Shown(room);
 
+    public static string? InspectionUnavailableReason(NTreasureRoom? room)
+    {
+        if (room != null && GodotObject.IsInstanceValid(room) && Exposed(room)) return null;
+        if (!RunManager.Instance.IsInProgress) return "No local run is available for treasure inspection.";
+        if (room == null || !GodotObject.IsInstanceValid(room)) return "No treasure room is available on the current screen.";
+        var map = NRun.Instance?.GlobalUi.MapScreen;
+        if (VisibleUi.Shown(map))
+            return map!.IsOpen ? "Close the map with close_map before inspecting the chest."
+                : "Wait for the map to finish closing before inspecting the chest.";
+        if (CardView.Current != null) return "Close the card browsing page with close_card_view before inspecting the chest.";
+        if (CardSelection.Current != null)
+            return "Resolve the current card selection before inspecting the chest; inspect_selection shows its choices.";
+        if (RewardInspection.Current != null)
+            return "Resolve the current reward page before inspecting the chest; inspect_rewards shows its rows.";
+        if (RunUi.CardPreviewsPending()) return "Wait for card previews to finish before inspecting the chest.";
+        if (RunUi.Transitioning()) return "Wait for the screen transition before inspecting the chest.";
+        return "The treasure room is covered by a dialog or another screen.";
+    }
+
     public static NButton Chest(NTreasureRoom room) => room.GetNode<NButton>("%Chest");
     public static NTreasureRoomRelicCollection Collection(NTreasureRoom room) => room.GetNode<NTreasureRoomRelicCollection>("%RelicCollection");
     public static bool Opened(NTreasureRoom room) => PrivateFields.Read(room, "_hasChestBeenOpened") is true;
     private static bool Picking(NTreasureRoom room) => PrivateFields.Read(room, "_isRelicCollectionOpen") is true;
 
     public static NTreasureRoomRelicHolder? Relic(NTreasureRoom room) => Opened(room) && Picking(room)
-        && Collection(room).SingleplayerRelicHolder is { } holder && VisibleUi.OnScreen(holder)
-        && VisibleUi.OnScreen(holder.Relic.Icon) && holder.Relic.Icon.Texture != null ? holder : null;
+        && Collection(room).SingleplayerRelicHolder is { } holder && VisibleUi.Displayed(holder)
+        && VisibleUi.Displayed(holder.Relic) && VisibleUi.Displayed(holder.Relic.Icon)
+        && holder.Relic.Icon.Texture != null ? holder : null;
 
     private static bool RelicClickable(NTreasureRoom room) => Relic(room) is { IsEnabled: true } holder
+        && VisibleUi.OnScreen(holder) && VisibleUi.OnScreen(holder.Relic.Icon)
         && holder.MouseFilter == Control.MouseFilterEnum.Stop && holder.Modulate.A >= 0.99f
         && Collection(room).Modulate.A >= 0.99f
         && !RewardInspection.Animating(holder, "_initTween")
@@ -48,8 +69,17 @@ internal static class TreasureInspection
 
     public static bool CanLoot(NTreasureRoom room) => Ready(room) && (!Opened(room) || RelicClickable(room));
 
-    public static object? Read(bool full = false)
+    public static object? Read(bool full = false) => Read(full, out _);
+
+    public static object Inspect()
     {
+        var treasure = Read(full: true, out var unavailable);
+        return new { treasure, unavailable_hover_sources = unavailable };
+    }
+
+    private static object? Read(bool full, out string[] unavailable)
+    {
+        unavailable = [];
         if (Current is not { } room) return null;
         if (!Exposed(room)) return new { status = "covered", chest = (string?)null, relic = (object?)null, proceed = (object?)null };
         bool ready = Ready(room);
@@ -64,9 +94,11 @@ internal static class TreasureInspection
             };
             if (full)
             {
-                var details = RelicInspection.Details(holder.Relic.Model, null);
-                value["description"] = details.description;
-                value["hover_tips"] = details.hover_tips;
+                bool hoverable = HoverAccess.CanFocus(holder);
+                var details = hoverable ? RelicInspection.Details(holder.Relic.Model, null) : null;
+                value["description"] = details?.description;
+                value["hover_tips"] = details?.hover_tips ?? [];
+                if (!hoverable) unavailable = ["treasure.relic"];
             }
             relic = value;
         }

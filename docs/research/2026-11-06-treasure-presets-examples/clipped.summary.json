@@ -1,0 +1,16 @@
+{
+  "scene": "treasure",
+  "screen": {
+    "status": "visible"
+  },
+  "treasure": {
+    "status": "visible",
+    "chest": "open",
+    "relic": null,
+    "proceed": {
+      "text": "Skip",
+      "enabled": false,
+      "skips_remaining": true
+    }
+  }
+}

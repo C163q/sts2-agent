@@ -24,9 +24,11 @@
 
 这是字段节选，完整观察还包含顶栏等公共字段。`chest` 为 `closed`、`opening` 或 `open`，不表示未来会掉落什么。只有原生遗物图标已经显示时，`relic` 才提供 `{name, enabled}`；未开箱不读取同步器提前生成的隐藏内容。基础观察不附送遗物效果。
 
-`inspect_treasure()` 只读当前暴露的宝箱房，为可见遗物增加 `description` 与 `hover_tips`。地图、选牌、额外奖励或其他页面覆盖时，`treasure.status` 为 `covered`，`chest`、`relic`、`proceed` 全为 `null`，详情不可用。成功详情可用于后续动作，令牌规则见[MCP 调用语义](mcp.md#调用和错误语义)。多人共享遗物投票尚未适配，不能由该动作自动代选。
+`inspect_treasure()` 只读当前暴露的宝箱房，支持 `preset:default/full/summary`，默认 default。full/default 为可悬停遗物提供 `description` 与 `hover_tips`；summary 沿用基础观察的静态宝箱格式，保留箱子状态、遗物 name/enabled 及前进按钮。地图、选牌、额外奖励或其他页面覆盖时，`treasure.status` 为 `covered`，`chest`、`relic`、`proceed` 全为 `null`，详情不可用。成功详情可用于后续动作，令牌规则见[MCP 调用语义](mcp.md#调用和错误语义)。多人共享遗物投票尚未适配，不能由该动作自动代选。
 
-明确的读取拒绝保留已有操作许可，首次读取失败仍须取得有效观察。当前拒绝原因较笼统；成功响应校验尚未核对宝箱详情与 screen 的可见性一致，遗物正文也尚未区分不可悬停状态。已知问题、证据范围与候选改进见[宝箱详情审阅](../research/2026-11-06-inspect-treasure-review.md)。
+明确读取拒绝保留已有操作许可，首次失败仍须取得有效观察。错误会说明无宝箱房、地图／牌组／选牌／奖励页覆盖或过渡等原因，与可用工具列表共用条件。详情成功必须为 scene:treasure、screen:{status:visible}；矛盾内容返回 transport_error 并清除许可，完整校验后才应用预设。
+
+已显示遗物不可悬停时仍返回 name/enabled；full 为 description:null、hover_tips:[]，并通过 notes.hover_tips_unavailable.sources 中的 treasure.relic 说明。default 省略空正文，保留 note；summary 省略悬停内容和该 note。遗物显示读取保留隐藏、透明和容器裁剪判断，独立于屏幕边缘；点击继续检查屏幕位置与原生可操作状态。静态读取不要求房间已可点击。
 
 ## 开箱与领取
 
@@ -70,4 +72,4 @@ python3 scripts/run_roundtrip.py --windowed --treasure-scenario basic
 
 报告和截图目录必须全新。测试真实开箱、领取并前进，只能对新建隔离实例运行。其他夹具、证据与未测范围见[调研记录](../research/2026-10-31-treasure.md)。
 
-详情专项可使用 [treasure_inspection_review 套件](../../tests/game/data/gui_suite_treasure_inspection_review.json)，按[图形测试指南](gui-testing.md)传入 --suite 和全新 --output 目录。它验证未开／已开／已领取／空箱、覆盖拒绝与纯读取续接；当前断言保留已知的笼统错误基线，后续修复须同步。范围见[开发核验](../research/2026-11-06-inspect-treasure-development-notes.md)。
+详情专项可使用 [treasure_inspection_review 套件](../../tests/game/data/gui_suite_treasure_inspection_review.json)，按[图形测试指南](gui-testing.md)传入 --suite 和全新 --output 目录。它验证未开／已开／已领取／空箱、覆盖拒绝与纯读取续接；包含 summary 与基础观察对照，并以双重门控扰动检查不可悬停、禁用、离屏、隐藏、透明和容器裁剪，finally 和局间重置恢复。范围见[实施验证](../research/2026-11-06-treasure-inspection-presets-implementation.md)。

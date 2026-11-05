@@ -1,0 +1,206 @@
+[
+  {
+    "file": "closed.full.json",
+    "description": "未开箱 full",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/basic/audit/evidence.json",
+    "index": 0,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "8a0d614bb9c0cfef3d38e77feb9933e1537ec357288dd72fe769dd77a18d71d8"
+  },
+  {
+    "file": "closed.summary.json",
+    "description": "未开箱 summary 保留 relic:null",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/basic/audit/evidence.json",
+    "index": 3,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "summary"
+    },
+    "image_count": 0,
+    "sha256": "11590657e0d365b4b9dac2e18a7254ae128e6364565136458d113a16c41c7f6b"
+  },
+  {
+    "file": "opened.full.json",
+    "description": "已开箱 full，正文与关键词",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/basic/audit/evidence.json",
+    "index": 15,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "6b216f86ecda7b600a7cd343ab8a0da265934c525c4c24c7bb261b74492fd52e"
+  },
+  {
+    "file": "opened.summary.json",
+    "description": "已开箱静态 summary",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/basic/audit/evidence.json",
+    "index": 16,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "summary"
+    },
+    "image_count": 0,
+    "sha256": "e1607025b369b694b65f5ba67d60491d420d198f207ce9ab246967fbeca1d04e"
+  },
+  {
+    "file": "empty.summary.json",
+    "description": "白银熔炉空箱 summary",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/empty/audit/evidence.json",
+    "index": 7,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "summary"
+    },
+    "image_count": 0,
+    "sha256": "9b6f79f776083c4190b4cae0cca5f4e3525ae3d7025eedeae4bf242bbc87ae02"
+  },
+  {
+    "file": "no-hover.full.json",
+    "description": "不可悬停：正文 null，提示来源明确",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/display/verify/evidence.json",
+    "index": 8,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "84003a04fc80c899e6551bafcc6f74f3a6271151936f61716e385f46331e4b14"
+  },
+  {
+    "file": "no-hover.default.json",
+    "description": "不可悬停 default：省略空正文，保留 note",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/display/verify/evidence.json",
+    "index": 9,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "default"
+    },
+    "image_count": 0,
+    "sha256": "6ac5f8cebd1f05d78b7d016d9d0b64bbbd03e5e9b3020488befec00f715b5cbd"
+  },
+  {
+    "file": "no-hover.summary.json",
+    "description": "不可悬停 summary：只提供静态信息",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/display/verify/evidence.json",
+    "index": 10,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "summary"
+    },
+    "image_count": 0,
+    "sha256": "2ab4adeabd997a7eb980dd94cb1d447c75ac8a661f6042275515a04767169544"
+  },
+  {
+    "file": "offscreen.full.json",
+    "description": "人工离屏：保留读取，enabled:false",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/display/verify/evidence.json",
+    "index": 26,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "201650d9e01021ea917757a1ed293e0d164b089ee015cf9409e04822f2f05703"
+  },
+  {
+    "file": "offscreen.summary.json",
+    "description": "人工离屏 summary",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/display/verify/evidence.json",
+    "index": 28,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "summary"
+    },
+    "image_count": 0,
+    "sha256": "2ab4adeabd997a7eb980dd94cb1d447c75ac8a661f6042275515a04767169544"
+  },
+  {
+    "file": "hidden.full.json",
+    "description": "图标隐藏：不提供身份",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/display/verify/evidence.json",
+    "index": 35,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "d1c8e042078e75015b7302a0e4d6250f46406247e3342169aa3619e470d88e16"
+  },
+  {
+    "file": "clipped.summary.json",
+    "description": "容器裁剪：不提供身份",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/display/verify/evidence.json",
+    "index": 55,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "summary"
+    },
+    "image_count": 0,
+    "sha256": "d1c8e042078e75015b7302a0e4d6250f46406247e3342169aa3619e470d88e16"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "地图覆盖的具体原因",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/basic/audit/evidence.json",
+    "index": 10,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "9e15d40d58b2c09f568cd4e31683f0770fbea47960c6eee658ea26eee7ab64ee"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "选牌覆盖的具体原因",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/choice/audit/evidence.json",
+    "index": 14,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e409a082d9d80e89fd7271cff22c98b2480950cff0e3e772cbab90fcdd4b9b82"
+  },
+  {
+    "file": "with-permission.full.json",
+    "description": "无宝箱页，仍保留已有许可",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/no_treasure/audit/evidence.json",
+    "index": 3,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "db7ede5af000e6a28a7529f546a2f629b072176f74433023d6fb838b7d10c8c8"
+  },
+  {
+    "file": "nested-relic.summary.json",
+    "description": "嵌套遗物 summary",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/nested/audit/evidence.json",
+    "index": 7,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "summary"
+    },
+    "image_count": 0,
+    "sha256": "a9ca66542957a174b6a688b814b171e939dc6d351a2644955cdfb2a6bf5257ee"
+  },
+  {
+    "file": "collected.full.json",
+    "description": "已领取 full",
+    "source": ".tmp/2026-11-06-treasure-inspection-presets/gui/basic/audit/evidence.json",
+    "index": 22,
+    "tool": "inspect_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "9b6f79f776083c4190b4cae0cca5f4e3525ae3d7025eedeae4bf242bbc87ae02"
+  }
+]

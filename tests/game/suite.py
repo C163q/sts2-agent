@@ -115,7 +115,7 @@ def load_cases(path):
             if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
-                'verify_treasure_inspection_review.py': ('basic','empty','extra','nested','choice','no_treasure','map_pending'),
+                'verify_treasure_inspection_review.py': ('basic','empty','extra','nested','choice','no_treasure','map_pending','display_red','display'),
                 'verify_claim_reward_review.py': ('basic','full','linked','nested','returned','covered','no_rewards','transform','deck_covered','scroll_success','scroll_failure'),
                 'verify_reward_inspection_review.py': ('no_rewards','basic','linked','empty','nested','returned','escaped','deck_covered','legacy'),
                 'verify_travel_review.py': ('basic', 'flight', 'combat', 'choice', 'shop', 'treasure', 'unknown', 'entry', 'double', 'antler', 'scroll_failure'),

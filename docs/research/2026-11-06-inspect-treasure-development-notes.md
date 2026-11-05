@@ -1,6 +1,6 @@
 # inspect_treasure 开发核验依据
 
-> 当前状态：现状核验完成，待确认修复与 summary。59 项 Python、七类 GUI、102 次 MCP、四种损坏上下文及 14 份完整样本已核对。用户可读结论见[审阅记录](2026-11-06-inspect-treasure-review.md)，尚未修改生产行为。
+> 本文保留 d01713c／fac27bf 的审阅基线。三项问题与 summary 已确认并进入[实施记录](2026-11-06-treasure-inspection-presets-implementation.md)；下文问题状态、探针与原样本用于修复前对照。
 
 ## 基线与证据
 

@@ -1,0 +1,11 @@
+{
+  "scene": "treasure",
+  "screen": {
+    "status": "visible"
+  },
+  "treasure": {
+    "status": "visible",
+    "chest": "closed",
+    "relic": null
+  }
+}

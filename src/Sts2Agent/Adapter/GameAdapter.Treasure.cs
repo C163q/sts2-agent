@@ -21,10 +21,14 @@ internal sealed partial class GameAdapter
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current treasure room before acting.");
         var room = TreasureInspection.Current;
-        if (room == null || !TreasureInspection.Exposed(room) || !inspect && !TreasureInspection.Ready(room))
+        if (inspect)
+        {
+            if (TreasureInspection.InspectionUnavailableReason(room) is { } unavailable)
+                return ResponseBuilder.Error(request.Id, "illegal_action", unavailable, publicMessage: true);
+            return InspectionSuccess(request, before, TreasureInspection.Inspect());
+        }
+        if (room == null || !TreasureInspection.Exposed(room) || !TreasureInspection.Ready(room))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player treasure room.");
-        if (inspect) return InspectionSuccess(request, before, new { treasure = TreasureInspection.Read(full: true)
-        });
         bool closed = !TreasureInspection.Opened(room);
         var button = request.Operation == "proceed" ? TreasureInspection.Proceed(room)
             : closed ? TreasureInspection.Chest(room) : TreasureInspection.Relic(room);
