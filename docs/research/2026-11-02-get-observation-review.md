@@ -1,6 +1,6 @@
 # get_observation 场景核验与参数设计
 
-> 当前状态：01–04 组战斗与全部选牌、07–15 组房间／事件／占卜／确认框／建筑师终章的约定 summary 已交付；05、06 组地图及牌组／牌堆覆盖已完成主体 default 占位和共用顶栏摘要，实际内容待对应工具核验。[剩余 16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状核验已交付，完整基线 full 与源码边界已记录，[文字修复、unrecognized 改名及 summary](2026-11-03-result-observation-implementation.md)已交付。17 组均已有对应核验记录，但仍有明确的后续范围，get_observation 整体尚未核销。
+> 当前状态：17 组场景的约定核验与 summary 均已完成，get_observation 已核销。牌组／牌堆的实际内容与摘要已交付；最后的[地图分类与上下文](2026-11-05-map-summary-implementation.md)已替换占位，并补齐原生 MapRoom 的 scene:map。未来占卜文字等扩展仍按[用户待办](../development/TODO.md)单独处理，不属于本项未完成范围。原始分组及基线证据保留在下文，现行行为见开发指南。
 
 总清单与流程见[工具核验记录](2026-11-02-mcp-tool-review.md)。
 

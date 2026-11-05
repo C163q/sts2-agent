@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 44 项，已核销 18 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、play_card、play_cards、end_turn、use_potion、discard_potion、inspect_selection、select_card、selection_option、set_selection_view。inspect_map.summary 已确认按节点类型分类，仅返回 ID，不表达连接或附送详情，max_steps 继续生效；get_observation 的 full/default/summary 地图主体均采用该分类策略，并以 note 指向 inspect_map 读取连接详情。具体字段与边界已记录；两项修复、分类输出及基础观察已完成 698 项 Python、124 项 C# 和 9 种 GUI 组合，等待终审及合入，get_observation 整体未核销，其余 24 项尚未核销。暂无阻塞。
+> 当前状态：工具核验进行中，共 44 项，已核销 20 项。get_observation 与 inspect_map 的约定内容、地图分类摘要、错误恢复及 MapRoom 场景补齐均已完成并合入 main；698 项 Python、124 项 C#、九种 GUI 组合与一次独立审查完成。剩余 24 项尚未核销，暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -8,7 +8,7 @@
 
 - 核对基线：提交 `ef9f34e`，MCP `0.48.0`；工具名称与数量依据 [mcp_catalog.py](../../src/sts2_mcp/mcp_catalog.py)。后续以每项核验时的实现为准，工具增删时同步本清单及总数。
 - 逐项检查工具的适用场景、返回内容、参数及预设，目标是符合玩家实际可从 UI 获得的信息，并让 LLM 聚焦所关心的内容。遵循[可见信息边界](../observation.md)。
-- 43 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、药水、战斗对象、遗物的 `summary`、地图的 `selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆也已迁移为 full/default/summary，旧 detail_level 已移除。既有能力也须重新核验，不因此直接核销。
+- 43 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、药水、战斗对象、遗物的 `summary`、地图的 `summary/selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆也已迁移为 full/default/summary，旧 detail_level 已移除。既有能力也须重新核验，不因此直接核销。
 - `capture_screenshot` 按配置启用，不支持 preset；核验其现有参数与返回。统一预设的现行契约见 [MCP 输出预设](../development/mcp.md#输出预设)。
 
 ## 逐项工作流程
@@ -31,7 +31,7 @@
 
 ### 基础观察与战斗详情（7 项）
 
-- [ ] `get_observation`：当前画面的基础观察与可用操作。阶段：[07–09 组奖励、火堆与宝箱](2026-11-02-get-observation-rooms.md)现状核验和 summary 已交付，[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)现状核验及 summary 已交付，[13–15 组](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状及完整 full 已交付，summary 已交付；[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)的初次摘要占位已交付，[牌组内容与摘要](2026-11-04-deck-inspection-implementation.md)已实现，[牌堆内容与摘要](2026-11-04-pile-inspection-implementation.md)已实现，地图仍待核验；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
+- [x] `get_observation`：当前画面的基础观察与可用操作。阶段：[07–09 组奖励、火堆与宝箱](2026-11-02-get-observation-rooms.md)现状核验和 summary 已交付，[10–12 组](2026-11-03-get-observation-shop-ancient-event.md)现状核验及 summary 已交付，[13–15 组](2026-11-03-get-observation-divination-confirmation-epilogue.md)现状核验已交付，建筑师牌组覆盖校验已修复，summary 已交付；[16–17 组结算、解锁与菜单](2026-11-03-get-observation-result-menu.md)现状及完整 full 已交付，summary 已交付；[地图与牌组／牌堆覆盖](2026-11-02-get-observation-browsing.md)的初次摘要占位已交付，[牌组内容与摘要](2026-11-04-deck-inspection-implementation.md)已实现，[牌堆内容与摘要](2026-11-04-pile-inspection-implementation.md)已实现，[地图分类与上下文](2026-11-05-map-summary-implementation.md)已完成；[全部选牌](2026-11-02-get-observation-selections.md)与[战斗主画面](2026-11-02-get-observation-combat.md)约定范围已交付，完整[场景目录](2026-11-02-get-observation-review.md)。
 - [x] `inspect_ui`：可见顶栏、战斗 UI、资源及空充能球槽帮助。阶段：[修复与核验完成](2026-11-03-inspect-ui-review.md)，[统一上下文、summary、sources 筛选及验证](2026-11-03-ui-context-implementation.md)已交付；部分条件变体保留源码／历史核对边界。
 - [x] `inspect_hand`：手牌详情。阶段：[核验及定稿](2026-11-03-inspect-hand-review.md)、[覆盖清单](2026-11-03-card-format-coverage.md)和[实现／验证](2026-11-03-card-format-implementation.md)已完成；新增可见 Affliction、统一附魔空值、资源计数及共用卡牌格式。后续补齐[手牌 HUD 牌堆计数](2026-11-04-hand-pile-counts.md)，不改变既有卡牌预设及筛选规则。
 - [x] `inspect_targets`：指定手牌或药水的可用性与目标范围。阶段：[核验及输出定稿](2026-11-03-inspect-targets-review.md)、[错误修复与验证](2026-11-03-inspection-error-recovery.md)完成；维持 default/full，不新增 summary，不改原生指示范围。AnyPlayer／AllAllies／Osty 卡牌分支保留源码核对边界，未新增实际调用样本。
@@ -62,7 +62,7 @@
 
 ### 地图（3 项）
 
-- [ ] `inspect_map`：打开并查看地图。阶段：[设计讨论与典型 full 结构](2026-11-05-inspect-map-review.md)，[开发核验](2026-11-05-inspect-map-development-notes.md)记录两项错误恢复／诊断问题；[实施记录](2026-11-05-map-summary-implementation.md)已完成约定实现与验证，等待终审和合入。核验时同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)；[共用地图 covered 状态](2026-11-05-potion-actions-implementation.md)已交付。
+- [x] `inspect_map`：打开并查看地图。[定稿](2026-11-05-inspect-map-review.md)与[实施／验证](2026-11-05-map-summary-implementation.md)已完成并合入 main：分类 summary、原深度与 selectable 行为、两项拒绝修复、基础观察地图主体与 note，以及[原生 MapRoom 场景](2026-11-05-act-entry-scene.md)。698 项 Python、124 项 C#、九种 GUI 组合与一次独立审查完成，提供 [13 份典型完整返回](2026-11-05-map-summary-examples/README.md)，包含一份明确的修复前对照。
 - [ ] `close_map`：关闭地图。
 - [ ] `travel_to_node`：前往可选节点。
 

@@ -1,6 +1,6 @@
 # inspect_map 核验与摘要候选
 
-> 当前状态：定稿已确认，实施中。inspect_map.summary 已确定采用节点类型分组，仅列节点 ID，省略连接关系及节点详情，max_steps 继续生效；get_observation 的 full/default/summary 均采用这一地图表达，并注明连接关系已省略、详情使用 inspect_map。具体字段与边界采用下文约定；两项修复、摘要和基础观察接入已完成约定验证，等待终审与合入，验证结果见[实施记录](2026-11-05-map-summary-implementation.md)。本项未核销。暂无阻塞。
+> 当前状态：定稿、实现及验证完成。inspect_map.summary 已确定采用节点类型分组，仅列节点 ID，省略连接关系及节点详情，max_steps 继续生效；get_observation 的 full/default/summary 均采用这一地图表达，并注明连接关系已省略、详情使用 inspect_map。具体字段与边界采用下文约定；两项修复、摘要和基础观察接入已完成约定验证，已合入 main，验证结果见[实施记录](2026-11-05-map-summary-implementation.md)。本项已核销。暂无阻塞。
 
 总流程见[工具核验清单](2026-11-02-mcp-tool-review.md)，实现证据与未验证范围见[开发核验](2026-11-05-inspect-map-development-notes.md)。
 
@@ -109,7 +109,7 @@
 ## 定稿与实施边界
 
 - inspect_map 及基础观察的字段、上下文与分组边界以上文为准。
-- 地图分类与基础观察复用读取和分类入口；不以调用会打开页面的 inspect_map 来实现基础观察。两项正确性修复与预设接入的验证见实施记录，终审和合入后核销。
+- 地图分类与基础观察复用读取和分类入口；不以调用会打开页面的 inspect_map 来实现基础观察。两项正确性修复与预设接入的验证见实施记录，终审和合入已完成。
 - 暂不增加自动推荐路线、隐藏问号预测或自动选路。
 
 ## 本阶段验证
