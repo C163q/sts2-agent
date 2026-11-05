@@ -209,7 +209,7 @@ internal sealed partial class GameAdapter
         if (RunManager.Instance.IsSingleplayerOrFakeMultiplayer && selection is { Supported: true })
         {
             if (selection.Status == "visible") actions.Add("inspect_selection");
-            if (selection.CanPeek) actions.Add("set_selection_view");
+            if (SelectionAvailability.ViewUnavailableReason(selection) == null) actions.Add("set_selection_view");
         }
         if (CanPlayCards() && NPlayerHand.Instance!.ActiveHolders.Any(holder => CardSelection.Clickable(holder)
                 && TargetInspection.Type(holder.CardModel!) != null)

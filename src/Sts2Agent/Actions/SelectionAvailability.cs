@@ -46,4 +46,21 @@ internal static class SelectionAvailability
             return $"Selection option '{optionId}' is disabled. Follow the current selection prompt before continuing.";
         return null;
     }
+
+    public static string? ViewUnavailableReason(CardSelection? selection)
+    {
+        if (selection == null) return "No card selection is open.";
+        if (!RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
+            return "Card selection views are supported only in single-player.";
+        if (!selection.Supported) return "This card selection is not supported; use manual input.";
+        if (!selection.Exposed)
+            return "The card selection is covered or hidden. Close the covering card/map page or wait for the transition before switching views.";
+        if (selection.Eye is not { } eye)
+            return "This selection page has no native eye button. Continue with the available selection controls.";
+        if (!eye.IsEnabled)
+            return "The native eye button is disabled on this selection page. Continue with the available selection controls.";
+        if (!VisibleUi.OnScreen(eye))
+            return "The native eye button is not currently visible for clicking. Wait for the selection page to become ready before switching views.";
+        return null;
+    }
 }

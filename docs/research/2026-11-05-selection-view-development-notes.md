@@ -1,13 +1,13 @@
 # set_selection_view 开发核验记录
 
-> 当前状态：现状核验完成，待设计确认。8 个典型游戏场景、62 项相关 Python 检查通过，6 份典型 full 样例已提取；两个错误处理问题未修复，玩法行为和版本未变，工具未核销。用户说明见[审阅](2026-11-05-selection-view-review.md)。
+> 当前状态：修复及输出精简已验证，等待独立审查，见[实施记录](2026-11-05-selection-view-results-implementation.md)。下文 8 个场景、62 项 Python 及 6 份 full 样例保留为修复前基线，不作为当前接口契约；工具尚未核销。用户说明见[审阅与定稿](2026-11-05-selection-view-review.md)。
 
 ## 已定位问题
 
 | 编号 | 优先级 | 依据与影响 | 状态 |
 | --- | --- | --- | --- |
-| VIEW-01 | 中；恢复 | `GameAdapter.SelectionRequest` 在不支持选择、CanPeek 为 false 时返回普通错误；`set_selection_view` 没有 `unchanged_view_rejections` 登记。`GameSession.execute` 在 view 请求前取走许可，不能仅凭 illegal_action 推断未交互 | 源码及典型游戏拒绝已复现，待定稿 |
-| VIEW-02 | 中；原因 | 无选择、眼睛不可用和切换后选择改变都没有公开原因标记，公共错误输出统一替换为笼统提示；CanPeek 把覆盖、无眼睛、隐藏及禁用合并 | 已定位，待定稿；不能直接公开任意异常 Message |
+| VIEW-01 | 中；恢复 | 审阅基线在不支持选择、CanPeek 为 false 时返回普通错误，未登记 `unchanged_view_rejections`；GameSession 无法仅凭 illegal_action 判断未交互 | 已修复验证，见实施记录 |
+| VIEW-02 | 中；原因 | 审阅基线没有公开固定原因，CanPeek 把覆盖、无眼睛、隐藏及禁用合并 | 已提供固定诊断并验证；不公开任意异常 Message |
 
 ## 基线与原生依据
 
@@ -28,13 +28,13 @@
 | `SettledObservation` | 观察连续 250 毫秒稳定或至 2 秒截止，等待逐帧推进；不是战斗结算等待，不产生 transition |
 | `ToolSpec/GameSession` | view 类型，无初始许可要求，成功经完整观察校验后刷新许可；返回当前完整观察，普通 default 过滤在统一投影执行 |
 
-## 修复及输出候选的实现边界
+## 定稿接入的实现依据
 
 前置拒绝应使用 view 专用的 `ui_unchanged:true` 及 `unchanged_view_rejections`；不能机械套用按钮动作的 action_submitted 登记，因为该查看工具不传动作许可令牌。只保留原来已有的许可，首次拒绝不生成许可；切换后选择改变、异常和执行证据矛盾不能标记为未交互。
 
 视图切换允许 `battlefield` 和 `visible` 两种选择状态，不能直接套用拒绝 battlefield 的候选／按钮检查。可新增聚焦眼睛的前置判断或独立适配方法，继续让 AvailableTools 和执行共享相同可用条件。非战斗／结果页仍按实际原生入口判断，不以直接改 peeking 状态替代按钮。
 
-若定稿选择紧凑返回，可在现有完整解码之后复用 `actions_only_result`，不改变底层文件完整状态或许可刷新；default/full 的公共空值语义仍由统一入口处理。保持返回完整观察并复用 summary 是另一候选，未预先实现。
+紧凑返回在完整解码之后复用 `actions_only_result`，不改变底层文件完整状态或许可刷新；default/full 的公共空值语义仍由统一入口处理。最终输出见[设计定稿](2026-11-05-selection-view-review.md#设计定稿)，这里保留接入依据，不再独立定义公共字段。
 
 ## 验证与边界
 

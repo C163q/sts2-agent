@@ -76,8 +76,10 @@ internal sealed partial class GameAdapter
                 ? FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request", "Expected one non-negative integer card_id.")
                 : request.Operation == "selection_option"
                 ? FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request", "Expected one non-empty option_id string of at most 128 characters.")
-                : FileMailbox.Error(request.Id, "invalid_request", "Invalid selection arguments.");
+                : ResponseBuilder.Error(request.Id, "invalid_request", "Expected view as battlefield or selection.",
+                    publicMessage: true, uiUnchanged: true);
         var selection = CardSelection.Current;
+        if (request.Operation == "set_selection_view") return await SetSelectionView(request, selection, value!);
         NButton? button = null;
         if (request.Operation is "select_card" or "selection_option")
         {
@@ -91,21 +93,6 @@ internal sealed partial class GameAdapter
         }
         if (selection == null || !selection.Supported || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
             return FileMailbox.Error(request.Id, "illegal_action", "No supported local card selection is available.");
-        if (request.Operation == "set_selection_view")
-        {
-            if (!selection.CanPeek)
-                return FileMailbox.Error(request.Id, "illegal_action", "The native eye button is unavailable.");
-            bool peeking = value == "battlefield";
-            if (selection.Peeking != peeking)
-            {
-                UiChanged();
-                selection.Eye!.ForceClick();
-            }
-            string state = await SettledObservation();
-            if (!SelectionActions.Same(selection) || !selection.Exposed || selection.Peeking != peeking)
-                return FileMailbox.Error(request.Id, "illegal_action", "The selection changed while switching views.");
-            return Success(request, state);
-        }
         var model = request.Operation == "select_card" ? selection.Cards.First(card => observation.CardId(card) == cardId) : null;
         var journal = CombatJournalScope.Current!;
         bool startedInCombat = journal.Capturing;

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The card selection is covered or hidden. Close the covering card/map page or wait for the transition before switching views.",
+    "recovery": "choose_legal_action"
+  }
+}

@@ -178,6 +178,30 @@ class Client:
 
 
 class SelectionPermissionTests(unittest.IsolatedAsyncioTestCase):
+    async def test_selection_view_returns_only_context_actions_and_choice_status(self):
+        for preset in ('default', 'full'):
+            tools = GameTools(Client())
+            result = await tools.set_selection_view({'view': 'selection', 'preset': preset})
+            self.assertEqual(result, {'scene': 'combat', 'screen': {'status': 'covered'},
+                'available_actions': ['select_card', 'selection_option'],
+                'selection': {'type': 'choose_one', 'status': 'visible'}})
+            self.assertEqual(tools.snapshot_id, 'fixture-1')
+            self.assertNotIn('error', await tools.select_card({'card_id': 5}))
+
+    async def test_compact_view_still_validates_full_state_and_keeps_existing_presets(self):
+        class Broken(Client):
+            def call(self, *args, **kwargs):
+                result = super().call(*args, **kwargs)
+                result['state']['selection']['selected_ids'] = 'invalid'
+                return result
+        tools = GameTools(Broken()); tools.snapshot_id = 'existing'
+        self.assertEqual((await tools.set_selection_view({'view': 'selection'}))['error']['code'], 'transport_error')
+        self.assertIsNone(tools.snapshot_id)
+        tools = GameTools(Client()); tools.snapshot_id = 'existing'
+        for preset in ('summary', 'actions_only'):
+            self.assertEqual((await tools.set_selection_view({'view': 'selection', 'preset': preset}))['error']['code'], 'invalid_request')
+            self.assertEqual(tools.snapshot_id, 'existing')
+
     async def test_choice_passes_card_id_and_supplies_confirmation_observation(self):
         client = Client()
         tools = GameTools(client)

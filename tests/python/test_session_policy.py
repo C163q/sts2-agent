@@ -15,6 +15,41 @@ def requests():
 
 
 class SessionPolicyTests(unittest.IsolatedAsyncioTestCase):
+    async def test_selection_view_retains_only_explicit_unchanged_rejections(self):
+        for code, unchanged, retained in [
+                ('illegal_action', True, True), ('invalid_request', True, True),
+                ('illegal_action', None, False), ('illegal_action', False, False),
+                ('stale_state', True, False), ('game_error', True, False)]:
+            with self.subTest(code=code, unchanged=unchanged):
+                error = {'code': code, 'public_message': 'No card selection is open.'}
+                if unchanged is not None:
+                    error['ui_unchanged'] = unchanged
+                tools = GameTools(ContractReply({}, error)); tools.snapshot_id = 'existing'
+                result = await tools.set_selection_view({'view': 'selection'})
+                self.assertEqual(tools.snapshot_id, 'existing' if retained else None)
+                self.assertEqual(result['error']['recovery'], 'correct_request' if code == 'invalid_request' else (
+                    'choose_legal_action' if retained else 'get_observation'))
+        tools = GameTools(ContractReply({}, {'code': 'illegal_action', 'ui_unchanged': True}))
+        result = await tools.set_selection_view({'view': 'selection'})
+        self.assertIsNone(tools.snapshot_id)
+        self.assertEqual(result['error']['recovery'], 'get_observation')
+
+    async def test_selection_view_interaction_cannot_claim_unchanged(self):
+        class Interacted(ContractReply):
+            def call(self, *args, **kwargs):
+                result = super().call(*args, **kwargs)
+                result['execution'] = {'ui_interaction_started': True,
+                    'action_submission_observed': False, 'state_captured': True}
+                return result
+        for unchanged in (None, True):
+            error = {'code': 'illegal_action'}
+            if unchanged is not None:
+                error['ui_unchanged'] = unchanged
+            tools = GameTools(Interacted({}, error)); tools.snapshot_id = 'existing'
+            result = await tools.set_selection_view({'view': 'selection'})
+            self.assertIsNone(tools.snapshot_id)
+            self.assertEqual(result['error']['code'], 'illegal_action' if unchanged is None else 'transport_error')
+
     async def test_selection_option_recovers_only_explicit_unsubmitted_rejections(self):
         for code, submitted, retained in [
                 ('illegal_action', False, True), ('invalid_request', False, True),

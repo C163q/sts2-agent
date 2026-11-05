@@ -1,0 +1,74 @@
+[
+  {
+    "file": "battlefield.full.json",
+    "tool": "set_selection_view",
+    "arguments": {
+      "preset": "full",
+      "view": "battlefield"
+    },
+    "source": ".tmp/2026-11-05-selection-view-results/gui/overlay/verify/evidence.json",
+    "source_record": 1,
+    "mod_sha256": "f6ed9c480f73f1675442da0ea26e438c0f8b28cb6be81ea28b3185031508db63",
+    "sha256": "76a5bd0162a4272c3ba66162b9868beecb3740c272fbace76c34f5be2d34d24a"
+  },
+  {
+    "file": "selection.full.json",
+    "tool": "set_selection_view",
+    "arguments": {
+      "preset": "full",
+      "view": "selection"
+    },
+    "source": ".tmp/2026-11-05-selection-view-results/gui/overlay/verify/evidence.json",
+    "source_record": 5,
+    "mod_sha256": "f6ed9c480f73f1675442da0ea26e438c0f8b28cb6be81ea28b3185031508db63",
+    "sha256": "10dc4ca9e40763360b442d44965f158e00847ef5d1615157c1216ea747b1be65"
+  },
+  {
+    "file": "no-selection.full.json",
+    "tool": "set_selection_view",
+    "arguments": {
+      "preset": "full",
+      "view": "selection"
+    },
+    "source": ".tmp/2026-11-05-selection-view-results/gui/no_selection/verify/evidence.json",
+    "source_record": 8,
+    "mod_sha256": "f6ed9c480f73f1675442da0ea26e438c0f8b28cb6be81ea28b3185031508db63",
+    "sha256": "57a511c83ae3c0fe14a8afea80387585e3f68833673fbcfcbb14eceb0ea9f452"
+  },
+  {
+    "file": "covered.full.json",
+    "tool": "set_selection_view",
+    "arguments": {
+      "preset": "full",
+      "view": "selection"
+    },
+    "source": ".tmp/2026-11-05-selection-view-results/gui/covered_deck/verify/evidence.json",
+    "source_record": 7,
+    "mod_sha256": "f6ed9c480f73f1675442da0ea26e438c0f8b28cb6be81ea28b3185031508db63",
+    "sha256": "f7b7e85d096476335540ea0dec702d71de4caba49cfd25e1c0fb87cff95cbe02"
+  },
+  {
+    "file": "eye-disabled.full.json",
+    "tool": "set_selection_view",
+    "arguments": {
+      "preset": "full",
+      "view": "selection"
+    },
+    "source": ".tmp/2026-11-05-selection-view-results/gui/noncombat/verify/evidence.json",
+    "source_record": 4,
+    "mod_sha256": "f6ed9c480f73f1675442da0ea26e438c0f8b28cb6be81ea28b3185031508db63",
+    "sha256": "94fe3dcc5be0931a5e2e3036725c42d763247bc9564fa60c5ab82644c8f474a3"
+  },
+  {
+    "file": "eye-absent.full.json",
+    "tool": "set_selection_view",
+    "arguments": {
+      "preset": "full",
+      "view": "selection"
+    },
+    "source": ".tmp/2026-11-05-selection-view-results/gui/results/verify/evidence.json",
+    "source_record": 7,
+    "mod_sha256": "f6ed9c480f73f1675442da0ea26e438c0f8b28cb6be81ea28b3185031508db63",
+    "sha256": "48e50579758d8e41bbe05b0b3f6bc4504f59660d3dec74023915cce7edb8f6d9"
+  }
+]

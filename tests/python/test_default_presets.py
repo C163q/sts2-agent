@@ -185,7 +185,7 @@ class DefaultToolTests(unittest.IsolatedAsyncioTestCase):
                     options = {**arguments, **({'preset': preset} if preset else {})}
                     result = await getattr(tools, definition.name)(options)
                     expected = copy.deepcopy(tools.payload)
-                    if definition.name == 'close_card_view':
+                    if definition.name in {'close_card_view', 'set_selection_view'}:
                         expected = {key: expected[key] for key in ('scene', 'screen', 'available_actions')}
                     elif preset != 'full':
                         del expected['ordinary']
@@ -285,7 +285,7 @@ class DefaultStdioTests(unittest.IsolatedAsyncioTestCase):
                             result = await session.call_tool(definition.name, options)
                             self.assertFalse(result.isError, result)
                             expected = copy.deepcopy(BoundaryProbe.payload)
-                            if definition.name == 'close_card_view':
+                            if definition.name in {'close_card_view', 'set_selection_view'}:
                                 expected = {key: expected[key] for key in ('scene', 'screen', 'available_actions')}
                             elif preset != 'full':
                                 del expected['ordinary']

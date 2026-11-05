@@ -111,6 +111,10 @@
 
 调用 `set_selection_view({"view":"battlefield"})` 点击原生眼睛。此后基础观察及 `inspect_hand`、`inspect_combatants`、`inspect_ui`、药水、遗物详情按当前可见性工作；牌组、地图和牌堆还要求各自原生入口可用。小型候选和简单网格使用其自己的牌堆入口，不能强行点击被禁用的战斗按钮。
 
+该工具保留 `view:battlefield/selection` 和 `preset:default/full`；成功仅返回 `scene`、`screen`、`available_actions` 和 `selection:{type,status}`，与基础观察的 actions_only 内容一致，不带 transition。底层文件协议及成功解码仍使用完整状态，公共输出精简不会改变许可刷新。需要完整新画面或预览时，再调用基础观察或相关详情；已知候选 ID 或确认按钮可直接续接。首次切换也不要求先读取；若尚不知道候选 ID，须通过公开观察或详情取得所需信息。
+
+重复请求当前视图不会再次点击，但仍要求当前页有可用原生眼睛。没有选择、页面不支持、非单人、覆盖、无原生眼睛、眼睛禁用或隐藏会给具体原因；明确未交互拒绝保留已有许可，不创建许可。切换过程中选择改变或发生异常仍要求重新读取，不表示可以安全重复切换。数量选择和确认规则不因查看战场而改变。
+
 查看战场不允许出牌、结束回合或直接选隐藏的候选；`available_actions` 列出当前可用的战场详情、页面查看及 `set_selection_view` 返回入口。`close_card_view` 只关闭牌组或牌堆，保留底层选择与原有查看状态；地图由 `close_map` 关闭。关闭覆盖页后，调用 `set_selection_view({"view":"selection"})` 返回候选。返回候选的成功视图结果可以直接续接选择；普通观察和只读详情都不会自动切换眼睛。
 
 ## 动作后的结算

@@ -44,7 +44,7 @@
 | 选牌查看的具体拒绝、安全续接、覆盖边界及卡包／结果说明 | [selection_review](../../tests/game/data/gui_suite_selection_review.json)；[核验与实施](../research/2026-11-05-selection-inspection-implementation.md) |
 | 点击候选的选中／取消、替换、自动提交、预览、未知身份、滚动及拒绝恢复 | [select_card_review](../../tests/game/data/gui_suite_select_card_review.json)；[实施与验证](../research/2026-11-05-selection-feedback-implementation.md) |
 | 选择按钮的确认、返回、放弃、跳过、整包、奖励替代及明确拒绝后续接 | [selection_option_review](../../tests/game/data/gui_suite_selection_option_review.json)；[审阅](../research/2026-11-05-selection-option-review.md)。grid_manual 包含双重门控的禁用按钮／过期优先检查，人工扰动只用于验证拒绝，不代表自然游玩出现过同类静止按钮 |
-| 原生眼睛切换、重复目标、保留选择／预览及覆盖拒绝 | [selection_view_review](../../tests/game/data/gui_suite_selection_view_review.json)；[审阅](../research/2026-11-05-selection-view-review.md)。核验保留当前错误恢复缺陷，不表示已修复 |
+| 原生眼睛切换、紧凑结果、重复目标、保留选择／预览及拒绝后续接 | [selection_view_review](../../tests/game/data/gui_suite_selection_view_review.json)；[审阅与定稿](../research/2026-11-05-selection-view-review.md)。grid 用例包含双重门控的隐藏／禁用眼睛检查，扰动后恢复按钮和快照，不代表自然游玩出现了此种状态 |
 | 生成牌、奖励牌及公开加入去向 | [card_additions](../../tests/game/data/gui_suite_card_additions.json) |
 | default 公共空值规则及图片 | [default_presets](../../tests/game/data/gui_suite_default_presets.json) |
 | 战斗、顶栏、附魔与观察预设 | [observation_presets](../../tests/game/data/gui_suite_observation_presets.json) |

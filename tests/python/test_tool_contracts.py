@@ -57,6 +57,11 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                 if case['tool'] == 'close_card_view' and 'error' not in want:
                     # The approved action contract replaces the frozen partial observation.
                     want = {key: want[key] for key in ('scene', 'screen', 'available_actions')}
+                if case['tool'] == 'set_selection_view' and 'error' not in want:
+                    choice = want.get('selection')
+                    want = {key: want[key] for key in ('scene', 'screen', 'available_actions')}
+                    if choice is not None:
+                        want['selection'] = {key: choice[key] for key in ('type', 'status')}
                 if case['tool'] == 'inspect_pile' and case['arguments'].get('preset') == 'summary' and want.get('status') == 'opened':
                     want.pop('message', None)
                 if 'unknown_field' in case['arguments']:

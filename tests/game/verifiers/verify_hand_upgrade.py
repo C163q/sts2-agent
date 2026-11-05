@@ -89,7 +89,8 @@ async def verify(args):
             await capture('preview')
             detail = await call('inspect_selection')
             assert detail['selection']['upgrade_preview']['after']['description'], detail
-            peek = await call('set_selection_view', {'view': 'battlefield'})
+            await call('set_selection_view', {'view': 'battlefield'})
+            peek = await call('get_observation')
             assert peek['selection']['status'] == 'battlefield' and peek['selection']['cards'] is None, peek
             assert peek['selection']['upgrade_preview'] is None and not set(peek['available_actions']) & GAME_ACTIONS, peek
             await capture('battlefield')
@@ -104,7 +105,8 @@ async def verify(args):
             covered = await call('get_observation')
             assert covered['selection']['status'] == 'covered' and covered['selection']['upgrade_preview'] is None, covered
             await call('close_card_view')
-            restored = await call('set_selection_view', {'view': 'selection'})
+            await call('set_selection_view', {'view': 'selection'})
+            restored = await call('get_observation')
             assert restored['selection']['selected_ids'] == [first['id']], restored
             await preview(other)
             await capture('replaced')

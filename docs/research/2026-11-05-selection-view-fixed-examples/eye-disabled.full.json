@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The native eye button is disabled on this selection page. Continue with the available selection controls.",
+    "recovery": "choose_legal_action"
+  }
+}

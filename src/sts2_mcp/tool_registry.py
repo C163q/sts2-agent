@@ -695,7 +695,7 @@ SPECS = (
         schema=VIEW_SCHEMA,
         description="Click the native eye to show battlefield or return to selection. "
             "Battlefield view permits available inspections, never normal combat actions. "
-            "Close covering card/map views first.",
+            "Close covering card/map views first. Returns scene/screen, available_actions and selection type/status.",
         annotations=view,
         category='view',
         effect='view',
@@ -705,6 +705,8 @@ SPECS = (
         reader='observation_details:observation_details',
         parser='selection_details:selection_arguments',
         parser_operation=True,
+        projector='observation_presets:actions_only_result',
+        unchanged_view_rejections=True,
         media=True),
     ToolSpec(
         name='end_turn',
