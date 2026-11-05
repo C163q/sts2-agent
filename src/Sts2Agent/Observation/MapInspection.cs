@@ -23,14 +23,13 @@ internal static class MapInspection
     public static object? Summary(RunState? run)
     {
         var screen = NMapScreen.Instance;
-        if (run == null || screen == null || !MapView.Current(screen)) return null;
-        var choices = Choices(screen);
-        return new { status = "visible", act = run.CurrentActIndex + 1,
-            current_node = run.CurrentMapCoord is { } coord ? Id(run, coord) : null,
-            can_travel = choices.Length > 0, selectable_nodes = choices.Select(n => Id(run, n.Point.coord)).ToArray() };
+        if (run == null || screen == null || !MapView.Ready(screen)) return null;
+        var graph = Read(screen, run);
+        graph["status"] = "visible";
+        return graph;
     }
 
-    public static Dictionary<string, object?> Read(NMapScreen screen, RunState run, string snapshotId)
+    public static Dictionary<string, object?> Read(NMapScreen screen, RunState run)
     {
         var nodes = VisibleUi.Descendants<NMapPoint>(screen).Where(VisibleUi.Shown)
             .OrderBy(node => node.Point.coord.row).ThenBy(node => node.Point.coord.col).ToArray();
@@ -40,7 +39,6 @@ internal static class MapInspection
         var choices = Choices(screen).Select(node => Id(node.Point.coord)).ToArray();
         return new()
         {
-            ["snapshot_id"] = snapshotId,
             ["act"] = run.CurrentActIndex + 1,
             ["current_node"] = run.CurrentMapCoord is { } current && coordinates.Contains(current) ? Id(current) : null,
             ["visited_path"] = run.VisitedMapCoords.Where(coordinates.Contains).Select(Id).ToArray(),

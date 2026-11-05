@@ -30,46 +30,6 @@ namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
 {
-    private async Task<string> InspectMap(Request request)
-    {
-        var run = RunManager.Instance.DebugOnlyGetState();
-        var map = NRun.Instance?.GlobalUi.MapScreen;
-        if (run == null || map == null || !CanInspectMap())
-            return FileMailbox.Error(request.Id, "illegal_action", "Map viewing is unavailable in the current screen.");
-        var graph = run.Map;
-        int act = run.CurrentActIndex;
-        bool cardOpen = MapView.CardPage != null;
-        if (!map.IsOpen || cardOpen)
-        {
-            var button = NRun.Instance!.GlobalUi.TopBar.Map;
-            if (!button.IsEnabled || !VisibleUi.OnScreen(button)
-                || (!map.IsOpen && VisibleUi.Shown(map))
-                || (CombatManager.Instance.IsInProgress && !CanInspectViews(allowPause: map.IsOpen || cardOpen)))
-                return FileMailbox.Error(request.Id, "illegal_action", "The map button is unavailable.");
-            UiChanged();
-            button.ForceClick();
-        }
-        bool closed = false;
-        void Closed() => closed = true;
-        bool SamePage() => !closed && ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
-            && ReferenceEquals(graph, run.Map) && act == run.CurrentActIndex && MapView.Current(map);
-        map.Closed += Closed;
-        try
-        {
-            await ObservationFrame();
-            await WaitUntil(() => !SamePage() || MapView.Ready(map));
-            if (!SamePage() || !MapView.Ready(map))
-                return FileMailbox.Error(request.Id, "illegal_action", "The map changed while reading.");
-            using var snapshot = JsonDocument.Parse(Observe());
-            return InspectionSuccess(request, snapshot.RootElement, MapInspection.Read(map, run,
-                snapshot.RootElement.GetProperty("snapshot_id").GetString()!));
-        }
-        finally
-        {
-            if (GodotObject.IsInstanceValid(map)) map.Closed -= Closed;
-        }
-    }
-
     private async Task<string> InspectDeck(Request request, DeckOptions options)
     {
         bool interacted = false;

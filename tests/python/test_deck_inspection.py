@@ -79,7 +79,7 @@ class DeckInspectionTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(tools.snapshot_id)
 
     async def test_unchanged_guarantee_never_creates_permission_or_applies_to_other_views(self):
-        for operation, observed in [('inspect_deck', False), ('inspect_map', True)]:
+        for operation, observed in [('inspect_deck', False), ('close_map', True)]:
             with self.subTest(operation=operation, observed=observed), FakeGame() as game:
                 base = Client(game.directory)
                 class RejectedClient:

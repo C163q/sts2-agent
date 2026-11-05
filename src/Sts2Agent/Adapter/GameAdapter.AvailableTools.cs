@@ -15,16 +15,34 @@ internal sealed partial class GameAdapter
     private static bool CanInspectCombatants() => LocalPlayer != null
         && CombatantInspection.UnavailableReason(CombatantInspection.Level.Summary) == null;
 
-    private static bool CanInspectMap()
+    private static bool CanInspectMap() => MapUnavailableReason() == null;
+
+    private static string? MapUnavailableReason()
     {
+        if (RunManager.Instance.DebugOnlyGetState() == null || !RunManager.Instance.IsInProgress)
+            return "No local run is available for map viewing.";
+        if (!RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
+            return "Map viewing requires a local single-player run.";
         var map = NRun.Instance?.GlobalUi.MapScreen;
-        if (RunManager.Instance.DebugOnlyGetState() == null || map == null
-            || !MapView.Clear(allowCardView: true) || map.IsTraveling) return false;
-        if (map.IsOpen && MapView.CardPage == null) return MapView.Ready(map);
+        if (map == null) return "The map entry is not ready.";
+        if (map.IsTraveling) return "Wait for map travel to finish before viewing the map.";
+        if (!MapView.Clear(allowCardView: true))
+        {
+            if (RunUi.Transitioning()) return "Wait for the screen transition before opening the map.";
+            if (CardSelection.Current is { Status: "visible" })
+                return "Return from the card selection before opening the map.";
+            return "The map entry is covered by a dialog, selection or another detail page.";
+        }
+        if (map.IsOpen && MapView.CardPage == null)
+            return MapView.Ready(map) ? null : "The map is still preparing. Wait before viewing it.";
         var button = NRun.Instance!.GlobalUi.TopBar.Map;
+        if (!VisibleUi.OnScreen(button)) return "The map button is not visible.";
+        if (!button.IsEnabled) return "The map button is disabled.";
+        if (!map.IsOpen && VisibleUi.Shown(map)) return "Wait for the map to finish closing before reopening it.";
         bool cardOpen = MapView.CardPage != null;
-        return button.IsEnabled && VisibleUi.OnScreen(button) && (map.IsOpen || !VisibleUi.Shown(map))
-            && (!CombatManager.Instance.IsInProgress || CanInspectViews(allowPause: map.IsOpen || cardOpen));
+        if (CombatManager.Instance.IsInProgress && !CanInspectViews(allowPause: map.IsOpen || cardOpen))
+            return "Combat is not ready for map browsing. Wait for the current action to finish.";
+        return null;
     }
 
     private static bool CanInspectDeck() => DeckUnavailableReason() == null;

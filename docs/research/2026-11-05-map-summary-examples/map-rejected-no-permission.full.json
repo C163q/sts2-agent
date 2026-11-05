@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Return from the card selection before opening the map.",
+    "recovery": "get_observation"
+  }
+}

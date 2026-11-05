@@ -1,4 +1,4 @@
-from sts2_mcp.output.contracts.map import MAP_SUMMARY
+from sts2_mcp.output.contracts.map import MAP_CONTEXT, NODE_TYPES
 from sts2_mcp.output.value_shapes import project
 from sts2_mcp.output.scene_context import scene_context
 import re
@@ -6,14 +6,13 @@ import re
 
 
 
-NODE_TYPES = ("ancient", "boss", "monster", "elite", "shop", "treasure", "rest_site", "unknown", "unrecognized")
 REVEALED_TYPES = ("monster", "elite", "shop", "treasure", "rest_site")
 NODE_ID = re.compile(r'map:([1-9][0-9]*):(0|[1-9][0-9]*):(0|[1-9][0-9]*)')
 MAP_SCHEMA = {
     'type': 'object',
     'properties': {
-        'preset': {'type': 'string', 'enum': ['full', 'selectable'], 'default': 'full',
-                   'description': 'full returns the map graph and route context; selectable returns only current candidates with node details, omitting links and visited_path. selectable overrides max_steps.'},
+        'preset': {'type': 'string', 'enum': ['full', 'summary', 'selectable'], 'default': 'full',
+                   'description': 'full returns the graph; summary groups node IDs by type without connections or node details; selectable returns only current candidates with node details, omitting links and visited_path. selectable overrides max_steps.'},
         'max_steps': {'type': 'integer', 'minimum': 0, 'maximum': 2147483647, 'default': 0,
                       'description': '0 keeps the entire graph. Positive N keeps the current node and nodes within N drawn directed links, clipping links at the boundary. Before first entry, the lowest row counts as step 1. Route context and native selectable IDs stay unfiltered; off-link flight choices are not added to the subgraph.'},
     },
@@ -41,8 +40,8 @@ TRAVEL_SCHEMA = {'type': 'object', 'properties': {'node_id': {
 
 
 def map_summary(value):
-    result = project(value, MAP_SUMMARY)
-    if (set(result) != set(MAP_SUMMARY) or result['status'] != 'visible'
+    result = project(value, MAP_CONTEXT)
+    if (set(result) != set(MAP_CONTEXT) or result['status'] != 'visible'
             or not 1 <= result['act'] <= 2147483647
             or result['current_node'] is not None and not valid_node_id(result['current_node'], result['act'])
             or any(not valid_node_id(i, result['act']) for i in result['selectable_nodes'])
@@ -59,7 +58,7 @@ def map_arguments(arguments):
         raise ValueError('Invalid map arguments.')
     preset = arguments.get('preset', 'full')
     steps = arguments.get('max_steps', 0)
-    if not isinstance(preset, str) or preset not in ('full', 'selectable') \
+    if not isinstance(preset, str) or preset not in ('full', 'summary', 'selectable') \
             or type(steps) is not int or not 0 <= steps <= 2147483647:
         raise ValueError('Invalid map preset or step limit.')
     return {'preset': preset, 'max_steps': steps}
@@ -73,6 +72,37 @@ def map_preset(payload, preset, max_steps):
         return {**{key: payload[key] for key in ('scene', 'screen', 'act', 'current_node', 'can_travel', 'selectable_nodes')},
                 'preset': preset, 'nodes': [{key: value for key, value in node.items() if key != 'next'}
                                           for node in payload['nodes'] if node['id'] in choices]}
+    scoped = map_subgraph(payload, max_steps)
+    if preset == 'summary':
+        from sts2_mcp.output.null_fields import apply_preset
+        return apply_preset(grouped_map(scoped), 'default')
+    return scoped
+
+
+def grouped_map(payload):
+    result = {key: payload[key] for key in ('act', 'current_node', 'can_travel', 'selectable_nodes')}
+    for key in ('scene', 'screen', 'max_steps'):
+        if key in payload: result[key] = payload[key]
+    groups = {}
+    for node in payload['nodes']:
+        groups.setdefault(node['type'], []).append(node['id'])
+    return {**result, 'nodes_by_type': groups}
+
+
+def map_observation(value, context, *, require_graph=False):
+    if value.get('status') != 'visible':
+        raise ValueError('Invalid map visibility.')
+    if require_graph or 'nodes' in value or 'visited_path' in value:
+        graph = map_details({**value, **context})
+        result = grouped_map(graph)
+        return {'status': 'visible', **{k:v for k,v in result.items() if k not in ('scene', 'screen')}}
+    # Older native snapshots expose only route context; never invent their missing nodes.
+    return map_summary(value)
+
+
+def map_subgraph(payload, max_steps):
+    if max_steps == 0:
+        return payload
     nodes = {node['id']: node for node in payload['nodes']}
     if payload['current_node'] is not None:
         included = {payload['current_node']}

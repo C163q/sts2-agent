@@ -1,6 +1,6 @@
 # 当前幕地图查看
 
-版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。scene/screen 遵循[统一上下文](observation.md#场景上下文)，展开地图时仅 screen.view 为 map，scene 保留当前房间或战斗场景。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。scene/screen 遵循[统一上下文](observation.md#场景上下文)，展开地图时仅 screen.view 为 map，scene 保留当前房间或战斗场景；原生房间为 MapRoom 时使用 scene:map（如换幕入口），不是根据地图是否展开来改名。
 
 文件接口仍提供无参数 `inspect_map` 和 `close_map`；MCP 的 `inspect_map` 支持以下参数；`close_map` 只接受通用 preset。当前工具目录见 [MCP 指南](mcp.md)。
 
@@ -10,10 +10,14 @@
 
 | 参数 | 默认值 | 含义 |
 | --- | --- | --- |
-| `preset` | `"default"` | `default` 保留全图内容并省略普通空值；`full` 保留原有空值；`selectable` 只返回当前可选节点及其详情 |
+| `preset` | `"default"` | `default` 保留全图内容并省略普通空值；`full` 保留原有空值；`summary` 按类型仅列节点 ID；`selectable` 只返回当前可选节点及其详情 |
 | `max_steps` | `0` | 非负整数，最大 `2147483647`；`0` 不裁剪，正数 N 返回沿实际有向连线最多走 N 步可达的子图 |
 
 两个参数只影响返回数据，地图仍正常打开并保留。显式传入 `{"preset":"full","max_steps":0}` 与原有全图格式一致；省略参数使用[default](mcp.md#输出预设)，例如无当前节点时省略 current_node。只在 Python MCP 层裁剪，底层仍完整读取并校验当前地图，动作使用完整原生状态的令牌。
+
+`preset: "summary"` 返回 `scene/screen/act/current_node/can_travel/selectable_nodes` 与 `nodes_by_type`；后者按原 `type` 将 ID 分组，每组从下到上、同行从左到右，空分类省略。无正文、名称、揭晓类型、任务标记、坐标、连线或 visited_path。问号仍归 unknown，细节使用 default/full。普通空值沿用 default 过滤。
+
+summary 先按相同的 `max_steps` 规则裁剪再分类；当前节点为第 0 步，尚未进入节点时最低行是第 1 步。省略或 0 表示整幕，含过去节点和其他支路。正数增加 max_steps 标识；原生 selectable_nodes 不裁剪，因此飞鞋候选可能没有出现在分组中。分类不能说明节点能否依次经过。
 
 `preset: "selectable"` 优先于 `max_steps`：保留 `scene`、`screen`、`act`、`current_node`、`can_travel`、`selectable_nodes`，增加 `preset: "selectable"`；`nodes` 只包含候选节点的 ID、坐标、图标类型及已显示的名称、揭晓类型或标记，不含 `next`，也不返回 `visited_path`。没有候选时 `can_travel: false` 且两个列表均为空，不附送不可选择的路线。即使深度被忽略，参数本身也必须合法。
 
@@ -91,19 +95,22 @@
 
 `travel_to_node({"node_id":"map:1:2:3"})` 只接受当前已展开地图允许的节点。旅行真实离开当前房间，放弃未领取奖励；工具不会自动领取奖励、挑选路径或决定后续输入。飞鞋的合法路线与次数由原生 Hook 决定，不能只按 `next` 判断合法性。
 
-基础观察在地图暴露时返回摘要，完整图仍通过 `inspect_map` 按需读取：
+基础观察在地图已就绪、暴露时返回整幕分类。get_observation 的 full/default/summary 共用这一地图表达；full 保留普通 null，default/summary 省略。基础观察不接受 max_steps，也不继承上次详情的筛选；只有 inspect_map.default/full 返回连接关系与节点详情。
+
+以下为基础观察的地图及 note 片段，不是完整对局样本：
 
 ```json
 {
-  "screen": {"status":"covered","view":"map"},
   "map": {
     "status":"visible","act":1,"current_node":"map:1:1:2",
-    "can_travel":true,"selectable_nodes":["map:1:2:1","map:1:2:3"]
-  }
+    "can_travel":true,"selectable_nodes":["map:1:2:1","map:1:2:3"],
+    "nodes_by_type":{"monster":["map:1:1:2"],"unknown":["map:1:2:1"],"rest_site":["map:1:2:3"]}
+  },
+  "notes":{"map":"Map connections omitted; use inspect_map for details."}
 }
 ```
 
-这是结构示例。底层 `scene` 保留房间类型，房间正文与奖励保持 covered；地图未展开、被覆盖或旅行中时 `map` 为 null。入场动画、绘图模式、战斗未完成等原生不允许选路的状态，选路候选为空，不提供 `travel_to_node`；仍可列出当前可用的查看与关闭工具。不会在基础观察附送整幕图或下一房间内容。
+外层 `scene` 保留房间类型，`screen:{status:covered,view:map}` 表示下层被覆盖。地图关闭、被牌组等更高层覆盖或尚不可读时，map 为 null，按通用预设处理，且没有 notes.map；actions_only/top_bar 不返回地图或这条 note。顶栏独立遵循原有规则。旧原生 schema 的五字段地图仍可兼容读取，不虚构缺失的分类。
 
 `inspect_map` 成功后可直接按 `selectable_nodes` 调用 `travel_to_node`，无需额外基础观察。普通房间 `proceed` 的成功回执列出旅行工具时，按需使用 `get_observation` 或 `inspect_map` 读取节点。`travel_to_node` 返回[精简动作回执](mcp.md#动作返回格式)：下一房间普通操作通常为 action_completed，战斗为 player_ready，入场选牌为 choice_required，未知界面为 manual_input_required。父入场任务等待玩家选择时不会死等；卡牌选择仍使用原有工具。失败或不完整结果须重新观察，不自动重试。
 
@@ -117,11 +124,11 @@
 
 地图与卡牌浏览页分别管理。`inspect_map` 在卡牌页之上调用时，使用原生顶栏地图按钮，先关闭卡牌页，再打开或露出地图。`close_map` 只在地图当前位于最上层且原生返回按钮可用时执行，不穿透上层牌组页。关闭卡牌页继续用 [`close_card_view`](deck-inspection.md)，不会顺带关闭地图。
 
-仅支持单人进行中的对局；选牌、弹窗、其他详情、过渡和正在移动期间拒绝。允许原生奖励页在地图底下保留，这是战后正常选路流程；关闭地图会露出原有奖励页。也支持[占卜棋盘](divination.md)在地图底下保留，覆盖时不返回棋盘内容与图像，关闭后可重新观察并继续。首次打开要求原生地图入口可见且启用，战斗中还须处于可行动阶段。当前幕起点等原生禁止返回的地图不能强行关闭。错误参数在 UI 操作前返回 `invalid_request`；页面或对局在异步等待期间变化返回 `illegal_action`，不自动重开页面。超时或异常不能自动重试。
+仅支持单人进行中的对局；候选选择页、弹窗、其他详情、过渡和正在移动期间拒绝。受支持选择先切至战场后允许打开地图。允许原生奖励页在地图底下保留，这是战后正常选路流程；关闭地图会露出原有奖励页。也支持[占卜棋盘](divination.md)在地图底下保留，覆盖时不返回棋盘内容与图像，关闭后可重新观察并继续。首次打开要求原生地图入口可见且启用，战斗中还须处于可行动阶段。当前幕起点等原生禁止返回的地图不能强行关闭。错误参数在 UI 操作前返回 `invalid_request`；页面或对局在异步等待期间变化返回 `illegal_action`，不自动重开页面。超时或异常不能自动重试。
 
 Godot 主线程发起操作，使用异步帧等待，遵循原生暂停/恢复与动画。关闭等待地图退场后才返回基础观察。工具 UI 操作使旧动作令牌失效；MCP 使用成功结果的新令牌继续操作，仍校验当前页面与动作合法性。
 
-MCP 在 IPC 前校验查看参数；`close_map` 除通用 preset 外拒绝全部额外参数，查看工具也拒绝未知字段。参数错误保留此前有效权限。合法查看与关闭请求在发送前清除旧令牌，成功后保存返回状态的新令牌；失败、超时或取消后不恢复。地图投影校验当前幕节点 ID、坐标、唯一引用、已走路径与候选布尔状态，逐层过滤附加字段；不会要求可选节点必须在 `next` 中。格式错误返回 `transport_error`。关闭结果若仍指向浏览页，同样拒绝。
+MCP 在 IPC 前校验查看参数；`close_map` 除通用 preset 外拒绝全部额外参数，查看工具也拒绝未知字段。参数错误保留此前有效权限。合法查看与关闭请求在发送前清除旧令牌，成功后保存返回状态的新令牌。inspect_map 的点击前明确拒绝带有未交互保证时恢复已有令牌，允许直接改用合法操作；没有初始令牌不会创建许可。点击后变化、超时、异常或矛盾执行证据不恢复。close_map 保持原有失败策略。地图投影校验当前幕节点 ID、坐标、唯一引用、已走路径与候选布尔状态，逐层过滤附加字段；不会要求可选节点必须在 `next` 中。格式错误返回 `transport_error`。关闭结果若仍指向浏览页，同样拒绝。
 
 ## 调用与验证
 
@@ -148,3 +155,5 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_map
 选路与跨幕的目标版本源码证据、图形验证及未验证范围见[选路验证记录](../research/2026-10-31-map-travel-validation.md)。
 
 返回预设与子图的边界用例和隔离图形证据见[地图预设验证记录](../research/2026-11-01-map-presets.md)。
+
+地图分类、基础观察与明确拒绝恢复的实现及验证见[地图摘要交付](../research/2026-11-05-map-summary-implementation.md)。

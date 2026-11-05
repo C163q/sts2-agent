@@ -2,7 +2,7 @@ OBSERVATION_SCHEMA = {
     'type': 'object',
     'properties': {'preset': {
         'type': 'string', 'enum': ['full', 'actions_only', 'summary', 'top_bar'], 'default': 'full',
-        'description': 'full keeps basic observations; summary compacts cards (including result unlocks), combat, and top bars, omitting event narrative, false warnings, and divination instructions; actions_only keeps context and tool names; top_bar adds values and relic_count without relic details. All refresh action permission.',
+        'description': 'full keeps basic observations with maps grouped by node type; summary compacts cards (including result unlocks), combat, and top bars, omitting event narrative, false warnings, and divination instructions; actions_only keeps context and tool names; top_bar adds values and relic_count without relic details. All refresh action permission.',
     }},
     'additionalProperties': False,
 }
@@ -100,5 +100,4 @@ def browsing_summary(payload):
     if payload['screen'].get('view') in {'draw_pile', 'discard_pile', 'exhaust_pile'} and payload.get('cards') is not None:
         payload['cards'] = [card_summary(card) for card in payload['cards']]
         payload.pop('message', None)
-    # Map content retains its pending review projection.
     return payload

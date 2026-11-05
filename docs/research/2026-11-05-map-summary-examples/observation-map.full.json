@@ -1,0 +1,162 @@
+{
+  "scene": "rewards",
+  "map": {
+    "status": "visible",
+    "act": 1,
+    "current_node": "map:1:1:0",
+    "can_travel": true,
+    "selectable_nodes": [
+      "map:1:2:0"
+    ],
+    "nodes_by_type": {
+      "ancient": [
+        "map:1:0:3"
+      ],
+      "monster": [
+        "map:1:1:0",
+        "map:1:1:1",
+        "map:1:1:3",
+        "map:1:1:5",
+        "map:1:2:0",
+        "map:1:2:1",
+        "map:1:2:3",
+        "map:1:2:5",
+        "map:1:2:6",
+        "map:1:3:2",
+        "map:1:3:3",
+        "map:1:3:5",
+        "map:1:4:0",
+        "map:1:4:3",
+        "map:1:4:5",
+        "map:1:4:6",
+        "map:1:5:3",
+        "map:1:5:5",
+        "map:1:5:6",
+        "map:1:6:0",
+        "map:1:6:2",
+        "map:1:6:6",
+        "map:1:7:0",
+        "map:1:10:1",
+        "map:1:10:3",
+        "map:1:10:5",
+        "map:1:11:0",
+        "map:1:11:2",
+        "map:1:12:6",
+        "map:1:13:1",
+        "map:1:13:6",
+        "map:1:14:3"
+      ],
+      "unknown": [
+        "map:1:3:0",
+        "map:1:3:6",
+        "map:1:4:2",
+        "map:1:5:1",
+        "map:1:7:3",
+        "map:1:7:5",
+        "map:1:8:6",
+        "map:1:12:2",
+        "map:1:13:3",
+        "map:1:13:5"
+      ],
+      "rest_site": [
+        "map:1:6:3",
+        "map:1:6:5",
+        "map:1:7:2",
+        "map:1:8:0",
+        "map:1:8:5",
+        "map:1:11:6",
+        "map:1:12:0",
+        "map:1:15:0",
+        "map:1:15:3",
+        "map:1:15:6"
+      ],
+      "elite": [
+        "map:1:8:3",
+        "map:1:10:0",
+        "map:1:10:6",
+        "map:1:11:3",
+        "map:1:14:6"
+      ],
+      "shop": [
+        "map:1:8:4",
+        "map:1:14:0"
+      ],
+      "treasure": [
+        "map:1:9:0",
+        "map:1:9:4",
+        "map:1:9:5",
+        "map:1:9:6"
+      ],
+      "boss": [
+        "map:1:16:3"
+      ]
+    }
+  },
+  "screen": {
+    "status": "covered",
+    "view": "map"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      null
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null,
+        "grayed_out": false,
+        "pulsing": false
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": {
+    "status": "covered",
+    "title": null,
+    "items": null,
+    "proceed": null
+  },
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "travel_to_node",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "close_map"
+  ],
+  "notes": {
+    "map": "Map connections omitted; use inspect_map for details."
+  }
+}

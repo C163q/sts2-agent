@@ -56,6 +56,8 @@ def assemble_details(details, *, operation=None):
     if operation == "inspect_selection":
         result["selection"]["cards"], result["hover_tips"] = share_hand_tips(result["selection"]["cards"])
     notes = {}
+    if 'nodes_by_type' in (result.get('map') or {}):
+        notes['map'] = 'Map connections omitted; use inspect_map for details.'
     unavailable = result.pop('unavailable_hover_sources', [])
     if unavailable:
         notes['hover_tips_unavailable'] = {

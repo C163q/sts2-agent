@@ -1,0 +1,184 @@
+{
+  "scene": "rewards",
+  "map": null,
+  "screen": {
+    "status": "covered",
+    "view": "deck"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      null
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null,
+        "grayed_out": false,
+        "pulsing": false
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": {
+    "status": "covered",
+    "title": null,
+    "items": null,
+    "proceed": null
+  },
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "close_card_view",
+    "inspect_map"
+  ],
+  "deck": [
+    {
+      "id": "deck:0",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    },
+    {
+      "id": "deck:1",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    },
+    {
+      "id": "deck:2",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    },
+    {
+      "id": "deck:3",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    },
+    {
+      "id": "deck:4",
+      "name": "Strike",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    },
+    {
+      "id": "deck:5",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    },
+    {
+      "id": "deck:6",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    },
+    {
+      "id": "deck:7",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    },
+    {
+      "id": "deck:8",
+      "name": "Defend",
+      "type": "Skill",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "1",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    },
+    {
+      "id": "deck:9",
+      "name": "Bash",
+      "type": "Attack",
+      "rarity": "basic",
+      "visual_card_pool": "ironclad",
+      "energy_cost": "2",
+      "star_cost": null,
+      "enchantment": null,
+      "affliction": null
+    }
+  ],
+  "view_upgrades": false,
+  "sort": {
+    "by": "obtained",
+    "descending": false
+  }
+}

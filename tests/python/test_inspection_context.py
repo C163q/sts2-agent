@@ -24,9 +24,9 @@ class InspectionContextTests(unittest.TestCase):
         self.assertEqual(result['scene'], 'epilogue')
         self.assertEqual(result['screen'], state['screen'])
 
-    def test_old_page_names_are_rejected_as_scenes(self):
+    def test_browsing_only_page_names_are_rejected_as_scenes(self):
         state = map_payload()
-        state['scene'] = 'map'
+        state['scene'] = 'deck'
         with self.assertRaises(ValueError): map_details(state)
 
     def test_pile_full_help_no_longer_depends_on_scene_card_pile(self):

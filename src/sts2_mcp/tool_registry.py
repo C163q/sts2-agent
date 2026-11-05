@@ -611,7 +611,8 @@ SPECS = (
         name='inspect_map',
         schema=MAP_SCHEMA,
         description="Open/reuse the current-act map, replacing a covering card page. Leaves it open. "
-            "Returns the full graph by default; preset and max_steps limit returned data only. "
+            "Returns the graph by default; summary groups node IDs by type without connections or details. "
+            "max_steps limits nodes within N drawn links; 0 keeps the entire map. "
             "Does not travel or reveal unknown encounters; close with close_map.",
         annotations=view,
         category='view',
@@ -623,7 +624,8 @@ SPECS = (
         parser='map_details:map_arguments',
         parser_operation=False,
         projector='map_details:map_preset',
-        native_keys=()),
+        native_keys=(),
+        unchanged_view_rejections=True),
     ToolSpec(
         name='close_map',
         schema=NO_ARGUMENTS,

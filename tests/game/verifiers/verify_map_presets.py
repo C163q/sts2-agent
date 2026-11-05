@@ -79,8 +79,17 @@ async def verify(args):
             assert summary['status'] == 'visible', before
             assert all(summary[key] == full[key] for key in ('act', 'current_node', 'can_travel', 'selectable_nodes')), before
             assert await call('inspect_map', {'preset': 'full', 'max_steps': 0}) == full
-            for steps in (1, 2, 3):
-                check_subgraph(full, await call('inspect_map', {'max_steps': steps}), steps)
+            for steps in (0, 1, 2, 3):
+                scoped = full if steps == 0 else await call('inspect_map', {'max_steps': steps})
+                if steps: check_subgraph(full, scoped, steps)
+                compact = await call('inspect_map', {'preset': 'summary', 'max_steps': steps})
+                grouped = {}
+                for node in scoped['nodes']:
+                    grouped.setdefault(node['type'], []).append(node['id'])
+                assert compact['nodes_by_type'] == grouped, compact
+                assert compact['selectable_nodes'] == full['selectable_nodes'], compact
+                assert not {'nodes', 'visited_path'} & compact.keys(), compact
+                assert ('current_node' in compact) == (full['current_node'] is not None), compact
 
             selected = await call('inspect_map', {'preset': 'selectable'})
             assert selected['can_travel'] == full['can_travel'], selected

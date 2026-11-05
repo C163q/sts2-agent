@@ -136,7 +136,7 @@ class MapPresetTests(unittest.IsolatedAsyncioTestCase):
         with FakeGame() as game:
             tools = GameTools(Client(game.directory))
             await tools.get_observation()
-            for arguments in ({'preset': None}, {'preset': 'summary'}, {'preset': []}, {'max_steps': True},
+            for arguments in ({'preset': None}, {'preset': 'brief'}, {'preset': []}, {'max_steps': True},
                               {'max_steps': 1.0}, {'max_steps': -1}, {'max_steps': 2147483648},
                               {'max_steps': '1'}, {'max_steps': None}, {'preset': 'selectable', 'max_steps': -1},
                               {'filter_next': 1}, [], False):

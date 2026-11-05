@@ -1,0 +1,18 @@
+{
+  "act": 2,
+  "can_travel": true,
+  "selectable_nodes": [
+    "map:2:0:3"
+  ],
+  "scene": "map",
+  "screen": {
+    "status": "covered",
+    "view": "map"
+  },
+  "max_steps": 1,
+  "nodes_by_type": {
+    "ancient": [
+      "map:2:0:3"
+    ]
+  }
+}

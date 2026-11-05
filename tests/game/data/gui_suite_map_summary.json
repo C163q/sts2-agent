@@ -1,0 +1,114 @@
+[
+  {
+    "name": "map_flight",
+    "scenarios": {
+      "navigation": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_map_presets.py",
+        "args": [
+          "--scenario",
+          "flight"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "map_combat",
+    "scenarios": {
+      "navigation": "combat"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_map_presets.py",
+        "args": [
+          "--scenario",
+          "combat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "map_entry",
+    "scenarios": {
+      "navigation": "boss1"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_map_presets.py",
+        "args": [
+          "--scenario",
+          "entry"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "map_double",
+    "scenarios": {
+      "navigation": "double"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_map_presets.py",
+        "args": [
+          "--scenario",
+          "double"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "grouped_map",
+    "scenarios": {
+      "navigation": "combat"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_map_summary.py",
+        "args": [
+          "--scenario",
+          "map"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "rejected_selection",
+    "scenarios": {
+      "selection": "combat_pile"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_map_summary.py",
+        "args": [
+          "--scenario",
+          "selection"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "act_entry_immediate",
+    "scenarios": {
+      "navigation": "boss1"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_map_summary.py",
+        "args": [
+          "--scenario",
+          "act_entry"
+        ]
+      }
+    ]
+  }
+]

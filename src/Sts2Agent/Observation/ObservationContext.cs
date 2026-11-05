@@ -1,5 +1,7 @@
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Nodes;
+using MegaCrit.Sts2.Core.Rooms;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace Sts2Agent;
 
@@ -13,6 +15,7 @@ internal static class ObservationContext
         : AncientInspection.Current != null ? "ancient"
         : ShopInspection.Current != null ? "shop"
         : EventInspection.Current != null ? "event"
+        : RunManager.Instance.DebugOnlyGetState()?.CurrentRoom is MapRoom ? "map"
         : NGame.Instance?.MainMenu != null ? "main_menu" : "unrecognized";
 
     public static string Visibility(string scene, object? map,

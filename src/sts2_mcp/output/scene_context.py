@@ -1,5 +1,5 @@
 """Shared meaning of room scenes and exposed or covering pages."""
-SCENES = frozenset(('combat', 'main_menu', 'unrecognized', 'rewards', 'rest_site',
+SCENES = frozenset(('combat', 'main_menu', 'map', 'unrecognized', 'rewards', 'rest_site',
                     'treasure', 'shop', 'ancient', 'event', 'epilogue', 'run_result'))
 SCREEN_STATUSES = frozenset(('visible', 'covered', 'hidden', 'not_ready', 'not_applicable'))
 

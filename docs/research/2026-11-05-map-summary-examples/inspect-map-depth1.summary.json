@@ -1,0 +1,26 @@
+{
+  "act": 1,
+  "current_node": "map:1:1:0",
+  "can_travel": true,
+  "selectable_nodes": [
+    "map:1:2:0",
+    "map:1:2:1",
+    "map:1:2:3",
+    "map:1:2:5",
+    "map:1:2:6"
+  ],
+  "scene": "rewards",
+  "screen": {
+    "status": "covered",
+    "view": "map"
+  },
+  "max_steps": 1,
+  "nodes_by_type": {
+    "monster": [
+      "map:1:1:0"
+    ],
+    "rest_site": [
+      "map:1:2:0"
+    ]
+  }
+}

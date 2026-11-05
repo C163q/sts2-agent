@@ -26,10 +26,11 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 基础观察、动作回执和所有已返回 scene 的详情工具，使用同一含义与判定入口：
 
-- `scene` 表示当前战斗、房间或结算场景，取值为 `combat/rewards/rest_site/treasure/shop/ancient/event/epilogue/run_result/main_menu/unrecognized`。不能根据工具名称或读到战斗背景就改为 combat。
+- `scene` 表示当前战斗、房间或结算场景，取值为 `combat/rewards/rest_site/treasure/shop/ancient/event/map/epilogue/run_result/main_menu/unrecognized`。不能根据工具名称或读到战斗背景就改为 combat。
+- `scene:map` 仅表示当前房间本身是原生 MapRoom，例如换幕后尚未选择先古之民节点的地图入口；普通战斗或事件上展开地图仍保留 combat/event 等原场景。
 - `screen.status` 表示该场景的可见／覆盖状态，取值为 `visible/covered/hidden/not_ready/not_applicable`；`screen.view` 在识别到覆盖或专项页面时提供。没有已识别查看页时省略 view。
 - 地图展开时返回 `screen:{status:covered,view:map}`，与牌组／牌堆一样表示下层场景被覆盖；不据此隐藏仍暴露的顶栏。`map.status:visible` 仍表示地图本身可见，地图主体与摘要另按现有接口读取。
-- `view` 包括 `map/deck/draw_pile/discard_pile/exhaust_pile/divination/confirmation/epilogue/run_result`。地图、牌组和牌堆不会将 scene 改为页面类型；牌堆本次请求是否打开页面另看其 status。
+- `view` 包括 `map/deck/draw_pile/discard_pile/exhaust_pile/divination/confirmation/epilogue/run_result`。打开地图、牌组和牌堆不会将 scene 改为页面类型；牌堆本次请求是否打开页面另看其 status。
 - 详情读取使用其状态令牌对应的快照上下文；会打开或修改页面的工具，使用修改后的快照。因此，同一画面的 scene/screen 与 get_observation 一致；不因 summary 或筛选改变。
 
 例如在事件中打开牌组，get_observation 与 inspect_deck 都返回 `scene:event`、`screen:{status:covered,view:deck}`；建筑师的 inspect_ui/inspect_combatants 返回 `scene:epilogue`。空牌堆没有打开页面，仍返回实际战斗画面的 screen，而非伪造一个牌堆页。
@@ -75,7 +76,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 已就绪且未被更高层覆盖的战斗牌堆页提供 pile、cards、message；full/default/summary 的卡牌分别采用 face_full／face_default／共用摘要，均无正文或悬停解释，底部固定 message 在 summary 省略。原生显示顺序及 ID 与 inspect_pile 一致，不继承 card_ids 筛选，不读取真实抽取顺序；关闭或覆盖后不附缓存，actions_only/top_bar 不增加这些字段。详见[牌堆接口](pile-inspection.md#已打开牌堆的基础观察)。
 
-地图覆盖（`screen.view:map`）的页面主体仍暂时沿用 default，待 inspect_map 核验后补内容与摘要。所有浏览页均先处理共用顶栏摘要，保留被覆盖选择的元数据，不对下层战斗再次压缩；分工依据见[共用顶栏记录](../research/2026-11-02-shared-top-bar-summary.md)。
+地图覆盖（`screen.view:map`）时，full/default/summary 的 map 均返回整幕节点的 `nodes_by_type` 分类、当前节点及原生可选节点；不含连接、名称、揭晓类型或任务标记。`notes.map` 提醒连接省略、详情用 inspect_map。基础观察不继承详情的 max_steps；actions_only/top_bar 不附地图或这条 note，地图未就绪／关闭／被覆盖时也不附 note。完整规则见[地图接口](map-inspection.md#地图选路)。所有浏览页均先处理共用顶栏摘要，保留被覆盖选择的元数据，不对下层战斗再次压缩；分工依据见[共用顶栏记录](../research/2026-11-02-shared-top-bar-summary.md)。
 
 结算的 `run_result` 主体沿用 default，保留完整的当前页 texts、分数、徽章、发现、options 及空列表；已显示的 cards 复用卡牌摘要，保留字符串 card:N ID、名称、类型和费用等字段，省略正文、稀有度及卡池。需要正文或悬停说明时调用 inspect_run_result。full/default 的结算卡牌使用共用完整格式，包含逐牌悬停解释；结算页其他悬停帮助仍由专项详情提供。主菜单与 unrecognized 主体沿用 default；共用顶栏规则独立适用。约定及验证见[结算观察实施记录](../research/2026-11-03-result-observation-implementation.md)。
 
@@ -232,7 +233,7 @@ python3 -m tests.game.verifiers.verify_roundtrip --ipc-dir .tmp/roundtrip/ipc --
 
 [占卜接口](divination.md)通过 `divination` 字段返回可见次数、工具、说明与格子覆盖状态；同时以独立 MCP PNG 图像保留部分揭开的物品图案。底层事件和被覆盖的棋盘内容为 null，不读取雾下物品或未来奖励。
 
-地图展开时返回 `map` 候选摘要及 `travel_to_node` 动作；整幕节点和连线仍由 `inspect_map` 提供，见[地图接口](map-inspection.md#地图选路)。
+地图展开且就绪时，`map` 返回整幕类型分组及原生候选；可选时列出 `travel_to_node`。连接与节点详情由 `inspect_map` 提供，见[地图接口](map-inspection.md#地图选路)。
 
 各场景工具可用性与早期预设验证见[核查记录](../research/2026-10-31-observation-presets-validation.md)；当前各场景 summary 的设计与实施证据见[逐项核验记录](../research/2026-11-02-get-observation-review.md)。
 

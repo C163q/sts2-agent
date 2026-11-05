@@ -33,8 +33,9 @@ def observation_details(state):
             if not {'id', 'name', *HEALTH, 'powers'} <= ally.keys() or ally.get('block_shared_with', 'player') != 'player':
                 raise ValueError('Invalid public ally.')
     if result.get('map') is not None:
-        from sts2_mcp.output.map_details import map_summary
-        result['map'] = map_summary(result['map'])
+        from sts2_mcp.output.map_details import map_observation
+        result['map'] = map_observation(state['map'], scene_context(state),
+            require_graph=state.get('schema_version', 0) >= 41)
         map_tools = {'travel_to_node', 'inspect_map', 'close_map', 'inspect_deck', 'inspect_relics', 'inspect_potions', 'inspect_ui'}
         if result['scene'] != 'combat':
             map_tools |= {'inspect_targets', 'use_potion', 'discard_potion'}
