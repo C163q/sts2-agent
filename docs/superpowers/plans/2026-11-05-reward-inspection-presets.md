@@ -1,6 +1,6 @@
 # 奖励详情预设、筛选与诊断实施计划
 
-> 当前状态：实施中，共 1 项，已完成 0 项。方案已确认，实现与 713 项 Python、124 项 C#、构建完成，九类 GUI 与样本完成；交付校验通过；剩余独立审查和合并，暂无阻塞。
+> 当前状态：已完成，共 1 项已完成 1 项。约定实现、验证和一次独立审查完成，22333e2 已合入 main，临时分支已删除，无阻塞。
 >
 > 执行方式：executing-plans 当前会话实施，结束时一次独立代码审查；本地合并按项目协作约定执行。
 
@@ -39,4 +39,4 @@
 - [x] 实现 Python 投影和上下文一致性；实现共用原生拒绝入口，更新 available_actions 与读取分支；运行针对性回归观察 GREEN。
 - [x] 修正旧验证器的目录发现；扩充七类奖励 GUI 的摘要、ID 筛选及三预设观察对照，增加牌组覆盖和旧流程场景。完整 Python、C# 与构建通过后准备隔离运行时，执行 GUI。
 - [x] 保存典型真实 JSON，更新接口文档、审阅规格和 TODO 既有覆盖记录；整理文档表达。校验样本来源／哈希、链接和进程退出。
-- [ ] 提交、一次独立审查；处理必要发现后合入 main、清理分支。使用 `env PYTHONPATH=src:. .tmp/mcp-venv/bin/python .tmp/2026-11-05-reward-inspection-presets/verify_delivery.py` 核对完整检查与 GUI 证据后记录 task-done，归档本计划 workspace，更新核销。
+- [x] 提交、一次独立审查；处理必要发现后合入 main、清理分支。使用 `env PYTHONPATH=src:. .tmp/mcp-venv/bin/python .tmp/2026-11-05-reward-inspection-presets/verify_delivery.py` 核对完整检查与 GUI 证据后记录 task-done，归档本计划 workspace，更新核销。

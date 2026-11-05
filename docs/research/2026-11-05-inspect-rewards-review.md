@@ -1,6 +1,6 @@
 # inspect_rewards 核验与参数建议
 
-> 当前状态：三项修复、summary、reward_ids 与约定验证完成，正在独立审查，本项尚未核销。结果见[实施记录](2026-11-05-reward-inspection-presets-implementation.md)；下方问题及原返回保留审阅基线。
+> 当前状态：三项修复、summary、reward_ids、约定验证与一次独立审查完成，22333e2 已合入 main，本项已核销。结果见[实施记录](2026-11-05-reward-inspection-presets-implementation.md)；下方问题及原返回保留审阅基线。
 
 总流程见[工具清单](2026-11-02-mcp-tool-review.md)；源码、问题编号与测试依据单列在[开发核验](2026-11-05-inspect-rewards-development-notes.md)。
 

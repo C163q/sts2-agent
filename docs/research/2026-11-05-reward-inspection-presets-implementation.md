@@ -1,8 +1,8 @@
 # 奖励详情预设与筛选交付
 
-> 当前状态：实施中，共 1 项，已完成 0 项。三项修复、summary、reward_ids 和文档表达调整已完成；713 项 Python、124 项 C# 与构建通过，九类 GUI 与 11 份真实返回已完成，20 份新旧样本、351 个相对链接及进程退出校验通过；剩余独立审查和合并，暂无阻塞。
+> 当前状态：已完成，共 1 项已完成 1 项。三项修复、summary、reward_ids、文档表达调整、约定验证与一次独立审查完成，22333e2 已合入 main，临时分支已删除，无阻塞。
 
-依据：[已确认规格](2026-11-05-inspect-rewards-review.md)、[开发核验](2026-11-05-inspect-rewards-development-notes.md)及[实施计划](../superpowers/plans/2026-11-05-reward-inspection-presets.md)。起点 537f7ae，临时分支 feat/reward-inspection-presets。
+依据：[已确认规格](2026-11-05-inspect-rewards-review.md)、[开发核验](2026-11-05-inspect-rewards-development-notes.md)及[实施计划](../superpowers/plans/2026-11-05-reward-inspection-presets.md)。起点 537f7ae，实现提交 22333e2 已快进合入 main，feat/reward-inspection-presets 已删除。
 
 ## 返回契约
 
@@ -48,3 +48,9 @@ reward_ids 作用于当前奖励页的 items。省略／null 取全部，[] 取�
 card_removal、第三方奖励、多人与全部遗物组合沿用审阅时的证据范围；实际游戏验证覆盖上表场景。接口整理以当前奖励页为边界，其他工具的审阅继续由总清单跟踪。
 
 verification.json 核对 713 项 Python、124 项 C#、九类有效 GUI、204 次实际 MCP 调用、20 份样本和 351 个相对链接；两个自有测试进程均已退出。
+
+独立审查范围 537f7ae..22333e2：Critical 0、Important 0、Minor 0，可以合并。五项重点均通过；审查者另执行 23 个只读管线探针并核对已有完整日志与两批 GUI，全部通过。审查结果保存在 `.tmp/2026-11-05-reward-inspection-presets/review-result.md`。
+
+实施取舍：沿用单一写入者的当前工作区和临时分支、已确认的 inline 实施与本地自动合并方式；并发修改需重新隔离。牌组关闭后按实际可用工具列表等待原生淡入，保留失败和补验两批证据。card_removal 与其他原生变体、第三方奖励和全部遗物组合按原审阅范围保留待实测边界，多人沿用明确单人要求；共用投影未发现特例遗漏。
+
+任务记录、审查包和完成检查归档于 `.tmp/2026-11-05-reward-inspection-presets/inline-workspace/`，逐文件哈希核对后清理本计划 workspace。正式 Mod 未安装，代码仅在本地 main 合并。

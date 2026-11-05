@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 44 项，已核销 22 项。inspect_rewards 的三项修复、summary 和 reward_ids 已确认并实现，713 项 Python、124 项 C# 与构建通过，九类 GUI 和 11 份新返回完成，正在独立审查与合并。剩余 22 项尚未核销，暂无阻塞。
+> 当前状态：工具核验进行中，共 44 项，已核销 23 项。inspect_rewards 的三项修复、summary、reward_ids、713 项 Python、124 项 C#、九类 GUI 与一次独立审查均完成并合入 main。剩余 21 项尚未核销，暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -68,7 +68,7 @@
 
 ### 奖励、宝箱与流程推进（5 项）
 
-- [ ] `inspect_rewards`：查看奖励列表。阶段：实施与验证。[已确认规格](2026-11-05-inspect-rewards-review.md)、[开发核验](2026-11-05-inspect-rewards-development-notes.md)和[实施记录](2026-11-05-reward-inspection-presets-implementation.md)。三项修复、summary、reward_ids 和九类 GUI 已完成，正在独立审查；原 [9 份审阅返回](2026-11-05-inspect-rewards-examples/README.md)保留为基线。
+- [x] `inspect_rewards`：查看奖励列表。[定稿](2026-11-05-inspect-rewards-review.md)与[实施／验证](2026-11-05-reward-inspection-presets-implementation.md)完成并合入 main：summary 复用基础观察静态奖励格式、reward_ids 按稳定 ID 筛选、具体拒绝与上下文一致性、旧领取验证器更新。713 项 Python、124 项 C#、九类 GUI 与一次独立审查通过；[11 份新返回](2026-11-05-reward-presets-examples/README.md)和原[9 份审阅样本](2026-11-05-inspect-rewards-examples/README.md)保留来源。
 - [ ] `claim_reward`：领取一项奖励。
 - [ ] `inspect_treasure`：查看宝箱房及已展示遗物。
 - [ ] `loot_treasure`：打开宝箱或领取遗物。
