@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 44 项，已核销 18 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、play_card、play_cards、end_turn、use_potion、discard_potion、inspect_selection、select_card、selection_option、set_selection_view。当前讨论 inspect_map 的 summary：源码核对及典型结构示例已记录，两项错误恢复／诊断问题待修复，尚未新增游戏实测或修改工具行为；get_observation 的地图覆盖仍待同步设计，整体未核销，其余 24 项尚未核销。暂无阻塞。
+> 当前状态：工具核验进行中，共 44 项，已核销 18 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、play_card、play_cards、end_turn、use_potion、discard_potion、inspect_selection、select_card、selection_option、set_selection_view。inspect_map.summary 已确认按节点类型分类，仅返回 ID，不表达连接或附送详情，max_steps 继续生效；具体字段、边界与基础观察地图覆盖仍待定稿。两项错误恢复／诊断问题待修复，尚未新增游戏实测或修改工具行为；get_observation 整体未核销，其余 24 项尚未核销。暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
