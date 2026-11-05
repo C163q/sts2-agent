@@ -1,0 +1,209 @@
+[
+  {
+    "file": "default-complete.full.json",
+    "description": "默认开箱并领取",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/basic/audit/evidence.json",
+    "index": 4,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "bd33d7f610ae68610d5a829aaa80880cb65e432c99581caea58ffaffc6ad37bb"
+  },
+  {
+    "file": "open-only.full.json",
+    "description": "只开箱，记录金币变化",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/open/audit/evidence.json",
+    "index": 4,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full",
+      "open_only": true
+    },
+    "image_count": 0,
+    "sha256": "a4b9a0c2bb6e4d1dc95080cc9b96cd737d87236c9d838f08ca7a96b9ec30d8aa"
+  },
+  {
+    "file": "take-opened.default.json",
+    "description": "已开箱后领取，default",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/open/audit/evidence.json",
+    "index": 9,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "default",
+      "open_only": false
+    },
+    "image_count": 0,
+    "sha256": "4493614cd812c87323124438b39b9f276a6ca3cbf7701e002cd5ecd53b3449e0"
+  },
+  {
+    "file": "empty-chest.full.json",
+    "description": "空箱正常完成，events为空",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/empty/audit/evidence.json",
+    "index": 4,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e22cbd791f02a60cdac564611895d6ef46421deca26fb8b0ac93e75c039a47eb"
+  },
+  {
+    "file": "extra-rewards.full.json",
+    "description": "额外奖励中止自动领取",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/extra/audit/evidence.json",
+    "index": 4,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "6dc39ab9fb8af39a26b8a5e63e3d15f471ac7efe2bb1826571cfe8e9def647a9"
+  },
+  {
+    "file": "explicit-take-after-extra.full.json",
+    "description": "处理额外奖励后显式领取",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/extra/audit/evidence.json",
+    "index": 13,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "4493614cd812c87323124438b39b9f276a6ca3cbf7701e002cd5ecd53b3449e0"
+  },
+  {
+    "file": "nested-rewards.full.json",
+    "description": "取得遗物后停在嵌套奖励",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/nested/audit/evidence.json",
+    "index": 4,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "fc9c096c528f97e9c82736dcbfb4fc8670ad2de6d5b942336943aa02b33d890a"
+  },
+  {
+    "file": "card-choice.full.json",
+    "description": "取得遗物后停在变牌选择",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/choice/audit/evidence.json",
+    "index": 4,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "cd241345598c9827983e1f3af503b33f529931f92c8355a6bb6b7675f85b7ce2"
+  },
+  {
+    "file": "map-after-obtain.full.json",
+    "description": "遗物延迟效果打开地图并完成",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/map_pending/audit/evidence.json",
+    "index": 4,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "85ce99023316ac05c8021347c2d2080a95ca53c2416f8ec4dbd0464d76db21e9"
+  },
+  {
+    "file": "already-open.full.json",
+    "description": "已开箱再次要求只开箱",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/open/audit/evidence.json",
+    "index": 6,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full",
+      "open_only": true
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "after-rejection.full.json",
+    "description": "拒绝后合法领取被迫观察",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/open/audit/evidence.json",
+    "index": 7,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "empty-or-collected.full.json",
+    "description": "已领取后再次操作",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/basic/audit/evidence.json",
+    "index": 6,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "地图覆盖的拒绝",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/covered/audit/evidence.json",
+    "index": 4,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "选牌覆盖的拒绝",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/choice/audit/evidence.json",
+    "index": 6,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "disabled.full.json",
+    "description": "人工禁用遗物的拒绝",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/display/audit/evidence.json",
+    "index": 8,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "no-observation.full.json",
+    "description": "无初始观察",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/basic/audit/evidence.json",
+    "index": 0,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "wrong-scene.full.json",
+    "description": "非宝箱房的拒绝",
+    "source": ".tmp/2026-11-06-loot-treasure-review/gui/no_treasure/audit/evidence.json",
+    "index": 2,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  }
+]

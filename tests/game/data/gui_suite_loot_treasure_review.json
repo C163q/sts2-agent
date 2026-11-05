@@ -1,0 +1,162 @@
+[
+  {
+    "name": "basic",
+    "scenarios": {
+      "treasure": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_loot_treasure_review.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "open",
+    "scenarios": {
+      "treasure": "open"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_loot_treasure_review.py",
+        "args": [
+          "--scenario",
+          "open"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "empty",
+    "scenarios": {
+      "treasure": "empty"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_loot_treasure_review.py",
+        "args": [
+          "--scenario",
+          "empty"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "extra",
+    "scenarios": {
+      "treasure": "extra"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_loot_treasure_review.py",
+        "args": [
+          "--scenario",
+          "extra"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nested",
+    "scenarios": {
+      "treasure": "nested"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_loot_treasure_review.py",
+        "args": [
+          "--scenario",
+          "nested"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "choice",
+    "scenarios": {
+      "treasure": "choice"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_loot_treasure_review.py",
+        "args": [
+          "--scenario",
+          "choice"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "covered",
+    "scenarios": {
+      "treasure": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_loot_treasure_review.py",
+        "args": [
+          "--scenario",
+          "covered"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "no_treasure",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_loot_treasure_review.py",
+        "args": [
+          "--scenario",
+          "no_treasure"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "map_pending",
+    "scenarios": {
+      "treasure": "map_pending"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_loot_treasure_review.py",
+        "args": [
+          "--scenario",
+          "map_pending"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "display",
+    "scenarios": {
+      "treasure": "open"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_loot_treasure_review.py",
+        "args": [
+          "--scenario",
+          "display"
+        ]
+      }
+    ]
+  }
+]
