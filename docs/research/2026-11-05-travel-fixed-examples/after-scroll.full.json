@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The map changed while preparing travel. Read the current map before continuing.",
+    "recovery": "get_observation"
+  }
+}

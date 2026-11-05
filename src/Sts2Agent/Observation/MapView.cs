@@ -53,6 +53,33 @@ internal static class MapView
     public static NButton? Back(NMapScreen screen) => screen.GetNodeOrNull<NButton>("Back");
     public static bool CanClose(NMapScreen screen) => CloseUnavailableReason(screen) == null;
 
+    public static string? TravelUnavailableReason(NMapScreen? screen)
+    {
+        if (!RunManager.Instance.IsInProgress || RunManager.Instance.DebugOnlyGetState() == null)
+            return "No local run is available for map travel.";
+        if (!RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
+            return "Map travel requires a local single-player run.";
+        if (screen == null || !GodotObject.IsInstanceValid(screen) || !screen.IsNodeReady()
+            || !ReferenceEquals(NMapScreen.Instance, screen))
+            return "The map is not ready for travel.";
+        if (!screen.IsOpen)
+            return "Open the map with inspect_map before choosing a node.";
+        if (screen.IsTraveling) return "Wait for the current map travel to finish.";
+        if (!Clear())
+        {
+            if (CardPage != null)
+                return "Close the covering card page with close_card_view before choosing a map node.";
+            if (RunUi.Transitioning()) return "Wait for the screen transition before choosing a map node.";
+            return "The map is covered by a dialog, selection or another detail page.";
+        }
+        if (!Ready(screen)) return "The map is still preparing. Wait before choosing a node.";
+        if (NavigationTasks.ChangingAct) return "Wait for the next act's map to finish preparing.";
+        if (screen.Drawings.GetLocalDrawingMode() != DrawingMode.None)
+            return "Exit map drawing mode before choosing a node.";
+        if (screen.IsDebugTravelEnabled) return "Map travel is unavailable in debug travel mode.";
+        return screen.IsTravelEnabled ? null : "Map travel is not enabled on the current screen.";
+    }
+
     public static string? CloseUnavailableReason(NMapScreen? screen)
     {
         if (!RunManager.Instance.IsInProgress || RunManager.Instance.DebugOnlyGetState() == null)

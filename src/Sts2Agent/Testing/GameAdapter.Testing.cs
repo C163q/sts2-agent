@@ -53,6 +53,7 @@ internal sealed partial class GameAdapter
             return FileMailbox.Error(request.Id, "invalid_request", "No arguments are accepted.");
         testResetFailed = true;
         PotionFixture.Reset();
+        MapTravelFailureFixture.Reset();
         // Native cleanup cancels player choices and disposes the run's action synchronizers.
         var pending = new[] { SelectionFixture.Pending, RewardFixture.Pending, ShopFixture.Pending, TreasureFixture.Pending, CombatHandoffFixture.Pending }
             .Where(task => task != null).Cast<Task>().ToArray();

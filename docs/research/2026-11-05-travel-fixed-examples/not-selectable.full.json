@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The requested node is not selectable on the current map. Choose an ID from selectable_nodes.",
+    "recovery": "choose_legal_action"
+  }
+}

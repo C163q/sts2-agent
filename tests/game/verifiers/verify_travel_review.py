@@ -22,10 +22,13 @@ async def verify(args):
         evidence.append(item)
         args.report.write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')
 
-    async def native(operation):
-        response = await asyncio.to_thread(raw.call, operation)
+    async def native(operation, arguments=None, token=None, error=None):
+        response = await asyncio.to_thread(raw.call, operation, token, arguments=arguments)
         record({'native_test': operation, 'result': response})
-        assert response['ok'], response
+        assert response['ok'] == (error is None), response
+        if error is not None:
+            assert response['error']['code'] == error, response
+            return response
         return response['state']
 
     params = StdioServerParameters(command=sys.executable, args=[
@@ -58,8 +61,9 @@ async def verify(args):
             if args.scenario in {'entry', 'double'}:
                 await call('proceed')
             if args.scenario == 'basic':
-                await call('travel_to_node', {'node_id': 'map:1:2:0'}, 'illegal_action', 'map_closed')
-                await call('proceed', error='observation_required', label='lost_after_closed')
+                rejected = await call('travel_to_node', {'node_id': 'map:1:2:0'}, 'illegal_action', 'map_closed')
+                assert 'inspect_map' in rejected['error']['message'] and rejected['error']['recovery'] == 'choose_legal_action', rejected
+                await call('proceed', label='direct_after_closed')
             graph = await call('inspect_map')
             before = await native('check_test_navigation')
             source = next((n for n in graph['nodes'] if n['id'] == graph['current_node']), None)
@@ -70,29 +74,56 @@ async def verify(args):
             assert target in graph['selectable_nodes'], graph
 
             if args.scenario == 'basic':
+                current = await native('get_state')
+                invalid = await native('travel_to_node', {'node_id': True}, current['snapshot_id'], 'invalid_request')
+                assert invalid['error']['action_submitted'] is False, invalid
+                assert invalid['execution']['ui_interaction_started'] is False, invalid
                 await call('travel_to_node', {'node_id': target, 'force': True}, 'invalid_request', 'extra_argument')
                 # The native rejection proves local validation preserved the existing permission.
-                await call('travel_to_node', {'node_id': graph['current_node']}, 'illegal_action', 'not_selectable')
-                await call('travel_to_node', {'node_id': target}, 'observation_required', 'lost_after_candidate')
+                rejected = await call('travel_to_node', {'node_id': graph['current_node']}, 'illegal_action', 'not_selectable')
+                assert 'selectable_nodes' in rejected['error']['message'] and rejected['error']['recovery'] == 'choose_legal_action', rejected
+                await call('travel_to_node', {'node_id': graph['current_node']}, 'illegal_action', 'retained_after_candidate')
                 await call('inspect_map')
                 await call('inspect_deck')
-                await call('travel_to_node', {'node_id': target}, 'illegal_action', 'covered')
-                await call('travel_to_node', {'node_id': target}, 'observation_required', 'lost_after_cover')
+                rejected = await call('travel_to_node', {'node_id': target}, 'illegal_action', 'covered')
+                assert 'close_card_view' in rejected['error']['message'] and rejected['error']['recovery'] == 'choose_legal_action', rejected
+                await call('end_turn', error='illegal_action', label='retained_after_cover')
                 await call('close_card_view')
                 await native('set_test_navigation_drawing')
                 await call('travel_to_node', {'node_id': target}, 'stale_state', 'drawing_changed')
                 await call('get_observation')
-                await call('travel_to_node', {'node_id': target}, 'illegal_action', 'drawing')
+                rejected = await call('travel_to_node', {'node_id': target}, 'illegal_action', 'drawing')
+                assert 'drawing mode' in rejected['error']['message'] and rejected['error']['recovery'] == 'choose_legal_action', rejected
+                await call('travel_to_node', {'node_id': target}, 'illegal_action', 'retained_after_drawing')
                 await native('clear_test_navigation_drawing')
                 await call('inspect_map')
                 await native('scroll_test_navigation')
 
-            receipt = await call('travel_to_node', {'node_id': target}, label='arrival')
+            if args.scenario == 'scroll_failure':
+                await native('scroll_test_navigation')
+                prepared = await native('arm_test_navigation_scroll_failure')
+                target = prepared['offscreen_nodes'][0]
+                rejected = await call('travel_to_node', {'node_id': target}, 'illegal_action', 'after_scroll')
+                assert 'map changed' in rejected['error']['message'] and rejected['error']['recovery'] == 'get_observation', rejected
+                facts = evidence[-1]
+                assert facts['execution']['ui_interaction_started'] is True, facts
+                assert 'action_submitted' not in facts['native_error'], facts
+                await call('travel_to_node', {'node_id': target}, 'observation_required', 'lost_after_scroll')
+                await native('clear_test_navigation_scroll_failure')
+                await call('inspect_map')
+
+            receipt = await call('travel_to_node', {'node_id': target, **({'preset':'default'} if args.scenario == 'flight' else {})}, label='arrival')
             reason = 'choice_required' if args.scenario == 'choice' else (
-                'player_ready' if args.scenario in {'combat', 'double'} else 'action_completed')
+                'player_ready' if args.scenario in {'combat', 'double', 'antler'} else 'action_completed')
             assert receipt['transition']['complete'] and receipt['transition']['stop_reason'] == reason, receipt
             assert set(receipt) <= {'scene', 'screen', 'available_actions', 'selection', 'transition', 'notes'}, receipt
             assert not {'player', 'map', 'top_bar'} & receipt.keys(), receipt
+            if args.scenario == 'antler':
+                added = [e for e in receipt['transition']['events'] if e['type'] == 'card_added']
+                assert len(added) == 3, receipt
+                assert all(e['card']['name'] == 'Dazed' and e['pile'] == 'draw' for e in added), added
+                assert len({e['card']['id'] for e in added}) == 3, added
+                assert all(set(e) == {'type', 'sequence', 'card', 'pile'} for e in added), added
             if args.scenario == 'combat':
                 await call('end_turn', label='direct_continuation')
             elif args.scenario == 'choice':
@@ -104,7 +135,7 @@ async def verify(args):
                 if state.get('selection'):
                     option = next(o for o in state['selection']['options'] if o['enabled'])
                     await call('selection_option', {'option_id': option['id']})
-            elif args.scenario in {'basic', 'flight'}:
+            elif args.scenario in {'basic', 'flight', 'scroll_failure'}:
                 await call('choose_rest_option', {'option_id': 'HEAL'}, label='direct_continuation')
             after = await native('check_test_navigation')
             assert after['current_node'] == target and after['rewards'] is False, after
@@ -112,7 +143,7 @@ async def verify(args):
                 assert after['boots_used'] == (3 if args.scenario == 'flight' else before['boots_used']), after
             observed = await call('get_observation')
             expected = {'basic': 'rest_site', 'flight': 'rest_site', 'combat': 'combat', 'choice': 'combat',
-                        'shop': 'shop', 'treasure': 'treasure', 'entry': 'ancient', 'double': 'combat'}
+                        'shop': 'shop', 'treasure': 'treasure', 'entry': 'ancient', 'double': 'combat', 'antler': 'combat', 'scroll_failure': 'rest_site'}
             assert observed['scene'] == expected.get(args.scenario, 'event'), observed
             assert observed['scene'] == receipt['scene'], (receipt, observed)
     print('PASS travel review:', args.scenario, flush=True)
@@ -120,6 +151,6 @@ async def verify(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--scenario', choices=('basic', 'flight', 'combat', 'choice', 'shop', 'treasure', 'unknown', 'entry', 'double'), required=True)
+    parser.add_argument('--scenario', choices=('basic', 'flight', 'combat', 'choice', 'shop', 'treasure', 'unknown', 'entry', 'double', 'antler', 'scroll_failure'), required=True)
     parser.add_argument('--report', type=Path, required=True)
     asyncio.run(verify(parser.parse_args()))

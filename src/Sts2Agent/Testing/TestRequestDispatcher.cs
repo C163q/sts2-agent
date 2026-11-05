@@ -301,6 +301,23 @@ internal sealed partial class GameAdapter
         }
         if (testMode && testSettings.Get("STS2_AGENT_TEST_NAVIGATION_SCENARIO") != null && LocalPlayer != null)
         {
+            if (request.Operation == "clear_test_navigation_scroll_failure"
+                && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
+            {
+                MapTravelFailureFixture.Reset();
+                return Success(request, Observe());
+            }
+            if (request.Operation == "arm_test_navigation_scroll_failure"
+                && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
+            {
+                var map = NRun.Instance!.GlobalUi.MapScreen;
+                var run = RunManager.Instance.DebugOnlyGetState()!;
+                var offscreen = MapInspection.Choices(map).Where(point => !map.IsNodeOnScreen(point))
+                    .Select(point => MapInspection.Id(run, point.Point.coord)).ToArray();
+                if (offscreen.Length == 0) throw new InvalidOperationException("Scroll a candidate off screen before arming the fixture.");
+                MapTravelFailureFixture.Arm(map);
+                return Success(request, JsonSerializer.Serialize(new { offscreen_nodes = offscreen }));
+            }
             if (request.Operation == "check_test_navigation")
                 return Success(request, JsonSerializer.Serialize(NavigationFixture.Read(LocalPlayer)));
             if (request.Operation == "finish_test_navigation_boss")

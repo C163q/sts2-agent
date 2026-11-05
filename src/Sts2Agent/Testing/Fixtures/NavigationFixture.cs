@@ -43,7 +43,7 @@ internal static class NavigationFixture
         var source = map.GetAllMapPoints().First(p => p.coord.row == 1 && p.Children.Count > 0
             && map.GetPointsInRow(2).Any(q => !p.Children.Contains(q)));
         foreach (var point in map.GetPointsInRow(2))
-            point.PointType = scenario switch { "combat" or "choice" => MapPointType.Monster,
+            point.PointType = scenario switch { "combat" or "choice" or "antler" => MapPointType.Monster,
                 "shop" => MapPointType.Shop, "treasure" => MapPointType.Treasure, "unknown" => MapPointType.Unknown,
                 _ => MapPointType.RestSite };
         run.AddVisitedMapCoord(source.coord);
@@ -57,6 +57,7 @@ internal static class NavigationFixture
             if (scenario == "flight") boots.TimesUsed = 2;
         }
         if (scenario == "choice") await RelicCmd.Obtain<ChoicesParadox>(player);
+        if (scenario == "antler") await RelicCmd.Obtain<BlessedAntler>(player);
         await RewardFixture.Configure("basic", player, frame);
         screen.SetTravelEnabled(true);
     }

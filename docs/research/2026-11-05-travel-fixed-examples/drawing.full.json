@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Exit map drawing mode before choosing a node.",
+    "recovery": "choose_legal_action"
+  }
+}

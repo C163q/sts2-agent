@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Close the covering card page with close_card_view before choosing a map node.",
+    "recovery": "choose_legal_action"
+  }
+}

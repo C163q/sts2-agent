@@ -129,6 +129,7 @@ SPECS = (
         requires_permission=True,
         returns_transition=True,
         records_events=True,
+        unsubmitted_rejection_unchanged=True,
         reader='transition_details:end_turn_details',
         parser='map_details:travel_arguments',
         parser_operation=False),

@@ -13,9 +13,7 @@ internal static class MapInspection
 
     public static string Id(RunState run, MapCoord coord) => $"map:{run.CurrentActIndex + 1}:{coord.row}:{coord.col}";
 
-    public static NMapPoint[] Choices(NMapScreen screen) => MapView.Ready(screen)
-        && screen.IsTravelEnabled && !screen.IsDebugTravelEnabled && !NavigationTasks.ChangingAct
-        && screen.Drawings.GetLocalDrawingMode() == DrawingMode.None
+    public static NMapPoint[] Choices(NMapScreen screen) => MapView.TravelUnavailableReason(screen) == null
         ? VisibleUi.Descendants<NMapPoint>(screen).Where(node => VisibleUi.Shown(node)
             && node.State == MapPointState.Travelable && node.IsEnabled)
             .OrderBy(node => node.Point.coord.row).ThenBy(node => node.Point.coord.col).ToArray() : [];

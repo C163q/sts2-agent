@@ -1,0 +1,110 @@
+[
+  {
+    "file": "antler.full.json",
+    "source": ".tmp/2026-11-05-travel-recovery/gui/antler/verify/evidence.json",
+    "index": 4,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "025d399bc34d46e866a3bcd6e042688f6c9a6b53075d6bc58fb1526f71b5024f"
+  },
+  {
+    "file": "rest.full.json",
+    "source": ".tmp/2026-11-05-travel-recovery/gui/basic/verify/evidence.json",
+    "index": 24,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "a0fa8afc7f0bbd52dab578013a99726ff82c0a080a726316c0e9bbe4f0744958"
+  },
+  {
+    "file": "combat.full.json",
+    "source": ".tmp/2026-11-05-travel-recovery/gui/combat/verify/evidence.json",
+    "index": 4,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "67d485d6b5274854ac353b9ba32029e2b35ec34b78f634310dbbaa270364d7ef"
+  },
+  {
+    "file": "flight.default.json",
+    "source": ".tmp/2026-11-05-travel-recovery/gui/flight/verify/evidence.json",
+    "index": 4,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "default",
+      "node_id": "map:1:2:1"
+    },
+    "image_count": 0,
+    "sha256": "a0fa8afc7f0bbd52dab578013a99726ff82c0a080a726316c0e9bbe4f0744958"
+  },
+  {
+    "file": "map-closed.full.json",
+    "source": ".tmp/2026-11-05-travel-recovery/gui/basic/verify/evidence.json",
+    "index": 2,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "82312ac30ca124282c7ce86f484c0d77e48fa65a093763a87000e500cf281789"
+  },
+  {
+    "file": "not-selectable.full.json",
+    "source": ".tmp/2026-11-05-travel-recovery/gui/basic/verify/evidence.json",
+    "index": 9,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:1:0"
+    },
+    "image_count": 0,
+    "sha256": "bd546f8c11b1086d536c1cded432c69331650a35bb0ef372d6a4c29ba53edb1d"
+  },
+  {
+    "file": "covered.full.json",
+    "source": ".tmp/2026-11-05-travel-recovery/gui/basic/verify/evidence.json",
+    "index": 13,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "2a1dee127f575dcbb62344ab1026788bfcbdccd177c2e859f04244d366afaadf"
+  },
+  {
+    "file": "drawing.full.json",
+    "source": ".tmp/2026-11-05-travel-recovery/gui/basic/verify/evidence.json",
+    "index": 19,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "8fa101a95ffc82675c63df1b92c28a214735d18311e43ecbc46fb487de9c0ef6"
+  },
+  {
+    "file": "after-scroll.full.json",
+    "source": ".tmp/2026-11-05-travel-recovery/gui/scroll_failure/verify/evidence.json",
+    "index": 6,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "de69f57055ea6ffa02eedd8c22835a6cd16ca187f13b9f566381e755435ab7d3"
+  }
+]

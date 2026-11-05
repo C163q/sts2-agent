@@ -1,5 +1,21 @@
 [
   {
+    "name": "scroll_failure",
+    "scenarios": {
+      "navigation": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_travel_review.py",
+        "args": [
+          "--scenario",
+          "scroll_failure"
+        ]
+      }
+    ]
+  },
+  {
     "name": "basic",
     "scenarios": {
       "navigation": "basic"
@@ -140,6 +156,27 @@
           "--scenario",
           "double"
         ]
+      }
+    ]
+  },
+  {
+    "name": "antler",
+    "scenarios": {
+      "navigation": "antler"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_travel_review.py",
+        "args": [
+          "--scenario",
+          "antler"
+        ]
+      },
+      {
+        "name": "gates",
+        "verifier": "verify_native_dispatch.py",
+        "args": []
       }
     ]
   }
