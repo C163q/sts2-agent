@@ -1,6 +1,6 @@
 # inspect_rest_site 核验与参数建议
 
-> 当前状态：已按定稿实现并验收，正在最终独立审阅与合入。以下保留审阅基线及实际样本；当前行为和验证见[实施记录](2026-11-06-rest-site-inspection-presets-implementation.md)。
+> 当前状态：已按定稿实现并验收，独立审阅通过并已合入main。以下保留审阅基线及实际样本；当前行为和验证见[实施记录](2026-11-06-rest-site-inspection-presets-implementation.md)。
 
 流程见[工具清单](2026-11-02-mcp-tool-review.md)。源码入口、问题编号和详细证据见[开发核验](2026-11-06-inspect-rest-site-development-notes.md)。
 

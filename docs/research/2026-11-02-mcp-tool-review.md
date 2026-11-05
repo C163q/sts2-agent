@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销28项。inspect_rest_site修复、summary／option_ids及基础观察静态格式已通过最终验收，正在独立审阅与合入。剩余16项尚未核销，无阻塞。
+> 当前状态：工具核验进行中，共44项，已核销28项。inspect_rest_site修复、summary／option_ids及基础观察静态格式已通过最终验收与独立审阅，并合入main。剩余16项尚未核销，无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 

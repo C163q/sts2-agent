@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 >
-> 当前状态：实施与验收完成，共1项，已完成1项；正在最终独立审阅与合入，无剩余必修项或阻塞。
+> 当前状态：实施与验收完成，共1项，已完成1项；独立审阅通过并已合入main，无剩余必修项或阻塞。
 
 **Goal:** 修复火堆读取诊断和上下文校验，提供summary及option_ids，基础观察同步省略火堆description。
 
@@ -46,4 +46,4 @@
 - [x] **Step 3: 实现。** 分离页面可读和点击就绪，公开固定原因；取消读取及全局Ready的视口条件，单个Clickable保留实际交互判断并拒绝无聚焦能力的按钮。读取保留静态行，full按CanFocus获取Description，否则null及来源。Python严格校验上下文、nullable正文与来源；共享静态投影去除description，先校验再摘要／筛选，note同步裁剪。注册参数且不发送Python筛选到原生，更新版本和受影响旧断言。
 - [x] **Step 4: 验证。** 相关Python通过后，完整unittest discover、目标依赖dotnet build（无还原）及C# checks通过；准备隔离运行时，运行原七类专项加display，并回归旧verify_rest_site.basic和test dispatch双模式门控。GUI预期所有分支通过，基本场景须断言未完成活动时proceed:null；记录失败／修正而不覆盖证据。源与运行时DLL一致，所有自有进程退出。
 - [x] **Step 5: 文档与样本。** 更新当前契约、原审阅保留基线；导出实际full/default/summary、筛选、note及错误的典型JSON，核对来源和哈希，清单闭合28/44。记录基础观察description约定与已修复状态的文档差异，未测范围如实保留。`.tmp/2026-11-06-rest-site-inspection-presets/verify_delivery.py`校验上述日志、样本、链接、版本、进程与git diff --check，预期通过。
-- [ ] **Step 6: 提交。** `feat: add rest site inspection presets and shared static output`。执行计划任务验收后进行一次独立完整审阅，按技能处理审阅结果、归档并核对本任务工作区，合入main和删除临时分支；不正式安装或推送。
+- [x] **Step 6: 提交。** `feat: add rest site inspection presets and shared static output`。执行计划任务验收后进行一次独立完整审阅，按技能处理审阅结果、归档并核对本任务工作区，合入main和删除临时分支；不正式安装或推送。
