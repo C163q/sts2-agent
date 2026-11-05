@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The selection is hidden while viewing the battlefield. Return with set_selection_view(view=\"selection\") before selecting a card.",
+    "recovery": "choose_legal_action"
+  }
+}

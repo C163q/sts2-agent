@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "These cards are results for viewing. Use the enabled confirmation option to close the page.",
+    "recovery": "choose_legal_action"
+  }
+}

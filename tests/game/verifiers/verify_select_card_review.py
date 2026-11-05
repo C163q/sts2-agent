@@ -1,4 +1,4 @@
-"""Record native card selection outcomes, boundaries and rejection recovery."""
+"""Verify native selection feedback, boundaries and safe rejection recovery."""
 from scripts._bootstrap import ROOT
 import argparse
 import asyncio
@@ -19,6 +19,7 @@ async def verify(args):
     raw = Client(ipc_directory())
     await asyncio.to_thread(ensure_run, raw)
     evidence = []
+    card_names = {}
     args.report.parent.mkdir(parents=True, exist_ok=True)
 
     def record(item):
@@ -41,9 +42,22 @@ async def verify(args):
                 assert data.get('error', {}).get('code') == error, data
                 return data
 
-            async def click(card_id, label):
+            def changes(result, expected, names=None):
+                events = result['transition']['events']
+                actual = [e for e in events if e['type'] in {'card_selected', 'card_deselected'}]
+                assert [{k: v for k, v in e.items() if k != 'sequence'} for e in actual] == [
+                    {'type': kind, 'card': {'id': i, 'name': (card_names if names is None else names)[i]}}
+                    for kind, i in expected], result
+                assert [e['sequence'] for e in events] == list(range(1, len(events) + 1)), result
+                return actual
+
+            async def click(card_id, label, expected=None):
                 result = await call('select_card', {'card_id': card_id}, label=label)
                 assert result['transition']['complete'], result
+                selected = changes(result, expected if expected is not None else [('card_selected', card_id)])
+                effects = [e for e in result['transition']['events'] if e['type'] not in {'card_selected', 'card_deselected'}]
+                if selected and effects:
+                    assert selected[-1]['sequence'] < effects[0]['sequence'], result
                 # Read the exact response without granting a new MCP permission.
                 state = completed_action_state(raw.directory, result)
                 record({'label': label, 'native_action_state': state})
@@ -63,11 +77,11 @@ async def verify(args):
                     state = await call('get_observation')
                 option = next(o for o in state['ancient']['options'] if o['enabled'])
                 await call('choose_ancient_option', {'option_id': option['id']})
-            elif args.scenario in {'choose_one', 'hand_upgrade'}:
+            elif args.scenario in {'choose_one', 'hand_upgrade', 'hand_replace'}:
                 name = 'Discovery' if args.scenario == 'choose_one' else 'Armaments'
                 card = next(c for c in state['player']['hand'] if c['name'] == name)
                 await call('play_card', {'card_id': card['id']})
-            elif args.scenario == 'smith':
+            elif args.scenario in {'smith', 'upgrade_view'}:
                 await call('choose_rest_option', {'option_id': 'SMITH'})
             elif args.scenario == 'enchant_single':
                 option = next(o for o in state['event']['options'] if o['enabled'])
@@ -80,36 +94,66 @@ async def verify(args):
                 await call('select_card', {'card_id': True}, error='invalid_request', label='malformed')
                 await call('end_turn', label='after_malformed')
                 await call('get_observation')
-                await call('select_card', {'card_id': 0}, error='illegal_action', label='no_selection')
-                await call('end_turn', error='observation_required', label='after_unsubmitted_rejection')
+                rejected = await call('select_card', {'card_id': 0}, error='illegal_action', label='no_selection')
+                assert 'selection' in rejected['error']['message'].lower(), rejected
+                assert rejected['error']['recovery'] == 'choose_legal_action', rejected
+                await call('end_turn', label='after_unsubmitted_rejection')
                 return
 
-            choice = (await call('inspect_selection'))['selection']
+            choice = (await call('inspect_selection', {'view_upgrades': True} if args.scenario == 'upgrade_view' else None))['selection']
             cards = choice['cards']
+            card_names.update({c['id']: c['name'] for c in cards})
+            if args.scenario == 'hand_replace':
+                await click(cards[0]['id'], 'select_first')
+                _, replaced = await click(cards[1]['id'], 'replace_selected', [
+                    ('card_deselected', cards[0]['id']), ('card_selected', cards[1]['id'])])
+                assert replaced['selection']['selected_ids'] == [cards[1]['id']], replaced
+                result = await call('selection_option', {'option_id': 'confirm'})
+                changes(result, [])
+                return
+            if args.scenario == 'grid_manual':
+                native = await asyncio.to_thread(raw.call, 'check_test_selection_input')
+                record({'native_input_checks': native})
+                assert native['ok'] and native['state']['passed'], native
+                await call('inspect_selection')
+                await click(cards[0]['id'], 'first_manual')
+                _, selected = await click(cards[1]['id'], 'second_manual')
+                _, unchanged = await click(cards[2]['id'], 'already_full', [])
+                assert unchanged['selection']['selected_ids'] == selected['selection']['selected_ids'], unchanged
+                result = await call('selection_option', {'option_id': 'confirm'})
+                changes(result, [])
+                return
             if args.scenario in {'bundle', 'view_cards'}:
                 if args.scenario == 'bundle':
                     target = choice['bundles'][0]['cards'][0]['id']
                 else:
                     target = cards[0]['id']
-                await call('select_card', {'card_id': target}, error='illegal_action', label='not_individually_selectable')
+                rejected = await call('select_card', {'card_id': target}, error='illegal_action', label='not_individually_selectable')
+                assert ('bundle' if args.scenario == 'bundle' else 'confirm') in rejected['error']['message'].lower(), rejected
+                assert rejected['error']['recovery'] == 'choose_legal_action', rejected
                 option = choice['bundles'][0]['id'] if args.scenario == 'bundle' else 'confirm'
-                await call('selection_option', {'option_id': option}, error='observation_required', label='valid_button_after_rejection')
+                result = await call('selection_option', {'option_id': option}, label='valid_button_after_rejection')
+                changes(result, [])
                 return
             if args.scenario == 'invalid_candidate':
                 before = await asyncio.to_thread(raw.call, 'get_state')
-                await call('select_card', {'card_id': 2147483647}, error='illegal_action', label='unknown_id')
+                rejected = await call('select_card', {'card_id': 2147483647}, error='illegal_action', label='unknown_id')
+                assert 'candidate' in rejected['error']['message'].lower(), rejected
+                assert rejected['error']['recovery'] == 'choose_legal_action', rejected
                 after = await asyncio.to_thread(raw.call, 'get_state')
                 record({'label': 'unchanged_rejection', 'before': before, 'after': after})
                 assert before['state'] == after['state'], (before, after)
-                await call('select_card', {'card_id': cards[0]['id']}, error='observation_required', label='valid_card_after_rejection')
+                await click(cards[0]['id'], 'valid_card_after_rejection')
                 return
             if args.scenario == 'covered':
                 await call('set_selection_view', {'view': 'battlefield'})
-                await call('select_card', {'card_id': cards[0]['id']}, error='illegal_action', label='battlefield')
+                rejected = await call('select_card', {'card_id': cards[0]['id']}, error='illegal_action', label='battlefield')
+                assert 'battlefield' in rejected['error']['message'].lower(), rejected
                 await call('set_selection_view', {'view': 'selection'})
                 await call('set_selection_view', {'view': 'battlefield'})
                 await call('inspect_deck')
-                await call('select_card', {'card_id': cards[0]['id']}, error='illegal_action', label='covered')
+                rejected = await call('select_card', {'card_id': cards[0]['id']}, error='illegal_action', label='covered')
+                assert 'cover' in rejected['error']['message'].lower(), rejected
                 return
             if args.scenario == 'scroll_race':
                 result = await asyncio.to_thread(raw.call, 'check_test_selection_race')
@@ -137,7 +181,7 @@ async def verify(args):
                 assert selected['selection']['selected_ids'] == [cards[0]['id']], selected
                 if args.scenario == 'hand_upgrade':
                     assert selected['selection']['upgrade_preview'] is not None, selected
-                _, cleared = await click(cards[0]['id'], 'deselect_without_read')
+                _, cleared = await click(cards[0]['id'], 'deselect_without_read', [('card_deselected', cards[0]['id'])])
                 assert cleared['selection']['selected_ids'] == [], cleared
                 if args.scenario == 'hand_upgrade':
                     assert cleared['selection']['upgrade_preview'] is None, cleared
@@ -150,18 +194,35 @@ async def verify(args):
             if current and current['status'] == 'visible':
                 assert result['transition']['stop_reason'] == 'choice_required', result
                 assert set(current['selected_ids']) == {c['id'] for c in selected_cards}, current
-                preview = args.scenario in {'deck', 'smith', 'multi_upgrade', 'enchant_single', 'enchant_multi', 'transform'}
+                preview = args.scenario in {'deck', 'smith', 'upgrade_view', 'multi_upgrade', 'enchant_single', 'enchant_multi', 'transform'}
                 if preview:
                     # Re-clicking a card in a confirmation preview is a preflight rejection.
-                    await call('select_card', {'card_id': selected_cards[0]['id']}, error='illegal_action', label='preview_rejection')
-                    await call('selection_option', {'option_id': 'confirm'}, error='observation_required', label='confirm_after_preview_rejection')
-                    await call('inspect_selection')
+                    rejected = await call('select_card', {'card_id': selected_cards[0]['id']}, error='illegal_action', label='preview_rejection')
+                    assert 'preview' in rejected['error']['message'].lower(), rejected
+                    canceled = await call('selection_option', {'option_id': 'cancel_preview'}, label='cancel_after_preview_rejection')
+                    # These multi-card previews display only result faces, leaving originals unknown.
+                    names = {c['id']: None for c in selected_cards} if args.scenario in {'multi_upgrade', 'enchant_multi'} else None
+                    if args.scenario == 'upgrade_view':
+                        assert selected_cards[0]['name'] == 'Bash+', selected_cards
+                        names = {selected_cards[0]['id']: 'Bash'}
+                    changes(canceled, [('card_deselected', c['id']) for c in selected_cards], names=names)
+                    for card in selected_cards:
+                        result, after = await click(card['id'], 'reselect_after_cancel')
                 result = await call('selection_option', {'option_id': 'confirm'}, label='confirm')
+                changes(result, [])
             expected = {'death': 'combat_lost', 'victory': 'combat_won', 'combat_entry': 'player_ready'}.get(args.scenario)
             assert result['transition']['complete'], result
             if expected:
                 assert result['transition']['stop_reason'] == expected, result
-            assert (await call('get_observation')).get('selection') is None
+            observed = await call('get_observation')
+            assert observed.get('selection') is None
+            if args.scenario == 'victory':
+                # The combat boundary precedes the native reward-page transition.
+                deadline = time.monotonic() + 15
+                while observed['scene'] != 'rewards' or 'proceed' not in observed['available_actions']:
+                    assert time.monotonic() < deadline, observed
+                    await asyncio.sleep(.1)
+                    observed = await call('get_observation')
     print(f'PASS select_card review: {args.scenario}')
 
 

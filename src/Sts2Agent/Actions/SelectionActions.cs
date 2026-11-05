@@ -10,7 +10,8 @@ internal static class SelectionActions
     public static bool Same(CardSelection selection) => CardSelection.Current is { } current
         && ReferenceEquals(current.Owner, selection.Owner) && ReferenceEquals(current.Key, selection.Key);
 
-    public static async Task Click(CardSelection selection, CardModel model, Func<Task> frame)
+    public static async Task Click(CardSelection selection, CardModel model, Func<Task> frame,
+        Action<Action>? interact = null)
     {
         if (!selection.CanSelect || !selection.Cards.Contains(model))
             throw new InvalidOperationException("This card cannot be selected.");
@@ -44,6 +45,8 @@ internal static class SelectionActions
         if (!Unchanged() || !selection.CanSelect || holder == null || !CardSelection.Clickable(holder))
             throw new InvalidOperationException("The candidate is not clickable.");
         // The native holder emits this signal for mouse/controller selection.
-        holder.EmitSignal(NCardHolder.SignalName.Pressed, holder);
+        void Press() => holder.EmitSignal(NCardHolder.SignalName.Pressed, holder);
+        if (interact == null) Press();
+        else interact(Press);
     }
 }

@@ -82,6 +82,7 @@ MCP `end_turn()` 接受可选的[通用 preset](mcp.md#输出预设)，默认 de
 | --- | --- |
 | `combat_started` | 同次动作已有战斗后进入新战斗的上下文分隔，仅含 `sequence/type`；后续事件中的角色和卡牌 ID 属于新战斗，不附送遭遇或敌人信息 |
 | `card_played` | 已进入出牌流程的牌、`autoplay`，以及可选目标和已核实的触发来源；full 保留 autoplay:false，default 省略该 false，true 表示自动出牌；不代表全部效果已完成 |
+| `card_selected`、`card_deselected` | 选牌 UI 实际接受的选中／取消，仅含 `sequence/type/card`，`card` 为原候选的 `id/name`；名称取输入前同次公开快照，不可读时为 `null`，未知／锁定牌只保留实际公开的占位文字。自动替换先取消旧牌再选中新牌，最后一张自动提交仍记录选中；确认、进入预览或关闭页面不算取消，随机结果不随选中附送。default/full 都保留，包括 `name:null` |
 | `card_drawn`、`card_discarded`、`card_exhausted` | 本地玩家牌的公开移动；抽牌在原生历史写入时记录，手牌弃置和消耗在原生入堆事件时记录，先于其后续触发效果 |
 | `card_added` | 已公开展示的新生成牌或永久入组牌，含 `card.id/name` 和 `pile`：`deck` 为永久牌组，`hand/draw/discard/exhaust/play` 为战斗中的手牌、抽牌堆、弃牌堆、消耗堆和出牌结算区；UI 未明确显示去向时为 `null`，不输出堆内位置或顺序 |
 | `card_moved` | 已有牌的可见跨战斗牌堆移动，固定含 card.id/name、from_pile、to_pile；牌堆为 hand/draw/discard/exhaust/play，不包含 position、堆内位置或顺序。已由抽牌、弃置、消耗或手牌进入出牌流程表达的同次移动不重复报告 |

@@ -1,0 +1,39 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "select_card",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ],
+  "selection": {
+    "type": "deck_upgrade",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 8,
+          "name": null
+        },
+        "type": "card_deselected",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 9,
+          "name": null
+        },
+        "type": "card_deselected",
+        "sequence": 2
+      }
+    ]
+  }
+}

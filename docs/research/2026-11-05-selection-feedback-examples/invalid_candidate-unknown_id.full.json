@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Card ID 2147483647 is not a candidate in the current selection.",
+    "recovery": "choose_legal_action"
+  }
+}

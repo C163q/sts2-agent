@@ -1,0 +1,404 @@
+[
+  {
+    "file": "no_selection-no_selection.full.json",
+    "scenario": "no_selection",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 0
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-final/no_selection/verify/evidence.json",
+    "source_record": 6,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "57a511c83ae3c0fe14a8afea80387585e3f68833673fbcfcbb14eceb0ea9f452"
+  },
+  {
+    "file": "no_selection-after_unsubmitted_rejection.full.json",
+    "scenario": "no_selection",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-final/no_selection/verify/evidence.json",
+    "source_record": 7,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "6c7338d84f3d213d283c9a122a4f17f5277a22f6f19ac9abfcc8f258648bc506"
+  },
+  {
+    "file": "invalid_candidate-unknown_id.full.json",
+    "scenario": "invalid_candidate",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 2147483647
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-final/invalid_candidate/verify/evidence.json",
+    "source_record": 3,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "47d2d0e294acde8aefdc938da68e7e5c795ba10eabbae227c70a215ca9c49c6b"
+  },
+  {
+    "file": "invalid_candidate-valid_card_after_rejection.full.json",
+    "scenario": "invalid_candidate",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 5
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-final/invalid_candidate/verify/evidence.json",
+    "source_record": 5,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "d0833f6ffde2228f894c2adc32951a06169ed99a9a684f3bcc2ce498fb733fb3"
+  },
+  {
+    "file": "covered-battlefield.full.json",
+    "scenario": "covered",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 5
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-other-corrected/covered/verify/evidence.json",
+    "source_record": 4,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "b6b2bdbf96d48fbed868bd1324ec25154662133140857e9a565c24c9ebf4102b"
+  },
+  {
+    "file": "covered-covered.full.json",
+    "scenario": "covered",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 5
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-other-corrected/covered/verify/evidence.json",
+    "source_record": 8,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "07d3e96e80788a0350d43d3d402da6eecb310eab3a5ea809d93bbf9344070cfe"
+  },
+  {
+    "file": "grid-select_first.full.json",
+    "scenario": "grid",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 0
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-final/grid/verify/evidence.json",
+    "source_record": 3,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "30f40201de69112a277b5ec19cb62bbb0362a733525762edd53190ef7d02afbe"
+  },
+  {
+    "file": "grid-deselect_without_read.full.json",
+    "scenario": "grid",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 0
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-final/grid/verify/evidence.json",
+    "source_record": 5,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "8d390c3fcb8d5c0719281eb1b1a5d31b0896ab15aa9ba3777aa1ffd4ecca34fe"
+  },
+  {
+    "file": "grid-choose_candidate.full.json",
+    "scenario": "grid",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 7
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-final/grid/verify/evidence.json",
+    "source_record": 9,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "6b89141c788ab46098802f07618c63c76b6a25adcd614ebec2b680b4aa45ea43"
+  },
+  {
+    "file": "smith-choose_candidate.full.json",
+    "scenario": "smith",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 20
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-focused-corrected/smith/verify/evidence.json",
+    "source_record": 4,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "6dad3b6f07917216a252f894e384ea7ddc02ee3a71a1912e5621e3fffecce408"
+  },
+  {
+    "file": "smith-cancel_after_preview_rejection.full.json",
+    "scenario": "smith",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "cancel_preview"
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-focused-corrected/smith/verify/evidence.json",
+    "source_record": 7,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "722a97386653a1e745330d3cf5355f6458d64024f1bfd78f19917331d3e81fcf"
+  },
+  {
+    "file": "smith-confirm.full.json",
+    "scenario": "smith",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-focused-corrected/smith/verify/evidence.json",
+    "source_record": 10,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "12b15f01f9125940e76656b9b56187933714c87c88d7443332ab198517de8d57"
+  },
+  {
+    "file": "multi_upgrade-choose_candidate.full.json",
+    "scenario": "multi_upgrade",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 9
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-other-remaining/multi_upgrade/verify/evidence.json",
+    "source_record": 9,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "e34dbdbfe99d38db0e52d69a2c3ffc6f7b89b08428a316e404362b318c43fae0"
+  },
+  {
+    "file": "multi_upgrade-cancel_after_preview_rejection.full.json",
+    "scenario": "multi_upgrade",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "cancel_preview"
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-other-remaining/multi_upgrade/verify/evidence.json",
+    "source_record": 12,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "31dcbc9c7c14a8761b72057a4cd2b579e6c393ab44fdd867c9da695b0e3dd657"
+  },
+  {
+    "file": "hand_replace-replace_selected.full.json",
+    "scenario": "hand_replace",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 7
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-final/hand_replace/verify/evidence.json",
+    "source_record": 6,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "984b630e2bb505413c13d8549adc08fefa3ea69ab85e6ab51d420b8d63f73db7"
+  },
+  {
+    "file": "grid_manual-already_full.full.json",
+    "scenario": "grid_manual",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 7
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-final/grid_manual/verify/evidence.json",
+    "source_record": 9,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "debec4c61672dae6644aa0133a9d3bcfc9132f6e7d1a0a92469fbe5dacec23ee"
+  },
+  {
+    "file": "headbutt-select_card.full.json",
+    "scenario": "headbutt",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 6
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-final/headbutt/verify/evidence.json",
+    "source_record": 11,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "656554b2b51c2079b88ac0e8d78cd1348da1a005a2e36da62634377934cd3a14"
+  },
+  {
+    "file": "choose_one-choose_candidate.full.json",
+    "scenario": "choose_one",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 10
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-focused-corrected/choose_one/verify/evidence.json",
+    "source_record": 4,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "c51c02637759dd962549e16939d9789152ff92aaba69531bb0f5c9a3a8bacbd7"
+  },
+  {
+    "file": "reward-choose_candidate.full.json",
+    "scenario": "reward",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 2
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-focused-corrected/reward/verify/evidence.json",
+    "source_record": 3,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "8e630c4eefbaf5d465e9ab0204d4543bfc9a40495ae7cb71e778e537bcb15dad"
+  },
+  {
+    "file": "chain-first_choice.full.json",
+    "scenario": "chain",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 5
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-focused-corrected/chain/verify/evidence.json",
+    "source_record": 3,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "1c066c8f7c0dd3c0c3c7ddd34b4fd63736dc02ccd18c24fc5b3e8c950f575efe"
+  },
+  {
+    "file": "chain-second_choice_without_read.full.json",
+    "scenario": "chain",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 5
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-focused-corrected/chain/verify/evidence.json",
+    "source_record": 6,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "d0833f6ffde2228f894c2adc32951a06169ed99a9a684f3bcc2ce498fb733fb3"
+  },
+  {
+    "file": "combat_entry-choose_candidate.full.json",
+    "scenario": "combat_entry",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 1
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-final/combat_entry/verify/evidence.json",
+    "source_record": 3,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "a48c3d1c83110a0d2927fb97b423261a75db524cd819386fd837e7fc8bad7b0d"
+  },
+  {
+    "file": "bundle-not_individually_selectable.full.json",
+    "scenario": "bundle",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 39
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-other-remaining/bundle/verify/evidence.json",
+    "source_record": 6,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "db1607ecbae35508e97023ff74f974ac3c3165fcc0d29d4766fabab20b587273"
+  },
+  {
+    "file": "bundle-valid_button_after_rejection.full.json",
+    "scenario": "bundle",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "bundle:0"
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-other-remaining/bundle/verify/evidence.json",
+    "source_record": 7,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "d0d7d84282927eb9cf9033e9485dff36c389a893a4e015546701868fa6123461"
+  },
+  {
+    "file": "view_cards-not_individually_selectable.full.json",
+    "scenario": "view_cards",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 45
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-other-remaining/view_cards/verify/evidence.json",
+    "source_record": 7,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "dd478a8cf05b6401d6dc11381ee82f88ee39114b3e571fc38a165fea0c7b540f"
+  },
+  {
+    "file": "view_cards-valid_button_after_rejection.full.json",
+    "scenario": "view_cards",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-other-remaining/view_cards/verify/evidence.json",
+    "source_record": 8,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "7b80308dfe4fec589be1b1879839d2addc7d427a68e08ee04f71ef351d4d843f"
+  },
+  {
+    "file": "enchant_multi-cancel_after_preview_rejection.full.json",
+    "scenario": "enchant_multi",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "cancel_preview"
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-other-remaining/enchant_multi/verify/evidence.json",
+    "source_record": 15,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "ce396237e62ea340034e2f2e03af70b6e82b75c01e1990b539160ea7630b2cf2"
+  },
+  {
+    "file": "death-confirm.full.json",
+    "scenario": "death",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-other-remaining/death/verify/evidence.json",
+    "source_record": 6,
+    "mod_sha256": "289e6f43ac6ab1cd3651114bfa34e37f3c8561f55024b7de354321397eef5e29",
+    "sha256": "89743a77d906bd92f1f5ec6e7cc88796c2c1a32c97205d8a0f891d9394a2dfbc"
+  },
+  {
+    "file": "victory-confirm.full.json",
+    "scenario": "victory",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-final/victory/verify/evidence.json",
+    "source_record": 6,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "12097f95ae148fe39581f4f035bcf1c0436cecf32f0c9ee8f876d8dc09196352"
+  },
+  {
+    "file": "upgrade_view-choose_candidate.full.json",
+    "scenario": "upgrade_view",
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 9
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-upgrade-view/upgrade_view/verify/evidence.json",
+    "source_record": 4,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "d36312a1d3ca2ff2a5b6de4217d347e5c4fc0edf4eb779d93bd4d8714298e8e6"
+  },
+  {
+    "file": "upgrade_view-cancel_after_preview_rejection.full.json",
+    "scenario": "upgrade_view",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "cancel_preview"
+    },
+    "source": ".tmp/2026-11-05-selection-feedback/gui-upgrade-view/upgrade_view/verify/evidence.json",
+    "source_record": 7,
+    "mod_sha256": "239a0fd5c1c244044dc1ec308951aa339c0efb051b257e5d5b6e693f78faeacd",
+    "sha256": "f057fb66c828975c71e8e47296067ea330008f5bfd39913cfd666696a673826a"
+  }
+]

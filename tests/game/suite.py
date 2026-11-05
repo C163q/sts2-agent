@@ -110,7 +110,7 @@ def load_cases(path):
                 'verify_select_card_review.py': ('no_selection', 'invalid_candidate', 'covered', 'scroll_race',
                     'choose_one', 'reward', 'grid', 'scroll', 'hand', 'hand_upgrade', 'combat_pile', 'deck', 'smith',
                     'multi_upgrade', 'enchant_single', 'enchant_multi', 'transform', 'bundle', 'view_cards',
-                    'chain', 'death', 'victory', 'combat_entry'),
+                    'chain', 'death', 'victory', 'combat_entry', 'hand_replace', 'grid_manual', 'upgrade_view'),
                 'verify_selection_review.py': ('no_selection', 'covered', 'hand_upgrade', 'bundle', 'view_cards'),
                 'verify_potion_discard_queue.py': ('choose_one', 'hand', 'pile', 'noncombat_upgrade', 'immediate',
                     'cancel', 'hidden', 'multiple', 'skip', 'pending_reset', 'after_reset', 'card_choice', 'card_pile', 'hand_upgrade', 'fault', 'foreign'),

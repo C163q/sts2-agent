@@ -125,11 +125,12 @@ internal static class SelectionFixture
             Pending = CardSelectCmd.FromSimpleGrid(new BlockingPlayerChoiceContext(), cards, player,
                 new CardSelectorPrefs(CardSelectorPrefs.ExhaustSelectionPrompt, 2));
         }
-        else if (scenario is "grid_scroll" or "scroll_race")
+        else if (scenario is "grid_scroll" or "scroll_race" or "grid_manual")
         {
             var cards = Enumerable.Range(0, 40).Select(_ => (CardModel)player.RunState.CreateCard<DefendIronclad>(player)).ToArray();
             Pending = CardSelectCmd.FromSimpleGrid(new BlockingPlayerChoiceContext(), cards, player,
-                new CardSelectorPrefs(CardSelectorPrefs.ExhaustSelectionPrompt, scenario == "scroll_race" ? 2 : 1));
+                new CardSelectorPrefs(CardSelectorPrefs.ExhaustSelectionPrompt, scenario is "scroll_race" or "grid_manual" ? 2 : 1)
+                    { RequireManualConfirmation = scenario == "grid_manual" });
         }
         else throw new ArgumentException("Unknown card selection test scenario.");
     }

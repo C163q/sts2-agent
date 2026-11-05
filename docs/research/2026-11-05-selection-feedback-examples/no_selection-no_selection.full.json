@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "No card selection is open.",
+    "recovery": "choose_legal_action"
+  }
+}

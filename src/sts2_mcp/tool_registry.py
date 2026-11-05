@@ -663,11 +663,13 @@ SPECS = (
         schema=CARD_SCHEMA,
         description="Click one current selection candidate. Multi-select clicks toggle that card; "
             "single-choice screens may immediately submit. Use enabled selection.options to confirm when required. "
-            "Hand upgrades preview before confirmation; click the selected card to deselect.",
+            "Hand upgrades preview before confirmation; click the selected card to deselect. "
+            "Accepted selections and deselections appear in transition.events.",
         annotations=action,
         category='action',
         effect='action',
         requires_permission=True,
+        unsubmitted_rejection_unchanged=True,
         returns_transition=True,
         records_events=True,
         reader='transition_details:end_turn_details',

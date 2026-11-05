@@ -356,6 +356,10 @@ internal sealed partial class GameAdapter
         if (request.Operation == "check_test_selection_race" && testMode
             && testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO") == "scroll_race")
             return Success(request, JsonSerializer.Serialize(await SelectionFixture.CheckScrollRace(ObservationFrame)));
+        if (request.Operation == "check_test_selection_input" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+            && testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO") == "grid_manual")
+            return Success(request, JsonSerializer.Serialize(await SelectionInputChecks.Run(this, observation, ObservationFrame, Observe)));
         if (request.Operation == "check_test_deck_lifecycle" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS") is { } deckChecks)
             return Success(request, JsonSerializer.Serialize(await DeckInspectionChecks.Lifecycle(this, deckChecks)));

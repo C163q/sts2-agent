@@ -20,7 +20,7 @@ internal static class TestDispatchChecks
         "check_test_navigation", "finish_test_navigation_boss", "set_test_navigation_drawing", "clear_test_navigation_drawing",
         "scroll_test_navigation", "cancel_test_shop_targeting", "check_test_shop", "check_test_treasure",
         "check_test_rest_site", "check_test_rewards", "check_test_potion_state", "replace_test_potion", "check_test_play_state",
-        "check_test_selection_race", "check_test_deck_lifecycle", "check_test_card_views", "check_test_piles", "check_test_map",
+        "check_test_selection_race", "check_test_selection_input", "check_test_deck_lifecycle", "check_test_card_views", "check_test_piles", "check_test_map",
         "start_test_combat", "check_test_play_queue", "arm_test_card_rejection"
     ];
 

@@ -24,6 +24,7 @@ FIELDS = {
     "died": {"target"}, "revived": {"target"}, "creature_added": {"target"},
     "card_played": {"card", "autoplay"}, "card_drawn": {"card"},
     "card_discarded": {"card"}, "card_exhausted": {"card"},
+    "card_selected": {"card"}, "card_deselected": {"card"},
     "card_added": {"card", "pile"},
     "card_moved": {"card", "from_pile", "to_pile"},
     "potion_used": {"potion"}, "potion_discarded": {"potion"},
@@ -63,6 +64,8 @@ def end_turn_details(state):
         if kind in {'card_stats_changed', 'card_energy_cost_changed', 'card_enchantment_changed'} and (
                 set(event) != {'sequence', 'type', 'card', 'pile'}):
             raise ValueError('Unexpected fields in an identity-only card change.')
+        if kind in {'card_selected', 'card_deselected'} and set(event) != {'sequence', 'type', 'card'}:
+            raise ValueError('Unexpected fields in a selection change.')
         for key in ("actor", "target"):
             if key in event and (set(event[key]) != {"id", "kind", "name"}
                                 or event[key]["kind"] not in {"player", "enemy", "ally"}):

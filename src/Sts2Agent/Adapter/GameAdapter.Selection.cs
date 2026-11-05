@@ -71,8 +71,17 @@ internal sealed partial class GameAdapter
             || (field == "card_id" ? supplied.ValueKind != JsonValueKind.Number || !supplied.TryGetInt32(out cardId) || cardId < 0
                 : supplied.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(value = supplied.GetString()) || value.Length > 128)
             || (field == "view" && value is not ("battlefield" or "selection")))
-            return FileMailbox.Error(request.Id, "invalid_request", "Invalid selection arguments.");
+            return request.Operation == "select_card"
+                ? FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request", "Expected one non-negative integer card_id.")
+                : FileMailbox.Error(request.Id, "invalid_request", "Invalid selection arguments.");
         var selection = CardSelection.Current;
+        if (request.Operation == "select_card")
+        {
+            if (request.ExpectedState != before.GetProperty("snapshot_id").GetString())
+                return FileMailbox.Error(request.Id, "stale_state", "Read the current selection before acting.");
+            if (SelectionAvailability.UnavailableReason(selection, cardId, observation) is { } rejection)
+                return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", rejection);
+        }
         if (selection == null || !selection.Supported || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
             return FileMailbox.Error(request.Id, "illegal_action", "No supported local card selection is available.");
         if (request.Operation == "set_selection_view")
@@ -90,7 +99,7 @@ internal sealed partial class GameAdapter
                 return FileMailbox.Error(request.Id, "illegal_action", "The selection changed while switching views.");
             return Success(request, state);
         }
-        if (request.ExpectedState != before.GetProperty("snapshot_id").GetString())
+        if (request.Operation != "select_card" && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current selection before acting.");
         if (selection.Status != "visible")
             return FileMailbox.Error(request.Id, "illegal_action", "The selection is covered or hidden.");
@@ -106,9 +115,17 @@ internal sealed partial class GameAdapter
         if (model != null)
         {
             CardMovementJournal.Choose(model);
-            try { await SelectionActions.Click(selection, model, ObservationFrame); }
-            catch (InvalidOperationException error) { return FileMailbox.Error(request.Id, "illegal_action", error.Message); }
+            try { await SelectionActions.Click(selection, model, ObservationFrame,
+                input => SelectionInputJournal.Record(selection, model, before, observation.CardId, input)); }
+            catch (InvalidOperationException)
+            {
+                return FileMailbox.Error(request.Id, "illegal_action",
+                    "The selection changed while locating the candidate, or the candidate could not be clicked. Read the current state before continuing.",
+                    publicMessage: true);
+            }
         }
+        else if (value == "cancel_preview")
+            SelectionInputJournal.Record(selection, null, before, observation.CardId, () => button!.ForceClick());
         else button!.ForceClick();
 
         var (after, reason) = await ActionObservation(() =>

@@ -15,6 +15,19 @@ def requests():
 
 
 class SessionPolicyTests(unittest.IsolatedAsyncioTestCase):
+    async def test_selection_preflight_retains_only_explicit_unsubmitted_permission(self):
+        for code, submitted, retained in [('illegal_action', False, True), ('illegal_action', True, False),
+                                           ('illegal_action', None, False), ('stale_state', False, False),
+                                           ('game_error', False, False)]:
+            with self.subTest(code=code, submitted=submitted):
+                error = {'code': code, 'public_message': 'No card selection is open.'}
+                if submitted is not None:
+                    error['action_submitted'] = submitted
+                tools = GameTools(ContractReply({}, error)); tools.snapshot_id = 'existing'
+                result = await tools.select_card({'card_id': 5})
+                self.assertEqual(tools.snapshot_id, 'existing' if retained else None)
+                self.assertEqual(result['error']['recovery'], 'choose_legal_action' if retained else 'get_observation')
+
     async def test_local_rejections_preserve_existing_permission_for_every_tool(self):
         for name, spec in TOOLS.items():
             with self.subTest(tool=name):

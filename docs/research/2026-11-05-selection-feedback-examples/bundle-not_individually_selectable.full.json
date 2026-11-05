@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Choose a whole card bundle with an enabled selection_option; individual cards cannot be selected here.",
+    "recovery": "choose_legal_action"
+  }
+}

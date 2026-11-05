@@ -380,5 +380,53 @@
         ]
       }
     ]
+  },
+  {
+    "name": "hand_replace",
+    "scenarios": {
+      "play": "armaments"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "hand_replace"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "grid_manual",
+    "scenarios": {
+      "selection": "grid_manual"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "grid_manual"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "upgrade_view",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "upgrade_view"
+        ]
+      }
+    ]
   }
 ]
