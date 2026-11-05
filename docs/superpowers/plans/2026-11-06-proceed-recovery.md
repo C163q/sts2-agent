@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 >
-> 当前状态：实施与验收完成，共1项，已完成1项；当前进行最终审阅与合入，无剩余实现或阻塞。
+> 当前状态：实施与验收完成，共1项，已完成1项；最终审阅通过并已合入main，无剩余必修项或阻塞。
 
 **Goal:** 让明确未点击的 proceed 拒绝保留许可并说明具体原因，统一执行与可用工具的判断。
 
@@ -47,4 +47,4 @@
 - [x] **Step 3: 实现。** 统一入口先校验 snapshot，再区分结算／覆盖／当前前进目标。只在全部前置判断通过后 UiChanged、ForceClick；保留每类原生等待。删除旧场景中的 proceed 操作分支；可用列表集中添加 proceed。注册未提交恢复；旧终章断言改为无 GAME_ACTIONS，并保留已有观察前置检查。Mod/MCP 补丁版本分别升至0.71.2/0.73.2。
 - [x] **Step 4: 验证。** 先运行相关 Python；成功后完整 `unittest discover -s tests -t . -p 'test_*.py'`、dotnet build（目标版本依赖，无还原）、C# checks；预期全通过且构建无警告。准备隔离运行时后跑更新的 proceed GUI 清单，预期所有正常分支和拒绝恢复通过；独立新进度实例分别回归建筑师专项及旧 victory_unlock 完整脚本。保存失败日志，不将脚本前提错误误报产品故障。
 - [x] **Step 5: 交付证据与文档。** 提取典型实际完整 JSON，记录来源与哈希；修正文档中未修复状态及旧终章限制，更新两项 TODO 的已覆盖工具；闭合清单为27/44。验证链接、JSON来源／哈希、构建运行时一致性、自有进程已退出及 git diff --check；私有 `.tmp/2026-11-06-proceed-recovery/verify_delivery.py` 返回成功作为 task-done 验证命令。
-- [ ] **Step 6: 提交和审阅。** 提交 `fix: unify proceed validation and preserve rejected action permission`；执行技能要求的一个独立完整审阅，按结果处理。归档并逐文件核对本计划执行工作区后删除原工作区；合入 main 并删除临时分支，复核交付证据，无正式安装或推送。
+- [x] **Step 6: 提交和审阅。** 提交 `fix: unify proceed validation and preserve rejected action permission`；执行技能要求的一个独立完整审阅，按结果处理。归档并逐文件核对本计划执行工作区后删除原工作区；合入 main 并删除临时分支，复核交付证据，无正式安装或推送。

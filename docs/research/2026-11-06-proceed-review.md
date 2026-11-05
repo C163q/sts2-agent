@@ -1,6 +1,6 @@
 # proceed 核验与设计建议
 
-> 当前状态：已按批准方案实现并验收，等待最终代码审阅与合入。实现和修复后返回见[实施记录](2026-11-06-proceed-recovery-implementation.md)。以下保留修复前110项Python、15类GUI及23份返回的核验基线与证据。
+> 当前状态：已按批准方案实现、验收并合入main。实现和修复后返回见[实施记录](2026-11-06-proceed-recovery-implementation.md)。以下保留修复前110项Python、15类GUI及23份返回的核验基线与证据。
 
 总流程见[工具清单](2026-11-02-mcp-tool-review.md)。源码、问题编号与详细证据见[开发核验](2026-11-06-proceed-development-notes.md)。
 

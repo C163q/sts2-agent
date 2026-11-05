@@ -1,6 +1,6 @@
 # proceed 开发核验依据
 
-> 当前状态：修复已实现并验收，等待最终审阅与合入。本文保留a8b85aa提交前的核验依据与失败证据；后续实现见[实施记录](2026-11-06-proceed-recovery-implementation.md)。用户可读结论见[审阅记录](2026-11-06-proceed-review.md)。
+> 当前状态：修复已实现、验收并合入main。本文保留a8b85aa提交前的核验依据与失败证据；后续实现见[实施记录](2026-11-06-proceed-recovery-implementation.md)。用户可读结论见[审阅记录](2026-11-06-proceed-review.md)。
 
 ## 基线与证据
 
