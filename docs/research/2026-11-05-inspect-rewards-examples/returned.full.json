@@ -1,0 +1,54 @@
+{
+  "scene": "rewards",
+  "rewards": {
+    "status": "visible",
+    "title": "Loot!",
+    "items": [
+      {
+        "id": 13,
+        "type": "gold",
+        "text": "12 Gold",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": []
+      },
+      {
+        "id": 14,
+        "type": "gold",
+        "text": "23 Gold (stolen back)",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": []
+      },
+      {
+        "id": 15,
+        "type": "special_card",
+        "text": "Take your stolen card back.",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": [
+          {
+            "title": "Bash",
+            "description": "Deal 8 damage.\nApply 2 Vulnerable."
+          }
+        ]
+      },
+      {
+        "id": 16,
+        "type": "card",
+        "text": "Add a card to your deck.",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": []
+      }
+    ],
+    "proceed": {
+      "text": "Skip",
+      "enabled": true,
+      "skips_remaining": true
+    }
+  },
+  "screen": {
+    "status": "visible"
+  }
+}

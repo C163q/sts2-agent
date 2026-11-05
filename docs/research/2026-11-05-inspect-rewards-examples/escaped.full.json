@@ -1,0 +1,33 @@
+{
+  "scene": "rewards",
+  "rewards": {
+    "status": "visible",
+    "title": "Mugged...",
+    "items": [
+      {
+        "id": 17,
+        "type": "gold",
+        "text": "12 Gold",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": []
+      },
+      {
+        "id": 18,
+        "type": "card",
+        "text": "Add a card to your deck.",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": []
+      }
+    ],
+    "proceed": {
+      "text": "Skip",
+      "enabled": true,
+      "skips_remaining": true
+    }
+  },
+  "screen": {
+    "status": "visible"
+  }
+}

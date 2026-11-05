@@ -1,0 +1,84 @@
+{
+  "scene": "rewards",
+  "rewards": {
+    "status": "visible",
+    "title": "Loot!",
+    "items": [
+      {
+        "id": 0,
+        "type": "gold",
+        "text": "17 Gold",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": []
+      },
+      {
+        "id": 1,
+        "type": "gold",
+        "text": "23 Gold (stolen back)",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": []
+      },
+      {
+        "id": 2,
+        "type": "potion",
+        "text": "Block Potion",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": [
+          {
+            "title": "Block Potion",
+            "description": "Gain 12 Block."
+          },
+          {
+            "title": "Block",
+            "description": "Until next turn, prevents damage."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "type": "relic",
+        "text": "Whetstone",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": [
+          {
+            "title": "Whetstone",
+            "description": "Upon pickup, Upgrade 2 random Attacks."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "type": "special_card",
+        "text": "Add Strike+ to your deck.",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": [
+          {
+            "title": "Strike+",
+            "description": "Deal 9 damage."
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "type": "card",
+        "text": "Add a card to your deck.",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": []
+      }
+    ],
+    "proceed": {
+      "text": "Skip",
+      "enabled": true,
+      "skips_remaining": true
+    }
+  },
+  "screen": {
+    "status": "visible"
+  }
+}

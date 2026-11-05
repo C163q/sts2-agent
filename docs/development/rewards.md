@@ -42,6 +42,8 @@
 
 标题保留搜刮与被抢劫等可见区别。只呈现实际掉落，不根据敌人类型补发被偷的牌或金币。怪物逃离可能改变金币比例和追回条目，但不会被工具当成一种固定奖励模板。
 
+inspect_rewards 只接受通用 default/full，返回 scene/screen 与 rewards；不返回 available_actions，按需使用 get_observation 获取。它是纯读取，明确拒绝会保留此前已有操作许可，首次失败不生成许可；当前拒绝说明尚未区分无奖励、覆盖与尚未就绪。具体诊断及损坏响应的一致性校验缺口见[奖励详情审阅](../research/2026-11-05-inspect-rewards-review.md)。
+
 ## 领取与后续选择
 
 `claim_reward({"reward_id": 5})` 点击一行，按模型选择的顺序执行。工具不连领、不自动选择卡牌，也不自动丢弃已有药水。领取遗物可能立即改变牌组或后续奖励，因此每次都应阅读返回结果再决定下一项。
@@ -72,16 +74,12 @@ Boss 或特殊事件战斗的前进可能进入下一幕、结束本次游戏或
 
 游戏侧由 `RewardInspection.cs` 采样 UI 和奖励身份，`GameAdapter.Rewards.cs` 校验并点击原生按钮；不直接增加金币、卡牌、药水或遗物。`RewardCompatibility.cs` 只适配目标版本互斥奖励中已核实的信号参数错误，保留原生领取与收尾流程。外部层由 `reward_details.py` 验证参数、字段和结果，不输出内部令牌或未声明字段。
 
-隔离图形测试先按[往返指南](roundtrip.md)准备运行目录，再启动：
+奖励详情的隔离图形核验先按[往返指南](roundtrip.md)准备运行目录，再执行：
 
 ```sh
-python3 scripts/run_roundtrip.py --windowed --reward-scenario basic
+.tmp/mcp-venv/bin/python scripts/gui_suite.py --suite tests/game/data/gui_suite_reward_inspection_review.json --output .tmp/reward-inspection-review
 ```
 
-在另一终端运行：
+输出目录须全新；套件拥有测试游戏与存档，会实际读取、领取、覆盖奖励并旅行离开房间，用于核对完整列表、稳定 ID、互斥／嵌套／追回、空列表和错误后续接。范围及证据见[奖励详情核验](../research/2026-11-05-inspect-rewards-development-notes.md)。
 
-```sh
-.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_rewards --scenario basic --report .tmp/rewards-check/basic.json
-```
-
-只允许新建的隔离实例；报告及截图目录须全新。该检查会实际领取奖励、跳过卡牌、打开地图和前进。其他场景参数与验证范围见[调研记录](../research/2026-10-31-rewards.md)。
+旧全流程入口 [verify_rewards.py](../../tests/game/verifiers/verify_rewards.py) 启用截图后仍固定工具总数为 43，与当前 44 项目录不符，不能作为当前可用验收命令；修复前不宣称其领取顺序等全部分支已通过。历史场景与范围见[奖励调研](../research/2026-10-31-rewards.md)。

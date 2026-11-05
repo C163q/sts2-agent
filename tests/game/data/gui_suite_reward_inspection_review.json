@@ -1,0 +1,114 @@
+[
+  {
+    "name": "no_rewards",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_reward_inspection_review.py",
+        "args": [
+          "--scenario",
+          "no_rewards"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "basic",
+    "scenarios": {
+      "navigation": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_reward_inspection_review.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "linked",
+    "scenarios": {
+      "reward": "linked"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_reward_inspection_review.py",
+        "args": [
+          "--scenario",
+          "linked"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "empty",
+    "scenarios": {
+      "reward": "empty"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_reward_inspection_review.py",
+        "args": [
+          "--scenario",
+          "empty"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nested",
+    "scenarios": {
+      "reward": "nested"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_reward_inspection_review.py",
+        "args": [
+          "--scenario",
+          "nested"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "returned",
+    "scenarios": {
+      "reward": "returned"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_reward_inspection_review.py",
+        "args": [
+          "--scenario",
+          "returned"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "escaped",
+    "scenarios": {
+      "reward": "escaped"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_reward_inspection_review.py",
+        "args": [
+          "--scenario",
+          "escaped"
+        ]
+      }
+    ]
+  }
+]

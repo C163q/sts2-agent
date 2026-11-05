@@ -1,0 +1,16 @@
+{
+  "scene": "rewards",
+  "rewards": {
+    "status": "visible",
+    "title": null,
+    "items": [],
+    "proceed": {
+      "text": "Proceed",
+      "enabled": true,
+      "skips_remaining": false
+    }
+  },
+  "screen": {
+    "status": "visible"
+  }
+}

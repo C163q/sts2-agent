@@ -1,0 +1,64 @@
+{
+  "scene": "rewards",
+  "rewards": {
+    "status": "visible",
+    "title": "Loot!",
+    "items": [
+      {
+        "id": 10,
+        "type": "relic",
+        "text": "Oddly Smooth Stone",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": [
+          {
+            "title": "Oddly Smooth Stone",
+            "description": "Start each combat with 1 Dexterity."
+          },
+          {
+            "title": "Dexterity",
+            "description": "Dexterity improves Block gained from cards."
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "type": "relic",
+        "text": "Gremlin Horn",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": [
+          {
+            "title": "Gremlin Horn",
+            "description": "Whenever an enemy dies, gain <Energy> and draw 1 card."
+          },
+          {
+            "title": "Energy",
+            "description": "Energy is used to play cards from your Hand."
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "type": "relic",
+        "text": "Frozen Egg",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": [
+          {
+            "title": "Frozen Egg",
+            "description": "Whenever you add a Power into your Deck, Upgrade it."
+          }
+        ]
+      }
+    ],
+    "proceed": {
+      "text": "Skip",
+      "enabled": true,
+      "skips_remaining": true
+    }
+  },
+  "screen": {
+    "status": "visible"
+  }
+}

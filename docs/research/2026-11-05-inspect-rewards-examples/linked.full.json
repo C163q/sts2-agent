@@ -1,0 +1,51 @@
+{
+  "scene": "rewards",
+  "rewards": {
+    "status": "visible",
+    "title": "Loot!",
+    "items": [
+      {
+        "id": 6,
+        "type": "gold",
+        "text": "17 Gold",
+        "enabled": true,
+        "linked_group": 7,
+        "hover_tips": [
+          {
+            "title": "Linked Rewards",
+            "description": "You can only select 1 reward from this set."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "type": "potion",
+        "text": "Block Potion",
+        "enabled": true,
+        "linked_group": 7,
+        "hover_tips": [
+          {
+            "title": "Block Potion",
+            "description": "Gain 12 Block."
+          },
+          {
+            "title": "Block",
+            "description": "Until next turn, prevents damage."
+          },
+          {
+            "title": "Linked Rewards",
+            "description": "You can only select 1 reward from this set."
+          }
+        ]
+      }
+    ],
+    "proceed": {
+      "text": "Skip",
+      "enabled": true,
+      "skips_remaining": true
+    }
+  },
+  "screen": {
+    "status": "visible"
+  }
+}

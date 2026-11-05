@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 44 项，已核销 22 项。travel_to_node 的两项拒绝修复、赐福鹿角原生入场验证、706 项 Python、124 项 C#、11 类旅行 GUI、测试入口门控与一次独立审查均完成并合入 main。剩余 22 项尚未核销，暂无阻塞。
+> 当前状态：工具核验进行中，共 44 项，已核销 22 项。inspect_rewards 已完成 46 项针对性检查、七种 GUI、9 份真实返回及损坏响应／旧目录探针，处于设计讨论；三项问题及 summary／reward_ids 建议待确认。剩余 22 项尚未核销，暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -68,7 +68,7 @@
 
 ### 奖励、宝箱与流程推进（5 项）
 
-- [ ] `inspect_rewards`：查看奖励列表。
+- [ ] `inspect_rewards`：查看奖励列表。阶段：设计讨论。[审阅与建议](2026-11-05-inspect-rewards-review.md)、[开发核验](2026-11-05-inspect-rewards-development-notes.md)和 [9 份典型完整返回](2026-11-05-inspect-rewards-examples/README.md)。46 项针对性检查、七种 GUI 通过；具体拒绝、矛盾上下文校验及旧验证器三项待确认，工具行为未改。
 - [ ] `claim_reward`：领取一项奖励。
 - [ ] `inspect_treasure`：查看宝箱房及已展示遗物。
 - [ ] `loot_treasure`：打开宝箱或领取遗物。

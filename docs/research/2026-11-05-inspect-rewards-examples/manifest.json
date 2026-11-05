@@ -1,0 +1,101 @@
+[
+  {
+    "file": "basic.full.json",
+    "source": ".tmp/2026-11-05-inspect-rewards/gui/basic/verify/evidence.json",
+    "index": 0,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "8042391b98316a312164f878de68c0c35433441e18018437c7449fec13d5c1ee"
+  },
+  {
+    "file": "basic.default.json",
+    "source": ".tmp/2026-11-05-inspect-rewards/gui/basic/verify/evidence.json",
+    "index": 3,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "default"
+    },
+    "image_count": 0,
+    "sha256": "9baf773a54fa9e79597aab015b6a0b20689d88a48634fa0ee82dcb02b5cbf181"
+  },
+  {
+    "file": "linked.full.json",
+    "source": ".tmp/2026-11-05-inspect-rewards/gui/linked/verify/evidence.json",
+    "index": 0,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "18f0d4833e5f49f9d5be5352fe5e6c31d5c23f3f7f778dab4f148ca1ffb436f6"
+  },
+  {
+    "file": "empty.full.json",
+    "source": ".tmp/2026-11-05-inspect-rewards/gui/empty/verify/evidence.json",
+    "index": 0,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "3990f32b4f6c43285d584f3ed972ba4b345cb4fb23d0b82c3cb4d267e1ada964"
+  },
+  {
+    "file": "nested.full.json",
+    "source": ".tmp/2026-11-05-inspect-rewards/gui/nested/verify/evidence.json",
+    "index": 6,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "f752d12968217beea020f1ee1355519763b39369f614716857438543ee070db0"
+  },
+  {
+    "file": "returned.full.json",
+    "source": ".tmp/2026-11-05-inspect-rewards/gui/returned/verify/evidence.json",
+    "index": 0,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "31596342f59d86771207bd198037b5dbcda1e310e47b35d2edf910569e8b9037"
+  },
+  {
+    "file": "escaped.full.json",
+    "source": ".tmp/2026-11-05-inspect-rewards/gui/escaped/verify/evidence.json",
+    "index": 0,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "3f6f04a147e7b25943cd6cd52a73edad453e187e45b9b8c07e72ca9f497fb39c"
+  },
+  {
+    "file": "no-permission.full.json",
+    "source": ".tmp/2026-11-05-inspect-rewards/gui/no_rewards/verify/evidence.json",
+    "index": 0,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "covered.full.json",
+    "source": ".tmp/2026-11-05-inspect-rewards/gui/basic/verify/evidence.json",
+    "index": 9,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  }
+]
