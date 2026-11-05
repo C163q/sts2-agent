@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "No rest site is available on the current screen.",
+    "recovery": "get_observation"
+  }
+}

@@ -1,6 +1,6 @@
 # inspect_rest_site 开发核验依据
 
-> 当前状态：核验完成，进入设计讨论；65项Python、七类GUI、51次真实MCP、16份完整返回。工具行为未改，待确认修复与预设／筛选方案。用户可读结论见[审阅记录](2026-11-06-inspect-rest-site-review.md)。
+> 当前状态：修复已实施并验收；本文保留原基线的65项Python、七类GUI、51次MCP及16份返回。当前实现见[实施记录](2026-11-06-rest-site-inspection-presets-implementation.md)。用户可读结论见[审阅记录](2026-11-06-inspect-rest-site-review.md)。
 
 ## 基线与证据
 

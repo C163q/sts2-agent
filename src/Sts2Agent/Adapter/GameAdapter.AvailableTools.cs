@@ -229,8 +229,7 @@ internal sealed partial class GameAdapter
             || (CanHandlePotions() || CanDiscardPotions()) && PotionInspection.ExposedHolders() is { } targetHolders
                 && targetHolders.Any(h => PotionInspection.Displayed(h) && h.HasPotion && PotionActions.Type(h.Potion!.Model) != null)) actions.Add("inspect_targets");
         if (RewardInspection.InspectionUnavailableReason(RewardInspection.Current) == null) actions.Add("inspect_rewards");
-        if (RestSiteInspection.Current is { } restPage && RestSiteInspection.Ready(restPage)
-            && RunManager.Instance.IsSingleplayerOrFakeMultiplayer) actions.Add("inspect_rest_site");
+        if (RestSiteInspection.InspectionUnavailableReason(RestSiteInspection.Current) == null) actions.Add("inspect_rest_site");
         if (TreasureInspection.InspectionUnavailableReason(TreasureInspection.Current) == null) actions.Add("inspect_treasure");
         if (ShopInspection.Current is { } shopPage && ShopInspection.Exposed(shopPage) && RunContext.Singleplayer
             && shopPage.Inventory.IsOpen && !ShopInspection.Animating(shopPage)) actions.Add("inspect_shop");

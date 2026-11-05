@@ -69,6 +69,8 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                     want['error']['message'] = result['error']['message']
                 if case['tool'] == 'inspect_relics' and case['arguments'] == {'relic_indices': [2, 80], 'preset': 'full'}:
                     want['hover_tips'][0]['relic_indices'] = [2]
+                if case['tool'] == 'get_observation' and want.get('rest_site') is not None:
+                    want['rest_site'].pop('description', None)
                 if case.get('error') and case['tool'] in {
                     'inspect_run_result', 'inspect_event', 'inspect_ancient', 'inspect_shop',
                     'inspect_treasure', 'inspect_rest_site', 'inspect_rewards', 'inspect_potions',
@@ -98,7 +100,7 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
             successful = [case for case in cases if case['tool'] == tool.name and 'error' not in expected[case['expected_ref']]]
             presets = {case['arguments'].get('preset') for case in successful}
             # Dedicated preset tests cover additions to the frozen refactor baseline.
-            added = {'summary'} if tool.name in {'inspect_potions', 'inspect_map', 'inspect_rewards', 'inspect_treasure'} else set()
+            added = {'summary'} if tool.name in {'inspect_potions', 'inspect_map', 'inspect_rewards', 'inspect_treasure', 'inspect_rest_site'} else set()
             self.assertGreaterEqual(presets, {None, *(set(tool.inputSchema['properties']['preset']['enum']) - added)})
             self.assertTrue(any(case['tool'] == tool.name and case.get('error') for case in cases))
             self.assertTrue(any(case['tool'] == tool.name and 'unknown_field' in case['arguments'] for case in cases))

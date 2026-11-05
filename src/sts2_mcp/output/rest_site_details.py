@@ -1,4 +1,5 @@
-from sts2_mcp.output.value_shapes import project
+from sts2_mcp.output.value_shapes import project, TEXT
+from sts2_mcp.output.scene_context import scene_context
 from sts2_mcp.output.contracts.rooms import REST_SITE, REST_OPTION
 from sts2_mcp.output.selection_details import OPTION_SCHEMA, selection_arguments
 
@@ -14,7 +15,7 @@ def rest_option_arguments(arguments):
 
 
 def rest_site_details(value, *, full=False):
-    option_shape = {**REST_OPTION, 'description': str} if full else REST_OPTION
+    option_shape = {**REST_OPTION, 'description': TEXT} if full else REST_OPTION
     result = project(value, {**REST_SITE, 'options': ([option_shape],)})
     if set(result) != set(REST_SITE) or result['status'] not in {'visible', 'covered'}:
         raise ValueError('Invalid rest site structure.')
@@ -35,7 +36,21 @@ def rest_site_details(value, *, full=False):
     return result
 
 
+def rest_site_summary(value):
+    result = rest_site_details(value)
+    result.pop('description')
+    return result
+
+
 def inspect_rest_site_details(state):
-    if state.get('scene') != 'rest_site':
-        raise ValueError('Invalid rest site inspection scene.')
-    return {'scene': 'rest_site', 'rest_site': rest_site_details(state['rest_site'], full=True)}
+    context = scene_context(state)
+    if context['scene'] != 'rest_site' or context['screen'] != {'status': 'visible'}:
+        raise ValueError('Invalid rest site inspection context.')
+    rest = rest_site_details(state['rest_site'], full=True)
+    sources = state.get('unavailable_hover_sources', [])
+    expected = ['rest_site.options.' + option['id'] for option in rest['options'] if option['description'] is None]
+    if not isinstance(sources, list) or sources != expected:
+        raise ValueError('Invalid or missing unavailable rest option hover evidence.')
+    result = {**context, 'rest_site': rest}
+    if sources: result['unavailable_hover_sources'] = list(sources)
+    return result

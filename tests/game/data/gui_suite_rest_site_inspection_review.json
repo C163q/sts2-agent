@@ -110,5 +110,21 @@
         ]
       }
     ]
+  },
+  {
+    "name": "display",
+    "scenarios": {
+      "rest": "basic"
+    },
+    "steps": [
+      {
+        "name": "check",
+        "verifier": "verify_rest_site_inspection_review.py",
+        "args": [
+          "--scenario",
+          "display"
+        ]
+      }
+    ]
   }
 ]

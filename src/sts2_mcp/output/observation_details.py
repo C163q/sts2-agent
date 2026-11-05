@@ -54,8 +54,8 @@ def observation_details(state):
     elif result['scene'] == 'rewards':
         raise ValueError('Missing rewards state.')
     if result.get('rest_site') is not None:
-        from sts2_mcp.output.rest_site_details import rest_site_details
-        result['rest_site'] = rest_site_details(result['rest_site'])
+        from sts2_mcp.output.rest_site_details import rest_site_summary
+        result['rest_site'] = rest_site_summary(result['rest_site'])
     elif result['scene'] == 'rest_site':
         raise ValueError('Missing rest site state.')
     if result.get('treasure') is not None:

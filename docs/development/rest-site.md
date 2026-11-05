@@ -4,11 +4,11 @@
 
 工具点击当前原生休息处按钮，选择与实际效果由游戏执行；不自动选路。
 
-下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
+下文示例以公开 MCP full 为准；MCP 工具接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
 
 ## 观察与详情
 
-`get_observation()` 返回 `scene: "rest_site"` 和 `rest_site`。基础观察包含当前可见标题、选项名称与灰置状态；只有当前画面已展开的说明才放在 `description`，否则为 `null`。例如：
+`get_observation()` 返回 `scene: "rest_site"` 和 `rest_site`。基础观察的full/default/summary共用静态火堆格式，包含当前显示的标题、选项名称、启用状态和前进按钮，省略顶层及各选项description。例如：
 
 ```json
 {
@@ -16,7 +16,6 @@
   "rest_site": {
     "status": "visible",
     "prompt": "What shall I do?",
-    "description": null,
     "options": [
       {"id": "HEAL", "text": "Rest", "enabled": true},
       {"id": "SMITH", "text": "Smith", "enabled": true}
@@ -28,11 +27,21 @@
 
 这是字段节选，完整返回还包含顶栏等公共观察。`id` 使用该次实际选项的原生标识，传给动作的字段名为 `option_id`；不要把选择卡牌页面的按钮 ID 或奖励 ID 传入。
 
-`inspect_rest_site()` 返回当前休息处状态，并为每个可见选项增加 `description`，例如恢复生命的实时数值、附加奖励说明、锻炼剩余次数或不能锻造的原因。灰置选项依然可以查看；说明来自同一按钮实际悬停使用的动态文本，不重新生成选项或预测挖掘所得遗物。成功详情可用于后续动作，令牌规则见[MCP 调用语义](mcp.md#调用和错误语义)。
+`inspect_rest_site({preset?, option_ids?})` 返回同次快照的scene、screen和rest_site。default/full保留画面当前已展开的顶层description，并为可悬停的选项提供完整description，例如恢复生命的实时数值、追加奖励、锻炼剩余次数或不能锻造的原因。说明来自同一原生按钮的动态文本，使用已有选项，不重新生成或预读挖掘所得遗物。成功详情可用于后续动作，令牌规则见[MCP调用语义](mcp.md#调用和错误语义)。
 
-当前详情支持default/full，默认default；summary和按选项ID筛选尚未实现。详情与available_actions中的inspect_rest_site都要求操作就绪，包括队列、按钮执行、选项／说明动画和所有按钮处于视口内。已显示但仍在等待动画的页面可能不能调用详情；读取与操作就绪的分离、离屏筛选、具体拒绝原因及输出上下文校验的开放问题见[详情审阅](../research/2026-11-06-inspect-rest-site-review.md)。
+| preset | 内容 |
+| --- | --- |
+| full | 完整说明和普通null，包括暂不可悬停选项的description:null |
+| default | 默认；完整内容按共用规则省略普通null |
+| summary | status、prompt、options的id/text/enabled及proceed，省略全部description与悬停note，并应用default空值规则 |
 
-地图、选牌、奖励、详情页面或过渡遮挡休息处时，`rest_site.status` 为 `covered`，其余字段为 `null`；隐藏内容不能查看或点击。`proceed` 仅在实际显示时提供 `{text, enabled}`。灰置、隐藏和已经消失的选项不能执行。已识别但尚未适配的选项保留名称与说明，`enabled` 为 `false`。
+option_ids按当前显示列表的原生字符串ID精确筛选，例如`["HEAL","SMITH"]`。省略或null取全部，[]取空；去重并保持原生顺序，未找到的ID合并到errors中的option_ids_not_found。ID须为不全为空白、最多128字符的字符串。prompt和proceed仍描述当前页面，options:[]保留；完整响应先校验再摘要／筛选，空筛选也会检查坏响应。
+
+普通灰置选项仍可悬停，保留说明和enabled:false。显示但无法悬停的选项保留静态字段，full提供description:null，default省略该null；notes.hover_tips_unavailable.sources通过`rest_site.options.<原生ID>`定位。筛选同步裁剪关联note，summary省略悬停note。
+
+页面可读性与操作就绪分开：说明淡出、队列或按钮暂不可执行时，详情仍可读取实际显示的内容，enabled按动作条件计算。选项不按窗口视口裁剪，真正隐藏、透明或被父控件裁剪的内容仍排除。原生前进按钮用移出屏幕实现隐藏，仍按实际显示判断；单个动作继续核对目标是否可交互。详情与available_actions共用InspectionUnavailableReason，公开无火堆、地图／牌组／选牌／奖励覆盖、预览及过渡的具体原因。
+
+地图、选牌、奖励、详情页面或过渡遮挡时，基础观察的rest_site.status为covered，其余静态字段为null；详情拒绝。proceed仅在实际显示时提供text、enabled。已识别但未适配的活动保留名称及可悬停说明，enabled为false。MCP会拒绝上下文与内容矛盾、缺少说明来源等坏响应并清除许可；纯读取的明确拒绝保留此前已有许可，首次失败不会生成许可。
 
 ## 选择与前进
 

@@ -32,6 +32,16 @@ internal sealed partial class GameAdapter
 {
     private async Task<string?> TestRequestBeforeCapture(Request request)
     {
+        if (request.Operation == "set_test_rest_site_display" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+            && testSettings.Get("STS2_AGENT_TEST_REST_SCENARIO") != null)
+        {
+            if (request.Arguments is not { } options || options.EnumerateObject().Count() != 1
+                || !options.TryGetProperty("mode", out var mode) || mode.ValueKind != JsonValueKind.String
+                || mode.GetString() is not ("normal" or "no_hover" or "disabled" or "offscreen" or "hidden" or "transparent" or "clipped" or "fade"))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected a rest site display mode.");
+            return Success(request, JsonSerializer.Serialize(RestSiteDisplayFixture.Set(mode.GetString()!)));
+        }
         if (request.Operation == "set_test_treasure_display" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
             && testSettings.Get("STS2_AGENT_TEST_TREASURE_SCENARIO") != null)

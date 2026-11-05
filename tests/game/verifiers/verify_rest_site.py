@@ -72,7 +72,7 @@ async def verify(args):
             if args.scenario == 'basic':
                 await call('inspect_map')
                 covered = await call('get_observation')
-                assert covered['rest_site'] == {'status': 'covered', 'prompt': None, 'description': None,
+                assert covered['rest_site'] == {'status': 'covered', 'prompt': None,
                                                 'options': None, 'proceed': None}, covered
                 await call('inspect_rest_site', error='illegal_action')
                 await call('close_map')

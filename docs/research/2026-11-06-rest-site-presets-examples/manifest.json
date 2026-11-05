@@ -1,0 +1,342 @@
+[
+  {
+    "file": "inspect.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "basic_initial",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/basic/audit/evidence.json",
+    "index": 0,
+    "sha256": "347e7cec51d5bb3c5e22d1bd35858a426873afe708e741f42c04f9bb0a27c3f2"
+  },
+  {
+    "file": "inspect.default.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "default"
+    },
+    "label": "basic_default",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/basic/audit/evidence.json",
+    "index": 8,
+    "sha256": "a25f28cc6ac5e2100cdf368537933a06070491e2012bc7c7af6dc1555f00d689"
+  },
+  {
+    "file": "inspect.summary.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "summary"
+    },
+    "label": "basic_summary",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/basic/audit/evidence.json",
+    "index": 1,
+    "sha256": "326e84b5ab0b894d9c20437be587135119652dac9f7bb0d5bf51d0119851da5a"
+  },
+  {
+    "file": "observation.full.json",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "basic_observation_full",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/basic/audit/evidence.json",
+    "index": 2,
+    "sha256": "56a39381df14b2982ae26d6c83778ddd174ca31efc1ef198faa778e30f558cc7"
+  },
+  {
+    "file": "observation.default.json",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "default"
+    },
+    "label": "basic_observation_default",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/basic/audit/evidence.json",
+    "index": 3,
+    "sha256": "a7efd4217fdbf96044d36867343477911763314529cc78c2da91ca4207cf36ce"
+  },
+  {
+    "file": "observation.summary.json",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "summary"
+    },
+    "label": "basic_observation_summary",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/basic/audit/evidence.json",
+    "index": 4,
+    "sha256": "4bcbf177d311fe1ac3021d4e292f7c40ea9a73a67b90ab50885c0b693d111f10"
+  },
+  {
+    "file": "filtered.summary.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "summary",
+      "option_ids": [
+        "SMITH",
+        "HEAL",
+        "SMITH",
+        "UNKNOWN"
+      ]
+    },
+    "label": "basic_filtered",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/basic/audit/evidence.json",
+    "index": 5,
+    "sha256": "05924d1c3eb9a8a8902ff738d570ed717692af3b27331f5785b35d0ed80bce98"
+  },
+  {
+    "file": "empty-filter.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full",
+      "option_ids": []
+    },
+    "label": "basic_empty_filter",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/basic/audit/evidence.json",
+    "index": 6,
+    "sha256": "f107d17d689dfcd53caea04075f7a9f07f97b7b97f870b05a93e8532ab62fd5d"
+  },
+  {
+    "file": "disabled.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "disabled_initial",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/disabled/audit/evidence.json",
+    "index": 0,
+    "sha256": "650bd9e0253f51531020a48ab9c10626f64cc5d8ff4925d0d3feef5e31cc38f0"
+  },
+  {
+    "file": "tent.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "tent_initial",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/tent/audit/evidence.json",
+    "index": 0,
+    "sha256": "ee018ed4c7b00b4367ed9624ed1adacbff22c8a3a0b8547667d73cec042ee8fb"
+  },
+  {
+    "file": "tent-after-lift.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "tent_after_lift",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/tent/audit/evidence.json",
+    "index": 10,
+    "sha256": "fb02972fb0532381eedef7b894736615a0ae574f03f20b736f5ae6b291fd4892"
+  },
+  {
+    "file": "heal-with-reward.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "heal_rewards_initial",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/heal_rewards/audit/evidence.json",
+    "index": 0,
+    "sha256": "fe5333e5b8217ab1e6537716adb9f7ddb2c08dc8b76637a584d8161b3120495f"
+  },
+  {
+    "file": "dig.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "dig_initial",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/dig/audit/evidence.json",
+    "index": 0,
+    "sha256": "8d58338a100a2a5e8572c30ae308ac126c03845e95fbc14dd1f2ba0afe407453"
+  },
+  {
+    "file": "activity-complete.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "activity_complete",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/basic/audit/evidence.json",
+    "index": 17,
+    "sha256": "ec0b799a501ba19a5c09b5a37e004128973d14253de5dfb7b518e056a3309a50"
+  },
+  {
+    "file": "no-hover.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "no_hover_full",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/display/check/evidence.json",
+    "index": 2,
+    "sha256": "07a86a01dc68e5edf376028ceedb8f523fdb1705ba5e5247368bac59423c3075"
+  },
+  {
+    "file": "no-hover.summary.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "summary"
+    },
+    "label": "no_hover_summary",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/display/check/evidence.json",
+    "index": 4,
+    "sha256": "9d058814d4aae4033b7faced82ffaa901122fba919c577859c0da564d9f8a730"
+  },
+  {
+    "file": "no-hover-filtered.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full",
+      "option_ids": [
+        "SMITH"
+      ]
+    },
+    "label": "no_hover_filtered",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/display/check/evidence.json",
+    "index": 3,
+    "sha256": "13d6444378f95c287a72871ff2526335c9b710bed50e0141abc282bac389d015"
+  },
+  {
+    "file": "offscreen.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "offscreen_full",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/display/check/evidence.json",
+    "index": 15,
+    "sha256": "c316114f3e96af17ef3d1cef936c9e9eba93abce0ee93410aad7823cc2efefa4"
+  },
+  {
+    "file": "offscreen-observation.full.json",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "offscreen_observation",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/display/check/evidence.json",
+    "index": 17,
+    "sha256": "6ca77a42df68de20aa03e013a458f789d83a3e06e237719363b38e775a5e59e0"
+  },
+  {
+    "file": "hidden.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "hidden_full",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/display/check/evidence.json",
+    "index": 21,
+    "sha256": "13d6444378f95c287a72871ff2526335c9b710bed50e0141abc282bac389d015"
+  },
+  {
+    "file": "transparent.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "transparent_full",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/display/check/evidence.json",
+    "index": 27,
+    "sha256": "6513fc8124234ec99eb704510ae67e275d23edc059259ffd9ba493fddfda139a"
+  },
+  {
+    "file": "clipped.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "clipped_full",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/display/check/evidence.json",
+    "index": 33,
+    "sha256": "13d6444378f95c287a72871ff2526335c9b710bed50e0141abc282bac389d015"
+  },
+  {
+    "file": "fade.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "fade_full",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/display/check/evidence.json",
+    "index": 39,
+    "sha256": "a8aae9123c5393cd8129e26e05b5b5b2230b3c151a2df431a798a27da80a14d2"
+  },
+  {
+    "file": "fade-observation.full.json",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "fade_observation",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/display/check/evidence.json",
+    "index": 41,
+    "sha256": "b4b128a7451a88255baa7273a02d3a5ebce5617222dd6f98b62c9222097c78cc"
+  },
+  {
+    "file": "map-covered.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "map_covered",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/basic/audit/evidence.json",
+    "index": 11,
+    "sha256": "0318782d497599bc0411981c6461121422da38fe5f1dbf8fdffc96032b000e6f"
+  },
+  {
+    "file": "deck-covered.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "deck_covered",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/basic/audit/evidence.json",
+    "index": 14,
+    "sha256": "4d0c03b7cf789cdb565921c47005f7c6dab0647431cb221f59469bf521db1f9c"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "selection_covered",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/selection/audit/evidence.json",
+    "index": 11,
+    "sha256": "86270e8b6e022b12537d75ef2f280bc2eb5728b6dc5e13ada9d4400b205f72bf"
+  },
+  {
+    "file": "reward-covered.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "reward_covered",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/heal_rewards/audit/evidence.json",
+    "index": 10,
+    "sha256": "7590206fb7507686d3eb2987900910c2730a9a282303f73e28b2850476eb753e"
+  },
+  {
+    "file": "no-rest-first-read.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "no_rest_first_read",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/no_rest/audit/evidence.json",
+    "index": 0,
+    "sha256": "0d5152b60e186c3959eecd8d0a23ff8a5725b640e01f8022c44c9695719e0f27"
+  },
+  {
+    "file": "no-rest-existing-permission.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "no_rest_existing_permission",
+    "source": ".tmp/2026-11-06-rest-site-inspection-presets/gui-final/no_rest/audit/evidence.json",
+    "index": 3,
+    "sha256": "a7c96ce73a6188ca4edda756168002382ac87cb4166385aadfb85862271f5f1f"
+  }
+]

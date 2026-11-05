@@ -1,0 +1,16 @@
+{
+  "scene": "rest_site",
+  "screen": {
+    "status": "visible"
+  },
+  "rest_site": {
+    "status": "visible",
+    "prompt": null,
+    "description": null,
+    "options": [],
+    "proceed": {
+      "text": "Proceed",
+      "enabled": true
+    }
+  }
+}

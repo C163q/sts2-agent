@@ -1,6 +1,6 @@
 # inspect_rest_site 核验与参数建议
 
-> 当前状态：现状核验完成，进入设计讨论。65项Python、七类GUI及16份完整返回已整理；工具行为尚未修改，本项未核销。待讨论具体错误原因、输出校验、读取规则和summary／筛选方案，无阻塞。
+> 当前状态：已按定稿实现并验收，正在最终独立审阅与合入。以下保留审阅基线及实际样本；当前行为和验证见[实施记录](2026-11-06-rest-site-inspection-presets-implementation.md)。
 
 流程见[工具清单](2026-11-02-mcp-tool-review.md)。源码入口、问题编号和详细证据见[开发核验](2026-11-06-inspect-rest-site-development-notes.md)。
 
@@ -46,15 +46,15 @@ full保留普通null；default只按共用规则省略null，不省略false或�
 | 无火堆 | 首次失败要求先成功读取，有旧许可时可继续；[首次](2026-11-06-inspect-rest-site-examples/no-rest-first-read.full.json)、[已有许可](2026-11-06-inspect-rest-site-examples/no-rest-existing-permission.full.json) | 战斗场景GUI |
 | CLONE／HATCH／多人MEND及第三方选项 | 返回仍经过同一选项读取；动作支持范围另行判断 | 源码，未新增实际样本 |
 
-## 候选设计
+## 输出定稿
 
-建议先处理上述正确性与读取职责，再加以下参数；均未实施。
+以下为已确认并实施的要求。
 
 ### summary
 
-建议保留上下文、status、prompt、options的id/text/enabled以及proceed，省略顶层description和各选项description。相当于看有哪些按钮、哪些可用；需要说明时使用default/full。
+summary保留上下文、status、prompt、options的id/text/enabled以及proceed，省略顶层description和各选项description。相当于看有哪些按钮、哪些可用；需要说明时使用default/full。
 
-下例是建议格式，不能作为当前可调用结果：
+下例为summary的字段示例，当前实际完整返回见实施记录：
 
 ```json
 {
@@ -71,12 +71,14 @@ full保留普通null；default只按共用规则省略null，不省略false或�
 }
 ```
 
-这与get_observation的火堆主体接近。基础观察按既有规则保留画面已展开的说明；本工具summary建议统一省略说明，full/default继续保留。该差异是待确认设计，尚未修改基础观察。
+get_observation的full/default/summary统一使用相同静态字段，并省略火堆顶层description；各选项原本就不带正文。其他null仍遵循各自预设规则。inspect_rest_site的full/default继续保留当前展开说明和每项悬停说明。
 
 ### option_ids
 
-建议可选`option_ids:["HEAL","SMITH"]`，名称与动作的option_id对应。省略或null取全部，[]取空；重复ID去重、结果保持原生顺序，未找到的ID合并报错。筛选只应用于options，prompt和proceed仍描述当前页面。
+可选`option_ids:["HEAL","SMITH"]`，名称与动作的option_id对应。省略或null取全部，[]取空；重复ID去重、结果保持原生顺序。每个ID须为不全为空白、最多128字符的字符串，按原值精确匹配；未找到的ID合并为errors中的option_ids_not_found。筛选只应用于options，prompt和proceed仍描述当前页面；关联悬停note同步筛选，summary省略悬停note。
 
-火堆选项通常不多，筛选主要方便单独查看恢复量、某个灰置原因或遗物活动说明；可以独立于summary使用。另一种选择是只加summary、保留全部选项，参数更少，但不能单独取某一项的完整说明。
+所有响应先完整校验再摘要／筛选，过滤成空也不能掩盖坏响应。full的不可悬停选项保留description:null和来源note，default省略null；正常灰置但可聚焦的选项保留正文。来源使用rest_site.options.<原生ID>，不以筛选后位置引用。
 
-读取入口建议集中页面可读性、具体原因和悬停能力判断，工具执行及available_actions共用；choose_rest_option与proceed继续使用动作就绪判断。无需重做整个火堆流程。
+读取与可用列表共用页面可读性和固定原因判断。移除读取和全局就绪中的视口截断，保留真实隐藏、透明与裁剪的排除；单个动作仍核对目标是否可交互。公开只读失败沿用已有许可恢复，不为choose_rest_option新增动作错误恢复。
+
+读取入口集中页面可读性、具体原因和悬停能力判断，工具执行及available_actions共用；choose_rest_option与proceed继续使用动作就绪判断。无需重做整个火堆流程。

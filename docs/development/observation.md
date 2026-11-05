@@ -64,7 +64,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 当前选择页的 `selection` 候选、包内卡牌和已展开的比较均复用手牌摘要，省略正文、稀有度、卡池、空 `unplayable_markers` 和 `outline:"none"`；其他描边、非空标记及可见附魔保留。空 bundles 与空 `upgrade_previews/enchant_previews/transform_previews` 省略，cards／selected_ids／options 的空数组保留。提示、数量限制、全部已选 ID、按钮启用状态、升级模式、附魔操作说明及随机结果标记保留；比较中的未知身份、随机 after:null 不补齐。
 
-奖励、火堆和宝箱的房间主体保持与 default 一致，不省略标题、当前已显示说明、选项、空列表或按钮状态。宝箱可见时 default／summary 保留 `treasure.relic:null`；被覆盖时仍省略，完整规则见[公共空值规则](mcp.md#输出预设)。弹出的选牌使用上述共用摘要，顶栏独立精简。
+奖励和宝箱的房间主体保持与default一致，不省略标题、选项、空列表或按钮状态。火堆在full/default/summary中共用[静态格式](rest-site.md#观察与详情)，省略顶层与选项description；完整说明由inspect_rest_site.default/full提供，其他空值按各自预设处理。宝箱可见时 default／summary 保留 `treasure.relic:null`；被覆盖时仍省略，完整规则见[公共空值规则](mcp.md#输出预设)。弹出的选牌使用上述共用摘要，顶栏独立精简。
 
 商店的商品卡牌复用共用卡牌摘要：保留已有的名称、类型和费用，省略 rarity／visual_card_pool；商品 ID 保持在 items[].id，card 内不额外生成 ID。价格、affordable、enabled、on_sale、position、已用删牌项等商品信息仍沿用 default。商店卡牌沿用其网格上下文的可见外观字段；未显示的费用颜色、描边或不可打出标记不补造；卡牌正文继续通过 inspect_shop 查看。先古之民主体保持 default。
 

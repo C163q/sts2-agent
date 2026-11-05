@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销27项。inspect_rest_site现状核验完成，65项Python、七类GUI和16份完整返回已整理，进入具体诊断、上下文校验及summary／筛选的设计讨论。剩余17项尚未核销，无阻塞。
+> 当前状态：工具核验进行中，共44项，已核销28项。inspect_rest_site修复、summary／option_ids及基础观察静态格式已通过最终验收，正在独立审阅与合入。剩余16项尚未核销，无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -8,7 +8,7 @@
 
 - 核对基线：提交 `ef9f34e`，MCP `0.48.0`；工具名称与数量依据 [mcp_catalog.py](../../src/sts2_mcp/mcp_catalog.py)。后续以每项核验时的实现为准，工具增删时同步本清单及总数。
 - 逐项检查工具的适用场景、返回内容、参数及预设，目标是符合玩家实际可从 UI 获得的信息，并让 LLM 聚焦所关心的内容。遵循[可见信息边界](../observation.md)。
-- 43 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、药水、战斗对象、遗物、奖励及宝箱详情的 `summary`、地图的 `summary/selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆也已迁移为 full/default/summary，旧 detail_level 已移除。既有能力也须重新核验，不因此直接核销。
+- 43 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、药水、战斗对象、遗物、奖励、宝箱及火堆详情的 `summary`、地图的 `summary/selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆也已迁移为 full/default/summary，旧 detail_level 已移除。既有能力也须重新核验，不因此直接核销。
 - `capture_screenshot` 按配置启用，不支持 preset；核验其现有参数与返回。统一预设的现行契约见 [MCP 输出预设](../development/mcp.md#输出预设)。
 
 ## 逐项工作流程
@@ -76,7 +76,7 @@
 
 ### 火堆（2 项）
 
-- [ ] `inspect_rest_site`：查看火堆选项。阶段：设计讨论；[现状与建议](2026-11-06-inspect-rest-site-review.md)、[开发依据](2026-11-06-inspect-rest-site-development-notes.md)及[16份当前完整返回](2026-11-06-inspect-rest-site-examples/README.md)。具体原因与输出上下文有已确认缺口，读取就绪／离屏／悬停边界建议小范围统一；summary和option_ids为候选，工具行为未改。
+- [x] `inspect_rest_site`：具体诊断、上下文校验、读取／交互分离、summary和option_ids完成；get_observation同步使用静态格式、省略description。738项Python、124项C#、八类专项加旧basic共九类最终GUI及79项双模式门控通过；[实施记录](2026-11-06-rest-site-inspection-presets-implementation.md)、[30份新返回](2026-11-06-rest-site-presets-examples/README.md)，原[16份审阅返回](2026-11-06-inspect-rest-site-examples/README.md)保留基线。
 - [ ] `choose_rest_option`：选择火堆操作。
 
 ### 商店（4 项）

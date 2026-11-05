@@ -1,0 +1,34 @@
+{
+  "scene": "rest_site",
+  "screen": {
+    "status": "visible"
+  },
+  "rest_site": {
+    "status": "visible",
+    "prompt": "What shall I do?",
+    "description": null,
+    "options": [
+      {
+        "id": "HEAL",
+        "text": "Rest",
+        "enabled": false,
+        "description": null
+      },
+      {
+        "id": "SMITH",
+        "text": "Smith",
+        "enabled": true,
+        "description": "Upgrade a card in your Deck."
+      }
+    ],
+    "proceed": null
+  },
+  "notes": {
+    "hover_tips_unavailable": {
+      "message": "Hover help is currently unavailable for these displayed icons.",
+      "sources": [
+        "rest_site.options.HEAL"
+      ]
+    }
+  }
+}

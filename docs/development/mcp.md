@@ -50,7 +50,7 @@ flowchart LR
 | `proceed()` | [当前原生跳过／前进](#前进与跳过)，保留奖励、房间、换幕与终章各自后续流程 |
 | `loot_treasure(open_only?)` | [宝箱房开箱并领取](treasure.md)，可先开后决定；不自动前进 |
 | `inspect_treasure(preset?)` | 当前可见宝箱遗物及悬停说明 |
-| `inspect_rest_site()` | [当前休息处选项及动态悬停说明](rest-site.md) |
+| `inspect_rest_site(preset?, option_ids?)` | [火堆完整说明／静态summary及按原生ID筛选](rest-site.md) |
 | `choose_rest_option(option_id)` | 点击一个启用的休息处选项，后续选牌单独处理 |
 | `get_observation(preset?)` | 默认 `default`；`full` 保留空值；`summary` 精简战斗、卡牌、事件、占卜说明与顶栏；`actions_only` 仅返回上下文与工具名；`top_bar` 再附顶栏和遗物数量，各预设均刷新动作令牌 |
 | `inspect_hand({preset?, card_ids?})` | [手牌完整详情或摘要及当前能量／星星，可按 ID 筛选卡牌](hand-inspection.md) |

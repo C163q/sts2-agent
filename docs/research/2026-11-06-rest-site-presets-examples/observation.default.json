@@ -1,0 +1,55 @@
+{
+  "scene": "rest_site",
+  "screen": {
+    "status": "visible"
+  },
+  "top_bar": {
+    "hp": 30,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 2,
+    "deck_count": 10,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood"
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "rest_site": {
+    "status": "visible",
+    "prompt": "What shall I do?",
+    "options": [
+      {
+        "id": "HEAL",
+        "text": "Rest",
+        "enabled": true
+      },
+      {
+        "id": "SMITH",
+        "text": "Smith",
+        "enabled": true
+      }
+    ]
+  },
+  "available_actions": [
+    "choose_rest_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_rest_site"
+  ]
+}

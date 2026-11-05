@@ -11,7 +11,7 @@ from mcp.client.stdio import stdio_client
 from sts2_mcp.roundtrip_client import Client
 from tests.game.support.verification_runtime import ensure_run, ipc_directory
 
-SCENARIOS = ('no_rest', 'basic', 'disabled', 'tent', 'selection', 'heal_rewards', 'dig')
+SCENARIOS = ('no_rest', 'basic', 'disabled', 'tent', 'selection', 'heal_rewards', 'dig', 'display_red', 'display')
 
 
 async def verify(args):
@@ -45,6 +45,13 @@ async def verify(args):
                 assert data.get('error', {}).get('code') == error, data
                 return data
 
+            async def native(operation, arguments=None):
+                reply = await asyncio.to_thread(raw.call, operation, arguments=arguments)
+                evidence.append({'native_operation': operation, 'arguments': arguments, 'result': reply})
+                args.report.write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')
+                assert reply['ok'], reply
+                return reply['state']
+
             async def details(label, preset='full'):
                 value = await call('inspect_rest_site', {'preset': preset}, label=label)
                 assert value['scene'] == 'rest_site' and value['screen'] == {'status': 'visible'}, value
@@ -57,6 +64,9 @@ async def verify(args):
             async def reject(label, recovery='choose_legal_action'):
                 value = await call('inspect_rest_site', error='illegal_action', label=label)
                 assert value['error']['recovery'] == recovery, value
+                hint = 'close_map' if label == 'map_covered' else 'close_card_view' if label == 'deck_covered' else (
+                    'inspect_selection' if label == 'selection_covered' else 'inspect_rewards' if label == 'reward_covered' else 'rest site')
+                assert hint in value['error']['message'], value
                 assert evidence[-1]['execution']['ui_interaction_started'] is False, evidence[-1]
                 return value
 
@@ -70,8 +80,58 @@ async def verify(args):
                 return
 
             initial = await details(scenario + '_initial')
-            await call('inspect_rest_site', {'preset': 'summary'}, error='invalid_request', label='unsupported_summary')
-            await call('inspect_rest_site', {'option_ids': []}, error='invalid_request', label='unsupported_filter')
+            if scenario == 'basic':
+                assert initial['rest_site']['proceed'] is None, initial
+            if scenario == 'display_red':
+                try:
+                    await native('set_test_rest_site_display', {'mode': 'offscreen'})
+                    observed = await call('get_observation', label='offscreen_observation_red')
+                    assert any(o['id'] == 'HEAL' for o in observed['rest_site']['options']), observed
+                finally: await native('set_test_rest_site_display', {'mode': 'normal'})
+                return
+            if scenario == 'display':
+                for mode in ('no_hover', 'disabled', 'offscreen', 'hidden', 'transparent', 'clipped', 'fade'):
+                    try:
+                        configured = await native('set_test_rest_site_display', {'mode': mode})
+                        value = await call('inspect_rest_site', label=mode + '_full')
+                        rows = {o['id']: o for o in value['rest_site']['options']}
+                        if mode in {'hidden', 'transparent', 'clipped'}:
+                            assert 'HEAL' not in rows, value
+                        else: assert 'HEAL' in rows, value
+                        if mode == 'no_hover':
+                            assert rows['HEAL']['description'] is None and rows['HEAL']['enabled'] is False, value
+                            assert value['notes']['hover_tips_unavailable']['sources'] == ['rest_site.options.HEAL'], value
+                            filtered = await call('inspect_rest_site', {'option_ids': ['SMITH']}, label='no_hover_filtered')
+                            assert 'hover_tips_unavailable' not in filtered.get('notes', {}), filtered
+                        if mode == 'fade':
+                            assert configured['ready'] is False, configured
+                            assert all(not row['enabled'] for row in rows.values()), value
+                        summary = await call('inspect_rest_site', {'preset': 'summary'}, label=mode + '_summary')
+                        assert 'description' not in summary['rest_site'], summary
+                        assert all('description' not in o for o in summary['rest_site']['options']), summary
+                        assert 'hover_tips_unavailable' not in summary.get('notes', {}), summary
+                        observed = await call('get_observation', label=mode + '_observation')
+                        assert [o['id'] for o in observed['rest_site']['options']] == list(rows), observed
+                        assert 'description' not in observed['rest_site'], observed
+                        current = await native('get_state')
+                        assert 'inspect_rest_site' in current['available_actions'], current
+                    finally: await native('set_test_rest_site_display', {'mode': 'normal'})
+                guards = await native('check_test_dispatch')
+                assert guards['test_mode_off'] == guards['suite_and_scenarios_off'] and guards['test_mode_off'] >= 79, guards
+                return
+            summary = await call('inspect_rest_site', {'preset': 'summary'}, label=scenario + '_summary')
+            assert 'description' not in summary['rest_site'], summary
+            assert all('description' not in option for option in summary['rest_site']['options']), summary
+            for preset in ('full', 'default', 'summary'):
+                observed = await call('get_observation', {'preset': preset}, label=scenario + '_observation_' + preset)
+                assert 'description' not in observed['rest_site'], observed
+                assert all('description' not in option for option in observed['rest_site']['options']), observed
+            selected = await call('inspect_rest_site', {'preset': 'summary', 'option_ids': ['SMITH', 'HEAL', 'SMITH', 'UNKNOWN']}, label=scenario + '_filtered')
+            assert [o['id'] for o in selected['rest_site']['options']] == ['HEAL', 'SMITH'], selected
+            assert selected['errors'] == [{'code': 'option_ids_not_found', 'option_ids': ['UNKNOWN']}], selected
+            empty = await call('inspect_rest_site', {'option_ids': []}, label=scenario + '_empty_filter')
+            assert empty['rest_site']['options'] == [], empty
+            await call('inspect_rest_site', {'option_ids': ['  ']}, error='invalid_request', label='invalid_filter')
             compact = await details(scenario + '_default', 'default')
             if initial['rest_site']['description'] is None:
                 assert 'description' not in compact['rest_site'], compact

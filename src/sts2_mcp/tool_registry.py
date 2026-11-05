@@ -22,6 +22,7 @@ from sts2_mcp.screenshot_tool import SCREENSHOT_SCHEMA
 from sts2_mcp.output.reward_details import CLAIM_SCHEMA
 from sts2_mcp.output.reward_presets import REWARD_SCHEMA
 from sts2_mcp.output.rest_site_details import REST_OPTION_SCHEMA
+from sts2_mcp.output.rest_site_presets import REST_SCHEMA
 from sts2_mcp.output.treasure_details import LOOT_SCHEMA
 from sts2_mcp.output.treasure_presets import TREASURE_SCHEMA
 from sts2_mcp.output.shop_details import BUY_SCHEMA
@@ -385,15 +386,18 @@ SPECS = (
         native_keys=()),
     ToolSpec(
         name='inspect_rest_site',
-        schema=NO_ARGUMENTS,
-        description='Read visible rest-site options and their current hover descriptions, including disabled options.',
+        schema=REST_SCHEMA,
+        description='Read displayed rest options and hover help, including disabled options. summary omits descriptions; option_ids filters by native ID.',
         annotations=read_only,
         category='inspection',
         effect='read',
         requires_permission=False,
         returns_transition=False,
         records_events=False,
-        reader='rest_site_details:inspect_rest_site_details'),
+        reader='rest_site_details:inspect_rest_site_details',
+        parser='rest_site_presets:rest_inspection_arguments',
+        projector='rest_site_presets:rest_site_preset',
+        native_keys=()),
     ToolSpec(
         name='choose_rest_option',
         schema=REST_OPTION_SCHEMA,

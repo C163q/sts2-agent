@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Resolve the current reward page before inspecting rest options; inspect_rewards shows its rows.",
+    "recovery": "choose_legal_action"
+  }
+}

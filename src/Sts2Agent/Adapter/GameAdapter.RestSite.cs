@@ -17,10 +17,14 @@ internal sealed partial class GameAdapter
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current rest site before acting.");
         var room = RestSiteInspection.Current;
+        if (inspect)
+        {
+            if (RestSiteInspection.InspectionUnavailableReason(room) is { } unavailable)
+                return FileMailbox.Error(request.Id, "illegal_action", unavailable, publicMessage: true);
+            return InspectionSuccess(request, before, RestSiteInspection.Inspect());
+        }
         if (room == null || !RestSiteInspection.Ready(room) || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available local rest site.");
-        if (inspect) return InspectionSuccess(request, before, new { rest_site = RestSiteInspection.Read(full: true)
-        });
         var option = RestSiteInspection.Buttons(room).FirstOrDefault(b => b.Option.OptionId == optionId);
         NButton? button = option;
         if (button?.IsEnabled != true || request.Operation == "choose_rest_option"

@@ -1,0 +1,26 @@
+{
+  "scene": "rest_site",
+  "screen": {
+    "status": "visible"
+  },
+  "rest_site": {
+    "status": "visible",
+    "prompt": "What shall I do?",
+    "description": null,
+    "options": [
+      {
+        "id": "HEAL",
+        "text": "Rest",
+        "enabled": false,
+        "description": "Heal for 30% of your Max HP (24)."
+      },
+      {
+        "id": "SMITH",
+        "text": "Smith",
+        "enabled": true,
+        "description": "Upgrade a card in your Deck."
+      }
+    ],
+    "proceed": null
+  }
+}
