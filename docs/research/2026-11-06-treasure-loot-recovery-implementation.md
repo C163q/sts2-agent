@@ -1,6 +1,6 @@
 # 开箱动作拒绝恢复实施记录
 
-> 当前状态：实施中，共1项，已完成0项。两项修复、小范围重构、完整检查及构建已完成，图形验证与回归已通过，正在独立审查与集成，无阻塞。
+> 当前状态：已完成，共1项，已完成1项。两项修复、约定验证、独立审查与本地集成完成，c86fe22 已合入main，临时分支已删除，无遗留实现任务。
 
 规格见[定稿](2026-11-06-loot-treasure-review.md)，步骤见[计划](../superpowers/plans/2026-11-06-treasure-loot-recovery.md)；原问题证据见[审阅开发依据](2026-11-06-loot-treasure-development-notes.md)。
 
@@ -31,7 +31,13 @@
 - gui/report.json：十类GUI全部通过，219.722秒，108次MCP及22次文件辅助请求；包含原生参数拒绝与过期优先、拒绝后直接领取/继续/奖励领取/选牌/旅行，原正常边界及显示扰动保持。
 - gui-regression/report.json：旧basic/open及宝箱查看拒绝三例通过，71.195秒，44次MCP。合计152次真实MCP，自有PID186668、191909、192556均已退出。
 - [19份新完整返回](2026-11-06-loot-treasure-fixed-examples/README.md)含拒绝与直接续接；原17份样本保持基线。36项样本来源/哈希及链接、产物一致性通过，见证据根verification.json。
-- 一次独立审查尚未完成。
+- 一次独立审查通过，Critical0/Important0/Minor0，无需追加修复。
+
+## 独立审查与集成
+
+审查者/root/review_treasure_loot_recovery，gpt-6.1-sol/high，fresh context，只读审查46e5fd1..c86fe22；五项关注均通过，无拒绝判断项、无新增问题或TODO。审查另核对13类GUI共152次MCP、36份样本来源/哈希及最终产物一致；未重跑构建或游戏。完整结论保存在证据根review-result.md。
+
+main已快进合入c86fe22，fix/treasure-loot-recovery已删除；合并后交付校验通过，保持实际测试产物。临时工作区按逐文件哈希校验后归档至证据根inline-workspace/，原目录已清理。
 
 ## 未验证范围
 

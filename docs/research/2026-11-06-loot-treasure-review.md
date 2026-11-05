@@ -1,6 +1,6 @@
 # loot_treasure 核验与参数建议
 
-> 当前状态：两项修复、727项Python、124项C#、十类GUI与三类回归已通过，待独立审查和交付，本项尚未核销。结果见[实施记录](2026-11-06-treasure-loot-recovery-implementation.md)；下方问题与旧返回保留审阅基线。
+> 当前状态：两项修复、约定验证和一次独立审查完成，c86fe22 已合入main，本项已核销。结果见[实施记录](2026-11-06-treasure-loot-recovery-implementation.md)；下方问题与旧返回保留审阅基线。
 
 总流程见[工具清单](2026-11-02-mcp-tool-review.md)；源码、问题编号与具体证据见[开发核验](2026-11-06-loot-treasure-development-notes.md)。
 
