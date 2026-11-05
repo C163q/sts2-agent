@@ -1,6 +1,6 @@
 # select_card 开发核验记录
 
-> 当前状态：三项修复已通过游戏验证，正在独立审查；见[实施记录](2026-11-05-selection-feedback-implementation.md)。下文保留原审阅的 24 类组合、58 项相关 Python 检查、91 份公共返回及设计依据，不作为修复后行为定义。用户说明见[审阅与定稿](2026-11-05-select-card-review.md)。
+> 当前状态：三项修复及一次独立审查完成，工具已核销并合入 main；见[实施记录](2026-11-05-selection-feedback-implementation.md)。下文保留原审阅的 24 类组合、58 项相关 Python 检查、91 份公共返回及设计依据，不作为修复后行为定义。用户说明见[审阅与定稿](2026-11-05-select-card-review.md)。
 
 ## 审阅基线问题
 

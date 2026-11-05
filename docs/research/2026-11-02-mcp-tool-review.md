@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 44 项，已核销 15 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、play_card、play_cards、end_turn、use_potion、discard_potion、inspect_selection。select_card 的三项修复已通过 27 个专项场景和 9 个回归组合，正在独立审查；get_observation 的地图覆盖仍待 inspect_map，整体未核销，其余 28 项尚未核销。暂无阻塞。
+> 当前状态：工具核验进行中，共 44 项，已核销 16 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、play_card、play_cards、end_turn、use_potion、discard_potion、inspect_selection、select_card。select_card 的三项修复、27 个专项场景、9 个回归组合及一次独立审查已完成；get_observation 的地图覆盖仍待 inspect_map，整体未核销，其余 27 项尚未核销。暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -56,7 +56,7 @@
 ### 卡牌选择（4 项）
 
 - [x] `inspect_selection`：查看候选牌、按钮及预览。阶段：完成；[审阅及定稿](2026-11-05-inspect-selection-review.md)、[开发核验](2026-11-05-inspect-selection-development-notes.md)与[修复实施](2026-11-05-selection-inspection-implementation.md)记录三项修复、28 组 GUI 组合、676 项 Python、124 项 C# 和一次独立审查；保留原参数及 summary，补齐共用 prompt、明确拒绝与未交互恢复，提供 [27 份修复后返回](2026-11-05-selection-inspection-fixed-examples/README.md)。
-- [ ] `select_card`：点击候选牌。阶段：[核验与定稿](2026-11-05-select-card-review.md)及[三项修复与验证](2026-11-05-selection-feedback-implementation.md)已交付，正在独立审查；保留参数与紧凑回执，补齐明确拒绝、许可恢复和原生选中／取消事件，提供[31 份修复后返回](2026-11-05-selection-feedback-examples/README.md)。
+- [x] `select_card`：点击候选牌。阶段：[核验与定稿](2026-11-05-select-card-review.md)及[三项修复与验证](2026-11-05-selection-feedback-implementation.md)及一次独立审查完成；保留参数与紧凑回执，补齐明确拒绝、许可恢复和原生选中／取消事件，提供[31 份修复后返回](2026-11-05-selection-feedback-examples/README.md)。27 个专项场景、9 个回归组合、682 项 Python、124 项 C# 和 6 项原生输入检查通过，已合入 main。
 - [ ] `selection_option`：点击确认、取消、跳过等选择按钮。
 - [ ] `set_selection_view`：切换选择界面与战场视图。
 
