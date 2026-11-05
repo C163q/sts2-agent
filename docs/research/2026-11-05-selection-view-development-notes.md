@@ -1,6 +1,6 @@
 # set_selection_view 开发核验记录
 
-> 当前状态：修复及输出精简已验证，等待独立审查，见[实施记录](2026-11-05-selection-view-results-implementation.md)。下文 8 个场景、62 项 Python 及 6 份 full 样例保留为修复前基线，不作为当前接口契约；工具尚未核销。用户说明见[审阅与定稿](2026-11-05-selection-view-review.md)。
+> 当前状态：修复、输出精简及一次独立审查完成，已核销并合入 main，见[实施记录](2026-11-05-selection-view-results-implementation.md)。下文 8 个场景、62 项 Python 及 6 份 full 样例保留为修复前基线，不作为当前接口契约。用户说明见[审阅与定稿](2026-11-05-selection-view-review.md)。
 
 ## 已定位问题
 

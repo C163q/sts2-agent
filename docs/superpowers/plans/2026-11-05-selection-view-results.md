@@ -2,7 +2,7 @@
 
 > **For agentic workers:** 使用 `superpowers:executing-plans` 在当前会话执行，最终只做一次独立整分支审查。
 >
-> 当前状态：实施中。共 1 项，已完成 0 项；实现、构建及 688 项 Python／124 项 C# 已通过，8 组主 GUI、9 组回归、6 项原生检查及 6 份典型新样例完成，正在最终资料核对和独立审查。暂无阻塞。
+> 当前状态：完成。共 1 项，已完成 1 项；实现、全部验证、文档及一次独立审查完成，修复提交 `f41fffe` 已合入 main，临时分支已删除。无遗留修复项；证据及未测范围见[实施记录](../../research/2026-11-05-selection-view-results-implementation.md)。
 
 **Goal:** 明确未切换的拒绝保留旧许可并说明原因，成功结果仅返回 actions_only 内容。
 
@@ -40,6 +40,6 @@
 - [x] 实现共享可用性、独立切换流程、公开固定诊断与 view 保证；复用完整解码后投影。专项 Python 转绿，构建零警告／错误。
 - [x] 准备隔离运行时，运行 8 项主 GUI；检查覆盖页恢复、往返保留、重复请求、无许可首次成功／首次拒绝，补隐藏／禁用眼睛及门控检查；按受影响范围回归旧选择验证器和卡牌／按钮工具。全量 Python、C# 各运行一遍，无新改动不重复全量测试。
 - [x] 保存典型新 JSON、失败与通过证据、哈希及退出 PID，同步选择／MCP 文档、TODO 既有进度及清单，校验旧 6 份样例未改、链接有效。
-- [ ] 提交 `fix: recover selection view rejections and compact results`，完成一次独立整分支审查并处理重要问题，合入 main、删除临时分支，核销工具。
+- [x] 提交 `fix: recover selection view rejections and compact results`，完成一次独立整分支审查并处理重要问题，合入 main、删除临时分支，核销工具。
 
 **Verification:** Python 专项 `-m unittest tests.python.test_selection tests.python.test_session_policy tests.python.test_tool_contracts tests.python.test_default_presets`，全量 `-m unittest discover -s tests -t . -p 'test_*.py'`；构建 `dotnet build Sts2Agent.sln ... --no-restore`，C# `dotnet run --project tests/csharp/Sts2Agent.Checks --no-build --no-restore`；GUI `scripts/gui_suite.py --suite tests/game/data/gui_suite_selection_view_review.json --output <新目录>`。每条命令有限超时，证据位于 `.tmp/2026-11-05-selection-view-results/`；预期全部通过，最终资料检查逐项核对实际数量及样例来源。

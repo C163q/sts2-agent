@@ -1,6 +1,6 @@
 # set_selection_view 审阅
 
-> 当前状态：两项修复及成功输出精简完成并通过验证，等待独立审查，工具尚未核销。见[实施记录及 6 份典型新返回](2026-11-05-selection-view-results-implementation.md)。下文 8 个场景、62 项 Python 和 6 份旧 full 返回保留为审阅基线；执行见[实施计划](../superpowers/plans/2026-11-05-selection-view-results.md)。原证据及未测范围见[核验记录](2026-11-05-selection-view-development-notes.md)。
+> 当前状态：两项修复、成功输出精简及一次独立审查完成，已核销并合入 main。见[实施记录及 6 份典型新返回](2026-11-05-selection-view-results-implementation.md)。下文 8 个场景、62 项 Python 和 6 份旧 full 返回保留为审阅基线；执行见[实施计划](../superpowers/plans/2026-11-05-selection-view-results.md)。原证据及未测范围见[核验记录](2026-11-05-selection-view-development-notes.md)。
 
 ## 优先处理的问题
 
