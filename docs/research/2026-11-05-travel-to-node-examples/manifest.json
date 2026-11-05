@@ -1,0 +1,123 @@
+[
+  {
+    "file": "rest.full.json",
+    "source": ".tmp/2026-11-05-travel-review/gui/basic/verify/evidence.json",
+    "index": 21,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "a0fa8afc7f0bbd52dab578013a99726ff82c0a080a726316c0e9bbe4f0744958"
+  },
+  {
+    "file": "combat.full.json",
+    "source": ".tmp/2026-11-05-travel-review/gui/combat/verify/evidence.json",
+    "index": 4,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "67d485d6b5274854ac353b9ba32029e2b35ec34b78f634310dbbaa270364d7ef"
+  },
+  {
+    "file": "choice.full.json",
+    "source": ".tmp/2026-11-05-travel-review/gui/choice/verify/evidence.json",
+    "index": 4,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "7f3ae35ef36b218654a0b72d686c082010b6b0f649c5ba9fd03d52b50fef6dbb"
+  },
+  {
+    "file": "shop.full.json",
+    "source": ".tmp/2026-11-05-travel-review/gui/shop/verify/evidence.json",
+    "index": 4,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "c26aebc390ad92d7301e62ba942fcc590283c1df36787c8979cac128c986f0a4"
+  },
+  {
+    "file": "event.full.json",
+    "source": ".tmp/2026-11-05-travel-review/gui/unknown/verify/evidence.json",
+    "index": 4,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "23664b630319a907ee4fb3fa8d4b470d0563cd579e7dbe942c4c842e1a74c90f"
+  },
+  {
+    "file": "ancient.full.json",
+    "source": ".tmp/2026-11-05-travel-review/gui/entry/verify/evidence.json",
+    "index": 5,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:2:0:3"
+    },
+    "image_count": 0,
+    "sha256": "379a363db0110dd0cf2e3e7665d212989492ecb853ae7e62e7a53c63b6f9e7c6"
+  },
+  {
+    "file": "no-permission.full.json",
+    "source": ".tmp/2026-11-05-travel-review/gui/basic/verify/evidence.json",
+    "index": 0,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "invalid-argument.full.json",
+    "source": ".tmp/2026-11-05-travel-review/gui/basic/verify/evidence.json",
+    "index": 6,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0",
+      "force": true
+    },
+    "image_count": 0,
+    "sha256": "bda3d753f120fced0dbed63d06544b27409e3d1f73935c9bf21df4bc03c60b5f"
+  },
+  {
+    "file": "unavailable.full.json",
+    "source": ".tmp/2026-11-05-travel-review/gui/basic/verify/evidence.json",
+    "index": 7,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:1:0"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "stale.full.json",
+    "source": ".tmp/2026-11-05-travel-review/gui/basic/verify/evidence.json",
+    "index": 15,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "42a71b30fd7304b95d71e071e2d2c183c103a658fa8a8f2cba2d7b84ebec4a60"
+  }
+]

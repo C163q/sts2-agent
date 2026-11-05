@@ -112,7 +112,9 @@ summary 先按相同的 `max_steps` 规则裁剪再分类；当前节点为第 0
 
 外层 `scene` 保留房间类型，`screen:{status:covered,view:map}` 表示下层被覆盖。地图关闭、被牌组等更高层覆盖或尚不可读时，map 为 null，按通用预设处理，且没有 notes.map；actions_only/top_bar 不返回地图或这条 note。顶栏独立遵循原有规则。旧原生 schema 的五字段地图仍可兼容读取，不虚构缺失的分类。
 
-`inspect_map` 成功后可直接按 `selectable_nodes` 调用 `travel_to_node`，无需额外基础观察。普通房间 `proceed` 的成功回执列出旅行工具时，按需使用 `get_observation` 或 `inspect_map` 读取节点。`travel_to_node` 返回[精简动作回执](mcp.md#动作返回格式)：下一房间普通操作通常为 action_completed，战斗为 player_ready，入场选牌为 choice_required，未知界面为 manual_input_required。父入场任务等待玩家选择时不会死等；卡牌选择仍使用原有工具。失败或不完整结果须重新观察，不自动重试。
+`inspect_map` 成功后可直接按 `selectable_nodes` 调用 `travel_to_node`，无需额外基础观察。普通房间 `proceed` 的成功回执列出旅行工具时，按需使用 `get_observation` 或 `inspect_map` 读取节点。`travel_to_node` 返回[精简动作回执](mcp.md#动作返回格式)：下一房间普通操作通常为 action_completed，战斗为 player_ready，入场选牌为 choice_required，未知界面为 manual_input_required。父入场任务等待玩家选择时不会死等；卡牌选择仍使用原有工具。超时、旧状态、结果不明或不完整结果须重新观察，不自动重试；参数错误与明确拒绝按下述失败语义处理。
+
+MCP 本地参数错误保留已有许可；travel_to_node 的原生非法操作拒绝目前会清除许可，且尚未公开细分原因，需重新查看后继续。这两项已核实缺口及典型回执见[旅行工具审阅](../research/2026-11-05-travel-to-node-review.md)，不把它们作为长期要求。
 
 节点 ID 只能用于当前对局、当前幕的当前地图；动作令牌还校验地图身份、候选和页面状态。错误 ID 格式在 UI 操作前拒绝，旧令牌返回 stale_state，非候选、关闭/被覆盖的地图等返回 illegal_action。目标被滚动到屏幕外时，工具先通过原生滚动露出目标再点击；不直接调用进入房间 API。
 

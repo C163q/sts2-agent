@@ -1,0 +1,146 @@
+[
+  {
+    "name": "basic",
+    "scenarios": {
+      "navigation": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_travel_review.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "flight",
+    "scenarios": {
+      "navigation": "flight"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_travel_review.py",
+        "args": [
+          "--scenario",
+          "flight"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "combat",
+    "scenarios": {
+      "navigation": "combat"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_travel_review.py",
+        "args": [
+          "--scenario",
+          "combat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "choice",
+    "scenarios": {
+      "navigation": "choice"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_travel_review.py",
+        "args": [
+          "--scenario",
+          "choice"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "shop",
+    "scenarios": {
+      "navigation": "shop"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_travel_review.py",
+        "args": [
+          "--scenario",
+          "shop"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "treasure",
+    "scenarios": {
+      "navigation": "treasure"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_travel_review.py",
+        "args": [
+          "--scenario",
+          "treasure"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "unknown",
+    "scenarios": {
+      "navigation": "unknown"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_travel_review.py",
+        "args": [
+          "--scenario",
+          "unknown"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "entry",
+    "scenarios": {
+      "navigation": "boss1"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_travel_review.py",
+        "args": [
+          "--scenario",
+          "entry"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "double",
+    "scenarios": {
+      "navigation": "double"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_travel_review.py",
+        "args": [
+          "--scenario",
+          "double"
+        ]
+      }
+    ]
+  }
+]
