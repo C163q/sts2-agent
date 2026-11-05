@@ -1,0 +1,236 @@
+[
+  {
+    "file": "default-complete.full.json",
+    "description": "正常默认开箱与领取",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/basic/audit/evidence.json",
+    "index": 7,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "bd33d7f610ae68610d5a829aaa80880cb65e432c99581caea58ffaffc6ad37bb"
+  },
+  {
+    "file": "open-only.full.json",
+    "description": "只开箱，金币事件",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/open/audit/evidence.json",
+    "index": 4,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full",
+      "open_only": true
+    },
+    "image_count": 0,
+    "sha256": "a4b9a0c2bb6e4d1dc95080cc9b96cd737d87236c9d838f08ca7a96b9ec30d8aa"
+  },
+  {
+    "file": "already-open.full.json",
+    "description": "已开箱的具体原因及可保留许可",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/open/audit/evidence.json",
+    "index": 6,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full",
+      "open_only": true
+    },
+    "image_count": 0,
+    "sha256": "2a9827903c0aa5f37fe8fa45620b762ed2f12dbf281b4dd5d1ceb232ea542d33"
+  },
+  {
+    "file": "direct-take.default.json",
+    "description": "拒绝后直接领取，default",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/open/audit/evidence.json",
+    "index": 7,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "default",
+      "open_only": false
+    },
+    "image_count": 0,
+    "sha256": "4493614cd812c87323124438b39b9f276a6ca3cbf7701e002cd5ecd53b3449e0"
+  },
+  {
+    "file": "empty-chest.full.json",
+    "description": "空箱正常完成，events为空",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/empty/audit/evidence.json",
+    "index": 4,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e22cbd791f02a60cdac564611895d6ef46421deca26fb8b0ac93e75c039a47eb"
+  },
+  {
+    "file": "empty-or-collected.full.json",
+    "description": "当前无可领取遗物",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/basic/audit/evidence.json",
+    "index": 9,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "217959bc0b728847151c3b311a9a4217531b7f0e8ae321fec9837109b148e992"
+  },
+  {
+    "file": "direct-proceed.full.json",
+    "description": "拒绝后直接继续",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/basic/audit/evidence.json",
+    "index": 10,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "32702699a80713ec35ef4e7d53f4c221f65bc48f59c3d953ce9dcb894ed216d5"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "地图覆盖的具体原因",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/covered/audit/evidence.json",
+    "index": 4,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "bad035077e9f46f11241de6bf5b3b6e7ce6ff67ab603357575188638943694a7"
+  },
+  {
+    "file": "deck-covered.full.json",
+    "description": "牌组覆盖的具体原因",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/covered/audit/evidence.json",
+    "index": 8,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "4a36ac8f78790034bc3361c80385d587b14f1e7001967d7d8d03601e6d7cf4e1"
+  },
+  {
+    "file": "direct-travel.full.json",
+    "description": "地图覆盖拒绝后直接旅行",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/covered/audit/evidence.json",
+    "index": 18,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:0:3"
+    },
+    "image_count": 0,
+    "sha256": "5f6ca4098d76c73f1b02d550fd444827c988593b282957cff7d3d0f3d7243a2d"
+  },
+  {
+    "file": "extra-rewards.full.json",
+    "description": "额外奖励中断，保持原生边界",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/extra/audit/evidence.json",
+    "index": 4,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "6dc39ab9fb8af39a26b8a5e63e3d15f471ac7efe2bb1826571cfe8e9def647a9"
+  },
+  {
+    "file": "direct-claim.full.json",
+    "description": "覆盖拒绝后直接领取奖励",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/extra/audit/evidence.json",
+    "index": 8,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 0
+    },
+    "image_count": 0,
+    "sha256": "8d22301af6ab600c9794570790202e94d17bf0763de2878e070ca69b87c98fa6"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "选牌覆盖的具体原因",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/choice/audit/evidence.json",
+    "index": 6,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "523576d3eb7b350d3ff29319aecd0773bad7f26964ff81bac77895f537e8c51c"
+  },
+  {
+    "file": "direct-select.full.json",
+    "description": "覆盖拒绝后直接选择卡牌",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/choice/audit/evidence.json",
+    "index": 7,
+    "tool": "select_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 1
+    },
+    "image_count": 0,
+    "sha256": "52e6be56d5ffb0618d53d441c0fa3a774946b3487e99d0450d7ba53bae76e8fe"
+  },
+  {
+    "file": "disabled.full.json",
+    "description": "人工禁用遗物的具体原因",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/display/audit/evidence.json",
+    "index": 8,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "ef31df24e74475c1e278ccd0462c77453b0bc39ecf3c56214bbb11b910af8cb4"
+  },
+  {
+    "file": "offscreen.full.json",
+    "description": "人工离屏图标保留读取，拒绝点击",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/display/audit/evidence.json",
+    "index": 13,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "301c0e351e5ce3ce185261a1214038e535e6cc051b0abfe0819c1a44e7349dca"
+  },
+  {
+    "file": "wrong-scene.full.json",
+    "description": "无宝箱房的具体原因",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/no_treasure/audit/evidence.json",
+    "index": 2,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "db7ede5af000e6a28a7529f546a2f629b072176f74433023d6fb838b7d10c8c8"
+  },
+  {
+    "file": "direct-end-turn.full.json",
+    "description": "无宝箱拒绝后直接结束回合",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/no_treasure/audit/evidence.json",
+    "index": 3,
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "8b4acc9df56505809510e04fc9cdafc7e7f19184a62d37b26ed87bf647ab3400"
+  },
+  {
+    "file": "map-after-obtain.full.json",
+    "description": "等待人工延迟遗物效果完成后返回",
+    "source": ".tmp/2026-11-06-treasure-loot-recovery/gui/map_pending/audit/evidence.json",
+    "index": 4,
+    "tool": "loot_treasure",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "85ce99023316ac05c8021347c2d2080a95ca53c2416f8ec4dbd0464d76db21e9"
+  }
+]

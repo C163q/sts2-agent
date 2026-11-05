@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The displayed relic is not on screen and cannot be clicked.",
+    "recovery": "choose_legal_action"
+  }
+}

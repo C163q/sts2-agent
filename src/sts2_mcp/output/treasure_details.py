@@ -5,7 +5,7 @@ from sts2_mcp.output.scene_context import scene_context
 
 LOOT_SCHEMA = {'type': 'object', 'properties': {'open_only': {
     'type': 'boolean', 'default': False,
-    'description': 'true opens the chest without taking its relic; false (default) also takes the relic. Does not proceed.',
+    'description': 'true opens only a closed chest. false (default) opens/takes until the next input boundary; call again if a relic remains. Use proceed to leave.',
 }},
                'additionalProperties': False}
 

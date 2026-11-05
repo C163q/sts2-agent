@@ -1,4 +1,4 @@
-"""Audit chest action boundaries, visible events and current preflight recovery."""
+"""Verify chest boundaries, visible events and explicit preflight recovery."""
 from scripts._bootstrap import ROOT
 import argparse
 import asyncio
@@ -10,7 +10,6 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from sts2_mcp.roundtrip_client import Client
 from tests.game.support.verification_runtime import ensure_run, ipc_directory
-from tests.game.support.verification_actions import confirm_transform
 
 SCENARIOS = ('basic', 'open', 'empty', 'extra', 'nested', 'choice', 'covered', 'no_treasure', 'map_pending', 'display')
 
@@ -25,11 +24,12 @@ async def verify(args):
         evidence.append(row)
         args.report.write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')
 
-    async def native(operation, arguments=None):
-        reply = await asyncio.to_thread(raw.call, operation, arguments=arguments)
+    async def native(operation, arguments=None, expected=None, error=None):
+        reply = await asyncio.to_thread(raw.call, operation, expected, arguments=arguments)
         record({'native_operation': operation, 'arguments': arguments, 'result': reply})
-        assert reply['ok'], reply
-        return reply['state']
+        assert reply.get('ok') == (error is None), reply
+        assert reply.get('error', {}).get('code') == error, reply
+        return reply if error else reply['state']
 
     params = StdioServerParameters(command=sys.executable, args=[
         str(ROOT / 'scripts/mcp_server.py'), '--ipc-dir', str(raw.directory)])
@@ -62,30 +62,38 @@ async def verify(args):
 
             async def reject(label, arguments=None):
                 result = await call('loot_treasure', arguments, 'illegal_action', label)
-                assert result['error'] == {'code': 'illegal_action', 'message': 'The requested action is unavailable.',
-                                           'recovery': 'get_observation'}, result
+                expected = ('No treasure room' if label == 'wrong_scene' else 'already open' if label == 'already_open'
+                    else 'close_map' if 'map_covered' in label else 'close_card_view' if 'deck_covered' in label
+                    else 'inspect_selection' if 'selection' in label else 'inspect_rewards' if 'rewards' in label
+                    else 'disabled' if label.startswith('disabled') else 'not on screen' if label.startswith('offscreen')
+                    else 'No displayed relic')
+                assert result['error']['recovery'] == 'choose_legal_action' and expected in result['error']['message'], result
                 assert evidence[-1]['execution']['ui_interaction_started'] is False, evidence[-1]
+                assert evidence[-1]['native_error']['action_submitted'] is False, evidence[-1]
                 return result
 
             await call('loot_treasure', error='observation_required', label='no_initial_permission')
             if args.scenario == 'no_treasure':
                 await call('get_observation')
                 await reject('wrong_scene')
-                await call('end_turn', error='observation_required', label='after_wrong_scene_rejection')
-                await call('get_observation')
-                await call('end_turn')
+                await call('end_turn', label='direct_after_wrong_scene_rejection')
                 return
 
             await call('inspect_treasure')
             before = await native('check_test_treasure')
+            if args.scenario == 'basic':
+                current = await native('get_state')
+                invalid = await native('loot_treasure', {'open_only': 1}, current['snapshot_id'], 'invalid_request')
+                assert invalid['error'].get('action_submitted') is False and invalid['execution']['ui_interaction_started'] is False, invalid
+                await native('loot_treasure', {}, 'expired-observation', 'stale_state')
             if args.scenario == 'covered':
                 await call('inspect_map')
                 await reject('map_covered')
-                await call('loot_treasure', error='observation_required', label='after_map_rejection')
+                await reject('map_covered_again')
                 await call('close_map')
                 await call('inspect_deck')
                 await reject('deck_covered')
-                await call('loot_treasure', error='observation_required', label='after_deck_rejection')
+                await reject('deck_covered_again')
                 await call('close_card_view')
             await call('loot_treasure', {'open_only': 1}, 'invalid_request', 'local_invalid')
             stepwise = args.scenario in {'open', 'display'}
@@ -103,14 +111,13 @@ async def verify(args):
                         try:
                             await call('inspect_treasure')
                             await reject(mode + '_rejected')
-                            await call('loot_treasure', error='observation_required', label=mode + '_lost_permission')
+                            await reject(mode + '_rejected_again')
                         finally:
                             await native('set_test_treasure_display', {'mode': 'normal'})
                     await call('inspect_treasure')
                 else:
                     await reject('already_open', {'open_only': True})
-                    await call('loot_treasure', error='observation_required', label='after_already_open_rejection')
-                    await call('inspect_treasure')
+
                 receipt = await call('loot_treasure', {'open_only': False, 'preset': 'default'}, label='take_opened_default')
                 boundary(receipt)
                 assert any(e['type'] == 'relic_obtained' for e in receipt['transition']['events']), receipt
@@ -119,9 +126,7 @@ async def verify(args):
                 assert (await native('check_test_treasure'))['relics'] == before['relics']
                 rows = (await call('inspect_rewards'))['rewards']['items']
                 await reject('extra_rewards_covered')
-                await call('claim_reward', {'reward_id': rows[0]['id']}, 'observation_required', 'after_extra_rejection')
-                await call('inspect_rewards')
-                claimed = await call('claim_reward', {'reward_id': rows[0]['id']})
+                claimed = await call('claim_reward', {'reward_id': rows[0]['id']}, label='direct_claim_after_extra_rejection')
                 if claimed['scene'] == 'rewards': await call('proceed')
                 returned = await call('inspect_treasure')
                 assert returned['treasure']['relic']['name'] == 'Anchor', returned
@@ -131,14 +136,17 @@ async def verify(args):
             elif args.scenario == 'nested':
                 assert receipt['scene'] == 'rewards' and any(e['type'] == 'relic_obtained' for e in events), receipt
                 await reject('nested_rewards_covered')
-                await call('proceed', error='observation_required', label='after_nested_rejection')
-                await call('inspect_rewards')
-                await call('proceed')
+                await call('proceed', label='direct_proceed_after_nested_rejection')
             elif args.scenario == 'choice':
                 selection = await call('inspect_selection')
                 await reject('selection_covered')
-                await call('select_card', {'card_id': selection['selection']['cards'][0]['id']}, 'observation_required', 'after_selection_rejection')
-                await confirm_transform(call, receipt)
+                for card in selection['selection']['cards'][:3]:
+                    selected = await call('select_card', {'card_id': card['id']}, label='direct_select_after_rejection')
+                    boundary(selected, 'choice_required')
+                preview = await call('inspect_selection')
+                assert len(preview['selection']['transform_previews']) == 3, preview
+                confirmed = await call('selection_option', {'option_id': 'confirm'})
+                boundary(confirmed)
             elif args.scenario == 'empty':
                 assert events == [], receipt
                 after = await native('check_test_treasure')
@@ -154,9 +162,12 @@ async def verify(args):
             current = await call('inspect_treasure')
             assert current['treasure']['chest'] == 'open' and current['treasure']['relic'] is None, current
             await reject('empty_or_collected')
-            await call('proceed', error='observation_required', label='after_collected_rejection')
-            await call('inspect_treasure')
-            await call('proceed')
+            await call('proceed', label='direct_proceed_after_collected_rejection')
+            if args.scenario == 'covered':
+                graph = await call('inspect_map')
+                assert graph['selectable_nodes'], graph
+                await reject('map_covered_after_loot')
+                await call('travel_to_node', {'node_id': graph['selectable_nodes'][0]}, label='direct_travel_after_loot_rejection')
     print('PASS loot treasure audit:', args.scenario, flush=True)
 
 

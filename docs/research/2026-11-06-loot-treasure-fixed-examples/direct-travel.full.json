@@ -1,0 +1,88 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "end_turn",
+    "play_card",
+    "play_cards",
+    "inspect_hand",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_pile",
+    "inspect_map",
+    "inspect_targets"
+  ],
+  "transition": {
+    "stop_reason": "player_ready",
+    "complete": true,
+    "events": [
+      {
+        "before": 0,
+        "after": 10,
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "block_changed",
+        "sequence": 1
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 0,
+        "after": 3,
+        "type": "energy_changed",
+        "sequence": 2
+      },
+      {
+        "card": {
+          "id": 0,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 3
+      },
+      {
+        "card": {
+          "id": 1,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 4
+      },
+      {
+        "card": {
+          "id": 2,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 5
+      },
+      {
+        "card": {
+          "id": 3,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 6
+      },
+      {
+        "card": {
+          "id": 4,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 7
+      }
+    ]
+  }
+}

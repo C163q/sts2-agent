@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The displayed relic is disabled. Wait for the current treasure interaction to finish.",
+    "recovery": "choose_legal_action"
+  }
+}

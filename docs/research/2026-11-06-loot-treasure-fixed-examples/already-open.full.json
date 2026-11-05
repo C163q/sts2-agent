@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The chest is already open. Use open_only:false to take any displayed relic, or proceed to leave.",
+    "recovery": "choose_legal_action"
+  }
+}

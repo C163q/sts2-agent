@@ -356,8 +356,9 @@ SPECS = (
     ToolSpec(
         name='loot_treasure',
         schema=LOOT_SCHEMA,
-        description='Open a single-player chest and take its relic by default, or take the relic from an already opened chest. '
-            'Does not proceed; handle subsequent rewards, choices or dialogs separately.',
+        description='Open a single-player chest and take its relic, or take the relic already shown. '
+            'Stops for rewards, choices or dialogs; call again for any remaining relic. '
+            'Use open_only to inspect first and proceed to leave.',
         annotations=action,
         category='action',
         effect='action',
@@ -366,7 +367,8 @@ SPECS = (
         records_events=True,
         reader='transition_details:end_turn_details',
         parser='treasure_details:loot_arguments',
-        parser_operation=False),
+        parser_operation=False,
+        unsubmitted_rejection_unchanged=True),
     ToolSpec(
         name='inspect_treasure',
         schema=TREASURE_SCHEMA,

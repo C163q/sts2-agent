@@ -157,10 +157,10 @@ internal sealed partial class GameAdapter
                 if (ShopInspection.Back(shop).IsEnabled) actions.Add("close_shop");
             }
         }
-        if (TreasureInspection.Current is { } treasure && TreasureInspection.Ready(treasure))
+        if (TreasureInspection.Current is { } treasure)
         {
             if (TreasureInspection.CanLoot(treasure)) actions.Add("loot_treasure");
-            if (TreasureInspection.Proceed(treasure)?.IsEnabled == true) actions.Add("proceed");
+            if (TreasureInspection.Ready(treasure) && TreasureInspection.Proceed(treasure)?.IsEnabled == true) actions.Add("proceed");
         }
         if (RestSiteInspection.Current is { } rest && RestSiteInspection.Ready(rest)
             && RunManager.Instance.IsSingleplayerOrFakeMultiplayer)

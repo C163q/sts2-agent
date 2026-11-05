@@ -40,9 +40,9 @@
 2. 根据观察，按需调用 `inspect_treasure()` 查看遗物说明。
 3. 调用 `loot_treasure()` 领取当前可见遗物，或调用 `proceed()` 跳过。
 
-`open_only` 可省略或为布尔值，默认 `false`；已开箱时再次传 `true` 属于不可用动作。已领取或空箱不能再次搜刮。动作沿用[MCP 许可规则](mcp.md#调用和错误语义)：成功读取及完整动作结果可以续接下一动作；失败后重新读取当前状态再决定。
+`open_only` 可省略或为布尔值，默认 `false`；已开箱时再次传 `true` 属于不可用动作。已领取或空箱不能再次搜刮。动作沿用[MCP 许可规则](mcp.md#调用和错误语义)：成功读取及完整动作结果可以续接下一动作。首次点击前的明确拒绝保留已有许可；已点击、状态过期、超时或未知结果仍须重新观察。
 
-当前开箱动作的已知限制：明确点击前的拒绝也会清除已有许可，且公开原因较笼统；例如已开箱再次要求 open_only:true，后续合法领取仍需先查看。证据与候选修复见[开箱动作审阅](../research/2026-11-06-loot-treasure-review.md)。
+开箱／领取与 available_actions 共用目标和原因判断；无宝箱、覆盖页、已开箱、无可领取遗物、禁用、离屏或尚未就绪会给出固定说明，明确拒绝可按 recovery 纠正或选择合法动作。例如已开箱再次要求 open_only:true 被拒后，可直接用普通 loot_treasure 领取；已领取再次操作被拒后，可直接 proceed。首次调用仍需已有有效观察。
 
 开箱可能先出现额外奖励；领取遗物可能引发选牌或嵌套奖励。工具停在当前交互边界，返回[精简动作回执](mcp.md#动作返回格式)，后续使用奖励或选牌工具，不等待依赖后续输入的父任务。处理完后若宝箱仍有遗物，须再次显式调用 `loot_treasure()`，先前请求不会在后台继续自动领取。教程与未支持界面返回 `manual_input_required`。
 
@@ -76,4 +76,4 @@ python3 scripts/run_roundtrip.py --windowed --treasure-scenario basic
 
 详情专项可使用 [treasure_inspection_review 套件](../../tests/game/data/gui_suite_treasure_inspection_review.json)，按[图形测试指南](gui-testing.md)传入 --suite 和全新 --output 目录。它验证未开／已开／已领取／空箱、覆盖拒绝与纯读取续接；包含 summary 与基础观察对照，并以双重门控扰动检查不可悬停、禁用、离屏、隐藏、透明和容器裁剪，finally 和局间重置恢复。范围见[实施验证](../research/2026-11-06-treasure-inspection-presets-implementation.md)。
 
-动作现状核验使用 [loot_treasure_review 套件](../../tests/game/data/gui_suite_loot_treasure_review.json)，按图形测试指南指定新输出目录。它覆盖默认／分步／空箱、奖励与选择中断、延迟效果、覆盖及拒绝恢复；断言保留当前笼统拒绝与许可丢失的基线，修复时同步。范围见[开箱动作开发核验](../research/2026-11-06-loot-treasure-development-notes.md)。
+动作现状核验使用 [loot_treasure_review 套件](../../tests/game/data/gui_suite_loot_treasure_review.json)，按图形测试指南指定新输出目录。它覆盖默认／分步／空箱、奖励与选择中断、延迟效果、覆盖及拒绝恢复；验证拒绝后直接领取／继续／选择／旅行及原生未提交证明；真实超时或未知结果仍走保守恢复。范围见[开箱动作修复](../research/2026-11-06-treasure-loot-recovery-implementation.md)。
