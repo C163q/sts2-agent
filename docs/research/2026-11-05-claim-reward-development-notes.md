@@ -1,6 +1,6 @@
 # claim_reward 开发核验依据
 
-> 当前状态：现状核验完成，待确认三项修复与参数建议。55 项 Python、八类 GUI、88 次 MCP 调用、一项损坏响应探针及 15 份完整样本已完成。用户可读的问题与建议见[审阅记录](2026-11-05-claim-reward-review.md)；尚未修改生产行为。
+> 本文保留 43ea846／55c02af 的审阅基线与修复前证据。三项问题已确认并进入[修复实施](2026-11-05-claim-reward-recovery-implementation.md)；下文问题状态与旧返回用于基线对照，现行契约见[奖励指南](../development/rewards.md)。
 
 ## 基线与证据
 

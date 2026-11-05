@@ -299,6 +299,27 @@ internal sealed partial class GameAdapter
                 return Success(request, await SettledObservation());
             }
         }
+        if (testMode && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+            && testSettings.Get("STS2_AGENT_TEST_REWARD_SCENARIO") != null && LocalPlayer != null)
+        {
+            if (request.Operation == "clear_test_reward_scroll_failure")
+            {
+                RewardClaimFailureFixture.Reset();
+                return Success(request, Observe());
+            }
+            if (request.Operation == "arm_test_reward_scroll_failure")
+            {
+                var rewards = RewardInspection.Current;
+                if (rewards == null || !RewardInspection.Ready(rewards))
+                    throw new InvalidOperationException("An exposed reward list is required.");
+                var offscreen = RewardInspection.Buttons(rewards)
+                    .Where(button => !VisibleUi.OnScreen(button.GetNode<Control>("%Label")))
+                    .Select(button => rewardInspection.Id(button.Reward!)).ToArray();
+                if (offscreen.Length == 0) throw new InvalidOperationException("An off-screen reward is required.");
+                RewardClaimFailureFixture.Arm(rewards);
+                return Success(request, JsonSerializer.Serialize(new { offscreen_reward_ids = offscreen }));
+            }
+        }
         if (testMode && testSettings.Get("STS2_AGENT_TEST_NAVIGATION_SCENARIO") != null && LocalPlayer != null)
         {
             if (request.Operation == "clear_test_navigation_scroll_failure"

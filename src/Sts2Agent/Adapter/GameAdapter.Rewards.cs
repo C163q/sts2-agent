@@ -59,13 +59,23 @@ internal sealed partial class GameAdapter
     private async Task<string> RewardRequest(Request request, JsonElement before)
     {
         bool inspect = request.Operation == "inspect_rewards";
+        bool claim = request.Operation == "claim_reward";
+        bool interacted = false;
+        void BeginInteraction()
+        {
+            if (!interacted) UiChanged();
+            interacted = true;
+        }
+        string RejectClaim(string message) => interacted
+            ? ResponseBuilder.Error(request.Id, "illegal_action", message, publicMessage: true)
+            : FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", message);
         int rewardId = -1;
-        if (request.Operation == "claim_reward")
+        if (claim)
         {
             if (request.Arguments is not { } args || args.EnumerateObject().Count() != 1
                 || !args.TryGetProperty("reward_id", out var id) || id.ValueKind != JsonValueKind.Number
                 || !id.TryGetInt32(out rewardId) || rewardId < 0)
-                return FileMailbox.Error(request.Id, "invalid_request", "A nonnegative reward_id is required.");
+                return FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request", "A nonnegative reward_id is required.");
         }
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read current rewards before acting.");
@@ -76,14 +86,22 @@ internal sealed partial class GameAdapter
                 return ResponseBuilder.Error(request.Id, "illegal_action", reason, publicMessage: true);
             return InspectionSuccess(request, before, new { rewards = rewardInspection.Read(full: true) });
         }
-        if (screen == null || !RewardInspection.Ready(screen) || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
-            return FileMailbox.Error(request.Id, "illegal_action", "Return to an available local rewards screen.");
-
         var run = RunManager.Instance.DebugOnlyGetState();
-        NRewardButton? row = request.Operation == "claim_reward" ? rewardInspection.Find(screen, rewardId) : null;
-        NButton? button = request.Operation == "proceed" ? RewardInspection.Proceed(screen) : row;
-        if (button?.IsEnabled != true || row != null && RewardInspection.Type(row.Reward!) == "unsupported")
-            return FileMailbox.Error(request.Id, "illegal_action", "The requested reward or proceed button is unavailable.");
+        NRewardButton? row = null;
+        NButton? button;
+        if (claim)
+        {
+            if (rewardInspection.ClaimUnavailableReason(screen, rewardId, out row) is { } reason) return RejectClaim(reason);
+            button = row;
+        }
+        else
+        {
+            if (screen == null || !RewardInspection.Ready(screen) || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
+                return FileMailbox.Error(request.Id, "illegal_action", "Return to an available local rewards screen.");
+            button = RewardInspection.Proceed(screen);
+            if (button?.IsEnabled != true)
+                return FileMailbox.Error(request.Id, "illegal_action", "The requested reward or proceed button is unavailable.");
+        }
         bool finished = row == null;
         bool? claimed = null;
         var potionReward = row?.Reward as PotionReward;
@@ -93,21 +111,27 @@ internal sealed partial class GameAdapter
         void Skipped(NRewardButton _) { finished = true; claimed = false; }
         if (row != null)
         {
-            var originalRows = RewardInspection.Buttons(screen).Select(b => b.Reward).ToArray();
+            var originalRows = RewardInspection.Buttons(screen!).Select(b => b.Reward).ToArray();
             bool Unchanged() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
-                && RewardInspection.Ready(screen) && originalRows.SequenceEqual(RewardInspection.Buttons(screen).Select(b => b.Reward));
-            try { await RewardInspection.Reveal(screen, row, ObservationFrame, Unchanged); }
-            catch (InvalidOperationException error) { return FileMailbox.Error(request.Id, "illegal_action", error.Message); }
-            if (!Unchanged()) return FileMailbox.Error(request.Id, "illegal_action", "Rewards changed before clicking.");
-            RewardCompatibility.AdaptLinkedClaim(row);
-            row.RewardClaimed += Claimed;
-            row.RewardSkipped += Skipped;
-            if (potionReward != null) potionReward.Player.PotionProcured += Procured;
+                && RewardInspection.Ready(screen!) && originalRows.SequenceEqual(RewardInspection.Buttons(screen!).Select(b => b.Reward));
+            try { await RewardInspection.Reveal(screen!, row, ObservationFrame, Unchanged, BeginInteraction); }
+            catch (InvalidOperationException)
+            {
+                return RejectClaim("The reward list changed or the row could not be revealed while preparing the claim. Read current rewards before continuing.");
+            }
+            if (!Unchanged()) return RejectClaim("The rewards changed before clicking. Read current rewards before continuing.");
         }
         try
         {
-            UiChanged();
-            button.ForceClick();
+            BeginInteraction();
+            if (row != null)
+            {
+                RewardCompatibility.AdaptLinkedClaim(row);
+                row.RewardClaimed += Claimed;
+                row.RewardSkipped += Skipped;
+                if (potionReward != null) potionReward.Player.PotionProcured += Procured;
+            }
+            button!.ForceClick();
             var (after, reason) = await ActionObservation(() =>
             {
                 if (!ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())) return "interrupted";

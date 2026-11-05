@@ -3,11 +3,12 @@ from sts2_mcp.output.value_shapes import project
 from sts2_mcp.output.transition_details import end_turn_details
 
 
-def claim_reward_details(state):
+def claim_reward_details(state, arguments=None):
     result = end_turn_details(state)
     outcome = project(state['reward_result'], {'reward_id': int, 'status': str})
     if (set(outcome) != {'reward_id', 'status'} or not 0 <= outcome['reward_id'] <= 2147483647
-            or outcome['status'] not in {'claimed', 'not_claimed', 'pending', 'not_obtained'}):
+            or outcome['status'] not in {'claimed', 'not_claimed', 'pending', 'not_obtained'}
+            or arguments is not None and outcome['reward_id'] != arguments['reward_id']):
         raise ValueError('Invalid reward outcome.')
     result['reward_result'] = outcome
     return result

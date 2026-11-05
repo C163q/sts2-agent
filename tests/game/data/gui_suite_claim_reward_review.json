@@ -126,5 +126,53 @@
         ]
       }
     ]
+  },
+  {
+    "name": "deck_covered",
+    "scenarios": {
+      "navigation": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_claim_reward_review.py",
+        "args": [
+          "--scenario",
+          "deck_covered"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "scroll_success",
+    "scenarios": {
+      "reward": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_claim_reward_review.py",
+        "args": [
+          "--scenario",
+          "scroll_success"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "scroll_failure",
+    "scenarios": {
+      "reward": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_claim_reward_review.py",
+        "args": [
+          "--scenario",
+          "scroll_failure"
+        ]
+      }
+    ]
   }
 ]

@@ -54,6 +54,7 @@ internal sealed partial class GameAdapter
         testResetFailed = true;
         PotionFixture.Reset();
         MapTravelFailureFixture.Reset();
+        RewardClaimFailureFixture.Reset();
         // Native cleanup cancels player choices and disposes the run's action synchronizers.
         var pending = new[] { SelectionFixture.Pending, RewardFixture.Pending, ShopFixture.Pending, TreasureFixture.Pending, CombatHandoffFixture.Pending }
             .Where(task => task != null).Cast<Task>().ToArray();

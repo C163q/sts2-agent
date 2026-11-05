@@ -1,0 +1,235 @@
+[
+  {
+    "file": "gold.default.json",
+    "description": "金币领取，default",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/basic/audit/evidence.json",
+    "index": 7,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "default",
+      "reward_id": 0
+    },
+    "image_count": 0,
+    "sha256": "df4460930c2e18971f3b3b2cef07dff84faf4c4d434e9d53c70bfae2dfb87206"
+  },
+  {
+    "file": "direct-potion.full.json",
+    "description": "重复领取被拒绝后直接取得药水",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/basic/audit/evidence.json",
+    "index": 9,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 2
+    },
+    "image_count": 0,
+    "sha256": "0a8f24d622b96d4acafd20af579b2c0dc445bec5255671b1f4583929098d010e"
+  },
+  {
+    "file": "relic.full.json",
+    "description": "取得遗物并永久升级卡牌",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/basic/audit/evidence.json",
+    "index": 11,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 3
+    },
+    "image_count": 0,
+    "sha256": "b183ca662504cfe54082117983931b919730ca0310279e8776f9519aadc82c46"
+  },
+  {
+    "file": "card-choice.full.json",
+    "description": "打开卡牌选择，pending/choice_required",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/basic/audit/evidence.json",
+    "index": 12,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 5
+    },
+    "image_count": 0,
+    "sha256": "28bd9077067e3aaa5461db0f0e34b89ce7a9154ed6aa63b02cece6ce43e8e779"
+  },
+  {
+    "file": "full-belt.full.json",
+    "description": "药水满槽仍返回 not_claimed",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/full/audit/evidence.json",
+    "index": 2,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 8
+    },
+    "image_count": 0,
+    "sha256": "1cd0b25cdbdca3a80f4ef6184c817b6ab97454212814323e1c7694369b11c600"
+  },
+  {
+    "file": "nested-rewards.full.json",
+    "description": "嵌套奖励保持 pending/action_completed",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/nested/audit/evidence.json",
+    "index": 2,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 15
+    },
+    "image_count": 0,
+    "sha256": "f356ed0bcc2676583b6530010678ec4197f6ee58a7de4f86c095782e9153255f"
+  },
+  {
+    "file": "unknown-id.full.json",
+    "description": "奖励 ID 无效，保留许可并提示当前入口",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/basic/audit/evidence.json",
+    "index": 3,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 2147483647
+    },
+    "image_count": 0,
+    "sha256": "2f3d1ef26ffbdd0d450af3757e89682ccd69f7579ca832219acbea1b97924346"
+  },
+  {
+    "file": "already-claimed.full.json",
+    "description": "奖励已消失，保留许可",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/basic/audit/evidence.json",
+    "index": 8,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 0
+    },
+    "image_count": 0,
+    "sha256": "2f3d1ef26ffbdd0d450af3757e89682ccd69f7579ca832219acbea1b97924346"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "地图覆盖，提示 close_map 并保留许可",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/covered/audit/evidence.json",
+    "index": 3,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 23
+    },
+    "image_count": 0,
+    "sha256": "295b71bd3e8cee517ce6ced413c0da3ae7da33f28684fcfbea4249b39b708d8f"
+  },
+  {
+    "file": "direct-travel.full.json",
+    "description": "拒绝后直接原生旅行",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/covered/audit/evidence.json",
+    "index": 4,
+    "tool": "travel_to_node",
+    "arguments": {
+      "preset": "full",
+      "node_id": "map:1:2:0"
+    },
+    "image_count": 0,
+    "sha256": "a0fa8afc7f0bbd52dab578013a99726ff82c0a080a726316c0e9bbe4f0744958"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "选牌覆盖，提示 inspect_selection",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/basic/audit/evidence.json",
+    "index": 13,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 5
+    },
+    "image_count": 0,
+    "sha256": "4709a4a08581a123114239daf521db2628d9df5551dcff17ed3877becabf76c5"
+  },
+  {
+    "file": "direct-skip.full.json",
+    "description": "拒绝后直接跳过卡牌奖励",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/basic/audit/evidence.json",
+    "index": 14,
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "skip"
+    },
+    "image_count": 0,
+    "sha256": "ea3d81997a10142b80abc1965e67420f348cd147094e13279e0f1830086c78b7"
+  },
+  {
+    "file": "deck-covered.full.json",
+    "description": "牌组覆盖，提示 close_card_view",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/deck_covered/verify/evidence.json",
+    "index": 3,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 30
+    },
+    "image_count": 0,
+    "sha256": "03d07d0a867998bcc21b041b8a1671ee6f8af399bb67856b49e57fd750351f68"
+  },
+  {
+    "file": "wrong-scene.full.json",
+    "description": "无奖励页的固定原因",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/no_rewards/audit/evidence.json",
+    "index": 2,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 0
+    },
+    "image_count": 0,
+    "sha256": "99ab3b7c7d99fb37698fc1607e8c2a9bf7718816e2b170d30ca112496d30c1b4"
+  },
+  {
+    "file": "direct-end-turn.full.json",
+    "description": "无奖励页拒绝后直接结束回合",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/no_rewards/audit/evidence.json",
+    "index": 3,
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "8b4acc9df56505809510e04fc9cdafc7e7f19184a62d37b26ed87bf647ab3400"
+  },
+  {
+    "file": "scroll-choice.full.json",
+    "description": "成功滚动后打开画面外卡牌奖励",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/scroll_success/verify/evidence.json",
+    "index": 2,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 41
+    },
+    "image_count": 0,
+    "sha256": "478184da0218ce2b77e13cdb2777cd8d68f41fc474402e5934bb5a46e27bfbb2"
+  },
+  {
+    "file": "scroll-failed.full.json",
+    "description": "人为制造滚动后失败，要求观察",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/scroll_failure/verify/evidence.json",
+    "index": 3,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 47
+    },
+    "image_count": 0,
+    "sha256": "7bf8e3e2554b22b0193ad4394adfe48dc47c81b163d0a679260e906d0538180e"
+  },
+  {
+    "file": "after-scroll-failed.full.json",
+    "description": "滚动后失败，已有许可已清除",
+    "source": ".tmp/2026-11-05-claim-reward-recovery/gui/scroll_failure/verify/evidence.json",
+    "index": 4,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 47
+    },
+    "image_count": 0,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  }
+]

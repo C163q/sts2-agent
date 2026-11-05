@@ -171,7 +171,7 @@ internal sealed partial class GameAdapter
         if (RewardInspection.Current is { } rewards && RewardInspection.Ready(rewards)
             && RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
         {
-            if (RewardInspection.Buttons(rewards).Any(b => RewardInspection.Type(b.Reward!) != "unsupported")) actions.Add("claim_reward");
+            if (RewardInspection.Buttons(rewards).Any(RewardInspection.Claimable)) actions.Add("claim_reward");
             if (RewardInspection.Proceed(rewards)?.IsEnabled == true) actions.Add("proceed");
         }
         if (EventConfirmation.Current is { } dialog && EventConfirmation.Exposed(dialog))

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The reward list changed or the row could not be revealed while preparing the claim. Read current rewards before continuing.",
+    "recovery": "get_observation"
+  }
+}

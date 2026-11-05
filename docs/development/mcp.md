@@ -191,7 +191,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 `inspect_selection` 省略 `view_upgrades` 时属于纯读取；显式提供该参数则可能改变 UI，与地图、牌组、牌堆及查看页切换一样，不能仅凭明确拒绝的错误码恢复许可。inspect_deck／inspect_pile／inspect_map／close_card_view／close_map／set_selection_view 的已审查拒绝另有原生“本请求未交互”保证；只有显式保证为 true、证据不矛盾且已有许可时保留，返回 choose_legal_action。缺少保证、已交互或未知结果仍要求观察；该例外不推广到其他页面工具。这些页面操作不要求已有动作许可。`set_divination_tool` 虽只切换占卜工具，仍须已有许可、记录事件并返回动作回执；MCP annotations 不代替执行策略。
 
-游戏动作仅在原生证明“未提交且 UI 未改变”时保留旧许可。`play_card`、`play_cards`、`end_turn`、`use_potion`、`discard_potion`、`select_card`、`selection_option` 与 `travel_to_node` 的已审查前置拒绝提供这一保证；费用、目标和选择／覆盖／按钮状态会给具体提示，例如能量不足被拒后可直接结束回合，选牌期间误用 end_turn 被拒后可直接继续合法选择，无效候选或按钮被拒后可直接改用有效候选或按钮。travel_to_node 在地图未开、被覆盖、绘图或目标非候选等明确拒绝时可直接纠正；滚动已经属于交互，滚动后的失败不会恢复许可。批量部分提交后的失败不具备整批未提交保证。缺少标记的旧 Mod、其他动作拒绝或执行结果未知时不恢复许可。占卜等操作返回 `screenshot_unavailable` 仍可能已经改变游戏，返回 `outcome:"unknown"` 并要求观察，不能把图像失败当作玩法未执行。
+游戏动作仅在原生证明“未提交且 UI 未改变”时保留旧许可。`play_card`、`play_cards`、`end_turn`、`use_potion`、`discard_potion`、`select_card`、`selection_option`、`travel_to_node` 与 `claim_reward` 的已审查前置拒绝提供这一保证；费用、目标和选择／覆盖／按钮状态会给具体提示，例如能量不足被拒后可直接结束回合，选牌期间误用 end_turn 被拒后可直接继续合法选择，无效候选或按钮被拒后可直接改用有效候选或按钮。travel_to_node 在地图未开、被覆盖、绘图或目标非候选等明确拒绝时可直接纠正；claim_reward 的奖励 ID 无效、页面覆盖或尚未就绪等明确拒绝也可直接纠正，具体契约见[奖励领取](rewards.md#领取与后续选择)。地图与奖励的滚动已经属于交互，滚动后的失败不会恢复许可。批量部分提交后的失败不具备整批未提交保证。缺少标记的旧 Mod、其他动作拒绝或执行结果未知时不恢复许可。占卜等操作返回 `screenshot_unavailable` 仍可能已经改变游戏，返回 `outcome:"unknown"` 并要求观察，不能把图像失败当作玩法未执行。
 
 许可同时记录令牌和代次。排队动作只能使用调用开始时已有的那一代许可，即使后来读取返回相同字符串，也不能借用；取消会使等待／在途请求无法重新发布已撤销的许可。执行证据与公开 JSON 分开保存，不向模型暴露控制字段。用户保存的实测记录尚未逐条对照，[两项待办](TODO.md#当前工具审阅结束后处理)仍保留。
 

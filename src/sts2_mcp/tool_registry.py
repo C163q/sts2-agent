@@ -334,8 +334,10 @@ SPECS = (
         returns_transition=True,
         records_events=True,
         reader='action_details:claim_reward_details',
+        reader_argument='request',
         parser='reward_details:reward_arguments',
-        parser_operation=True),
+        parser_operation=True,
+        unsubmitted_rejection_unchanged=True),
     ToolSpec(
         name='proceed',
         schema=NO_ARGUMENTS,

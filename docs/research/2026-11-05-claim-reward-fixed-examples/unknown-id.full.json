@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "That reward is no longer available. Choose a current ID from inspect_rewards or get_observation.",
+    "recovery": "choose_legal_action"
+  }
+}

@@ -44,30 +44,44 @@ internal sealed class RewardInspection
         && !Buttons(screen).Any(b => !b.IsEnabled) && RunManager.Instance.ActionQueueSet.IsEmpty
         && !CombatManager.Instance.IsInProgress;
 
-    public static string? InspectionUnavailableReason(NRewardsScreen? screen)
+    public static string? InspectionUnavailableReason(NRewardsScreen? screen) => UnavailableReason(screen, claiming: false);
+
+    public static bool Claimable(NRewardButton button) => button.IsEnabled && Type(button.Reward!) != "unsupported";
+
+    public string? ClaimUnavailableReason(NRewardsScreen? screen, int id, out NRewardButton? button)
+    {
+        button = null;
+        if (UnavailableReason(screen, claiming: true) is { } reason) return reason;
+        button = Find(screen!, id);
+        if (button == null) return "That reward is no longer available. Choose a current ID from inspect_rewards or get_observation.";
+        if (Type(button.Reward!) == "unsupported") return "That reward type is not supported by claim_reward.";
+        return Claimable(button) ? null : "That reward is disabled. Wait for the current reward interaction to finish.";
+    }
+
+    private static string? UnavailableReason(NRewardsScreen? screen, bool claiming)
     {
         if (screen != null && GodotObject.IsInstanceValid(screen) && screen.IsNodeReady()
             && RunManager.Instance.IsSingleplayerOrFakeMultiplayer && Ready(screen)) return null;
         if (!RunManager.Instance.IsInProgress)
-            return "No local run is available for reward inspection.";
+            return claiming ? "No local run is available for claiming rewards." : "No local run is available for reward inspection.";
         if (!RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
-            return "Reward inspection requires a local single-player run.";
+            return claiming ? "Claiming rewards requires a local single-player run." : "Reward inspection requires a local single-player run.";
         if (screen == null || !GodotObject.IsInstanceValid(screen) || !screen.IsNodeReady())
             return "No reward list is available on the current screen.";
         var map = NRun.Instance?.GlobalUi.MapScreen;
         if (VisibleUi.Shown(map))
-            return map!.IsOpen ? "Close the map with close_map before reading rewards."
-                : "Wait for the map to finish closing before reading rewards.";
+            return map!.IsOpen ? "Close the map with close_map before interacting with rewards."
+                : "Wait for the map to finish closing before interacting with rewards.";
         if (CardView.Current != null)
-            return "Close the card browsing page with close_card_view before reading rewards.";
+            return "Close the card browsing page with close_card_view before interacting with rewards.";
         if (CardSelection.Current != null)
-            return "Resolve the current card selection before reading rewards; inspect_selection shows its choices.";
-        if (RunUi.CardPreviewsPending()) return "Wait for the card previews to finish before reading rewards.";
-        if (RunUi.Transitioning()) return "Wait for the screen transition before reading rewards.";
+            return "Resolve the current card selection before interacting with rewards; inspect_selection shows its choices.";
+        if (RunUi.CardPreviewsPending()) return "Wait for the card previews to finish before interacting with rewards.";
+        if (RunUi.Transitioning()) return "Wait for the screen transition before interacting with rewards.";
         if (!Exposed(screen)) return "The reward list is covered by a dialog or another screen.";
         if (!RunManager.Instance.ActionQueueSet.IsEmpty)
-            return "Wait for the current action to finish before reading rewards.";
-        return "The reward list is still preparing. Wait before reading it.";
+            return "Wait for the current action to finish before interacting with rewards.";
+        return "The reward list is still preparing. Wait before interacting with it.";
     }
 
     public static NProceedButton? Proceed(NRewardsScreen screen) => screen.GetNodeOrNull<NProceedButton>("ProceedButton") is { } button
@@ -95,7 +109,7 @@ internal sealed class RewardInspection
             {
                 ["id"] = Id(reward), ["type"] = Type(reward),
                 ["text"] = EnglishCardText.Read(() => EnglishCardText.Plain(reward.Description.GetFormattedText())),
-                ["enabled"] = ready && b.IsEnabled && Type(reward) != "unsupported",
+                ["enabled"] = ready && Claimable(b),
                 ["linked_group"] = reward.ParentRewardSet is { } group ? Id(group) : null
             };
             if (full) item["hover_tips"] = EnglishCardText.Read(() => reward.HoverTips.Select(HoverTipText.From).Distinct().ToArray());
@@ -118,13 +132,15 @@ internal sealed class RewardInspection
         return new { status = "visible", title, items = rows, proceed };
     }
 
-    public static async Task Reveal(NRewardsScreen screen, NRewardButton button, Func<Task> frame, Func<bool> unchanged)
+    public static async Task Reveal(NRewardsScreen screen, NRewardButton button, Func<Task> frame, Func<bool> unchanged,
+        Action beginInteraction)
     {
         if (VisibleUi.OnScreen(button.GetNode<Control>("%Label"))) return;
         // Follow the native reward list's wheel target; never click a clipped row through its mask.
         var container = screen.GetNode<Control>("%RewardsContainer");
         float bottom = 35f - container.Size.Y + 400f;
         float target = Mathf.Clamp(35f - button.Position.Y, Mathf.Min(35f, bottom), 35f);
+        beginInteraction();
         HarmonyLib.AccessTools.Field(typeof(NRewardsScreen), "_targetDragPos").SetValue(screen, new Vector2(container.Position.X, target));
         for (int i = 0; i < 30; i++)
         {

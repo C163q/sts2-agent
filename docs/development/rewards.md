@@ -80,9 +80,9 @@ reward_ids 按当前最上层奖励页的 items[].id 筛选。省略或 null 取
 
 佩尔之翼的献祭、浮木的重掷同样使用[卡牌奖励替代按钮](card-selection.md#卡牌奖励替代按钮)，不新增 `claim_reward` 参数，也不把所有替代选项视为跳过。
 
-两类动作沿用[MCP 动作许可](mcp.md#调用和错误语义)：成功读取及完整动作结果可以续接下一步，查看页关闭后无需额外观察。失败或超时后重新读取当前状态再决定。动作始终校验当前原始令牌和界面合法性。
+动作沿用[MCP 动作许可](mcp.md#调用和错误语义)：成功读取及完整动作结果可以续接下一步，查看页关闭后无需额外观察。claim_reward 在滚动／点击前明确拒绝时保留已有许可，错误会说明奖励 ID 已不存在、地图／牌组／选择覆盖、尚未就绪等原因，可按 recovery 纠正或改用合法动作。首次调用仍需已有有效观察。
 
-领取的已知限制：明确未交互的奖励 ID／覆盖页拒绝也会清除已有许可，且公开原因仍较笼统。成功回执校验尚未核对 reward_result.reward_id 与请求 ID 是否一致；详情及修复建议见[领取审阅](../research/2026-11-05-claim-reward-review.md)。
+第一次滚动及点击即标记交互；滚动后拒绝、状态过期、超时和未知结果须重新观察。proceed 的失败沿用重新观察。成功领取响应须先完整校验，并核对 reward_result.reward_id 与本次请求一致；矛盾响应返回 transport_error，清除操作许可。
 
 ## 跳过、前进和地图
 
@@ -94,7 +94,7 @@ Boss 或特殊事件战斗的前进可能进入下一幕、结束本次游戏或
 
 ## 实现与验证
 
-游戏侧由 RewardInspection.cs 采样 UI 和奖励身份、提供共用查看诊断，GameAdapter.Rewards.cs 校验并点击原生按钮，领取与后续界面由原生流程负责。`RewardCompatibility.cs` 只适配目标版本互斥奖励中已核实的信号参数错误，保留原生领取与收尾流程。外部层由 reward_details.py 验证字段与可见性上下文，reward_presets.py 在校验后生成摘要和筛选；参数与许可遵循共用 MCP 流程。
+游戏侧由 RewardInspection.cs 采样 UI 和奖励身份、提供共用查看／领取诊断与行可领取判断，GameAdapter.Rewards.cs 使用共用领取判断并点击原生按钮，领取与后续界面由原生流程负责。`RewardCompatibility.cs` 只适配目标版本互斥奖励中已核实的信号参数错误，保留原生领取与收尾流程。外部层由 reward_details.py 验证字段与可见性上下文，action_details.py 核对领取结果与请求 ID，reward_presets.py 在校验后生成摘要和筛选；参数与许可遵循共用 MCP 流程。
 
 奖励详情的隔离图形核验先按[往返指南](roundtrip.md)准备运行目录，再执行：
 
@@ -106,4 +106,4 @@ Boss 或特殊事件战斗的前进可能进入下一幕、结束本次游戏或
 
 旧全流程入口 [verify_rewards.py](../../tests/game/verifiers/verify_rewards.py) 通过当前工具目录核对发现结果，basic 场景由上述套件准备并验证，随后原生旅行完成夹具清理。其他历史分支的范围见[奖励调研](../research/2026-10-31-rewards.md)。
 
-领取的现状核验使用 [claim_reward_review 清单](../../tests/game/data/gui_suite_claim_reward_review.json)，入口与输出约定同上，替换 --suite 和独立输出目录即可。它采集正常领取、满槽、互斥、嵌套、追回、覆盖与拒绝后的真实返回，并断言当前已知的许可丢失行为；验证范围见[领取开发记录](../research/2026-11-05-claim-reward-development-notes.md)。
+领取验证使用 [claim_reward_review 清单](../../tests/game/data/gui_suite_claim_reward_review.json)，入口与输出约定同上，替换 --suite 和独立输出目录即可。它采集正常领取、满槽、互斥、嵌套、追回、覆盖与拒绝后的真实返回，验证明确拒绝后直接操作、成功滚动及滚动后失败须观察。滚动失败使用双重测试门控扰动，finally 和局间重置恢复；验证范围见[领取修复记录](../research/2026-11-05-claim-reward-recovery-implementation.md)。
