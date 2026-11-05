@@ -1,0 +1,34 @@
+{
+  "scene": "treasure",
+  "treasure": {
+    "status": "visible",
+    "chest": "open",
+    "relic": {
+      "name": "Calling Bell",
+      "enabled": true,
+      "description": "Upon pickup, obtain a unique Curse and 3 Relics.",
+      "hover_tips": [
+        {
+          "title": "Curse of the Bell",
+          "description": "Unplayable.\nEternal."
+        },
+        {
+          "title": "Eternal",
+          "description": "Cannot be removed or transformed from your Deck."
+        },
+        {
+          "title": "Unplayable",
+          "description": "Unplayable cards cannot be played."
+        }
+      ]
+    },
+    "proceed": {
+      "text": "Skip",
+      "enabled": true,
+      "skips_remaining": true
+    }
+  },
+  "screen": {
+    "status": "visible"
+  }
+}

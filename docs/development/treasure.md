@@ -26,6 +26,8 @@
 
 `inspect_treasure()` 只读当前暴露的宝箱房，为可见遗物增加 `description` 与 `hover_tips`。地图、选牌、额外奖励或其他页面覆盖时，`treasure.status` 为 `covered`，`chest`、`relic`、`proceed` 全为 `null`，详情不可用。成功详情可用于后续动作，令牌规则见[MCP 调用语义](mcp.md#调用和错误语义)。多人共享遗物投票尚未适配，不能由该动作自动代选。
 
+明确的读取拒绝保留已有操作许可，首次读取失败仍须取得有效观察。当前拒绝原因较笼统；成功响应校验尚未核对宝箱详情与 screen 的可见性一致，遗物正文也尚未区分不可悬停状态。已知问题、证据范围与候选改进见[宝箱详情审阅](../research/2026-11-06-inspect-treasure-review.md)。
+
 ## 开箱与领取
 
 `loot_treasure()` 默认点击关闭的宝箱，等待原生金币和额外奖励流程，然后点击唯一单人遗物。金币由游戏在开箱时自动发放；工具不补发奖励。它不点击前进。
@@ -67,3 +69,5 @@ python3 scripts/run_roundtrip.py --windowed --treasure-scenario basic
 ```
 
 报告和截图目录必须全新。测试真实开箱、领取并前进，只能对新建隔离实例运行。其他夹具、证据与未测范围见[调研记录](../research/2026-10-31-treasure.md)。
+
+详情专项可使用 [treasure_inspection_review 套件](../../tests/game/data/gui_suite_treasure_inspection_review.json)，按[图形测试指南](gui-testing.md)传入 --suite 和全新 --output 目录。它验证未开／已开／已领取／空箱、覆盖拒绝与纯读取续接；当前断言保留已知的笼统错误基线，后续修复须同步。范围见[开发核验](../research/2026-11-06-inspect-treasure-development-notes.md)。
