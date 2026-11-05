@@ -1,6 +1,6 @@
 # inspect_map 开发核验依据
 
-> 当前状态：源码核验与摘要方向已记录，summary 采用类型分组的 ID 列表，具体字段与基础观察接入仍处于设计讨论。尚未实施修复或新预设，也未新增游戏采样。本记录仅对下述基线负责。
+> 当前状态：源码核验与摘要方向已记录，summary 采用类型分组的 ID 列表；基础观察的 full/default/summary 同样采用分类并增加连接省略 note，具体字段与边界见审阅记录。尚未实施修复或新预设，也未新增游戏采样。本记录仅对下述基线负责。
 
 供用户讨论的表现、问题和方案见[审阅记录](2026-11-05-inspect-map-review.md)；这里记录实现位置和验证边界。
 
@@ -73,10 +73,20 @@
 
 建议使用现有 type 分类，避免为了分组新增游戏机制判断。unknown 的 revealed_type 是已存在的详情，summary 省略；当前可选性独立保留，不根据分组或原始 next 推测。通过 max_steps 裁掉的飞鞋候选仍允许保留在 selectable_nodes 中，与现有 default/full 裁剪契约一致。
 
-summary 的确切字段与基础观察接入尚未确认。后续实施须保持 full/default/selectable 的既有契约，避免将新分组格式用于这些预设。当前记录不是完整实施规格，不授权提前修改行为。
+inspect_map 的 full/default/selectable 保持既有契约，只有新增 summary 使用分组。get_observation 的 full/default/summary 地图主体均使用分组，这是基础观察的明确内容调整；两种工具的 full 不因此等同。字段和边界建议见审阅记录，尚未实施。
+
+## 基础观察接入依据
+
+`GameObservation.Capture` 当前通过 `MapInspection.Summary` 生成五字段 map；`contracts/map.py` 的 MAP_SUMMARY 与 map_details.map_summary 仅接受该结构。公开 notes 由 public_output.py 的 `assemble_details` 统一组装；observation_presets.observation_preset 的 actions_only/top_bar 会移除地图及 notes。
+
+实施需扩展原生观察的地图数据及完整校验，不能只在浏览摘要分派中添加分类，否则 full/default 仍缺少节点信息。建议抽取不依赖 snapshot_id 的地图读取和分组入口，让基础观察与详情复用；不得从基础观察调用 InspectMap 或重入 Observe，也不缓存上一次详情投影。
+
+外层 notes.map 仅在地图主体存在时加入，随后遵循既有预设的保留规则；关闭、牌组覆盖与旅行中无法读取地图的分支不附说明。不得改写 available_actions、用分类推测可选节点或放宽未知图的校验。
 
 ## 示例与检查范围
 
 [basic.full.json](2026-11-05-inspect-map-examples/basic.full.json) 是根据当前字段和校验整理的结构样例，调用参数为 `{"preset":"full"}`。它不来自真实 MCP 调用；未提供截图或冒充完整对局地图。检查 JSON 语法、当前完整地图校验、候选投影与深度裁剪，以及文档链接；不因此核销该工具。
 
 分类摘要草案同样根据该样例整理，调用参数为 `{"preset":"summary","max_steps":1}`，不表示现有工具已支持 summary。文档检查对照当前裁剪后的节点，确认分组覆盖、顺序、上下文与不含详情／连接字段。
+
+基础观察的新增 JSON 是地图与 notes 片段，使用同一样例的整图范围；仅校验字段、分类一致性及英语 note，不作为当前 observation_details 已能接收的原生响应，也不冒充实测。

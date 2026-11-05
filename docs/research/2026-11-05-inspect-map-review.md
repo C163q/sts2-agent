@@ -1,6 +1,6 @@
 # inspect_map 核验与摘要候选
 
-> 当前状态：设计讨论中。summary 已确定采用节点类型分组，仅列节点 ID，省略连接关系及节点详情，max_steps 继续生效。下方给出具体字段与边界建议，基础观察的地图内容尚待讨论。两项正确性问题尚未修复；未新增游戏实测，未修改工具行为，本项未核销。暂无阻塞。
+> 当前状态：设计讨论中。inspect_map.summary 已确定采用节点类型分组，仅列节点 ID，省略连接关系及节点详情，max_steps 继续生效；get_observation 的 full/default/summary 均采用这一地图表达，并注明连接关系已省略、详情使用 inspect_map。具体字段与边界建议见下文。两项正确性问题尚未修复；未新增游戏实测，未修改工具行为，本项未核销。暂无阻塞。
 
 总流程见[工具核验清单](2026-11-02-mcp-tool-review.md)，实现证据与未验证范围见[开发核验](2026-11-05-inspect-map-development-notes.md)。
 
@@ -63,10 +63,47 @@
 - `selectable_nodes` 保留原生候选，即使飞鞋候选不在 max_steps 连线子图中，也不删掉或擅自加入分类范围；它仍可以用于合法旅行。需要候选详情时使用 selectable。
 - `max_steps>0` 时保留现有输出中的 max_steps，`0` 时不增加该字段。`full/default/selectable` 保持原有含义。
 
-## 尚待讨论的契约
+## 基础观察的地图契约
 
-- 确认上一节的字段名、上下文与具体边界建议。
-- `get_observation` 的地图展开内容与摘要须一起决定，复用同次地图读取和表达入口；`actions_only`、`top_bar` 仍按各自用途精简。完整图是否进入基础观察、不同预设分别使用哪种地图表示，尚未确认。
+已确认：地图展开时，`get_observation` 的 full/default/summary 在 `map` 内均采用 inspect_map.summary 的类型分组策略，不返回连接关系或节点详情，并附带 note 指向 inspect_map。
+
+具体装配规则如下：
+
+- `map` 保留 `status/act/current_node/can_travel/selectable_nodes`，增加 `nodes_by_type`，不重复放入外层的 scene/screen。三种预设的分类内容相同，普通空值仍遵循各自通用规则。
+- 基础观察不新增 max_steps 参数，使用不裁剪的整幕范围，即 inspect_map 的 max_steps:0。之前的 inspect_map 调用所用预设、深度不会影响下一次基础观察。
+- note 放在外层 `notes.map`，文字为 `Map connections omitted; use inspect_map for details.`，仅在实际返回地图内容时加入，并与其他适用 notes 合并。
+- `actions_only/top_bar` 沿用现有用途，不增加地图主体或这条 note。
+- 基础观察只读取已展开且未被更高层覆盖的地图，不主动打开地图。地图关闭、被牌组等页面盖住或无法读取时，沿用现有 map 空值和通用过滤规则，也不附这条 note。
+- 顶栏、场景、可用操作和其他主体继续遵循各自预设，统一仅针对地图部分。
+
+以下为同一五节点示例在基础观察中的地图及 note 片段，不是完整 get_observation 返回，也不是实际采样：
+
+```json
+{
+  "map": {
+    "status": "visible",
+    "act": 1,
+    "current_node": "map:1:1:2",
+    "can_travel": true,
+    "selectable_nodes": ["map:1:2:1", "map:1:2:3"],
+    "nodes_by_type": {
+      "ancient": ["map:1:0:3"],
+      "monster": ["map:1:1:2"],
+      "unknown": ["map:1:2:1"],
+      "rest_site": ["map:1:2:3"],
+      "boss": ["map:1:3:3"]
+    }
+  },
+  "notes": {
+    "map": "Map connections omitted; use inspect_map for details."
+  }
+}
+```
+
+## 定稿与实施边界
+
+- inspect_map 的具体字段名与分组边界建议见“具体输出建议”；基础观察采用上述已确认的分类方向。
+- 地图分类与基础观察复用读取和分类入口；不以调用会打开页面的 inspect_map 来实现基础观察。两项正确性修复与预设接入仍待实施和验证，不因契约记录而核销。
 - 暂不增加自动推荐路线、隐藏问号预测或自动选路。
 
 ## 本阶段验证
