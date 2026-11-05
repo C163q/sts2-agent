@@ -1,0 +1,29 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "select_card",
+    "selection_option",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "inspect_targets"
+  ],
+  "selection": {
+    "type": "reward",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": []
+  },
+  "reward_result": {
+    "reward_id": 5,
+    "status": "pending"
+  }
+}

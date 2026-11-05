@@ -1,0 +1,35 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "claim_reward",
+    "proceed",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_rewards"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 0,
+          "name": "Bash"
+        },
+        "pile": "deck",
+        "type": "card_added",
+        "sequence": 1
+      }
+    ]
+  },
+  "reward_result": {
+    "reward_id": 21,
+    "status": "claimed"
+  }
+}

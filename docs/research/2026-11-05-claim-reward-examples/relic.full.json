@@ -1,0 +1,53 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "claim_reward",
+    "proceed",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_targets",
+    "inspect_rewards"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "relic": {
+          "name": "Whetstone"
+        },
+        "type": "relic_obtained",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 1,
+          "name": "Strike+"
+        },
+        "pile": "deck",
+        "type": "card_upgraded",
+        "sequence": 2
+      },
+      {
+        "card": {
+          "id": 2,
+          "name": "Strike+"
+        },
+        "pile": "deck",
+        "type": "card_upgraded",
+        "sequence": 3
+      }
+    ]
+  },
+  "reward_result": {
+    "reward_id": 3,
+    "status": "claimed"
+  }
+}

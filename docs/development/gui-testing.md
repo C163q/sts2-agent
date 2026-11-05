@@ -45,6 +45,7 @@
 | 点击候选的选中／取消、替换、自动提交、预览、未知身份、滚动及拒绝恢复 | [select_card_review](../../tests/game/data/gui_suite_select_card_review.json)；[实施与验证](../research/2026-11-05-selection-feedback-implementation.md) |
 | 选择按钮的确认、返回、放弃、跳过、整包、奖励替代及明确拒绝后续接 | [selection_option_review](../../tests/game/data/gui_suite_selection_option_review.json)；[审阅](../research/2026-11-05-selection-option-review.md)。grid_manual 包含双重门控的禁用按钮／过期优先检查，人工扰动只用于验证拒绝，不代表自然游玩出现过同类静止按钮 |
 | 奖励预设与 ID 筛选、基础观察对照、拒绝续接及旧领取流程 | [reward_inspection_review](../../tests/game/data/gui_suite_reward_inspection_review.json)；[实施与验证](../research/2026-11-05-reward-inspection-presets-implementation.md) |
+| 领取结果、满槽、互斥、嵌套、追回与拒绝后许可现状 | [claim_reward_review](../../tests/game/data/gui_suite_claim_reward_review.json)；[审阅依据](../research/2026-11-05-claim-reward-development-notes.md)。当前断言基线中的拒绝后许可丢失，修复时须同步新预期 |
 | 地图旅行的到达回执、拒绝续接、滚动后失败与赐福鹿角 | [travel_review](../../tests/game/data/gui_suite_travel_review.json)；[修复与验证](../research/2026-11-05-travel-recovery-implementation.md) |
 | 地图关闭的最小结果、具体拒绝与许可续接、占卜无图像依赖及旧独立检查 | [close_map_review](../../tests/game/data/gui_suite_close_map_review.json)；[关闭结果实施](../research/2026-11-05-close-map-results-implementation.md)。combat 的第二步在同一就绪战斗中运行旧独立验证器 |
 | 地图分类、深度裁剪、飞鞋、幕起点、双 Boss、覆盖隐藏及拒绝续接 | [map_summary](../../tests/game/data/gui_suite_map_summary.json)；[地图交付](../research/2026-11-05-map-summary-implementation.md) |

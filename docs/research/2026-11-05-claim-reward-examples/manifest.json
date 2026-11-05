@@ -1,0 +1,197 @@
+[
+  {
+    "file": "gold.default.json",
+    "description": "金币领取，default",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/basic/audit/evidence.json",
+    "index": 3,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "default",
+      "reward_id": 0
+    },
+    "image_count": 0,
+    "sha256": "df4460930c2e18971f3b3b2cef07dff84faf4c4d434e9d53c70bfae2dfb87206"
+  },
+  {
+    "file": "gold-linked.full.json",
+    "description": "金币领取，互斥奖励组同时移除",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/linked/audit/evidence.json",
+    "index": 2,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 12
+    },
+    "image_count": 0,
+    "sha256": "6eb7ed8d38a441e1d5345b0c29e498dafab157f9a35e61d030340b7cc09f569b"
+  },
+  {
+    "file": "potion.full.json",
+    "description": "取得药水",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/basic/audit/evidence.json",
+    "index": 7,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 2
+    },
+    "image_count": 0,
+    "sha256": "0a8f24d622b96d4acafd20af579b2c0dc445bec5255671b1f4583929098d010e"
+  },
+  {
+    "file": "special-card.full.json",
+    "description": "指定卡牌加入牌组",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/basic/audit/evidence.json",
+    "index": 8,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 4
+    },
+    "image_count": 0,
+    "sha256": "4e7269664f37500464d9853ce7921a3563bfd64af337dd1bcfa5f802645c0469"
+  },
+  {
+    "file": "relic.full.json",
+    "description": "遗物与永久卡牌升级",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/basic/audit/evidence.json",
+    "index": 9,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 3
+    },
+    "image_count": 0,
+    "sha256": "b183ca662504cfe54082117983931b919730ca0310279e8776f9519aadc82c46"
+  },
+  {
+    "file": "card-choice.full.json",
+    "description": "打开卡牌奖励",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/basic/audit/evidence.json",
+    "index": 10,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 5
+    },
+    "image_count": 0,
+    "sha256": "28bd9077067e3aaa5461db0f0e34b89ce7a9154ed6aa63b02cece6ce43e8e779"
+  },
+  {
+    "file": "full-belt.full.json",
+    "description": "满药水槽，not_claimed",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/full/audit/evidence.json",
+    "index": 2,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 8
+    },
+    "image_count": 0,
+    "sha256": "1cd0b25cdbdca3a80f4ef6184c817b6ab97454212814323e1c7694369b11c600"
+  },
+  {
+    "file": "nested-rewards.full.json",
+    "description": "遗物打开嵌套奖励，pending/action_completed",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/nested/audit/evidence.json",
+    "index": 2,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 15
+    },
+    "image_count": 0,
+    "sha256": "f356ed0bcc2676583b6530010678ec4197f6ee58a7de4f86c095782e9153255f"
+  },
+  {
+    "file": "relic-transform.full.json",
+    "description": "遗物打开变牌选择",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/transform/audit/evidence.json",
+    "index": 2,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 29
+    },
+    "image_count": 0,
+    "sha256": "8902d31f4456a223cdae180dd0896417659d428f7b6bfa5a56fbaad917321947"
+  },
+  {
+    "file": "stolen-card-returned.full.json",
+    "description": "追回被偷的卡牌",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/returned/audit/evidence.json",
+    "index": 2,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 21
+    },
+    "image_count": 0,
+    "sha256": "70d452ecf3a4e8c9d995ed1c6abc3b7a86aca7e6e96826c8ccd8085e2b0197f6"
+  },
+  {
+    "file": "already-claimed.full.json",
+    "description": "重复领取已经消失的奖励",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/basic/audit/evidence.json",
+    "index": 4,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 0
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "after-rejection.full.json",
+    "description": "拒绝后合法领取仍要求观察",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/basic/audit/evidence.json",
+    "index": 5,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 2
+    },
+    "image_count": 0,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "地图覆盖时拒绝领取",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/covered/audit/evidence.json",
+    "index": 3,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 23
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "卡牌选择覆盖时拒绝领取",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/basic/audit/evidence.json",
+    "index": 11,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 5
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "wrong-scene.full.json",
+    "description": "战斗中没有奖励页",
+    "source": ".tmp/2026-11-05-claim-reward-review/gui/no_rewards/audit/evidence.json",
+    "index": 2,
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 0
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  }
+]

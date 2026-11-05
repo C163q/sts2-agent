@@ -82,6 +82,8 @@ reward_ids 按当前最上层奖励页的 items[].id 筛选。省略或 null 取
 
 两类动作沿用[MCP 动作许可](mcp.md#调用和错误语义)：成功读取及完整动作结果可以续接下一步，查看页关闭后无需额外观察。失败或超时后重新读取当前状态再决定。动作始终校验当前原始令牌和界面合法性。
 
+领取的已知限制：明确未交互的奖励 ID／覆盖页拒绝也会清除已有许可，且公开原因仍较笼统。成功回执校验尚未核对 reward_result.reward_id 与请求 ID 是否一致；详情及修复建议见[领取审阅](../research/2026-11-05-claim-reward-review.md)。
+
 ## 跳过、前进和地图
 
 `proceed()` 只点击奖励页当前暴露且启用的原生按钮。尚有奖励时常显示 Skip，全部领取后列表淡出、按钮显示 Proceed；没有掉落的终结奖励页也能提供 Proceed。剩余条目的领取由独立 claim_reward 操作决定。
@@ -103,3 +105,5 @@ Boss 或特殊事件战斗的前进可能进入下一幕、结束本次游戏或
 输出目录须全新；套件拥有测试游戏与存档，会实际读取、领取、覆盖奖励并旅行离开房间，用于核对预设、ID 筛选、基础观察对照、完整列表、稳定身份、互斥／嵌套／追回、空列表与错误后续接，并运行旧领取流程。范围及证据见[奖励详情实施](../research/2026-11-05-reward-inspection-presets-implementation.md)。
 
 旧全流程入口 [verify_rewards.py](../../tests/game/verifiers/verify_rewards.py) 通过当前工具目录核对发现结果，basic 场景由上述套件准备并验证，随后原生旅行完成夹具清理。其他历史分支的范围见[奖励调研](../research/2026-10-31-rewards.md)。
+
+领取的现状核验使用 [claim_reward_review 清单](../../tests/game/data/gui_suite_claim_reward_review.json)，入口与输出约定同上，替换 --suite 和独立输出目录即可。它采集正常领取、满槽、互斥、嵌套、追回、覆盖与拒绝后的真实返回，并断言当前已知的许可丢失行为；验证范围见[领取开发记录](../research/2026-11-05-claim-reward-development-notes.md)。

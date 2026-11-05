@@ -1,0 +1,130 @@
+[
+  {
+    "name": "basic",
+    "scenarios": {
+      "navigation": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_claim_reward_review.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "full",
+    "scenarios": {
+      "reward": "full"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_claim_reward_review.py",
+        "args": [
+          "--scenario",
+          "full"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "linked",
+    "scenarios": {
+      "reward": "linked"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_claim_reward_review.py",
+        "args": [
+          "--scenario",
+          "linked"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nested",
+    "scenarios": {
+      "reward": "nested"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_claim_reward_review.py",
+        "args": [
+          "--scenario",
+          "nested"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "returned",
+    "scenarios": {
+      "reward": "returned"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_claim_reward_review.py",
+        "args": [
+          "--scenario",
+          "returned"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "covered",
+    "scenarios": {
+      "navigation": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_claim_reward_review.py",
+        "args": [
+          "--scenario",
+          "covered"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "no_rewards",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_claim_reward_review.py",
+        "args": [
+          "--scenario",
+          "no_rewards"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "transform",
+    "scenarios": {
+      "reward": "unsupported"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_claim_reward_review.py",
+        "args": [
+          "--scenario",
+          "transform"
+        ]
+      }
+    ]
+  }
+]
