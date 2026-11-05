@@ -88,20 +88,8 @@ internal sealed partial class GameAdapter
         }
         var run = RunManager.Instance.DebugOnlyGetState();
         NRewardButton? row = null;
-        NButton? button;
-        if (claim)
-        {
-            if (rewardInspection.ClaimUnavailableReason(screen, rewardId, out row) is { } reason) return RejectClaim(reason);
-            button = row;
-        }
-        else
-        {
-            if (screen == null || !RewardInspection.Ready(screen) || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
-                return FileMailbox.Error(request.Id, "illegal_action", "Return to an available local rewards screen.");
-            button = RewardInspection.Proceed(screen);
-            if (button?.IsEnabled != true)
-                return FileMailbox.Error(request.Id, "illegal_action", "The requested reward or proceed button is unavailable.");
-        }
+        if (rewardInspection.ClaimUnavailableReason(screen, rewardId, out row) is { } unavailable) return RejectClaim(unavailable);
+        NButton? button = row;
         bool finished = row == null;
         bool? claimed = null;
         var potionReward = row?.Reward as PotionReward;

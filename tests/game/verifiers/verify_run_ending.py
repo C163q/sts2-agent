@@ -79,7 +79,7 @@ async def verify(args):
                         assert any(event['type'] == 'hp_changed' and event['target']['kind'] == 'player'
                                    and event['before'] > 0 and event['after'] == 0
                                    for event in receipt['transition']['events']), receipt
-                        assert receipt['available_actions'] == [], receipt
+                        assert not set(receipt['available_actions']) & GAME_ACTIONS, receipt
                         await call('run_result_option', {'option_id': 'continue'}, error='observation_required')
                         data = await observe_after_action(call, receipt)
                         break

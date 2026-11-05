@@ -26,8 +26,7 @@ internal sealed partial class GameAdapter
         if (screen == null || !DivinationInspection.Ready(screen))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available divination board.");
         if (inspect) return InspectionSuccess(request, before, new { divination = DivinationInspection.Read() });
-        NClickableControl? button = request.Operation == "proceed" ? DivinationInspection.Proceed(screen)
-            : !DivinationInspection.Playing(screen) ? null
+        NClickableControl? button = !DivinationInspection.Playing(screen) ? null
             : tool != null ? DivinationInspection.Tool(screen, tool)
             : DivinationInspection.Cells(screen).SingleOrDefault(c => c.Entity.X == x && c.Entity.Y == y && DivinationInspection.Clickable(c));
         if (button?.IsEnabled != true)

@@ -352,7 +352,8 @@ SPECS = (
         records_events=True,
         reader='transition_details:end_turn_details',
         parser='reward_details:reward_arguments',
-        parser_operation=True),
+        parser_operation=True,
+        unsubmitted_rejection_unchanged=True),
     ToolSpec(
         name='loot_treasure',
         schema=LOOT_SCHEMA,

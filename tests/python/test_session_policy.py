@@ -15,6 +15,46 @@ def requests():
 
 
 class SessionPolicyTests(unittest.IsolatedAsyncioTestCase):
+    async def test_proceed_preserves_only_proven_unsubmitted_rejections(self):
+        for code, submitted, retained in [
+                ('illegal_action', False, True), ('invalid_request', False, True),
+                ('illegal_action', None, False), ('illegal_action', True, False),
+                ('stale_state', False, False), ('timeout', False, False), ('game_error', False, False)]:
+            with self.subTest(code=code, submitted=submitted):
+                error = {'code': code, 'public_message': 'Close the map with close_map before proceeding.'}
+                if submitted is not None:
+                    error['action_submitted'] = submitted
+                tools = GameTools(ContractReply({}, error)); tools.snapshot_id = 'existing'
+                result = await tools.proceed({'preset': 'full'})
+                self.assertEqual(tools.snapshot_id, 'existing' if retained else None)
+                if retained:
+                    self.assertEqual(result['error']['recovery'],
+                                     'correct_request' if code == 'invalid_request' else 'choose_legal_action')
+                    self.assertIn('close_map', result['error']['message'])
+        client = ContractReply({}, {'code': 'illegal_action', 'action_submitted': False})
+        tools = GameTools(client)
+        self.assertEqual((await tools.proceed())['error']['code'], 'observation_required')
+        self.assertEqual(client.calls, [])
+
+    async def test_proceed_cannot_restore_permission_after_interaction_or_bad_response(self):
+        class Interacted(ContractReply):
+            def call(self, *args, **kwargs):
+                result = super().call(*args, **kwargs)
+                result['execution'] = {'ui_interaction_started': True,
+                    'action_submission_observed': False, 'state_captured': True}
+                return result
+
+        for proof in (None, False):
+            error = {'code': 'illegal_action'}
+            if proof is not None: error['action_submitted'] = proof
+            tools = GameTools(Interacted({}, error)); tools.snapshot_id = 'existing'
+            result = await tools.proceed()
+            self.assertIsNone(tools.snapshot_id)
+            self.assertEqual(result['error']['code'], 'transport_error' if proof is False else 'illegal_action')
+        tools = GameTools(ContractReply({})); tools.snapshot_id = 'existing'
+        self.assertEqual((await tools.proceed())['error']['code'], 'transport_error')
+        self.assertIsNone(tools.snapshot_id)
+
     async def test_selection_view_retains_only_explicit_unchanged_rejections(self):
         for code, unchanged, retained in [
                 ('illegal_action', True, True), ('invalid_request', True, True),

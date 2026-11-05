@@ -19,7 +19,7 @@ internal sealed partial class GameAdapter
         var context = EpilogueInspection.Current;
         var button = context == null ? null : EpilogueInspection.Button(context);
         if (context == null || !EpilogueInspection.Ready(context) || button == null
-            || EpilogueInspection.IsProceed(button) != (request.Operation == "proceed"))
+            || EpilogueInspection.IsProceed(button))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested dialogue action is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
         UiChanged();

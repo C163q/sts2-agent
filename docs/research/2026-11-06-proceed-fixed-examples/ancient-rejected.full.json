@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Choose an ancient's gift with choose_ancient_option before proceeding.",
+    "recovery": "choose_legal_action"
+  }
+}

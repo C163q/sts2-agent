@@ -28,20 +28,8 @@ internal sealed partial class GameAdapter
                 return ResponseBuilder.Error(request.Id, "illegal_action", unavailable, publicMessage: true);
             return InspectionSuccess(request, before, TreasureInspection.Inspect());
         }
-        NButton? button;
-        if (loot)
-        {
-            if (TreasureInspection.LootUnavailableReason(room, openOnly, out button) is { } unavailable)
-                return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", unavailable);
-        }
-        else
-        {
-            if (room == null || !TreasureInspection.Exposed(room) || !TreasureInspection.Ready(room))
-                return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player treasure room.");
-            button = TreasureInspection.Proceed(room);
-            if (button?.IsEnabled != true)
-                return FileMailbox.Error(request.Id, "illegal_action", "This treasure action is unavailable.");
-        }
+        if (TreasureInspection.LootUnavailableReason(room, openOnly, out var button) is { } rejection)
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", rejection);
         bool closed = !TreasureInspection.Opened(room!);
         var run = RunManager.Instance.DebugOnlyGetState();
         string? Boundary() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())

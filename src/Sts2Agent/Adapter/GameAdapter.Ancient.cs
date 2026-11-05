@@ -24,7 +24,7 @@ internal sealed partial class GameAdapter
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player ancient.");
         if (inspect) return InspectionSuccess(request, before, new { ancient = ancientInspection.Read(full: true) });
         NClickableControl? button = request.Operation == "advance_dialogue" ? AncientInspection.Continue(context)
-            : request.Operation == "proceed" ? AncientInspection.Proceed(context) : ancientInspection.Find(context, optionId);
+            : ancientInspection.Find(context, optionId);
         if (button?.IsEnabled != true || button is MegaCrit.Sts2.Core.Nodes.Events.NEventOptionButton option
             && (!AncientInspection.Clickable(option) || AncientInspection.Continue(context) != null))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested dialogue or option is unavailable.");

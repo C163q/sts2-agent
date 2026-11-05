@@ -43,8 +43,7 @@ internal sealed partial class GameAdapter
         if (request.Operation == "buy_item" && (!context.Inventory.IsOpen || slot == null || !ShopInspection.Purchasable(slot)))
             return FileMailbox.Error(request.Id, "illegal_action", "The observed shop item is unavailable.");
         if (request.Operation == "open_shop" && (context.Inventory.IsOpen || !context.Merchant.IsEnabled || !ShopInspection.MerchantShown(context))
-            || request.Operation == "close_shop" && (!context.Inventory.IsOpen || !ShopInspection.Back(context).IsEnabled)
-            || request.Operation == "proceed" && (context.Inventory.IsOpen || !context.Proceed.IsEnabled || !VisibleUi.OnScreen(context.Proceed)))
+            || request.Operation == "close_shop" && (!context.Inventory.IsOpen || !ShopInspection.Back(context).IsEnabled))
             return FileMailbox.Error(request.Id, "illegal_action", "This shop button is unavailable.");
         if (slot != null) { slot.Entry.PurchaseCompleted += Purchased; slot.Entry.PurchaseFailed += Failed; }
         try
@@ -54,7 +53,6 @@ internal sealed partial class GameAdapter
                 submitted = (Task)AccessTools.Method(typeof(NMerchantSlot), "OnSelected").Invoke(slot, null)!;
             else if (request.Operation == "open_shop") context.Merchant.ForceClick();
             else if (request.Operation == "close_shop") ShopInspection.Back(context).ForceClick();
-            else context.Proceed.ForceClick();
             var (after, reason) = await ActionObservation(() =>
             {
                 if (!ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())) return "interrupted";

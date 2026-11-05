@@ -127,13 +127,11 @@ internal sealed partial class GameAdapter
         if (DivinationInspection.Current is { } divination && DivinationInspection.Exposed(divination))
         {
             if (DivinationInspection.Playing(divination)) { actions.Add("set_divination_tool"); actions.Add("divine"); }
-            else if (DivinationInspection.Ready(divination) && DivinationInspection.Proceed(divination)?.IsEnabled == true) actions.Add("proceed");
         }
         if (EventInspection.Current is { } currentEvent && EventInspection.Ready(currentEvent))
         {
             if (currentEvent.Layout.OptionButtons.Any(b => !ReferenceEquals(b, EventInspection.Proceed(currentEvent)) && EventInspection.Clickable(b)))
                 actions.Add("choose_event_option");
-            if (EventInspection.Proceed(currentEvent) is { } button && EventInspection.Clickable(button)) actions.Add("proceed");
         }
         if (AncientInspection.Current is { } ancient && AncientInspection.Ready(ancient))
         {
@@ -141,7 +139,6 @@ internal sealed partial class GameAdapter
             else
             {
                 if (ancient.Layout.OptionButtons.Any(b => !b.Option.IsProceed && AncientInspection.Clickable(b))) actions.Add("choose_ancient_option");
-                if (AncientInspection.Proceed(ancient) is { } button && AncientInspection.Clickable(button)) actions.Add("proceed");
             }
         }
         if (ShopInspection.Current is { } shop && ShopInspection.Ready(shop))
@@ -149,7 +146,6 @@ internal sealed partial class GameAdapter
             if (!shop.Inventory.IsOpen)
             {
                 if (shop.Merchant.IsEnabled && ShopInspection.MerchantShown(shop)) actions.Add("open_shop");
-                if (shop.Proceed.IsEnabled && VisibleUi.OnScreen(shop.Proceed)) actions.Add("proceed");
             }
             else
             {
@@ -160,19 +156,16 @@ internal sealed partial class GameAdapter
         if (TreasureInspection.Current is { } treasure)
         {
             if (TreasureInspection.CanLoot(treasure)) actions.Add("loot_treasure");
-            if (TreasureInspection.Ready(treasure) && TreasureInspection.Proceed(treasure)?.IsEnabled == true) actions.Add("proceed");
         }
         if (RestSiteInspection.Current is { } rest && RestSiteInspection.Ready(rest)
             && RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
         {
             if (RestSiteInspection.Buttons(rest).Any(RestSiteInspection.Clickable)) actions.Add("choose_rest_option");
-            if (RestSiteInspection.Proceed(rest)?.IsEnabled == true) actions.Add("proceed");
         }
         if (RewardInspection.Current is { } rewards && RewardInspection.Ready(rewards)
             && RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
         {
             if (RewardInspection.Buttons(rewards).Any(RewardInspection.Claimable)) actions.Add("claim_reward");
-            if (RewardInspection.Proceed(rewards)?.IsEnabled == true) actions.Add("proceed");
         }
         if (EventConfirmation.Current is { } dialog && EventConfirmation.Exposed(dialog))
         {
@@ -188,13 +181,15 @@ internal sealed partial class GameAdapter
         {
             actions.Clear();
             if (EpilogueInspection.Ready(epilogue) && EpilogueInspection.Button(epilogue) is { } epilogueButton)
-                actions.Add(EpilogueInspection.IsProceed(epilogueButton) ? "proceed" : "advance_dialogue");
+                if (!EpilogueInspection.IsProceed(epilogueButton)) actions.Add("advance_dialogue");
         }
         if (ending != null)
         {
             actions.Clear();
             if (runResultInspection.Ready(ending)) actions.Add("run_result_option");
         }
+
+        if (ProceedUnavailableReason(out _) == null) actions.Add("proceed");
 
         if (ending != null)
         {

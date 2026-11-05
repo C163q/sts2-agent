@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Resolve the event with choose_event_option before proceeding; inspect_event shows its options.",
+    "recovery": "choose_legal_action"
+  }
+}

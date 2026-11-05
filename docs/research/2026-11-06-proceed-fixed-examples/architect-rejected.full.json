@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Finish the Architect dialogue with advance_dialogue before proceeding.",
+    "recovery": "choose_legal_action"
+  }
+}

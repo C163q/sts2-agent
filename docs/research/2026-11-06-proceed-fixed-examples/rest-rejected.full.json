@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Use choose_rest_option to complete a rest site activity before proceeding.",
+    "recovery": "choose_legal_action"
+  }
+}

@@ -1,4 +1,4 @@
-"""Audit current proceed routing, native boundaries and rejection recovery."""
+"""Verify proceed routing, native boundaries and explicit rejection recovery."""
 from scripts._bootstrap import ROOT
 import argparse
 import asyncio
@@ -14,7 +14,7 @@ from sts2_mcp.output.available_tools import GAME_ACTIONS
 from tests.game.support.verification_runtime import ensure_run, ipc_directory
 
 SCENARIOS = ('combat', 'reward_skip', 'reward_empty', 'nested_reward', 'treasure_skip', 'treasure_collected',
-    'rest', 'tent', 'shop', 'event', 'ancient', 'divination', 'boss1', 'event_resume', 'architect')
+    'rest', 'tent', 'shop', 'event', 'ancient', 'divination', 'boss1', 'event_resume', 'selection', 'confirmation', 'architect')
 
 
 async def verify(args):
@@ -67,10 +67,13 @@ async def verify(args):
                     assert time.monotonic() < deadline, value
                     await asyncio.sleep(.1)
 
-            async def reject(label):
+            async def reject(label, hint):
+                previous = await native('get_state')
+                assert 'proceed' not in previous['available_actions'], previous
                 value = await call('proceed', error='illegal_action', label=label)
-                assert value['error'] == {'code': 'illegal_action', 'message': 'The requested action is unavailable.',
-                    'recovery': 'get_observation'}, value
+                assert value['error']['recovery'] == 'choose_legal_action', value
+                assert hint in value['error']['message'], value
+                assert evidence[-1]['native_error']['action_submitted'] is False, evidence[-1]
                 assert evidence[-1]['execution']['ui_interaction_started'] is False, evidence[-1]
                 return value
 
@@ -92,15 +95,18 @@ async def verify(args):
             scenario = args.scenario
 
             if scenario == 'combat':
-                await reject('no_proceed_in_combat')
-                await call('end_turn', error='observation_required', label='after_combat_rejection')
-                await observed(); await call('end_turn')
+                await reject('no_proceed_in_combat', 'combat')
+                await call('end_turn', label='after_combat_rejection')
+                stale = await asyncio.to_thread(raw.call, 'proceed', 'not-current')
+                record({'native_operation': 'proceed', 'label': 'stale_state', 'result': stale})
+                assert stale['error']['code'] == 'stale_state' and 'action_submitted' not in stale['error'], stale
                 return
             if scenario in {'reward_skip', 'reward_empty'}:
                 if scenario == 'reward_skip':
-                    await call('inspect_map'); await reject('reward_map_covered')
-                    await call('proceed', error='observation_required', label='after_reward_rejection')
-                    await call('close_map')
+                    await call('inspect_map'); await reject('reward_map_covered', 'close_map')
+                    await call('close_map', label='after_reward_rejection')
+                    await call('inspect_deck'); await reject('reward_deck_covered', 'close_card_view')
+                    await call('close_card_view', label='after_deck_rejection')
                 await observed('proceed')
                 result = await proceed('reward_skip' if scenario == 'reward_skip' else 'empty_reward', preset='default' if scenario == 'reward_empty' else 'full')
                 assert result['screen']['view'] == 'map', result
@@ -114,37 +120,29 @@ async def verify(args):
                 assert parent['rewards']['items'] == [], parent
                 await proceed('parent_reward_leave'); await leave_map(); return
             if scenario in {'treasure_skip', 'treasure_collected'}:
-                await reject('closed_chest')
-                await call('loot_treasure', error='observation_required', label='after_chest_rejection')
-                await call('inspect_treasure')
-                await call('loot_treasure', {'open_only': scenario == 'treasure_skip'})
+                await reject('closed_chest', 'loot_treasure')
+                await call('loot_treasure', {'open_only': scenario == 'treasure_skip'}, label='after_chest_rejection')
                 result = await proceed('unclaimed_relic_skip' if scenario == 'treasure_skip' else 'collected_chest_leave')
                 assert result['screen']['view'] == 'map', result
                 await leave_map(); return
             if scenario in {'rest', 'tent'}:
-                await reject('unused_rest')
-                await call('choose_rest_option', {'option_id': 'HEAL'}, 'observation_required', 'after_rest_rejection')
-                await call('inspect_rest_site'); await call('choose_rest_option', {'option_id': 'HEAL'})
+                await reject('unused_rest', 'choose_rest_option')
+                await call('choose_rest_option', {'option_id': 'HEAL'}, label='after_rest_rejection')
                 if scenario == 'tent':
                     current = await observed('proceed'); assert current['rest_site']['options'], current
                 await proceed('tent_leave_remaining' if scenario == 'tent' else 'rest_leave')
                 await leave_map(); return
             if scenario == 'shop':
-                await call('open_shop'); await reject('shop_inventory_open')
-                await call('close_shop', error='observation_required', label='after_shop_rejection')
-                await call('inspect_shop'); await call('close_shop')
+                await call('open_shop'); await reject('shop_inventory_open', 'close_shop')
+                await call('close_shop', label='after_shop_rejection')
                 await proceed('shop_leave'); await leave_map(); return
             if scenario == 'event':
-                await reject('unfinished_event')
-                await call('choose_event_option', {'option_id': state['event']['options'][1]['id']}, 'observation_required', 'after_event_rejection')
-                details = await call('inspect_event')
-                await call('choose_event_option', {'option_id': details['event']['options'][1]['id']})
+                await reject('unfinished_event', 'choose_event_option')
+                await call('choose_event_option', {'option_id': state['event']['options'][1]['id']}, label='after_event_rejection')
                 await proceed('event_leave'); await leave_map(); return
             if scenario == 'ancient':
-                await reject('unfinished_ancient')
-                await call('choose_ancient_option', {'option_id': state['ancient']['options'][0]['id']}, 'observation_required', 'after_ancient_rejection')
-                await call('inspect_ancient')
                 details = await observed('choose_ancient_option')
+                await reject('unfinished_ancient', 'choose_ancient_option')
                 option = next(option for option in details['ancient']['options'] if option['enabled'])
                 await call('choose_ancient_option', {'option_id': option['id']})
                 for _ in range(15):
@@ -156,9 +154,8 @@ async def verify(args):
                 await proceed('ancient_leave'); await leave_map(); return
             if scenario == 'divination':
                 await call('choose_event_option', {'option_id': state['event']['options'][0]['id']})
-                await reject('unfinished_divination')
-                await call('set_divination_tool', {'tool': 'small'}, 'observation_required', 'after_divination_rejection')
-                await call('inspect_event'); await call('set_divination_tool', {'tool': 'small'})
+                await reject('unfinished_divination', 'divine')
+                await call('set_divination_tool', {'tool': 'small'}, label='after_divination_rejection')
                 for attempt in range(15):
                     current = await observed()
                     if 'proceed' in current['available_actions']: break
@@ -169,6 +166,19 @@ async def verify(args):
                     await call('divine', {'x': x, 'y': y})
                 else: raise AssertionError('Divination did not finish')
                 await proceed('divination_leave'); await leave_map(); return
+            if scenario == 'selection':
+                await call('choose_rest_option', {'option_id': 'SMITH'})
+                await reject('rest_selection_covered', 'selection_option')
+                await call('selection_option', {'option_id': 'cancel'}, label='after_selection_rejection')
+                return
+            if scenario == 'confirmation':
+                await call('choose_event_option', {'option_id': state['event']['options'][1]['id']})
+                current = await observed('choose_event_option')
+                option = next(o for o in current['event']['options'] if o['enabled'] and o['lethal_warning'])
+                await call('choose_event_option', {'option_id': option['id']})
+                await reject('event_confirmation_covered', 'respond_to_confirmation')
+                await call('respond_to_confirmation', {'option': 'cancel'}, label='after_confirmation_rejection')
+                return
             if scenario == 'boss1':
                 result = await proceed('next_act')
                 assert result['scene'] == 'map' and result['screen']['view'] == 'map', result
@@ -195,9 +205,8 @@ async def verify(args):
                 current = await observed()
                 assert current['scene'] == 'epilogue', current
                 if 'advance_dialogue' in current['available_actions']:
-                    await reject('architect_dialogue_not_finished')
-                    await call('advance_dialogue', error='observation_required', label='after_architect_rejection')
-                    await observed()
+                    await reject('architect_dialogue_not_finished', 'advance_dialogue')
+                    await call('advance_dialogue', label='after_architect_rejection')
                 for _ in range(20):
                     current = await observed()
                     if 'proceed' in current['available_actions']: break
@@ -207,8 +216,8 @@ async def verify(args):
                 result = await proceed('architect_run_won', reason='run_won')
                 assert not set(result['available_actions']) & GAME_ACTIONS, result
                 await call('proceed', error='observation_required', label='terminal_has_no_permission')
-                await call('inspect_run_result'); await reject('result_requires_result_tool')
-                await call('run_result_option', {'option_id': 'continue'}, 'observation_required', 'after_result_rejection')
+                await call('inspect_run_result'); await reject('result_requires_result_tool', 'run_result_option')
+                await call('run_result_option', {'option_id': 'continue'}, label='after_result_rejection')
                 return
 
 

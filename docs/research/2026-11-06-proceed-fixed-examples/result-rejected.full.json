@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Use run_result_option for the current run result; inspect_run_result shows its buttons.",
+    "recovery": "choose_legal_action"
+  }
+}

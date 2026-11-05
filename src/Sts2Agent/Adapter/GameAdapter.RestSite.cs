@@ -22,10 +22,10 @@ internal sealed partial class GameAdapter
         if (inspect) return InspectionSuccess(request, before, new { rest_site = RestSiteInspection.Read(full: true)
         });
         var option = RestSiteInspection.Buttons(room).FirstOrDefault(b => b.Option.OptionId == optionId);
-        NButton? button = request.Operation == "proceed" ? RestSiteInspection.Proceed(room) : option;
+        NButton? button = option;
         if (button?.IsEnabled != true || request.Operation == "choose_rest_option"
             && (option == null || !RestSiteInspection.Clickable(option)))
-            return FileMailbox.Error(request.Id, "illegal_action", "This rest site option or proceed button is unavailable.");
+            return FileMailbox.Error(request.Id, "illegal_action", "This rest site option is unavailable.");
         var run = RunManager.Instance.DebugOnlyGetState();
         UiChanged();
         button.ForceClick();

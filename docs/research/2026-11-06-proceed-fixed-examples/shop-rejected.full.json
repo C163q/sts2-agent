@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Close the shop inventory with close_shop before proceeding.",
+    "recovery": "choose_legal_action"
+  }
+}

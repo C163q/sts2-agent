@@ -38,7 +38,9 @@ internal sealed partial class GameAdapter
         JsonElement beforeState = snapshot.State;
         if (request.Operation is not ("set_test_capture_failure" or "inspect_potions" or "inspect_relics" or "inspect_combatants" or "inspect_deck" or "inspect_pile" or "inspect_selection" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "play_cards" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
-            return FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
+            return request.Operation == "proceed"
+                ? FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request", "Proceed takes no arguments.")
+                : FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
         {
             string? capture = System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_CAPTURE");
@@ -63,31 +65,27 @@ internal sealed partial class GameAdapter
         if (request.Operation == "respond_to_confirmation")
             return await ConfirmationRequest(request, beforeState);
         if (request.Operation is "inspect_run_result" or "run_result_option") return await RunResultRequest(request, beforeState);
-        if (request.Operation is "advance_dialogue" or "proceed" && EpilogueInspection.Current != null)
+        if (request.Operation == "proceed") return await ProceedRequest(request, beforeState);
+        if (request.Operation == "advance_dialogue" && EpilogueInspection.Current != null)
             return await EpilogueRequest(request, beforeState);
         if (request.Operation == "travel_to_node") return await TravelRequest(request, beforeState);
         if (request.Operation is "use_potion" or "discard_potion" || request.Operation == "inspect_targets"
             && request.Arguments is { } targetArguments && targetArguments.TryGetProperty("potion_slot", out _))
             return await PotionRequest(request, beforeState);
-        if (request.Operation is "inspect_ancient" or "choose_ancient_option" or "advance_dialogue"
-            || request.Operation == "proceed" && RewardInspection.Current == null && AncientInspection.Current != null)
+        if (request.Operation is "inspect_ancient" or "choose_ancient_option" or "advance_dialogue")
             return await AncientRequest(request, beforeState);
         if (request.Operation is "set_divination_tool" or "divine"
-            || request.Operation is "inspect_event" or "proceed" && RewardInspection.Current == null && DivinationInspection.Current != null)
+            || request.Operation == "inspect_event" && RewardInspection.Current == null && DivinationInspection.Current != null)
             return await DivinationRequest(request, beforeState);
-        if (request.Operation is "inspect_event" or "choose_event_option"
-            || request.Operation == "proceed" && RewardInspection.Current == null && EventInspection.Current != null)
+        if (request.Operation is "inspect_event" or "choose_event_option")
             return await EventRequest(request, beforeState);
-        if (request.Operation is "open_shop" or "close_shop" or "inspect_shop" or "buy_item"
-            || request.Operation == "proceed" && RewardInspection.Current == null && ShopInspection.Current != null)
+        if (request.Operation is "open_shop" or "close_shop" or "inspect_shop" or "buy_item")
             return await ShopRequest(request, beforeState);
-        if (request.Operation is "loot_treasure" or "inspect_treasure"
-            || request.Operation == "proceed" && RewardInspection.Current == null && TreasureInspection.Current != null)
+        if (request.Operation is "loot_treasure" or "inspect_treasure")
             return await TreasureRequest(request, beforeState);
-        if (request.Operation is "inspect_rest_site" or "choose_rest_option"
-            || request.Operation == "proceed" && RewardInspection.Current == null && RestSiteInspection.Current != null)
+        if (request.Operation is "inspect_rest_site" or "choose_rest_option")
             return await RestSiteRequest(request, beforeState);
-        if (request.Operation is "inspect_rewards" or "claim_reward" or "proceed")
+        if (request.Operation is "inspect_rewards" or "claim_reward")
             return await RewardRequest(request, beforeState);
         if (request.Operation is "inspect_targets" or "play_card" or "play_cards")
             return await CardPlayRequest(request, beforeState);

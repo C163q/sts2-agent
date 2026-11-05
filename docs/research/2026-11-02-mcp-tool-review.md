@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销26项。proceed 的跨场景现状核验完成：110项Python、15类成功GUI场景、23份完整返回，进入设计讨论；待确认拒绝恢复、具体诊断与旧终章断言修正。剩余18项尚未核销，无阻塞。
+> 当前状态：工具核验进行中，共44项，已核销27项。proceed 的统一入口、明确拒绝恢复及旧终章断言已实现并通过自动与游戏验收，正在最终代码审阅。剩余17项尚未核销，无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -72,7 +72,7 @@
 - [x] `claim_reward`：领取一项奖励。阶段：完成；[定稿](2026-11-05-claim-reward-review.md)与[实施记录](2026-11-05-claim-reward-recovery-implementation.md)完成明确拒绝恢复、具体原因、回执 ID 核对及滚动边界；保留 reward_id、default/full 与精简动作回执。718 项 Python、124 项 C#、十一类 GUI、三类回归及一次独立审查通过，提供[18 份新返回](2026-11-05-claim-reward-fixed-examples/README.md)，原[15 份审阅返回](2026-11-05-claim-reward-examples/README.md)保持为基线。
 - [x] `inspect_treasure`：查看宝箱房及已展示遗物。[定稿](2026-11-06-inspect-treasure-review.md)与[实施记录](2026-11-06-treasure-inspection-presets-implementation.md)完成具体诊断、上下文、悬停边界及显示／点击分离，summary 复用静态宝箱格式。724 项 Python、124 项 C#、八类 GUI、三类回归及一次独立审查通过，提供[17 份新返回](2026-11-06-treasure-presets-examples/README.md)，原[14 份返回](2026-11-06-inspect-treasure-examples/README.md)保持为基线。
 - [x] `loot_treasure`：打开宝箱或领取遗物。[定稿](2026-11-06-loot-treasure-review.md)与[实施记录](2026-11-06-treasure-loot-recovery-implementation.md)完成明确拒绝恢复、具体原因与共用前置判断；保留open_only、default/full及原生预算和输入边界。727项Python、124项C#、十类GUI、三类回归与一次独立审查通过，提供[19份新返回](2026-11-06-loot-treasure-fixed-examples/README.md)，原[17份返回](2026-11-06-loot-treasure-examples/README.md)保持基线。
-- [ ] `proceed`：点击当前界面的跳过或继续按钮。阶段：设计讨论；[现状与建议](2026-11-06-proceed-review.md)、[开发依据](2026-11-06-proceed-development-notes.md)及[23份完整返回](2026-11-06-proceed-examples/README.md)已整理。待确认八条分支的拒绝恢复／共用前置判断及旧终章断言修正；建议保留零操作参数与default/full。
+- [x] `proceed`：统一当前按钮及拒绝原因，明确点击前拒绝保留许可，保留原生后续流程；零操作参数、default/full。729项Python、124项C#、16类普通GUI及两个独立终章流程通过；[实施与验证](2026-11-06-proceed-recovery-implementation.md)、[26份修复返回](2026-11-06-proceed-fixed-examples/README.md)，原审阅证据保持原样。
 
 ### 火堆（2 项）
 

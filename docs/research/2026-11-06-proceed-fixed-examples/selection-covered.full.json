@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Resolve the current card selection with select_card or selection_option before proceeding; inspect_selection shows its choices.",
+    "recovery": "choose_legal_action"
+  }
+}

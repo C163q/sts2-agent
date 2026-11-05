@@ -79,4 +79,4 @@ get_observation 的 summary 保留当前结算主体和全部 texts、options、
 
 建筑师牌组覆盖期间，五种观察预设均可读取当前覆盖页，并接受原生允许的药水／遗物只读工具；底层对白和推进对话、使用药水等动作仍被覆盖。缺陷与修复的验证证据见[覆盖页核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md#已确认缺陷建筑师牌组覆盖)。
 
-旧独立终章脚本 verify_run_ending.py 的胜利分支仍含 available_actions:[] 的过时断言，可能把正确终态判为失败；当前断言应仅排除玩法动作并验证许可未续接。现状与独立终章实测见[proceed开发核验](../research/2026-11-06-proceed-development-notes.md)。脚本尚未修正，不能把新审阅验证器通过当作旧脚本已通过。
+独立终章验证使用[verify_run_ending.py](../../tests/game/verifiers/verify_run_ending.py)。胜利回执检查没有玩法动作及连续玩法许可，允许保留只读工具；继续验证结算、历史、解锁和返回主菜单。完整victory_unlock与建筑师专项的证据及限制见[前进修复记录](../research/2026-11-06-proceed-recovery-implementation.md)。

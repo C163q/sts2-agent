@@ -47,7 +47,7 @@ flowchart LR
 | `buy_item(item_id)` | 购买一个当前商品；补货使用新 ID，删牌复用选牌工具 |
 | `inspect_rewards(preset?, reward_ids?)` | [当前奖励、静态 summary 和按稳定奖励 ID 筛选](rewards.md) |
 | `claim_reward(reward_id)` | 逐项点击奖励，后续选牌复用现有选择工具 |
-| `proceed()` | 点击奖励页跳过/前进、宝箱房跳过/前进、休息处、已完成事件、先古之民或关闭商品页后的商店、建筑师前进按钮；保留原生返回父事件等行为 |
+| `proceed()` | [当前原生跳过／前进](#前进与跳过)，保留奖励、房间、换幕与终章各自后续流程 |
 | `loot_treasure(open_only?)` | [宝箱房开箱并领取](treasure.md)，可先开后决定；不自动前进 |
 | `inspect_treasure(preset?)` | 当前可见宝箱遗物及悬停说明 |
 | `inspect_rest_site()` | [当前休息处选项及动态悬停说明](rest-site.md) |
@@ -191,9 +191,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 `inspect_selection` 省略 `view_upgrades` 时属于纯读取；显式提供该参数则可能改变 UI，与地图、牌组、牌堆及查看页切换一样，不能仅凭明确拒绝的错误码恢复许可。inspect_deck／inspect_pile／inspect_map／close_card_view／close_map／set_selection_view 的已审查拒绝另有原生“本请求未交互”保证；只有显式保证为 true、证据不矛盾且已有许可时保留，返回 choose_legal_action。缺少保证、已交互或未知结果仍要求观察；该例外不推广到其他页面工具。这些页面操作不要求已有动作许可。`set_divination_tool` 虽只切换占卜工具，仍须已有许可、记录事件并返回动作回执；MCP annotations 不代替执行策略。
 
-proceed 的点击前明确拒绝尚未接入下述许可恢复，公开原因也较笼统；现行八条分支、实测返回及开放问题见[跨场景前进审阅](../research/2026-11-06-proceed-review.md)。
-
-游戏动作仅在原生证明“未提交且 UI 未改变”时保留旧许可。`play_card`、`play_cards`、`end_turn`、`use_potion`、`discard_potion`、`select_card`、`selection_option`、`travel_to_node`、`claim_reward` 与 `loot_treasure` 的已审查前置拒绝提供这一保证；费用、目标和选择／覆盖／按钮状态会给具体提示，例如能量不足被拒后可直接结束回合，选牌期间误用 end_turn 被拒后可直接继续合法选择，无效候选或按钮被拒后可直接改用有效候选或按钮。travel_to_node 在地图未开、被覆盖、绘图或目标非候选等明确拒绝时可直接纠正；claim_reward 的奖励 ID 无效、页面覆盖或尚未就绪等明确拒绝也可直接纠正，具体契约见[奖励领取](rewards.md#领取与后续选择)。loot_treasure 在首次点击前的已开箱、无遗物或覆盖等明确拒绝也可直接纠正；已经开箱后的第二阶段不具备整次请求未交互保证。地图与奖励的滚动已经属于交互，滚动后的失败不会恢复许可。批量部分提交后的失败不具备整批未提交保证。缺少标记的旧 Mod、其他动作拒绝或执行结果未知时不恢复许可。占卜等操作返回 `screenshot_unavailable` 仍可能已经改变游戏，返回 `outcome:"unknown"` 并要求观察，不能把图像失败当作玩法未执行。
+游戏动作仅在原生证明“未提交且 UI 未改变”时保留旧许可。`play_card`、`play_cards`、`end_turn`、`use_potion`、`discard_potion`、`select_card`、`selection_option`、`travel_to_node`、`claim_reward`、`loot_treasure` 与 `proceed` 的已审查前置拒绝提供这一保证；费用、目标和选择／覆盖／按钮状态会给具体提示，例如能量不足被拒后可直接结束回合，选牌期间误用 end_turn 被拒后可直接继续合法选择，无效候选或按钮被拒后可直接改用有效候选或按钮。travel_to_node 在地图未开、被覆盖、绘图或目标非候选等明确拒绝时可直接纠正；claim_reward 的奖励 ID 无效、页面覆盖或尚未就绪等明确拒绝也可直接纠正，具体契约见[奖励领取](rewards.md#领取与后续选择)。loot_treasure 在首次点击前的已开箱、无遗物或覆盖等明确拒绝也可直接纠正；已经开箱后的第二阶段不具备整次请求未交互保证。proceed 在地图／牌组／选牌／确认框覆盖、未完成活动或对白、商品页展开等点击前拒绝时保留已有许可，并提示相应工具。地图与奖励的滚动已经属于交互，滚动后的失败不会恢复许可。批量部分提交后的失败不具备整批未提交保证。缺少标记的旧 Mod、其他动作拒绝或执行结果未知时不恢复许可。占卜等操作返回 `screenshot_unavailable` 仍可能已经改变游戏，返回 `outcome:"unknown"` 并要求观察，不能把图像失败当作玩法未执行。
 
 许可同时记录令牌和代次。排队动作只能使用调用开始时已有的那一代许可，即使后来读取返回相同字符串，也不能借用；取消会使等待／在途请求无法重新发布已撤销的许可。执行证据与公开 JSON 分开保存，不向模型暴露控制字段。用户保存的实测记录尚未逐条对照，[两项待办](TODO.md#当前工具审阅结束后处理)仍保留。
 
@@ -206,6 +204,12 @@ proceed 的点击前明确拒绝尚未接入下述许可恢复，公开原因也
 成功时 `structuredContent` 是玩法对象，`content` 同时提供相同对象的紧凑 JSON 文本。[占卜](divination.md)的完整观察和详情还带独立 PNG 图像内容，需要支持图像的客户端和视觉模型；图片不进入文字 JSON，也不依赖截图工具配置；`actions_only/top_bar` 预设及动作回执不返回棋盘或图像；summary 仍保留棋盘与图像。正文中的换行和空格保留；终端与证据文件使用两空格缩进。对象本身没有排版属性，客户端决定如何转换为模型输入。协议、文本、显示的区别及官方依据见 [项目审阅](../research/2026-10-29-project-review.md#mcp-json-与官方实践)。
 
 输出递归过滤未知字段，不转发原始响应包装、状态令牌或测试入口；`available_actions` 只保留当前可用的公开查看与操作工具，省略观察、截图及测试入口并去重。MCP 与非 raw 文件客户端共用按原生操作的成功解码；基础观察和动作结果检查全部必需顶层观察字段，对已提供的嵌套字段检查类型，再进行输出精简；错误结果不生成新动作令牌，只有上述明确拒绝会保留旧许可。原始文件协议见 [原型接口](roundtrip.md#原型接口)。
+
+## 前进与跳过
+
+`proceed()` 点击当前已显示、启用且可交互的原生 Skip/Proceed。适用奖励、宝箱、火堆、已完成事件、先古之民、占卜结束、商品页已关闭的商店和建筑师最后一行；它可能打开地图、结束子奖励、恢复父事件、换幕或进入结算。后续选择由对应工具处理。对话中段使用 `advance_dialogue`，选牌按钮使用 `selection_option`，结算页使用 `run_result_option`。
+
+[GameAdapter.Proceed.cs](../../src/Sts2Agent/Adapter/GameAdapter.Proceed.cs)集中目标选择、具体拒绝原因和原生点击，执行与 `available_actions` 使用同一判断。保留事件战斗日志、先古之民／宝箱的上下文检查和各原生后续流程；状态过期在目标判断前拒绝，第一次点击前才可证明未提交。参数为 `preset:default/full`，默认 default；返回下述精简动作回执。
 
 ## 动作返回格式
 

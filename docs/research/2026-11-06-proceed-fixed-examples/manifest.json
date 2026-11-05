@@ -1,0 +1,288 @@
+[
+  {
+    "file": "combat-rejected.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "no_proceed_in_combat",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui/combat/audit/evidence.json",
+    "index": 2,
+    "sha256": "701afc48f3f7aa3a42fb4a7fc7ec09d667960a559cd820c2c73d5911a3479acd"
+  },
+  {
+    "file": "map-covered.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "reward_map_covered",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/reward_skip/audit/evidence.json",
+    "index": 4,
+    "sha256": "37be79ef5f5a682159240dc6c92d1250640dc047e274317b05b36baae6657f55"
+  },
+  {
+    "file": "deck-covered.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "reward_deck_covered",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/reward_skip/audit/evidence.json",
+    "index": 8,
+    "sha256": "5221eab0f5f37c1ac6ef0eca67ddce6338def08b0d326d3ccbf162354ceb4f80"
+  },
+  {
+    "file": "reward-skip.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "reward_skip",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/reward_skip/audit/evidence.json",
+    "index": 13,
+    "sha256": "bd92fae6059e8e373c88a95897dba8f2cc64faa6680b506913618de1b701217c"
+  },
+  {
+    "file": "reward-empty.default.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "default"
+    },
+    "label": "empty_reward",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/reward_empty/audit/evidence.json",
+    "index": 4,
+    "sha256": "bd92fae6059e8e373c88a95897dba8f2cc64faa6680b506913618de1b701217c"
+  },
+  {
+    "file": "nested-return.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "nested_reward_return",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/nested_reward/audit/evidence.json",
+    "index": 5,
+    "sha256": "d5a150bacaac0f104ffc519b6942538d0b3fc1e17c30c129f7c070d6dc1e0c66"
+  },
+  {
+    "file": "closed-chest.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "closed_chest",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/treasure_skip/audit/evidence.json",
+    "index": 3,
+    "sha256": "4ce2ad108a658eebeb9bac454a1c800591980ddbc3f903f6923c84f0eb4d5357"
+  },
+  {
+    "file": "treasure-skip.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "unclaimed_relic_skip",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/treasure_skip/audit/evidence.json",
+    "index": 6,
+    "sha256": "32702699a80713ec35ef4e7d53f4c221f65bc48f59c3d953ce9dcb894ed216d5"
+  },
+  {
+    "file": "rest-rejected.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "unused_rest",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/rest/audit/evidence.json",
+    "index": 3,
+    "sha256": "087c035bac38e9d87aeea071c922ed2b5b22fb644393c0fc142a3bf8bbb91768"
+  },
+  {
+    "file": "rest.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "rest_leave",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/rest/audit/evidence.json",
+    "index": 6,
+    "sha256": "d32e2face5d301b084bb0af74c5b150773df04c79c4cbc027d97102ffad41f18"
+  },
+  {
+    "file": "shop-rejected.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "shop_inventory_open",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/shop/audit/evidence.json",
+    "index": 4,
+    "sha256": "81d03af2697f6efd5023dfa314bf8210e916b4d175d7463214d1647c7d524a03"
+  },
+  {
+    "file": "shop-recovered.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "after_shop_rejection",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/shop/audit/evidence.json",
+    "index": 5,
+    "sha256": "c26aebc390ad92d7301e62ba942fcc590283c1df36787c8979cac128c986f0a4"
+  },
+  {
+    "file": "shop.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "shop_leave",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/shop/audit/evidence.json",
+    "index": 7,
+    "sha256": "1b49d8b9e6d2fe01df188732424eb581ffcd0e193339445f2b97c1e7094f98a8"
+  },
+  {
+    "file": "event-rejected.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "unfinished_event",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/event/audit/evidence.json",
+    "index": 3,
+    "sha256": "c0c99e3952902795fe8f6c5918f356271766db10499ba97ef6fd8cbd41e76015"
+  },
+  {
+    "file": "event.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "event_leave",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/event/audit/evidence.json",
+    "index": 6,
+    "sha256": "b18d81aa2cfb037aa4b0725ec501fd414b1894917c221bd11ec5a61ff059c6a4"
+  },
+  {
+    "file": "ancient-rejected.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "unfinished_ancient",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/ancient/audit/evidence.json",
+    "index": 6,
+    "sha256": "56d17084bb98197bddf49473bc87094fd4ebcfbe89db7f7e2359a8dbc72cf50e"
+  },
+  {
+    "file": "ancient.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "ancient_leave",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/ancient/audit/evidence.json",
+    "index": 10,
+    "sha256": "d623c40cdc36610a87b5dba269bb1553949c9c6019439fd44326f3c679718e9c"
+  },
+  {
+    "file": "divination-rejected.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "unfinished_divination",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/divination/audit/evidence.json",
+    "index": 4,
+    "sha256": "515cb5770f9f0221522139d0bd27a95168a9d547f01df70c3db5fc3f99d53455"
+  },
+  {
+    "file": "divination.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "divination_leave",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/divination/audit/evidence.json",
+    "index": 14,
+    "sha256": "b18d81aa2cfb037aa4b0725ec501fd414b1894917c221bd11ec5a61ff059c6a4"
+  },
+  {
+    "file": "next-act.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "next_act",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/boss1/audit/evidence.json",
+    "index": 3,
+    "sha256": "5105f6ac2f14cd42ea432c171ae66baa8670a5046a17a031ce94f539d62ffa7a"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "rest_selection_covered",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/selection/recovery/evidence.json",
+    "index": 4,
+    "sha256": "15a94b9b51f430d75af61c864124ce2d0094608de8007f57fa32871c3a76ad69"
+  },
+  {
+    "file": "confirmation-covered.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "event_confirmation_covered",
+    "source": ".tmp/2026-11-06-proceed-recovery/gui-remaining/confirmation/recovery/evidence.json",
+    "index": 6,
+    "sha256": "58b9cb1ba931523254b32da491e4d17e03e208a7559e7f5fd58f96b368c80db2"
+  },
+  {
+    "file": "architect-rejected.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "architect_dialogue_not_finished",
+    "source": ".tmp/2026-11-06-proceed-recovery/architect/evidence.json",
+    "index": 6,
+    "sha256": "2caebd40889ef757742de3c9646af9de97316df93fe4fea76d5b6b4c4d5185a1"
+  },
+  {
+    "file": "run-won.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "architect_run_won",
+    "source": ".tmp/2026-11-06-proceed-recovery/architect/evidence.json",
+    "index": 10,
+    "sha256": "a5ae69deebcd93ef6460aa31701e11e7138f5da8dc40e923badb5734ed398b3d"
+  },
+  {
+    "file": "terminal-no-permission.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "terminal_has_no_permission",
+    "source": ".tmp/2026-11-06-proceed-recovery/architect/evidence.json",
+    "index": 11,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "result-rejected.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "result_requires_result_tool",
+    "source": ".tmp/2026-11-06-proceed-recovery/architect/evidence.json",
+    "index": 14,
+    "sha256": "ffee8d1cbc6a168e7cd6a54019c7cf626a9123d6aab8e71f7af223ad97107c08"
+  }
+]

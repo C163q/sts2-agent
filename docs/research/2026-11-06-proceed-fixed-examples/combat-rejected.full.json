@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Proceed is unavailable during combat. Use the available combat actions.",
+    "recovery": "choose_legal_action"
+  }
+}

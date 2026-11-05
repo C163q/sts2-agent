@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Open the chest with loot_treasure before proceeding.",
+    "recovery": "choose_legal_action"
+  }
+}
