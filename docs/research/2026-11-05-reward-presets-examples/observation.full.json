@@ -1,0 +1,122 @@
+{
+  "scene": "rewards",
+  "map": null,
+  "screen": {
+    "status": "visible"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      null
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 2,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null,
+        "grayed_out": false,
+        "pulsing": false
+      },
+      {
+        "name": "Winged Boots",
+        "counter": 3,
+        "melted": null,
+        "grayed_out": false,
+        "pulsing": false
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": {
+    "status": "visible",
+    "title": "Loot!",
+    "items": [
+      {
+        "id": 6,
+        "type": "gold",
+        "text": "17 Gold",
+        "enabled": true,
+        "linked_group": null
+      },
+      {
+        "id": 7,
+        "type": "gold",
+        "text": "23 Gold (stolen back)",
+        "enabled": true,
+        "linked_group": null
+      },
+      {
+        "id": 8,
+        "type": "potion",
+        "text": "Block Potion",
+        "enabled": true,
+        "linked_group": null
+      },
+      {
+        "id": 9,
+        "type": "relic",
+        "text": "Whetstone",
+        "enabled": true,
+        "linked_group": null
+      },
+      {
+        "id": 10,
+        "type": "special_card",
+        "text": "Add Strike+ to your deck.",
+        "enabled": true,
+        "linked_group": null
+      },
+      {
+        "id": 11,
+        "type": "card",
+        "text": "Add a card to your deck.",
+        "enabled": true,
+        "linked_group": null
+      }
+    ],
+    "proceed": {
+      "text": "Skip",
+      "enabled": true,
+      "skips_remaining": true
+    }
+  },
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "claim_reward",
+    "proceed",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_rewards"
+  ]
+}

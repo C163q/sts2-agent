@@ -44,6 +44,32 @@ internal sealed class RewardInspection
         && !Buttons(screen).Any(b => !b.IsEnabled) && RunManager.Instance.ActionQueueSet.IsEmpty
         && !CombatManager.Instance.IsInProgress;
 
+    public static string? InspectionUnavailableReason(NRewardsScreen? screen)
+    {
+        if (screen != null && GodotObject.IsInstanceValid(screen) && screen.IsNodeReady()
+            && RunManager.Instance.IsSingleplayerOrFakeMultiplayer && Ready(screen)) return null;
+        if (!RunManager.Instance.IsInProgress)
+            return "No local run is available for reward inspection.";
+        if (!RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
+            return "Reward inspection requires a local single-player run.";
+        if (screen == null || !GodotObject.IsInstanceValid(screen) || !screen.IsNodeReady())
+            return "No reward list is available on the current screen.";
+        var map = NRun.Instance?.GlobalUi.MapScreen;
+        if (VisibleUi.Shown(map))
+            return map!.IsOpen ? "Close the map with close_map before reading rewards."
+                : "Wait for the map to finish closing before reading rewards.";
+        if (CardView.Current != null)
+            return "Close the card browsing page with close_card_view before reading rewards.";
+        if (CardSelection.Current != null)
+            return "Resolve the current card selection before reading rewards; inspect_selection shows its choices.";
+        if (RunUi.CardPreviewsPending()) return "Wait for the card previews to finish before reading rewards.";
+        if (RunUi.Transitioning()) return "Wait for the screen transition before reading rewards.";
+        if (!Exposed(screen)) return "The reward list is covered by a dialog or another screen.";
+        if (!RunManager.Instance.ActionQueueSet.IsEmpty)
+            return "Wait for the current action to finish before reading rewards.";
+        return "The reward list is still preparing. Wait before reading it.";
+    }
+
     public static NProceedButton? Proceed(NRewardsScreen screen) => screen.GetNodeOrNull<NProceedButton>("ProceedButton") is { } button
         && VisibleUi.OnScreen(button) && VisibleUi.Text(button, "%Label") is { Length: > 0 } ? button : null;
 

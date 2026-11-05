@@ -8,7 +8,7 @@
 
 ## 观察与详情
 
-`get_observation` 在奖励阶段返回 `scene: "rewards"` 和 `rewards`。这也覆盖奖励领完后只剩前进按钮的页面。被地图、选牌或其他页面覆盖时，`rewards.status` 为 `covered`，标题、条目和按钮均为 `null`，不能领取隐藏奖励。
+`get_observation` 在奖励阶段返回 `scene: "rewards"` 和 `rewards`。这也覆盖奖励领完后只剩前进按钮的页面。被地图、选牌或其他页面覆盖时，`rewards.status` 为 `covered`，标题、条目和按钮均为 `null`。
 
 基础观察中的奖励示例：
 
@@ -28,7 +28,7 @@
 }
 ```
 
-这是节选；完整观察还包含可见顶栏、选择状态等公共字段，并可能提供药水动作。基础观察与 `inspect_rewards()` 都返回当前整张可浏览奖励列表，不按滚动位置截断；隐藏的标签仍不读取。`inspect_rewards()` 每行另附 `hover_tips`，不会提前查看尚未打开的卡牌奖励候选，也不会生成或重抽奖励。两种读取都不改变顺序或滚动位置；领取画外条目时仍先滚动到原生可点击位置。
+这是节选；完整观察还包含可见顶栏、选择状态等公共字段，并可能提供药水动作。基础观察与 inspect_rewards 读取整张可滚动奖励列表，保留当前顺序和滚动位置；行和标签须实际显示。领取画外条目时先滚动到原生可点击位置。
 
 | 字段 | 含义 |
 | --- | --- |
@@ -40,13 +40,33 @@
 | `proceed` | 当前显示的原生跳过/前进按钮；未显示为 `null` |
 | `skips_remaining` | 按钮当前处于原生 Skip 模式；具体后续流程仍由游戏决定 |
 
-标题保留搜刮与被抢劫等可见区别。只呈现实际掉落，不根据敌人类型补发被偷的牌或金币。怪物逃离可能改变金币比例和追回条目，但不会被工具当成一种固定奖励模板。
+标题区分搜刮与被抢劫等 UI 状态；逃脱、金币比例和追回内容按当前原生奖励行的实际文本呈现。
 
-inspect_rewards 只接受通用 default/full，返回 scene/screen 与 rewards；不返回 available_actions，按需使用 get_observation 获取。它是纯读取，明确拒绝会保留此前已有操作许可，首次失败不生成许可；当前拒绝说明尚未区分无奖励、覆盖与尚未就绪。具体诊断及损坏响应的一致性校验缺口见[奖励详情审阅](../research/2026-11-05-inspect-rewards-review.md)。
+### inspect_rewards 预设与筛选
+
+MCP 的 inspect_rewards 返回 scene/screen 与 rewards，支持 default/full/summary：
+
+| 预设 | 奖励内容 |
+| --- | --- |
+| full | 完整奖励行和每行 hover_tips，保留普通 null |
+| default（默认） | full 应用统一空值规则 |
+| summary | 静态奖励行，保留状态、标题、id/type/text/enabled/linked_group 和 proceed，应用 default 空值规则 |
+
+get_observation 的 full/default/summary 均使用静态奖励格式；full 保留普通 null，default/summary 的 rewards 与未筛选的 inspect_rewards.summary 一致。点开卡牌奖励后，inspect_selection 提供候选牌及选择按钮。可用操作列表通过 get_observation 获取。
+
+reward_ids 按当前最上层奖励页的 items[].id 筛选。省略或 null 取全部，[] 取空；重复 ID 去重，结果保留原生顺序。title 和 proceed 保留整页内容，每行使用已有 id 标识。未找到的 ID 按请求顺序合并到 errors，例如：
+
+```json
+{"errors":[{"code":"reward_ids_not_found","reward_ids":[99,100]}]}
+```
+
+有效行同时返回。完整响应先通过格式与可见性一致性校验，再应用预设和筛选。
+
+纯读取的明确拒绝保留已有操作许可。提示区分无奖励、地图／牌组／选择覆盖、预览、过渡及动作等待；首次读取失败仍需取得有效观察。读取可用性与基础观察的工具列表共用同一检查。接口样本与验证范围见[奖励详情实施](../research/2026-11-05-reward-inspection-presets-implementation.md)。
 
 ## 领取与后续选择
 
-`claim_reward({"reward_id": 5})` 点击一行，按模型选择的顺序执行。工具不连领、不自动选择卡牌，也不自动丢弃已有药水。领取遗物可能立即改变牌组或后续奖励，因此每次都应阅读返回结果再决定下一项。
+`claim_reward({"reward_id": 5})` 点击一行，按模型选择的顺序执行。每次领取后由模型根据返回结果决定下一项、后续选牌或药水槽位操作。领取遗物可能立即改变牌组或后续奖励，因此每次都应阅读返回结果再决定下一项。
 
 动作返回[精简回执](mcp.md#动作返回格式)，保留 `transition` 和 `reward_result`：
 
@@ -54,9 +74,9 @@ inspect_rewards 只接受通用 default/full，返回 scene/screen 与 rewards�
 {"reward_result": {"reward_id": 1, "status": "not_claimed"}}
 ```
 
-`status` 为 `claimed`、`not_claimed`、`not_obtained` 或 `pending`。`not_obtained` 表示药水奖励行已被原生处理并消耗，但玩家没有获得该药水，例如添水禁止获取；不能把它当作已入栏或自动重试。满槽等原生拒绝通常返回 `not_claimed`，保留奖励行；需要腾出药水槽时，由模型另外调用 `discard_potion` 或合法的 `use_potion`，再决定是否领取。`pending` 表示已进入选择或后续交互，不能据此认为已获得奖励，也不能自动重试。`complete` 仍只确认 `stop_reason` 所述边界。
+`status` 为 `claimed`、`not_claimed`、`not_obtained` 或 `pending`。`not_obtained` 表示药水奖励行已被原生处理并消耗，但玩家没有获得该药水，例如添水禁止获取；后续以当前奖励行和药水栏为准。满槽等原生拒绝通常返回 `not_claimed`，保留奖励行；需要腾出药水槽时，由模型另外调用 `discard_potion` 或合法的 `use_potion`，再决定是否领取。`pending` 表示已进入选择或后续交互，不能据此认为已获得奖励，也不能自动重试。`complete` 仍只确认 `stop_reason` 所述边界。
 
-点开卡牌奖励后，在已显示的候选中使用 `select_card`，或点击当前 `selection.options` 提供的 `selection_option`。卡牌奖励的 Skip 与整页跳过不同：原生通常返回搜刮列表并保留这一奖励入口，可以重新打开。不能把卡牌候选 ID 传给 `claim_reward`。奖励卡牌启用和入场动画完成后才返回可继续选择的边界。已识别的原生大卡预览存在时，奖励视为被覆盖；等待其结束后再提供奖励动作。领取遗物若打开另一张奖励页，返回新页面供模型继续决策，不等待依赖后续操作的父任务。
+点开卡牌奖励后，在已显示的候选中使用 `select_card`，或点击当前 `selection.options` 提供的 `selection_option`。卡牌奖励的 Skip 与整页跳过不同：原生通常返回搜刮列表并保留这一奖励入口，可以重新打开。奖励卡牌启用和入场动画完成后才返回可继续选择的边界。已识别的原生大卡预览存在时，奖励视为被覆盖；等待其结束后再提供奖励动作。领取遗物若打开另一张奖励页，到达新页面即返回，供模型继续决策。
 
 佩尔之翼的献祭、浮木的重掷同样使用[卡牌奖励替代按钮](card-selection.md#卡牌奖励替代按钮)，不新增 `claim_reward` 参数，也不把所有替代选项视为跳过。
 
@@ -64,15 +84,15 @@ inspect_rewards 只接受通用 default/full，返回 scene/screen 与 rewards�
 
 ## 跳过、前进和地图
 
-`proceed()` 只点击奖励页当前暴露且启用的原生按钮。尚有奖励时常显示 Skip，全部领取后列表淡出、按钮显示 Proceed；没有掉落的终结奖励页也能提供 Proceed。不会自动领取剩余项目。
+`proceed()` 只点击奖励页当前暴露且启用的原生按钮。尚有奖励时常显示 Skip，全部领取后列表淡出、按钮显示 Proceed；没有掉落的终结奖励页也能提供 Proceed。剩余条目的领取由独立 claim_reward 操作决定。
 
 普通战斗后按钮通常打开地图，地图顶栏入口也可在搜刮时直接使用。打开地图不等于已经离开房间；剩余奖励的最终放弃时机由原生旅行流程决定。查看地图会隐藏奖励内容。原生允许返回时，关闭地图的成功结果可直接续接搜刮；奖励变化时按需读取详情。
 
-Boss 或特殊事件战斗的前进可能进入下一幕、结束本次游戏或返回父事件，而不是地图。工具沿用原生流程，不强行转换。返回[通用事件](events.md)后，继续等待其 `Resume` 任务、卡牌预览和资源动画；若出现子奖励或选择则先返回该输入边界。未支持的原生对话或页面立即返回 `manual_input_required` 并清除动作许可，避免一直等待玩家输入。地图旅行见[选路接口](map-inspection.md#地图选路)；终章对话与结局页使用[终章与结算接口](run-ending.md)。
+Boss 或特殊事件战斗的前进可能进入下一幕、结束本次游戏或返回父事件，而不是地图。工具沿用原生流程。返回[通用事件](events.md)后，继续等待其 `Resume` 任务、卡牌预览和资源动画；若出现子奖励或选择则先返回该输入边界。未支持的原生对话或页面立即返回 `manual_input_required` 并清除动作许可，避免一直等待玩家输入。地图旅行见[选路接口](map-inspection.md#地图选路)；终章对话与结局页使用[终章与结算接口](run-ending.md)。
 
 ## 实现与验证
 
-游戏侧由 `RewardInspection.cs` 采样 UI 和奖励身份，`GameAdapter.Rewards.cs` 校验并点击原生按钮；不直接增加金币、卡牌、药水或遗物。`RewardCompatibility.cs` 只适配目标版本互斥奖励中已核实的信号参数错误，保留原生领取与收尾流程。外部层由 `reward_details.py` 验证参数、字段和结果，不输出内部令牌或未声明字段。
+游戏侧由 RewardInspection.cs 采样 UI 和奖励身份、提供共用查看诊断，GameAdapter.Rewards.cs 校验并点击原生按钮，领取与后续界面由原生流程负责。`RewardCompatibility.cs` 只适配目标版本互斥奖励中已核实的信号参数错误，保留原生领取与收尾流程。外部层由 reward_details.py 验证字段与可见性上下文，reward_presets.py 在校验后生成摘要和筛选；参数与许可遵循共用 MCP 流程。
 
 奖励详情的隔离图形核验先按[往返指南](roundtrip.md)准备运行目录，再执行：
 
@@ -80,6 +100,6 @@ Boss 或特殊事件战斗的前进可能进入下一幕、结束本次游戏或
 .tmp/mcp-venv/bin/python scripts/gui_suite.py --suite tests/game/data/gui_suite_reward_inspection_review.json --output .tmp/reward-inspection-review
 ```
 
-输出目录须全新；套件拥有测试游戏与存档，会实际读取、领取、覆盖奖励并旅行离开房间，用于核对完整列表、稳定 ID、互斥／嵌套／追回、空列表和错误后续接。范围及证据见[奖励详情核验](../research/2026-11-05-inspect-rewards-development-notes.md)。
+输出目录须全新；套件拥有测试游戏与存档，会实际读取、领取、覆盖奖励并旅行离开房间，用于核对预设、ID 筛选、基础观察对照、完整列表、稳定身份、互斥／嵌套／追回、空列表与错误后续接，并运行旧领取流程。范围及证据见[奖励详情实施](../research/2026-11-05-reward-inspection-presets-implementation.md)。
 
-旧全流程入口 [verify_rewards.py](../../tests/game/verifiers/verify_rewards.py) 启用截图后仍固定工具总数为 43，与当前 44 项目录不符，不能作为当前可用验收命令；修复前不宣称其领取顺序等全部分支已通过。历史场景与范围见[奖励调研](../research/2026-10-31-rewards.md)。
+旧全流程入口 [verify_rewards.py](../../tests/game/verifiers/verify_rewards.py) 通过当前工具目录核对发现结果，basic 场景由上述套件准备并验证，随后原生旅行完成夹具清理。其他历史分支的范围见[奖励调研](../research/2026-10-31-rewards.md)。

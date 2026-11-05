@@ -1,0 +1,31 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "visible"
+  },
+  "rewards": {
+    "status": "visible",
+    "title": "Loot!",
+    "items": [
+      {
+        "id": 12,
+        "type": "gold",
+        "text": "17 Gold",
+        "enabled": true,
+        "linked_group": 13
+      },
+      {
+        "id": 14,
+        "type": "potion",
+        "text": "Block Potion",
+        "enabled": true,
+        "linked_group": 13
+      }
+    ],
+    "proceed": {
+      "text": "Skip",
+      "enabled": true,
+      "skips_remaining": true
+    }
+  }
+}

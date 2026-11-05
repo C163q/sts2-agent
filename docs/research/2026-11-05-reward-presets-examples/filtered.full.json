@@ -1,0 +1,41 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "visible"
+  },
+  "rewards": {
+    "status": "visible",
+    "title": "Loot!",
+    "items": [
+      {
+        "id": 6,
+        "type": "gold",
+        "text": "17 Gold",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": []
+      },
+      {
+        "id": 11,
+        "type": "card",
+        "text": "Add a card to your deck.",
+        "enabled": true,
+        "linked_group": null,
+        "hover_tips": []
+      }
+    ],
+    "proceed": {
+      "text": "Skip",
+      "enabled": true,
+      "skips_remaining": true
+    }
+  },
+  "errors": [
+    {
+      "code": "reward_ids_not_found",
+      "reward_ids": [
+        2147483647
+      ]
+    }
+  ]
+}

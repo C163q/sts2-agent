@@ -1,0 +1,16 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "visible"
+  },
+  "rewards": {
+    "status": "visible",
+    "title": "Loot!",
+    "items": [],
+    "proceed": {
+      "text": "Skip",
+      "enabled": true,
+      "skips_remaining": true
+    }
+  }
+}

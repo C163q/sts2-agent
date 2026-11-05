@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 44 项，已核销 22 项。inspect_rewards 已完成 46 项针对性检查、七种 GUI、9 份真实返回及损坏响应／旧目录探针，处于设计讨论；三项问题及 summary／reward_ids 建议待确认。剩余 22 项尚未核销，暂无阻塞。
+> 当前状态：工具核验进行中，共 44 项，已核销 22 项。inspect_rewards 的三项修复、summary 和 reward_ids 已确认并实现，713 项 Python、124 项 C# 与构建通过，九类 GUI 和 11 份新返回完成，正在独立审查与合并。剩余 22 项尚未核销，暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -8,7 +8,7 @@
 
 - 核对基线：提交 `ef9f34e`，MCP `0.48.0`；工具名称与数量依据 [mcp_catalog.py](../../src/sts2_mcp/mcp_catalog.py)。后续以每项核验时的实现为准，工具增删时同步本清单及总数。
 - 逐项检查工具的适用场景、返回内容、参数及预设，目标是符合玩家实际可从 UI 获得的信息，并让 LLM 聚焦所关心的内容。遵循[可见信息边界](../observation.md)。
-- 43 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、药水、战斗对象、遗物的 `summary`、地图的 `summary/selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆也已迁移为 full/default/summary，旧 detail_level 已移除。既有能力也须重新核验，不因此直接核销。
+- 43 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、药水、战斗对象、遗物、奖励详情的 `summary`、地图的 `summary/selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆也已迁移为 full/default/summary，旧 detail_level 已移除。既有能力也须重新核验，不因此直接核销。
 - `capture_screenshot` 按配置启用，不支持 preset；核验其现有参数与返回。统一预设的现行契约见 [MCP 输出预设](../development/mcp.md#输出预设)。
 
 ## 逐项工作流程
@@ -68,7 +68,7 @@
 
 ### 奖励、宝箱与流程推进（5 项）
 
-- [ ] `inspect_rewards`：查看奖励列表。阶段：设计讨论。[审阅与建议](2026-11-05-inspect-rewards-review.md)、[开发核验](2026-11-05-inspect-rewards-development-notes.md)和 [9 份典型完整返回](2026-11-05-inspect-rewards-examples/README.md)。46 项针对性检查、七种 GUI 通过；具体拒绝、矛盾上下文校验及旧验证器三项待确认，工具行为未改。
+- [ ] `inspect_rewards`：查看奖励列表。阶段：实施与验证。[已确认规格](2026-11-05-inspect-rewards-review.md)、[开发核验](2026-11-05-inspect-rewards-development-notes.md)和[实施记录](2026-11-05-reward-inspection-presets-implementation.md)。三项修复、summary、reward_ids 和九类 GUI 已完成，正在独立审查；原 [9 份审阅返回](2026-11-05-inspect-rewards-examples/README.md)保留为基线。
 - [ ] `claim_reward`：领取一项奖励。
 - [ ] `inspect_treasure`：查看宝箱房及已展示遗物。
 - [ ] `loot_treasure`：打开宝箱或领取遗物。

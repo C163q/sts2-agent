@@ -768,8 +768,10 @@ class StdioTests(unittest.IsolatedAsyncioTestCase):
                     close_tool = next(tool for tool in listed.tools if tool.name == "close_card_view")
                     self.assertFalse(close_tool.annotations.readOnlyHint)
                     self.assertEqual(set(close_tool.inputSchema["properties"]), {"preset"})
+                    reward_tool = next(tool for tool in listed.tools if tool.name == "inspect_rewards")
+                    self.assertEqual(set(reward_tool.inputSchema["properties"]), {"preset", "reward_ids"})
                     for tool in listed.tools:
-                        if tool.name not in {"inspect_potions", "inspect_combatants", "inspect_ui", "get_observation", "inspect_hand", "inspect_selection", "inspect_relics", "inspect_map", "inspect_deck", "inspect_pile", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "play_cards", "use_potion", "discard_potion", "claim_reward", "choose_rest_option", "loot_treasure", "buy_item", "choose_ancient_option", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation", "travel_to_node", "run_result_option"}:
+                        if tool.name not in {"inspect_potions", "inspect_combatants", "inspect_ui", "get_observation", "inspect_hand", "inspect_selection", "inspect_relics", "inspect_map", "inspect_deck", "inspect_pile", "inspect_rewards", "select_card", "selection_option", "set_selection_view", "inspect_targets", "play_card", "play_cards", "use_potion", "discard_potion", "claim_reward", "choose_rest_option", "loot_treasure", "buy_item", "choose_ancient_option", "choose_event_option", "set_divination_tool", "divine", "respond_to_confirmation", "travel_to_node", "run_result_option"}:
                             self.assertEqual(set(tool.inputSchema["properties"]), {"preset"})
                     missing = await session.call_tool("end_turn", {})
                     self.assertTrue(missing.isError)

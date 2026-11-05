@@ -45,7 +45,7 @@ flowchart LR
 | `open_shop()` / `close_shop()` | 点击[商店](shop.md)的商人或返回按钮，实际展开/收回商品页 |
 | `inspect_shop()` | 一次查看当前全部商品正文与悬停说明 |
 | `buy_item(item_id)` | 购买一个当前商品；补货使用新 ID，删牌复用选牌工具 |
-| `inspect_rewards()` | [当前可浏览奖励及悬停说明](rewards.md) |
+| `inspect_rewards(preset?, reward_ids?)` | [当前奖励、静态 summary 和按稳定奖励 ID 筛选](rewards.md) |
 | `claim_reward(reward_id)` | 逐项点击奖励，后续选牌复用现有选择工具 |
 | `proceed()` | 点击奖励页跳过/前进、宝箱房跳过/前进、休息处、已完成事件、先古之民或关闭商品页后的商店、建筑师前进按钮；保留原生返回父事件等行为 |
 | `loot_treasure(open_only?)` | [宝箱房开箱并领取](treasure.md)，可先开后决定；不自动前进 |

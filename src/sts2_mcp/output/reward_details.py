@@ -1,5 +1,6 @@
 from sts2_mcp.output.value_shapes import project, TIP
 from sts2_mcp.output.contracts.rooms import REWARDS, REWARD_ITEM
+from sts2_mcp.output.scene_context import scene_context
 
 
 CLAIM_SCHEMA = {
@@ -49,6 +50,7 @@ def rewards_details(value, *, full=False):
 
 
 def inspect_rewards_details(state):
-    if state.get('scene') != 'rewards':
-        raise ValueError('Invalid rewards inspection scene.')
-    return {'scene': 'rewards', 'rewards': rewards_details(state['rewards'], full=True)}
+    context = scene_context(state)
+    if context['scene'] != 'rewards' or context['screen'] != {'status':'visible'}:
+        raise ValueError('Invalid rewards inspection context.')
+    return {**context, 'rewards': rewards_details(state['rewards'], full=True)}

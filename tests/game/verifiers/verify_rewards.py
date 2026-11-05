@@ -12,6 +12,7 @@ from pathlib import Path
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from sts2_mcp.roundtrip_client import Client
+from sts2_mcp.mcp_catalog import tool_definitions
 from tests.game.support.verification_actions import confirm_transform
 
 
@@ -29,7 +30,8 @@ async def verify(args):
     async with stdio_client(params) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
-            assert len((await session.list_tools()).tools) == 43
+            assert {tool.name for tool in (await session.list_tools()).tools} == {
+                tool.name for tool in tool_definitions(screenshots_enabled=True)}
 
             async def call(name, arguments=None, *, error=None):
                 response = await session.call_tool(name, full_output_arguments(name, arguments or {}))

@@ -4,6 +4,7 @@ import argparse
 import asyncio
 import json
 import sys
+import time
 from pathlib import Path
 
 from mcp import ClientSession, StdioServerParameters
@@ -21,6 +22,12 @@ async def verify(args):
     def record(item):
         evidence.append(item)
         args.report.write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')
+
+    if args.scenario == 'legacy':
+        from tests.game.verifiers.verify_rewards import verify as legacy_verify
+        legacy_path=args.report.parent/'legacy.json'
+        await legacy_verify(argparse.Namespace(scenario='basic',report=legacy_path))
+        evidence.extend(json.loads(legacy_path.read_text()))
 
     async def native_state():
         reply = await asyncio.to_thread(raw.call, 'get_state')
@@ -54,12 +61,19 @@ async def verify(args):
 
             if args.scenario == 'no_rewards':
                 rejected = await call('inspect_rewards', error='illegal_action', label='no_initial_permission')
+                assert 'No reward list' in rejected['error']['message'], rejected
                 assert rejected['error']['recovery'] == 'get_observation', rejected
                 await call('end_turn', error='observation_required')
                 await call('get_observation')
                 rejected = await call('inspect_rewards', error='illegal_action', label='with_permission')
                 assert rejected['error']['recovery'] == 'choose_legal_action', rejected
                 await call('end_turn', label='direct_after_refusal')
+                return
+
+            if args.scenario == 'legacy':
+                await call('get_observation')
+                graph=await call('inspect_map')
+                await call('travel_to_node',{'node_id':graph['selectable_nodes'][0]})
                 return
 
             before = await native_state()
@@ -77,7 +91,26 @@ async def verify(args):
             compact = await call('inspect_rewards', {'preset':'default'}, label='initial_default')
             assert [r['id'] for r in compact['rewards']['items']] == [r['id'] for r in rows]
             assert all('linked_group' not in r for r in compact['rewards']['items'] if next(v for v in rows if v['id']==r['id'])['linked_group'] is None)
-            assert (await call('inspect_rewards', {'reward_ids':[]}, 'invalid_request', 'local_arguments'))['error']['recovery'] == 'correct_request'
+            summary=await call('inspect_rewards',{'preset':'summary'},label='initial_summary')
+            for preset in ('full','default','summary'):
+                observed=await call('get_observation',{'preset':preset},label='observation_'+preset)
+                reference=initial if preset=='full' else compact
+                expected={**reference['rewards'],'items':[{k:v for k,v in row.items() if k!='hover_tips'} for row in reference['rewards']['items']]}
+                assert observed['rewards']==expected, (preset,observed,expected)
+                if preset!='full':assert summary['rewards']==expected, summary
+            for preset in ('full','default','summary'):
+                empty=await call('inspect_rewards',{'preset':preset,'reward_ids':[]},label='empty_filter_'+preset)
+                assert empty['rewards']['items']==[], empty
+                reference=initial if preset=='full' else compact
+                assert {k:v for k,v in empty['rewards'].items() if k!='items'}=={k:v for k,v in reference['rewards'].items() if k!='items'}
+            assert await call('inspect_rewards',{'reward_ids':None},label='null_filter')==initial
+            if rows:
+                requested=[rows[-1]['id'],rows[0]['id'],2147483647,rows[-1]['id']]
+                for preset in ('full','summary'):
+                    filtered=await call('inspect_rewards',{'preset':preset,'reward_ids':requested},label='filtered_'+preset)
+                    assert [r['id'] for r in filtered['rewards']['items']]==[r['id'] for r in rows if r['id'] in requested],filtered
+                    assert filtered['errors']==[{'code':'reward_ids_not_found','reward_ids':[2147483647]}],filtered
+            assert (await call('inspect_rewards', {'reward_ids':[True]}, 'invalid_request', 'local_arguments'))['error']['recovery'] == 'correct_request'
 
             if args.scenario == 'basic':
                 gold = next(r for r in rows if r['type']=='gold')
@@ -89,6 +122,7 @@ async def verify(args):
                 selected = await call('inspect_selection')
                 rejected = await call('inspect_rewards', error='illegal_action', label='selection_covered')
                 assert rejected['error']['recovery']=='choose_legal_action', rejected
+                assert 'inspect_selection' in rejected['error']['message'], rejected
                 skip = next(o for o in selected['selection']['options'] if o['id']=='skip')
                 await call('selection_option', {'option_id':skip['id']}, label='direct_selection_after_refusal')
             elif args.scenario == 'linked':
@@ -108,6 +142,17 @@ async def verify(args):
                 assert any(r['type']=='special_card' for r in rows), rows
             elif args.scenario == 'escaped':
                 assert not any(r['type']=='special_card' for r in rows), rows
+            elif args.scenario == 'deck_covered':
+                await call('inspect_deck')
+                rejected=await call('inspect_rewards',{'preset':'summary','reward_ids':[]},'illegal_action','deck_covered')
+                assert 'close_card_view' in rejected['error']['message'] and rejected['error']['recovery']=='choose_legal_action',rejected
+                restored=await call('close_card_view')
+                deadline=time.monotonic()+3
+                while 'inspect_rewards' not in restored['available_actions']:
+                    assert time.monotonic()<deadline,restored
+                    await asyncio.sleep(.1)
+                    restored=await call('get_observation',{'preset':'actions_only'},label='reward_reveal')
+                assert (await call('inspect_rewards',{'preset':'summary'},label='after_deck_summary'))==summary
 
             # Leave through native travel so the fixture's parent reward task can finish.
             if args.scenario != 'basic':
@@ -115,6 +160,7 @@ async def verify(args):
             graph = await call('inspect_map')
             rejected = await call('inspect_rewards', error='illegal_action', label='map_covered')
             assert rejected['error']['recovery']=='choose_legal_action', rejected
+            assert 'close_map' in rejected['error']['message'], rejected
             assert graph['selectable_nodes'], graph
             await call('travel_to_node', {'node_id':graph['selectable_nodes'][0]}, label='direct_map_after_refusal')
     print('PASS reward inspection review:', args.scenario, flush=True)
@@ -122,6 +168,6 @@ async def verify(args):
 
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--scenario', choices=('no_rewards','basic','linked','empty','nested','returned','escaped'), required=True)
+    parser.add_argument('--scenario', choices=('no_rewards','basic','linked','empty','nested','returned','escaped','deck_covered','legacy'), required=True)
     parser.add_argument('--report', type=Path, required=True)
     asyncio.run(verify(parser.parse_args()))

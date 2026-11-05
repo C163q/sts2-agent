@@ -233,8 +233,7 @@ internal sealed partial class GameAdapter
                 && TargetInspection.Type(holder.CardModel!) != null)
             || (CanHandlePotions() || CanDiscardPotions()) && PotionInspection.ExposedHolders() is { } targetHolders
                 && targetHolders.Any(h => PotionInspection.Displayed(h) && h.HasPotion && PotionActions.Type(h.Potion!.Model) != null)) actions.Add("inspect_targets");
-        if (RewardInspection.Current is { } rewardPage && RewardInspection.Ready(rewardPage)
-            && RunManager.Instance.IsSingleplayerOrFakeMultiplayer) actions.Add("inspect_rewards");
+        if (RewardInspection.InspectionUnavailableReason(RewardInspection.Current) == null) actions.Add("inspect_rewards");
         if (RestSiteInspection.Current is { } restPage && RestSiteInspection.Ready(restPage)
             && RunManager.Instance.IsSingleplayerOrFakeMultiplayer) actions.Add("inspect_rest_site");
         if (TreasureInspection.Current is { } treasurePage && TreasureInspection.Exposed(treasurePage)) actions.Add("inspect_treasure");

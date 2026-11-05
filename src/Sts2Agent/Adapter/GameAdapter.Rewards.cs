@@ -70,10 +70,14 @@ internal sealed partial class GameAdapter
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read current rewards before acting.");
         var screen = RewardInspection.Current;
+        if (inspect)
+        {
+            if (RewardInspection.InspectionUnavailableReason(screen) is { } reason)
+                return ResponseBuilder.Error(request.Id, "illegal_action", reason, publicMessage: true);
+            return InspectionSuccess(request, before, new { rewards = rewardInspection.Read(full: true) });
+        }
         if (screen == null || !RewardInspection.Ready(screen) || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available local rewards screen.");
-        if (inspect) return InspectionSuccess(request, before, new { rewards = rewardInspection.Read(full: true)
-        });
 
         var run = RunManager.Instance.DebugOnlyGetState();
         NRewardButton? row = request.Operation == "claim_reward" ? rewardInspection.Find(screen, rewardId) : null;

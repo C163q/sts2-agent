@@ -1,6 +1,6 @@
 # inspect_rewards 开发核验依据
 
-> 当前状态：场景核验完成，处于设计讨论。46 项针对性检查、七种 GUI、9 份样本和两项专门探针完成；三项问题待确认处理，工具行为未修改。用户可读的问题与参数建议见[审阅记录](2026-11-05-inspect-rewards-review.md)。
+> 本文保留 ae47d3d 的审阅基线：46 项检查、七种 GUI、9 份样本与两项探针。三项修复、summary 和 reward_ids 已确认并进入[实施与验证](2026-11-05-reward-inspection-presets-implementation.md)；下文缺口及原返回用于审阅基线对照。用户可读的问题与参数建议见[审阅记录](2026-11-05-inspect-rewards-review.md)。
 
 ## 基线与证据
 

@@ -1,0 +1,73 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "visible"
+  },
+  "top_bar": {
+    "gold": 99,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 2
+  },
+  "rewards": {
+    "status": "visible",
+    "title": "Loot!",
+    "items": [
+      {
+        "id": 6,
+        "type": "gold",
+        "text": "17 Gold",
+        "enabled": true
+      },
+      {
+        "id": 7,
+        "type": "gold",
+        "text": "23 Gold (stolen back)",
+        "enabled": true
+      },
+      {
+        "id": 8,
+        "type": "potion",
+        "text": "Block Potion",
+        "enabled": true
+      },
+      {
+        "id": 9,
+        "type": "relic",
+        "text": "Whetstone",
+        "enabled": true
+      },
+      {
+        "id": 10,
+        "type": "special_card",
+        "text": "Add Strike+ to your deck.",
+        "enabled": true
+      },
+      {
+        "id": 11,
+        "type": "card",
+        "text": "Add a card to your deck.",
+        "enabled": true
+      }
+    ],
+    "proceed": {
+      "text": "Skip",
+      "enabled": true,
+      "skips_remaining": true
+    }
+  },
+  "available_actions": [
+    "claim_reward",
+    "proceed",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_rewards"
+  ]
+}

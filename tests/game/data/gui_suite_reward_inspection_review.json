@@ -1,5 +1,21 @@
 [
   {
+    "name": "legacy",
+    "scenarios": {
+      "reward": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_reward_inspection_review.py",
+        "args": [
+          "--scenario",
+          "legacy"
+        ]
+      }
+    ]
+  },
+  {
     "name": "no_rewards",
     "scenarios": {
       "play": "basic"
@@ -107,6 +123,22 @@
         "args": [
           "--scenario",
           "escaped"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "deck_covered",
+    "scenarios": {
+      "navigation": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_reward_inspection_review.py",
+        "args": [
+          "--scenario",
+          "deck_covered"
         ]
       }
     ]

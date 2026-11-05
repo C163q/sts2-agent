@@ -1,0 +1,15 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "visible"
+  },
+  "rewards": {
+    "status": "visible",
+    "items": [],
+    "proceed": {
+      "text": "Proceed",
+      "enabled": true,
+      "skips_remaining": false
+    }
+  }
+}

@@ -1,0 +1,137 @@
+[
+  {
+    "file": "basic.full.json",
+    "source": ".tmp/2026-11-05-reward-inspection-presets/gui/basic/verify/evidence.json",
+    "index": 0,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "4e580243ece428840ab097d8850ad5ecf416c9e388e5ee9fe85a13708e32a27b"
+  },
+  {
+    "file": "basic.summary.json",
+    "source": ".tmp/2026-11-05-reward-inspection-presets/gui/basic/verify/evidence.json",
+    "index": 4,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "summary"
+    },
+    "image_count": 0,
+    "sha256": "0588cca0d8fd0e6135db05d719118a414b7e05aae21e86354f358d37682ad593"
+  },
+  {
+    "file": "filtered.full.json",
+    "source": ".tmp/2026-11-05-reward-inspection-presets/gui/basic/verify/evidence.json",
+    "index": 12,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "full",
+      "reward_ids": [
+        11,
+        6,
+        2147483647,
+        11
+      ]
+    },
+    "image_count": 0,
+    "sha256": "a6f54b6ba62b9027fdf241314b8426f8974cfff54d1a803d81147bf252923e7c"
+  },
+  {
+    "file": "filtered.summary.json",
+    "source": ".tmp/2026-11-05-reward-inspection-presets/gui/basic/verify/evidence.json",
+    "index": 13,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "summary",
+      "reward_ids": [
+        11,
+        6,
+        2147483647,
+        11
+      ]
+    },
+    "image_count": 0,
+    "sha256": "1c4561b2ee8f8749e67b02f231506daf79735e4da2414e81233e1272743d2188"
+  },
+  {
+    "file": "empty-filter.summary.json",
+    "source": ".tmp/2026-11-05-reward-inspection-presets/gui/basic/verify/evidence.json",
+    "index": 10,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "summary",
+      "reward_ids": []
+    },
+    "image_count": 0,
+    "sha256": "dc684d08a71e18b6885adaed334176cb416738871511360313200872ad5b20c8"
+  },
+  {
+    "file": "linked.summary.json",
+    "source": ".tmp/2026-11-05-reward-inspection-presets/gui/linked/verify/evidence.json",
+    "index": 4,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "summary"
+    },
+    "image_count": 0,
+    "sha256": "12bb557f4e82b6928b66eabcdca72eda381554b9fdb102e999bd21e47299afa3"
+  },
+  {
+    "file": "empty.summary.json",
+    "source": ".tmp/2026-11-05-reward-inspection-presets/gui/empty/verify/evidence.json",
+    "index": 4,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "summary"
+    },
+    "image_count": 0,
+    "sha256": "6038a729fa118029e85cd8baa9d1dd0840f354220b691c1c94893496f7b3b6d7"
+  },
+  {
+    "file": "observation.full.json",
+    "source": ".tmp/2026-11-05-reward-inspection-presets/gui/basic/verify/evidence.json",
+    "index": 5,
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "8c3787c7193189893518adfaf68bf99ee168b6371429cd2a1b7e47dbe7af091a"
+  },
+  {
+    "file": "observation.summary.json",
+    "source": ".tmp/2026-11-05-reward-inspection-presets/gui/basic/verify/evidence.json",
+    "index": 7,
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "summary"
+    },
+    "image_count": 0,
+    "sha256": "d63becc554ba9860151c15f564fe16ccde9cc3f6db6daa9edcd43d968ada474f"
+  },
+  {
+    "file": "deck-covered.summary.json",
+    "source": ".tmp/2026-11-05-reward-inspection-presets/gui-deck/deck_covered/verify/evidence.json",
+    "index": 16,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "summary",
+      "reward_ids": []
+    },
+    "image_count": 0,
+    "sha256": "8f7eee761385edf0f57bb5c490cbd549e99a4afd611cb1c0af70cc6b5a4c929d"
+  },
+  {
+    "file": "no-rewards.full.json",
+    "source": ".tmp/2026-11-05-reward-inspection-presets/gui/no_rewards/verify/evidence.json",
+    "index": 0,
+    "tool": "inspect_rewards",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "10be1de03cbf88bda478e924b55229ede0684098ded28c31a0d8ea602f188eea"
+  }
+]

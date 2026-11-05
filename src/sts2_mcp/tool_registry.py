@@ -20,6 +20,7 @@ from sts2_mcp.output.card_batch_details import BATCH_SCHEMA
 from sts2_mcp.output.potion_action_details import POTION_SCHEMA, USE_SCHEMA
 from sts2_mcp.screenshot_tool import SCREENSHOT_SCHEMA
 from sts2_mcp.output.reward_details import CLAIM_SCHEMA
+from sts2_mcp.output.reward_presets import REWARD_SCHEMA
 from sts2_mcp.output.rest_site_details import REST_OPTION_SCHEMA
 from sts2_mcp.output.treasure_details import LOOT_SCHEMA
 from sts2_mcp.output.shop_details import BUY_SCHEMA
@@ -308,15 +309,18 @@ SPECS = (
         media=True),
     ToolSpec(
         name='inspect_rewards',
-        schema=NO_ARGUMENTS,
-        description='Read the current browsable reward rows and their hover help. Does not reveal unopened card reward candidates.',
+        schema=REWARD_SCHEMA,
+        description='Read current reward rows and hover help. summary keeps static rows; use inspect_selection for opened card rewards.',
         annotations=read_only,
         category='inspection',
         effect='read',
         requires_permission=False,
         returns_transition=False,
         records_events=False,
-        reader='reward_details:inspect_rewards_details'),
+        reader='reward_details:inspect_rewards_details',
+        parser='reward_presets:reward_inspection_arguments',
+        projector='reward_presets:reward_preset',
+        native_keys=()),
     ToolSpec(
         name='claim_reward',
         schema=CLAIM_SCHEMA,
