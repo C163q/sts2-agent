@@ -1,0 +1,96 @@
+{
+  "scene": "event",
+  "selection": {
+    "type": "deck_upgrade",
+    "status": "visible",
+    "prompt": "Choose 2 cards to Upgrade.",
+    "min_select": 2,
+    "max_select": 2,
+    "selected_ids": [
+      40,
+      41
+    ],
+    "cards": [],
+    "options": [
+      {
+        "id": "cancel_preview",
+        "text": "Back",
+        "enabled": true
+      },
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "upgrade_previews": [
+      {
+        "before": {
+          "name": null,
+          "description": null,
+          "hover_tips": null,
+          "enchantment": null,
+          "affliction": null,
+          "id": 40
+        },
+        "after": {
+          "id": 40,
+          "name": "Defend+",
+          "type": "Skill",
+          "rarity": "basic",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "1",
+          "star_cost": null,
+          "unplayable_markers": [],
+          "outline": "none",
+          "enchantment": null,
+          "affliction": null,
+          "description": "Gain 8 Block.",
+          "hover_tips": [
+            {
+              "title": "Block",
+              "description": "Until next turn, prevents damage."
+            }
+          ]
+        }
+      },
+      {
+        "before": {
+          "name": null,
+          "description": null,
+          "hover_tips": null,
+          "enchantment": null,
+          "affliction": null,
+          "id": 41
+        },
+        "after": {
+          "id": 41,
+          "name": "Bash+",
+          "type": "Attack",
+          "rarity": "basic",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "2",
+          "star_cost": null,
+          "unplayable_markers": [],
+          "outline": "none",
+          "enchantment": null,
+          "affliction": null,
+          "description": "Deal 10 damage.\nApply 3 Vulnerable.",
+          "hover_tips": [
+            {
+              "title": "Vulnerable",
+              "description": "Vulnerable creatures take 50% more damage from Attacks."
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": []
+}

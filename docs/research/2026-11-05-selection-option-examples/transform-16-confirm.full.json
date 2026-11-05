@@ -1,0 +1,39 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "proceed",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_ancient"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 69,
+          "name": "Bash"
+        },
+        "pile": "deck",
+        "type": "card_removed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 70,
+          "name": "Anger"
+        },
+        "pile": "deck",
+        "type": "card_added",
+        "sequence": 2
+      }
+    ]
+  }
+}

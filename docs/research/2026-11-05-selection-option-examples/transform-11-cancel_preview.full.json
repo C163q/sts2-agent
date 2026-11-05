@@ -1,0 +1,31 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "select_card",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ],
+  "selection": {
+    "type": "deck_transform",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 69,
+          "name": "Bash"
+        },
+        "type": "card_deselected",
+        "sequence": 1
+      }
+    ]
+  }
+}

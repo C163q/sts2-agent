@@ -1,0 +1,77 @@
+{
+  "scene": "rest_site",
+  "selection": {
+    "type": "deck_upgrade",
+    "status": "visible",
+    "prompt": "Choose a card to Upgrade.",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [
+      29
+    ],
+    "cards": [],
+    "options": [
+      {
+        "id": "cancel_preview",
+        "text": "Back",
+        "enabled": true
+      },
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "upgrade_previews": [
+      {
+        "before": {
+          "id": 29,
+          "name": "Bash",
+          "type": "Attack",
+          "rarity": "basic",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "2",
+          "star_cost": null,
+          "unplayable_markers": [],
+          "outline": "none",
+          "enchantment": null,
+          "affliction": null,
+          "description": "Deal 8 damage.\nApply 2 Vulnerable.",
+          "hover_tips": [
+            {
+              "title": "Vulnerable",
+              "description": "Vulnerable creatures take 50% more damage from Attacks."
+            }
+          ]
+        },
+        "after": {
+          "id": 29,
+          "name": "Bash+",
+          "type": "Attack",
+          "rarity": "basic",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "2",
+          "star_cost": null,
+          "unplayable_markers": [],
+          "outline": "none",
+          "enchantment": null,
+          "affliction": null,
+          "description": "Deal 10 damage.\nApply 3 Vulnerable.",
+          "hover_tips": [
+            {
+              "title": "Vulnerable",
+              "description": "Vulnerable creatures take 50% more damage from Attacks."
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": []
+}

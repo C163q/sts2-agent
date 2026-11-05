@@ -43,6 +43,7 @@
 | 候选升级模式与不支持反馈 | [selection_upgrades](../../tests/game/data/gui_suite_selection_upgrades.json) |
 | 选牌查看的具体拒绝、安全续接、覆盖边界及卡包／结果说明 | [selection_review](../../tests/game/data/gui_suite_selection_review.json)；[核验与实施](../research/2026-11-05-selection-inspection-implementation.md) |
 | 点击候选的选中／取消、替换、自动提交、预览、未知身份、滚动及拒绝恢复 | [select_card_review](../../tests/game/data/gui_suite_select_card_review.json)；[实施与验证](../research/2026-11-05-selection-feedback-implementation.md) |
+| 选择按钮的确认、返回、放弃、跳过、整包与奖励替代行为 | [selection_option_review](../../tests/game/data/gui_suite_selection_option_review.json)；[审阅](../research/2026-11-05-selection-option-review.md)。保留错误恢复缺陷的核验，不表示问题已修复 |
 | 生成牌、奖励牌及公开加入去向 | [card_additions](../../tests/game/data/gui_suite_card_additions.json) |
 | default 公共空值规则及图片 | [default_presets](../../tests/game/data/gui_suite_default_presets.json) |
 | 战斗、顶栏、附魔与观察预设 | [observation_presets](../../tests/game/data/gui_suite_observation_presets.json) |

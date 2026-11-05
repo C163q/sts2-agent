@@ -1,0 +1,84 @@
+{
+  "scene": "rewards",
+  "selection": {
+    "type": "reward",
+    "status": "visible",
+    "prompt": "Choose a Card",
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [],
+    "cards": [
+      {
+        "id": 0,
+        "name": "Flash of Steel",
+        "type": "Attack",
+        "rarity": "uncommon",
+        "visual_card_pool": "colorless",
+        "energy_cost": "0",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Deal 5 damage.\nDraw 1 card."
+      },
+      {
+        "id": 1,
+        "name": "Stratagem",
+        "type": "Power",
+        "rarity": "uncommon",
+        "visual_card_pool": "colorless",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Whenever you shuffle your Draw Pile, choose a card from it to put into your Hand."
+      },
+      {
+        "id": 2,
+        "name": "Dark Shackles",
+        "type": "Skill",
+        "rarity": "uncommon",
+        "visual_card_pool": "colorless",
+        "energy_cost": "0",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Enemy loses 9 Strength this turn.\nExhaust."
+      }
+    ],
+    "options": [
+      {
+        "id": "skip",
+        "text": "Skip",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [
+    {
+      "title": "Strength",
+      "description": "Strength adds additional damage to Attacks.",
+      "card_ids": [
+        2
+      ]
+    },
+    {
+      "title": "Exhaust",
+      "description": "Removed until the end of combat.",
+      "card_ids": [
+        2
+      ]
+    }
+  ]
+}

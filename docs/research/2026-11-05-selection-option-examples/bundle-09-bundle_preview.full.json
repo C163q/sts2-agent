@@ -1,0 +1,95 @@
+{
+  "scene": "ancient",
+  "selection": {
+    "type": "bundle",
+    "status": "visible",
+    "prompt": null,
+    "min_select": 1,
+    "max_select": 1,
+    "selected_ids": [
+      71,
+      72,
+      73
+    ],
+    "cards": [
+      {
+        "id": 71,
+        "name": "Breakthrough",
+        "type": "Attack",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Lose 1 HP.\nDeal 9 damage to ALL enemies."
+      },
+      {
+        "id": 72,
+        "name": "Havoc",
+        "type": "Skill",
+        "rarity": "common",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Play the top card of your Draw Pile and Exhaust it."
+      },
+      {
+        "id": 73,
+        "name": "Feel No Pain",
+        "type": "Power",
+        "rarity": "uncommon",
+        "visual_card_pool": "ironclad",
+        "energy_cost": "1",
+        "star_cost": null,
+        "unplayable_markers": [],
+        "outline": "none",
+        "enchantment": null,
+        "affliction": null,
+        "description": "Whenever a card is Exhausted, gain 3 Block."
+      }
+    ],
+    "options": [
+      {
+        "id": "cancel_preview",
+        "text": "Back",
+        "enabled": true
+      },
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "can_view_battlefield": false,
+    "can_view_upgrades": false,
+    "view_upgrades": false,
+    "bundles": []
+  },
+  "screen": {
+    "status": "covered"
+  },
+  "hover_tips": [
+    {
+      "title": "Exhaust",
+      "description": "Removed until the end of combat.",
+      "card_ids": [
+        72,
+        73
+      ]
+    },
+    {
+      "title": "Block",
+      "description": "Until next turn, prevents damage.",
+      "card_ids": [
+        73
+      ]
+    }
+  ]
+}

@@ -1,0 +1,400 @@
+[
+  {
+    "name": "no_selection",
+    "scenarios": {},
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "no_selection"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "invalid_option",
+    "scenarios": {
+      "selection": "combat_pile"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "invalid_option"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "disabled",
+    "scenarios": {
+      "selection": "grid_manual"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "disabled"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "battlefield",
+    "scenarios": {
+      "selection": "combat_pile"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "battlefield"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "covered",
+    "scenarios": {
+      "selection": "combat_pile"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "covered"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "choose_skip",
+    "scenarios": {
+      "play": "discovery"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "choose_skip"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "reward_skip",
+    "scenarios": {
+      "selection": "reward"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "reward_skip"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "grid_manual",
+    "scenarios": {
+      "selection": "grid_manual"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "grid_manual"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hand_zero",
+    "scenarios": {
+      "selection": "retain_zero"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "hand_zero"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hand_one",
+    "scenarios": {
+      "selection": "retain_one"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "hand_one"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hand_upgrade",
+    "scenarios": {
+      "play": "armaments"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "hand_upgrade"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "deck_cancel",
+    "scenarios": {
+      "selection": "deck"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "deck_cancel"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "deck_preview",
+    "scenarios": {
+      "selection": "deck"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "deck_preview"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "smith",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "smith"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "multi_upgrade",
+    "scenarios": {
+      "selection": "upgrade_multi"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "multi_upgrade"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "enchant_single",
+    "scenarios": {
+      "event": "enchant"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "enchant_single"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "enchant_multi",
+    "scenarios": {
+      "ancient": "multi"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "enchant_multi"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "transform",
+    "scenarios": {
+      "ancient": "transform"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "transform"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "bundle",
+    "scenarios": {
+      "ancient": "bundle"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "bundle"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "view_cards",
+    "scenarios": {
+      "ancient": "pandora"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "view_cards"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "death",
+    "scenarios": {
+      "selection": "retain_death"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "death"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "victory",
+    "scenarios": {
+      "selection": "retain_victory"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "victory"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "paels_wing",
+    "scenarios": {
+      "reward": "paels_wing"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_reward_alternatives.py",
+        "args": [
+          "--scenario",
+          "paels_wing"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "driftwood",
+    "scenarios": {
+      "reward": "driftwood"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_reward_alternatives.py",
+        "args": [
+          "--scenario",
+          "driftwood"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "shop_remove",
+    "scenarios": {
+      "shop": "remove"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "shop_remove"
+        ]
+      }
+    ]
+  }
+]

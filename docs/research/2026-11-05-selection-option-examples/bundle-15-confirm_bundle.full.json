@@ -1,0 +1,48 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "proceed",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_ancient"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 74,
+          "name": "Thunderclap"
+        },
+        "pile": "deck",
+        "type": "card_added",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 75,
+          "name": "Setup Strike"
+        },
+        "pile": "deck",
+        "type": "card_added",
+        "sequence": 2
+      },
+      {
+        "card": {
+          "id": 76,
+          "name": "Ashen Strike"
+        },
+        "pile": "deck",
+        "type": "card_added",
+        "sequence": 3
+      }
+    ]
+  }
+}

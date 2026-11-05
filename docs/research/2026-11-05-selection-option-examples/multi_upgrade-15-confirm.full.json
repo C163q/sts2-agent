@@ -1,0 +1,39 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "choose_event_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 40,
+          "name": "Defend"
+        },
+        "pile": "deck",
+        "type": "card_upgraded",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 41,
+          "name": "Bash"
+        },
+        "pile": "deck",
+        "type": "card_upgraded",
+        "sequence": 2
+      }
+    ]
+  }
+}

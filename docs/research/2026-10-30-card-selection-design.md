@@ -5,7 +5,7 @@
 ## 已核实的流程
 
 - `CardSelectCmd.FromChooseACardScreen` 用于最多三个候选；药水允许跳过，`KnowledgeDemon.ChooseCurse` 不允许跳过。候选卡片已经显示完整正文，基础观察可以提供正文，悬停解释仍通过详情读取。
-- `NCardRewardSelectionScreen` 独立于上述页面；非卡牌按钮来自 `CardRewardAlternative.Generate`，除 Skip 外还可能有重新生成、治疗、献祭等。不能把所有非卡牌按钮都解释为跳过。`BrainLeech.Rip` 使用这种奖励流程。
+- `NCardRewardSelectionScreen` 独立于上述页面；非卡牌按钮来自 `CardRewardAlternative.Generate`，除 Skip 外还可能有重掷和献祭。不能把所有非卡牌按钮都解释为跳过。`BrainLeech.Rip` 使用这种奖励流程。源码注释还举过捕梦网治疗，但该例未获实际生成逻辑支持；更正依据见[selection_option 核验](2026-11-05-selection-option-development-notes.md#奖励按钮名称与旧注释)。
 - `NSimpleCardSelectScreen` 读取 `CardSelectorPrefs` 的数量上下限、手动确认规则。`RoomFullOfCheese.Gorge` 为八选二，`BrainLeech.ShareKnowledge` 为五选一。`ChoicesParadox.AfterPlayerTurnStart` 在第一回合生成五张候选，选一张并保留；它不是回合结束后的专属流程。
 - `NPlayerHand.SelectCards` 管理手牌选择。`TyrannyPower` 要求消耗；`WellLaidPlansPower.BeforeFlushLate` 允许选零到指定数量。`Cancelable` 不意味着每种页面都会显示跳过按钮；以原生按钮为准。
 - `NPeekButton` 隐藏选牌内容并切换原生 backstop；`NPlayerHand.OnHolderPressed` 在 peeking 时直接拒绝操作，`AreCardActionsAllowed` 也检查此状态。小型候选页和简单网格页在 peeking 时启用自己的 `NCombatPilesContainer`。
