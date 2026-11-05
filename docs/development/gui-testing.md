@@ -45,6 +45,7 @@
 | 点击候选的选中／取消、替换、自动提交、预览、未知身份、滚动及拒绝恢复 | [select_card_review](../../tests/game/data/gui_suite_select_card_review.json)；[实施与验证](../research/2026-11-05-selection-feedback-implementation.md) |
 | 选择按钮的确认、返回、放弃、跳过、整包、奖励替代及明确拒绝后续接 | [selection_option_review](../../tests/game/data/gui_suite_selection_option_review.json)；[审阅](../research/2026-11-05-selection-option-review.md)。grid_manual 包含双重门控的禁用按钮／过期优先检查，人工扰动只用于验证拒绝，不代表自然游玩出现过同类静止按钮 |
 | 奖励预设与 ID 筛选、基础观察对照、拒绝续接及旧领取流程 | [reward_inspection_review](../../tests/game/data/gui_suite_reward_inspection_review.json)；[实施与验证](../research/2026-11-05-reward-inspection-presets-implementation.md) |
+| 奖励、宝箱、火堆、商店、事件、先古、占卜与换幕的前进核验 | [proceed_review](../../tests/game/data/gui_suite_proceed_review.json)；[开发依据](../research/2026-11-06-proceed-development-notes.md)。建筑师使用新进度独立实例，未加入复用清单 |
 | 开箱／分步领取、空箱、输入边界与明确拒绝恢复 | [loot_treasure_review](../../tests/game/data/gui_suite_loot_treasure_review.json)；[修复记录](../research/2026-11-06-treasure-loot-recovery-implementation.md)。验证具体诊断、原生证明与合法动作直接续接 |
 | 宝箱预设、空值、覆盖拒绝、纯读取续接与显示／悬停边界 | [treasure_inspection_review](../../tests/game/data/gui_suite_treasure_inspection_review.json)；[实施验证](../research/2026-11-06-treasure-inspection-presets-implementation.md)。显示扰动双重门控，finally 和局间重置恢复 |
 | 领取结果、满槽、互斥、嵌套、追回、拒绝续接与滚动失败边界 | [claim_reward_review](../../tests/game/data/gui_suite_claim_reward_review.json)；[修复记录](../research/2026-11-05-claim-reward-recovery-implementation.md)。滚动失败使用双重门控的原生按钮禁用扰动，finally 与局间重置恢复 |

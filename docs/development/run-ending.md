@@ -18,7 +18,7 @@
 
 第三幕最后 Boss 的奖励页 `proceed` 返回 `scene: "epilogue"`。依次操作观察提供的 `advance_dialogue` 或 `proceed`，不会跳过台词。结算使用 `scene: "run_result"`，按 `options` 继续、解锁、确认或返回。`main_menu` 按钮的文字有时是 Unlock，点击后先进入时间线；只有 `scene: "main_menu"`、结算字段为空时才真正回到菜单。工具不新开一局。
 
-成功动作使用现有 `transition`：`action_completed/complete=true` 表示下一页已就绪，可按许可规则继续；当前页内容和按钮通过观察或 `inspect_run_result` 按需读取。首次进入已就绪的胜利结算页返回 `run_won/complete=true`，失败结算页返回 `run_lost/complete=true`，依据与原生横幅相同的胜负判据。刚进入建筑师对话仍为 `action_completed`；结算后翻页、解锁和返回菜单同样为 `action_completed`，不重复报告胜负。终局回执不保留连续动作许可，需通过观察或详情取得当前结算操作。成功详情也刷新状态令牌；失败、超时或人工改动后重新读取当前状态。MCP 工具除通用 `preset` 外只接受 `option_id`，底层文件操作不接受额外参数；按钮、页面身份和状态令牌在游戏线程再次核对。工具将时间线绑定到本次结算的原生菜单栈；人工返回菜单同样结束关联。工具入口不用于操作平常打开的时间线或其他主菜单页面。
+成功动作使用现有 `transition`：`action_completed/complete=true` 表示下一页已就绪，可按许可规则继续；当前页内容和按钮通过观察或 `inspect_run_result` 按需读取。首次进入已就绪的胜利结算页返回 `run_won/complete=true`，失败结算页返回 `run_lost/complete=true`，依据与原生横幅相同的胜负判据。终局 available_actions 可保留实际可用的只读查看工具；列表不必为空，但不续接玩法许可。刚进入建筑师对话仍为 `action_completed`；结算后翻页、解锁和返回菜单同样为 `action_completed`，不重复报告胜负。终局回执不保留连续动作许可，需通过观察或详情取得当前结算操作。成功详情也刷新状态令牌；失败、超时或人工改动后重新读取当前状态。MCP 工具除通用 `preset` 外只接受 `option_id`，底层文件操作不接受额外参数；按钮、页面身份和状态令牌在游戏线程再次核对。工具将时间线绑定到本次结算的原生菜单栈；人工返回菜单同样结束关联。工具入口不用于操作平常打开的时间线或其他主菜单页面。
 
 ## 建筑师观察
 
@@ -78,3 +78,5 @@ get_observation 的 summary 保留当前结算主体和全部 texts、options、
 建筑师对话也可在原生按钮可用时查看牌组；覆盖期间保留 `screen.view: deck` 并隐藏底层对话，当前原生工具列表包含浏览及实际可读的药水／遗物详情。结算页的药水／遗物详情也根据实际可见、可悬停控件独立列出，不要求无关的结算文字动画完成；仍不能打开牌组或执行已结束对局的动作。实测范围见[可用工具修复记录](../research/2026-11-02-available-actions-fix.md)。
 
 建筑师牌组覆盖期间，五种观察预设均可读取当前覆盖页，并接受原生允许的药水／遗物只读工具；底层对白和推进对话、使用药水等动作仍被覆盖。缺陷与修复的验证证据见[覆盖页核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md#已确认缺陷建筑师牌组覆盖)。
+
+旧独立终章脚本 verify_run_ending.py 的胜利分支仍含 available_actions:[] 的过时断言，可能把正确终态判为失败；当前断言应仅排除玩法动作并验证许可未续接。现状与独立终章实测见[proceed开发核验](../research/2026-11-06-proceed-development-notes.md)。脚本尚未修正，不能把新审阅验证器通过当作旧脚本已通过。

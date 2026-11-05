@@ -1,0 +1,278 @@
+[
+  {
+    "file": "reward-skip.full.json",
+    "description": "奖励页Skip打开地图",
+    "source": ".tmp/2026-11-06-proceed-review/gui/reward_skip/audit/evidence.json",
+    "index": 8,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "bd92fae6059e8e373c88a95897dba8f2cc64faa6680b506913618de1b701217c"
+  },
+  {
+    "file": "reward-empty.default.json",
+    "description": "奖励领完后Proceed，default",
+    "source": ".tmp/2026-11-06-proceed-review/gui/reward_empty/audit/evidence.json",
+    "index": 4,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "default"
+    },
+    "image_count": 0,
+    "sha256": "bd92fae6059e8e373c88a95897dba8f2cc64faa6680b506913618de1b701217c"
+  },
+  {
+    "file": "nested-return.full.json",
+    "description": "子奖励返回父页面",
+    "source": ".tmp/2026-11-06-proceed-review/gui/nested_reward/audit/evidence.json",
+    "index": 5,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "d5a150bacaac0f104ffc519b6942538d0b3fc1e17c30c129f7c070d6dc1e0c66"
+  },
+  {
+    "file": "treasure-skip.full.json",
+    "description": "宝箱Skip放弃遗物",
+    "source": ".tmp/2026-11-06-proceed-review/gui/treasure_skip/audit/evidence.json",
+    "index": 7,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "32702699a80713ec35ef4e7d53f4c221f65bc48f59c3d953ce9dcb894ed216d5"
+  },
+  {
+    "file": "treasure-collected.full.json",
+    "description": "宝箱领取后前进",
+    "source": ".tmp/2026-11-06-proceed-review/gui/treasure_collected/audit/evidence.json",
+    "index": 7,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "32702699a80713ec35ef4e7d53f4c221f65bc48f59c3d953ce9dcb894ed216d5"
+  },
+  {
+    "file": "rest.full.json",
+    "description": "休息后离开火堆",
+    "source": ".tmp/2026-11-06-proceed-review/gui/rest/audit/evidence.json",
+    "index": 7,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "d32e2face5d301b084bb0af74c5b150773df04c79c4cbc027d97102ffad41f18"
+  },
+  {
+    "file": "tent.full.json",
+    "description": "帐篷仍有选项时离开",
+    "source": ".tmp/2026-11-06-proceed-review/gui/tent/audit/evidence.json",
+    "index": 8,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "d32e2face5d301b084bb0af74c5b150773df04c79c4cbc027d97102ffad41f18"
+  },
+  {
+    "file": "shop.full.json",
+    "description": "关闭商品页后离开商店",
+    "source": ".tmp/2026-11-06-proceed-review/gui/shop/audit/evidence.json",
+    "index": 8,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "1b49d8b9e6d2fe01df188732424eb581ffcd0e193339445f2b97c1e7094f98a8"
+  },
+  {
+    "file": "event.full.json",
+    "description": "普通事件完成后前进",
+    "source": ".tmp/2026-11-06-proceed-review/gui/event/audit/evidence.json",
+    "index": 7,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "b18d81aa2cfb037aa4b0725ec501fd414b1894917c221bd11ec5a61ff059c6a4"
+  },
+  {
+    "file": "ancient.full.json",
+    "description": "先古之民完成后前进",
+    "source": ".tmp/2026-11-06-proceed-review/gui-remaining/ancient/audit/evidence.json",
+    "index": 11,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "d623c40cdc36610a87b5dba269bb1553949c9c6019439fd44326f3c679718e9c"
+  },
+  {
+    "file": "divination.full.json",
+    "description": "占卜完成后前进，无附图",
+    "source": ".tmp/2026-11-06-proceed-review/gui-remaining/divination/audit/evidence.json",
+    "index": 15,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "b18d81aa2cfb037aa4b0725ec501fd414b1894917c221bd11ec5a61ff059c6a4"
+  },
+  {
+    "file": "next-act.full.json",
+    "description": "Boss奖励前进至下一幕MapRoom",
+    "source": ".tmp/2026-11-06-proceed-review/gui-remaining/boss1/audit/evidence.json",
+    "index": 3,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "5105f6ac2f14cd42ea432c171ae66baa8670a5046a17a031ce94f539d62ffa7a"
+  },
+  {
+    "file": "resumed-event.full.json",
+    "description": "已自动恢复的父事件前进",
+    "source": ".tmp/2026-11-06-proceed-review/gui-remaining/event_resume/audit/evidence.json",
+    "index": 8,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "b18d81aa2cfb037aa4b0725ec501fd414b1894917c221bd11ec5a61ff059c6a4"
+  },
+  {
+    "file": "architect-entry.full.json",
+    "description": "第三幕Boss奖励进入建筑师",
+    "source": ".tmp/2026-11-06-proceed-review/architect-corrected/evidence.json",
+    "index": 3,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "0c5639db9450af3dffa797dde483cf9db0638b342c8fba8eff24fb93a03e8afb"
+  },
+  {
+    "file": "run-won.full.json",
+    "description": "建筑师最后前进，run_won",
+    "source": ".tmp/2026-11-06-proceed-review/architect-corrected/evidence.json",
+    "index": 12,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "a5ae69deebcd93ef6460aa31701e11e7138f5da8dc40e923badb5734ed398b3d"
+  },
+  {
+    "file": "combat-rejected.full.json",
+    "description": "战斗中没有前进按钮",
+    "source": ".tmp/2026-11-06-proceed-review/gui/combat/audit/evidence.json",
+    "index": 2,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "shop-rejected.full.json",
+    "description": "商品页未关闭的拒绝",
+    "source": ".tmp/2026-11-06-proceed-review/gui/shop/audit/evidence.json",
+    "index": 3,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "rest-rejected.full.json",
+    "description": "火堆尚未操作的拒绝",
+    "source": ".tmp/2026-11-06-proceed-review/gui/rest/audit/evidence.json",
+    "index": 2,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "ancient-rejected.full.json",
+    "description": "先古之民尚未完成的拒绝",
+    "source": ".tmp/2026-11-06-proceed-review/gui-remaining/ancient/audit/evidence.json",
+    "index": 2,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "divination-rejected.full.json",
+    "description": "占卜尚未完成的拒绝",
+    "source": ".tmp/2026-11-06-proceed-review/gui-remaining/divination/audit/evidence.json",
+    "index": 3,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "dialogue-rejected.full.json",
+    "description": "建筑师还应推进对白时拒绝proceed",
+    "source": ".tmp/2026-11-06-proceed-review/architect-corrected/evidence.json",
+    "index": 5,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "result-rejected.full.json",
+    "description": "结算页应使用run_result_option",
+    "source": ".tmp/2026-11-06-proceed-review/architect-corrected/evidence.json",
+    "index": 15,
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "after-rejection.full.json",
+    "description": "拒绝后合法关闭商店被要求观察",
+    "source": ".tmp/2026-11-06-proceed-review/gui/shop/audit/evidence.json",
+    "index": 4,
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "image_count": 0,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  }
+]

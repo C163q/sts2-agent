@@ -1,0 +1,21 @@
+{
+  "scene": "epilogue",
+  "screen": {
+    "status": "visible",
+    "view": "epilogue"
+  },
+  "available_actions": [
+    "advance_dialogue",
+    "inspect_ui",
+    "inspect_combatants",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": []
+  }
+}

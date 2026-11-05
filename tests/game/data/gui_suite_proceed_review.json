@@ -1,0 +1,226 @@
+[
+  {
+    "name": "combat",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "combat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "reward_skip",
+    "scenarios": {
+      "reward": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "reward_skip"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "reward_empty",
+    "scenarios": {
+      "reward": "empty"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "reward_empty"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nested_reward",
+    "scenarios": {
+      "reward": "nested"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "nested_reward"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "treasure_skip",
+    "scenarios": {
+      "treasure": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "treasure_skip"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "treasure_collected",
+    "scenarios": {
+      "treasure": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "treasure_collected"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "rest",
+    "scenarios": {
+      "rest": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "rest"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "tent",
+    "scenarios": {
+      "rest": "tent"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "tent"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "shop",
+    "scenarios": {
+      "shop": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "shop"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "event",
+    "scenarios": {
+      "event": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "event"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ancient",
+    "scenarios": {
+      "ancient": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "ancient"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "divination",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "divination"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "boss1",
+    "scenarios": {
+      "navigation": "boss1"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "boss1"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "event_resume",
+    "scenarios": {
+      "event": "dummy2"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "event_resume"
+        ]
+      }
+    ]
+  }
+]
