@@ -126,7 +126,7 @@ summary 先按相同的 `max_steps` 规则裁剪再分类；当前节点为第 0
 
 仅支持单人进行中的对局；候选选择页、弹窗、其他详情、过渡和正在移动期间拒绝。受支持选择先切至战场后允许打开地图。允许原生奖励页在地图底下保留，这是战后正常选路流程；关闭地图会露出原有奖励页。也支持[占卜棋盘](divination.md)在地图底下保留，覆盖时不返回棋盘内容与图像，关闭后可重新观察并继续。首次打开要求原生地图入口可见且启用，战斗中还须处于可行动阶段。当前幕起点等原生禁止返回的地图不能强行关闭。错误参数在 UI 操作前返回 `invalid_request`；页面或对局在异步等待期间变化返回 `illegal_action`，不自动重开页面。超时或异常不能自动重试。
 
-Godot 主线程发起操作，使用异步帧等待，遵循原生暂停/恢复与动画。关闭等待地图退场后才返回基础观察。工具 UI 操作使旧动作令牌失效；MCP 使用成功结果的新令牌继续操作，仍校验当前页面与动作合法性。
+Godot 主线程发起操作，使用异步帧等待，遵循原生暂停/恢复与动画。底层文件接口关闭后保留完整基础观察。当前 MCP 普通页面关闭结果仅返回 scene/screen、turn/player/enemies/top_bar/buttons/available_actions 及适用 notes；选牌的返回提示仍在，但不含 selection 元数据或房间主体。占卜／终章页面则返回完整观察，包含适用图像。这一投影差异及完整校验缺口见[close_map 审阅](../research/2026-11-05-close-map-review.md)，尚未修复。工具 UI 操作使旧动作令牌失效；MCP 使用成功结果的新令牌继续操作，仍校验当前页面与动作合法性。
 
 MCP 在 IPC 前校验查看参数；`close_map` 除通用 preset 外拒绝全部额外参数，查看工具也拒绝未知字段。参数错误保留此前有效权限。合法查看与关闭请求在发送前清除旧令牌，成功后保存返回状态的新令牌。inspect_map 的点击前明确拒绝带有未交互保证时恢复已有令牌，允许直接改用合法操作；没有初始令牌不会创建许可。点击后变化、超时、异常或矛盾执行证据不恢复。close_map 保持原有失败策略。地图投影校验当前幕节点 ID、坐标、唯一引用、已走路径与候选布尔状态，逐层过滤附加字段；不会要求可选节点必须在 `next` 中。格式错误返回 `transport_error`。关闭结果若仍指向浏览页，同样拒绝。
 
@@ -144,13 +144,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_map
 
 端到端脚本为 `tests/game/verifiers/verify_map.py`；`--exercise-cases` 仅允许 `.tmp/roundtrip/ipc`，需启动时启用 `--check-map`。它会在一次性隔离夹具中完成敌人死亡、原生奖励页继续、飞鞋获取与耗尽、双 Boss 和跨幕等场景，不可对正式游戏启用测试标志。
 
-正式游戏的只读地图采样及原生 API 依据见[地图设计与实施记录](../research/2026-10-29-map-inspection.md)；真实 stdio 验证见[地图 MCP 记录](../research/2026-10-29-mcp-map-inspection.md)。同类 UI 验证可执行：
-
-```sh
-.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_mcp_map --ipc-dir .tmp/live/ipc --output-dir .tmp/live/mcp-map
-```
-
-该命令不选路、出牌或结束回合，但会真实打开和关闭地图；使用新的输出目录。
+正式游戏的只读地图采样及原生 API 依据见[地图设计与实施记录](../research/2026-10-29-map-inspection.md)；真实 stdio 历史验证见[地图 MCP 记录](../research/2026-10-29-mcp-map-inspection.md)。旧独立 verify_mcp_map.py 仍固定 42 个工具及旧关闭输出断言，不能作为当前可用验收入口；现状与后续修复范围见[关闭审阅](../research/2026-11-05-close-map-review.md)。隔离的当前行为采样使用 [close_map 审阅套件](../../tests/game/data/gui_suite_close_map_review.json)，只验证其审阅基线，不代表已修复所列问题。
 
 选路与跨幕的目标版本源码证据、图形验证及未验证范围见[选路验证记录](../research/2026-10-31-map-travel-validation.md)。
 
