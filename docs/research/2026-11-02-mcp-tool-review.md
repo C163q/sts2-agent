@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 44 项，已核销 21 项。travel_to_node 两项修复方案已确认，正在实施与验证；赐福鹿角的原生入场效果已确认正确，完整 706 项 Python 与 124 项 C# 通过，最终 11 类 GUI 与门控检查已通过，正在独立审查。剩余 23 项尚未核销，暂无阻塞。
+> 当前状态：工具核验进行中，共 44 项，已核销 22 项。travel_to_node 的两项拒绝修复、赐福鹿角原生入场验证、706 项 Python、124 项 C#、11 类旅行 GUI、测试入口门控与一次独立审查均完成并合入 main。剩余 22 项尚未核销，暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -64,7 +64,7 @@
 
 - [x] `inspect_map`：打开并查看地图。[定稿](2026-11-05-inspect-map-review.md)与[实施／验证](2026-11-05-map-summary-implementation.md)已完成并合入 main：分类 summary、原深度与 selectable 行为、两项拒绝修复、基础观察地图主体与 note，以及[原生 MapRoom 场景](2026-11-05-act-entry-scene.md)。698 项 Python、124 项 C#、九种 GUI 组合与一次独立审查完成，提供 [13 份典型完整返回](2026-11-05-map-summary-examples/README.md)，包含一份明确的修复前对照。
 - [x] `close_map`：关闭地图。[定稿](2026-11-05-close-map-review.md)与[实施／验证](2026-11-05-close-map-results-implementation.md)完成并合入 main：具体拒绝、明确未交互恢复、完整校验后的最小返回、占卜无图像依赖及旧验证器更新。703 项 Python、124 项 C#、六类 GUI／七步骤及一次独立审查完成；[9 份新返回](2026-11-05-close-map-fixed-examples/README.md)，原[6 份审阅样本](2026-11-05-close-map-examples/README.md)保持为基线。
-- [ ] `travel_to_node`：前往可选节点。阶段：实施与验证。[审阅与建议](2026-11-05-travel-to-node-review.md)及[修复记录](2026-11-05-travel-recovery-implementation.md)、[开发依据](2026-11-05-travel-to-node-development-notes.md)和 [10 份典型完整返回](2026-11-05-travel-to-node-examples/README.md)。49 项单元与九种 GUI 通过；未交互拒绝丢失许可、具体原因未公开两项已确认并实现，正在最终验证；原样本保留为基线。
+- [x] `travel_to_node`：前往可选节点。[定稿](2026-11-05-travel-to-node-review.md)与[实施／验证](2026-11-05-travel-recovery-implementation.md)完成并合入 main：具体拒绝、明确滚动／点击前保留已有许可、首次滚动即标记交互，原有参数及精简回执保持。706 项 Python、124 项 C#、11 类 GUI、75 项入口的双模式门控与一次独立审查通过；[9 份新返回](2026-11-05-travel-fixed-examples/README.md)含赐福鹿角三张眩晕正确加入 draw，原[10 份审阅样本](2026-11-05-travel-to-node-examples/README.md)保留为基线。
 
 ### 奖励、宝箱与流程推进（5 项）
 

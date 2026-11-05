@@ -1,6 +1,6 @@
 # travel_to_node 核验与调整建议
 
-> 当前状态：场景核验完成，处于设计讨论。49 项单元检查与九种典型 GUI 通过，提供 10 份真实 full JSON；两项修复方案已确认，已按[实施计划](../superpowers/plans/2026-11-05-travel-recovery.md)完成代码与约定行为验证，正在独立审查；下方现状及样本保留修复前基线，尚未核销本项。证据见[开发依据](2026-11-05-travel-to-node-development-notes.md)。
+> 当前状态：两项修复、约定验证和一次独立审查完成，已合入 main（cf0ba88），本项已核销。结果见[实施记录](2026-11-05-travel-recovery-implementation.md)；下方审阅基线及原始样本不作为修复后输出。
 
 总流程见[工具清单](2026-11-02-mcp-tool-review.md)。
 
