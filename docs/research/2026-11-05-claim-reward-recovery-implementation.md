@@ -1,6 +1,6 @@
 # claim_reward 拒绝恢复与回执校验实施记录
 
-> 当前状态：实施中，共 1 项，已完成 0 项。三项修复、完整检查、十一类 GUI 与三类回归已通过，正在准备独立审查及交付。暂无阻塞。
+> 当前状态：已完成，共 1 项，已完成 1 项。三项修复、约定验证及一次独立审查全部完成，881cbce 已合入 main，临时分支已删除，无遗留实现任务。
 
 最终契约见[审阅定稿](2026-11-05-claim-reward-review.md)，步骤见[实施计划](../superpowers/plans/2026-11-05-claim-reward-recovery.md)，审阅基线的证据见[开发核验](2026-11-05-claim-reward-development-notes.md)。
 
@@ -33,7 +33,13 @@
 - gui-regression/report.json：三类回归全部通过，88.724 秒，38 次 MCP。包含旧 basic 奖励全流程、无奖励页纯读取拒绝后直接结束回合，以及原生测试入口的双模式门控，每个禁用模式 77 项均拒绝。自有进程 155961 已退出。
 - 共 139 次真实 MCP；专项另有五次文件原生请求，包含参数拒绝、过期优先和滚动扰动控制。三项问题均修复，成功结果、pending 两种边界和 proceed 回归通过。
 - [18 份修复后完整返回](2026-11-05-claim-reward-fixed-examples/README.md)包含 17 份 full 与一份 default；原 15 份审阅样本保持不变。全部 33 份样本哈希与来源已核对，链接及退出证明保存在 verification.json。
-- 一次独立审查尚未完成。
+- 一次独立审查通过：Critical 0、Important 0、Minor 0；无需修复追加轮次。
+
+## 独立审查与集成
+
+审查者 /root/review_claim_recovery，gpt-6.1-sol/high，fresh context，只读审查 55c02af..881cbce；五项关注均通过，无拒绝判断项、无新增待办。审查另核对全部 33 份样本来源与哈希，未重跑构建或游戏。完整结论保存在证据根 review-result.md。
+
+main 已快进合入 881cbce，fix/claim-reward-recovery 已删除；合并后交付验证通过，产物与游戏实测相同。本计划临时工作区按文件哈希核对后归档至证据根 inline-workspace/，原工作区已清理。
 
 ## 未验证范围
 

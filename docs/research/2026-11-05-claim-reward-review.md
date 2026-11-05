@@ -1,6 +1,6 @@
 # claim_reward 核验与设计建议
 
-> 当前状态：三项修复、718 项 Python、124 项 C#、十一类 GUI 与三类回归已通过，待独立审查和交付。本项尚未核销。结果见[实施记录](2026-11-05-claim-reward-recovery-implementation.md)；下方问题及原返回保留审阅基线。
+> 当前状态：三项修复、约定验证和一次独立审查完成，881cbce 已合入 main，本项已核销。结果见[实施记录](2026-11-05-claim-reward-recovery-implementation.md)；下方问题及原返回保留审阅基线。
 
 总流程见[工具清单](2026-11-02-mcp-tool-review.md)。源码、问题编号与验证证据见[开发核验](2026-11-05-claim-reward-development-notes.md)。
 
