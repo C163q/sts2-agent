@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销27项。proceed 的统一入口、明确拒绝恢复及旧终章断言已实现，通过自动／游戏验收与最终独立审阅，并合入main。剩余17项尚未核销，无阻塞。
+> 当前状态：工具核验进行中，共44项，已核销27项。inspect_rest_site现状核验完成，65项Python、七类GUI和16份完整返回已整理，进入具体诊断、上下文校验及summary／筛选的设计讨论。剩余17项尚未核销，无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -76,7 +76,7 @@
 
 ### 火堆（2 项）
 
-- [ ] `inspect_rest_site`：查看火堆选项。
+- [ ] `inspect_rest_site`：查看火堆选项。阶段：设计讨论；[现状与建议](2026-11-06-inspect-rest-site-review.md)、[开发依据](2026-11-06-inspect-rest-site-development-notes.md)及[16份当前完整返回](2026-11-06-inspect-rest-site-examples/README.md)。具体原因与输出上下文有已确认缺口，读取就绪／离屏／悬停边界建议小范围统一；summary和option_ids为候选，工具行为未改。
 - [ ] `choose_rest_option`：选择火堆操作。
 
 ### 商店（4 项）

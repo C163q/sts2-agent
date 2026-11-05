@@ -1,0 +1,178 @@
+[
+  {
+    "file": "basic.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "basic_initial",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/basic/audit/evidence.json",
+    "index": 0,
+    "sha256": "347654ff4f90d50fb9f8198e734166540aae01d8e46769a2d7f8c9a5b78699b2"
+  },
+  {
+    "file": "basic.default.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "default"
+    },
+    "label": "basic_default",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/basic/audit/evidence.json",
+    "index": 3,
+    "sha256": "92d3db15bce837a130823ccbe846b028876959b344409be465ee46fba9715950"
+  },
+  {
+    "file": "disabled.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "disabled_initial",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/disabled/audit/evidence.json",
+    "index": 0,
+    "sha256": "b5e163333660d342d73a12a29311b1ed474f89051054d6f9cc3c6efedc2746d9"
+  },
+  {
+    "file": "tent.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "tent_initial",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/tent/audit/evidence.json",
+    "index": 0,
+    "sha256": "d0ad602e0b2d9be07cc546f3647335e042166e773dfdef2c0343c40a7c218f8a"
+  },
+  {
+    "file": "tent-after-lift.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "tent_after_lift",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/tent/audit/evidence.json",
+    "index": 5,
+    "sha256": "87f0371c5012dd1767161c7ea6444afc28d4933e4cb0dd52b345e16f898bae61"
+  },
+  {
+    "file": "dig.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "dig_initial",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/dig/audit/evidence.json",
+    "index": 0,
+    "sha256": "e406350fd5925deb1c41b7b2ce63e9d14cf3f9994b63fc986533d942109b9b4b"
+  },
+  {
+    "file": "heal-with-reward.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "heal_rewards_initial",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/heal_rewards/audit/evidence.json",
+    "index": 0,
+    "sha256": "aeeb960660738feb961da11d07f9ed5a626c46f2e1ab384cced6de91e1d816f0"
+  },
+  {
+    "file": "activity-complete.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "activity_complete",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/basic/audit/evidence.json",
+    "index": 12,
+    "sha256": "4b2ff605afc53ebf87a0b3882a8cb1ab91d69e1e356bc666c30e699f632ab87f"
+  },
+  {
+    "file": "after-selection-cancel.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "after_selection_cancel",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/selection/audit/evidence.json",
+    "index": 8,
+    "sha256": "347654ff4f90d50fb9f8198e734166540aae01d8e46769a2d7f8c9a5b78699b2"
+  },
+  {
+    "file": "after-reward.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "after_nested_reward",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/heal_rewards/audit/evidence.json",
+    "index": 7,
+    "sha256": "4b2ff605afc53ebf87a0b3882a8cb1ab91d69e1e356bc666c30e699f632ab87f"
+  },
+  {
+    "file": "no-rest-first-read.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "no_rest_first_read",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/no_rest/audit/evidence.json",
+    "index": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "no-rest-existing-permission.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "no_rest_existing_permission",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/no_rest/audit/evidence.json",
+    "index": 3,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "map-covered.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "map_covered",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/basic/audit/evidence.json",
+    "index": 6,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "deck-covered.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "deck_covered",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/basic/audit/evidence.json",
+    "index": 9,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "selection_covered",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/selection/audit/evidence.json",
+    "index": 6,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "reward-covered.full.json",
+    "tool": "inspect_rest_site",
+    "arguments": {
+      "preset": "full"
+    },
+    "label": "reward_covered",
+    "source": ".tmp/2026-11-06-rest-site-inspection-review/gui/heal_rewards/audit/evidence.json",
+    "index": 5,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  }
+]

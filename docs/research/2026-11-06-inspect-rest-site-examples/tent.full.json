@@ -1,0 +1,44 @@
+{
+  "scene": "rest_site",
+  "rest_site": {
+    "status": "visible",
+    "prompt": "What shall I do?",
+    "description": null,
+    "options": [
+      {
+        "id": "HEAL",
+        "text": "Rest",
+        "enabled": true,
+        "description": "Heal for 30% of your Max HP (24)."
+      },
+      {
+        "id": "SMITH",
+        "text": "Smith",
+        "enabled": true,
+        "description": "Upgrade a card in your Deck."
+      },
+      {
+        "id": "LIFT",
+        "text": "Train",
+        "enabled": true,
+        "description": "Start battles with +1 Strength. (3 Left)"
+      },
+      {
+        "id": "KINDLE",
+        "text": "Kindle",
+        "enabled": true,
+        "description": "Add 5 charges to Pumpkin Candle."
+      },
+      {
+        "id": "COOK",
+        "text": "Cook",
+        "enabled": true,
+        "description": "Remove 2 cards from your Deck and gain 9 Max HP."
+      }
+    ],
+    "proceed": null
+  },
+  "screen": {
+    "status": "visible"
+  }
+}

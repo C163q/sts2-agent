@@ -1,0 +1,114 @@
+[
+  {
+    "name": "no_rest",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_rest_site_inspection_review.py",
+        "args": [
+          "--scenario",
+          "no_rest"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "basic",
+    "scenarios": {
+      "rest": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_rest_site_inspection_review.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "disabled",
+    "scenarios": {
+      "rest": "disabled"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_rest_site_inspection_review.py",
+        "args": [
+          "--scenario",
+          "disabled"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "tent",
+    "scenarios": {
+      "rest": "tent"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_rest_site_inspection_review.py",
+        "args": [
+          "--scenario",
+          "tent"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "selection",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_rest_site_inspection_review.py",
+        "args": [
+          "--scenario",
+          "selection"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "heal_rewards",
+    "scenarios": {
+      "rest": "heal_rewards"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_rest_site_inspection_review.py",
+        "args": [
+          "--scenario",
+          "heal_rewards"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "dig",
+    "scenarios": {
+      "rest": "dig"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_rest_site_inspection_review.py",
+        "args": [
+          "--scenario",
+          "dig"
+        ]
+      }
+    ]
+  }
+]
