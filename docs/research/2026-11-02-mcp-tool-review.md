@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 44 项，已核销 18 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、play_card、play_cards、end_turn、use_potion、discard_potion、inspect_selection、select_card、selection_option、set_selection_view。set_selection_view 的两项修复、成功输出精简及一次独立审查完成并合入 main；get_observation 的地图覆盖仍待 inspect_map，整体未核销，其余 25 项尚未核销。暂无阻塞。
+> 当前状态：工具核验进行中，共 44 项，已核销 18 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、play_card、play_cards、end_turn、use_potion、discard_potion、inspect_selection、select_card、selection_option、set_selection_view。当前讨论 inspect_map 的 summary：源码核对及典型结构示例已记录，两项错误恢复／诊断问题待修复，尚未新增游戏实测或修改工具行为；get_observation 的地图覆盖仍待同步设计，整体未核销，其余 24 项尚未核销。暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -62,7 +62,7 @@
 
 ### 地图（3 项）
 
-- [ ] `inspect_map`：打开并查看地图。核验时同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)；[共用地图 covered 状态](2026-11-05-potion-actions-implementation.md)已交付，地图参数及主体／摘要仍待核验。
+- [ ] `inspect_map`：打开并查看地图。阶段：[设计讨论与典型 full 结构](2026-11-05-inspect-map-review.md)，[开发核验](2026-11-05-inspect-map-development-notes.md)记录两项错误恢复／诊断问题及实测边界，尚未实施。核验时同步补充[基础观察的浏览内容与摘要](2026-11-02-get-observation-browsing.md#本阶段定稿与后续接入)；[共用地图 covered 状态](2026-11-05-potion-actions-implementation.md)已交付。
 - [ ] `close_map`：关闭地图。
 - [ ] `travel_to_node`：前往可选节点。
 
