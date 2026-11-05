@@ -1,4 +1,4 @@
-"""Audit offered selection buttons and preserve current public behavior as evidence."""
+"""Verify selection button outcomes, public diagnostics and safe preflight recovery."""
 from scripts._bootstrap import ROOT
 import argparse
 import asyncio
@@ -51,13 +51,10 @@ async def verify(args):
             async def inspect(label='selection'):
                 return (await call('inspect_selection', label=label))['selection']
 
-            async def baseline_rejection(value, label):
+            async def rejected(value, label, message):
                 result = await call('selection_option', {'option_id': value}, error='illegal_action', label=label)
-                assert result['error']['message'] == 'The requested action is unavailable.', result
-                assert result['error']['recovery'] == 'get_observation', result
-                # The audit records the existing permission loss; it does not endorse it.
-                await call('selection_option', {'option_id': value}, error='observation_required', label=label + '_retry')
-                await call('get_observation', label=label + '_refresh')
+                assert message in result['error']['message'], result
+                assert result['error']['recovery'] == 'choose_legal_action', result
 
             if args.scenario == 'no_selection':
                 await call('selection_option', {'option_id': 'confirm'}, error='observation_required', label='no_permission')
@@ -67,7 +64,8 @@ async def verify(args):
                     await call('selection_option', {'option_id': value}, error='invalid_request', label='malformed')
                 await call('end_turn', label='after_local_rejection')
                 await call('get_observation')
-                await baseline_rejection('confirm', 'no_selection')
+                await rejected('confirm', 'no_selection', 'No card selection')
+                await call('end_turn', label='after_unsubmitted_rejection')
                 return
 
             if args.scenario in {'bundle', 'view_cards', 'enchant_multi', 'transform'}:
@@ -106,12 +104,21 @@ async def verify(args):
                         await call('inspect_deck')
                 if args.scenario == 'disabled':
                     assert not any(o['id'] == 'confirm' and o['enabled'] for o in selection['options']), selection
-                await baseline_rejection('not_offered' if args.scenario == 'invalid_option' else 'confirm', args.scenario)
+                message = 'not offered' if args.scenario in {'invalid_option', 'disabled'} else (
+                    'battlefield' if args.scenario == 'battlefield' else 'covered')
+                await rejected('not_offered' if args.scenario == 'invalid_option' else 'confirm', args.scenario, message)
                 if args.scenario == 'covered':
                     await call('close_card_view')
                 if args.scenario in {'battlefield', 'covered'}:
                     await call('set_selection_view', {'view': 'selection'})
-                await inspect('after_rejection')
+                if args.scenario == 'invalid_option':
+                    await call('select_card', {'card_id': selection['cards'][0]['id']}, label='valid_card_after_rejection')
+                elif args.scenario == 'disabled':
+                    for card in selection['cards'][:selection['min_select']]:
+                        await call('select_card', {'card_id': card['id']}, label='select_after_rejection')
+                    await option('confirm', 'confirm_after_rejection')
+                else:
+                    await inspect('after_rejection')
                 return
 
             if args.scenario in {'choose_skip', 'reward_skip'}:
@@ -148,6 +155,10 @@ async def verify(args):
                     assert (await inspect('candidates_again'))['selected_ids'] == []
                     for card in selected:
                         await call('select_card', {'card_id': card['id']}, label='reselect')
+                if args.scenario == 'grid_manual':
+                    checks = await asyncio.to_thread(raw.call, 'check_test_selection_options')
+                    record({'native_option_checks': checks})
+                    assert checks['ok'] and checks['state']['passed'], checks
                 result = await option('confirm', 'confirm')
                 assert not any(e['type'] == 'card_deselected' for e in result['transition']['events']), result
                 if args.scenario == 'shop_remove':

@@ -1,13 +1,13 @@
 # selection_option 开发核验记录
 
-> 当前状态：现状核验完成，待设计确认。25 组不同游戏情形、42 项相关 Python 检查通过，81 份 full 样例已提取；两项错误处理问题未修复，工具未核销。仅添加审阅资料、验证代码和已核实的文档更正。用户说明见[审阅](2026-11-05-selection-option-review.md)。
+> 当前状态：修复与验证完成，正在独立审查，见[实施记录](2026-11-05-selection-option-recovery-implementation.md)，工具尚未核销。下文保留审阅基线的 25 组不同游戏情形、42 项相关 Python 检查和 81 份 full 样例，不作为修复后的契约。用户说明见[审阅与定稿](2026-11-05-selection-option-review.md)。
 
 ## 已定位问题
 
 | 编号 | 优先级 | 代码依据与影响 | 状态 |
 | --- | --- | --- | --- |
-| OPTION-01 | 中；错误恢复 | `GameAdapter.SelectionRequest` 的按钮前置拒绝使用普通 `FileMailbox.Error`，`selection_option` 未登记 `unsubmitted_rejection_unchanged`；`GameSession` 因没有明确未交互保证而清除已有许可 | 已复现，待确认修复范围。不得把 `UiChanged` 后的失败标为未交互 |
-| OPTION-02 | 中；错误原因 | 前置拒绝没有 `publicMessage:true`，公共错误输出替换具体原因；不存在及禁用按钮还合并在同一检查中 | 已复现，待定稿。使用固定公开诊断，不透传任意异常字符串 |
+| OPTION-01 | 中；错误恢复 | 审阅基线的按钮前置拒绝使用普通 `FileMailbox.Error`，`selection_option` 未登记 `unsubmitted_rejection_unchanged`；`GameSession` 因没有明确未交互保证而清除已有许可 | 已实现恢复，见实施记录。不得把 `UiChanged` 后的失败标为未交互 |
+| OPTION-02 | 中；错误原因 | 审阅基线的前置拒绝没有 `publicMessage:true`，公共错误输出替换具体原因；不存在及禁用按钮还合并在同一检查中 | 已实现固定公开诊断，见实施记录；不透传任意异常字符串 |
 
 ## 核对基线
 

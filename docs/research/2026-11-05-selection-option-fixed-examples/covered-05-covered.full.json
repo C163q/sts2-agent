@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The card selection is covered or hidden. Close the covering screen or wait for the transition before clicking a selection option.",
+    "recovery": "choose_legal_action"
+  }
+}

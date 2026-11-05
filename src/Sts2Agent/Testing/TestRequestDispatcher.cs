@@ -360,6 +360,10 @@ internal sealed partial class GameAdapter
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
             && testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO") == "grid_manual")
             return Success(request, JsonSerializer.Serialize(await SelectionInputChecks.Run(this, observation, ObservationFrame, Observe)));
+        if (request.Operation == "check_test_selection_options" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+            && testSettings.Get("STS2_AGENT_TEST_SELECTION_SCENARIO") == "grid_manual")
+            return Success(request, JsonSerializer.Serialize(await SelectionOptionChecks.Run(this, Observe)));
         if (request.Operation == "check_test_deck_lifecycle" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_DECK_CHECKS") is { } deckChecks)
             return Success(request, JsonSerializer.Serialize(await DeckInspectionChecks.Lifecycle(this, deckChecks)));

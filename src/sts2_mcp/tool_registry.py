@@ -684,6 +684,7 @@ SPECS = (
         category='action',
         effect='action',
         requires_permission=True,
+        unsubmitted_rejection_unchanged=True,
         returns_transition=True,
         records_events=True,
         reader='transition_details:end_turn_details',

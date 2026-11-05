@@ -3,6 +3,7 @@ using Godot;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Combat;
+using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Runs;
 
@@ -73,13 +74,19 @@ internal sealed partial class GameAdapter
             || (field == "view" && value is not ("battlefield" or "selection")))
             return request.Operation == "select_card"
                 ? FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request", "Expected one non-negative integer card_id.")
+                : request.Operation == "selection_option"
+                ? FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request", "Expected one non-empty option_id string of at most 128 characters.")
                 : FileMailbox.Error(request.Id, "invalid_request", "Invalid selection arguments.");
         var selection = CardSelection.Current;
-        if (request.Operation == "select_card")
+        NButton? button = null;
+        if (request.Operation is "select_card" or "selection_option")
         {
             if (request.ExpectedState != before.GetProperty("snapshot_id").GetString())
                 return FileMailbox.Error(request.Id, "stale_state", "Read the current selection before acting.");
-            if (SelectionAvailability.UnavailableReason(selection, cardId, observation) is { } rejection)
+            string? rejection = request.Operation == "select_card"
+                ? SelectionAvailability.UnavailableReason(selection, cardId, observation)
+                : SelectionAvailability.OptionUnavailableReason(selection, value!, out button);
+            if (rejection != null)
                 return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", rejection);
         }
         if (selection == null || !selection.Supported || !RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
@@ -99,16 +106,7 @@ internal sealed partial class GameAdapter
                 return FileMailbox.Error(request.Id, "illegal_action", "The selection changed while switching views.");
             return Success(request, state);
         }
-        if (request.Operation != "select_card" && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
-            return FileMailbox.Error(request.Id, "stale_state", "Read the current selection before acting.");
-        if (selection.Status != "visible")
-            return FileMailbox.Error(request.Id, "illegal_action", "The selection is covered or hidden.");
-
-        var model = request.Operation == "select_card" ? selection.Cards.FirstOrDefault(card => observation.CardId(card) == cardId) : null;
-        var button = request.Operation == "selection_option" ? selection.Options().FirstOrDefault(option => option.id == value).button : null;
-        if (request.Operation == "select_card" ? model == null || !selection.CanSelect
-            : button == null || !button.IsEnabled)
-            return FileMailbox.Error(request.Id, "illegal_action", "The requested candidate or button is unavailable.");
+        var model = request.Operation == "select_card" ? selection.Cards.First(card => observation.CardId(card) == cardId) : null;
         var journal = CombatJournalScope.Current!;
         bool startedInCombat = journal.Capturing;
         UiChanged();

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Selection option 'confirm' is not offered on the current page. Use an enabled ID from selection.options.",
+    "recovery": "choose_legal_action"
+  }
+}

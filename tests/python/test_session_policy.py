@@ -15,6 +15,45 @@ def requests():
 
 
 class SessionPolicyTests(unittest.IsolatedAsyncioTestCase):
+    async def test_selection_option_recovers_only_explicit_unsubmitted_rejections(self):
+        for code, submitted, retained in [
+                ('illegal_action', False, True), ('invalid_request', False, True),
+                ('illegal_action', True, False), ('illegal_action', None, False),
+                ('stale_state', False, False), ('game_error', False, False)]:
+            with self.subTest(code=code, submitted=submitted):
+                error = {'code': code, 'public_message': 'No card selection is open.'}
+                if submitted is not None:
+                    error['action_submitted'] = submitted
+                tools = GameTools(ContractReply({}, error)); tools.snapshot_id = 'existing'
+                result = await tools.selection_option({'option_id': 'confirm'})
+                self.assertEqual(tools.snapshot_id, 'existing' if retained else None)
+                recovery = 'choose_legal_action' if retained and code == 'illegal_action' else (
+                    'correct_request' if code == 'invalid_request' else 'get_observation')
+                self.assertEqual(result['error']['recovery'], recovery)
+        client = ContractReply({}, {'code': 'illegal_action', 'action_submitted': False})
+        tools = GameTools(client)
+        self.assertEqual((await tools.selection_option({'option_id': 'confirm'}))['error']['code'], 'observation_required')
+        self.assertIsNone(tools.snapshot_id)
+        self.assertEqual(client.calls, [])
+
+    async def test_selection_option_interaction_evidence_never_retains_permission(self):
+        class Interacted(ContractReply):
+            def call(self, *args, **kwargs):
+                result = super().call(*args, **kwargs)
+                result['execution'] = {'ui_interaction_started': True,
+                    'action_submission_observed': False, 'state_captured': True}
+                return result
+
+        for submitted in (None, False):
+            error = {'code': 'illegal_action'}
+            if submitted is not None:
+                error['action_submitted'] = submitted
+            tools = GameTools(Interacted({}, error)); tools.snapshot_id = 'existing'
+            result = await tools.selection_option({'option_id': 'confirm'})
+            self.assertIsNone(tools.snapshot_id)
+            self.assertEqual(result['error']['code'], 'illegal_action' if submitted is None else 'transport_error')
+            self.assertEqual(result['error']['recovery'], 'get_observation' if submitted is None else 'check_connection')
+
     async def test_selection_preflight_retains_only_explicit_unsubmitted_permission(self):
         for code, submitted, retained in [('illegal_action', False, True), ('illegal_action', True, False),
                                            ('illegal_action', None, False), ('stale_state', False, False),
