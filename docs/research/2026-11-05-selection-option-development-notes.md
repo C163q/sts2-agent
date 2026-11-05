@@ -1,6 +1,6 @@
 # selection_option 开发核验记录
 
-> 当前状态：修复与验证完成，正在独立审查，见[实施记录](2026-11-05-selection-option-recovery-implementation.md)，工具尚未核销。下文保留审阅基线的 25 组不同游戏情形、42 项相关 Python 检查和 81 份 full 样例，不作为修复后的契约。用户说明见[审阅与定稿](2026-11-05-selection-option-review.md)。
+> 当前状态：修复、验证及一次独立审查完成，已核销并合入 main，见[实施记录](2026-11-05-selection-option-recovery-implementation.md)。下文保留审阅基线的 25 组不同游戏情形、42 项相关 Python 检查和 81 份 full 样例，不作为修复后的契约。用户说明见[审阅与定稿](2026-11-05-selection-option-review.md)。
 
 ## 已定位问题
 

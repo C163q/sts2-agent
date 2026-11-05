@@ -2,7 +2,7 @@
 
 > **For agentic workers:** 使用 `superpowers:executing-plans` 在当前会话执行；最终仅作一次独立整分支审查。
 >
-> 当前状态：实施中。共 1 项，已完成 0 项；实现与全部验证已通过，45 份样例及文档已同步，正在提交并进行独立审查。暂无阻塞。
+> 当前状态：完成。共 1 项，已完成 1 项；实现、全部验证、文档及一次独立审查完成，修复提交 `73a8964` 已合入 main，临时分支已删除。无遗留修复项；未验证范围及证据见[实施记录](../../research/2026-11-05-selection-option-recovery-implementation.md)。
 
 **Goal:** 明确未点击的选择按钮拒绝保留已有观察许可，并提供具体公开原因。
 
@@ -40,6 +40,6 @@
 - [x] 运行专项 Python（预期全过），构建（预期 0 错误），准备隔离运行时。全量 Python 和 C# 检查运行一遍，预期全部通过。
 - [x] 运行 25 项 selection_option GUI 清单：无需刷新即可纠正无效 ID、取消／确认或结束回合；覆盖与查看战场有准确恢复提示；全部原有成功分支正常。补原生禁用按钮与过期优先检查，必要时用双重门控夹具；回归 select_card 的无效候选／预览、inspect_selection、原生测试入口门控。
 - [x] 记录实际 full JSON、各组产物哈希、失败尝试和退出的自有 PID，检查样例来源、链接与旧样例哈希；按需求同步当前文档，移除“待定稿”状态。
-- [ ] 提交 `fix: preserve selection option permission on preflight rejection`。独立整分支审查后处理重要发现，按项目规则自行合入 main、清理分支，不重复已通过且未受新改动影响的测试。
+- [x] 提交 `fix: preserve selection option permission on preflight rejection`。独立整分支审查后处理重要发现，按项目规则自行合入 main、清理分支，不重复已通过且未受新改动影响的测试。
 
 **Verification:** Python 专项使用 `.tmp/mcp-venv/bin/python -m unittest tests.python.test_session_policy tests.python.test_selection tests.python.test_gui_suite`；完整 Python 使用 `-m unittest discover -s tests -t . -p 'test_*.py'`，C# 使用既有 `Sts2Agent.Checks`；GUI 使用 `scripts/gui_suite.py --suite tests/game/data/gui_suite_selection_option_review.json --output <新目录>`。预期全部通过，准确记录实际数量，不把仅源码核对的边界计入游戏实测。

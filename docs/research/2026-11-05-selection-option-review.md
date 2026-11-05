@@ -1,6 +1,6 @@
 # selection_option 审阅
 
-> 当前状态：两项修复及游戏验证完成，正在独立审查，工具尚未核销；见[实施记录与 45 份新返回](2026-11-05-selection-option-recovery-implementation.md)。下文 25 组游戏情形、42 项相关 Python 检查及 81 份完整返回保留为修复前基线。执行见[实施计划](../superpowers/plans/2026-11-05-selection-option-recovery.md)，原审阅证据及未验证范围见[开发核验记录](2026-11-05-selection-option-development-notes.md)。
+> 当前状态：两项修复、全部验证及一次独立审查完成，已核销并合入 main；见[实施记录与 45 份新返回](2026-11-05-selection-option-recovery-implementation.md)。下文 25 组游戏情形、42 项相关 Python 检查及 81 份完整返回保留为修复前基线。执行见[实施计划](../superpowers/plans/2026-11-05-selection-option-recovery.md)，原审阅证据及未验证范围见[开发核验记录](2026-11-05-selection-option-development-notes.md)。
 
 ## 优先处理的问题
 
