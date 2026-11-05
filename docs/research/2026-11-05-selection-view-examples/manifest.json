@@ -1,0 +1,80 @@
+[
+  {
+    "file": "overlay-battlefield.full.json",
+    "scenario": "overlay",
+    "tool": "set_selection_view",
+    "arguments": {
+      "preset": "full",
+      "view": "battlefield"
+    },
+    "source": ".tmp/2026-11-05-selection-view-review/gui/overlay/verify/evidence.json",
+    "source_record": 1,
+    "mod_sha256": "50de6a77d5866847bf4fcd7c8e72d932f242bbb970b8628f86e378fc60c9ec38",
+    "sha256": "5881a538bae97a0196cc7338e3719e2a678e6a641e678832287294dfe5e8c9b6"
+  },
+  {
+    "file": "overlay-selection.full.json",
+    "scenario": "overlay",
+    "tool": "set_selection_view",
+    "arguments": {
+      "preset": "full",
+      "view": "selection"
+    },
+    "source": ".tmp/2026-11-05-selection-view-review/gui/overlay/verify/evidence.json",
+    "source_record": 5,
+    "mod_sha256": "50de6a77d5866847bf4fcd7c8e72d932f242bbb970b8628f86e378fc60c9ec38",
+    "sha256": "ac803f0223f703bc6ee3300490771d840297cb54082bba2727f27bfa749203af"
+  },
+  {
+    "file": "hand-upgrade-selection.full.json",
+    "scenario": "hand_upgrade",
+    "tool": "set_selection_view",
+    "arguments": {
+      "preset": "full",
+      "view": "selection"
+    },
+    "source": ".tmp/2026-11-05-selection-view-review/gui-remaining/hand_upgrade/verify/evidence.json",
+    "source_record": 10,
+    "mod_sha256": "50de6a77d5866847bf4fcd7c8e72d932f242bbb970b8628f86e378fc60c9ec38",
+    "sha256": "d04c1aa5c60afe2202a75b2b1a06c1656e9d871db3bf82d4d835cdfc5d6d5a23"
+  },
+  {
+    "file": "no-selection.full.json",
+    "scenario": "no_selection",
+    "tool": "set_selection_view",
+    "arguments": {
+      "preset": "full",
+      "view": "selection"
+    },
+    "source": ".tmp/2026-11-05-selection-view-review/gui/no_selection/verify/evidence.json",
+    "source_record": 8,
+    "mod_sha256": "50de6a77d5866847bf4fcd7c8e72d932f242bbb970b8628f86e378fc60c9ec38",
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "covered-deck.full.json",
+    "scenario": "covered_deck",
+    "tool": "set_selection_view",
+    "arguments": {
+      "preset": "full",
+      "view": "selection"
+    },
+    "source": ".tmp/2026-11-05-selection-view-review/gui-remaining/covered_deck/verify/evidence.json",
+    "source_record": 7,
+    "mod_sha256": "50de6a77d5866847bf4fcd7c8e72d932f242bbb970b8628f86e378fc60c9ec38",
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "noncombat-eye-unavailable.full.json",
+    "scenario": "noncombat",
+    "tool": "set_selection_view",
+    "arguments": {
+      "preset": "full",
+      "view": "selection"
+    },
+    "source": ".tmp/2026-11-05-selection-view-review/gui-remaining/noncombat/verify/evidence.json",
+    "source_record": 4,
+    "mod_sha256": "50de6a77d5866847bf4fcd7c8e72d932f242bbb970b8628f86e378fc60c9ec38",
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  }
+]

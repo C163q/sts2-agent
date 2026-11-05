@@ -1,0 +1,128 @@
+[
+  {
+    "name": "no_selection",
+    "scenarios": {},
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_view_review.py",
+        "args": [
+          "--scenario",
+          "no_selection"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "overlay",
+    "scenarios": {
+      "selection": "combat_pile"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_view_review.py",
+        "args": [
+          "--scenario",
+          "overlay"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "grid",
+    "scenarios": {
+      "selection": "grid_manual"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_view_review.py",
+        "args": [
+          "--scenario",
+          "grid"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hand_upgrade",
+    "scenarios": {
+      "play": "armaments"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_view_review.py",
+        "args": [
+          "--scenario",
+          "hand_upgrade"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "covered_deck",
+    "scenarios": {
+      "selection": "combat_pile"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_view_review.py",
+        "args": [
+          "--scenario",
+          "covered_deck"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "covered_map",
+    "scenarios": {
+      "selection": "combat_pile"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_view_review.py",
+        "args": [
+          "--scenario",
+          "covered_map"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "noncombat",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_view_review.py",
+        "args": [
+          "--scenario",
+          "noncombat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "results",
+    "scenarios": {
+      "ancient": "pandora"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_view_review.py",
+        "args": [
+          "--scenario",
+          "results"
+        ]
+      }
+    ]
+  }
+]

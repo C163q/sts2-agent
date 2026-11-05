@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共 44 项，已核销 17 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、play_card、play_cards、end_turn、use_potion、discard_potion、inspect_selection、select_card、selection_option。selection_option 的两项修复、全部验证和一次独立审查已完成并合入 main；get_observation 的地图覆盖仍待 inspect_map，整体未核销，其余 26 项尚未核销。暂无阻塞。
+> 当前状态：工具核验进行中，共 44 项，已核销 17 项：inspect_ui、inspect_hand、inspect_targets、inspect_combatants、inspect_potions、inspect_relics、inspect_deck、inspect_pile、close_card_view、play_card、play_cards、end_turn、use_potion、discard_potion、inspect_selection、select_card、selection_option。set_selection_view 现状核验完成，8 个典型场景及 6 份 full 样例已交付，两项错误处理问题和输出方案待定稿，尚未修改玩法行为；get_observation 的地图覆盖仍待 inspect_map，整体未核销，其余 25 项尚未核销。暂无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -14,14 +14,14 @@
 ## 逐项工作流程
 
 1. **指定工具**：由用户选择本轮工具，记录当前阶段与核验基线。
-2. **梳理场景**：查阅工具实现及相关游戏源码，列出所有已识别的适用场景、特殊状态、覆盖页面与失败情况；区分返回结构相同的内容变体和真正不同的返回分支。场景过多时先提供目录，由用户选择本轮展开的场景，其余明确标记待核验。
-3. **展示现状**：提供各场景的 `preset:"full"` 完整返回示例，保留空值及实际存在的提示、预览、事件、错误等字段。标明实测样本或依据实现整理，附调用参数与证据位置；整理示例不能冒充实测。图片内容单独说明。截图工具按其实际返回展示。
+2. **梳理场景**：查阅工具实现及相关游戏源码，列出已识别的适用场景、特殊状态、覆盖页面与失败情况；区分返回结构相同的内容变体和真正不同的返回分支。场景过多或无法完全覆盖时，以典型场景展开，说明其代表范围及其余分支的核对方式、未验证边界；必要时提供目录供用户选择。
+3. **展示现状**：提供典型场景的 `preset:"full"` 完整返回示例，不要求每个场景各给一份 JSON。优先展示不同返回结构、重要操作结果和错误情况，保留样例中的空值及实际存在的提示、预览、事件、错误等字段。标明实测样本或依据实现整理，附调用参数与证据位置；整理示例不能冒充实测。图片内容单独说明。截图工具按其实际返回展示。
 发现正确性问题时，在专项记录开头集中列出问题编号、优先级、影响、证据、处理状态与未解决范围；不能只埋在场景表或将缺口写成合理限制。先解决正确性与共用契约问题，再推进参数和摘要设计。
 
 4. **讨论设计**：用户提出新增参数、`summary` 字段或其他调整；核对目标版本源码与 UI，反馈是否合理、是否有更好的设计。说明字段的信息来源、筛选范围、默认值、组合优先级和错误语义，逐步消除歧义，不在讨论期间提前修改工具行为。
 5. **形成定稿**：记录最终字段与参数契约、保留或省略的原因、信息边界、与既有预设的关系，以及待验证事项。用户确认定稿后进入实现；尚未确认的内容保留为候选。
 6. **实现与验证**：完成约定变更及相应检查，涉及 UI 行为时进行游戏内验证；同步持续维护的接口文档，创建本项 Git 提交。若定稿决定维持现状，记录判断依据及必要核验即可，不为核销制造代码变更。
-7. **核销与交接**：补齐验证结果、未验证范围、提交及文档链接，更新本文件开头的总进度和下方清单。未完成场景或遗留问题须记录处理范围与去向，不能以展示过一个示例代替整个工具核验完成。
+7. **核销与交接**：补齐约定范围的验证结果、未验证边界、提交及文档链接，更新本文件开头的总进度和下方清单。遗留问题须记录处理范围与去向；不以单个典型示例推断其他分支均已验证，也不以所有场景都有 JSON 样例作为核销前提。
 
 阶段依次为：待选 → 场景核验 → 设计讨论 → 待定稿 → 实现与验证 → 完成。阶段性暂停时记录当前步骤和下一步；只有本项约定范围完成后才勾选。后续各轮持续更新本文件，不仅在对话中记录。
 
@@ -58,7 +58,7 @@
 - [x] `inspect_selection`：查看候选牌、按钮及预览。阶段：完成；[审阅及定稿](2026-11-05-inspect-selection-review.md)、[开发核验](2026-11-05-inspect-selection-development-notes.md)与[修复实施](2026-11-05-selection-inspection-implementation.md)记录三项修复、28 组 GUI 组合、676 项 Python、124 项 C# 和一次独立审查；保留原参数及 summary，补齐共用 prompt、明确拒绝与未交互恢复，提供 [27 份修复后返回](2026-11-05-selection-inspection-fixed-examples/README.md)。
 - [x] `select_card`：点击候选牌。阶段：[核验与定稿](2026-11-05-select-card-review.md)及[三项修复与验证](2026-11-05-selection-feedback-implementation.md)及一次独立审查完成；保留参数与紧凑回执，补齐明确拒绝、许可恢复和原生选中／取消事件，提供[31 份修复后返回](2026-11-05-selection-feedback-examples/README.md)。27 个专项场景、9 个回归组合、682 项 Python、124 项 C# 和 6 项原生输入检查通过，已合入 main。
 - [x] `selection_option`：点击确认、取消、跳过等选择按钮。阶段：[核验与定稿](2026-11-05-selection-option-review.md)、[两项修复与验证](2026-11-05-selection-option-recovery-implementation.md)及一次独立审查完成，已合入 main；25 组专项、11 组回归、684 项 Python、124 项 C# 和 6 项原生检查通过，提供[45 份修复后 full 返回](2026-11-05-selection-option-fixed-examples/README.md)。保留参数与紧凑回执，修复明确拒绝后的许可恢复及具体原因；原[81 份审阅返回](2026-11-05-selection-option-examples/README.md)保留为修复前基线。
-- [ ] `set_selection_view`：切换选择界面与战场视图。
+- [ ] `set_selection_view`：切换选择界面与战场视图。阶段：[现状核验完成，待设计确认](2026-11-05-selection-view-review.md)，[开发证据](2026-11-05-selection-view-development-notes.md)记录 8 个典型场景、62 项相关 Python 检查及[6 份典型 full 返回](2026-11-05-selection-view-examples/README.md)；未交互拒绝后的许可丢失、笼统错误及成功输出精简待定稿，尚未修改工具行为或核销。
 
 ### 地图（3 项）
 
