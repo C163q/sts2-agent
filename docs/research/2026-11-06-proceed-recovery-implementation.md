@@ -1,6 +1,6 @@
 # proceed 统一前进入口与拒绝恢复
 
-> 当前状态：实施与验收完成，共1项，已完成1项；729项Python、124项C#、16类普通GUI及两个独立终章流程通过。正在最终代码审阅与合入，无剩余实现或阻塞。
+> 当前状态：实施与验收完成，共1项，已完成1项；729项Python、124项C#、16类普通GUI及两个独立终章流程通过。最终独立审阅通过（Critical0、Important0、Minor1），正在合入，无剩余必修项或阻塞。
 
 需求与修复前证据见[审阅](2026-11-06-proceed-review.md)及[开发依据](2026-11-06-proceed-development-notes.md)，执行步骤见[计划](../superpowers/plans/2026-11-06-proceed-recovery.md)。
 
@@ -34,3 +34,11 @@ GUI首轮combat通过；reward_skip在proceed调用前被测试断言阻断，�
 双Boss、教程、真实超时、对局中途退出、多人和全部事件／遗物组合未穷举。奖励proceed触发父事件Resume分支继续以目标版本源码为依据；Battleworn Dummy样本在战斗结束时已经恢复父事件，后续proceed只验证离开事件。
 
 持续维护文档曾要求所有proceed拒绝后重新观察，现随实现改为明确点击前拒绝可恢复；旧终章断言的临时限制已在完整实测通过后移除，明确现行脚本检查和验证入口。文档差异处理保存在证据根documentation-conflict-report.md。
+
+## 最终审阅
+
+独立只读审阅范围a8b85aa..7ca98a9，Critical0、Important0、Minor1，可合入。未重新构建或运行游戏，使用已有证据核对。
+
+保留的小问题：[原生参数检查](../../src/Sts2Agent/Adapter/RequestDispatcher.cs#L39)会在proceed同时携带过期令牌和非空参数时先返回invalid_request及未提交证明。正常MCP在本地拦截非法参数，后续合法动作仍须通过快照校验，因此不阻断当前玩法修复；该边界暂未调整，未新增用户TODO。
+
+审阅提出的验证边界维持上节范围：多人、第三方Mod、真实超时及全部组合没有扩展实测，可能仍存在未见变体问题；奖励前进触发父事件Resume保留原生流程与源码依据，该特定恢复分支仍有游戏内验证盲区。
