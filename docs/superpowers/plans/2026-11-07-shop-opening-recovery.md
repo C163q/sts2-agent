@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-> 当前状态：实施中，共1项，已完成0项；实现和验收完成，正在提交；剩余独立审阅与合入。暂无阻塞。
+> 当前状态：已完成，共1项，已完成1项；独立审阅通过并已合入main，无剩余步骤或阻塞。
 
 **Goal:** open_shop在明确点击前拒绝后可以直接继续合法操作，并提供具体原因。
 
@@ -46,12 +46,12 @@
 - [x] **Step 4:** 打开分支独立调用共享检查、返回明确拒绝，UiChanged后再原生ForceClick；available_actions、open.enabled接入相同检查；注册MCP证明规则与原始参数拒绝。
 - [x] **Step 5:** 新Python变绿，运行全量Python、C#及构建，准备隔离运行时；五类专项GUI及普通／送货员／删牌、药水瞄准及详情显示回归通过。
 - [x] **Step 6:** 同步持续文档和版本、导出修复后样本，核对来源／哈希／相对链接／进程退出，更新计划与实施记录。
-- [ ] **Step 7:** 提交fix: preserve shop opening rejection recovery，并记录任务验收。
+- [x] **Step 7:** 提交fix: preserve shop opening rejection recovery，并记录任务验收。
 
 ## 最终审阅与合入
 
-- [ ] 独立最终审阅，必要问题按RED→GREEN处理。
-- [ ] 将证据归档并清理本计划工作目录，自行合入main，删除临时分支，更新核销清单。
+- [x] 独立最终审阅，必要问题按RED→GREEN处理。
+- [x] 将证据归档并清理本计划工作目录，自行合入main，删除临时分支，更新核销清单。
 
 新测试命令：`.tmp/mcp-venv/bin/python -m unittest tests.python.test_shop_opening`，RED为明确拒绝后close_shop得到observation_required，GREEN为直接成功。
 
