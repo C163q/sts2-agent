@@ -1,0 +1,102 @@
+[
+  {
+    "file": "inventory.full.json",
+    "tool": "open_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-open-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 4,
+    "sha256": "cc7e3ed813e6833786ba38b264c10ec8f0709d63af555dc12e1d795d6f2ff589"
+  },
+  {
+    "file": "inventory.default.json",
+    "tool": "open_shop",
+    "arguments": {
+      "preset": "default"
+    },
+    "source": ".tmp/2026-11-07-open-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 24,
+    "sha256": "cc7e3ed813e6833786ba38b264c10ec8f0709d63af555dc12e1d795d6f2ff589"
+  },
+  {
+    "file": "fake.full.json",
+    "tool": "open_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-open-shop-review/gui/fake/audit/evidence.json",
+    "row_index": 4,
+    "sha256": "608e2872444ab8555fefcf5321ea1d653e316a4959b005d794c6b78a9f224036"
+  },
+  {
+    "file": "parasol-reopen.full.json",
+    "tool": "open_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-open-shop-review/gui/parasol/audit/evidence.json",
+    "row_index": 11,
+    "sha256": "42508b57098a827c21bfabf71269de466ff137cf7d1f96ee0025b1b6839dd469"
+  },
+  {
+    "file": "no-permission.full.json",
+    "tool": "open_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-open-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 0,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "already-open.full.json",
+    "tool": "open_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-open-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 7,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "after-rejection.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-open-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 8,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "map-covered.full.json",
+    "tool": "open_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-open-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 14,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "tool": "open_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-open-shop-review/gui/remove/audit/evidence.json",
+    "row_index": 13,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "merchant.full.json",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-open-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 2,
+    "sha256": "ab0ac43208f21d98a0418da38e4af712ba026fadd55d8da65dc3cac7763a07e3"
+  }
+]
