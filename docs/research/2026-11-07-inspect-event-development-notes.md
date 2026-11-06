@@ -30,6 +30,8 @@ CrystalSphereMinigame.PopulateItems 实际生成九类图案：两种金币、�
 
 NCrystalSphereItem._Ready 对卡牌奖励隐藏 _icon，使用 CardFrame、CardBanner 及阴影组合；实际牌框材料来自玩家角色，横幅材料来自稀有度。资源中三张预合成 card_reward PNG 不能直接当作当前绘制真值。仅凭下方相同的牌框不能输出稀有度。
 
+NCrystalSphereItem.OnRevealed 在完整揭开后播放闪光与缩放，NCrystalSphereScreen.OnItemRevealed 播放正向／负向对白。cell_rows 的 S 应表示已完整揭开的可见图案，而非已领取、随机奖励身份或内部矩形；该字符是文字转译，原生并没有永久显示字母或同名标记。需验证动画结束、重新读取与页面往返后仍能依据完整外观保持正确表示。
+
 common_potion 与 uncommon_potion 解码后 RGBA 像素 SHA-256 同为 b3259870855365aad0936917e7c870cb9b7b5921a55acee32359237243f03795。字典应按外观归类，不以类枚举制造不存在的视觉差别。
 
 后续识别入口建议只接收可见区域图像／遮罩与静态图案定义，避免依赖 CrystalSphereItem.Position 或 cell.Item 选择唯一答案。识别结果必须容许多个可见外观等价、透明留白与未知。字典可包含固定方向的静态图案知识，但不得把推断的雾下范围列作本次直接观察。
