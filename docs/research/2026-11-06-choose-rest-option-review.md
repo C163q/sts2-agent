@@ -1,6 +1,6 @@
 # choose_rest_option 核验与建议
 
-> 当前状态：三项问题及输出要求已定稿，已完成实现及行为验收，正在最终独立审阅；[实施与验证](2026-11-06-rest-option-feedback-implementation.md)；原审阅样本保留修复前行为。工具清单仍为28/44，无阻塞。
+> 当前状态：三项修复已实现、验收并通过独立审阅，功能41b7d60已合入main；[实施与验证](2026-11-06-rest-option-feedback-implementation.md)及新样本另列，原审阅样本保留修复前行为。工具清单29/44，无阻塞。
 
 流程见[工具清单](2026-11-02-mcp-tool-review.md)。实现依据及验证边界单列在[开发核验](2026-11-06-choose-rest-option-development-notes.md)。
 

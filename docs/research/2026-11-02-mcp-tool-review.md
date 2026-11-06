@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销28项。choose_rest_option的三项修复已实现并通过行为验收，正在最终独立审阅。剩余16项尚未核销，无阻塞。
+> 当前状态：工具核验进行中，共44项，已核销29项。choose_rest_option的三项修复已完成验收与独立审阅，并合入main。剩余15项尚未核销，无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -77,7 +77,7 @@
 ### 火堆（2 项）
 
 - [x] `inspect_rest_site`：具体诊断、上下文校验、读取／交互分离、summary和option_ids完成；get_observation同步使用静态格式、省略description。738项Python、124项C#、八类专项加旧basic共九类最终GUI及79项双模式门控通过；[实施记录](2026-11-06-rest-site-inspection-presets-implementation.md)、[30份新返回](2026-11-06-rest-site-presets-examples/README.md)，原[16份审阅返回](2026-11-06-inspect-rest-site-examples/README.md)保留基线。
-- [ ] `choose_rest_option`：选择火堆操作；[审阅与建议](2026-11-06-choose-rest-option-review.md)、[开发核验](2026-11-06-choose-rest-option-development-notes.md)与[27份典型返回](2026-11-06-choose-rest-option-examples/README.md)已整理。35项相关Python、12类不同GUI完成；三项已按[实施记录](2026-11-06-rest-option-feedback-implementation.md)修复，743项Python、131项C#及15类动作／1类显示回归通过，等待最终独立审阅。
+- [x] `choose_rest_option`：选择火堆操作；[审阅与建议](2026-11-06-choose-rest-option-review.md)、[开发核验](2026-11-06-choose-rest-option-development-notes.md)与[27份典型返回](2026-11-06-choose-rest-option-examples/README.md)已整理。35项相关Python、12类不同GUI完成；三项已按[实施记录](2026-11-06-rest-option-feedback-implementation.md)修复，743项Python、131项C#及15类动作／1类显示回归通过，独立审阅无问题，已合入main。
 
 ### 商店（4 项）
 
