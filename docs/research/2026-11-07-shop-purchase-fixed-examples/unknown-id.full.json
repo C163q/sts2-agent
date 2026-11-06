@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "No current item matches item_id; it may have been sold or restocked. inspect_shop shows the current IDs.",
+    "recovery": "choose_legal_action"
+  }
+}

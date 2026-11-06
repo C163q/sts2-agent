@@ -6,10 +6,10 @@ internal sealed class ActionSettling
     private string? previousState;
     private TimeSpan stableSince;
 
-    public bool Sample(string? reason, string state, bool motionPending, TimeSpan now)
+    public bool Sample(string? reason, string state, bool motionPending, TimeSpan now, bool choiceMotionPending = false)
     {
         bool waitsForMotion = reason is "player_ready" or "action_completed" or "action_canceled" or "combat_won";
-        if (reason == null || waitsForMotion && motionPending)
+        if (reason == null || waitsForMotion && motionPending || reason == "choice_required" && choiceMotionPending)
         {
             previousReason = previousState = null;
             return false;

@@ -17,7 +17,7 @@ from sts2_mcp.roundtrip_client import Client
 from sts2_mcp.mcp_config import load_config
 
 
-SERVER_VERSION = "0.76.2"
+SERVER_VERSION = "0.77.0"
 
 def tool_result(payload):
     content = [TextContent(type="text", text=json.dumps(payload, ensure_ascii=False, separators=(",", ":")))]

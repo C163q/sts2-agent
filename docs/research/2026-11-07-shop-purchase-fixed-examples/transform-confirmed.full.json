@@ -1,0 +1,76 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "buy_item",
+    "close_shop",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_shop"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 28,
+          "name": "Strike"
+        },
+        "pile": "deck",
+        "type": "card_removed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 38,
+          "name": "Anger+"
+        },
+        "pile": "deck",
+        "type": "card_added",
+        "sequence": 2
+      },
+      {
+        "card": {
+          "id": 29,
+          "name": "Strike"
+        },
+        "pile": "deck",
+        "type": "card_removed",
+        "sequence": 3
+      },
+      {
+        "card": {
+          "id": 39,
+          "name": "Aggression+"
+        },
+        "pile": "deck",
+        "type": "card_added",
+        "sequence": 4
+      },
+      {
+        "card": {
+          "id": 30,
+          "name": "Strike"
+        },
+        "pile": "deck",
+        "type": "card_removed",
+        "sequence": 5
+      },
+      {
+        "card": {
+          "id": 40,
+          "name": "Infernal Blade+"
+        },
+        "pile": "deck",
+        "type": "card_added",
+        "sequence": 6
+      }
+    ]
+  }
+}

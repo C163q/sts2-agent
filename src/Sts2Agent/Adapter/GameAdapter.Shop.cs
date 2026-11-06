@@ -1,8 +1,5 @@
 using System.Text.Json;
-using HarmonyLib;
-using MegaCrit.Sts2.Core.Entities.Merchant;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
-using MegaCrit.Sts2.Core.Nodes.Screens.Shops;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace Sts2Agent;
@@ -15,7 +12,7 @@ internal sealed partial class GameAdapter
         int itemId = -1;
         if (request.Operation == "buy_item" && (request.Arguments is not { } args || args.EnumerateObject().Count() != 1
             || !args.TryGetProperty("item_id", out var id) || id.ValueKind != JsonValueKind.Number || !id.TryGetInt32(out itemId) || itemId < 0))
-            return FileMailbox.Error(request.Id, "invalid_request", "A nonnegative item_id is required.");
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request", "A nonnegative item_id is required.");
         bool inspect = request.Operation == "inspect_shop";
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current shop before acting.");
@@ -29,42 +26,14 @@ internal sealed partial class GameAdapter
                 top_bar = before.GetProperty("top_bar") });
         }
         if (request.Operation is "open_shop" or "close_shop") return await ShopViewRequest(request, context);
-        if (context == null || !ShopInspection.Exposed(context) || !RunContext.Singleplayer
-            || !ShopInspection.Ready(context))
-            return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player shop.");
-        var run = RunManager.Instance.DebugOnlyGetState();
-        Task? submitted = null;
-        string? outcome = null;
-        void Purchased(PurchaseStatus _, MerchantEntry __) => outcome = "success";
-        void Failed(PurchaseStatus status) => outcome = status switch
-        {
-            PurchaseStatus.FailureSpace => "failure_space", PurchaseStatus.FailureForbidden => "failure_forbidden",
-            PurchaseStatus.FailureGold => "failure_gold", PurchaseStatus.FailureOutOfStock => "failure_out_of_stock", _ => null
-        };
-        NMerchantSlot? slot = request.Operation == "buy_item" ? shopInspection.Find(context, itemId) : null;
-        if (request.Operation == "buy_item" && (!context.Inventory.IsOpen || slot == null || !ShopInspection.Purchasable(slot)))
-            return FileMailbox.Error(request.Id, "illegal_action", "The observed shop item is unavailable.");
-        if (slot != null) { slot.Entry.PurchaseCompleted += Purchased; slot.Entry.PurchaseFailed += Failed; }
-        try
-        {
-            UiChanged();
-            if (slot != null)
-                submitted = (Task)AccessTools.Method(typeof(NMerchantSlot), "OnSelected").Invoke(slot, null)!;
-            var (after, reason) = await ActionObservation(() =>
-            {
-                if (!ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())) return "interrupted";
-                if (submitted?.IsFaulted == true) throw submitted.Exception!.GetBaseException();
-                string? boundary = NonCombatBoundary();
-                return boundary == "action_completed" && RewardInspection.Current == null && submitted is { IsCompleted: false } ? null : boundary;
-            });
-            if (submitted is { IsCompletedSuccessfully: true } && outcome == null) outcome = "canceled";
-            return TransitionSuccess(request, after, reason, purchaseResult:
-                slot != null && outcome != null ? new { item_id = itemId, status = outcome } : null);
-        }
-        finally
-        {
-            if (slot != null) { slot.Entry.PurchaseCompleted -= Purchased; slot.Entry.PurchaseFailed -= Failed; }
-        }
+        if (ShopInspection.PurchaseUnavailableReason(context) is { } unavailablePurchase)
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", unavailablePurchase);
+        var slot = shopInspection.Find(context!, itemId);
+        if (slot == null) return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action",
+            "No current item matches item_id; it may have been sold or restocked. inspect_shop shows the current IDs.");
+        if (ShopInspection.ItemUnavailableReason(slot) is { } unavailableItem)
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", unavailableItem);
+        return await PurchaseShopItem(request, slot, itemId);
     }
 
     private async Task<string> ShopViewRequest(Request request, ShopInspection.Context? context)

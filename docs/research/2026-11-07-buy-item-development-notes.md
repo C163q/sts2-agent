@@ -1,6 +1,6 @@
 # buy_item 开发核验依据
 
-> 当前状态：审阅完成，等待设计定稿；四项问题仍未修复。用户决策内容见[审阅与建议](2026-11-07-buy-item-review.md)。
+> 当前状态：定稿已实现，当前验收见[实施记录](2026-11-07-shop-purchase-feedback-implementation.md)；以下保留审阅基线。用户决策内容见[审阅与建议](2026-11-07-buy-item-review.md)。
 
 ## 基线
 

@@ -29,8 +29,11 @@ internal static class RunUi
         }
     }
 
+    public static bool GoldMotionPending() => NRun.Instance is { } run
+        && PrivateFields.Read(run.GlobalUi.TopBar.Gold, "_alreadyRunning") is true;
+
     public static bool ResourceMotionPending() => NRun.Instance is { } run
-        && (PrivateFields.Read(run.GlobalUi.TopBar.Gold, "_alreadyRunning") is true
+        && (GoldMotionPending()
             || VisibleUi.Descendants<MegaCrit.Sts2.Core.Nodes.Potions.NPotion>(run.GlobalUi.TopBar.PotionContainer)
                 .Any(potion => RewardInspection.Animating(potion, "_obtainedTween"))
             || VisibleUi.Descendants<NRelicInventoryHolder>(run.GlobalUi.RelicInventory)

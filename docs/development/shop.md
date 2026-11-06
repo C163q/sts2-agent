@@ -85,9 +85,11 @@ get_observation 的 summary 使用[共用卡牌摘要规则](observation.md#mcp-
 }
 ```
 
-这同样是完整结果的节选。`purchase_result` 仅在本次请求中已得到原生结果时存在，状态可以是 `success`、`failure_space`、`failure_forbidden`、`failure_gold`、`failure_out_of_stock` 或 `canceled`。遇到选牌/奖励时先返回，不等待依赖后续输入的父任务。
+这同样是完整结果的节选。`purchase_result` 包含请求的item_id及status：success、failure_space、failure_forbidden、failure_gold、failure_out_of_stock、canceled或pending。购买尚未结束而进入受支持的选牌／奖励输入时返回pending，继续使用当前页面工具；扣款时点由原生流程决定。后续动作提供自己的回执和期间事件，不携带购买终态。
 
-buy_item的点击前拒绝目前仍会清除已有许可并返回通用错误；购买变牌遗物后，顶栏金币计数仍滚动时立即选牌可能stale_state，应等计数稳定后再观察。结果ID校验也有缺口，见[购买审阅](../research/2026-11-07-buy-item-review.md)，均待实现修复。需要后续输入时没有purchase_result，后续动作也不补回；pending是审阅中的候选设计。
+购买页面、单品拒绝及商品enabled／available_actions使用共用检查；无效或已替换ID、已用删牌、不可交互、价格不可读、金币不足及覆盖各有具体提示。明确点击前拒绝保留已有许可，可直接纠正或选择其他合法操作；进入原生点击后，领取失败通过purchase_result表达。读取完整响应时先检查结果ID在Int32非负范围内且与请求一致，再精简及续接；错误响应清除许可。
+
+schema44的正常完成与已识别输入边界包含purchase_result；超时、中断、人工处理或胜负终局等购买状态未知的边界可省略，旧schema维持可省略结果的兼容读取。choice_required在金币计数动画结束后再经过稳定间隔返回，仍允许父购买／卡牌任务暂停等待玩家。实现入口、验证及边界见[购买反馈修复](../research/2026-11-07-shop-purchase-feedback-implementation.md)。
 
 没有补货效果时，买完的条目从 `items` 消失；删牌成功后仍保留打叉条目，`used: true`、`enabled: false`、`price/affordable: null`，不输出隐藏价格和悬停说明。“送货员”补货后同一 `position` 会出现新的 `id`，必须使用新观察中的 ID，不能按位置重复购买旧商品。卡牌补货后的特价标记遵循原生规则。
 

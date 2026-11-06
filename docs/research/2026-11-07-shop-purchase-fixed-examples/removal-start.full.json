@@ -1,0 +1,27 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "select_card",
+    "selection_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ],
+  "selection": {
+    "type": "deck",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": []
+  },
+  "purchase_result": {
+    "item_id": 13,
+    "status": "pending"
+  }
+}

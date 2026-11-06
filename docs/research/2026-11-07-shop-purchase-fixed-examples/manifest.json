@@ -1,0 +1,218 @@
+[
+  {
+    "file": "buy-card.full.json",
+    "tool": "buy_item",
+    "arguments": {
+      "preset": "full",
+      "item_id": 0
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/basic/audit/evidence.json",
+    "row_index": 25,
+    "sha256": "33da845c1bdf43eebfc5488420d1046d1f178fa69f20f186046fe2bccccb212e"
+  },
+  {
+    "file": "buy-relic.full.json",
+    "tool": "buy_item",
+    "arguments": {
+      "preset": "full",
+      "item_id": 7
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/basic/audit/evidence.json",
+    "row_index": 29,
+    "sha256": "9b50b2dc6a0158845173c212ff3e1c1645e4161e6c6db19d16778200fff56cd2"
+  },
+  {
+    "file": "buy-potion.default.json",
+    "tool": "buy_item",
+    "arguments": {
+      "preset": "default",
+      "item_id": 10
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/basic/audit/evidence.json",
+    "row_index": 33,
+    "sha256": "c2e3ec5fa7c3af167943fb5582373a50fc79118d0e918321f556a47bab296b82"
+  },
+  {
+    "file": "full-potion-failure.full.json",
+    "tool": "buy_item",
+    "arguments": {
+      "preset": "full",
+      "item_id": 10
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/cauldron/audit/evidence.json",
+    "row_index": 9,
+    "sha256": "cb6e310c6194da1b7ff17dd5b2694062126def872f5759ced878f5ac85660cac"
+  },
+  {
+    "file": "forbidden-potion-failure.full.json",
+    "tool": "buy_item",
+    "arguments": {
+      "preset": "full",
+      "item_id": 10
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/sozu/audit/evidence.json",
+    "row_index": 9,
+    "sha256": "ae247b0866c30c40edb52a37bb6c9e0673de9df013805a64d56d7901a430a7d1"
+  },
+  {
+    "file": "courier-replacement.full.json",
+    "tool": "buy_item",
+    "arguments": {
+      "preset": "full",
+      "item_id": 14
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/courier/audit/evidence.json",
+    "row_index": 15,
+    "sha256": "3f9c62b72cdffb421d3bbdfa4802b76615077b8cf7c3b80ade81f7e5c8185e23"
+  },
+  {
+    "file": "insufficient-gold.full.json",
+    "tool": "buy_item",
+    "arguments": {
+      "preset": "full",
+      "item_id": 29
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/courier/audit/evidence.json",
+    "row_index": 46,
+    "sha256": "4c336138efcdc20dc2ed4821e84b1b9ca9e00e0e8a4975bdbb3ef7cfdc699749"
+  },
+  {
+    "file": "close-after-gold.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/courier/audit/evidence.json",
+    "row_index": 48,
+    "sha256": "c26aebc390ad92d7301e62ba942fcc590283c1df36787c8979cac128c986f0a4"
+  },
+  {
+    "file": "unknown-id.full.json",
+    "tool": "buy_item",
+    "arguments": {
+      "preset": "full",
+      "item_id": 2147483647
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/basic/audit/evidence.json",
+    "row_index": 9,
+    "sha256": "a18adf32a6b826b8cf1c6309378a849c5dddf16d1c6b284178619e42ab112394"
+  },
+  {
+    "file": "close-after-unknown.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/basic/audit/evidence.json",
+    "row_index": 11,
+    "sha256": "c26aebc390ad92d7301e62ba942fcc590283c1df36787c8979cac128c986f0a4"
+  },
+  {
+    "file": "removal-start.full.json",
+    "tool": "buy_item",
+    "arguments": {
+      "preset": "full",
+      "item_id": 13
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/remove/audit/evidence.json",
+    "row_index": 8,
+    "sha256": "ee467d906a295418275e619277ea03e03fb7b28820eca7b22abd1ba82b430547"
+  },
+  {
+    "file": "removal-canceled.full.json",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "cancel"
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/remove/audit/evidence.json",
+    "row_index": 12,
+    "sha256": "cc7e3ed813e6833786ba38b264c10ec8f0709d63af555dc12e1d795d6f2ff589"
+  },
+  {
+    "file": "removal-confirmed.full.json",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/remove/audit/evidence.json",
+    "row_index": 17,
+    "sha256": "c5fbafa8cecf4fe0fef36a6ebc2571f3c5906475d73e92ac0d81374071ee5795"
+  },
+  {
+    "file": "reward-start.full.json",
+    "tool": "buy_item",
+    "arguments": {
+      "preset": "full",
+      "item_id": 7
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/nested/audit/evidence.json",
+    "row_index": 8,
+    "sha256": "831a6f7f5593d6020e45fce991238ee7ed3f9f18d401c8d4a046d0991c82784f"
+  },
+  {
+    "file": "reward-finished.full.json",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/nested/audit/evidence.json",
+    "row_index": 12,
+    "sha256": "cc7e3ed813e6833786ba38b264c10ec8f0709d63af555dc12e1d795d6f2ff589"
+  },
+  {
+    "file": "transform-start.full.json",
+    "tool": "buy_item",
+    "arguments": {
+      "preset": "full",
+      "item_id": 7
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/choice/audit/evidence.json",
+    "row_index": 8,
+    "sha256": "bc12ed9c04fd862dba27837556da3e7766a50d0ee2485feed75e3ca0d8e333b3"
+  },
+  {
+    "file": "transform-confirmed.full.json",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/choice/audit/evidence.json",
+    "row_index": 14,
+    "sha256": "b05da343527672a93947857b5d3eac9044a682d471e55bf733fdf3172f271595"
+  },
+  {
+    "file": "fake-purchase.full.json",
+    "tool": "buy_item",
+    "arguments": {
+      "preset": "full",
+      "item_id": 0
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/fake/audit/evidence.json",
+    "row_index": 8,
+    "sha256": "3ec13b429112a79b93fbcb92bab0ffae0976420c9a7697a10953bd8f6965c7f4"
+  },
+  {
+    "file": "unreadable-price.full.json",
+    "tool": "buy_item",
+    "arguments": {
+      "preset": "full",
+      "item_id": 0
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/hidden_price/audit/evidence.json",
+    "row_index": 4,
+    "sha256": "e2cd68885f6cd96be609c8bbf6b4907b4cda2d81a94abb39a883e084992c0895"
+  },
+  {
+    "file": "close-after-price.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-shop-purchase-feedback/gui/hidden_price/audit/evidence.json",
+    "row_index": 6,
+    "sha256": "c26aebc390ad92d7301e62ba942fcc590283c1df36787c8979cac128c986f0a4"
+  }
+]

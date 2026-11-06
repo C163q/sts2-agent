@@ -20,6 +20,7 @@
     <Compile Include="../../../src/Sts2Agent/Testing/TestScenarioSettings.cs" Link="TestScenarioSettings.cs" />
     <EmbeddedResource Include="../../game/data/test_scenarios.json" LogicalName="Sts2Agent.TestScenarios" />
     <Compile Include="../../../src/Sts2Agent/Actions/ActionSettling.cs" Link="ActionSettling.cs" />
+    <Compile Include="../../../src/Sts2Agent/Actions/PurchaseOutcome.cs" Link="PurchaseOutcome.cs" />
     <Compile Include="../../../src/Sts2Agent/Actions/RewardBoundary.cs" Link="RewardBoundary.cs" />
     <Compile Include="../../../src/Sts2Agent/Events/TurnBoundary.cs" Link="TurnBoundary.cs" />
     <Compile Include="../../../src/Sts2Agent/Events/TurnEventBuffer.cs" Link="TurnEventBuffer.cs" />

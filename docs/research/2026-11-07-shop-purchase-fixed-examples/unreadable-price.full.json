@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This item's price is not currently readable. Wait for its price to reappear.",
+    "recovery": "choose_legal_action"
+  }
+}

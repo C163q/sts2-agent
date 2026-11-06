@@ -287,8 +287,8 @@ SPECS = (
     ToolSpec(
         name='buy_item',
         schema=BUY_SCHEMA,
-        description='Buy one shop item; restocked goods have new IDs. Card removal opens a selection and canceling costs nothing. '
-            'Full potion slots or gain restrictions can block purchase without spending gold. Check purchase_result for the outcome.',
+        description='Buy one current item_id; restocked goods have new IDs. purchase_result reports the outcome; '
+            'pending requires finishing the current selection or rewards. Canceling card removal costs nothing.',
         annotations=action,
         category='action',
         effect='action',
@@ -296,8 +296,10 @@ SPECS = (
         returns_transition=True,
         records_events=True,
         reader='action_details:purchase_details',
+        reader_argument='request',
         parser='shop_details:shop_arguments',
-        parser_operation=True),
+        parser_operation=True,
+        unsubmitted_rejection_unchanged=True),
     ToolSpec(
         name='get_observation',
         schema=OBSERVATION_SCHEMA,

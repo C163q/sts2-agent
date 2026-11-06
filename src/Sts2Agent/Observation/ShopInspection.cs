@@ -44,7 +44,7 @@ internal sealed class ShopInspection
     public static NBackButton Back(Context context) => context.Inventory.GetNode<NBackButton>("%BackButton");
     public static bool Animating(Context context) => RewardInspection.Animating(context.Inventory, "_inventoryTween");
     public static bool Busy => ShopTransactions.Pending || RelicObtainTracker.Pending;
-    private enum PagePurpose { Inspect, Open, Close }
+    private enum PagePurpose { Inspect, Open, Close, Buy }
 
     public static string? InspectionUnavailableReason(Context? context)
         => PageUnavailableReason(context, PagePurpose.Inspect)
@@ -57,6 +57,7 @@ internal sealed class ShopInspection
             PagePurpose.Inspect => ("inspecting shop goods", "Shop inspection"),
             PagePurpose.Open => ("opening the shop", "Opening the shop"),
             PagePurpose.Close => ("closing the shop", "Closing the shop"),
+            PagePurpose.Buy => ("buying shop goods", "Buying shop goods"),
             _ => throw new ArgumentOutOfRangeException(nameof(operation))
         };
         if (!RunManager.Instance.IsInProgress) return operation == PagePurpose.Inspect
@@ -106,6 +107,14 @@ internal sealed class ShopInspection
         return !Back(context).IsEnabled ? "Wait for the shop back button to become enabled before closing the shop." : null;
     }
 
+    public static string? PurchaseUnavailableReason(Context? context)
+    {
+        if (PageUnavailableReason(context, PagePurpose.Buy) is { } unavailable) return unavailable;
+        if (!context!.Inventory.IsOpen) return "Open the shop with open_shop before buying goods.";
+        if (ActivityUnavailableReason(context, "buying shop goods") is { } pending) return pending;
+        return !Back(context).IsEnabled ? "Wait for the shop controls to become enabled before buying goods." : null;
+    }
+
     public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context) && !Animating(context)
         && ActivityUnavailableReason(context, "using shop controls") == null
         && (context.Inventory.IsOpen ? Back(context).IsEnabled : context.Merchant.IsEnabled || context.Proceed.IsEnabled);
@@ -142,9 +151,18 @@ internal sealed class ShopInspection
         return mouse || controller;
     }
 
-    public static bool Purchasable(NMerchantSlot slot) => VisibleSlot(slot) && slot.Entry.IsStocked
-        && slot.Hitbox.IsEnabled && slot.Hitbox.IsVisibleInTree() && slot.Hitbox.MouseFilter != Control.MouseFilterEnum.Ignore
-        && VisibleUi.Number(slot, "%CostLabel") is >= 0 && slot.Entry.EnoughGold;
+    public static string? ItemUnavailableReason(NMerchantSlot slot)
+    {
+        if (slot.Entry is MerchantCardRemovalEntry { Used: true }) return "This card removal service has already been used.";
+        if (!slot.Entry.IsStocked) return "This item has already been sold or is out of stock. inspect_shop shows the current goods.";
+        if (!VisibleSlot(slot)) return "This item is not currently visible and interactive. inspect_shop shows the displayed goods.";
+        if (!slot.Hitbox.IsEnabled || !slot.Hitbox.IsVisibleInTree() || slot.Hitbox.MouseFilter == Control.MouseFilterEnum.Ignore)
+            return "This item is disabled. Wait for the current shop activity to finish.";
+        if (VisibleUi.Number(slot, "%CostLabel") is not >= 0) return "This item's price is not currently readable. Wait for its price to reappear.";
+        return !slot.Entry.EnoughGold ? "Not enough gold to buy this item. inspect_shop shows its price and your gold." : null;
+    }
+
+    public static bool Purchasable(NMerchantSlot slot) => ItemUnavailableReason(slot) == null;
 
     public void Synchronize()
     {
@@ -165,7 +183,7 @@ internal sealed class ShopInspection
     }
 
     public NMerchantSlot? Find(Context context, int id) => context.Inventory.GetAllSlots().FirstOrDefault(slot =>
-        VisibleSlot(slot) && ids.TryGetValue(slot, out var value) && value.id == id && ReferenceEquals(value.payload, Payload(slot)));
+        ids.TryGetValue(slot, out var value) && value.id == id && ReferenceEquals(value.payload, Payload(slot)));
 
     public object? Read(bool full = false)
         => Read(full, out _);
@@ -182,14 +200,14 @@ internal sealed class ShopInspection
             open = (object?)null, back = (object?)null, proceed = (object?)null };
         bool animating = Animating(context), opened = context.Inventory.IsOpen;
         string view = animating ? opened ? "opening" : "closing" : opened ? "inventory" : "merchant";
-        bool ready = Ready(context);
+        bool ready = Ready(context), canPurchase = PurchaseUnavailableReason(context) == null;
         var slots = opened && !animating ? context.Inventory.GetAllSlots().Where(DisplayedSlot).ToArray() : [];
         if (full) unavailable = slots.Where(slot => slot.Entry is not MerchantCardRemovalEntry { Used: true }
             && !CanHover(context, slot)).Select(slot => "shop.items." + ids[slot].id).ToArray();
         return EnglishCardText.Read(() => new
         {
             status = "visible", view,
-            items = opened && !animating ? slots.Select(slot => ReadItem(slot, ready, full, CanHover(context, slot))).ToArray() : null,
+            items = opened && !animating ? slots.Select(slot => ReadItem(slot, canPurchase, full, CanHover(context, slot))).ToArray() : null,
             open = !opened && !animating && MerchantShown(context) ? new { enabled = OpenUnavailableReason(context) == null } : null,
             back = opened && !animating && VisibleUi.OnScreen(Back(context)) ? new { enabled = CloseUnavailableReason(context) == null } : null,
             proceed = !opened && !animating && VisibleUi.OnScreen(context.Proceed) ? new

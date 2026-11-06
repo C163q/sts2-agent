@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Not enough gold to buy this item. inspect_shop shows its price and your gold.",
+    "recovery": "choose_legal_action"
+  }
+}
