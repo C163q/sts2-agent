@@ -87,6 +87,8 @@ get_observation 的 summary 使用[共用卡牌摘要规则](observation.md#mcp-
 
 这同样是完整结果的节选。`purchase_result` 仅在本次请求中已得到原生结果时存在，状态可以是 `success`、`failure_space`、`failure_forbidden`、`failure_gold`、`failure_out_of_stock` 或 `canceled`。遇到选牌/奖励时先返回，不等待依赖后续输入的父任务。
 
+buy_item的点击前拒绝目前仍会清除已有许可并返回通用错误；购买变牌遗物后，顶栏金币计数仍滚动时立即选牌可能stale_state，应等计数稳定后再观察。结果ID校验也有缺口，见[购买审阅](../research/2026-11-07-buy-item-review.md)，均待实现修复。需要后续输入时没有purchase_result，后续动作也不补回；pending是审阅中的候选设计。
+
 没有补货效果时，买完的条目从 `items` 消失；删牌成功后仍保留打叉条目，`used: true`、`enabled: false`、`price/affordable: null`，不输出隐藏价格和悬停说明。“送货员”补货后同一 `position` 会出现新的 `id`，必须使用新观察中的 ID，不能按位置重复购买旧商品。卡牌补货后的特价标记遵循原生规则。
 
 ## 删牌、自动购买与前进

@@ -1,0 +1,46 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "buy_item",
+    "close_shop",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_shop"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 12,
+          "name": "Perfected Strike"
+        },
+        "pile": "deck",
+        "type": "card_added",
+        "sequence": 1
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 2068,
+        "after": 2028,
+        "type": "gold_changed",
+        "sequence": 2
+      }
+    ]
+  },
+  "purchase_result": {
+    "item_id": 14,
+    "status": "success"
+  }
+}

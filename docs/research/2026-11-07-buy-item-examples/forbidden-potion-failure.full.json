@@ -1,0 +1,25 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "buy_item",
+    "close_shop",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_shop"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": []
+  },
+  "purchase_result": {
+    "item_id": 10,
+    "status": "failure_forbidden"
+  }
+}

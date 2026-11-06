@@ -1,0 +1,47 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "buy_item",
+    "close_shop",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_targets",
+    "inspect_shop"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "potion": {
+          "slot_index": 0,
+          "name": "Heart of Iron"
+        },
+        "type": "potion_obtained",
+        "sequence": 1
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 1846,
+        "after": 1774,
+        "type": "gold_changed",
+        "sequence": 2
+      }
+    ]
+  },
+  "purchase_result": {
+    "item_id": 10,
+    "status": "success"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "buy_item",
+    "close_shop",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_shop"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 2099,
+        "after": 2024,
+        "type": "gold_changed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 1,
+          "name": "Strike"
+        },
+        "pile": "deck",
+        "type": "card_removed",
+        "sequence": 2
+      }
+    ]
+  }
+}

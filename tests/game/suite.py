@@ -16,6 +16,7 @@ from sts2_mcp.roundtrip_client import Client
 
 CATALOG = json.loads((ROOT / 'tests/game/data/test_scenarios.json').read_text())
 SUPPORTED_VERIFIERS = {
+    'verify_buy_item_review.py',
     'verify_close_shop_review.py',
     'verify_open_shop_review.py',
     'verify_shop_inspection_review.py',
@@ -122,6 +123,7 @@ def load_cases(path):
             if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
+                'verify_buy_item_review.py': ('no_shop','basic','remove','courier','cauldron','sozu','hidden_price','nested','choice','fake'),
                 'verify_close_shop_review.py': ('no_shop','basic','fake','remove','nested','parasol'),
                 'verify_open_shop_review.py': ('no_shop','basic','fake','remove','parasol'),
                 'verify_shop_inspection_review.py': ('no_shop','basic','remove','courier','hidden_price','fake','full','nested','parasol','display'),
