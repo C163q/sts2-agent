@@ -1,5 +1,21 @@
 [
   {
+    "name": "counters",
+    "scenarios": {
+      "rest": "tent"
+    },
+    "steps": [
+      {
+        "name": "check",
+        "verifier": "verify_choose_rest_option_review.py",
+        "args": [
+          "--scenario",
+          "counters"
+        ]
+      }
+    ]
+  },
+  {
     "name": "no_rest",
     "scenarios": {
       "play": "basic"
@@ -187,6 +203,38 @@
         "args": [
           "--scenario",
           "dig_choice"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "combat_counter",
+    "scenarios": {
+      "rest": "tent"
+    },
+    "steps": [
+      {
+        "name": "combat",
+        "verifier": "verify_choose_rest_option_review.py",
+        "args": [
+          "--scenario",
+          "combat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "target_boundaries",
+    "scenarios": {
+      "rest": "basic"
+    },
+    "steps": [
+      {
+        "name": "check",
+        "verifier": "verify_choose_rest_option_review.py",
+        "args": [
+          "--scenario",
+          "targets"
         ]
       }
     ]

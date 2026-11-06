@@ -29,9 +29,9 @@
 | 项目 | 当前版本或要求 | 核对入口 |
 | --- | --- | --- |
 | 游戏 | Linux `v0.107.1`，release 分支，构建 `59260271` | [目标程序集核对与验证](docs/research/2026-11-03-result-observation-implementation.md) |
-| Mod | `0.72.0` | [Mod 清单](src/Sts2Agent/Sts2Agent.json) |
-| MCP server | `0.74.0` | [服务入口](src/sts2_mcp/mcp_server.py) |
-| 底层观察 schema | `41` | [观察序列化](src/Sts2Agent/Observation/GameObservation.cs) |
+| Mod | `0.73.0` | [Mod 清单](src/Sts2Agent/Sts2Agent.json) |
+| MCP server | `0.75.0` | [服务入口](src/sts2_mcp/mcp_server.py) |
+| 底层观察 schema | `42` | [观察序列化](src/Sts2Agent/Observation/GameObservation.cs) |
 | RitsuLib | `0.6.10`，须使用游戏 `0.107.1` 兼容运行时 | [获取与构建](docs/development/roundtrip.md#前提与构建) |
 | .NET | 9 SDK；版本选择见 [global.json](global.json) | [构建指南](docs/development/roundtrip.md#前提与构建) |
 | Python | 3.10 或以上；MCP 另需安装依赖 | [requirements-mcp.txt](requirements-mcp.txt) |

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This rest option is not currently visible and interactive. Wait for its button to finish appearing.",
+    "recovery": "choose_legal_action"
+  }
+}

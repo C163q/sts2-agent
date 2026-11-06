@@ -411,7 +411,8 @@ SPECS = (
         records_events=True,
         reader='transition_details:end_turn_details',
         parser='rest_site_details:rest_option_arguments',
-        parser_operation=False),
+        parser_operation=False,
+        unsubmitted_rejection_unchanged=True),
     ToolSpec(
         name='inspect_hand',
         schema=HAND_SCHEMA,

@@ -75,6 +75,7 @@ internal sealed class GameObservation
         CombatJournalScope.Current?.SampleVisibility();
         RunResourceJournal.Current?.SampleVisibility();
         RunInventoryJournal.Current?.SampleVisibility();
+        RelicCounterJournal.Current?.SampleVisibility();
         PotionJournal.Current?.SampleVisibility();
         CombatResourceJournal.Current?.SampleVisibility();
         OrbJournal.Current?.SampleVisibility();
@@ -137,7 +138,7 @@ internal sealed class GameObservation
             ? observation.Combatants(player) : null;
         JsonObject body = JsonSerializer.SerializeToNode(new
         {
-            schema_version = 41, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
+            schema_version = 42, language = "en", session, combat_generation = combatGeneration, ui_generation = uiGeneration, potion_generation = potionGeneration,
             rest_site_generation = restSiteGeneration, treasure_generation = treasureGeneration,
             reward_generation = rewardInspection.Generation, shop_generation = shopInspection.Generation, ancient_generation = ancientInspection.Generation,
             event_generation = eventInspection.Generation,

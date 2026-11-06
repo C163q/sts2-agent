@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Resolve the current card selection before choosing a rest option; inspect_selection shows its choices.",
+    "recovery": "choose_legal_action"
+  }
+}

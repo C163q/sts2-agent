@@ -9,7 +9,7 @@ internal static class TestDispatchChecks
         "configure_test_run", "reset_test_run", "get_test_session", "set_test_combatant_hover",
         "set_test_relic_hover", "set_test_relic_display", "check_test_display_readers", "set_test_capture_failure", "check_test_dispatch", "check_test_run_result_text", "check_test_card_additions", "check_test_permanent_cards",
         "check_test_combat_handoff", "check_test_death_notifications", "check_test_orb_events", "check_test_companions",
-        "check_test_blades", "check_test_orb_visibility", "check_test_capacity", "check_test_combat_resources",
+        "check_test_blades", "check_test_orb_visibility", "check_test_capacity", "check_test_combat_resources", "check_test_relic_counters",
         "check_test_star_reveal", "check_test_inventory", "check_test_resources", "check_test_resource_masks",
         "external_back_test_result", "reopen_test_timeline", "close_test_timeline", "inspect_test_browsing_containers",
         "prepare_test_browsable_result", "prepare_test_browsable_history", "check_test_browsable_content", "check_test_top_bar",

@@ -30,6 +30,7 @@ FIELDS = {
     "potion_used": {"potion"}, "potion_discarded": {"potion"},
     "potion_obtained": {"potion"},
     "relic_obtained": {"relic"}, "relic_removed": {"relic"}, "relic_melted": {"relic"},
+    'relic_counter_changed': {'relic', 'before', 'after'},
     "card_removed": {"card", "pile"}, "card_upgraded": {"card", "pile"},
     "card_downgraded": {"card", "pile"}, "card_enchantment_changed": {"card", "pile"},
     "card_stats_changed": {"card", "pile"}, "card_energy_cost_changed": {"card", "pile"},
@@ -96,9 +97,13 @@ def end_turn_details(state):
                     'card_stats_changed', 'card_energy_cost_changed'} or event.get('pile') == 'deck':
             if not event['card']['name']:
                 raise ValueError('Missing visible permanent card identity.')
-        if kind in {'relic_obtained', 'relic_removed', 'relic_melted'} and (
+        if kind in {'relic_obtained', 'relic_removed', 'relic_melted', 'relic_counter_changed'} and (
                 set(event['relic']) != {'name'} or not event['relic']['name']):
             raise ValueError('Invalid visible relic identity.')
+        if kind == 'relic_counter_changed' and (
+                set(event) != {'sequence', 'type', 'relic', 'before', 'after'}
+                or event['before'] == event['after']):
+            raise ValueError('Invalid visible relic counter change.')
         if kind == 'potion_obtained' and not event['potion']['name']:
             raise ValueError('Missing visible potion identity.')
         if any(event.get(key) is not None and event[key] < 0 for key in ("hp_loss", "blocked")):

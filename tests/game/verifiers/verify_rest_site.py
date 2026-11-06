@@ -132,6 +132,10 @@ async def verify(args):
                 assert {r['id'] for r in details['rest_site']['options']} == {'HEAL', 'SMITH', 'COOK', 'KINDLE', 'LIFT'}, details
                 for name in ['LIFT', 'KINDLE', 'HEAL']:
                     result = await choose(name); done(result)
+                    if name in {'LIFT', 'KINDLE'}:
+                        counter_events = [e for e in result['transition']['events'] if e['type'] == 'relic_counter_changed']
+                        assert [(e['relic']['name'], e['before'], e['after']) for e in counter_events] == (
+                            [('Girya', 0, 1)] if name == 'LIFT' else [('Pumpkin Candle', 5, 10)]), result
                     assert name not in [r['id'] for r in result['rest_site']['options']], result
                 after = await fixture()
                 assert after['lifts'] == 1 and after['kindle'] == before['kindle'] + 5 and after['hp'] == 54, after

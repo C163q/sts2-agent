@@ -1,0 +1,61 @@
+{
+  "scene": "rest_site",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "proceed",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_rest_site"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 36,
+          "name": "Strike"
+        },
+        "pile": "deck",
+        "type": "card_removed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 37,
+          "name": "Strike"
+        },
+        "pile": "deck",
+        "type": "card_removed",
+        "sequence": 2
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 80,
+        "after": 89,
+        "type": "max_hp_changed",
+        "sequence": 3
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 30,
+        "after": 39,
+        "type": "hp_changed",
+        "sequence": 4
+      }
+    ]
+  }
+}

@@ -205,6 +205,13 @@ internal sealed partial class GameAdapter
             async Task Frame() { await ObservationFrame(); Observe(); }
             return Success(request, JsonSerializer.Serialize(await OrbVisibilityChecks.Run(orbPlayer, Frame, Observe)));
         }
+        if (request.Operation == "check_test_relic_counters" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+            && testSettings.Get("STS2_AGENT_TEST_REST_SCENARIO") == "tent" && LocalPlayer is { } counterPlayer)
+        {
+            async Task Frame() { await ObservationFrame(); Observe(); }
+            return Success(request, JsonSerializer.Serialize(await RelicCounterEventChecks.Run(counterPlayer, Frame)));
+        }
         if (request.Operation == "check_test_capacity" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1" && LocalPlayer is { } capacityPlayer)
         {

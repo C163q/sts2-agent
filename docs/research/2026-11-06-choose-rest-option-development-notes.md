@@ -1,6 +1,6 @@
 # choose_rest_option 开发核验依据
 
-> 当前状态：现状审阅完成，三项问题待讨论定稿；35项相关Python与12类不同GUI场景完成，未修改玩法实现。用户决策内容见[审阅记录](2026-11-06-choose-rest-option-review.md)。
+> 当前状态：三项问题已按定稿实现并通过行为验收，最终审阅与合入结果见[实施记录](2026-11-06-rest-option-feedback-implementation.md)。下文保留修复前审阅基线及其验证。用户决策内容见[审阅记录](2026-11-06-choose-rest-option-review.md)。
 
 ## 基线与证据
 
@@ -61,4 +61,4 @@ basic确认本地参数错误可直接继续、地图／牌组覆盖拒绝后可
 
 REST-ACTION-01/02可集中火堆动作的页面／目标拒绝原因，再由可用列表、enabled和执行复用；保留独立读取判断，避免以动作Ready阻塞只读详情。点击前使用既有RejectedBeforeSubmission并注册相应ToolSpec规则；UiChanged之后不得发未交互证明。
 
-REST-ACTION-03应另在共用遗物事件记录中设计，避免只按LIFT/KINDLE的名字推断效果。建议候选类型relic_counter_changed，以与现有relic事件一致的身份及before/after表达，数据取实际显示标签。需核对刷新时机、从无计数到有计数、动作期间隐藏／物品取得移除、重复采样及其他动作的同类变化；本轮尚未确认事件字段或实现授权。
+REST-ACTION-03应另在共用遗物事件记录中设计，避免只按LIFT/KINDLE的名字推断效果。建议候选类型relic_counter_changed，以与现有relic事件一致的身份及before/after表达，数据取实际显示标签。需核对刷新时机、从无计数到有计数、动作期间隐藏／物品取得移除、重复采样及其他动作的同类变化；事件字段及最终实现要求见审阅记录的输出定稿，实施与验证另列于实施记录。

@@ -25,5 +25,6 @@
     <Compile Include="../../../src/Sts2Agent/Events/TurnEventBuffer.cs" Link="TurnEventBuffer.cs" />
     <Compile Include="../../../src/Sts2Agent/Events/ActionEventScope.cs" Link="ActionEventScope.cs" />
     <Compile Include="../../../src/Sts2Agent/Events/VisibleResourceChange.cs" Link="VisibleResourceChange.cs" />
+    <Compile Include="../../../src/Sts2Agent/Events/RelicCounterChanges.cs" Link="RelicCounterChanges.cs" />
   </ItemGroup>
 </Project>

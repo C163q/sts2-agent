@@ -19,24 +19,30 @@ internal static class RestSiteInspection
         && NRun.Instance?.GlobalUi.Overlays.ScreenCount == 0 && !RunUi.CardPreviewsPending()
         && !VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen) && VisibleUi.Shown(room);
 
-    public static string? InspectionUnavailableReason(NRestSiteRoom? room)
+    public static string? InspectionUnavailableReason(NRestSiteRoom? room) => PageUnavailableReason(room, false);
+
+    private static string? PageUnavailableReason(NRestSiteRoom? room, bool choosing)
     {
         if (room != null && GodotObject.IsInstanceValid(room) && Exposed(room)
             && RunManager.Instance.IsSingleplayerOrFakeMultiplayer) return null;
         if (!RunManager.Instance.IsInProgress) return "No local run is available for rest site inspection.";
         if (room == null || !GodotObject.IsInstanceValid(room)) return "No rest site is available on the current screen.";
         if (!RunManager.Instance.IsSingleplayerOrFakeMultiplayer) return "Rest site inspection requires a local single-player run.";
+        string purpose = choosing ? "choosing a rest option" : "inspecting rest options";
         var map = NRun.Instance?.GlobalUi.MapScreen;
         if (VisibleUi.Shown(map)) return map!.IsOpen
-            ? "Close the map with close_map before inspecting rest options."
-            : "Wait for the map to finish closing before inspecting rest options.";
-        if (CardView.Current != null) return "Close the card browsing page with close_card_view before inspecting rest options.";
-        if (CardSelection.Current != null) return "Resolve the current card selection before inspecting rest options; inspect_selection shows its choices.";
-        if (RewardInspection.Current != null) return "Resolve the current reward page before inspecting rest options; inspect_rewards shows its rows.";
-        if (RunUi.CardPreviewsPending()) return "Wait for card previews to finish before inspecting rest options.";
-        if (RunUi.Transitioning()) return "Wait for the screen transition before inspecting rest options.";
+            ? $"Close the map with close_map before {purpose}."
+            : $"Wait for the map to finish closing before {purpose}.";
+        if (CardView.Current != null) return $"Close the card browsing page with close_card_view before {purpose}.";
+        if (CardSelection.Current != null) return $"Resolve the current card selection before {purpose}; inspect_selection shows its choices.";
+        if (RewardInspection.Current != null) return $"Resolve the current reward page before {purpose}; inspect_rewards shows its rows.";
+        if (RunUi.CardPreviewsPending()) return $"Wait for card previews to finish before {purpose}.";
+        if (RunUi.Transitioning()) return $"Wait for the screen transition before {purpose}.";
         return "The rest site is covered by a dialog or another screen.";
     }
+
+    public static string? ActionUnavailableReason(NRestSiteRoom? room) => PageUnavailableReason(room, true)
+        ?? (!Ready(room!) ? "Wait for the rest site activity, buttons, and animations to finish before choosing another option." : null);
 
     public static NRestSiteButton[] Buttons(NRestSiteRoom room) => room.GetNode<Control>("%ChoicesContainer")
         .GetChildren().OfType<NRestSiteButton>().Where(b => !b.IsQueuedForDeletion() && b.IsNodeReady()).ToArray();
@@ -44,9 +50,18 @@ internal static class RestSiteInspection
     public static bool Supported(NRestSiteButton button) => button.Option.OptionId is
         "HEAL" or "SMITH" or "DIG" or "LIFT" or "KINDLE" or "COOK" or "CLONE" or "HATCH";
 
-    public static bool Clickable(NRestSiteButton button) => Supported(button) && button.IsEnabled && button.Option.IsEnabled
-        && PrivateFields.Read(button, "_isUnclickable") is false && VisibleUi.OnScreen(button)
-        && button.Modulate.A >= 0.99f && HoverAccess.CanFocus(button);
+    public static string? OptionUnavailableReason(NRestSiteButton button)
+    {
+        if (!Supported(button)) return "This rest option is not supported by choose_rest_option.";
+        if (!button.Option.IsEnabled || PrivateFields.Read(button, "_isUnclickable") is not false)
+            return "This rest option is disabled. Use inspect_rest_site to read its requirements.";
+        if (!button.IsEnabled) return "Wait for this rest option to become enabled after the current activity.";
+        if (!VisibleUi.OnScreen(button) || button.Modulate.A < 0.99f || !HoverAccess.CanFocus(button))
+            return "This rest option is not currently visible and interactive. Wait for its button to finish appearing.";
+        return null;
+    }
+
+    public static bool Clickable(NRestSiteButton button) => OptionUnavailableReason(button) == null;
 
     public static bool Ready(NRestSiteRoom room)
     {
@@ -78,7 +93,7 @@ internal static class RestSiteInspection
         if (Current is not { } room) return null;
         if (!Exposed(room)) return new { status = "covered", prompt = (string?)null, description = (string?)null,
             options = (object?)null, proceed = (object?)null };
-        bool ready = Ready(room);
+        bool ready = ActionUnavailableReason(room) == null;
         var visible = Buttons(room).Where(b => VisibleUi.Displayed(b)
             && VisibleUi.DisplayedText(b, "%Label") is { Length: > 0 }).ToArray();
         List<string> missing = [];

@@ -37,6 +37,7 @@ public static class BridgeMod
         CombatJournalScope.Initialize();
         ShopTransactions.Initialize();
         PermanentCardCapture.Initialize();
+        RelicCounterJournal.Initialize();
         OrbCapture.Initialize();
         CardAdditionJournal.Initialize();
         CardMovementJournal.Initialize();

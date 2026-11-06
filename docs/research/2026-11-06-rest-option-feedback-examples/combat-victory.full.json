@@ -1,0 +1,111 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_rewards"
+  ],
+  "transition": {
+    "stop_reason": "combat_won",
+    "complete": true,
+    "events": [
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 1,
+        "after": 0,
+        "type": "energy_changed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 2,
+          "name": "Strike"
+        },
+        "autoplay": false,
+        "source": null,
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "card_played",
+        "sequence": 2
+      },
+      {
+        "hp_loss": 2,
+        "blocked": 0,
+        "source": {
+          "kind": "card",
+          "name": "Strike"
+        },
+        "actor": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "damage",
+        "sequence": 3
+      },
+      {
+        "source": {
+          "kind": "card",
+          "name": "Strike"
+        },
+        "target": {
+          "id": 3,
+          "kind": "enemy",
+          "name": "Twig Slime (S)"
+        },
+        "type": "died",
+        "sequence": 4
+      },
+      {
+        "relic": {
+          "name": "Pumpkin Candle"
+        },
+        "before": 5,
+        "after": 4,
+        "type": "relic_counter_changed",
+        "sequence": 5
+      },
+      {
+        "before": 39,
+        "after": 45,
+        "source": null,
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "type": "hp_changed",
+        "sequence": 6
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 4,
+        "after": 3,
+        "type": "max_energy_changed",
+        "sequence": 7
+      }
+    ]
+  }
+}

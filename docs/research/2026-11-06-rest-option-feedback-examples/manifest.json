@@ -1,0 +1,332 @@
+[
+  {
+    "file": "no_rest.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "HEAL"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/no_rest/audit/evidence.json",
+    "row_index": 2,
+    "sha256": "a7c96ce73a6188ca4edda756168002382ac87cb4166385aadfb85862271f5f1f"
+  },
+  {
+    "file": "no_rest_direct_continuation.full.json",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/no_rest/audit/evidence.json",
+    "row_index": 3,
+    "sha256": "8b4acc9df56505809510e04fc9cdafc7e7f19184a62d37b26ed87bf647ab3400"
+  },
+  {
+    "file": "no_initial_permission.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "HEAL"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/basic/audit/evidence.json",
+    "row_index": 0,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "local_invalid.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": ""
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/basic/audit/evidence.json",
+    "row_index": 2,
+    "sha256": "d2a521200752af984ad4748663220ede3a4c25b4e13e7b8ef2ba4cac7d4d8dfa"
+  },
+  {
+    "file": "map_covered.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "HEAL"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/basic/audit/evidence.json",
+    "row_index": 6,
+    "sha256": "44cb77bb837b43b174e030805144e43a46e3eff362955f3c11fab9b07473560d"
+  },
+  {
+    "file": "deck_covered.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "HEAL"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/basic/audit/evidence.json",
+    "row_index": 9,
+    "sha256": "8bae1320ec500c239a632c82cb747832eb0f07876ae7ea1de301b5065e15a7c2"
+  },
+  {
+    "file": "wrong_case.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "heal"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/basic/audit/evidence.json",
+    "row_index": 11,
+    "sha256": "a762941d4aea98d90aa186eb675ae97f15c76de16014e3bfed2f08a44863a9af"
+  },
+  {
+    "file": "unknown_option.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "UNKNOWN"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/basic/audit/evidence.json",
+    "row_index": 13,
+    "sha256": "a762941d4aea98d90aa186eb675ae97f15c76de16014e3bfed2f08a44863a9af"
+  },
+  {
+    "file": "heal.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "HEAL"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/basic/audit/evidence.json",
+    "row_index": 15,
+    "sha256": "350bd7b144896936835f2d6bd15b36bcea8d339b856177f6f50f688ae7ac1b02"
+  },
+  {
+    "file": "already_consumed.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "HEAL"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/basic/audit/evidence.json",
+    "row_index": 16,
+    "sha256": "a762941d4aea98d90aa186eb675ae97f15c76de16014e3bfed2f08a44863a9af"
+  },
+  {
+    "file": "disabled_smith.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "SMITH"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/disabled/audit/evidence.json",
+    "row_index": 2,
+    "sha256": "6d787ab6a499ea88a6bbd3b001dc416b500cd3d0bad3621edb27e0261138607b"
+  },
+  {
+    "file": "disabled_cook.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "COOK"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/disabled/audit/evidence.json",
+    "row_index": 4,
+    "sha256": "6d787ab6a499ea88a6bbd3b001dc416b500cd3d0bad3621edb27e0261138607b"
+  },
+  {
+    "file": "heal_default.default.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "default",
+      "option_id": "HEAL"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/disabled/audit/evidence.json",
+    "row_index": 6,
+    "sha256": "350bd7b144896936835f2d6bd15b36bcea8d339b856177f6f50f688ae7ac1b02"
+  },
+  {
+    "file": "smith.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "SMITH"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/selection/audit/evidence.json",
+    "row_index": 2,
+    "sha256": "f93d76894324c797426efcaf9bb83fe7a5fb99ef031a8d10241fe4981ea71f0f"
+  },
+  {
+    "file": "selection_covered.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "HEAL"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/selection/audit/evidence.json",
+    "row_index": 3,
+    "sha256": "d2afcd77bffadbd66ffbe5a3926f7e763f804c93fdc40f0e5073220a42143520"
+  },
+  {
+    "file": "heal_reward.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "HEAL"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/rewards/audit/evidence.json",
+    "row_index": 2,
+    "sha256": "51a58ed0bb542db31de7f5c6174ac015548a0c6f577a2271a1d94160a105a8e1"
+  },
+  {
+    "file": "reward_covered.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "SMITH"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/rewards/audit/evidence.json",
+    "row_index": 3,
+    "sha256": "f61a3bb9ffbf319ad3ee97a73dd8aa07736c4003148c95c7af175d21a446c26f"
+  },
+  {
+    "file": "smith-confirm.full.json",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/native_smith/flow/evidence.json",
+    "row_index": 22,
+    "sha256": "5d046b4cd9105da5eb25eaac8407086fbd879f234d08dc166ed25af7755c1a7e"
+  },
+  {
+    "file": "multi-confirm.full.json",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/native_multi/flow/evidence.json",
+    "row_index": 26,
+    "sha256": "af4335e3907fdc1c4e588f82b82b8996b6f9a29c66283e904402c90b8543cf64"
+  },
+  {
+    "file": "cook.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "COOK"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/native_cook/flow/evidence.json",
+    "row_index": 5,
+    "sha256": "f9c4650a22ade6557148f1c0b0cd0d8bb648e3a17bff438f1da1e1fdb4adb62c"
+  },
+  {
+    "file": "cook-confirm.full.json",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/native_cook/flow/evidence.json",
+    "row_index": 25,
+    "sha256": "a09cb208afd27ddb5be14ac1499f76ce8cabbdb051b342a2203e9840585bf8e0"
+  },
+  {
+    "file": "lift.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "LIFT"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/native_tent/flow/evidence.json",
+    "row_index": 5,
+    "sha256": "3e9f36902476cb3db1366eaae4daaa9018cea064d2f5b7bdce6f41b4a68b054a"
+  },
+  {
+    "file": "kindle.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "KINDLE"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/native_tent/flow/evidence.json",
+    "row_index": 7,
+    "sha256": "839649c709d17fdce5233598f72818504ec92b14df735e755899288e2e6237aa"
+  },
+  {
+    "file": "dig.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "DIG"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/native_dig/flow/evidence.json",
+    "row_index": 5,
+    "sha256": "bb856723acf865a733fa4955a311b2b17874f391d9fbdd2dd617dde77afdc7d7"
+  },
+  {
+    "file": "dig-nested.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "DIG"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/native_dig_nested/flow/evidence.json",
+    "row_index": 5,
+    "sha256": "730234ac0f23e03300540b134316f5dfb07822af8f29e0715fdcc09005904ec7"
+  },
+  {
+    "file": "dig-transform.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "DIG"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/native_dig_choice/flow/evidence.json",
+    "row_index": 5,
+    "sha256": "4318d8aa26f6b6dfa9b64fa48dc6dc9bcb29b8c5c6b9881b704bd1c1d1b1e401"
+  },
+  {
+    "file": "transform-confirm.full.json",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "confirm"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/gui/native_dig_choice/flow/evidence.json",
+    "row_index": 12,
+    "sha256": "11fb009cc9875d147f2274efbce734c96245fb746d9d38948844d227387fb371"
+  },
+  {
+    "file": "combat-victory.full.json",
+    "tool": "play_card",
+    "arguments": {
+      "preset": "full",
+      "card_id": 2,
+      "target_id": 3
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/combat/combat_counter/combat/evidence.json",
+    "row_index": 44,
+    "sha256": "7935558e1d6de71bcbe21bb2855bbfbb0f9fe86f23217b5ae99d7a72a39ce125"
+  },
+  {
+    "file": "no_hover-rejected.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "HEAL"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/regression/target_boundaries/check/evidence.json",
+    "row_index": 4,
+    "sha256": "58e6be339feb5dea2ef0b7d813a12cf601f0abac8d38276742e305ad8f8f98a3"
+  },
+  {
+    "file": "offscreen-rejected.full.json",
+    "tool": "choose_rest_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "HEAL"
+    },
+    "source": ".tmp/2026-11-06-rest-option-feedback/regression/target_boundaries/check/evidence.json",
+    "row_index": 10,
+    "sha256": "58e6be339feb5dea2ef0b7d813a12cf601f0abac8d38276742e305ad8f8f98a3"
+  }
+]

@@ -37,6 +37,7 @@ internal sealed partial class GameAdapter
         using var events = new ActionEventScope();
         using var resources = LocalPlayer is { } player ? new RunResourceJournal(player, events.Buffer) : null;
         using var inventory = LocalPlayer is { } owner ? new RunInventoryJournal(owner, events.Buffer, observation.CardId) : null;
+        using var relicCounters = LocalPlayer is { } relicOwner ? new RelicCounterJournal(relicOwner, events.Buffer) : null;
         using var potions = LocalPlayer is { } potionOwner ? new PotionJournal(potionOwner) : null;
         using var enteringCombat = LocalPlayer is { } combatPlayer
             ? CombatJournalScope.Begin(combatPlayer, observation) : null;

@@ -157,8 +157,7 @@ internal sealed partial class GameAdapter
         {
             if (TreasureInspection.CanLoot(treasure)) actions.Add("loot_treasure");
         }
-        if (RestSiteInspection.Current is { } rest && RestSiteInspection.Ready(rest)
-            && RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
+        if (RestSiteInspection.Current is { } rest && RestSiteInspection.ActionUnavailableReason(rest) == null)
         {
             if (RestSiteInspection.Buttons(rest).Any(RestSiteInspection.Clickable)) actions.Add("choose_rest_option");
         }
