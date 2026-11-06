@@ -1,0 +1,28 @@
+[
+  {
+    "file": "event.full.json",
+    "sha256": "91692eb09dac785019df61bd6c4013d602ed0c6b31441acfe4fa6e1406db2ecf",
+    "kind": "historical_domain_data_replayed_through_current_decoder",
+    "source": ".tmp/2026-10-31-divination/event-basic.json",
+    "row_index": 1,
+    "screen_source": "nearest preceding response with screen",
+    "code_baseline": "b1afbaa",
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full"
+    }
+  },
+  {
+    "file": "divination.full.json",
+    "sha256": "e48b3e496474f3d63a41c79d3cc2dd2c67558e768f7f4ef5eca21965b8034a06",
+    "kind": "historical_domain_data_replayed_through_current_decoder",
+    "source": ".tmp/2026-10-31-divination/full-run1.json",
+    "row_index": 2,
+    "screen_source": "nearest preceding response with screen",
+    "code_baseline": "b1afbaa",
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full"
+    }
+  }
+]

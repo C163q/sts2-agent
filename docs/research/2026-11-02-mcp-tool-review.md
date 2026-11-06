@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销33项。buy_item已实现、验收及合入main，独立审阅留1项非阻塞建议；剩余11项尚未核销，无阻塞。
+> 当前状态：工具核验进行中，共44项，已核销33项。inspect_event处于设计讨论，含占卜文字观察；剩余11项尚未核销，无阻塞。buy_item独立审阅的非阻塞建议见其实施记录。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -88,7 +88,7 @@
 
 ### 事件（5 项）
 
-- [ ] `inspect_event`：查看事件内容，含占卜棋盘及图片。
+- [ ] `inspect_event`：阶段：设计讨论；[审阅与占卜文字方案](2026-11-07-inspect-event-review.md)、[开发核验](2026-11-07-inspect-event-development-notes.md)及[两份当前结构 full JSON](2026-11-07-inspect-event-examples/README.md)。源码／资源与受控输入已核对，三项问题待处理；碎片词表、图片策略及summary尚未定稿，未修改工具行为。
 - [ ] `choose_event_option`：选择事件选项。
 - [ ] `set_divination_tool`：切换占卜揭示范围。
 - [ ] `divine`：执行一次占卜揭示。
