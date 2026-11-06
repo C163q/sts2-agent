@@ -81,9 +81,10 @@ class DivinationClient:
 
 
 class DivinationSessionTests(unittest.IsolatedAsyncioTestCase):
-    async def test_default_config_returns_image_and_reuses_successful_action_observation(self):
+    async def test_text_default_and_optional_image_reuse_successful_action_observation(self):
         client = DivinationClient(); tools = GameTools(client)
-        observed = tool_result(await tools.get_observation())
+        self.assertEqual([c.type for c in tool_result(await tools.get_observation()).content], ['text'])
+        observed = tool_result(await tools.inspect_event({'include_image': True}))
         self.assertEqual([c.type for c in observed.content], ['text', 'image'])
         self.assertEqual(observed.content[1].mimeType, 'image/png')
         self.assertEqual(base64.b64decode(observed.content[1].data), base64.b64decode(png_payload()['png_base64']))
@@ -95,7 +96,7 @@ class DivinationSessionTests(unittest.IsolatedAsyncioTestCase):
         result = await tools.divine({'x': 0, 'y': 10})
         self.assertNotIn('divination', result)
         self.assertEqual([c.type for c in tool_result(result).content], ['text'])
-        self.assertEqual(client.calls[-1], ('divine', 'sphere-2', {'x': 0, 'y': 10}))
+        self.assertEqual(client.calls[-1], ('divine', 'sphere-3', {'x': 0, 'y': 10}))
         self.assertEqual((await tools.inspect_event())['divination']['remaining'], 2)
 
     async def test_strict_arguments_and_inspection_supports_action(self):
@@ -118,7 +119,7 @@ class DivinationSessionTests(unittest.IsolatedAsyncioTestCase):
                        lambda r: replace_pixels(r, zlib.compress(b'\5\xff\0\0\xff'))):
             client = DivinationClient(); tools = GameTools(client)
             await tools.get_observation(); mutate(client.raw)
-            result = await tools.get_observation()
+            result = await tools.inspect_event({'include_image': True})
             self.assertIn('error', result)
             self.assertIsNone(tools.snapshot_id)
             self.assertEqual((await tools.divine({'x': 5, 'y': 5}))['error']['code'], 'observation_required')
@@ -137,7 +138,7 @@ class DivinationSessionTests(unittest.IsolatedAsyncioTestCase):
             client = DivinationClient(); tools = GameTools(client)
             await tools.get_observation()
             client.raw['divination_image']['png_base64'] = 'broken'
-            result = await tools.inspect_event() if operation == 'inspect_event' else await tools.divine({'x': 5, 'y': 5})
+            result = await tools.inspect_event({'include_image': True}) if operation == 'inspect_event' else await tools.divine({'x': 5, 'y': 5})
             if operation == 'inspect_event':
                 self.assertIn('error', result)
                 self.assertIsNone(tools.snapshot_id)
@@ -169,10 +170,12 @@ class DivinationSessionTests(unittest.IsolatedAsyncioTestCase):
                     await session.initialize()
                     self.assertNotIn('capture_screenshot', {t.name for t in (await session.list_tools()).tools})
                     response = await session.call_tool('get_observation', {})
+                    self.assertEqual([c.type for c in response.content], ['text'])
+                    response = await session.call_tool('inspect_event', {'include_image': True})
                     self.assertEqual([c.type for c in response.content], ['text', 'image'])
                     response = await session.call_tool('divine', {'x': 3, 'y': 6})
                     self.assertNotIn('divination', response.structuredContent)
                     self.assertEqual([c.type for c in response.content], ['text'])
                     response = await session.call_tool('inspect_event', {})
                     self.assertEqual(response.structuredContent['divination']['remaining'], 2)
-                    self.assertEqual([c.type for c in response.content], ['text', 'image'])
+                    self.assertEqual([c.type for c in response.content], ['text'])

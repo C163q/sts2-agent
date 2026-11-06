@@ -1,0 +1,108 @@
+{
+  "scene": "event",
+  "divination": {
+    "status": "visible",
+    "phase": "finished",
+    "dialogue": "The sphere must rest now...",
+    "grid": {
+      "columns": 11,
+      "rows": 11,
+      "cell_rows": [
+        "...........",
+        ".......ss..",
+        ".#########.",
+        ".Ss########",
+        ".Ss########",
+        ".S.########",
+        "#SS.#######",
+        "#.SS#######",
+        ".SSS######.",
+        "..#######..",
+        "...#####..."
+      ],
+      "visible_fragments": [
+        {
+          "x": 7,
+          "y": 1,
+          "appearance": "card.rare.upper_left"
+        },
+        {
+          "x": 8,
+          "y": 1,
+          "appearance": "card.rare.upper_right"
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "appearance": "potion.stopper"
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "appearance": "card.curse.upper_left"
+        },
+        {
+          "x": 1,
+          "y": 4,
+          "appearance": "potion.body"
+        },
+        {
+          "x": 2,
+          "y": 4,
+          "appearance": "card.lower_left"
+        },
+        {
+          "x": 1,
+          "y": 5,
+          "appearance": "potion.base"
+        },
+        {
+          "x": 1,
+          "y": 6,
+          "appearance": "gold.pile_left"
+        },
+        {
+          "x": 2,
+          "y": 6,
+          "appearance": "gold.pile_right"
+        },
+        {
+          "x": 2,
+          "y": 7,
+          "appearance": "card.common.upper_left"
+        },
+        {
+          "x": 3,
+          "y": 7,
+          "appearance": "card.common.upper_right"
+        },
+        {
+          "x": 1,
+          "y": 8,
+          "appearance": "gold.coin"
+        },
+        {
+          "x": 2,
+          "y": 8,
+          "appearance": "card.lower_left"
+        },
+        {
+          "x": 3,
+          "y": 8,
+          "appearance": "card.lower_right"
+        }
+      ]
+    },
+    "proceed": {
+      "text": "Proceed",
+      "enabled": true
+    }
+  },
+  "screen": {
+    "status": "visible",
+    "view": "divination"
+  },
+  "notes": {
+    "divination": "11x11 cells, (0,0) top-left; x right, y down. # covered, . empty, s partial, S fully revealed icon. Choose a # cell while playing. Known icon shapes (width x height): potion 1x3, round potion 2x2, card 2x2, box 4x4, coin 1x1, coin pile 2x1."
+  }
+}

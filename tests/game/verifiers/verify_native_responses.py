@@ -85,7 +85,7 @@ async def verify(args):
                     if 'close_map' in state['available_actions']: await call('close_map')
             if args.scenario == 'divination':
                 assert state['divination']['status'] == 'visible', state
-                rows = state['divination']['grid']['covered_rows']
+                rows = state['divination']['grid']['cell_rows']
                 y = next(index for index, row in enumerate(rows) if '#' in row); x = rows[y].index('#')
                 default = await native('get_state'); no_image = await native('get_state', response_options={'include_divination_image': False})
                 assert default['ok'] and no_image['ok']
@@ -93,7 +93,8 @@ async def verify(args):
                 assert default['state']['snapshot_id'] == no_image['state']['snapshot_id']
                 try:
                     assert (await native('set_test_capture_failure', arguments={'enabled': True}))['ok']
-                    await call('get_observation', error='screenshot_unavailable')
+                    await call('inspect_event', {'include_image': True}, error='screenshot_unavailable')
+                    await call('get_observation')
                     await call('get_observation', {'preset': 'actions_only'})
                     await call('get_observation', {'preset': 'top_bar'})
                     chosen = 'small' if state['divination']['tool'] == 'big' else 'big'

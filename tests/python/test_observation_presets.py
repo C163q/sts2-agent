@@ -84,14 +84,14 @@ class ObservationPresetTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result['error']['code'], 'transport_error')
         self.assertIsNone(tools.snapshot_id)
 
-    async def test_compact_divination_has_no_image_and_full_mode_keeps_image(self):
+    async def test_observation_divination_is_text_only_in_all_modes(self):
         tools = GameTools(DivinationClient())
         result = tool_result(await tools.get_observation({'preset': 'actions_only'}))
         self.assertEqual([c.type for c in result.content], ['text'])
         self.assertEqual(result.structuredContent, {'scene': 'event', 'screen': {'status': 'visible', 'view': 'divination'},
                                                    'available_actions': ['set_divination_tool', 'divine']})
         full = tool_result(await tools.get_observation())
-        self.assertEqual([c.type for c in full.content], ['text', 'image'])
+        self.assertEqual([c.type for c in full.content], ['text'])
 
 
 class AvailableToolOutputTests(unittest.TestCase):

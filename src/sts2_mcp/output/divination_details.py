@@ -1,10 +1,15 @@
 from sts2_mcp.output.value_shapes import project, TEXT, TIP
-from sts2_mcp.output.contracts.rooms import DIVINATION
+from sts2_mcp.output.contracts.rooms import DIVINATION, DIVINATION_TEXT_GRID
 import base64
+import json
 import struct
 import zlib
+from importlib.resources import files
 
 from sts2_mcp.output.media import ImagePayload, png_data as _png_data
+
+_PATTERNS = json.loads(files('sts2_mcp').joinpath('data/divination_patterns.json').read_text())['patterns']
+APPEARANCES = {'unrecognized', 'card.upper_left', 'card.upper_right'} | {part for pattern in _PATTERNS for row in pattern['parts'] for part in row}
 
 
 TOOL_SCHEMA = {'type': 'object', 'properties': {'tool': {
@@ -14,7 +19,7 @@ TOOL_SCHEMA = {'type': 'object', 'properties': {'tool': {
                'required': ['tool'], 'additionalProperties': False}
 DIVINE_SCHEMA = {'type': 'object', 'properties': {
     'x': {'type': 'integer', 'minimum': 0, 'maximum': 10,
-          'description': 'Zero-based column, increasing right from the top-left (0,0). Choose a # cell in divination.grid.covered_rows.'},
+          'description': 'Zero-based column, increasing right from the top-left (0,0). Choose a # cell in divination.grid.cell_rows.'},
     'y': {'type': 'integer', 'minimum': 0, 'maximum': 10,
           'description': 'Zero-based row, increasing down from the top-left (0,0).'},
 },
@@ -33,8 +38,10 @@ def divination_arguments(operation, arguments):
     return dict(arguments)
 
 
-def divination_details(value):
-    result = project(value, DIVINATION)
+def divination_details(value, *, require_text=False):
+    text = require_text or isinstance(value, dict) and 'cell_rows' in (value.get('grid') or {})
+    shape = {**DIVINATION, 'grid': (DIVINATION_TEXT_GRID,)} if text else DIVINATION
+    result = project(value, shape)
     if set(result) != set(DIVINATION) or result['status'] not in {'visible', 'covered'}:
         raise ValueError('Invalid divination state.')
     if result['status'] == 'covered':
@@ -44,11 +51,23 @@ def divination_details(value):
             or result['remaining'] is not None and not 0 <= result['remaining'] <= 6:
         raise ValueError('Invalid divination phase or tool.')
     grid = result['grid']
-    if (not grid or set(grid) != {'columns', 'rows', 'covered_rows', 'image'}
-            or grid['columns'] != 11 or grid['rows'] != 11 or len(grid['covered_rows']) != 11
-            or any(len(row) != 11 or set(row) - {'#', '.'} for row in grid['covered_rows'])
+    row_key = 'cell_rows' if text else 'covered_rows'
+    if (not grid or set(grid) != set(DIVINATION_TEXT_GRID if text else DIVINATION['grid'][0])
+            or grid['columns'] != 11 or grid['rows'] != 11 or len(grid[row_key]) != 11
+            or any(len(row) != 11 or set(row) - ({'#', '.', 's', 'S'} if text else {'#', '.'}) for row in grid[row_key])
             or set(grid['image']) != {'width', 'height'} or min(grid['image'].values()) <= 0):
         raise ValueError('Invalid divination grid.')
+    if text:
+        seen = set()
+        for fragment in grid['visible_fragments']:
+            x, y = fragment.get('x'), fragment.get('y')
+            if (set(fragment) != {'x', 'y', 'appearance'} or not 0 <= x < 11 or not 0 <= y < 11
+                    or (x, y) in seen or grid[row_key][y][x] not in {'s', 'S'}
+                    or fragment['appearance'] not in APPEARANCES):
+                raise ValueError('Invalid visible divination fragment.')
+            seen.add((x, y))
+        if seen != {(x, y) for y, row in enumerate(grid[row_key]) for x, cell in enumerate(row) if cell in 'sS'}:
+            raise ValueError('Missing visible divination fragments.')
     if result['tools'] is not None and (len(result['tools']) != 2
             or {t.get('id') for t in result['tools']} != {'big', 'small'}
             or any(set(t) != {'id', 'text', 'enabled'} for t in result['tools'])):

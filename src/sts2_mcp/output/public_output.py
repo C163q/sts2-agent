@@ -68,7 +68,12 @@ def assemble_details(details, *, operation=None):
             or result.get('screen', {}).get('view') == 'confirmation' and result.get('confirmation') is None:
         notes['interaction'] = 'A native dialog or unsupported screen requires manual input.'
     if (result.get('divination') or {}).get('status') == 'visible':
-        notes['divination'] = 'Board image: 11x11 cells, (0,0) top-left; x right, y down. # covered, . revealed. Choose a # cell while playing.'
+        notes['divination'] = ('11x11 cells, (0,0) top-left; x right, y down. # covered, . empty, s partial, S fully revealed icon. '
+            'Choose a # cell while playing. Known icon shapes (width x height): potion 1x3, round potion 2x2, '
+            'card 2x2, box 4x4, coin 1x1, coin pile 2x1.')
+        if 'cell_rows' not in result['divination']['grid']:
+            notes['divination'] = ('Legacy grid: 11x11, (0,0) top-left; x right, y down. '
+                '# covered, . revealed with unknown contents. Update the Mod for text fragments.')
     selection = result.get("selection") or {}
     selection_view = result.pop("selection_view", None) or selection.get("status")
     if selection_view == "visible" and selection.get("can_view_battlefield"):

@@ -81,7 +81,7 @@ async def verify(args):
 
             data = await call('get_observation')
             assert data['scene'] == 'event' and data['event']['status'] == 'visible', data
-            assert data['event']['description'] and data['event']['options'], data
+            assert 'description' not in data['event'] and data['event']['options'], data
             assert 'choose_event_option' in data['available_actions'], data
             before = await check()
             text_checks = await asyncio.to_thread(raw.call, 'check_test_event_english')
@@ -215,7 +215,7 @@ async def verify(args):
                 await finish_event(data)
             elif scenario == 'trial_story':
                 data = await choose(data, 0)
-                await call('inspect_event'); assert data['event']['description'], data
+                inspected = await call('inspect_event'); assert inspected['event']['description'], inspected
                 data = await choose(data, 0)
                 if data.get('selection'): data = await finish_selection(data)
                 if data['scene'] == 'rewards': data = await observe_after_action(call, await call('proceed'))

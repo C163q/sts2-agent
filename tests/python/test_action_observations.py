@@ -132,12 +132,12 @@ class ActionObservationTests(unittest.IsolatedAsyncioTestCase):
         from tests.python.test_divination import DivinationClient
         tools = GameTools(DivinationClient())
         observed = tool_result(await tools.get_observation())
-        self.assertEqual([c.type for c in observed.content], ['text', 'image'])
+        self.assertEqual([c.type for c in observed.content], ['text'])
         receipt = tool_result(await tools.divine({'x': 0, 'y': 0}))
         self.assertEqual(set(receipt.structuredContent), {'scene', 'screen', 'available_actions', 'transition'})
         self.assertEqual([c.type for c in receipt.content], ['text'])
         self.assertIsNotNone(tools.snapshot_id)
-        inspected = tool_result(await tools.inspect_event())
+        inspected = tool_result(await tools.inspect_event({'include_image': True}))
         self.assertEqual([c.type for c in inspected.content], ['text', 'image'])
 
     async def test_all_six_actions_advance_the_token_without_extra_observation(self):

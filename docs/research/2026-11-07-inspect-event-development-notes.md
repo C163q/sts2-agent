@@ -1,6 +1,6 @@
 # inspect_event 开发核验依据
 
-本记录对应[审阅与占卜文字方案](2026-11-07-inspect-event-review.md)，用于定位源码与后续验证。当前为源码、资源及受控输入核验，未完成新的 GUI 审计。
+本记录对应[审阅与占卜文字方案](2026-11-07-inspect-event-review.md)，用于定位源码与后续验证。本记录保留b1afbaa实现前的源码、资源与受控输入核验；修复、后续GUI及最终范围见[实施记录](2026-11-07-event-inspection-text-implementation.md)。
 
 ## 基线与证据
 

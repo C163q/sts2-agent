@@ -1,0 +1,98 @@
+[
+  {
+    "name": "no_event",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_event_inspection.py",
+        "args": [
+          "--scenario",
+          "no_event"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "basic",
+    "scenarios": {
+      "event": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_event_inspection.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "display",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_event_inspection.py",
+        "args": [
+          "--scenario",
+          "display"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "locked",
+    "scenarios": {
+      "event": "locked"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_event_inspection.py",
+        "args": [
+          "--scenario",
+          "locked"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "glyphs",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_event_inspection.py",
+        "args": [
+          "--scenario",
+          "glyphs"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "play",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_event_inspection.py",
+        "args": [
+          "--scenario",
+          "play"
+        ]
+      }
+    ]
+  }
+]

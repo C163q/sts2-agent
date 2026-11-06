@@ -230,8 +230,8 @@ internal sealed partial class GameAdapter
         if (ShopInspection.InspectionUnavailableReason(ShopInspection.Current) == null) actions.Add("inspect_shop");
         if (AncientInspection.Current is { } ancientPage && AncientInspection.Exposed(ancientPage)
             && RunContext.Singleplayer) actions.Add("inspect_ancient");
-        if (DivinationInspection.Current is { } board ? DivinationInspection.Ready(board)
-            : EventInspection.Current is { } eventPage && EventInspection.Exposed(eventPage) && RunContext.Singleplayer)
+        if (DivinationInspection.Current is { } board ? DivinationInspection.InspectionUnavailableReason(board) == null
+            : EventInspection.InspectionUnavailableReason(EventInspection.Current) == null)
             actions.Add("inspect_event");
         return actions.Distinct().ToList();
     }

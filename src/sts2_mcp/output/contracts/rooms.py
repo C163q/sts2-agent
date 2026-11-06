@@ -28,6 +28,9 @@ DIVINATION = {'status': str, 'phase': TEXT, 'remaining': NUMBER, 'tool': TEXT,
               'grid': nullable({'columns': int, 'rows': int, 'covered_rows': [str],
                                 'image': {'width': int, 'height': int}}),
               'proceed': nullable({'text': str, 'enabled': bool})}
+DIVINATION_TEXT_GRID = {'columns': int, 'rows': int, 'cell_rows': [str],
+                       'visible_fragments': [{'x': int, 'y': int, 'appearance': str}],
+                       'image': {'width': int, 'height': int}}
 ANCIENT = {'status': str, 'name': TEXT, 'epithet': TEXT, 'description': TEXT, 'dialogue': nullable([{'speaker': str, 'text': str}]),
            'options': nullable([ANCIENT_OPTION]), 'continue': nullable({'text': TEXT, 'enabled': bool}),
            'proceed': nullable({'text': str, 'enabled': bool})}

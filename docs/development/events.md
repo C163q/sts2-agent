@@ -10,8 +10,8 @@
 
 | 工具 | 行为 |
 | --- | --- |
-| `get_observation()` | 返回当前事件正文、选项、启用状态和原生致死警告 |
-| `inspect_event()` | 增加当前可悬停选项的 `hover_tips`，不推进页面、选项或 RNG |
+| `get_observation()` | 返回当前事件名称、选项效果、启用状态及原生致死警告 |
+| `inspect_event(preset?, include_image?)` | full/default 提供当前事件正文及可悬停选项的 `hover_tips`；summary 使用共用静态摘要；include_image 用于占卜 |
 | `choose_event_option({"option_id":0})` | 点击一个已观察到且启用的原生选项 |
 | `respond_to_confirmation({"option":"cancel"})` | 点击当前 Trial 原生确认框的取消；`confirm` 确认放弃本局 |
 | `proceed()` | 点击事件完成后的原生前进按钮，通常打开地图 |
@@ -20,7 +20,7 @@
 
 ## 基础观察与详情
 
-以下为深渊浴场初始页面的示例片段，省略通用顶栏和其他场景的空字段：
+以下为 inspect_event.full 的深渊浴场初始页面主体示例片段，省略通用顶栏和其他场景的空字段：
 
 ```json
 {
@@ -62,7 +62,7 @@
 
 事件英文格式化保留变量及嵌套正文的真实来源，按引用追踪赋值与克隆，在分离数据上读取；不修改原有语言、变量、选项或随机状态。升级牌名保留当前已公开的 `+`/`+N`。
 
-get_observation 的 summary 省略页面叙事 event.description 和选项中值为 false 的 lethal_warning；选项效果 description、true 警告、锁定状态及继续按钮保留。default/full 与 inspect_event 仍返回正文及完整警告字段。完整规则见[观察预设](observation.md#mcp-输出预设)。
+get_observation 的 full/default/summary 均使用 inspect_event.summary 的静态事件主体：省略页面叙事 event.description、hover_tips 和值为 false 的 lethal_warning，保留选项效果 description、true 警告、锁定状态及继续按钮。inspect_event.full/default 提供已展示正文与可悬停解释；default 另执行共用空值过滤。读取拒绝提供具体原因，已有许可的明确读取拒绝保留合法后续操作；事件选项的静态列表不按视口坐标截断。完整规则见[观察预设](observation.md#mcp-输出预设)。
 
 ## 后续交互与结算
 
@@ -88,11 +88,11 @@ get_observation 的 summary 省略页面叙事 event.description 和选项中值
 
 ## 专属界面与限制
 
-假商人沿用[商店接口](shop.md)，不额外暴露隐藏身份。[占卜小游戏](divination.md)支持棋盘图像、大小工具、揭开与原生奖励结算。
+假商人沿用[商店接口](shop.md)，不额外暴露隐藏身份。[占卜小游戏](divination.md)支持文字棋盘、可选图片、大小工具、揭开与原生奖励结算。
 
 ### 事件确认弹窗
 
-Trial 第二次拒绝会打开原生放弃本局确认框。`get_observation` 提供标题、正文及两个按钮，不需要额外详情工具。触发弹窗的动作回执通过 `screen.view: "confirmation"` 和 `available_actions` 标识当前交互；决定确认或取消前按需观察。以下为隔离游戏实测返回的片段：
+Trial 第二次拒绝会打开原生放弃本局确认框。`get_observation` 提供标题、正文及两个按钮，不需要额外详情工具。触发弹窗的动作回执通过 `screen.view: "confirmation"` 和 `available_actions` 标识当前交互；决定确认或取消前按需观察。以下为MCP full的确认框字段示例：
 
 ```json
 {
@@ -101,7 +101,6 @@ Trial 第二次拒绝会打开原生放弃本局确认框。`get_observation` �
   "event": {
     "status": "covered",
     "name": null,
-    "description": null,
     "options": null,
     "proceed": null
   },

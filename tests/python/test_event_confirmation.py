@@ -36,7 +36,7 @@ class ConfirmationOutputTests(unittest.TestCase):
         self.assertEqual([o['id'] for o in result['confirmation']['options']], ['confirm', 'cancel'])
         self.assertNotIn('private_owner', json.dumps(result))
         self.assertNotIn('interaction', result.get('notes', {}))
-        self.assertIsNone(result['event']['description'])
+        self.assertNotIn('description', result['event'])
 
     def test_incomplete_or_inconsistent_dialog_cannot_grant_action_permission(self):
         mutations = [lambda r: r.pop('confirmation'), lambda r: r['confirmation'].pop('title'),

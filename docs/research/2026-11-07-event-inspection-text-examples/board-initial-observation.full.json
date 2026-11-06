@@ -1,0 +1,109 @@
+{
+  "scene": "event",
+  "map": null,
+  "screen": {
+    "status": "visible",
+    "view": "divination"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 40,
+    "max_hp": 80,
+    "gold": 1099,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 11,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null,
+        "grayed_out": false,
+        "pulsing": false
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": null,
+  "event": {
+    "status": "covered",
+    "name": null,
+    "options": null,
+    "proceed": null
+  },
+  "divination": {
+    "status": "visible",
+    "phase": "playing",
+    "remaining": 6,
+    "tool": "big",
+    "tools": [
+      {
+        "id": "big",
+        "text": "Big Divination",
+        "enabled": true
+      },
+      {
+        "id": "small",
+        "text": "Small Divination",
+        "enabled": true
+      }
+    ],
+    "dialogue": null,
+    "grid": {
+      "columns": 11,
+      "rows": 11,
+      "cell_rows": [
+        "...#####...",
+        "..#######..",
+        ".#########.",
+        "###########",
+        "###########",
+        "###########",
+        "###########",
+        "###########",
+        ".#########.",
+        "..#######..",
+        "...#####..."
+      ],
+      "visible_fragments": []
+    },
+    "proceed": null
+  },
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "set_divination_tool",
+    "divine",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ],
+  "notes": {
+    "divination": "11x11 cells, (0,0) top-left; x right, y down. # covered, . empty, s partial, S fully revealed icon. Choose a # cell while playing. Known icon shapes (width x height): potion 1x3, round potion 2x2, card 2x2, box 4x4, coin 1x1, coin pile 2x1."
+  }
+}

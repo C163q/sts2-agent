@@ -29,6 +29,7 @@ from sts2_mcp.output.shop_details import BUY_SCHEMA
 from sts2_mcp.output.shop_presets import SHOP_SCHEMA
 from sts2_mcp.output.ancient_details import ANCIENT_OPTION_SCHEMA
 from sts2_mcp.output.event_details import EVENT_OPTION_SCHEMA
+from sts2_mcp.output.event_presets import EVENT_SCHEMA
 from sts2_mcp.output.confirmation_details import CONFIRMATION_SCHEMA
 from sts2_mcp.output.divination_details import TOOL_SCHEMA, DIVINE_SCHEMA
 
@@ -167,8 +168,8 @@ SPECS = (
     ToolSpec(
         name='divine',
         schema=DIVINE_SCHEMA,
-        description='Spend one reveal centered on a covered divination cell. Read the updated board image and grid with inspect_event '
-            'or full get_observation; the action receipt omits them. May pause for rewards or choices.',
+        description='Spend one reveal centered on a # divination cell. Read the updated text board with inspect_event '
+            'or get_observation. May pause for rewards or choices.',
         annotations=action,
         category='action',
         effect='action',
@@ -180,9 +181,9 @@ SPECS = (
         parser_operation=True),
     ToolSpec(
         name='inspect_event',
-        schema=NO_ARGUMENTS,
-        description='Read current event text, options and hover help, or the visible divination board and PNG image. '
-            'Divination requires an image-capable client and model.',
+        schema=EVENT_SCHEMA,
+        description='Read current event text, options and hover help, or the visible divination text board. '
+            'summary omits narrative/help; include_image optionally attaches the board PNG.',
         annotations=read_only,
         category='inspection',
         effect='read',
@@ -190,6 +191,8 @@ SPECS = (
         returns_transition=False,
         records_events=False,
         reader='event_details:inspect_event_details',
+        projector='event_presets:inspect_event_preset',
+        native_keys=(),
         media=True),
     ToolSpec(
         name='choose_event_option',
@@ -315,8 +318,7 @@ SPECS = (
         operation='get_state',
         reader='observation_details:observation_details',
         projector='observation_presets:observation_preset',
-        native_keys=(),
-        media=True),
+        native_keys=()),
     ToolSpec(
         name='inspect_rewards',
         schema=REWARD_SCHEMA,

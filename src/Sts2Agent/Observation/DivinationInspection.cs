@@ -26,6 +26,18 @@ internal static class DivinationInspection
         && VisibleUi.Shown(screen) && VisibleUi.Shown(screen.GetNode<Control>("%Items"))
         && !RewardInspection.Animating(screen, "_fadeTween");
 
+    public static string? InspectionUnavailableReason(NCrystalSphereScreen? screen)
+    {
+        if (screen == null) return "No divination board is available on the current screen.";
+        if (!RunContext.Singleplayer) return "Divination inspection requires a local single-player run.";
+        if (Exposed(screen)) return null;
+        if (VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen)) return "Close the map with close_map before inspecting divination.";
+        if (CardView.Current != null) return "Close the card browsing page with close_card_view before inspecting divination.";
+        if (CardSelection.Current != null) return "Resolve the current card selection; inspect_selection shows its choices.";
+        if (RewardInspection.Current != null) return "Resolve the current reward page; inspect_rewards shows its rows.";
+        return "Wait for the divination board to finish opening or return from the covering dialog.";
+    }
+
     public static NCrystalSphereCell[] Cells(NCrystalSphereScreen screen) => screen.GetNode<Control>("%Cells")
         .GetChildren().OfType<NCrystalSphereCell>().ToArray();
 
@@ -81,6 +93,17 @@ internal static class DivinationInspection
             tool = (string?)null, tools = (object?)null, instructions = (object?)null, dialogue = (string?)null,
             grid = (object?)null, proceed = (object?)null };
         var cells = Cells(screen);
+        var hidden = new bool[11, 11];
+        var mask = screen.GetNode<NCrystalSphereMask>("%ScryMask");
+        float now = (float)PrivateFields.Read(mask, "_time")!;
+        var fades = (Godot.Collections.Array<Vector3>)PrivateFields.Read(mask, "_values")!;
+        foreach (var cell in cells)
+        {
+            int x = cell.Entity.X, y = cell.Entity.Y;
+            var fade = fades[y * 11 + x];
+            hidden[x, y] = cell.Entity.IsHidden || fade.Z > 0 && now - fade.Z < .5f;
+        }
+        var board = DivinationBoard.Build(hidden, DivinationGlyphs.Read(screen, cells, hidden));
         var bounds = Bounds(screen);
         bool ready = Ready(screen), finished = Finished(screen);
         var model = Model(screen);
@@ -100,8 +123,7 @@ internal static class DivinationInspection
                     title = Text("minigame.instructions.title"), description = Text("minigame.instructions.description") } : null,
                 dialogue = VisibleUi.OnScreen(label) && label.VisibleRatio >= 0.999f && DivinationTasks.Dialogue(dialogue) is { } spoken
                     ? EnglishCardText.Plain(spoken.GetFormattedText()) : null,
-                grid = new { columns = 11, rows = 11, covered_rows = Enumerable.Range(0, 11).Select(y => new string(
-                    Enumerable.Range(0, 11).Select(x => cells.Single(c => c.Entity.X == x && c.Entity.Y == y).Entity.IsHidden ? '#' : '.').ToArray())).ToArray(),
+                grid = new { columns = 11, rows = 11, board.cell_rows, board.visible_fragments,
                     image = new { width = bounds.Size.X, height = bounds.Size.Y } },
                 proceed = Proceed(screen) is { } button ? new { text = EnglishCardText.Plain(NProceedButton.ProceedLoc.GetFormattedText()), enabled = ready && button.IsEnabled } : null
             };

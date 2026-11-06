@@ -13,6 +13,7 @@
   </PropertyGroup>
   <Import Project="$(RitsuLibDir)/RitsuLib.References.props" Condition="Exists('$(RitsuLibDir)/RitsuLib.References.props')" />
   <ItemGroup>
+    <EmbeddedResource Include="../sts2_mcp/data/divination_patterns.json" LogicalName="Sts2Agent.DivinationPatterns" />
     <EmbeddedResource Include="../../tests/game/data/test_scenarios.json" LogicalName="Sts2Agent.TestScenarios" />
     <Reference Include="sts2" HintPath="$(GameDataDir)/sts2.dll" Private="false" />
     <Reference Include="GodotSharp" HintPath="$(GameDataDir)/GodotSharp.dll" Private="false" />

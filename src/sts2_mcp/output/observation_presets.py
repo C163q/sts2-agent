@@ -2,7 +2,7 @@ OBSERVATION_SCHEMA = {
     'type': 'object',
     'properties': {'preset': {
         'type': 'string', 'enum': ['full', 'actions_only', 'summary', 'top_bar'], 'default': 'full',
-        'description': 'full keeps basic observations with maps grouped by node type; summary compacts cards (including result unlocks), combat, and top bars, omitting event narrative, false warnings, and divination instructions; actions_only keeps context and tool names; top_bar adds values and relic_count without relic details. All refresh action permission.',
+        'description': 'All presets keep static event/divination summaries. full preserves basic observations with maps grouped by node type; summary compacts cards, combat and top bars; actions_only keeps context and tool names; top_bar adds values and relic_count without relic details. All refresh action permission.',
     }},
     'additionalProperties': False,
 }
@@ -57,13 +57,11 @@ def observation_summary(payload):
         from sts2_mcp.output.shop_details import shop_summary
         result['shop'] = shop_summary(payload['shop'])
     if result.get('event') is not None:
-        event = result['event']
-        event.pop('description', None)
-        for option in event.get('options', []):
-            if option.get('lethal_warning') is False:
-                option.pop('lethal_warning')
+        from sts2_mcp.output.event_presets import event_summary
+        result['event'] = event_summary(result['event'])
     if result.get('divination') is not None:
-        result['divination'].pop('instructions', None)
+        from sts2_mcp.output.event_presets import divination_summary
+        result['divination'] = divination_summary(result['divination'])
     if payload['scene'] != 'combat':
         return result
 

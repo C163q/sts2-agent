@@ -18,10 +18,15 @@ internal sealed partial class GameAdapter
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current event before acting.");
         var context = EventInspection.Current;
+        if (inspect)
+        {
+            if (EventInspection.InspectionUnavailableReason(context) is { } rejection)
+                return ResponseBuilder.Error(request.Id, "illegal_action", rejection, publicMessage: true, uiUnchanged: true);
+            return InspectionSuccess(request, before, new { @event = eventInspection.Read(full: true) });
+        }
         if (context == null || !EventInspection.Exposed(context) || !RunContext.Singleplayer
             || !inspect && !EventInspection.Ready(context))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player event.");
-        if (inspect) return InspectionSuccess(request, before, new { @event = eventInspection.Read(full: true) });
         var button = eventInspection.Find(context, optionId);
         if (button == null || !EventInspection.Clickable(button))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested event option is unavailable.");

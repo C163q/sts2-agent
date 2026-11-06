@@ -1,0 +1,209 @@
+[
+  {
+    "file": "no-event.error.json",
+    "sha256": "ffeee334c1d4015d17630048419ac9972fa12af33f93eca2a5dd49da82b3dcbf",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/no_event/verify/evidence.json",
+    "row_index": 1,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full"
+    },
+    "kind": "natural_gameplay"
+  },
+  {
+    "file": "event.full.json",
+    "sha256": "91692eb09dac785019df61bd6c4013d602ed0c6b31441acfe4fa6e1406db2ecf",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/basic/verify/evidence.json",
+    "row_index": 1,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full"
+    },
+    "kind": "natural_gameplay"
+  },
+  {
+    "file": "event.summary.json",
+    "sha256": "43bfc3ca5fe3c2bf07463e66d959dd130b56d1813b1732ff6862925aea0737b6",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/basic/verify/evidence.json",
+    "row_index": 2,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "summary"
+    },
+    "kind": "natural_gameplay"
+  },
+  {
+    "file": "observation-event.full.json",
+    "sha256": "a7b63f1989877ff9a34f277a9ceb25d6cf5633bdcd9e1ed73209f6e24755a560",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/basic/verify/evidence.json",
+    "row_index": 0,
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "kind": "natural_gameplay"
+  },
+  {
+    "file": "observation-event.summary.json",
+    "sha256": "763a89d3bb9c429b40134ff0fdbd03b215b4eb877827962c96a28cd7eef39fcf",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/basic/verify/evidence.json",
+    "row_index": 5,
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "summary"
+    },
+    "kind": "natural_gameplay"
+  },
+  {
+    "file": "event-map-covered.error.json",
+    "sha256": "97006e1bd57279f160ab68dccb472cb0c32fe7d9feb05815fbc07ff6e3596789",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/basic/verify/evidence.json",
+    "row_index": 7,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full"
+    },
+    "kind": "natural_gameplay"
+  },
+  {
+    "file": "event-offscreen.full.json",
+    "sha256": "ee7e61d44987f76862a6f0a7fb0389de40bed61b0bb0d7342c3ff7f974a116d9",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/display/verify/evidence.json",
+    "row_index": 14,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full"
+    },
+    "kind": "ui_display_fixture"
+  },
+  {
+    "file": "event-no-hover.full.json",
+    "sha256": "0d21005e818990483a5b429db0abd84684427e5c3d2398d50808119f0fa67c62",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/display/verify/evidence.json",
+    "row_index": 18,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full"
+    },
+    "kind": "ui_display_fixture"
+  },
+  {
+    "file": "board-initial-observation.full.json",
+    "sha256": "0e606aa4000533ff30aca8296481b8b960eb0d41c24427112d7af243cf957b70",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/play/verify/evidence.json",
+    "row_index": 13,
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "kind": "natural_gameplay"
+  },
+  {
+    "file": "board-with-image.full.json",
+    "sha256": "9ebb097cedeb7ea580e65adb27d63b34850eca87dcac9f96cca349a73da459a7",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/play/verify/evidence.json",
+    "row_index": 15,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full",
+      "include_image": true
+    },
+    "kind": "natural_gameplay",
+    "image": {
+      "file": "board-with-image.full.png",
+      "sha256": "c2bf83f371919788eac12614d68b20b51f56ecb6b710b48ee7100b849fd47aaa"
+    }
+  },
+  {
+    "file": "board-text-png-unavailable.full.json",
+    "sha256": "19f60f14650f71ed3adebef210bd4f7b72b447324fc9b5531920b2f015c2fb65",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/play/verify/evidence.json",
+    "row_index": 17,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full"
+    },
+    "kind": "media_failure_fixture"
+  },
+  {
+    "file": "board-potion-base.full.json",
+    "sha256": "0a9471270fe2bc96a510a42129ea9907fcd1edc02b1afab466c3f5444be0657d",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/play/verify/evidence.json",
+    "row_index": 31,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full"
+    },
+    "kind": "natural_gameplay"
+  },
+  {
+    "file": "board-finished.summary.json",
+    "sha256": "0747b4e530e43850bc1e692671dd5630e5b5dd390289c8c3acf13011cb1b43a8",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/play/verify/evidence.json",
+    "row_index": 48,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "summary"
+    },
+    "kind": "natural_gameplay"
+  },
+  {
+    "file": "board-whole-box.full.json",
+    "sha256": "dc7feae145b666c3a07b514ef6b6b2be684bbd82f468ee554607108f3e05bcea",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/glyphs/verify/evidence.json",
+    "row_index": 82,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full",
+      "include_image": true
+    },
+    "kind": "ui_mask_fixture",
+    "image": {
+      "file": "board-whole-box.full.png",
+      "sha256": "5dcf875a04eaf123fe4e54d1695fe31abd8a2b776bfdd3277555c63ddd63b29c"
+    }
+  },
+  {
+    "file": "board-whole-card.full.json",
+    "sha256": "180055ebb7553ff38eef223d1a1d73c2ab5cd5b24d506d6df4efa28ea0176b4f",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/glyphs/verify/evidence.json",
+    "row_index": 97,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full",
+      "include_image": true
+    },
+    "kind": "ui_mask_fixture",
+    "image": {
+      "file": "board-whole-card.full.png",
+      "sha256": "e1bab71e52b3f1ef6264d37ca81d8dff0df81012dc0d062ccd06105d4edbdf7a"
+    }
+  },
+  {
+    "file": "board-whole-curse.full.json",
+    "sha256": "61a59d00054a4655e00943d3791774ee28d23c584439373342531d5b6b7d5b00",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/glyphs/verify/evidence.json",
+    "row_index": 138,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full",
+      "include_image": true
+    },
+    "kind": "ui_mask_fixture",
+    "image": {
+      "file": "board-whole-curse.full.png",
+      "sha256": "0c45d10aa1f7696b48e3a8b8d872c8d56d4931b5ebbe37a5da7955742c97dfaf"
+    }
+  },
+  {
+    "file": "board-visible-card-lower-left.full.json",
+    "sha256": "71c7d72d2dfe22e082ed6e1f6d65448eeeceb0ea9d3079e015c3a44a1f1f6d10",
+    "source": ".tmp/2026-11-07-event-inspection-text/gui-final/glyphs/verify/evidence.json",
+    "row_index": 89,
+    "tool": "inspect_event",
+    "arguments": {
+      "preset": "full"
+    },
+    "kind": "ui_mask_fixture"
+  }
+]

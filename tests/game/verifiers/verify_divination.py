@@ -33,11 +33,12 @@ async def verify(args):
         async with ClientSession(read, write) as session:
             await session.initialize()
             async def call(name, arguments=None, *, error=None):
-                response = await session.call_tool(name, full_output_arguments(name, arguments or {}))
+                params = {'include_image': True, **(arguments or {})} if name == 'inspect_event' else arguments or {}
+                response = await session.call_tool(name, full_output_arguments(name, params))
                 data = response.structuredContent
                 assert data == json.loads(response.content[0].text), response
                 images = [c for c in response.content if c.type == 'image']
-                if (data.get('divination') or {}).get('status') == 'visible':
+                if name == 'inspect_event' and (data.get('divination') or {}).get('status') == 'visible':
                     assert len(images) == 1 and images[0].mimeType == 'image/png', data
                     (captures / f'{len(evidence):02}-{name}.png').write_bytes(base64.b64decode(images[0].data))
                 else: assert not images, data
@@ -53,7 +54,7 @@ async def verify(args):
             assert data['transition']['stop_reason'] == 'action_completed', data
             assert data['divination']['remaining'] == (3 if args.option == 0 else 6), data
             assert data['divination']['tool'] == 'big' and data['divination']['phase'] == 'playing', data
-            initial_rows = data['divination']['grid']['covered_rows']
+            initial_rows = data['divination']['grid']['cell_rows']
             if args.scenario == 'delayed': await asyncio.sleep(4)
             if args.scenario == 'map':
                 await call('inspect_map')
@@ -61,7 +62,8 @@ async def verify(args):
                 assert covered['divination']['status'] == 'covered' and covered['divination']['grid'] is None, covered
                 await call('close_map'); data = await call('get_observation')
             inspected = await call('inspect_event')
-            assert {k:v for k,v in inspected['divination'].items() if k != 'dialogue'} == {k:v for k,v in data['divination'].items() if k != 'dialogue'}, inspected
+            assert inspected['divination']['phase'] == data['divination']['phase']
+            assert inspected['divination']['grid']['cell_rows'] == data['divination']['grid']['cell_rows']
             data = await observe_after_action(call, await call('set_divination_tool', {'tool': 'small'}))
             assert data['divination']['tool'] == 'small', data
             data = await observe_after_action(call, await call('divine', {'x': 5, 'y': 5}))
@@ -70,8 +72,8 @@ async def verify(args):
             full = await asyncio.to_thread(raw.call, 'capture_screenshot')
             (captures / 'center-full.png').write_bytes(base64.b64decode(full['state']['png_base64']))
             assert geometry['state']['center_border'], geometry
-            expected = list(initial_rows); expected[5] = expected[5][:5] + '.' + expected[5][6:]
-            assert data['divination']['grid']['covered_rows'] == expected, data
+            expected = [''.join('#' if c == '#' else '.' for c in row) for row in initial_rows]; expected[5] = expected[5][:5] + '.' + expected[5][6:]
+            assert [''.join('#' if c == '#' else '.' for c in row) for row in data['divination']['grid']['cell_rows']] == expected, data
             assert data['divination']['remaining'] == (2 if args.option == 0 else 5), data
             await call('divine', {'x': 5, 'y': 5}, error='illegal_action')
             data = await call('get_observation')
@@ -89,7 +91,7 @@ async def verify(args):
             had_rewards = False
             reward_types = set()
             while data.get('divination', {}).get('phase') == 'playing':
-                rows = data['divination']['grid']['covered_rows']
+                rows = data['divination']['grid']['cell_rows']
                 while planned and (not 0 <= planned[0][0] <= 10 or not 0 <= planned[0][1] <= 10 or rows[planned[0][1]][planned[0][0]] != '#'):
                     planned.pop(0)
                 x, y = planned.pop(0) if planned else next((x,y) for y,row in enumerate(rows) for x,c in enumerate(row) if c == '#')
@@ -97,8 +99,8 @@ async def verify(args):
                 data = await observe_after_action(call, await call('divine', {'x': x, 'y': y}))
                 assert data['transition']['complete'], data
                 if (data.get('divination') or {}).get('status') == 'visible':
-                    expected_rows = [''.join('.' if abs(cx-x) <= 1 and abs(cy-y) <= 1 else c for cx,c in enumerate(row)) for cy,row in enumerate(before_rows)]
-                    assert data['divination']['grid']['covered_rows'] == expected_rows, data
+                    expected_rows = [''.join('.' if abs(cx-x) <= 1 and abs(cy-y) <= 1 or c != '#' else '#' for cx,c in enumerate(row)) for cy,row in enumerate(before_rows)]
+                    assert [''.join('#' if c == '#' else '.' for c in row) for row in data['divination']['grid']['cell_rows']] == expected_rows, data
                 if (data.get('divination') or {}).get('phase') == 'finished': break
                 while data['scene'] == 'rewards':
                     had_rewards = True

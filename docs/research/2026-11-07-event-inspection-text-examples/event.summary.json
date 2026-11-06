@@ -1,0 +1,24 @@
+{
+  "scene": "event",
+  "event": {
+    "status": "visible",
+    "name": "Abyssal Baths",
+    "options": [
+      {
+        "id": 0,
+        "title": "Immerse",
+        "description": "Gain 2 Max HP. Take 3 damage.",
+        "enabled": true
+      },
+      {
+        "id": 1,
+        "title": "Abstain",
+        "description": "Heal 10 HP.",
+        "enabled": true
+      }
+    ]
+  },
+  "screen": {
+    "status": "visible"
+  }
+}

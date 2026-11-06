@@ -1,0 +1,39 @@
+{
+  "scene": "event",
+  "event": {
+    "status": "visible",
+    "name": "Crystal Sphere",
+    "description": "“I predicted you'd enter...!”\n\nA raspy voice calls out as you enter a mystic hut.\n\n“Your destiny has brought you here. We must uncover your future and fortunes so you can SAVE US ALL!!”\n“Okay, here are the options for the Crystal Sphere reading. Be sure to sign this waiver as well,” she says while bringing out pen and parchment.",
+    "options": [
+      {
+        "id": 4,
+        "title": "Uncover Future",
+        "description": "Pay 90 Gold. Divine 3 times.",
+        "enabled": true,
+        "lethal_warning": false,
+        "hover_tips": []
+      },
+      {
+        "id": 5,
+        "title": "Payment Plan",
+        "description": "Gain a Debt. Divine 6 times.",
+        "enabled": false,
+        "lethal_warning": false,
+        "hover_tips": [
+          {
+            "title": "Debt",
+            "description": "Unplayable.\nAt the end of your turn, if this is in your Hand, lose 10 Gold."
+          },
+          {
+            "title": "Unplayable",
+            "description": "Unplayable cards cannot be played."
+          }
+        ]
+      }
+    ],
+    "proceed": null
+  },
+  "screen": {
+    "status": "visible"
+  }
+}

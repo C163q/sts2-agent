@@ -1,0 +1,58 @@
+{
+  "scene": "event",
+  "divination": {
+    "status": "visible",
+    "phase": "playing",
+    "remaining": 6,
+    "tool": "big",
+    "tools": [
+      {
+        "id": "big",
+        "text": "Big Divination",
+        "enabled": true
+      },
+      {
+        "id": "small",
+        "text": "Small Divination",
+        "enabled": true
+      }
+    ],
+    "instructions": {
+      "title": "How to Divine",
+      "description": "Reveal your future by revealing the tiles!\n\nSelect Small Divination or Big Divination and reveal the tiles within the Crystal Sphere.\n\nOnce an item is revealed, you will receive it at the end of the session...\n\nBut beware, revealing some items may be dangerous!"
+    },
+    "dialogue": null,
+    "grid": {
+      "columns": 11,
+      "rows": 11,
+      "cell_rows": [
+        "###########",
+        "###########",
+        "###########",
+        "###########",
+        "###########",
+        "###########",
+        "###########",
+        "###########",
+        "##s########",
+        "###########",
+        "###########"
+      ],
+      "visible_fragments": [
+        {
+          "x": 2,
+          "y": 8,
+          "appearance": "card.lower_left"
+        }
+      ]
+    },
+    "proceed": null
+  },
+  "screen": {
+    "status": "visible",
+    "view": "divination"
+  },
+  "notes": {
+    "divination": "11x11 cells, (0,0) top-left; x right, y down. # covered, . empty, s partial, S fully revealed icon. Choose a # cell while playing. Known icon shapes (width x height): potion 1x3, round potion 2x2, card 2x2, box 4x4, coin 1x1, coin pile 2x1."
+  }
+}

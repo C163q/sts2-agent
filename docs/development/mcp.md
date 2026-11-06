@@ -37,7 +37,7 @@ flowchart LR
 | `respond_to_confirmation(option)` | 明确确认或取消[当前 Trial 事件确认框](events.md#事件确认弹窗)，确认会结束本局 |
 | `set_divination_tool(tool)` | [占卜](divination.md)切换大小工具，不消耗次数 |
 | `divine(x,y)` | 点击仍覆盖的占卜格子；棋盘及图像按需观察 |
-| `inspect_event()` | [当前通用事件](events.md)正文、选项及悬停解释，或占卜棋盘及图像 |
+| `inspect_event(preset?, include_image?)` | [当前通用事件](events.md)正文、选项与悬停解释；summary 为静态摘要；占卜默认文字，include_image:true 按需附图 |
 | `choose_event_option(option_id)` | 点击一个启用的事件选项，保留原生后续流程与致死警告 |
 | `inspect_ancient()` | [当前先古之民](ancients.md)的选项及悬停解释 |
 | `choose_ancient_option(option_id)` | 点击一个已显示且启用的先古选项 |
@@ -52,7 +52,7 @@ flowchart LR
 | `inspect_treasure(preset?)` | 当前可见宝箱遗物及悬停说明 |
 | `inspect_rest_site(preset?, option_ids?)` | [火堆完整说明／静态summary及按原生ID筛选](rest-site.md) |
 | `choose_rest_option(option_id)` | 点击一个启用的休息处选项，后续选牌单独处理 |
-| `get_observation(preset?)` | 默认 `default`；`full` 保留空值；`summary` 精简战斗、卡牌、事件、占卜说明与顶栏；`actions_only` 仅返回上下文与工具名；`top_bar` 再附顶栏和遗物数量，各预设均刷新动作令牌 |
+| `get_observation(preset?)` | 默认 `default`；`full` 保留空值；`summary` 精简战斗、卡牌与顶栏；full/default/summary 的事件和占卜主体均使用专门详情的静态摘要；`actions_only` 仅返回上下文与工具名；`top_bar` 再附顶栏和遗物数量，各预设均刷新动作令牌 |
 | `inspect_hand({preset?, card_ids?})` | [手牌完整详情或摘要及当前能量／星星，可按 ID 筛选卡牌](hand-inspection.md) |
 | `inspect_targets(card_id 或 potion_slot)` | 查询[手牌](card-play.md)或[药水](potion-actions.md)可用性、是否须指定目标及范围，不进入瞄准或抽随机数 |
 | `play_card(card_id, target_id?)` | [提交一次原生手动出牌](card-play.md)，后续选牌单独操作 |
@@ -154,7 +154,7 @@ approval_mode = "approve"
 
 各工具专用预设的完整字段规则由对应接口维护：`get_observation` 的 summary／top_bar 见[观察预设](observation.md#mcp-输出预设)，UI 帮助、手牌、选牌、药水和遗物摘要见各工具说明。不要把 default 保留空数组的公共规则套用到明确精简空列表的专用 summary。
 
-该参数只控制 Python 公开输出，不转发给 Mod；先完整校验响应，再进行原有筛选与统一空值过滤；许可依据完整状态判断，公开投影成功后才发布。部分成功的 `errors`、顶层错误及占卜图片保留。截图工具不提供 preset。其他标准库文件调用继续保留原有空值；牌组／牌堆 CLI 的 --preset 共用上述 Python 投影，底层 Mod 始终采样完整卡牌。
+该参数只控制 Python 公开输出，不转发给 Mod；先完整校验响应，再进行原有筛选与统一空值过滤；许可依据完整状态判断，公开投影成功后才发布。部分成功的 `errors`、顶层错误及显式请求的占卜图片保留。截图工具不提供 preset。其他标准库文件调用继续保留原有空值；牌组／牌堆 CLI 的 --preset 共用上述 Python 投影，底层 Mod 始终采样完整卡牌。
 
 可选筛选 `sources`、`card_ids`、`relic_indices` 统一接受省略或 `null` 表示全部，`[]` 表示空集合；重复项去重、原生顺序不变。有效与无效项并存时保留成功内容，并用 `errors` 合并缺失项。位置引用以当前未筛选列表为准，遗物通过顶层 `relic_indices` 对应压缩结果。工具登记与参数职责见[代码结构](architecture.md#工具登记与参数)。
 

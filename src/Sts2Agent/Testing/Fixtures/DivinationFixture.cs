@@ -2,6 +2,7 @@ using Godot;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Events.Custom.CrystalSphereEvent;
 using MegaCrit.Sts2.Core.Nodes;
+using MegaCrit.Sts2.Core.Nodes.Events.Custom.CrystalSphere;
 
 namespace Sts2Agent;
 
@@ -21,6 +22,13 @@ internal static class DivinationFixture
             && WhiteNear(capture.width / 2, 5 * capture.height / 11)
             && WhiteNear(capture.width / 2, 6 * capture.height / 11);
         return new { center_border = centerBorder,
+            ui_items = VisibleUi.Descendants<NCrystalSphereItem>(screen).Select(item => new {
+                position = item.Position.ToString(), size = item.Size.ToString(), scale = item.Scale.ToString(),
+                relative = (DivinationInspection.Cells(screen).Single(c => c.Entity.X == 0 && c.Entity.Y == 0)
+                    .GetGlobalTransformWithCanvas().AffineInverse() * item.GetGlobalTransformWithCanvas()).ToString(),
+                cell_size = DivinationInspection.Cells(screen)[0].Size.ToString(),
+                texture = item.GetNode<TextureRect>("Icon").Texture?.ResourcePath,
+                banner = item.GetNode<TextureRect>("%CardBanner").Material?.ResourcePath }).ToArray(),
             rng = model.Rng.Counter, gold = player.Gold,
             deck = player.Deck.Cards.Select(c => c.Id.Entry).ToArray(),
             items = model.Items.Select(i => new { kind = i.GetType().Name, x = i.Position.X, y = i.Position.Y, width = i.Size.X, height = i.Size.Y }).ToArray(),

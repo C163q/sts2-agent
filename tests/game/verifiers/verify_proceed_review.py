@@ -162,7 +162,7 @@ async def verify(args):
                     board = current['divination']; assert board['phase'] == 'playing', current
                     preferred = [(0, 0), (5, 5), (10, 10)]
                     cells = preferred + [(x, y) for y in range(11) for x in range(11)]
-                    x, y = next((x, y) for x, y in cells if board['grid']['covered_rows'][y][x] == '#')
+                    x, y = next((x, y) for x, y in cells if board['grid']['cell_rows'][y][x] == '#')
                     await call('divine', {'x': x, 'y': y})
                 else: raise AssertionError('Divination did not finish')
                 await proceed('divination_leave'); await leave_map(); return

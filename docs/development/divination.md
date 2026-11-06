@@ -1,98 +1,63 @@
 # 占卜小游戏
 
-版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
-
-支持单人原生 Crystal Sphere 界面，先用[事件工具](events.md)选择进入方式。
-
-下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。支持单人原生 Crystal Sphere，先用[事件工具](events.md)进入小游戏。
 
 ## 工具与图像
 
-| 工具 | 行为 |
+| 工具 | 内容／操作 |
 | --- | --- |
-| `get_observation()` | 当前棋盘、次数、工具和可用动作，刷新动作许可 |
-| `inspect_event()` | 只读当前占卜界面，与基础观察的小游戏信息相同；成功时刷新状态令牌 |
-| `set_divination_tool({"tool":"small"})` | 点击小范围工具；`big` 为大范围，不消耗次数 |
-| `divine({"x":5,"y":5})` | 点击一个仍被覆盖的格子，消耗一次次数 |
-| `proceed()` | 点击结算后实际启用的前进按钮 |
+| get_observation(preset?) | 文字棋盘、已揭开碎片、次数、工具、当前对白及可用动作；full/default/summary 均省略固定教学，不返回 PNG |
+| inspect_event(preset?, include_image?) | 共用文字棋盘；full/default 另提供当前展示的教学，summary 省略教学；include_image:true 按需附上当前棋盘 PNG，默认 false |
+| set_divination_tool({"tool":"small"}) | 点击小范围工具；big 为大范围，不消耗次数 |
+| divine({"x":5,"y":5}) | 点击一个仍被覆盖的格子，消耗一次次数 |
+| proceed() | 点击结算后实际启用的前进按钮 |
 
-占卜复用 `inspect_event` 作为专门查看入口，没有独立的 `inspect_divination`。`get_observation({"preset":"summary"})` 省略固定教学 `divination.instructions`，其余主体沿用 default，保留棋盘、图像、可见次数、工具按钮、当前完整对白及坐标说明；default/full 和 `inspect_event` 仍提供实际可见的教学说明。摘要不改变原生页面或动作许可，验证范围见 [13–15 组核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md)。
+占卜复用 inspect_event，没有独立 inspect_divination；两种观察从同一份可见棋盘读取。get_observation 不接受 include_image。图片可选，与工具 preset 分开控制。工具只读拒绝会说明无棋盘、地图／牌组／选择／奖励覆盖或开场过渡等原因；已有许可的明确读取拒绝可直接改用当前合法工具。
 
-占卜需要**支持图像内容的 MCP 客户端及有视觉能力的模型**。可见棋盘随完整基础观察和 `inspect_event` 详情返回独立的 `ImageContent` PNG；动作使用[精简回执](mcp.md#动作返回格式)，不附送棋盘或图像，后续按需查看；JSON 与文字内容不含 base64。图像直接裁剪游戏当前渲染画面，保留遮罩、边框和物品碎片，不从内部物品模型重绘。纯文字客户端无法获得全部可见信息。
+## 文字棋盘
 
-自动棋盘图像与可选[截图存盘工具](screenshots.md)独立：默认关闭截图工具仍可玩占卜，不自动存盘。文件客户端在 `state.divination_image` 收到 PNG base64，MCP 将其校验后转为图像。只有本次输出需要棋盘时才捕获 PNG；不能捕获有效图像时该读取失败，不提供动作许可。动作回执、actions_only/top_bar 不捕获棋盘图片，因此不受无关的图片生成失败阻断；旧文件调用省略媒体选项时仍保留原行为，执行后的图片错误按未知结果处理，见[文件协议](roundtrip.md#原型接口)。
+坐标左上角为 (0,0)，x 向右、y 向下，范围均为 0–10。grid 包含 columns:11、rows:11、11 行 cell_rows，以及按行排列的 visible_fragments。每行 11 个字符：
 
-## JSON 示例
+| 字符 | 含义 |
+| --- | --- |
+| # | 仍覆盖；揭开动画尚未完成的格子也暂时保留此状态 |
+| . | 已揭开且没有可见图案，或棋盘边缘空白 |
+| s | 已显示图案局部，整体尚未全部揭开 |
+| S | 图案整体已经揭开；并不表示已经领取奖励 |
 
-以下省略通用顶栏和底层已覆盖的事件字段；说明正文只摘取首句，实际返回完整英文说明。该 JSON 后还有一个 PNG 内容块。
+例如以下为字段结构示例，省略其余行，并非完整实测返回：
 
 ```json
 {
-  "scene": "event",
-  "screen": {"status": "visible", "view": "divination"},
-  "divination": {
-    "status": "visible",
-    "phase": "playing",
-    "remaining": 3,
-    "tool": "big",
-    "tools": [
-      {"id": "big", "text": "Big Divination", "enabled": true},
-      {"id": "small", "text": "Small Divination", "enabled": true}
-    ],
-    "instructions": {
-      "title": "How to Divine",
-      "description": "Reveal your future by revealing the tiles!"
-    },
-    "dialogue": null,
-    "grid": {
-      "columns": 11,
-      "rows": 11,
-      "covered_rows": [
-        "...#####...",
-        "..#######..",
-        ".#########.",
-        "###########",
-        "###########",
-        "###########",
-        "###########",
-        "###########",
-        ".#########.",
-        "..#######..",
-        "...#####..."
-      ],
-      "image": {"width": 599, "height": 598}
-    },
-    "proceed": null
-  }
+  "cell_rows": ["#####s#####"],
+  "visible_fragments": [
+    {"x": 5, "y": 0, "appearance": "potion.base"}
+  ]
 }
 ```
 
-结果另带精简 `notes.divination`，说明坐标与符号。图像覆盖11×11格子的完整矩形，按11等分对应坐标；尺寸随实际渲染分辨率变化，不能固定为示例数值。`#` 为仍覆盖的格子，`.` 为已揭开，边缘初始就有不可点空白。左上角为 `(0,0)`，向右为 x、向下为 y。只在 `playing` 且动作列表有 `divine` 时点击 `#` 格，已揭开格不能重复点。
+每个 s/S 格有一条坐标与 appearance 记录。可见部位名包括 potion.stopper/body/base（瓶塞／瓶身／瓶底）、round_potion 的圆瓶部位、card 的牌框部位、gold 的金币部位和 box 的箱体部位。有图案但无法可靠转译时保留 unrecognized；透明留白不因内部占用矩形而填满。完整揭开后，对应可见图案格改为 S。
 
-大范围揭开以指定格为中心、按边界裁剪的3×3，小范围揭一格。参数必须为 `big/small` 或0至10的整数；拒绝额外字段、布尔值、字符串、浮点数和越界值。切换工具、揭开和前进均点击原生按钮，在 UI 上可见。
+固定图案不旋转。常见药水为1×3、圆瓶为2×2、卡牌为2×2、遗物箱为4×4、金币为1×1或2×1。静态词表由[共用图案定义](../../src/sts2_mcp/data/divination_patterns.json)维护。卡牌只有顶部横幅可提供对应稀有度；下方牌框使用共用名称，不附带隐藏横幅的类别。药水、遗物和卡牌奖励图标不会提前给出将来随机生成的具体奖励。
 
-## 结算与边界
+读取依据当前显示节点的贴图、几何和已清除的遮罩区域；不从 cell.Item、雾下物品位置或奖励列表输出真实分组。原生物品层比格子层高2像素；按原生格子放置坐标确定部位，并排除格线及球体外框遮挡的溢出像素。未知外观与不支持的布局不能标成已识别部位。
 
-`phase` 为 `playing`、`settling` 或 `finished`。动作等待原生点击、遮罩及物品揭开动画、卡牌预览与资源结算稳定。次数归零后仍有延迟及奖励流程，不能提前报告结束。奖励或选牌需要输入时按[共享动作边界](end-turn.md#动作完成与画面稳定)返回，用现有奖励、选牌、药水工具继续。
+## 可选图片
 
-地图、奖励或其他界面覆盖棋盘时，`status: covered`，其余字段为 null，不返回底层图像。地图使用 `inspect_map/close_map`；关闭后可直接继续当前界面的合法动作，需要棋盘图像时按需调用 `inspect_event`。最终 `finished` 时原生隐藏次数、工具和说明，对应字段为 null；只有原生前进启用时才能 `proceed`。不自动领取奖励、选择卡牌或打开地图。
+inspect_event({"include_image":true}) 在文字结果后另附 ImageContent PNG。图片裁剪当前实际渲染的棋盘，保留遮罩、边框与局部图案；grid.image 记录该 PNG 的实际尺寸。JSON 与文字块不含 base64。只有这个调用需要支持图像的客户端；默认文字及 get_observation 不依赖 PNG 捕获。
 
-成功完整动作的观察可续接下一动作。动态噪声图像和自动消失的对白不使动作许可过期；次数、工具、格子、忙碌状态和页面变化仍会触发复核。对白只在当前完整显示时返回英文，不改变游戏语言。
+自动附图与可选[截图存档工具](screenshots.md)独立；请求图片不会自动存盘。显式请求的图片无效或无法捕获时读取失败，不授予新许可。底层文件调用通过 response_options.include_divination_image 控制媒体，省略该选项仍兼容旧文件客户端的附图行为；见[文件协议](roundtrip.md#原型接口)。
 
-不输出雾下物品、完整占用范围、未完整揭开的身份或未来奖励。碎片由图像保留，已揭开图标也不提前生成随机药水、遗物或卡牌奖励。源码、实测与未覆盖范围见[占卜验证记录](../research/2026-10-31-divination-validation.md)。
+## 动作、覆盖与结算
 
-## 隔离验证
+大范围以指定格为中心揭开按边界裁剪的3×3，小范围揭开一格。参数严格接受 big/small 或整数坐标，额外字段、布尔坐标、字符串、浮点数和越界值均拒绝。切换、揭开和前进都点击原生按钮；动作返回[精简回执](mcp.md#动作返回格式)，后续按需观察棋盘。
 
-按[测试指南](roundtrip.md)编译和准备隔离实例，启动：
+phase 为 playing、settling 或 finished。观察可读取已经展示的结算过程，动作继续要求原生输入与动画就绪。动作等待实际揭开、资源及奖励稳定；次数归零后仍可能需要奖励或选牌输入，按[共享动作边界](end-turn.md#动作完成与画面稳定)处理。
 
-```sh
-python3 scripts/run_roundtrip.py --windowed --event-scenario crystal
-```
+地图、牌组、奖励或其他界面覆盖时，divination.status:covered，其余底层字段为 null，不返回碎片与底层图像。关闭地图或浏览页后可以直接继续合法操作。finished 隐藏次数、工具与教学，只有原生前进启用时才允许 proceed。
 
-另一终端验证6次及奖励衔接：
+完整当前对白只在文字渐显完成时返回。瞬态对白与动态图像不使许可过期；次数、工具、棋盘、忙碌状态和页面变化仍会复核。观察不切换游戏语言，不主动生成或领取奖励。
 
-```sh
-.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_divination --option 1 --scenario rewards --report .tmp/divination-check/rewards.json
-```
+## 验证入口
 
-使用全新报告路径，只连接隔离 IPC，不用于正式对局。验证脚本使用私有测试真值安排覆盖用例；真实 LLM 不会获得这些数据。
+按[测试指南](roundtrip.md)编译并准备隔离实例，使用 tests/game/data/gui_suite_event_inspection.json 运行事件／占卜专项。UI 显示夹具与隐藏真值仅用于私有测试入口，不进入公开工具目录；自然揭开和 UI 夹具验证的范围分别记录在[实施记录](../research/2026-11-07-event-inspection-text-implementation.md)。

@@ -71,6 +71,20 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                     want['hover_tips'][0]['relic_indices'] = [2]
                 if case['tool'] == 'get_observation' and want.get('rest_site') is not None:
                     want['rest_site'].pop('description', None)
+                if case['tool'] == 'get_observation' and want.get('event') is not None:
+                    want['event'].pop('description', None)
+                    for option in want['event'].get('options') or []:
+                        if option.get('lethal_warning') is False: option.pop('lethal_warning')
+                board_text = case['tool'] in {'get_observation', 'inspect_event'} and want.get('divination') is not None
+                if board_text and want['divination'].get('status') == 'visible':
+                    want['divination']['grid'].pop('image', None)
+                    if case['tool'] == 'get_observation': want['divination'].pop('instructions', None)
+                    want['notes']['divination'] = ('11x11 cells, (0,0) top-left; x right, y down. # covered, . empty, s partial, S fully revealed icon. '
+                        'Choose a # cell while playing. Known icon shapes (width x height): potion 1x3, round potion 2x2, '
+                        'card 2x2, box 4x4, coin 1x1, coin pile 2x1.')
+                    if 'cell_rows' not in want['divination']['grid']:
+                        want['notes']['divination'] = ('Legacy grid: 11x11, (0,0) top-left; x right, y down. '
+                            '# covered, . revealed with unknown contents. Update the Mod for text fragments.')
                 if case['tool'] == 'inspect_shop' and 'error' not in want:
                     want['top_bar'] = {key: value for key, value in client.state.get('top_bar', {}).items()
                         if key in {'gold', 'potion_slots', 'deck_count', 'relic_count'}}
@@ -80,7 +94,7 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                     'inspect_relics', 'inspect_selection'}:
                     want['error']['recovery'] = 'choose_legal_action'
                 self.assertEqual(result, want)
-                self.assertEqual(getattr(result, 'image', None), case.get('expected_image'))
+                self.assertEqual(getattr(result, 'image', None), None if board_text else case.get('expected_image'))
                 native_calls = copy.deepcopy(case['native_calls'])
                 if case['tool'] == 'inspect_deck':
                     for call in native_calls:
@@ -103,7 +117,7 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
             successful = [case for case in cases if case['tool'] == tool.name and 'error' not in expected[case['expected_ref']]]
             presets = {case['arguments'].get('preset') for case in successful}
             # Dedicated preset tests cover additions to the frozen refactor baseline.
-            added = {'summary'} if tool.name in {'inspect_potions', 'inspect_map', 'inspect_rewards', 'inspect_treasure', 'inspect_rest_site', 'inspect_shop'} else set()
+            added = {'summary'} if tool.name in {'inspect_potions', 'inspect_map', 'inspect_rewards', 'inspect_treasure', 'inspect_rest_site', 'inspect_shop', 'inspect_event'} else set()
             self.assertGreaterEqual(presets, {None, *(set(tool.inputSchema['properties']['preset']['enum']) - added)})
             self.assertTrue(any(case['tool'] == tool.name and case.get('error') for case in cases))
             self.assertTrue(any(case['tool'] == tool.name and 'unknown_field' in case['arguments'] for case in cases))

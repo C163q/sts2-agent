@@ -101,8 +101,8 @@ class RoomToolPresetTests(unittest.IsolatedAsyncioTestCase):
                 {'id': 1, 'title': 'Locked', 'description': 'No eligible cards.', 'enabled': False}]})
         for preset in ('default', 'full'):
             event = (await tools.get_observation({'preset': preset}))['event']
-            self.assertEqual(event['description'], 'The water is warm.')
-            self.assertIs(event['options'][1]['lethal_warning'], False)
+            self.assertNotIn('description', event)
+            self.assertNotIn('lethal_warning', event['options'][1])
         detail = await tools.inspect_event()
         self.assertEqual(detail['event']['description'], 'The water is warm.')
         await tools.get_observation({'preset': 'summary'})

@@ -18,7 +18,7 @@
 
 战后支持[逐项搜刮、跳过与前进](docs/development/rewards.md)，奖励卡牌复用选牌工具；搜刮期间可以查看地图，并用 [travel_to_node 选路](docs/development/map-inspection.md#地图选路)；选路会放弃未领取奖励。每幕最后 Boss 后的前进沿原生流程进入下一幕，双 Boss 之间仍需选路；支持[建筑师对话、胜负结算及解锁后返回主菜单](docs/development/run-ending.md)。支持[休息处选项](docs/development/rest-site.md)、锻造升级与烹饪选牌，帐篷下逐项操作。支持[宝箱房开箱、领取与跳过](docs/development/treasure.md)，默认一次调用开箱并领取遗物。支持[商店开关、商品详情、逐项购买与删牌](docs/development/shop.md)。
 
-已接通[先古之民房间](docs/development/ancients.md)：逐句对话、选择遗物、后续选牌与前进。支持[通用问号事件](docs/development/events.md)的正文与选项、致死红框、后续选牌/奖励、战斗及返回事件；[占卜](docs/development/divination.md)支持棋盘图像、大小工具与逐格揭开。[Trial 确认弹窗](docs/development/events.md#事件确认弹窗)支持明确确认或取消；未知弹窗仍停在人工输入边界。
+已接通[先古之民房间](docs/development/ancients.md)：逐句对话、选择遗物、后续选牌与前进。支持[通用问号事件](docs/development/events.md)的正文与选项、致死红框、后续选牌/奖励、战斗及返回事件；[占卜](docs/development/divination.md)支持文字棋盘、可选图像、大小工具与逐格揭开。[Trial 确认弹窗](docs/development/events.md#事件确认弹窗)支持明确确认或取消；未知弹窗仍停在人工输入边界。
 
 默认提供 43 个 MCP 工具，可通过启动配置增加[截图存档工具](docs/development/screenshots.md)。完整目录、输出预设和调用语义见 [MCP 接入](docs/development/mcp.md)；各工具与场景说明见[开发文档索引](docs/development/README.md)。
 
@@ -29,9 +29,9 @@
 | 项目 | 当前版本或要求 | 核对入口 |
 | --- | --- | --- |
 | 游戏 | Linux `v0.107.1`，release 分支，构建 `59260271` | [目标程序集核对与验证](docs/research/2026-11-03-result-observation-implementation.md) |
-| Mod | `0.75.0` | [Mod 清单](src/Sts2Agent/Sts2Agent.json) |
-| MCP server | `0.77.0` | [服务入口](src/sts2_mcp/mcp_server.py) |
-| 底层观察 schema | `44` | [观察序列化](src/Sts2Agent/Observation/GameObservation.cs) |
+| Mod | `0.76.0` | [Mod 清单](src/Sts2Agent/Sts2Agent.json) |
+| MCP server | `0.78.0` | [服务入口](src/sts2_mcp/mcp_server.py) |
+| 底层观察 schema | `45` | [观察序列化](src/Sts2Agent/Observation/GameObservation.cs) |
 | RitsuLib | `0.6.10`，须使用游戏 `0.107.1` 兼容运行时 | [获取与构建](docs/development/roundtrip.md#前提与构建) |
 | .NET | 9 SDK；版本选择见 [global.json](global.json) | [构建指南](docs/development/roundtrip.md#前提与构建) |
 | Python | 3.10 或以上；MCP 另需安装依赖 | [requirements-mcp.txt](requirements-mcp.txt) |

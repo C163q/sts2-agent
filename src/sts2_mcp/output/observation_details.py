@@ -75,16 +75,23 @@ def observation_details(state):
         raise ValueError('Missing ancient state.')
     if result.get('event') is not None:
         from sts2_mcp.output.event_details import event_details
-        result['event'] = event_details(result['event'])
+        from sts2_mcp.output.event_presets import event_summary
+        result['event'] = event_summary(event_details(result['event']))
+        if result['event']['status'] == 'visible' and (result['scene'] != 'event' or result['screen'] != {'status': 'visible'}):
+            raise ValueError('Event is not the exposed screen.')
     elif result['scene'] == 'event':
         raise ValueError('Missing event state.')
     if result.get('divination') is not None:
         from sts2_mcp.output.divination_details import divination_details
-        result['divination'] = divination_details(result['divination'])
+        from sts2_mcp.output.event_presets import divination_summary
+        result['divination'] = divination_summary(divination_details(state['divination'],
+            require_text=state.get('schema_version', 0) >= 45))
         if result['divination']['status'] == 'visible' and (result['scene'] != 'event'
                 or result['screen'] != {'status': 'visible', 'view': 'divination'}
                 or (result.get('event') or {}).get('status') != 'covered'):
             raise ValueError('Divination is not the exposed screen.')
+        if result['divination'].get('grid') is not None:
+            result['divination']['grid'].pop('image', None)
     if result['screen'].get('view') == 'divination' and result.get('divination') is None:
         raise ValueError('Missing divination state.')
     if result.get('confirmation') is not None:

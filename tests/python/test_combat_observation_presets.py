@@ -174,7 +174,7 @@ class CombatProjectionTests(unittest.TestCase):
 
 
 class ObservationToolTests(unittest.IsolatedAsyncioTestCase):
-    async def test_divination_summary_omits_teaching_but_keeps_visible_board_media_and_permission(self):
+    async def test_divination_observation_omits_teaching_and_media_but_keeps_board_and_permission(self):
         client = DivinationClient()
         client.raw['divination']['dialogue'] = 'There is much to uncover...'
         original = copy.deepcopy(client.raw)
@@ -187,15 +187,16 @@ class ObservationToolTests(unittest.IsolatedAsyncioTestCase):
             'tools': [{'id': 'big', 'text': 'Big Divination', 'enabled': True},
                       {'id': 'small', 'text': 'Small Divination', 'enabled': True}],
             'dialogue': 'There is much to uncover...',
-            'grid': {'columns': 11, 'rows': 11, 'covered_rows': ['###########'] * 11,
-                     'image': {'width': 1, 'height': 1}}})
+            'grid': {'columns': 11, 'rows': 11, 'covered_rows': ['###########'] * 11}})
         self.assertIn('# covered', summary['notes']['divination'])
         self.assertEqual(summary['available_actions'], ['set_divination_tool', 'divine'])
         response = tool_result(summary)
-        self.assertEqual([block.type for block in response.content], ['text', 'image'])
-        self.assertEqual(response.content[1].data, tool_result(full).content[1].data)
+        self.assertEqual([block.type for block in response.content], ['text'])
+        self.assertEqual([block.type for block in tool_result(full).content], ['text'])
         self.assertEqual(json.loads(response.content[0].text), response.structuredContent)
-        for result in (full, await tools.get_observation(), await tools.inspect_event()):
+        for result in (full, await tools.get_observation()):
+            self.assertNotIn('instructions', result['divination'])
+        for result in (await tools.inspect_event(),):
             self.assertEqual(result['divination']['instructions'], {
                 'title': 'How to divine', 'description': 'Uncover the future.'})
         self.assertEqual(client.raw, original)
@@ -245,9 +246,9 @@ class ObservationToolTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual((await tools.get_observation({'preset': preset}))['error']['code'], 'transport_error')
             self.assertIsNone(tools.snapshot_id)
 
-    async def test_top_bar_divination_is_text_only_and_summary_has_image(self):
+    async def test_top_bar_and_summary_divination_are_text_only(self):
         tools = GameTools(DivinationClient())
-        for preset, types in [('summary', ['text', 'image']), ('top_bar', ['text'])]:
+        for preset, types in [('summary', ['text']), ('top_bar', ['text'])]:
             reply = tool_result(await tools.get_observation({'preset': preset}))
             self.assertFalse(reply.isError)
             self.assertEqual([c.type for c in reply.content], types)

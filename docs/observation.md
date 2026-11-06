@@ -37,7 +37,7 @@
 | 奖励、休息处与宝箱 | [奖励](development/rewards.md)、[休息处](development/rest-site.md)、[宝箱](development/treasure.md)只提供当前已展示内容；未打开奖励候选、未开箱宝藏及挖掘结果不提前公开 |
 | 商店 | [商店](development/shop.md)只在商品页已展开后读取库存；基础观察不提供卡牌正文，完整效果由详情调用提供，不暴露假商人隐藏身份 |
 | 事件与先古之民 | [事件](development/events.md)、[先古之民](development/ancients.md)提供当前已展开正文与选项，悬停解释单独查看；不提供后文或领取结果 |
-| 占卜 | [占卜](development/divination.md)保留实际棋盘图像、雾和局部图案，不用内部物品模型补齐未揭示身份或未来奖励 |
+| 占卜 | [占卜](development/divination.md)将实际已揭开图案转为文字部位，支持可选棋盘图像；隐藏、透明与格线遮挡区域不补齐身份、内部物品分组或未来奖励 |
 | 终章与结算 | [终章](development/run-ending.md)只提供当前完整气泡和已显示结算内容；发现提示保留原生数量限制，不提前透露后续解锁，胜负以原生结算为准 |
 
 `available_actions` 表示当前公开工具的可用范围，与具体参数是否合法分别判断；它不附送候选参数或保证未来状态。完整定义见[基础观察](development/observation.md#玩法字段)。

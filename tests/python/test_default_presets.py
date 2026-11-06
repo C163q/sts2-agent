@@ -229,10 +229,10 @@ class DefaultToolTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('star_cost', result['selection']['cards'][0])
         self.assertEqual(result['errors'], [{'code': 'cards_not_in_selection', 'card_ids': [80]}])
 
-    async def test_observation_default_and_images_keep_action_permission(self):
+    async def test_observation_default_text_keeps_action_permission(self):
         tools = GameTools(DivinationClient())
         default = await tools.get_observation()
-        self.assertIsInstance(default, ImagePayload)
+        self.assertNotIsInstance(default, ImagePayload)
         self.assertNotIn('player', default)
         self.assertEqual(default, await tools.get_observation({'preset': 'default'}))
         full = await tools.get_observation({'preset': 'full'})

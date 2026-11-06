@@ -110,5 +110,8 @@ def normalize_request(spec, arguments):
         for source, target in spec.native_renames:
             native[target] = native.pop(source)
     effect = spec.effect_for(native)
-    media = spec.media and preset not in {'actions_only', 'top_bar'}
+    media = spec.media and spec.name == 'inspect_event' and arguments.get('include_image', False)
+    if spec.projector and spec.name == 'inspect_event':
+        output.setdefault('preset', 'full' if preset == 'default' else preset)
+        output.setdefault('include_image', False)
     return NormalizedRequest(spec, preset, native, output, effect, media)

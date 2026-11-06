@@ -68,9 +68,9 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 商店的商品卡牌复用共用卡牌摘要：保留已有的名称、类型和费用，省略 rarity／visual_card_pool；商品 ID 保持在 items[].id，card 内不额外生成 ID。价格、affordable、enabled、on_sale、position、已用删牌项等商品信息仍沿用 default。商店卡牌沿用其网格上下文的可见外观字段；未显示的费用颜色、描边或不可打出标记不补造；卡牌正文继续通过 inspect_shop 查看。先古之民主体保持 default。
 
-普通事件 summary 省略 event.description，即当前页面叙事正文；options[].description 仍保留，用于展示效果、费用及锁定原因。选项 lethal_warning:false 时省略，true 时保留；其他 false 不受影响。省略表示本次没有显示原生危险红框，不沿用上次警告。default/full 和 inspect_event 仍保留页面正文与完整警告字段。示例与验证范围见[10–12 组记录](../research/2026-11-03-get-observation-shop-ancient-event.md)。
+普通事件主体在 get_observation.full/default/summary 中均使用 inspect_event.summary：省略页面叙事 event.description、悬停说明及 lethal_warning:false；保留选项效果 description、true 警告、启用状态和前进按钮。完整已展示正文及选项悬停解释由 inspect_event.full/default 提供。共用规则见[事件接口](events.md#基础观察与详情)。
 
-审判（Trial）的 event.description 同样省略；确认框的 confirmation.description 保留，不能按字段名递归删掉后果说明。建筑师 epilogue 主体沿用 default。占卜 summary 另省略 divination.instructions，其余可见主体、工具按钮、当前完整对白、坐标 notes 和同次棋盘 PNG 保留；default/full 及 inspect_event 的说明不变。13–15 组完整规则、示例和验证见[专项核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md)。
+审判（Trial）同样省略页面叙事，confirmation.description 保留，不能按字段名递归删除后果说明。建筑师 epilogue 主体沿用 default。占卜在 full/default/summary 中均省略固定教学 divination.instructions，保留文字棋盘、可见碎片、次数、工具和当前完整对白；基础观察不返回 PNG，也不接受 include_image。详情教学和可选图像见[占卜接口](divination.md)。
 
 已就绪且未被更高层覆盖的牌组页提供完整 `deck`、`view_upgrades` 和 `sort.by/descending`，分别对应 UI 的升级模式、主排序与方向。full/default/summary 的牌组卡牌采用 face_full／face_default／共用卡牌摘要，均无正文和悬停解释；ID 和显示顺序与 inspect_deck 相同，后者的 card_ids 不会限制基础观察。关闭或被覆盖后不附缓存内容，详细边界见[牌组接口](deck-inspection.md)。actions_only/top_bar 不增加牌组数据。
 
@@ -231,7 +231,7 @@ python3 -m tests.game.verifiers.verify_roundtrip --ipc-dir .tmp/roundtrip/ipc --
 
 ## 占卜棋盘
 
-[占卜接口](divination.md)通过 `divination` 字段返回可见次数、工具、说明与格子覆盖状态；同时以独立 MCP PNG 图像保留部分揭开的物品图案。底层事件和被覆盖的棋盘内容为 null，不读取雾下物品或未来奖励。
+[占卜接口](divination.md)通过 divination 返回当前阶段、可见次数、工具、对白、cell_rows 文字棋盘及 visible_fragments。#/. 表示覆盖／空白，s/S 区分局部图案与完整揭开；当前已揭开的方向线索由部位名称提供。三种基础观察预设共用事件详情摘要，省略固定教学；PNG 仅由 inspect_event.include_image 显式请求。底层事件与被覆盖棋盘内容继续隐藏，不读取雾下身份或未来随机奖励。
 
 地图展开且就绪时，`map` 返回整幕类型分组及原生候选；可选时列出 `travel_to_node`。连接与节点详情由 `inspect_map` 提供，见[地图接口](map-inspection.md#地图选路)。
 

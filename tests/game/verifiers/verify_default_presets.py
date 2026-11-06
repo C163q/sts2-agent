@@ -45,7 +45,7 @@ async def verify(args):
                 if images:
                     assert len(images) == 1 and images[0].mimeType == 'image/png'
                     (args.report.parent / f'{len(evidence):02}-{name}.png').write_bytes(base64.b64decode(images[0].data))
-                assert len(images) == (1 if (data.get('divination') or {}).get('status') == 'visible' else 0)
+                assert len(images) == int(bool((arguments or {}).get('include_image')) and (data.get('divination') or {}).get('status') == 'visible')
                 return data
 
             full = await call('get_observation', {'preset': 'full'})

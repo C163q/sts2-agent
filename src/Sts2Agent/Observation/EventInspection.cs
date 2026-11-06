@@ -36,6 +36,21 @@ internal sealed class EventInspection
         && RunUi.NonCombatVisible() && NRun.Instance?.GlobalUi.Overlays.ScreenCount == 0
         && !VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen) && VisibleUi.Shown(context.Layout);
 
+    public static string? InspectionUnavailableReason(Context? context)
+    {
+        if (!RunManager.Instance.IsInProgress) return "No local run is available for event inspection.";
+        if (context == null) return "No supported event is available on the current screen.";
+        if (!RunContext.Singleplayer) return "Event inspection requires a local single-player run.";
+        if (Exposed(context)) return null;
+        if (VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen)) return "Close the map with close_map before inspecting the event.";
+        if (CardView.Current != null) return "Close the card browsing page with close_card_view before inspecting the event.";
+        if (CardSelection.Current != null) return "Resolve the current card selection; inspect_selection shows its choices.";
+        if (RewardInspection.Current != null) return "Resolve the current reward page; inspect_rewards shows its rows.";
+        if (DivinationInspection.Current != null) return "Wait for the divination board to finish opening.";
+        if (EventConfirmation.Current != null) return "Resolve the confirmation with respond_to_confirmation before inspecting the event.";
+        return "The event is covered by a dialog or a screen transition.";
+    }
+
     private static bool TextComplete(Context context) => context.Layout.GetNodeOrNull<RichTextLabel>("%EventDescription")
         is { VisibleRatio: >= 0.999f } description && VisibleUi.OnScreen(description)
         && !RewardInspection.Animating(context.Layout, "_descriptionTween");
@@ -47,9 +62,13 @@ internal sealed class EventInspection
         && context.Layout.OptionButtons.Any(Shown)
         && context.Layout.OptionButtons.Where(Shown).All(b => !RewardInspection.Animating(b, "_animInTween"));
 
-    public static bool Shown(NEventOptionButton button) => VisibleUi.OnScreen(button.GetNodeOrNull<Control>("%Text"));
+    public static bool Shown(NEventOptionButton button) => VisibleUi.Displayed(button.GetNodeOrNull<Control>("%Text"));
 
-    public static bool Clickable(NEventOptionButton button) => Shown(button) && button.IsEnabled && !button.Option.IsLocked
+    public static bool CanHover(NEventOptionButton button) => Shown(button) && !button.Option.IsLocked
+        && button.IsEnabled && (button.GetMouseFilterWithOverride() != Control.MouseFilterEnum.Ignore
+            || button.GetFocusModeWithOverride() == Control.FocusModeEnum.All);
+
+    public static bool Clickable(NEventOptionButton button) => Shown(button) && VisibleUi.OnScreen(button) && button.IsEnabled && !button.Option.IsLocked
         && button.MouseFilter != Control.MouseFilterEnum.Ignore
         && (!button.Option.WasChosen || PrivateFields.Read(button.Option, "<DisableOnChosen>k__BackingField") is false)
         && !RewardInspection.Animating(button, "_animInTween");
@@ -90,7 +109,7 @@ internal sealed class EventInspection
                     ["description"] = EnglishCardText.Plain(b.Option.Description.GetFormattedText()),
                     ["enabled"] = ready && Clickable(b),
                     ["lethal_warning"] = VisibleUi.Shown(b.GetNodeOrNull<CanvasItem>("RedFlash")) };
-                if (full) result["hover_tips"] = Clickable(b) ? b.Option.HoverTips.Select(EnglishEventText.Tip).ToArray() : Array.Empty<HoverTipText>();
+                if (full) result["hover_tips"] = CanHover(b) ? b.Option.HoverTips.Select(EnglishEventText.Tip).ToArray() : Array.Empty<HoverTipText>();
                 return result;
             }).ToArray();
             var proceed = Proceed(current);

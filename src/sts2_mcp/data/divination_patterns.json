@@ -1,0 +1,19 @@
+{
+  "patterns": [
+    {"texture": "crystal_sphere_common_potion", "parts": [["potion.stopper"], ["potion.body"], ["potion.base"]]},
+    {"texture": "crystal_sphere_uncommon_potion", "parts": [["potion.stopper"], ["potion.body"], ["potion.base"]]},
+    {"texture": "crystal_sphere_rare_potion", "parts": [["round_potion.shoulder", "round_potion.stopper"], ["round_potion.lower_left", "round_potion.lower_right"]]},
+    {"texture": "crystal_sphere_gold", "parts": [["gold.coin"]]},
+    {"texture": "crystal_sphere_big_gold", "parts": [["gold.pile_left", "gold.pile_right"]]},
+    {"texture": "crystal_sphere_curse", "parts": [["card.curse.upper_left", "card.curse.upper_right"], ["card.lower_left", "card.lower_right"]]},
+    {"banner": "card_banner_common_mat", "parts": [["card.common.upper_left", "card.common.upper_right"], ["card.lower_left", "card.lower_right"]]},
+    {"banner": "card_banner_uncommon_mat", "parts": [["card.uncommon.upper_left", "card.uncommon.upper_right"], ["card.lower_left", "card.lower_right"]]},
+    {"banner": "card_banner_rare_mat", "parts": [["card.rare.upper_left", "card.rare.upper_right"], ["card.lower_left", "card.lower_right"]]},
+    {"texture": "crystal_sphere_relic", "parts": [
+      ["unrecognized", "box.top_left_edge", "box.top_with_gray_strip", "box.upper_right_corner"],
+      ["box.left_corner", "box.gray_strip", "box.gray_strip_and_brown_edge", "box.right_edge"],
+      ["box.left_face", "box.front_face", "box.vertical_edge", "box.spiral"],
+      ["box.lower_left_edge", "box.lower_edge", "box.lower_corner", "box.lower_right_edge"]
+    ]}
+  ]
+}

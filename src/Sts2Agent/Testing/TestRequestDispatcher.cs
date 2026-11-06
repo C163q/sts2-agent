@@ -32,6 +32,18 @@ internal sealed partial class GameAdapter
 {
     private async Task<string?> TestRequestBeforeCapture(Request request)
     {
+        if (request.Operation is "set_test_event_display" or "set_test_divination_display" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+            && testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") != null)
+        {
+            if (request.Arguments is not { } options || !options.TryGetProperty("mode", out var mode)
+                || mode.ValueKind != JsonValueKind.String)
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected a test display mode.");
+            int Number(string key) => options.TryGetProperty(key, out var value) && value.TryGetInt32(out int number) ? number : 0;
+            return Success(request, JsonSerializer.Serialize(request.Operation == "set_test_event_display"
+                ? EventInspectionDisplayFixture.Set(mode.GetString()!)
+                : DivinationDisplayFixture.Set(mode.GetString()!, Number("index"), Number("x"), Number("y"))));
+        }
         if (request.Operation == "set_test_shop_display" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
             && testSettings.Get("STS2_AGENT_TEST_SHOP_SCENARIO") != null)

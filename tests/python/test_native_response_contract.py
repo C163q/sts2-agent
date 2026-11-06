@@ -66,9 +66,9 @@ class NativeMediaTests(unittest.IsolatedAsyncioTestCase):
     async def test_only_outputs_with_boards_require_native_media(self):
         states = json.loads((DATA/'states.json').read_text())
         for tool, arguments, required in [
-            ('get_observation', {}, True), ('get_observation', {'preset': 'full'}, True),
-            ('get_observation', {'preset': 'summary'}, True), ('get_observation', {'preset': 'actions_only'}, False),
-            ('get_observation', {'preset': 'top_bar'}, False), ('inspect_event', {}, True),
+            ('get_observation', {}, False), ('get_observation', {'preset': 'full'}, False),
+            ('get_observation', {'preset': 'summary'}, False), ('get_observation', {'preset': 'actions_only'}, False),
+            ('get_observation', {'preset': 'top_bar'}, False), ('inspect_event', {}, False), ('inspect_event', {'include_image': True}, True),
             ('close_map', {}, False), ('close_card_view', {}, False),
             ('divine', {'x': 1, 'y': 2}, False), ('set_divination_tool', {'tool': 'small'}, False)]:
             with self.subTest(tool=tool, arguments=arguments):

@@ -23,9 +23,14 @@ internal sealed partial class GameAdapter
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current board before acting.");
         var screen = DivinationInspection.Current;
+        if (inspect)
+        {
+            if (DivinationInspection.InspectionUnavailableReason(screen) is { } rejection)
+                return ResponseBuilder.Error(request.Id, "illegal_action", rejection, publicMessage: true, uiUnchanged: true);
+            return InspectionSuccess(request, before, new { divination = DivinationInspection.Read() });
+        }
         if (screen == null || !DivinationInspection.Ready(screen))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available divination board.");
-        if (inspect) return InspectionSuccess(request, before, new { divination = DivinationInspection.Read() });
         NClickableControl? button = !DivinationInspection.Playing(screen) ? null
             : tool != null ? DivinationInspection.Tool(screen, tool)
             : DivinationInspection.Cells(screen).SingleOrDefault(c => c.Entity.X == x && c.Entity.Y == y && DivinationInspection.Clickable(c));

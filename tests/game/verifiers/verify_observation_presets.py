@@ -29,7 +29,7 @@ async def verify(args):
             initialized = await session.initialize()
             assert initialized.serverInfo.version == SERVER_VERSION
             definitions = {t.name: t for t in (await session.list_tools()).tools}
-            assert len(definitions) == 42
+            assert len(definitions) == 43
             assert definitions['get_observation'].inputSchema['properties']['preset']['enum'] == [
                 'default', 'full', 'actions_only', 'summary', 'top_bar']
 
@@ -107,7 +107,8 @@ async def verify(args):
                     assert summary['divination']['status'] == 'visible'
                     assert 'instructions' not in summary['divination']
                     inspected = await call('inspect_event')
-                    assert inspected['divination']['instructions'] == full['divination']['instructions']
+                    assert inspected['divination']['instructions']
+                    assert 'instructions' not in full['divination']
                     assert 'divination' not in bar
             after = await asyncio.to_thread(raw.call, 'get_state')
             # The board's visual animation changes PNG bytes without a gameplay change.
