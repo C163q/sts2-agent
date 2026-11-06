@@ -88,7 +88,7 @@
 
 ### 事件（5 项）
 
-- [ ] `inspect_event`：阶段：设计讨论；[审阅与占卜文字方案](2026-11-07-inspect-event-review.md)、[开发核验](2026-11-07-inspect-event-development-notes.md)及[两份当前结构 full JSON](2026-11-07-inspect-event-examples/README.md)。源码／资源与受控输入已核对，三项问题待处理；碎片词表、图片策略及summary尚未定稿，未修改工具行为。
+- [ ] `inspect_event`：阶段：设计讨论；[审阅与占卜文字方案](2026-11-07-inspect-event-review.md)、[开发核验](2026-11-07-inspect-event-development-notes.md)及[两份当前结构 full JSON](2026-11-07-inspect-event-examples/README.md)。源码／资源与受控输入已核对，三项问题待处理；s/S、summary及暂不筛选已确认，基础观察full/default/summary共用该摘要策略；碎片词表与图片策略待定，未修改工具行为。
 - [ ] `choose_event_option`：选择事件选项。
 - [ ] `set_divination_tool`：切换占卜揭示范围。
 - [ ] `divine`：执行一次占卜揭示。
