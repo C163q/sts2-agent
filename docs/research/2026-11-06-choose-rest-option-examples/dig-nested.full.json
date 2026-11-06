@@ -1,0 +1,38 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "claim_reward",
+    "proceed",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_rewards"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "relic": {
+          "name": "Calling Bell"
+        },
+        "type": "relic_obtained",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 46,
+          "name": "Curse of the Bell"
+        },
+        "pile": "deck",
+        "type": "card_added",
+        "sequence": 2
+      }
+    ]
+  }
+}

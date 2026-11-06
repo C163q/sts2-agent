@@ -1,0 +1,194 @@
+[
+  {
+    "name": "no_rest",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_choose_rest_option_review.py",
+        "args": [
+          "--scenario",
+          "no_rest"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "basic",
+    "scenarios": {
+      "rest": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_choose_rest_option_review.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "disabled",
+    "scenarios": {
+      "rest": "disabled"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_choose_rest_option_review.py",
+        "args": [
+          "--scenario",
+          "disabled"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "selection",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_choose_rest_option_review.py",
+        "args": [
+          "--scenario",
+          "selection"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "rewards",
+    "scenarios": {
+      "rest": "heal_rewards"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_choose_rest_option_review.py",
+        "args": [
+          "--scenario",
+          "rewards"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "native_smith",
+    "scenarios": {
+      "rest": "smith"
+    },
+    "steps": [
+      {
+        "name": "flow",
+        "verifier": "verify_rest_site.py",
+        "args": [
+          "--scenario",
+          "smith"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "native_multi",
+    "scenarios": {
+      "rest": "multi"
+    },
+    "steps": [
+      {
+        "name": "flow",
+        "verifier": "verify_rest_site.py",
+        "args": [
+          "--scenario",
+          "multi"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "native_cook",
+    "scenarios": {
+      "rest": "cook"
+    },
+    "steps": [
+      {
+        "name": "flow",
+        "verifier": "verify_rest_site.py",
+        "args": [
+          "--scenario",
+          "cook"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "native_tent",
+    "scenarios": {
+      "rest": "tent"
+    },
+    "steps": [
+      {
+        "name": "flow",
+        "verifier": "verify_rest_site.py",
+        "args": [
+          "--scenario",
+          "tent"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "native_dig",
+    "scenarios": {
+      "rest": "dig"
+    },
+    "steps": [
+      {
+        "name": "flow",
+        "verifier": "verify_rest_site.py",
+        "args": [
+          "--scenario",
+          "dig"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "native_dig_nested",
+    "scenarios": {
+      "rest": "dig_nested"
+    },
+    "steps": [
+      {
+        "name": "flow",
+        "verifier": "verify_rest_site.py",
+        "args": [
+          "--scenario",
+          "dig_nested"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "native_dig_choice",
+    "scenarios": {
+      "rest": "dig_choice"
+    },
+    "steps": [
+      {
+        "name": "flow",
+        "verifier": "verify_rest_site.py",
+        "args": [
+          "--scenario",
+          "dig_choice"
+        ]
+      }
+    ]
+  }
+]
