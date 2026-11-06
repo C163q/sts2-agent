@@ -1,6 +1,6 @@
 # close_shop 核验与设计建议
 
-> 当前状态：已按定稿实现并通过约定验收，等待独立审阅及合入；下文现状与样本保留审阅基线，最终要求见输出定稿。详细证据见[开发核验](2026-11-07-close-shop-development-notes.md)。
+> 当前状态：已按定稿实现并完成验收、独立审阅及合入main；下文现状与样本保留审阅基线，最终要求见输出定稿。详细证据见[开发核验](2026-11-07-close-shop-development-notes.md)。
 
 总流程见[工具清单](2026-11-02-mcp-tool-review.md)。实现及验收进度见[实施记录](2026-11-07-shop-closing-recovery-implementation.md)；下文现状及旧样本保留修复前基线。
 

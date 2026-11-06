@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-> 当前状态：实施中，共1项，已完成0项；实现和验收完成，正在提交；剩余最终审阅与合入。暂无阻塞。
+> 当前状态：已完成，共1项，已完成1项；独立审阅通过并合入main，无剩余步骤或阻塞。
 
 **Goal:** close_shop点击前拒绝给出准确原因，并可直接继续合法操作。
 
@@ -37,11 +37,11 @@
 - [x] **Step 2:** 运行新Python和至少一类旧DLL GUI，确认因旧恢复行为失败，保留证据。
 - [x] **Step 3:** 实现共用关闭检查，执行／列表／enabled接入；共享开关按钮流程，参数拒绝与注册恢复规则接入；更新版本和说明。
 - [x] **Step 4:** 新Python变绿，全量Python、C#和构建；六类专项GUI、已完成打开五类及购买／补货／详情显示回归通过。
-- [ ] **Step 5:** 同步当前文档与十五项以内典型修复后JSON，核对来源／哈希、链接、日志、进程退出和版本；提交fix: preserve shop closing rejection recovery。
+- [x] **Step 5:** 同步当前文档与十五项以内典型修复后JSON，核对来源／哈希、链接、日志、进程退出和版本；提交fix: preserve shop closing rejection recovery。
 
 新测试：`.tmp/mcp-venv/bin/python -m unittest tests.python.test_shop_closing`；RED应为get_observation而非choose_legal_action，GREEN为直接open成功。完整验收遵循[隔离运行](../../development/roundtrip.md)及[GUI指南](../../development/gui-testing.md)，证据根`.tmp/2026-11-07-shop-closing-recovery/`，最终验收脚本verify_delivery.py核对真实日志和样本，不重复编译。
 
 ## 最终审阅与合入
 
-- [ ] 独立最终审阅，必要问题按RED→GREEN处理。
-- [ ] 归档并校验本任务工作目录，自行合入main、删除已合并分支并核销工具。
+- [x] 独立最终审阅，必要问题按RED→GREEN处理。
+- [x] 归档并校验本任务工作目录，自行合入main、删除已合并分支并核销工具。
