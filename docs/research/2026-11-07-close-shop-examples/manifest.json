@@ -1,0 +1,122 @@
+[
+  {
+    "file": "inventory.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-close-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 26,
+    "sha256": "c26aebc390ad92d7301e62ba942fcc590283c1df36787c8979cac128c986f0a4"
+  },
+  {
+    "file": "inventory.default.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "default"
+    },
+    "source": ".tmp/2026-11-07-close-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 30,
+    "sha256": "c26aebc390ad92d7301e62ba942fcc590283c1df36787c8979cac128c986f0a4"
+  },
+  {
+    "file": "fake.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-close-shop-review/gui/fake/audit/evidence.json",
+    "row_index": 12,
+    "sha256": "84457b151fc130f58ef71edbf98e6f54859edfbbab6dbf89c5b84d30dda3fe1c"
+  },
+  {
+    "file": "after-automatic-purchase.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-close-shop-review/gui/parasol/audit/evidence.json",
+    "row_index": 11,
+    "sha256": "b743bed83f173850df6e1bea3e7e2581f866e5cf188f7fa5889bdaebb6f8d2ec"
+  },
+  {
+    "file": "after-selection.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-close-shop-review/gui/remove/audit/evidence.json",
+    "row_index": 20,
+    "sha256": "c26aebc390ad92d7301e62ba942fcc590283c1df36787c8979cac128c986f0a4"
+  },
+  {
+    "file": "after-rewards.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-close-shop-review/gui/nested/audit/evidence.json",
+    "row_index": 20,
+    "sha256": "c26aebc390ad92d7301e62ba942fcc590283c1df36787c8979cac128c986f0a4"
+  },
+  {
+    "file": "no-permission.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-close-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 0,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "already-closed.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-close-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 4,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "after-rejection.full.json",
+    "tool": "open_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-close-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 6,
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "map-covered.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-close-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 12,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-close-shop-review/gui/remove/audit/evidence.json",
+    "row_index": 13,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "reward-covered.full.json",
+    "tool": "close_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-close-shop-review/gui/nested/audit/evidence.json",
+    "row_index": 13,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  }
+]

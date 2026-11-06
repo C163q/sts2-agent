@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销31项。open_shop实现、验收与独立审阅完成并已合入main；剩余13项尚未核销，无阻塞。
+> 当前状态：工具核验进行中，共44项，已核销31项。close_shop场景核验完成，正在讨论点击前拒绝恢复与具体诊断；剩余13项尚未核销，无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -83,7 +83,7 @@
 
 - [x] `inspect_shop`：查看商品、价格与详情；[审阅与建议](2026-11-06-inspect-shop-review.md)、[开发核验](2026-11-06-inspect-shop-development-notes.md)、[16份典型JSON](2026-11-06-inspect-shop-examples/README.md)。21项相关Python、九类GUI通过；三项已按[定稿](2026-11-06-inspect-shop-review.md#输出定稿)实现，包含共用摘要／顶栏、item_ids/kinds与显示边界；751项Python、131项C#、十类专项及三类旧GUI回归通过，独立审阅无问题并已合入，见[实施记录](2026-11-06-shop-inspection-presets-implementation.md)。
 - [x] `open_shop`：打开商店。阶段：完成；[定稿](2026-11-07-open-shop-review.md#输出定稿)的两项问题已修复，755项Python、131项C#、五类专项及五类回归GUI通过，独立审阅无问题并已合入main（5e66b3b），见[实施记录](2026-11-07-shop-opening-recovery-implementation.md)和[十五份修复后JSON](2026-11-07-shop-opening-fixed-examples/README.md)；原[十份审阅返回](2026-11-07-open-shop-examples/README.md)保留基线。
-- [ ] `close_shop`：关闭商店。
+- [ ] `close_shop`：关闭商店。阶段：设计讨论；[审阅与建议](2026-11-07-close-shop-review.md)、[开发核验](2026-11-07-close-shop-development-notes.md)、[十二份典型JSON](2026-11-07-close-shop-examples/README.md)。33项相关Python、六类GUI通过；已复现点击前拒绝后的许可丢失和公开原因笼统两项问题，工具行为尚未修改。
 - [ ] `buy_item`：购买商品或进入删牌选择。
 
 ### 事件（5 项）

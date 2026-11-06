@@ -1,0 +1,98 @@
+[
+  {
+    "name": "no_shop",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_close_shop_review.py",
+        "args": [
+          "--scenario",
+          "no_shop"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "basic",
+    "scenarios": {
+      "shop": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_close_shop_review.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "fake",
+    "scenarios": {
+      "shop": "fake"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_close_shop_review.py",
+        "args": [
+          "--scenario",
+          "fake"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "remove",
+    "scenarios": {
+      "shop": "remove"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_close_shop_review.py",
+        "args": [
+          "--scenario",
+          "remove"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nested",
+    "scenarios": {
+      "shop": "nested"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_close_shop_review.py",
+        "args": [
+          "--scenario",
+          "nested"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "parasol",
+    "scenarios": {
+      "shop": "parasol"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_close_shop_review.py",
+        "args": [
+          "--scenario",
+          "parasol"
+        ]
+      }
+    ]
+  }
+]
