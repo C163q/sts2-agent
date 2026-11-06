@@ -41,15 +41,17 @@ def inspect_event_details(state):
     from sts2_mcp.output.scene_context import scene_context
     context = scene_context(state)
     if context['scene'] != 'event': raise ValueError('Invalid event inspection scene.')
-    if (state.get('divination') or {}).get('status') == 'visible':
+    board = None
+    if state.get('divination') is not None:
         from sts2_mcp.output.divination_details import divination_details
+        board = divination_details(state['divination'], require_text=state.get('schema_version', 0) >= 45)
+    if board is not None and board['status'] == 'visible':
         if (context['screen'] != {'status': 'visible', 'view': 'divination'}
                 or state.get('event') is not None and state['event'].get('status') != 'covered'):
             raise ValueError('Divination is not the exposed screen.')
         if state.get('event') is not None:
             event_details(state['event'])
-        return {'scene': 'event', 'divination': divination_details(state['divination'],
-                require_text=state.get('schema_version', 0) >= 45)}
+        return {'scene': 'event', 'divination': board}
     if context['screen'] != {'status': 'visible'}:
         raise ValueError('Event is not the exposed screen.')
     return {'scene': 'event', 'event': event_details(state['event'], full=True)}

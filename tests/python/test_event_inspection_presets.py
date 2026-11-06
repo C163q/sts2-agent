@@ -17,6 +17,25 @@ def text_board():
 
 
 class EventInspectionPresets(unittest.IsolatedAsyncioTestCase):
+    async def test_event_validates_nonvisible_auxiliary_board_before_authorizing(self):
+        for preset in ('default', 'full', 'summary'):
+            for status in ('covered', 'garbage'):
+                with self.subTest(preset=preset, status=status):
+                    client = EventClient()
+                    client.raw['divination'] = text_board()['divination']
+                    client.raw['divination']['status'] = status
+                    tools = GameTools(client)
+                    result = await tools.inspect_event({'preset': preset})
+                    self.assertEqual(result.get('error', {}).get('code'), 'transport_error')
+                    self.assertIsNone(tools.session.permission.token)
+            client = EventClient()
+            board = text_board()['divination']
+            client.raw['divination'] = {key: 'covered' if key == 'status' else None for key in board}
+            tools = GameTools(client)
+            result = await tools.inspect_event({'preset': preset})
+            self.assertNotIn('error', result)
+            self.assertEqual(tools.session.permission.token, 'event-1')
+
     async def test_legacy_revealed_cells_are_not_described_as_known_empty(self):
         client = DivinationClient()
         client.raw['divination']['grid']['covered_rows'][5] = '#####.#####'
