@@ -1,6 +1,6 @@
 # inspect_shop 核验与参数建议
 
-> 当前状态：定稿已实现并通过行为验收，准备最终独立审阅；[实施记录](2026-11-06-shop-inspection-presets-implementation.md)及新JSON另列，原审阅样本保持原样。工具清单29/44，无阻塞。
+> 当前状态：定稿已实现、验收并通过独立审阅，功能82c5dc4已合入main；[实施记录](2026-11-06-shop-inspection-presets-implementation.md)及新JSON另列，原审阅样本保持原样。工具清单30/44，无阻塞。
 
 流程见[工具清单](2026-11-02-mcp-tool-review.md)；源码、问题编号及验证依据见[开发核验](2026-11-06-inspect-shop-development-notes.md)。本页负责实际表现和待决定的设计。
 
