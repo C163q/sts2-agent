@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销32项。buy_item已实现并完成约定验收，正在独立最终审阅；剩余12项尚未核销，无阻塞。
+> 当前状态：工具核验进行中，共44项，已核销33项。buy_item已实现、验收及合入main，独立审阅留1项非阻塞建议；剩余11项尚未核销，无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -84,7 +84,7 @@
 - [x] `inspect_shop`：查看商品、价格与详情；[审阅与建议](2026-11-06-inspect-shop-review.md)、[开发核验](2026-11-06-inspect-shop-development-notes.md)、[16份典型JSON](2026-11-06-inspect-shop-examples/README.md)。21项相关Python、九类GUI通过；三项已按[定稿](2026-11-06-inspect-shop-review.md#输出定稿)实现，包含共用摘要／顶栏、item_ids/kinds与显示边界；751项Python、131项C#、十类专项及三类旧GUI回归通过，独立审阅无问题并已合入，见[实施记录](2026-11-06-shop-inspection-presets-implementation.md)。
 - [x] `open_shop`：打开商店。阶段：完成；[定稿](2026-11-07-open-shop-review.md#输出定稿)的两项问题已修复，755项Python、131项C#、五类专项及五类回归GUI通过，独立审阅无问题并已合入main（5e66b3b），见[实施记录](2026-11-07-shop-opening-recovery-implementation.md)和[十五份修复后JSON](2026-11-07-shop-opening-fixed-examples/README.md)；原[十份审阅返回](2026-11-07-open-shop-examples/README.md)保留基线。
 - [x] `close_shop`：关闭商店。阶段：完成；[定稿](2026-11-07-close-shop-review.md#输出定稿)的两项问题已实现，759项Python、131项C#、六类专项及九类回归GUI通过，独立审阅无问题并已合入main（38f4c58），见[实施记录](2026-11-07-shop-closing-recovery-implementation.md)及[十五份修复后JSON](2026-11-07-shop-closing-fixed-examples/README.md)；旧[十二份审阅样本](2026-11-07-close-shop-examples/README.md)保留基线。
-- [ ] `buy_item`：购买商品或进入删牌选择。阶段：独立最终审阅；[定稿](2026-11-07-buy-item-review.md#输出定稿)四项问题及pending已实现，767项Python、139项C#、十类专项及十类回归通过，见[实施记录](2026-11-07-shop-purchase-feedback-implementation.md)、[二十份修复后JSON](2026-11-07-shop-purchase-fixed-examples/README.md)；旧[十八份审阅返回](2026-11-07-buy-item-examples/README.md)保留原始问题。
+- [x] `buy_item`：购买商品或进入删牌选择。阶段：完成；[定稿](2026-11-07-buy-item-review.md#输出定稿)四项问题及pending已实现，767项Python、139项C#、十类专项及十类回归、最终DLL两类补测通过；独立审阅可合入，1项非阻塞建议见记录，已合入main（5d0cac9），见[实施记录](2026-11-07-shop-purchase-feedback-implementation.md)、[二十份修复后JSON](2026-11-07-shop-purchase-fixed-examples/README.md)；旧[十八份审阅返回](2026-11-07-buy-item-examples/README.md)保留原始问题。
 
 ### 事件（5 项）
 

@@ -1,6 +1,6 @@
 # 商店购买反馈、恢复与选择稳定性实施记录
 
-> 当前状态：实现和全部约定验收完成，等待独立审阅与合入。暂无阻塞。
+> 当前状态：已完成约定实现和验收，独立审阅可合入，功能提交5d0cac9已合入main；1项非阻塞校验建议延期记录。无未完成必需步骤或阻塞。
 
 依据[输出定稿](2026-11-07-buy-item-review.md#输出定稿)及[计划](../superpowers/plans/2026-11-07-shop-purchase-feedback.md)。旧问题及目标原生证据见[审阅开发依据](2026-11-07-buy-item-development-notes.md)。
 
@@ -46,3 +46,11 @@
 终局缺省结果补测RED：run_won／run_lost缺少购买结果时旧校验错误给transport_error；改为仅正常action_completed及choice_required强制结果，终局仍保留回执且不授权继续。该变更仅Python，Mod DLL未改，新增协议单测RED两个子用例（0.024秒）→八项协议GREEN（0.176秒），最终全量767项再次通过（39.791秒）；原GUI均使用相同Mod购买逻辑，正常输入校验未放宽。
 
 绿色GUI记录合计432次MCP／135条原生操作，另8次库存夹具检查及3条建局记录；候选／最终DLL分开保留。交付脚本核对38份新旧样本来源／哈希、433条相对链接、全部日志、六个自有PID退出、版本与schema及双81门控，均通过。
+
+## 最终审阅与合入
+
+独立审阅者review_purchase_feedback使用gpt-6.1-sol high、独立上下文，审阅d8f4a80..5d0cac9：Critical0、Important0、Minor1，可合入，无本范围内进一步重构要求；Declined to judge:none。另行重算候选／最终DLL、runtime及38样本来源和哈希，未启动游戏、构建或重复广泛测试。
+
+延期小问题：结果解码对pending的选择边界只检查status:visible，没有排除type:unsupported。审阅将实际删牌pending响应52a5a658d5c14ad3a82e8607d310b1cc.json的selection.type改为unsupported，仍可通过purchase_details。当前Mod的CardSelection.Status不会产生该矛盾组合，game_session.can_continue另行排除unsupported，因此不会错误授予操作许可；后续可补类型检查及负例。本项按非阻塞Minor记录于本报告，不新增用户TODO。
+
+功能提交5d0cac9快进合入main，清理临时分支；收尾只改记录，不重建已测试DLL。任务目录六文件归档至证据根inline-workspace，逐文件SHA-256相等后只删除本任务目录，记录为workspace-archive-verification.json。没有正式安装或推送；多人、第三方、全部修改组合及真实超时／人工并发仍受上述验证边界限制。
