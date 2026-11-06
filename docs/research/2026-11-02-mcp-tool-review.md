@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销33项。inspect_event已实现并完成验收，当前进行独立审阅，含占卜文字观察；剩余11项尚未核销，无阻塞。buy_item独立审阅的非阻塞建议见其实施记录。
+> 当前状态：工具核验进行中，共44项，已核销34项。inspect_event及占卜文字观察已完成，独立审阅的重要校验问题已修复并合入main；剩余10项尚未核销，无阻塞。buy_item独立审阅的非阻塞建议见其实施记录。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -88,7 +88,7 @@
 
 ### 事件（5 项）
 
-- [ ] `inspect_event`：阶段：独立审阅；[定稿](2026-11-07-inspect-event-review.md)、[开发依据](2026-11-07-inspect-event-development-notes.md)、[实施与验证](2026-11-07-event-inspection-text-implementation.md)及[17份实测返回](2026-11-07-event-inspection-text-examples/README.md)。三项问题、summary、文字棋盘和可选PNG已实现；基础观察三个预设共用静态摘要。776项Python、145项C#、11类GUI及缩放验证通过，审阅及合入待完成。
+- [x] `inspect_event`：阶段：完成；[定稿](2026-11-07-inspect-event-review.md)、[开发依据](2026-11-07-inspect-event-development-notes.md)、[实施与验证](2026-11-07-event-inspection-text-implementation.md)及[17份实测返回](2026-11-07-event-inspection-text-examples/README.md)。三项问题、summary、文字棋盘和可选PNG已实现；基础观察三个预设共用静态摘要。777项Python、145项C#、11类GUI、缩放及83入口门控通过；独立审阅发现1项重要校验缺口，补测试修复后合入main（9aac986、8a98c52），无遗留Minor。
 - [ ] `choose_event_option`：选择事件选项。
 - [ ] `set_divination_tool`：切换占卜揭示范围。
 - [ ] `divine`：执行一次占卜揭示。

@@ -1,6 +1,6 @@
 # inspect_event 核验与占卜文字方案
 
-> 当前状态：已按定稿实现并完成验收，独立审阅与合入待完成。当前行为及验证见[实施记录](2026-11-07-event-inspection-text-implementation.md)；下文审阅现状保留b1afbaa基线，字段定稿以已确认规则及实施记录为准。
+> 当前状态：已按定稿实现、验收，独立审阅的重要校验问题已修复并合入main。当前行为及验证见[实施记录](2026-11-07-event-inspection-text-implementation.md)；下文审阅现状保留b1afbaa基线，字段定稿以已确认规则及实施记录为准。
 
 总流程见[工具清单](2026-11-02-mcp-tool-review.md)。本项同时承接[占卜文字观察待办](../development/TODO.md)，get_observation 与 inspect_event 使用同一份文字棋盘。开发依据、受控探针和未验证范围另见[开发核验](2026-11-07-inspect-event-development-notes.md)。
 
