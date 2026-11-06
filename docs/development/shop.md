@@ -50,6 +50,8 @@ get_observation 的 summary 使用[共用卡牌摘要规则](observation.md#mcp-
 
 `inspect_shop()` 在商品页已打开时，一次返回全部当前商品的完整说明。卡牌在 `card` 内增加 `description`、`hover_tips`；遗物、药水和可用删牌服务在商品对象上增加这两个字段。关闭时调用会拒绝，不代为打开。详情只读，不消耗随机数；成功时刷新状态令牌，可直接购买已读取的商品。
 
+详情目前仅支持default/full，返回scene、screen及shop，不附送金币或药水槽；购买上下文可从get_observation读取。明确只读拒绝保留已有许可，首次失败不生成许可。当前错误说明仍笼统，外部上下文一致性校验及商品／价格读取的视口过滤也有已确认缺口，见[详情审阅](../research/2026-11-06-inspect-shop-review.md)；summary、筛选及购买上下文仍为待定建议。
+
 地图、选牌、奖励或其他界面覆盖时，`shop.status: "covered"`，`view/items/open/back/proceed` 均为 `null`；不会穿透读取或购买。原生展开/收回动画期间 `view` 为 `opening` / `closing`，不输出商品和可用按钮。
 
 ## 购买与补货

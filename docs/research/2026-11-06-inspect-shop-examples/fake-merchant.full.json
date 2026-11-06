@@ -1,0 +1,98 @@
+{
+  "scene": "shop",
+  "shop": {
+    "status": "visible",
+    "view": "inventory",
+    "items": [
+      {
+        "id": 0,
+        "kind": "relic",
+        "position": "relic:0",
+        "price": 46,
+        "affordable": true,
+        "enabled": true,
+        "name": "Orichalcum???",
+        "description": "If you end your turn without Block, gain 3 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Until next turn, prevents damage."
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "kind": "relic",
+        "position": "relic:1",
+        "price": 47,
+        "affordable": true,
+        "enabled": true,
+        "name": "Happy Flower???",
+        "description": "Every 5 turns, gain <Energy>.",
+        "hover_tips": [
+          {
+            "title": "Energy",
+            "description": "Energy is used to play cards from your Hand."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "kind": "relic",
+        "position": "relic:2",
+        "price": 50,
+        "affordable": true,
+        "enabled": true,
+        "name": "Lee's Waffle???",
+        "description": "Upon pickup, heal 10% of your HP.",
+        "hover_tips": []
+      },
+      {
+        "id": 3,
+        "kind": "relic",
+        "position": "relic:3",
+        "price": 46,
+        "affordable": true,
+        "enabled": true,
+        "name": "Snecko Eye???",
+        "description": "Start each combat Confused.",
+        "hover_tips": [
+          {
+            "title": "Confused",
+            "description": "The costs of your cards are randomized on draw, from 0 to 3."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "kind": "relic",
+        "position": "relic:4",
+        "price": 56,
+        "affordable": true,
+        "enabled": true,
+        "name": "Strike Dummy???",
+        "description": "Cards containing “Strike” deal 1 additional damage.",
+        "hover_tips": []
+      },
+      {
+        "id": 5,
+        "kind": "relic",
+        "position": "relic:5",
+        "price": 56,
+        "affordable": true,
+        "enabled": true,
+        "name": "Mango???",
+        "description": "Upon pickup, raise your Max HP by 3.",
+        "hover_tips": []
+      }
+    ],
+    "open": null,
+    "back": {
+      "enabled": true
+    },
+    "proceed": null
+  },
+  "screen": {
+    "status": "visible"
+  }
+}

@@ -1,0 +1,162 @@
+[
+  {
+    "file": "inventory.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 6,
+    "sha256": "9db4df977587007897a9b0de158cfb8f7233ca26216c5b7a83ec942146ebaf0a"
+  },
+  {
+    "file": "inventory.default.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "default"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 12,
+    "sha256": "f1451649f1dc4b2840b85957cb63633c0c2541c992fb0d2a6d545e9911b85f0b"
+  },
+  {
+    "file": "after-card.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 20,
+    "sha256": "9b655edaba7349b2f1a718ab71175ae1ce0875654d2862bb119ae4379cbf34a5"
+  },
+  {
+    "file": "closed-first.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 0,
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "map-covered.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/basic/audit/evidence.json",
+    "row_index": 14,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/remove/audit/evidence.json",
+    "row_index": 13,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "used-removal.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/remove/audit/evidence.json",
+    "row_index": 20,
+    "sha256": "f0351d6f9255dd1ae1b089e47ceb4d5153f918008a217ac19e97e2fedf1ee198"
+  },
+  {
+    "file": "courier.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/courier/audit/evidence.json",
+    "row_index": 6,
+    "sha256": "e48e2de24a6c959d014e9c2013a51a0fd7adbeb55835eddd5ed9989a9bc38398"
+  },
+  {
+    "file": "courier-restocked.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/courier/audit/evidence.json",
+    "row_index": 13,
+    "sha256": "6dbe2bc925388414448b3bbbb928a78e3f9451c58d5ea517b5f6d1551b5d4173"
+  },
+  {
+    "file": "hidden-price.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/hidden_price/audit/evidence.json",
+    "row_index": 2,
+    "sha256": "55fc1ece0234b8973e4166b4d5fd05cbba9a7c59e67780d17b14dba6d4579d22"
+  },
+  {
+    "file": "fake-merchant.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/fake/audit/evidence.json",
+    "row_index": 6,
+    "sha256": "7698912c9785bdd097f7a5fe4d106fb6e310e1d3d09e050baa0b155490e8a7f7"
+  },
+  {
+    "file": "full-potions.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/full/audit/evidence.json",
+    "row_index": 6,
+    "sha256": "9db4df977587007897a9b0de158cfb8f7233ca26216c5b7a83ec942146ebaf0a"
+  },
+  {
+    "file": "reward-covered.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/nested/audit/evidence.json",
+    "row_index": 13,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "nested-return.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/nested/audit/evidence.json",
+    "row_index": 15,
+    "sha256": "e577f83c6dbbf09990f06b01e79f942755156436a9018400c19d86f6009c863a"
+  },
+  {
+    "file": "parasol-complete.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/parasol/audit/evidence.json",
+    "row_index": 5,
+    "sha256": "a10885066ab99c5e9e6b03f4999277833a068515fca4d9e02b079d985b38c431"
+  },
+  {
+    "file": "no-shop.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-inspect-shop-review/gui/no_shop/audit/evidence.json",
+    "row_index": 3,
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  }
+]

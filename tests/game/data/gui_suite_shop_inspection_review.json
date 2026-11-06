@@ -1,0 +1,146 @@
+[
+  {
+    "name": "no_shop",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_shop_inspection_review.py",
+        "args": [
+          "--scenario",
+          "no_shop"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "basic",
+    "scenarios": {
+      "shop": "basic"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_shop_inspection_review.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "remove",
+    "scenarios": {
+      "shop": "remove"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_shop_inspection_review.py",
+        "args": [
+          "--scenario",
+          "remove"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "courier",
+    "scenarios": {
+      "shop": "courier"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_shop_inspection_review.py",
+        "args": [
+          "--scenario",
+          "courier"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hidden_price",
+    "scenarios": {
+      "shop": "hidden_price"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_shop_inspection_review.py",
+        "args": [
+          "--scenario",
+          "hidden_price"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "fake",
+    "scenarios": {
+      "shop": "fake"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_shop_inspection_review.py",
+        "args": [
+          "--scenario",
+          "fake"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "full",
+    "scenarios": {
+      "shop": "full"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_shop_inspection_review.py",
+        "args": [
+          "--scenario",
+          "full"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nested",
+    "scenarios": {
+      "shop": "nested"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_shop_inspection_review.py",
+        "args": [
+          "--scenario",
+          "nested"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "parasol",
+    "scenarios": {
+      "shop": "parasol"
+    },
+    "steps": [
+      {
+        "name": "audit",
+        "verifier": "verify_shop_inspection_review.py",
+        "args": [
+          "--scenario",
+          "parasol"
+        ]
+      }
+    ]
+  }
+]

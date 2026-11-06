@@ -1,0 +1,27 @@
+{
+  "scene": "shop",
+  "shop": {
+    "status": "visible",
+    "view": "inventory",
+    "items": [
+      {
+        "id": 0,
+        "kind": "card_removal",
+        "position": "card_removal:0",
+        "price": null,
+        "affordable": null,
+        "enabled": false,
+        "name": "Card Removal Service",
+        "used": true
+      }
+    ],
+    "open": null,
+    "back": {
+      "enabled": true
+    },
+    "proceed": null
+  },
+  "screen": {
+    "status": "visible"
+  }
+}
