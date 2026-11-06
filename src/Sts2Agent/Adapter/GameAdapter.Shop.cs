@@ -28,7 +28,7 @@ internal sealed partial class GameAdapter
             return InspectionSuccess(request, before, new { details.shop, details.unavailable_hover_sources,
                 top_bar = before.GetProperty("top_bar") });
         }
-        if (request.Operation == "open_shop") return await OpenShopRequest(request, context);
+        if (request.Operation is "open_shop" or "close_shop") return await ShopViewRequest(request, context);
         if (context == null || !ShopInspection.Exposed(context) || !RunContext.Singleplayer
             || !ShopInspection.Ready(context))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player shop.");
@@ -44,15 +44,12 @@ internal sealed partial class GameAdapter
         NMerchantSlot? slot = request.Operation == "buy_item" ? shopInspection.Find(context, itemId) : null;
         if (request.Operation == "buy_item" && (!context.Inventory.IsOpen || slot == null || !ShopInspection.Purchasable(slot)))
             return FileMailbox.Error(request.Id, "illegal_action", "The observed shop item is unavailable.");
-        if (request.Operation == "close_shop" && (!context.Inventory.IsOpen || !ShopInspection.Back(context).IsEnabled))
-            return FileMailbox.Error(request.Id, "illegal_action", "This shop button is unavailable.");
         if (slot != null) { slot.Entry.PurchaseCompleted += Purchased; slot.Entry.PurchaseFailed += Failed; }
         try
         {
             UiChanged();
             if (slot != null)
                 submitted = (Task)AccessTools.Method(typeof(NMerchantSlot), "OnSelected").Invoke(slot, null)!;
-            else if (request.Operation == "close_shop") ShopInspection.Back(context).ForceClick();
             var (after, reason) = await ActionObservation(() =>
             {
                 if (!ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())) return "interrupted";
@@ -70,15 +67,17 @@ internal sealed partial class GameAdapter
         }
     }
 
-    private async Task<string> OpenShopRequest(Request request, ShopInspection.Context? context)
+    private async Task<string> ShopViewRequest(Request request, ShopInspection.Context? context)
     {
-        if (ShopInspection.OpenUnavailableReason(context) is { } unavailable)
+        bool opening = request.Operation == "open_shop";
+        if ((opening ? ShopInspection.OpenUnavailableReason(context) : ShopInspection.CloseUnavailableReason(context)) is { } unavailable)
             return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", unavailable);
         var run = RunManager.Instance.DebugOnlyGetState();
         UiChanged();
-        context!.Merchant.ForceClick();
+        if (opening) context!.Merchant.ForceClick();
+        else ShopInspection.Back(context!).ForceClick();
         var (after, reason) = await ActionObservation(() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
-            && ReferenceEquals(context.Owner, ShopInspection.Current?.Owner) ? NonCombatBoundary() : "interrupted");
+            && ReferenceEquals(context!.Owner, ShopInspection.Current?.Owner) ? NonCombatBoundary() : "interrupted");
         return TransitionSuccess(request, after, reason);
     }
 }

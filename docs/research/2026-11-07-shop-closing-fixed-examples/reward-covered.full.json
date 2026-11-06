@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Resolve the current reward page before closing the shop; inspect_rewards shows its rows.",
+    "recovery": "choose_legal_action"
+  }
+}

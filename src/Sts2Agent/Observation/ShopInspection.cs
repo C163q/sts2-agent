@@ -44,19 +44,25 @@ internal sealed class ShopInspection
     public static NBackButton Back(Context context) => context.Inventory.GetNode<NBackButton>("%BackButton");
     public static bool Animating(Context context) => RewardInspection.Animating(context.Inventory, "_inventoryTween");
     public static bool Busy => ShopTransactions.Pending || RelicObtainTracker.Pending;
+    private enum PagePurpose { Inspect, Open, Close }
 
     public static string? InspectionUnavailableReason(Context? context)
-        => PageUnavailableReason(context, opening: false)
+        => PageUnavailableReason(context, PagePurpose.Inspect)
             ?? (!context!.Inventory.IsOpen ? "Open the shop with open_shop before inspecting its goods." : null);
 
-    private static string? PageUnavailableReason(Context? context, bool opening)
+    private static string? PageUnavailableReason(Context? context, PagePurpose operation)
     {
-        if (!RunManager.Instance.IsInProgress) return opening
-            ? "No local run is available for opening the shop." : "No local run is available for shop inspection.";
+        var (purpose, subject) = operation switch
+        {
+            PagePurpose.Inspect => ("inspecting shop goods", "Shop inspection"),
+            PagePurpose.Open => ("opening the shop", "Opening the shop"),
+            PagePurpose.Close => ("closing the shop", "Closing the shop"),
+            _ => throw new ArgumentOutOfRangeException(nameof(operation))
+        };
+        if (!RunManager.Instance.IsInProgress) return operation == PagePurpose.Inspect
+            ? "No local run is available for shop inspection." : $"No local run is available for {purpose}.";
         if (context == null) return "No shop is available on the current screen.";
-        if (!RunContext.Singleplayer) return opening
-            ? "Opening the shop requires a local single-player run." : "Shop inspection requires a local single-player run.";
-        string purpose = opening ? "opening the shop" : "inspecting shop goods";
+        if (!RunContext.Singleplayer) return $"{subject} requires a local single-player run.";
         var map = NRun.Instance?.GlobalUi.MapScreen;
         if (VisibleUi.Shown(map)) return map!.IsOpen
             ? $"Close the map with close_map before {purpose}."
@@ -84,12 +90,20 @@ internal sealed class ShopInspection
 
     public static string? OpenUnavailableReason(Context? context)
     {
-        if (PageUnavailableReason(context, opening: true) is { } unavailable) return unavailable;
+        if (PageUnavailableReason(context, PagePurpose.Open) is { } unavailable) return unavailable;
         if (context!.Inventory.IsOpen) return "The shop is already open. Use inspect_shop to read its goods or close_shop to return to the merchant.";
         if (ActivityUnavailableReason(context, "opening the shop") is { } pending) return pending;
         if (context.Merchant.IsLocalPlayerDead) return "The local player is dead; the merchant cannot open the shop.";
         if (!MerchantShown(context)) return "The merchant is not currently visible and interactive.";
         return !context.Merchant.IsEnabled ? "Wait for the merchant to become enabled before opening the shop." : null;
+    }
+
+    public static string? CloseUnavailableReason(Context? context)
+    {
+        if (PageUnavailableReason(context, PagePurpose.Close) is { } unavailable) return unavailable;
+        if (!context!.Inventory.IsOpen) return "The shop is already closed. Use open_shop to view its goods.";
+        if (ActivityUnavailableReason(context, "closing the shop") is { } pending) return pending;
+        return !Back(context).IsEnabled ? "Wait for the shop back button to become enabled before closing the shop." : null;
     }
 
     public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context) && !Animating(context)
@@ -177,7 +191,7 @@ internal sealed class ShopInspection
             status = "visible", view,
             items = opened && !animating ? slots.Select(slot => ReadItem(slot, ready, full, CanHover(context, slot))).ToArray() : null,
             open = !opened && !animating && MerchantShown(context) ? new { enabled = OpenUnavailableReason(context) == null } : null,
-            back = opened && !animating && VisibleUi.OnScreen(Back(context)) ? new { enabled = ready && Back(context).IsEnabled } : null,
+            back = opened && !animating && VisibleUi.OnScreen(Back(context)) ? new { enabled = CloseUnavailableReason(context) == null } : null,
             proceed = !opened && !animating && VisibleUi.OnScreen(context.Proceed) ? new
             {
                 text = EnglishCardText.Plain(NProceedButton.ProceedLoc.GetFormattedText()), enabled = ready && context.Proceed.IsEnabled

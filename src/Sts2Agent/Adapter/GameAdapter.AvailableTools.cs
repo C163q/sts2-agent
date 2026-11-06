@@ -147,8 +147,8 @@ internal sealed partial class GameAdapter
             if (shop.Inventory.IsOpen && ShopInspection.Ready(shop))
             {
                 if (shop.Inventory.GetAllSlots().Any(ShopInspection.Purchasable)) actions.Add("buy_item");
-                if (ShopInspection.Back(shop).IsEnabled) actions.Add("close_shop");
             }
+            if (ShopInspection.CloseUnavailableReason(shop) == null) actions.Add("close_shop");
         }
         if (TreasureInspection.Current is { } treasure)
         {

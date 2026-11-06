@@ -1,6 +1,6 @@
 # close_shop 开发核验依据
 
-> 当前状态：审阅完成，等待设计定稿；工具行为尚未修改。用户决策说明见[审阅与建议](2026-11-07-close-shop-review.md)。
+> 当前状态：定稿已实现，当前验收见[实施记录](2026-11-07-shop-closing-recovery-implementation.md)；以下保留审阅基线。用户决策说明见[审阅与建议](2026-11-07-close-shop-review.md)。
 
 ## 基线
 
@@ -39,7 +39,7 @@ stale先于商店状态检查，不属于可恢复旧许可的拒绝。MCP本地
 
 [专项套件](../../tests/game/data/gui_suite_close_shop_review.json)与[验证器](../../tests/game/verifiers/verify_close_shop_review.py)覆盖无商店、普通／假商人、删牌、购买子奖励和阳伞。子奖励夹具向商店注入召唤铃铛以触发该边界，并非普通商店的商品配置。实际记录公开JSON、原生错误及执行证据；关闭后直接原生读回只用于核验页面和资源，不为MCP会话刷新许可，因此后续open_shop／proceed可验证真正直接续接。
 
-验证器固定审阅基线的错误现状；修复时须改为具体原因、未提交证明与合法后续操作直接成功。六类GUI在单一自有游戏进程全部通过，158.587145418秒，83次真实MCP及35次直接原生操作；PID63320已退出。报告位于gui/report.json及各audit/evidence.json。正常关闭后立即核对merchant／items:null，金币、牌组数、持有遗物及药水名称／空位不变；假商人恶臭药水的usable_here恢复可用属于原生画面规则，不作为资源变化。相关Python为test_shop、test_shop_opening、test_shop_presets、test_gui_suite，共33项通过，1.867秒；没有产品改动，不运行全量测试或构建。
+审阅时的验证器固定上述错误现状，原始报告保留；当前验证器已按定稿改为具体原因、未提交证明与合法后续操作直接成功，修复结果另存实施记录。六类GUI在单一自有游戏进程全部通过，158.587145418秒，83次真实MCP及35次直接原生操作；PID63320已退出。报告位于gui/report.json及各audit/evidence.json。正常关闭后立即核对merchant／items:null，金币、牌组数、持有遗物及药水名称／空位不变；假商人恶臭药水的usable_here恢复可用属于原生画面规则，不作为资源变化。相关Python为test_shop、test_shop_opening、test_shop_presets、test_gui_suite，共33项通过，1.867秒；没有产品改动，不运行全量测试或构建。
 
 [十二份实际返回](2026-11-07-close-shop-examples/README.md)保留十一份full、一份default，按manifest核对原始行与SHA-256。两项问题在页面已关闭、地图／牌组覆盖、删牌／子奖励／阳伞选择及无商店等分支复现，拒绝期间ui_interaction_started/action_submission_observed均为false，前后snapshot_id一致。真实中途动画、无run、多人与未知异常只核对源码，未新增GUI扰动。
 

@@ -38,9 +38,14 @@ internal sealed partial class GameAdapter
         JsonElement beforeState = snapshot.State;
         if (request.Operation is not ("set_test_capture_failure" or "inspect_potions" or "inspect_relics" or "inspect_combatants" or "inspect_deck" or "inspect_pile" or "inspect_selection" or "select_card" or "selection_option" or "set_selection_view" or "inspect_targets" or "play_card" or "play_cards" or "use_potion" or "discard_potion" or "claim_reward" or "choose_rest_option" or "loot_treasure" or "buy_item" or "choose_ancient_option" or "choose_event_option" or "set_divination_tool" or "divine" or "respond_to_confirmation" or "travel_to_node" or "run_result_option")
             && request.Arguments is { } arguments && arguments.EnumerateObject().Any())
-            return request.Operation is "proceed" or "open_shop"
+            return request.Operation is "proceed" or "open_shop" or "close_shop"
                 ? FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request",
-                    request.Operation == "proceed" ? "Proceed takes no arguments." : "Open_shop takes no arguments.")
+                    request.Operation switch
+                    {
+                        "proceed" => "Proceed takes no arguments.",
+                        "open_shop" => "Open_shop takes no arguments.",
+                        _ => "close_shop takes no arguments."
+                    })
                 : FileMailbox.Error(request.Id, "invalid_request", "This operation does not accept arguments.");
         if (request.Operation == "get_state")
         {
