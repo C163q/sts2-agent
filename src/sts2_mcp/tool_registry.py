@@ -254,7 +254,8 @@ SPECS = (
         records_events=True,
         reader='transition_details:end_turn_details',
         parser='shop_details:shop_arguments',
-        parser_operation=True),
+        parser_operation=True,
+        unsubmitted_rejection_unchanged=True),
     ToolSpec(
         name='close_shop',
         schema=NO_ARGUMENTS,

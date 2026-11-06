@@ -10,7 +10,7 @@
 
 基础观察的商人界面返回 `scene: "shop"`，`shop.view: "merchant"`，`shop.items: null`；商品页尚未打开时不读取库存。`open_shop()` 点击当前商人，打开商品页；`close_shop()` 点击商品页左侧返回按钮。两者都返回[精简动作回执](mcp.md#动作返回格式)，可以按[MCP 许可规则](mcp.md#调用和错误语义)从满足续接条件的成功结果继续操作，不自动前进。
 
-open_shop当前在页面已打开、被覆盖等点击前拒绝后仍会清除已有许可，错误信息也只给出通用提示；继续合法操作前需成功观察。这两项缺口及修复建议见[打开商店审阅](../research/2026-11-07-open-shop-review.md)，尚待实现。本地参数错误则保留已有许可。
+open_shop的打开条件、基础观察open.enabled及available_actions共用OpenUnavailableReason。错误区分已经打开、页面覆盖、待处理选择及活动／动画等待，并提示相关工具；详情读取与动作就绪检查分开。相同快照下，明确点击前拒绝公开具体原因、保留已有许可并返回recovery:choose_legal_action，例如误用open_shop后可直接关闭商店或继续当前选择。本地参数错误同样保留许可；首次没有许可、状态过期或点击后失败仍须成功观察。原生点击和等待逻辑见GameAdapter.Shop.cs，验证与边界见[打开商店修复](../research/2026-11-07-shop-opening-recovery-implementation.md)。
 
 商品页的基础观察包含所有当前已展示商品（含视口外位置），卡牌采用无正文的共用 face 格式，提供名称、牌型、稀有度、实际外观卡池、显示费用及允许读取的外观，不附送效果解释。遗物和药水只提供可见名称。示例为字段节选：
 

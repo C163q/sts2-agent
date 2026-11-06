@@ -24,8 +24,8 @@ async def verify(args):
         evidence.append(row)
         args.report.write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')
 
-    async def native(operation, expected_state=None):
-        reply = await asyncio.to_thread(raw.call, operation, expected_state)
+    async def native(operation, expected_state=None, arguments=None):
+        reply = await asyncio.to_thread(raw.call, operation, expected_state, arguments=arguments)
         record({'native_operation': operation, 'result': reply})
         return reply
 
@@ -57,18 +57,22 @@ async def verify(args):
                 deadline = time.monotonic() + 15
                 while True:
                     value = await call('get_observation', label='observe_' + (action or 'screen'))
+                    shop = value.get('shop')
+                    if shop and shop['status'] == 'visible':
+                        assert ('open_shop' in value['available_actions']) == bool(shop.get('open') and shop['open']['enabled']), value
                     if action is None or action in value['available_actions']: return value
                     assert time.monotonic() < deadline, value
                     await asyncio.sleep(.1)
 
-            async def reject(label):
+            async def reject(label, hint):
                 before = await native('get_state')
                 assert 'open_shop' not in before['state']['available_actions'], before
                 value = await call('open_shop', error='illegal_action', label=label)
-                assert value['error'] == {'code': 'illegal_action',
-                    'message': 'The requested action is unavailable.', 'recovery': 'get_observation'}, value
+                assert value['error']['recovery'] == 'choose_legal_action', value
+                assert hint in value['error']['message'], value
                 assert evidence[-1]['execution']['ui_interaction_started'] is False, evidence[-1]
-                assert 'action_submitted' not in evidence[-1]['native_error'], evidence[-1]
+                assert evidence[-1]['execution']['action_submission_observed'] is False, evidence[-1]
+                assert evidence[-1]['native_error']['action_submitted'] is False, evidence[-1]
                 return value
 
             async def opened(label, preset='full'):
@@ -86,20 +90,16 @@ async def verify(args):
             await call('open_shop', error='observation_required', label='no_initial_permission')
             initial = await observe()
             if args.scenario == 'no_shop':
-                await reject('no_shop')
-                await call('end_turn', error='observation_required', label='legal_turn_blocked_after_rejection')
-                await call('inspect_hand', label='read_restores_permission')
-                await call('end_turn', label='turn_after_read')
+                await reject('no_shop', 'No shop')
+                await call('end_turn', label='legal_turn_after_rejection')
                 stale = await native('open_shop', 'not-current')
                 assert stale['error']['code'] == 'stale_state', stale
                 return
             if args.scenario == 'parasol':
                 assert initial['selection']['type'] == 'deck', initial
-                await reject('automatic_purchase_selection')
+                await reject('automatic_purchase_selection', 'inspect_selection')
                 await call('select_card', {'card_id': initial['selection']['cards'][0]['id']},
-                    error='observation_required', label='selection_blocked_after_rejection')
-                selected = await call('inspect_selection')
-                await call('select_card', {'card_id': selected['selection']['cards'][0]['id']})
+                    label='selection_after_rejection')
                 await call('selection_option', {'option_id': 'confirm'})
                 await observe('close_shop')
                 await call('close_shop')
@@ -108,31 +108,33 @@ async def verify(args):
                 return
 
             await observe('open_shop')
+            if args.scenario == 'basic':
+                current = await native('get_state')
+                bad = await native('open_shop', current['state']['snapshot_id'], {'unexpected': True})
+                assert bad['error']['code'] == 'invalid_request' and bad['error']['action_submitted'] is False, bad
+                assert bad['execution']['ui_interaction_started'] is False, bad
             await call('open_shop', {'unexpected': True}, error='invalid_request', label='local_invalid_preserves_permission')
             await opened('open_inventory')
-            await reject('already_open')
-            await call('close_shop', error='observation_required', label='close_blocked_after_rejection')
-            await call('inspect_shop', label='details_restore_permission')
+            await reject('already_open', 'already open')
+            await call('close_shop', label='close_after_rejection')
+            await observe('open_shop')
+            await opened('reopen_after_rejection')
             if args.scenario == 'remove':
                 inventory = await call('inspect_shop')
                 service = next(i for i in inventory['shop']['items'] if i['kind'] == 'card_removal')
                 await call('buy_item', {'item_id': service['id']})
-                await reject('card_removal_selection')
-                await call('selection_option', {'option_id': 'cancel'}, error='observation_required', label='cancel_blocked_after_rejection')
-                await call('inspect_selection')
-                await call('selection_option', {'option_id': 'cancel'})
+                await reject('card_removal_selection', 'inspect_selection')
+                await call('selection_option', {'option_id': 'cancel'}, label='cancel_after_rejection')
                 return
             await call('close_shop')
             await observe('open_shop')
             if args.scenario == 'basic':
                 await call('inspect_map')
-                await reject('map_covered')
-                await call('open_shop', error='observation_required', label='map_rejection_clears_permission')
+                await reject('map_covered', 'close_map')
                 await call('close_map')
                 await observe('open_shop')
                 await call('inspect_deck')
-                await reject('deck_covered')
-                await call('open_shop', error='observation_required', label='deck_rejection_clears_permission')
+                await reject('deck_covered', 'close_card_view')
                 await call('close_card_view')
                 await observe('open_shop')
             await opened('reopen_inventory_default', preset='default')

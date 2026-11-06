@@ -141,13 +141,10 @@ internal sealed partial class GameAdapter
                 if (ancient.Layout.OptionButtons.Any(b => !b.Option.IsProceed && AncientInspection.Clickable(b))) actions.Add("choose_ancient_option");
             }
         }
-        if (ShopInspection.Current is { } shop && ShopInspection.Ready(shop))
+        if (ShopInspection.Current is { } shop)
         {
-            if (!shop.Inventory.IsOpen)
-            {
-                if (shop.Merchant.IsEnabled && ShopInspection.MerchantShown(shop)) actions.Add("open_shop");
-            }
-            else
+            if (ShopInspection.OpenUnavailableReason(shop) == null) actions.Add("open_shop");
+            if (shop.Inventory.IsOpen && ShopInspection.Ready(shop))
             {
                 if (shop.Inventory.GetAllSlots().Any(ShopInspection.Purchasable)) actions.Add("buy_item");
                 if (ShopInspection.Back(shop).IsEnabled) actions.Add("close_shop");

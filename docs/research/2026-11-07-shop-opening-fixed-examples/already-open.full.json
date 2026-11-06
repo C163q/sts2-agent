@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The shop is already open. Use inspect_shop to read its goods or close_shop to return to the merchant.",
+    "recovery": "choose_legal_action"
+  }
+}

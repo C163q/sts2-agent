@@ -1,0 +1,23 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "buy_item",
+    "close_shop",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_targets",
+    "inspect_shop"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": []
+  }
+}

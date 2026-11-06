@@ -1,6 +1,6 @@
 # open_shop 开发核验依据
 
-> 当前状态：审阅完成，尚未修改工具行为；问题等待定稿。用户决策说明见[审阅与建议](2026-11-07-open-shop-review.md)。
+> 当前状态：定稿已实现，当前验收见[实施记录](2026-11-07-shop-opening-recovery-implementation.md)；以下保留审阅基线的代码与错误证据。用户决策说明见[审阅与建议](2026-11-07-open-shop-review.md)。
 
 ## 基线
 
@@ -38,7 +38,7 @@ stale_state在动作条件之前校验，不能并入保留旧许可的拒绝。
 
 [GUI套件](../../tests/game/data/gui_suite_open_shop_review.json)及[验证器](../../tests/game/verifiers/verify_open_shop_review.py)使用真实MCP，记录公开JSON、原生错误、执行证据及图像数量。用例覆盖无商店、普通商店、假商人、删牌选择和领主阳伞；普通商店还核验地图／牌组覆盖、本地参数错误、full/default、重新打开及立即观察。
 
-该验证器固定审阅基线的两项错误现状，属于复现证据；实施修复时须同步改为准确原因、点击前拒绝证明与合法后续操作直接成功，不能把旧错误断言当作目标接口。
+审阅时的验证器固定上述两项错误现状，原始结果保存在审阅证据目录。当前验证器已按定稿改为准确原因、点击前拒绝证明与合法后续操作直接成功，修复后的结果见实施记录；旧错误断言不是目标接口。
 
 Python相关测试为test_shop、test_shop_presets、test_gui_suite，共29项通过，2.287秒。五类GUI在一个自有进程内全部通过，套件131.761764163秒，69次MCP、9次直接原生检查。报告位于gui/report.json，过程及公开／原生返回保存在各audit/evidence.json；进程PID26588已退出。
 

@@ -46,26 +46,54 @@ internal sealed class ShopInspection
     public static bool Busy => ShopTransactions.Pending || RelicObtainTracker.Pending;
 
     public static string? InspectionUnavailableReason(Context? context)
+        => PageUnavailableReason(context, opening: false)
+            ?? (!context!.Inventory.IsOpen ? "Open the shop with open_shop before inspecting its goods." : null);
+
+    private static string? PageUnavailableReason(Context? context, bool opening)
     {
-        if (!RunManager.Instance.IsInProgress) return "No local run is available for shop inspection.";
+        if (!RunManager.Instance.IsInProgress) return opening
+            ? "No local run is available for opening the shop." : "No local run is available for shop inspection.";
         if (context == null) return "No shop is available on the current screen.";
-        if (!RunContext.Singleplayer) return "Shop inspection requires a local single-player run.";
+        if (!RunContext.Singleplayer) return opening
+            ? "Opening the shop requires a local single-player run." : "Shop inspection requires a local single-player run.";
+        string purpose = opening ? "opening the shop" : "inspecting shop goods";
         var map = NRun.Instance?.GlobalUi.MapScreen;
         if (VisibleUi.Shown(map)) return map!.IsOpen
-            ? "Close the map with close_map before inspecting shop goods."
-            : "Wait for the map to finish closing before inspecting shop goods.";
-        if (CardView.Current != null) return "Close the card browsing page with close_card_view before inspecting shop goods.";
-        if (CardSelection.Current != null) return "Resolve the current card selection before inspecting shop goods; inspect_selection shows its choices.";
-        if (RewardInspection.Current != null) return "Resolve the current reward page before inspecting shop goods; inspect_rewards shows its rows.";
-        if (RunUi.Transitioning()) return "Wait for the screen transition before inspecting shop goods.";
+            ? $"Close the map with close_map before {purpose}."
+            : $"Wait for the map to finish closing before {purpose}.";
+        if (CardView.Current != null) return $"Close the card browsing page with close_card_view before {purpose}.";
+        if (CardSelection.Current != null) return $"Resolve the current card selection before {purpose}; inspect_selection shows its choices.";
+        if (RewardInspection.Current != null) return $"Resolve the current reward page before {purpose}; inspect_rewards shows its rows.";
+        if (RunUi.Transitioning()) return $"Wait for the screen transition before {purpose}.";
         if (!Exposed(context)) return "The shop is covered by a dialog or another screen.";
         if (Animating(context)) return "Wait for the shop inventory to finish opening or closing.";
-        return !context.Inventory.IsOpen ? "Open the shop with open_shop before inspecting its goods." : null;
+        return null;
     }
+
+    private static string? ActivityUnavailableReason(Context context, string purpose)
+    {
+        if (MegaCrit.Sts2.Core.Nodes.Combat.NTargetManager.Instance.IsInSelection)
+            return $"Wait for the current targeting to finish before {purpose}.";
+        if (Busy) return $"Wait for the current purchase or relic effect to finish before {purpose}.";
+        if (RunUi.CardPreviewsPending()) return $"Wait for card previews to finish before {purpose}.";
+        if (RunUi.ResourceMotionPending()) return $"Wait for resource animations to finish before {purpose}.";
+        if (!RunManager.Instance.ActionQueueSet.IsEmpty) return $"Wait for queued game actions to finish before {purpose}.";
+        return PrivateFields.Read(context.Inventory, "_isInputBlocked") is not false
+            ? $"Wait for the shop to accept input before {purpose}." : null;
+    }
+
+    public static string? OpenUnavailableReason(Context? context)
+    {
+        if (PageUnavailableReason(context, opening: true) is { } unavailable) return unavailable;
+        if (context!.Inventory.IsOpen) return "The shop is already open. Use inspect_shop to read its goods or close_shop to return to the merchant.";
+        if (ActivityUnavailableReason(context, "opening the shop") is { } pending) return pending;
+        if (context.Merchant.IsLocalPlayerDead) return "The local player is dead; the merchant cannot open the shop.";
+        if (!MerchantShown(context)) return "The merchant is not currently visible and interactive.";
+        return !context.Merchant.IsEnabled ? "Wait for the merchant to become enabled before opening the shop." : null;
+    }
+
     public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context) && !Animating(context)
-        && !MegaCrit.Sts2.Core.Nodes.Combat.NTargetManager.Instance.IsInSelection
-        && !Busy && !RunUi.CardPreviewsPending() && !RunUi.ResourceMotionPending() && RunManager.Instance.ActionQueueSet.IsEmpty
-        && PrivateFields.Read(context.Inventory, "_isInputBlocked") is false
+        && ActivityUnavailableReason(context, "using shop controls") == null
         && (context.Inventory.IsOpen ? Back(context).IsEnabled : context.Merchant.IsEnabled || context.Proceed.IsEnabled);
 
     public static bool MerchantShown(Context context) => context.Merchant.IsVisibleInTree()
@@ -148,7 +176,7 @@ internal sealed class ShopInspection
         {
             status = "visible", view,
             items = opened && !animating ? slots.Select(slot => ReadItem(slot, ready, full, CanHover(context, slot))).ToArray() : null,
-            open = !opened && !animating && MerchantShown(context) ? new { enabled = ready && context.Merchant.IsEnabled } : null,
+            open = !opened && !animating && MerchantShown(context) ? new { enabled = OpenUnavailableReason(context) == null } : null,
             back = opened && !animating && VisibleUi.OnScreen(Back(context)) ? new { enabled = ready && Back(context).IsEnabled } : null,
             proceed = !opened && !animating && VisibleUi.OnScreen(context.Proceed) ? new
             {

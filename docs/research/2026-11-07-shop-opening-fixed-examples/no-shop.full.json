@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "No shop is available on the current screen.",
+    "recovery": "choose_legal_action"
+  }
+}
