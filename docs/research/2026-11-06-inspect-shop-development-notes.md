@@ -1,6 +1,6 @@
 # inspect_shop 开发核验依据
 
-> 当前状态：现状审阅完成，三项优先问题及参数建议待定稿，玩法行为尚未修改；用户决策内容见[审阅记录](2026-11-06-inspect-shop-review.md)。
+> 当前状态：定稿已实现并完成行为验收，最终审阅／合入见[实施记录](2026-11-06-shop-inspection-presets-implementation.md)；下文保留修复前审阅基线；用户决策内容见[审阅记录](2026-11-06-inspect-shop-review.md)。
 
 ## 基线
 

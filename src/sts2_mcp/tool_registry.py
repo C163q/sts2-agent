@@ -26,6 +26,7 @@ from sts2_mcp.output.rest_site_presets import REST_SCHEMA
 from sts2_mcp.output.treasure_details import LOOT_SCHEMA
 from sts2_mcp.output.treasure_presets import TREASURE_SCHEMA
 from sts2_mcp.output.shop_details import BUY_SCHEMA
+from sts2_mcp.output.shop_presets import SHOP_SCHEMA
 from sts2_mcp.output.ancient_details import ANCIENT_OPTION_SCHEMA
 from sts2_mcp.output.event_details import EVENT_OPTION_SCHEMA
 from sts2_mcp.output.confirmation_details import CONFIRMATION_SCHEMA
@@ -269,15 +270,18 @@ SPECS = (
         parser_operation=True),
     ToolSpec(
         name='inspect_shop',
-        schema=NO_ARGUMENTS,
-        description='Read all currently displayed shop items, card effects and hover help. Open the shop first.',
+        schema=SHOP_SCHEMA,
+        description='Read displayed shop goods and purchasing top bar. summary omits effects and hover help; item_ids and kinds filter goods. Open the shop first.',
         annotations=read_only,
         category='inspection',
         effect='read',
         requires_permission=False,
         returns_transition=False,
         records_events=False,
-        reader='shop_details:inspect_shop_details'),
+        reader='shop_details:inspect_shop_details',
+        parser='shop_presets:shop_inspection_arguments',
+        projector='shop_presets:shop_preset',
+        native_keys=()),
     ToolSpec(
         name='buy_item',
         schema=BUY_SCHEMA,

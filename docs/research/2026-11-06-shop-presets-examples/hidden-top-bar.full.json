@@ -1,0 +1,308 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "shop": {
+    "status": "visible",
+    "view": "inventory",
+    "items": [
+      {
+        "id": 0,
+        "kind": "card",
+        "position": "character_card:0",
+        "price": 75,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Dismantle",
+          "type": "Attack",
+          "rarity": "uncommon",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "1",
+          "star_cost": null,
+          "enchantment": null,
+          "affliction": null,
+          "description": "Deal 8 damage.\nIf the enemy is Vulnerable, hits twice.",
+          "hover_tips": [
+            {
+              "title": "Vulnerable",
+              "description": "Vulnerable creatures take 50% more damage from Attacks."
+            }
+          ]
+        },
+        "on_sale": false
+      },
+      {
+        "id": 1,
+        "kind": "card",
+        "position": "character_card:1",
+        "price": 39,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Fight Me!",
+          "type": "Attack",
+          "rarity": "uncommon",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "2",
+          "star_cost": null,
+          "enchantment": null,
+          "affliction": null,
+          "description": "Deal 5 damage twice.\nGain 3 Strength.\nThe enemy gains 1 Strength.",
+          "hover_tips": [
+            {
+              "title": "Strength",
+              "description": "Strength adds additional damage to Attacks."
+            }
+          ]
+        },
+        "on_sale": true
+      },
+      {
+        "id": 2,
+        "kind": "card",
+        "position": "character_card:2",
+        "price": 49,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Havoc",
+          "type": "Skill",
+          "rarity": "common",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "1",
+          "star_cost": null,
+          "enchantment": null,
+          "affliction": null,
+          "description": "Play the top card of your Draw Pile and Exhaust it.",
+          "hover_tips": [
+            {
+              "title": "Exhaust",
+              "description": "Removed until the end of combat."
+            }
+          ]
+        },
+        "on_sale": false
+      },
+      {
+        "id": 3,
+        "kind": "card",
+        "position": "character_card:3",
+        "price": 49,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Tremble",
+          "type": "Skill",
+          "rarity": "common",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "1",
+          "star_cost": null,
+          "enchantment": null,
+          "affliction": null,
+          "description": "Apply 3 Vulnerable.\nExhaust.",
+          "hover_tips": [
+            {
+              "title": "Vulnerable",
+              "description": "Vulnerable creatures take 50% more damage from Attacks."
+            },
+            {
+              "title": "Exhaust",
+              "description": "Removed until the end of combat."
+            }
+          ]
+        },
+        "on_sale": false
+      },
+      {
+        "id": 4,
+        "kind": "card",
+        "position": "character_card:4",
+        "price": 78,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Feel No Pain",
+          "type": "Power",
+          "rarity": "uncommon",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "1",
+          "star_cost": null,
+          "enchantment": null,
+          "affliction": null,
+          "description": "Whenever a card is Exhausted, gain 3 Block.",
+          "hover_tips": [
+            {
+              "title": "Exhaust",
+              "description": "Removed until the end of combat."
+            },
+            {
+              "title": "Block",
+              "description": "Until next turn, prevents damage."
+            }
+          ]
+        },
+        "on_sale": false
+      },
+      {
+        "id": 5,
+        "kind": "card",
+        "position": "colorless_card:0",
+        "price": 89,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Shockwave",
+          "type": "Skill",
+          "rarity": "uncommon",
+          "visual_card_pool": "colorless",
+          "energy_cost": "2",
+          "star_cost": null,
+          "enchantment": null,
+          "affliction": null,
+          "description": "Apply 3 Weak and Vulnerable to ALL enemies.\nExhaust.",
+          "hover_tips": [
+            {
+              "title": "Weak",
+              "description": "Weakened creatures deal 25% less damage with Attacks."
+            },
+            {
+              "title": "Vulnerable",
+              "description": "Vulnerable creatures take 50% more damage from Attacks."
+            },
+            {
+              "title": "Exhaust",
+              "description": "Removed until the end of combat."
+            }
+          ]
+        },
+        "on_sale": false
+      },
+      {
+        "id": 6,
+        "kind": "card",
+        "position": "colorless_card:1",
+        "price": 164,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Gold Axe",
+          "type": "Attack",
+          "rarity": "rare",
+          "visual_card_pool": "colorless",
+          "energy_cost": "1",
+          "star_cost": null,
+          "enchantment": null,
+          "affliction": null,
+          "description": "Deal damage equal to the number of cards played this combat.",
+          "hover_tips": []
+        },
+        "on_sale": false
+      },
+      {
+        "id": 7,
+        "kind": "relic",
+        "position": "relic:0",
+        "price": 178,
+        "affordable": true,
+        "enabled": true,
+        "name": "Anchor",
+        "description": "Start each combat with 10 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Until next turn, prevents damage."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "kind": "relic",
+        "position": "relic:1",
+        "price": 158,
+        "affordable": true,
+        "enabled": true,
+        "name": "Lantern",
+        "description": "Start each combat with an additional <Energy>.",
+        "hover_tips": [
+          {
+            "title": "Energy",
+            "description": "Energy is used to play cards from your Hand."
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "kind": "relic",
+        "position": "relic:2",
+        "price": 192,
+        "affordable": true,
+        "enabled": true,
+        "name": "Pen Nib",
+        "description": "Every 10th Attack you play deals double damage.",
+        "hover_tips": []
+      },
+      {
+        "id": 10,
+        "kind": "potion",
+        "position": "potion:0",
+        "price": 72,
+        "affordable": true,
+        "enabled": true,
+        "name": "Heart of Iron",
+        "description": "Gain 7 Plating.",
+        "hover_tips": [
+          {
+            "title": "Plating",
+            "description": "At the end of your turn, gain Block. Plating is reduced by 1 at the start of your turn."
+          },
+          {
+            "title": "Block",
+            "description": "Until next turn, prevents damage."
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "kind": "potion",
+        "position": "potion:1",
+        "price": 51,
+        "affordable": true,
+        "enabled": true,
+        "name": "Attack Potion",
+        "description": "Choose 1 of 3 random Attack cards to add into your Hand. It's free to play this turn.",
+        "hover_tips": []
+      },
+      {
+        "id": 12,
+        "kind": "potion",
+        "position": "potion:2",
+        "price": 51,
+        "affordable": true,
+        "enabled": true,
+        "name": "Colorless Potion",
+        "description": "Choose 1 of 3 random Colorless cards to add into your Hand. It's free to play this turn.",
+        "hover_tips": []
+      },
+      {
+        "id": 13,
+        "kind": "card_removal",
+        "position": "card_removal:0",
+        "price": 75,
+        "affordable": true,
+        "enabled": true,
+        "name": "Card Removal Service",
+        "used": false,
+        "description": "Remove a card from your deck. The cost of this service increases by 25 for the rest of this run.",
+        "hover_tips": []
+      }
+    ],
+    "open": null,
+    "back": {
+      "enabled": true
+    },
+    "proceed": null
+  },
+  "top_bar": null
+}

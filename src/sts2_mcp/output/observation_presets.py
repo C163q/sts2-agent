@@ -53,9 +53,9 @@ def observation_summary(payload):
         result['selection'] = selection_summary(result['selection'])
     if result.get('run_result') is not None:
         result['run_result']['cards'] = [card_summary(card) for card in result['run_result']['cards']]
-    for item in (result.get('shop') or {}).get('items') or []:
-        if item['kind'] == 'card':
-            item['card'] = card_summary(item['card'])
+    if payload.get('shop') is not None:
+        from sts2_mcp.output.shop_details import shop_summary
+        result['shop'] = shop_summary(payload['shop'])
     if result.get('event') is not None:
         event = result['event']
         event.pop('description', None)

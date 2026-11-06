@@ -1,5 +1,21 @@
 [
   {
+    "name": "display",
+    "scenarios": {
+      "shop": "basic"
+    },
+    "steps": [
+      {
+        "name": "check",
+        "verifier": "verify_shop_inspection_review.py",
+        "args": [
+          "--scenario",
+          "display"
+        ]
+      }
+    ]
+  },
+  {
     "name": "no_shop",
     "scenarios": {
       "play": "basic"

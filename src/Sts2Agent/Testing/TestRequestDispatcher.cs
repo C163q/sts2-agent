@@ -32,6 +32,19 @@ internal sealed partial class GameAdapter
 {
     private async Task<string?> TestRequestBeforeCapture(Request request)
     {
+        if (request.Operation == "set_test_shop_display" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+            && testSettings.Get("STS2_AGENT_TEST_SHOP_SCENARIO") != null)
+        {
+            if (request.Arguments is not { } displayArguments || displayArguments.EnumerateObject().Any(p => p.Name is not ("mode" or "kind"))
+                || !displayArguments.TryGetProperty("mode", out var mode) || mode.ValueKind != JsonValueKind.String
+                || mode.GetString() is not ("normal" or "offscreen" or "price_offscreen" or "hidden" or "transparent" or "visual_hidden" or "clipped"
+                    or "controller_only" or "mouse_only" or "click_disabled" or "no_hover" or "blocked" or "gold_hidden" or "top_bar_hidden")
+                || !displayArguments.TryGetProperty("kind", out var kind) || kind.ValueKind != JsonValueKind.String
+                || kind.GetString() is not ("card" or "relic" or "potion" or "card_removal"))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected shop display mode and kind.");
+            return Success(request, JsonSerializer.Serialize(ShopDisplayFixture.Set(mode.GetString()!, kind.GetString()!)));
+        }
         if (request.Operation == "set_test_rest_site_display" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
             && testSettings.Get("STS2_AGENT_TEST_REST_SCENARIO") != null)

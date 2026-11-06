@@ -1,0 +1,56 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "shop": {
+    "status": "visible",
+    "view": "inventory",
+    "items": [
+      {
+        "id": 0,
+        "kind": "card",
+        "position": "character_card:0",
+        "price": 75,
+        "affordable": true,
+        "enabled": false,
+        "card": {
+          "name": "Dismantle",
+          "type": "Attack",
+          "rarity": "uncommon",
+          "visual_card_pool": "ironclad",
+          "energy_cost": "1",
+          "star_cost": null,
+          "enchantment": null,
+          "affliction": null,
+          "description": "Deal 8 damage.\nIf the enemy is Vulnerable, hits twice.",
+          "hover_tips": null
+        },
+        "on_sale": false
+      }
+    ],
+    "open": null,
+    "back": {
+      "enabled": true
+    },
+    "proceed": null
+  },
+  "top_bar": {
+    "gold": 2099,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1
+  },
+  "notes": {
+    "hover_tips_unavailable": {
+      "message": "Hover help is currently unavailable for these displayed icons.",
+      "sources": [
+        "shop.items.0"
+      ]
+    }
+  }
+}

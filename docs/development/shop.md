@@ -10,7 +10,7 @@
 
 基础观察的商人界面返回 `scene: "shop"`，`shop.view: "merchant"`，`shop.items: null`；商品页尚未打开时不读取库存。`open_shop()` 点击当前商人，打开商品页；`close_shop()` 点击商品页左侧返回按钮。两者都返回[精简动作回执](mcp.md#动作返回格式)，可以按[MCP 许可规则](mcp.md#调用和错误语义)从满足续接条件的成功结果继续操作，不自动前进。
 
-商品页的基础观察包含所有当前可见商品，卡牌采用无正文的共用 face 格式，提供名称、牌型、稀有度、实际外观卡池、显示费用及允许读取的外观，不附送效果解释。遗物和药水只提供可见名称。示例为字段节选：
+商品页的基础观察包含所有当前已展示商品（含视口外位置），卡牌采用无正文的共用 face 格式，提供名称、牌型、稀有度、实际外观卡池、显示费用及允许读取的外观，不附送效果解释。遗物和药水只提供可见名称。示例为字段节选：
 
 ```json
 {
@@ -48,9 +48,23 @@ get_observation 的 summary 使用[共用卡牌摘要规则](observation.md#mcp-
 
 `items` 的示例只保留一项，不代表完整库存。`kind` 为 `card`、`relic`、`potion` 或 `card_removal`；`position` 表示原生布局中的类别和从 0 开始的槽位。正常布局通常有 5 张角色牌、2 张无色牌、3 个遗物、3 瓶药水及删牌服务，但接口按真实界面读取，不固定数量。
 
-`inspect_shop()` 在商品页已打开时，一次返回全部当前商品的完整说明。卡牌在 `card` 内增加 `description`、`hover_tips`；遗物、药水和可用删牌服务在商品对象上增加这两个字段。关闭时调用会拒绝，不代为打开。详情只读，不消耗随机数；成功时刷新状态令牌，可直接购买已读取的商品。
+`inspect_shop({preset?, item_ids?, kinds?})`在已打开的商品页返回同次scene、screen、shop和摘要top_bar。top_bar复用[摘要顶栏](observation.md#mcp-输出预设)，包含gold、potion_slots、deck_count、relic_count；所有预设使用相同字段范围，未知值按各自null规则处理。药水槽保留名称、空槽和实际UI提示，遗物详情通过inspect_relics查看。
 
-详情目前仅支持default/full，返回scene、screen及shop，不附送金币或药水槽；购买上下文可从get_observation读取。明确只读拒绝保留已有许可，首次失败不生成许可。当前错误说明仍笼统，外部上下文一致性校验及商品／价格读取的视口过滤也有已确认缺口，见[详情审阅](../research/2026-11-06-inspect-shop-review.md)；summary、筛选及购买上下文仍为待定建议。
+| 参数／预设 | 内容 |
+| --- | --- |
+| default | 默认；完整说明，按公共规则省略普通null |
+| full | 完整说明和普通null；卡牌description／hover_tips在card内，其他商品说明在商品行内 |
+| summary | 与get_observation.summary.shop共用静态格式；保留购买字段、名称和共用卡牌摘要，省略正文、悬停解释及不可悬停note |
+| item_ids | 外层商品整数ID列表；省略或null全部，[]为空，去重并保持原生顺序 |
+| kinds | card/relic/potion/card_removal分类列表；省略或null全部，[]为空，与item_ids取交集 |
+
+找不到的ID相对完整当前列表判断，合并为errors:[{code:"item_ids_not_found",item_ids:[...]}]，仍返回其他有效条目；有效ID仅被kinds排除时不报缺失。筛选保留页面按钮与顶栏，商品自身的id/position仍可用于定位。所有响应先完整校验再精简／筛选，空筛选也拒绝坏结构。
+
+商品和价格读取取消视口截断，保留真实隐藏、透明、裁剪与缺货边界；点击继续核对实际可交互范围。页面可读性独立于购买Ready，自动交易的输入阻挡期间可读取静态库存，enabled为false。详情和available_actions共用InspectionUnavailableReason，错误说明区分无商店、关闭、覆盖与动画；明确只读拒绝保留已有许可，首次失败不生成许可。
+
+悬停能力分别核对原生Hitbox鼠标入口与slot控制器有效焦点；买不起或只禁用点击仍可保留说明。确实不可悬停时，卡牌保留直接画在牌面的正文，full为hover_tips:null；其他未用商品为description:null、hover_tips:[]，full/default均附notes.hover_tips_unavailable.sources:["shop.items.<原ID>"]。筛选同步裁剪note，summary省略该note。已用删牌服务维持无说明字段。
+
+详情只读，读取不改变库存／金币／商店RNG；成功可直接购买。关闭时先open_shop，地图／牌组覆盖先关闭相应页面，选牌／奖励覆盖先处理当前输入。原生右键详情和升级对照列在[用户后续待办](TODO.md)，当前工具不提供view_upgrades。
 
 地图、选牌、奖励或其他界面覆盖时，`shop.status: "covered"`，`view/items/open/back/proceed` 均为 `null`；不会穿透读取或购买。原生展开/收回动画期间 `view` 为 `opening` / `closing`，不输出商品和可用按钮。
 

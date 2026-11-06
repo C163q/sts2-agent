@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销29项。inspect_shop现状审阅完成，三项优先问题及参数建议待讨论定稿。剩余15项尚未核销，无阻塞。
+> 当前状态：工具核验进行中，共44项，已核销29项。inspect_shop实现及行为验收完成，正在最终独立审阅。剩余15项尚未核销，无阻塞。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -8,7 +8,7 @@
 
 - 核对基线：提交 `ef9f34e`，MCP `0.48.0`；工具名称与数量依据 [mcp_catalog.py](../../src/sts2_mcp/mcp_catalog.py)。后续以每项核验时的实现为准，工具增删时同步本清单及总数。
 - 逐项检查工具的适用场景、返回内容、参数及预设，目标是符合玩家实际可从 UI 获得的信息，并让 LLM 聚焦所关心的内容。遵循[可见信息边界](../observation.md)。
-- 43 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、药水、战斗对象、遗物、奖励、宝箱及火堆详情的 `summary`、地图的 `summary/selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆也已迁移为 full/default/summary，旧 detail_level 已移除。既有能力也须重新核验，不因此直接核销。
+- 43 个玩法 JSON 工具已支持 `default/full`；现有专用预设包括界面帮助、手牌、选牌、药水、战斗对象、遗物、奖励、宝箱、火堆及商店详情的 `summary`、地图的 `summary/selectable` 和基础观察的 `summary/top_bar/actions_only`。牌组与牌堆也已迁移为 full/default/summary，旧 detail_level 已移除。既有能力也须重新核验，不因此直接核销。
 - `capture_screenshot` 按配置启用，不支持 preset；核验其现有参数与返回。统一预设的现行契约见 [MCP 输出预设](../development/mcp.md#输出预设)。
 
 ## 逐项工作流程
@@ -81,7 +81,7 @@
 
 ### 商店（4 项）
 
-- [ ] `inspect_shop`：查看商品、价格与详情；[审阅与建议](2026-11-06-inspect-shop-review.md)、[开发核验](2026-11-06-inspect-shop-development-notes.md)、[16份典型JSON](2026-11-06-inspect-shop-examples/README.md)。21项相关Python、九类GUI通过；具体诊断、上下文校验与离屏读取三项待定稿，金币／药水槽等购买上下文、summary及筛选仍为建议，尚未改玩法行为。
+- [ ] `inspect_shop`：查看商品、价格与详情；[审阅与建议](2026-11-06-inspect-shop-review.md)、[开发核验](2026-11-06-inspect-shop-development-notes.md)、[16份典型JSON](2026-11-06-inspect-shop-examples/README.md)。21项相关Python、九类GUI通过；三项已按[定稿](2026-11-06-inspect-shop-review.md#输出定稿)实现，包含共用摘要／顶栏、item_ids/kinds与显示边界；751项Python、131项C#、十类专项及三类旧GUI回归通过，最终审阅见[实施记录](2026-11-06-shop-inspection-presets-implementation.md)。
 - [ ] `open_shop`：打开商店。
 - [ ] `close_shop`：关闭商店。
 - [ ] `buy_item`：购买商品或进入删牌选择。

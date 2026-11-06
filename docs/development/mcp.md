@@ -43,7 +43,7 @@ flowchart LR
 | `choose_ancient_option(option_id)` | 点击一个已显示且启用的先古选项 |
 | `advance_dialogue()` | 推进先古之民或建筑师的一句原生对话，不选择遗物 |
 | `open_shop()` / `close_shop()` | 点击[商店](shop.md)的商人或返回按钮，实际展开/收回商品页 |
-| `inspect_shop()` | 一次查看当前全部商品正文与悬停说明 |
+| `inspect_shop(preset?, item_ids?, kinds?)` | [完整／静态商品及购买顶栏](shop.md#打开观察与详情)，按ID与分类筛选 |
 | `buy_item(item_id)` | 购买一个当前商品；补货使用新 ID，删牌复用选牌工具 |
 | `inspect_rewards(preset?, reward_ids?)` | [当前奖励、静态 summary 和按稳定奖励 ID 筛选](rewards.md) |
 | `claim_reward(reward_id)` | 逐项点击奖励，后续选牌复用现有选择工具 |

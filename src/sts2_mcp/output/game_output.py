@@ -64,8 +64,8 @@ def gameplay_fields(state, *, operation=None, arguments=None):
         full = any('description' in (i.get('card') or i) for i in state['shop']['items'])
         if full:
             shop_mode = "full"
-            shape = {**shape, 'shop': {**SHOP, 'items': nullable([{**SHOP_ITEM, 'description': str, 'hover_tips': [TIP],
-                'card': {**SHOP_CARD, 'description': str, 'hover_tips': [TIP]}}])}}
+            shape = {**shape, 'unavailable_hover_sources': [str], 'shop': {**SHOP, 'items': nullable([{**SHOP_ITEM, 'description': TEXT, 'hover_tips': [TIP],
+                'card': {**SHOP_CARD, 'description': str, 'hover_tips': nullable([TIP])}}])}}
     if state.get('scene') == 'ancient' and any('hover_tips' in o for o in (state.get('ancient') or {}).get('options') or []):
         shape = {**shape, 'ancient': {**ANCIENT, 'options': nullable([{**ANCIENT_OPTION, 'hover_tips': [TIP]}])}}
     if state.get('scene') == 'event' and any('hover_tips' in o for o in (state.get('event') or {}).get('options') or []):

@@ -1,0 +1,46 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "shop": {
+    "status": "visible",
+    "view": "inventory",
+    "items": [
+      {
+        "id": 7,
+        "kind": "relic",
+        "position": "relic:0",
+        "price": 178,
+        "affordable": true,
+        "enabled": false,
+        "name": "Anchor",
+        "description": null,
+        "hover_tips": []
+      }
+    ],
+    "open": null,
+    "back": {
+      "enabled": true
+    },
+    "proceed": null
+  },
+  "top_bar": {
+    "gold": 2099,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1
+  },
+  "notes": {
+    "hover_tips_unavailable": {
+      "message": "Hover help is currently unavailable for these displayed icons.",
+      "sources": [
+        "shop.items.7"
+      ]
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Open the shop with open_shop before inspecting its goods.",
+    "recovery": "get_observation"
+  }
+}

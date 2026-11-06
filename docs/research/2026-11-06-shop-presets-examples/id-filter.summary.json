@@ -1,0 +1,47 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "shop": {
+    "status": "visible",
+    "view": "inventory",
+    "items": [
+      {
+        "id": 0,
+        "kind": "card",
+        "position": "character_card:0",
+        "price": 75,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Dismantle",
+          "type": "Attack",
+          "energy_cost": "1"
+        },
+        "on_sale": false
+      }
+    ],
+    "back": {
+      "enabled": true
+    }
+  },
+  "top_bar": {
+    "gold": 2099,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1
+  },
+  "errors": [
+    {
+      "code": "item_ids_not_found",
+      "item_ids": [
+        9999
+      ]
+    }
+  ]
+}

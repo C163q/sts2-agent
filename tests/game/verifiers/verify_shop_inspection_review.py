@@ -4,6 +4,7 @@ import argparse
 import asyncio
 import json
 import sys
+import time
 from pathlib import Path
 
 from mcp import ClientSession, StdioServerParameters
@@ -11,7 +12,7 @@ from mcp.client.stdio import stdio_client
 from sts2_mcp.roundtrip_client import Client
 from tests.game.support.verification_runtime import ensure_run, ipc_directory
 
-SCENARIOS = ('no_shop', 'basic', 'remove', 'courier', 'hidden_price', 'fake', 'full', 'nested', 'parasol')
+SCENARIOS = ('no_shop', 'basic', 'remove', 'courier', 'hidden_price', 'fake', 'full', 'nested', 'parasol', 'display')
 
 
 async def verify(args):
@@ -57,7 +58,10 @@ async def verify(args):
 
             async def reject(label, recovery='choose_legal_action'):
                 result = await call('inspect_shop', error='illegal_action', label=label)
-                assert result['error']['message'] == 'The requested action is unavailable.', result
+                hint = ('open_shop' if label.startswith('closed') else 'close_map' if label == 'map_covered'
+                    else 'close_card_view' if label == 'deck_covered' else 'inspect_selection' if 'selection' in label
+                    else 'inspect_rewards' if label == 'reward_covered' else 'shop')
+                assert hint in result['error']['message'], result
                 assert result['error']['recovery'] == recovery, result
                 assert evidence[-1]['execution']['ui_interaction_started'] is False, evidence[-1]
                 return result
@@ -66,7 +70,8 @@ async def verify(args):
                 result = await call('inspect_shop', {'preset': preset}, label=label)
                 assert result['scene'] == 'shop' and result['screen'] == {'status': 'visible'}, result
                 assert result['shop']['status'] == 'visible' and result['shop']['view'] == 'inventory', result
-                assert not {'top_bar', 'gold', 'potion_slots', 'available_actions'} & result.keys(), result
+                assert set(result['top_bar']) == {'gold', 'potion_slots', 'deck_count', 'relic_count'}, result
+                assert 'available_actions' not in result, result
                 for item in result['shop']['items']:
                     content = item.get('card') or item
                     if item.get('used'): assert 'description' not in content and 'hover_tips' not in content, item
@@ -106,9 +111,67 @@ async def verify(args):
             assert await details('repeated_unchanged') == inventory
             assert await fixture() == before, 'Read-only details changed inventory, resources or shop RNG.'
             await call('inspect_shop', {'unexpected': True}, error='invalid_request', label='local_invalid')
-            await call('inspect_shop', {'preset': 'summary'}, error='invalid_request', label='summary_not_supported')
+            summary = await call('inspect_shop', {'preset': 'summary'}, label='summary')
+            observed = await call('get_observation', {'preset': 'summary'}, label='summary_observation')
+            assert summary['shop'] == observed['shop'] and summary['top_bar'] == observed['top_bar'], (summary, observed)
+            filtered = await call('inspect_shop', {'preset': 'summary', 'item_ids': [9999, inventory['shop']['items'][0]['id']]}, label='id_filter')
+            assert len(filtered['shop']['items']) == 1 and filtered['errors'] == [{'code': 'item_ids_not_found', 'item_ids': [9999]}], filtered
+            empty = await call('inspect_shop', {'item_ids': [], 'kinds': []}, label='empty_filter')
+            assert empty['shop']['items'] == [] and empty['top_bar']['gold'] == inventory['top_bar']['gold'], empty
+            relics = await call('inspect_shop', {'kinds': ['relic']}, label='kind_filter')
+            assert all(item['kind'] == 'relic' for item in relics['shop']['items']), relics
             assert await details('after_local_errors') == inventory
             items = inventory['shop']['items']
+
+            if scenario == 'display':
+                async def native(operation, arguments=None):
+                    reply = await asyncio.to_thread(raw.call, operation, arguments=arguments)
+                    record({'native_operation': operation, 'arguments': arguments, 'result': reply})
+                    assert reply['ok'], reply
+                    return reply['state']
+                modes = [(mode, 'card') for mode in ('offscreen', 'price_offscreen', 'hidden', 'transparent', 'visual_hidden', 'clipped',
+                    'controller_only', 'mouse_only', 'click_disabled', 'blocked', 'gold_hidden', 'top_bar_hidden')]
+                modes += [('no_hover', kind) for kind in ('card', 'relic', 'potion', 'card_removal')]
+                for mode, kind in modes:
+                    target = next(item for item in items if item['kind'] == kind)
+                    try:
+                        configured = await native('set_test_shop_display', {'mode': mode, 'kind': kind})
+                        if mode == 'controller_only': assert configured['effective_focus'] == 'All', configured
+                        # Native Back slides when input is blocked; compare settled snapshots.
+                        deadline = time.monotonic() + 3
+                        while True:
+                            state = await native('get_state')
+                            expected_back = None if mode == 'blocked' else {'enabled': True}
+                            if state['shop']['back'] == expected_back: break
+                            assert time.monotonic() < deadline, state['shop']
+                            await asyncio.sleep(.05)
+                        value = await call('inspect_shop', label=mode + '_' + kind + '_full')
+                        rows = {item['id']: item for item in value['shop']['items']}
+                        if mode in {'hidden', 'transparent', 'visual_hidden', 'clipped'}:
+                            assert target['id'] not in rows, value
+                        else:
+                            row = rows[target['id']]
+                            assert row['price'] == target['price'], row
+                            content = row.get('card') or row
+                            if mode in {'no_hover', 'blocked'}:
+                                if kind == 'card': assert content['description'] and content['hover_tips'] is None, row
+                                else: assert content['description'] is None and content['hover_tips'] == [], row
+                                assert 'shop.items.' + str(target['id']) in value['notes']['hover_tips_unavailable']['sources'], value
+                            else:
+                                assert content['description'] and content['hover_tips'] is not None, row
+                                assert 'hover_tips_unavailable' not in value.get('notes', {}), value
+                            if mode == 'gold_hidden': assert value['top_bar']['gold'] is None, value
+                            if mode == 'top_bar_hidden': assert value['top_bar'] is None, value
+                        compact = await call('inspect_shop', {'preset': 'summary'}, label=mode + '_' + kind + '_summary')
+                        observed = await call('get_observation', {'preset': 'summary'}, label=mode + '_' + kind + '_observation')
+                        assert compact['shop'] == observed['shop'] and compact.get('top_bar') == observed.get('top_bar'), (compact, observed)
+                        assert 'hover_tips_unavailable' not in compact.get('notes', {}), compact
+                        subset = await call('inspect_shop', {'item_ids': [target['id']]}, label=mode + '_' + kind + '_filtered')
+                        assert len(subset['shop']['items']) == int(target['id'] in rows), subset
+                    finally: await native('set_test_shop_display', {'mode': 'normal', 'kind': kind})
+                guards = await native('check_test_dispatch')
+                assert all(count == 81 for count in guards.values()), guards
+                return
 
             if scenario == 'basic':
                 await details('basic_default', 'default')

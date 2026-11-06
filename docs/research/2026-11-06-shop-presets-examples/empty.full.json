@@ -1,0 +1,26 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "shop": {
+    "status": "visible",
+    "view": "inventory",
+    "items": [],
+    "open": null,
+    "back": {
+      "enabled": true
+    },
+    "proceed": null
+  },
+  "top_bar": {
+    "gold": 2099,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1
+  }
+}

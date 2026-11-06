@@ -20,16 +20,17 @@ internal sealed partial class GameAdapter
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current shop before acting.");
         var context = ShopInspection.Current;
+        if (inspect)
+        {
+            if (ShopInspection.InspectionUnavailableReason(context) is { } unavailable)
+                return FileMailbox.Error(request.Id, "illegal_action", unavailable, publicMessage: true);
+            var details = shopInspection.Inspect();
+            return InspectionSuccess(request, before, new { details.shop, details.unavailable_hover_sources,
+                top_bar = before.GetProperty("top_bar") });
+        }
         if (context == null || !ShopInspection.Exposed(context) || !RunContext.Singleplayer
             || (!inspect && !ShopInspection.Ready(context)))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player shop.");
-        if (inspect)
-        {
-            if (!context.Inventory.IsOpen || ShopInspection.Animating(context))
-                return FileMailbox.Error(request.Id, "illegal_action", "Open the shop before inspecting its items.");
-            return InspectionSuccess(request, before, new { shop = shopInspection.Read(full: true)
-            });
-        }
         var run = RunManager.Instance.DebugOnlyGetState();
         Task? submitted = null;
         string? outcome = null;

@@ -1,0 +1,82 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "shop": {
+    "status": "visible",
+    "view": "inventory",
+    "items": [
+      {
+        "id": 0,
+        "kind": "relic",
+        "position": "relic:0",
+        "price": 46,
+        "affordable": true,
+        "enabled": true,
+        "name": "Orichalcum???"
+      },
+      {
+        "id": 1,
+        "kind": "relic",
+        "position": "relic:1",
+        "price": 47,
+        "affordable": true,
+        "enabled": true,
+        "name": "Happy Flower???"
+      },
+      {
+        "id": 2,
+        "kind": "relic",
+        "position": "relic:2",
+        "price": 50,
+        "affordable": true,
+        "enabled": true,
+        "name": "Lee's Waffle???"
+      },
+      {
+        "id": 3,
+        "kind": "relic",
+        "position": "relic:3",
+        "price": 46,
+        "affordable": true,
+        "enabled": true,
+        "name": "Snecko Eye???"
+      },
+      {
+        "id": 4,
+        "kind": "relic",
+        "position": "relic:4",
+        "price": 56,
+        "affordable": true,
+        "enabled": true,
+        "name": "Strike Dummy???"
+      },
+      {
+        "id": 5,
+        "kind": "relic",
+        "position": "relic:5",
+        "price": 56,
+        "affordable": true,
+        "enabled": true,
+        "name": "Mango???"
+      }
+    ],
+    "back": {
+      "enabled": true
+    }
+  },
+  "top_bar": {
+    "gold": 2099,
+    "deck_count": 10,
+    "potion_slots": [
+      {
+        "name": "Foul Potion",
+        "usable_here": false
+      },
+      null,
+      null
+    ],
+    "relic_count": 2
+  }
+}

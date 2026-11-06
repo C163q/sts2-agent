@@ -1,10 +1,10 @@
 # inspect_shop 核验与参数建议
 
-> 当前状态：现状审阅完成，三项优先问题及参数建议待讨论定稿，玩法行为尚未修改。21项相关Python、九类GUI完成；工具清单保持29/44，无调查阻塞。
+> 当前状态：定稿已实现并通过行为验收，准备最终独立审阅；[实施记录](2026-11-06-shop-inspection-presets-implementation.md)及新JSON另列，原审阅样本保持原样。工具清单29/44，无阻塞。
 
 流程见[工具清单](2026-11-02-mcp-tool-review.md)；源码、问题编号及验证依据见[开发核验](2026-11-06-inspect-shop-development-notes.md)。本页负责实际表现和待决定的设计。
 
-## 优先问题
+## 审阅基线的优先问题
 
 | 问题 | 影响 | 建议与证据状态 |
 | --- | --- | --- |
@@ -16,7 +16,7 @@
 
 另有一项边界待核验：full目前直接提供所有在列商品的说明，对“商品可见但当前无法悬停”的状态没有专门处理。普通买不起的商品仍可悬停，不能因为enabled:false就删掉说明；原生商品还可以通过控制器聚焦。建议在拆分读取判断时核对两种入口，确实无法查看时保留静态信息并给note。此处尚无本轮GUI复现，与上表已确认问题区分。
 
-## 当前参数与内容
+## 审阅基线的参数与内容
 
 仅支持preset:default/full，默认default，无操作参数或筛选。必须先打开商品页。full包含同次scene、screen和shop，不附送金币、药水槽或available_actions。
 
@@ -31,9 +31,9 @@ shop包含status、view、items及open/back/proceed。items沿用原生布局顺
 
 原生商品页是固定布局，没有遗漏的滚动商品列表。完整库存读取与实际点击范围分开：读取不必按屏幕坐标删商品，点击仍核对可交互性。
 
-## 参数建议
+## 审阅时的参数分析
 
-建议增加preset:summary与item_ids，补充购买上下文；以下均未定稿。
+以下保留审阅时的参数分析；最终接口以输出定稿及实施记录为准。
 
 - summary保留商品ID、种类、位置、价格、可负担／可点击、特价及删牌使用状态。卡牌沿用共用卡牌摘要；遗物／药水／服务保留名称，省略正文和悬停解释。
 - item_ids按外层整数ID筛选，省略或null为全部，[]为空；去重并保持原生顺序，找不到的ID合并到errors，仍返回其他有效商品。完整响应先校验再筛选。
@@ -44,7 +44,7 @@ shop包含status、view、items及open/back/proceed。items沿用原生布局顺
 
 筛选后的商品继续携带原有id和position，不需要再增加结果位置映射。共享解释如果提取到顶层，宜按item_ids关联；目前解释内嵌于各商品，是否提取与去重可作为小范围整理的一部分。
 
-原生还支持右键查看商品卡牌及升级预览，当前inspect_shop没有对应参数。这是可增补的能力，尚未定稿；若增加view_upgrades，需要设计真实预览与页面返回方式，不能只计算升级结果却声称UI已切换。源码依据见开发核验，未加入用户TODO。
+原生还支持右键查看商品卡牌及升级预览，审阅基线的inspect_shop没有对应参数。该能力已进入用户TODO；若增加view_upgrades，需要设计真实预览与页面返回方式，不能只计算升级结果却声称UI已切换。源码依据见开发核验，未加入用户TODO。
 
 ## 场景与典型JSON
 
@@ -64,3 +64,17 @@ shop包含status、view、items及open/back/proceed。items沿用原生布局顺
 | 关闭／地图覆盖／无商店 | [首次读取失败](2026-11-06-inspect-shop-examples/closed-first.full.json)不生成许可；[地图覆盖](2026-11-06-inspect-shop-examples/map-covered.full.json)及[无商店](2026-11-06-inspect-shop-examples/no-shop.full.json)保留已有许可但说明笼统 |
 
 21项相关Python及九类GUI通过，107次真实MCP、14次原生夹具检查；不重建Mod。离屏与不可悬停扰动、真实过渡／超时、其他自动购买组合、多人与第三方商品未新增GUI实测。原生悬停边界仍须在实现前核对，尤其是商品slot自身也能接收控制器焦点，不能只按鼠标Hitbox禁用判定说明不可读。
+
+## 输出定稿
+
+三项优先问题均修复：公开具体原因并共用可用性判断；完整校验scene:shop、screen:{status:visible}及库存状态；商品／价格读取取消视口过滤，实际点击继续检查可交互范围。只读拒绝沿用已有许可恢复。
+
+支持default/full/summary及item_ids、kinds。item_ids为当前外层商品整数ID（0到2147483647），kinds为card/relic/potion/card_removal；两项均省略或null取全部、[]为空，去重并保持原生顺序，组合取交集。找不到的ID相对完整当前商品列表判断，合并为errors:[{code:item_ids_not_found,item_ids:[...]}]；有效ID仅被kinds排除时不报缺失。非法分类为invalid_request，所有输出参数留在MCP本地。
+
+summary的shop主体与get_observation.summary.shop共用同一静态入口：商品购买字段保留，卡牌使用共用摘要，其他商品保留名称和已用状态，省略description、hover_tips及悬停note。筛选保留页面back/open/proceed等公共字段，[]仍返回items:[]。full/default完整说明继续保留在商品／card行内，不增加共享提示重排。
+
+所有预设增加同次快照的top_bar，使用共用摘要顶栏入口，含gold、potion_slots、deck_count、relic_count；药水保留名称、空槽及实际UI提示，不附送已持有遗物正文。完整校验后再精简与筛选，空筛选也拒绝坏响应。
+
+确实不可悬停的商品保留静态信息，notes.hover_tips_unavailable.sources使用shop.items.<原ID>，筛选同步裁剪，summary省略。卡牌正文已直接画在商品卡面，full/default仍保留正文，只有额外hover_tips为null；其他未用商品description:null、hover_tips:[]。已用删牌服务维持无说明字段。鼠标与slot控制器焦点分别判断，单纯点击禁用或金币不足不能等同不可悬停。
+
+升级预览只进入用户TODO：后续统一设计inspect_shop、inspect_selection等工具的原生右键详情／升级对照及实际UI响应，本阶段不实现。

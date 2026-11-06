@@ -1,0 +1,70 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "shop": {
+    "status": "visible",
+    "view": "inventory",
+    "items": [
+      {
+        "id": 7,
+        "kind": "relic",
+        "position": "relic:0",
+        "price": 178,
+        "affordable": true,
+        "enabled": true,
+        "name": "Anchor",
+        "description": "Start each combat with 10 Block.",
+        "hover_tips": [
+          {
+            "title": "Block",
+            "description": "Until next turn, prevents damage."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "kind": "relic",
+        "position": "relic:1",
+        "price": 158,
+        "affordable": true,
+        "enabled": true,
+        "name": "Lantern",
+        "description": "Start each combat with an additional <Energy>.",
+        "hover_tips": [
+          {
+            "title": "Energy",
+            "description": "Energy is used to play cards from your Hand."
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "kind": "relic",
+        "position": "relic:2",
+        "price": 192,
+        "affordable": true,
+        "enabled": true,
+        "name": "Pen Nib",
+        "description": "Every 10th Attack you play deals double damage.",
+        "hover_tips": []
+      }
+    ],
+    "open": null,
+    "back": {
+      "enabled": true
+    },
+    "proceed": null
+  },
+  "top_bar": {
+    "gold": 2099,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1
+  }
+}

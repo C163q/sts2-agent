@@ -1,0 +1,243 @@
+[
+  {
+    "file": "inventory.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/basic/audit/evidence.json",
+    "row_index": 6,
+    "sha256": "ac3f9191201644a7b1957d2e0b02a491b5767380c1059b2f5e566a6bfe08169c"
+  },
+  {
+    "file": "inventory.default.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "default"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/basic/audit/evidence.json",
+    "row_index": 16,
+    "sha256": "c2a031cebf7e94480d6f6991a3fe43e6e782623c872a6b411c0bb7113d875063"
+  },
+  {
+    "file": "inventory.summary.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/basic/audit/evidence.json",
+    "row_index": 10,
+    "sha256": "33e05eefe38b89e7eeddf92d5450d23e83ddb1980dc80f3c2831fcac364c7172"
+  },
+  {
+    "file": "observation.summary.json",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/basic/audit/evidence.json",
+    "row_index": 11,
+    "sha256": "24a4cb90f0101668876fa4c5f02cd100c4f00509eff139937254f2cbff0d64a8"
+  },
+  {
+    "file": "id-filter.summary.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "summary",
+      "item_ids": [
+        9999,
+        0
+      ]
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/basic/audit/evidence.json",
+    "row_index": 12,
+    "sha256": "92f0799aaa950d81853cefb9f3c5b2d382cfb7815f943a6b052e49afa0616001"
+  },
+  {
+    "file": "relics.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full",
+      "kinds": [
+        "relic"
+      ]
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/basic/audit/evidence.json",
+    "row_index": 14,
+    "sha256": "45d6b592bca7342944cf9ca1fb40ab346243fae42b6b06d0011bb38df62302c1"
+  },
+  {
+    "file": "empty.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full",
+      "item_ids": [],
+      "kinds": []
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/basic/audit/evidence.json",
+    "row_index": 13,
+    "sha256": "d85ed0ba2e54a5a4cdd307eb7f79c559148a3d84e65d9a76d07ce35f478b1f2e"
+  },
+  {
+    "file": "after-card.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/basic/audit/evidence.json",
+    "row_index": 24,
+    "sha256": "21a9b1bd12b8c56980e4e6a049bdf75d47996e06092299d595fd6d085227af55"
+  },
+  {
+    "file": "map-covered.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/basic/audit/evidence.json",
+    "row_index": 18,
+    "sha256": "90164bdd1f653d82f03f34498d33cbbbe51e2ded492b105fb7c03b03bf07f87b"
+  },
+  {
+    "file": "closed-first.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/basic/audit/evidence.json",
+    "row_index": 0,
+    "sha256": "898153c617be18060645c691bf40c4ce3c88999e9f77c60f052f5a1041bfb1f1"
+  },
+  {
+    "file": "used-removal.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/remove/audit/evidence.json",
+    "row_index": 24,
+    "sha256": "4b49a8b16ed951e590961c6d87835ec6dd740bd0e8613ec304038f4d061efb5c"
+  },
+  {
+    "file": "courier-restocked.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/courier/audit/evidence.json",
+    "row_index": 17,
+    "sha256": "a9a9eb226de505d7c7bc4b2024fad9a1cbdf2590fc0270a05e0ad93b6293a33d"
+  },
+  {
+    "file": "fake-merchant.summary.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/fake/audit/evidence.json",
+    "row_index": 10,
+    "sha256": "b5ed9ef3552160d2bdb316d4361159cd6349dbd1b217db123baacbbf777f8f29"
+  },
+  {
+    "file": "nested-return.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/nested/audit/evidence.json",
+    "row_index": 19,
+    "sha256": "a8e6cae3f62657d772a9de8255f65e61d51ba63be3f2b3c0aa07e8f9f1e7dd0a"
+  },
+  {
+    "file": "parasol-complete.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/parasol/audit/evidence.json",
+    "row_index": 5,
+    "sha256": "f0fc7e98a98b199cd5e698e1072aa43f790ea7a343d2b3184deee43f5ef423e1"
+  },
+  {
+    "file": "offscreen.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full",
+      "item_ids": [
+        0
+      ]
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/display/check/evidence.json",
+    "row_index": 21,
+    "sha256": "2b389f33c2d9ddf5f53b05b7c39611ededa4f2a66efc00275077827d3b04e7c1"
+  },
+  {
+    "file": "price-offscreen.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full",
+      "item_ids": [
+        0
+      ]
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/display/check/evidence.json",
+    "row_index": 28,
+    "sha256": "2b389f33c2d9ddf5f53b05b7c39611ededa4f2a66efc00275077827d3b04e7c1"
+  },
+  {
+    "file": "no-hover-card.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full",
+      "item_ids": [
+        0
+      ]
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/display/check/evidence.json",
+    "row_index": 106,
+    "sha256": "b792f235cc6978036375898ab441d04ee1c4b1d79933f62c07b50ca233013508"
+  },
+  {
+    "file": "no-hover-relic.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full",
+      "item_ids": [
+        7
+      ]
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/display/check/evidence.json",
+    "row_index": 113,
+    "sha256": "f989b1a2ea52e80d7b34f90a9257654197b50d0f1dbe494ebec536110fa7a472"
+  },
+  {
+    "file": "blocked.summary.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "summary"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/display/check/evidence.json",
+    "row_index": 83,
+    "sha256": "2b8b37ba432ea40ba718fbadf7fb6236cf04d46343ba0cfd088e0e0f3db50807"
+  },
+  {
+    "file": "hidden-gold.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/display/check/evidence.json",
+    "row_index": 89,
+    "sha256": "967d7431e300c6b46f0d7aedddf235853b273c7f015317db67ea3f59a81c70ef"
+  },
+  {
+    "file": "hidden-top-bar.full.json",
+    "tool": "inspect_shop",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-06-shop-inspection-presets/gui-final/display/check/evidence.json",
+    "row_index": 96,
+    "sha256": "6f6a47c5d836b8e8243084bb1787e0f1ba0d2173756fab6803473ba55949140a"
+  }
+]

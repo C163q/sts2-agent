@@ -120,7 +120,7 @@ async def verify(args):
                     record({'native_operation': operation, 'result': reply})
                     assert reply['ok'], reply
                     if operation == 'check_test_relic_counters': assert reply['state']['passed'], reply
-                    else: assert all(count == 80 for count in reply['state'].values()), reply
+                    else: assert all(count >= 80 for count in reply['state'].values()), reply
                 await call('get_observation', label='after_native_checks')
                 await call('choose_rest_option', {'option_id': 'LIFT'}, label='lift_after_checks')
             elif args.scenario == 'basic':

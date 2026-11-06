@@ -71,6 +71,9 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                     want['hover_tips'][0]['relic_indices'] = [2]
                 if case['tool'] == 'get_observation' and want.get('rest_site') is not None:
                     want['rest_site'].pop('description', None)
+                if case['tool'] == 'inspect_shop' and 'error' not in want:
+                    want['top_bar'] = {key: value for key, value in client.state.get('top_bar', {}).items()
+                        if key in {'gold', 'potion_slots', 'deck_count', 'relic_count'}}
                 if case.get('error') and case['tool'] in {
                     'inspect_run_result', 'inspect_event', 'inspect_ancient', 'inspect_shop',
                     'inspect_treasure', 'inspect_rest_site', 'inspect_rewards', 'inspect_potions',
@@ -100,7 +103,7 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
             successful = [case for case in cases if case['tool'] == tool.name and 'error' not in expected[case['expected_ref']]]
             presets = {case['arguments'].get('preset') for case in successful}
             # Dedicated preset tests cover additions to the frozen refactor baseline.
-            added = {'summary'} if tool.name in {'inspect_potions', 'inspect_map', 'inspect_rewards', 'inspect_treasure', 'inspect_rest_site'} else set()
+            added = {'summary'} if tool.name in {'inspect_potions', 'inspect_map', 'inspect_rewards', 'inspect_treasure', 'inspect_rest_site', 'inspect_shop'} else set()
             self.assertGreaterEqual(presets, {None, *(set(tool.inputSchema['properties']['preset']['enum']) - added)})
             self.assertTrue(any(case['tool'] == tool.name and case.get('error') for case in cases))
             self.assertTrue(any(case['tool'] == tool.name and 'unknown_field' in case['arguments'] for case in cases))
@@ -132,6 +135,9 @@ class FileContractTests(unittest.TestCase):
                     want = {key: want[key] for key in ('scene', 'screen', 'available_actions')}
                 if case['tool'] == 'inspect_pile' and '--preset' in case['argv'] and 'summary' in case['argv'] and want.get('status') == 'opened':
                     want.pop('message', None)
+                if case['tool'] == 'inspect_shop':
+                    want['top_bar'] = {key: value for key, value in want.get('top_bar', {}).items()
+                        if key in {'gold', 'potion_slots', 'deck_count', 'relic_count'}}
                 self.assertEqual(json.loads(output.getvalue()), want)
                 self.assertEqual(call.call_args.kwargs.get('arguments'), case['native_arguments'])
                 self.assertEqual(raw, original)

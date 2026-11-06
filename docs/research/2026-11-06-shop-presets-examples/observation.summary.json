@@ -1,0 +1,197 @@
+{
+  "scene": "shop",
+  "screen": {
+    "status": "visible"
+  },
+  "top_bar": {
+    "gold": 2099,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1
+  },
+  "shop": {
+    "status": "visible",
+    "view": "inventory",
+    "items": [
+      {
+        "id": 0,
+        "kind": "card",
+        "position": "character_card:0",
+        "price": 75,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Dismantle",
+          "type": "Attack",
+          "energy_cost": "1"
+        },
+        "on_sale": false
+      },
+      {
+        "id": 1,
+        "kind": "card",
+        "position": "character_card:1",
+        "price": 39,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Fight Me!",
+          "type": "Attack",
+          "energy_cost": "2"
+        },
+        "on_sale": true
+      },
+      {
+        "id": 2,
+        "kind": "card",
+        "position": "character_card:2",
+        "price": 49,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Havoc",
+          "type": "Skill",
+          "energy_cost": "1"
+        },
+        "on_sale": false
+      },
+      {
+        "id": 3,
+        "kind": "card",
+        "position": "character_card:3",
+        "price": 49,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Tremble",
+          "type": "Skill",
+          "energy_cost": "1"
+        },
+        "on_sale": false
+      },
+      {
+        "id": 4,
+        "kind": "card",
+        "position": "character_card:4",
+        "price": 78,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Feel No Pain",
+          "type": "Power",
+          "energy_cost": "1"
+        },
+        "on_sale": false
+      },
+      {
+        "id": 5,
+        "kind": "card",
+        "position": "colorless_card:0",
+        "price": 89,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Shockwave",
+          "type": "Skill",
+          "energy_cost": "2"
+        },
+        "on_sale": false
+      },
+      {
+        "id": 6,
+        "kind": "card",
+        "position": "colorless_card:1",
+        "price": 164,
+        "affordable": true,
+        "enabled": true,
+        "card": {
+          "name": "Gold Axe",
+          "type": "Attack",
+          "energy_cost": "1"
+        },
+        "on_sale": false
+      },
+      {
+        "id": 7,
+        "kind": "relic",
+        "position": "relic:0",
+        "price": 178,
+        "affordable": true,
+        "enabled": true,
+        "name": "Anchor"
+      },
+      {
+        "id": 8,
+        "kind": "relic",
+        "position": "relic:1",
+        "price": 158,
+        "affordable": true,
+        "enabled": true,
+        "name": "Lantern"
+      },
+      {
+        "id": 9,
+        "kind": "relic",
+        "position": "relic:2",
+        "price": 192,
+        "affordable": true,
+        "enabled": true,
+        "name": "Pen Nib"
+      },
+      {
+        "id": 10,
+        "kind": "potion",
+        "position": "potion:0",
+        "price": 72,
+        "affordable": true,
+        "enabled": true,
+        "name": "Heart of Iron"
+      },
+      {
+        "id": 11,
+        "kind": "potion",
+        "position": "potion:1",
+        "price": 51,
+        "affordable": true,
+        "enabled": true,
+        "name": "Attack Potion"
+      },
+      {
+        "id": 12,
+        "kind": "potion",
+        "position": "potion:2",
+        "price": 51,
+        "affordable": true,
+        "enabled": true,
+        "name": "Colorless Potion"
+      },
+      {
+        "id": 13,
+        "kind": "card_removal",
+        "position": "card_removal:0",
+        "price": 75,
+        "affordable": true,
+        "enabled": true,
+        "name": "Card Removal Service",
+        "used": false
+      }
+    ],
+    "back": {
+      "enabled": true
+    }
+  },
+  "available_actions": [
+    "buy_item",
+    "close_shop",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_shop"
+  ]
+}

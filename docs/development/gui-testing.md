@@ -47,7 +47,7 @@
 | 奖励预设与 ID 筛选、基础观察对照、拒绝续接及旧领取流程 | [reward_inspection_review](../../tests/game/data/gui_suite_reward_inspection_review.json)；[实施与验证](../research/2026-11-05-reward-inspection-presets-implementation.md) |
 | 火堆详情、灰置说明、覆盖拒绝与只读许可 | [rest_site_inspection_review](../../tests/game/data/gui_suite_rest_site_inspection_review.json)；[实施记录](../research/2026-11-06-rest-site-inspection-presets-implementation.md)，含预设／筛选和受保护的显示／淡出夹具 |
 | 火堆选择、确认／取消、追加奖励、拒绝续接与遗物计数 | [choose_rest_option_review](../../tests/game/data/gui_suite_choose_rest_option_review.json)；[定稿](../research/2026-11-06-choose-rest-option-review.md#输出定稿)。包括受保护的计数显示检查、按钮边界和自然战斗结束计数，支持同进程复用 |
-| 商店详情、缺货／补货、删牌和只读拒绝恢复现状 | [shop_inspection_review](../../tests/game/data/gui_suite_shop_inspection_review.json)；[审阅记录](../research/2026-11-06-inspect-shop-review.md)。诊断分支断言当前笼统错误，修复时同步更新；使用普通、假商人及受控嵌套商品夹具 |
+| 商店详情预设／双筛选、购买顶栏、显示焦点和只读拒绝恢复 | [shop_inspection_review](../../tests/game/data/gui_suite_shop_inspection_review.json)；[定稿](../research/2026-11-06-inspect-shop-review.md#输出定稿)。包含受保护ShopDisplayFixture的16组显示／焦点／顶栏扰动及双模式入口门控；UI属性在finally和局间重置恢复 |
 | 跨场景前进、覆盖拒绝和许可恢复 | [proceed_review](../../tests/game/data/gui_suite_proceed_review.json)；[实施记录](../research/2026-11-06-proceed-recovery-implementation.md)。建筑师与完整终章各使用全新进度独立实例 |
 | 开箱／分步领取、空箱、输入边界与明确拒绝恢复 | [loot_treasure_review](../../tests/game/data/gui_suite_loot_treasure_review.json)；[修复记录](../research/2026-11-06-treasure-loot-recovery-implementation.md)。验证具体诊断、原生证明与合法动作直接续接 |
 | 宝箱预设、空值、覆盖拒绝、纯读取续接与显示／悬停边界 | [treasure_inspection_review](../../tests/game/data/gui_suite_treasure_inspection_review.json)；[实施验证](../research/2026-11-06-treasure-inspection-presets-implementation.md)。显示扰动双重门控，finally 和局间重置恢复 |
