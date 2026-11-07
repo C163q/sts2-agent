@@ -1,6 +1,6 @@
 # inspect_ancient 核验与建议
 
-> 当前状态：修复范围与参数方案已确认，产品与验收已完成，待独立审阅及合并，无阻塞。审阅基线为831975d；下文现状与旧JSON保留该基线，输出定稿作为实施依据。
+> 当前状态：修复范围与参数方案已确认，产品、验收及独立审阅已完成并合入main，无阻塞。审阅基线为831975d；下文现状与旧JSON保留该基线，输出定稿作为实施依据。
 
 总流程见[工具清单](2026-11-02-mcp-tool-review.md)。[16份完整实测JSON](2026-11-07-inspect-ancient-examples/README.md)包含14份full、一份default，以及一份不支持summary的错误；修复后的实现及验证见[实施记录](2026-11-07-ancient-inspection-presets-implementation.md)；审阅源码位置、验证过程及未验证范围见[开发核验](2026-11-07-inspect-ancient-development-notes.md)。
 

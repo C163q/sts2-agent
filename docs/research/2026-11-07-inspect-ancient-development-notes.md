@@ -1,6 +1,6 @@
 # inspect_ancient 开发核验依据
 
-> 当前状态：定稿已实施并验收，独立审阅待进行；当前结果见[实施记录](2026-11-07-ancient-inspection-presets-implementation.md)，下文保留原审阅基线与旧问题。用户决策内容见[核验与建议](2026-11-07-inspect-ancient-review.md)。
+> 当前状态：定稿已实施、验收及独立审阅并合入main；当前结果见[实施记录](2026-11-07-ancient-inspection-presets-implementation.md)，下文保留原审阅基线与旧问题。用户决策内容见[核验与建议](2026-11-07-inspect-ancient-review.md)。
 
 ## 基线与证据
 

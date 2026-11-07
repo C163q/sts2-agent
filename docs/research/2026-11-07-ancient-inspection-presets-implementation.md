@@ -1,6 +1,6 @@
 # 先古详情预设与可见信息修复
 
-> 当前状态：产品与验证已完成，独立审阅待进行；实施计划共1项，任务实现及验收完成，剩余整分支审阅、提交合并及清理。无阻塞。
+> 当前状态：完成，共1项，已完成1项。产品、验收及独立审阅通过，合入main并清理临时分支；无剩余实现或阻塞。
 
 依据[输出定稿](2026-11-07-inspect-ancient-review.md#输出定稿)及[实施计划](../superpowers/plans/2026-11-07-ancient-inspection-presets.md)。[23份修复后返回](2026-11-07-ancient-inspection-fixed-examples/README.md)与[原审阅样本](2026-11-07-inspect-ancient-examples/README.md)分开保存；当前接口见[先古指南](../development/ancients.md)。
 
@@ -59,4 +59,13 @@ Mod0.78.0、MCP0.80.0、schema46；当前基线集中在README。没有修改cho
 
 ## 独立审阅与合并
 
-待一次整分支独立审阅；重要问题按测试先行修复后记录，不重复派发审阅。通过后提交并合入main，删除临时分支，归档及清理本计划的技能工作目录。
+独立审阅/root/review_ancient_inspection_presets（gpt-6.1-sol/high，独立上下文）核对02eaa7d..fab770e，Critical0／Important0／Minor0，可合入。没有修复补丁或复审。
+
+审阅列出的两项范围由主代理确认：
+
+1. choose_ancient_option／advance_dialogue的既有恢复设计留在后续逐工具审阅。若此范围过窄，相关动作错误仍可能要求重新观察，需后续处理。
+2. 多人及任意第三方UI继续处于当前原生单人支持范围之外。若需要更广兼容，仍可能需要人工交互及额外实现。
+
+没有遗留Minor。实现提交fab770e，按项目约定本地快进合入main，清理feat/ancient-inspection-presets；没有推送或正式安装。技能工作目录仅归档本计划的五个文件，逐份核对SHA-256后删除原目录，兄弟目录保持原样；归档位于.tmp/2026-11-07-ancient-inspection-presets/inline-workspace/。
+
+交付检查核对807项Python、145项C#、12组GUI、85项双模式门控、两项原生RED、两个已退出的自有进程、23份样本与18份成功响应重放、相对链接、版本及最终DLL哈希；记录见delivery-final.log。提交与合并后没有重建DLL或重复扩大测试。
