@@ -1,0 +1,175 @@
+[
+  {
+    "file": "switch-small.full.json",
+    "description": "切换为小范围",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-set-divination-tool-review/evidence.json",
+    "row_index": 18,
+    "native_files": [
+      ".tmp/2026-11-07-set-divination-tool-review/game/ipc/responses/12757637e70f4fe791a5df4ff866e831.json"
+    ],
+    "sha256": "76ac8019e0fbc3d51502f904d9531821ed99ed42cfaf312aabbd99ef612abf95"
+  },
+  {
+    "file": "same-tool.full.json",
+    "description": "重复选择当前工具",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-set-divination-tool-review/evidence.json",
+    "row_index": 20,
+    "native_files": [
+      ".tmp/2026-11-07-set-divination-tool-review/game/ipc/responses/fc71cf45a33f4e9d87d18b11f32f8e35.json"
+    ],
+    "sha256": "76ac8019e0fbc3d51502f904d9531821ed99ed42cfaf312aabbd99ef612abf95"
+  },
+  {
+    "file": "switch-big.default.json",
+    "description": "切换为大范围，default回执",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "default",
+      "tool": "big"
+    },
+    "source": ".tmp/2026-11-07-set-divination-tool-review/evidence.json",
+    "row_index": 22,
+    "native_files": [
+      ".tmp/2026-11-07-set-divination-tool-review/game/ipc/responses/8c07dcd153cf4e14ae04837ed01b3ab4.json"
+    ],
+    "sha256": "76ac8019e0fbc3d51502f904d9531821ed99ed42cfaf312aabbd99ef612abf95"
+  },
+  {
+    "file": "cold-call.full.json",
+    "description": "该MCP会话尚未观察",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-set-divination-tool-review/evidence.json",
+    "row_index": 8,
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "no-board.full.json",
+    "description": "无占卜棋盘时拒绝",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-set-divination-tool-review/evidence.json",
+    "row_index": 4,
+    "native_files": [
+      ".tmp/2026-11-07-set-divination-tool-review/game/ipc/responses/242e009f341d4391a295c31014b37ec9.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "地图覆盖时拒绝",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-set-divination-tool-review/evidence.json",
+    "row_index": 28,
+    "native_files": [
+      ".tmp/2026-11-07-set-divination-tool-review/game/ipc/responses/16cbefad681c4b28a1511b84c2c432bf.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "deck-covered.full.json",
+    "description": "牌组覆盖时拒绝",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-set-divination-tool-review/evidence.json",
+    "row_index": 34,
+    "native_files": [
+      ".tmp/2026-11-07-set-divination-tool-review/game/ipc/responses/47e41487785546388f7c93d192d3d6d2.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "finished.full.json",
+    "description": "占卜结束后拒绝",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-set-divination-tool-review/evidence.json",
+    "row_index": 52,
+    "native_files": [
+      ".tmp/2026-11-07-set-divination-tool-review/game/ipc/responses/4c7dc37a802d465380ae579dc9059805.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "rewards-covered.full.json",
+    "description": "奖励页面覆盖时拒绝",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-set-divination-tool-review/remaining/evidence.json",
+    "row_index": 13,
+    "native_files": [
+      ".tmp/2026-11-07-set-divination-tool-review/remaining/game/ipc/responses/27592201c0b14737b2104650d72ea0e3.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "奖励选牌覆盖时拒绝",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-set-divination-tool-review/remaining/evidence.json",
+    "row_index": 37,
+    "native_files": [
+      ".tmp/2026-11-07-set-divination-tool-review/remaining/game/ipc/responses/3921797b23b648d3a81595238bd7f099.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "after-rejection.full.json",
+    "description": "拒绝后合法proceed仍要求观察",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-set-divination-tool-review/evidence.json",
+    "row_index": 54,
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "invalid-tool.full.json",
+    "description": "非法tool在MCP本地拒绝",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "large"
+    },
+    "source": ".tmp/2026-11-07-set-divination-tool-review/evidence.json",
+    "row_index": 15,
+    "native_files": [],
+    "sha256": "f3390b1600f535be441920b18763de08f80aa023abb975d0b6ee7ef0a21e9a1c"
+  }
+]

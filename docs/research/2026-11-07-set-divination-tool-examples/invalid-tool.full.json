@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "tool must be one of: big, small.",
+    "recovery": "correct_request"
+  }
+}
