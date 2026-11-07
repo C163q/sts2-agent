@@ -32,6 +32,17 @@ internal sealed partial class GameAdapter
 {
     private async Task<string?> TestRequestBeforeCapture(Request request)
     {
+        if (request.Operation == "set_test_result_option" && testMode
+            && (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+                || testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") != null))
+        {
+            if (request.Arguments is not { ValueKind: JsonValueKind.Object } options
+                || options.EnumerateObject().Count() != 1 || !options.TryGetProperty("mode", out var mode)
+                || mode.ValueKind != JsonValueKind.String || mode.GetString() is not ("arm_scroll" or "reset"))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected arm_scroll or reset mode.");
+            return Success(request, JsonSerializer.Serialize(mode.GetString() == "reset"
+                ? ResultOptionFixture.Reset() : ResultOptionFixture.Arm(runResultInspection)));
+        }
         if (request.Operation == "set_test_presentation" && testMode
             && (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
                 || testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") != null))

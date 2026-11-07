@@ -1,8 +1,8 @@
 # 结算选项操作与错误恢复实施计划
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
-> 当前状态：实施中，共3项，已完成0项；正在处理拒绝恢复和共用判断，剩余章节重读、详情页夹具及最终验证。暂无阻塞。
+> 当前状态：实施中，共3项，已完成2项；正在整理最终样例和文档，剩余一次独立审阅及合入。暂无阻塞。
 
 **Goal:** 修复结算动作的许可恢复、具体原因及已揭晓章节查看，并核验原生结算详情的返回流程。
 
@@ -37,11 +37,11 @@
 
 **Interfaces:** 消费现有RejectedBeforeSubmission、UiChanged及game_session未提交策略；产生RunResultInspection.ActionUnavailableReason(Context?)、OptionUnavailableReason(Context?,string,out NClickableControl?)，Ready与执行复用。
 
-- [ ] 写Python边界测试：明确拒绝后直接纠正；冷调用、本地参数、过期、不确定、缺失／矛盾证据、交互后拒绝及坏成功响应。
-- [ ] RED：70秒内运行新模块，预期旧注册策略使明确拒绝恢复失败；保留输出。GUI旧DLL的错误房间已有本次审阅RED证据，开发记录明确引用。
-- [ ] 实现统一判断、具体public_message、点击前明确拒绝及注册策略；BeginInteraction在首次滚动／点击前调用，滚动后重新核对相同上下文和当前目标。
-- [ ] GREEN：新模块及结算／对话恢复相关测试通过；全Python检查通过。Expected：许可边界保持、无新错误。
-- [ ] 提交独立变更并记录结果。
+- [x] 写Python边界测试：明确拒绝后直接纠正；冷调用、本地参数、过期、不确定、缺失／矛盾证据、交互后拒绝及坏成功响应。
+- [x] RED：70秒内运行新模块，预期旧注册策略使明确拒绝恢复失败；保留输出。GUI旧DLL的错误房间已有本次审阅RED证据，开发记录明确引用。
+- [x] 实现统一判断、具体public_message、点击前明确拒绝及注册策略；BeginInteraction在首次滚动／点击前调用，滚动后重新核对相同上下文和当前目标。
+- [x] GREEN：新模块及结算／对话恢复相关测试通过；全Python检查通过。Expected：许可边界保持、无新错误。
+- [x] 提交独立变更并记录结果。
 
 ### Task 2: 已揭晓章节、原生详情夹具及游戏验证
 
@@ -49,12 +49,12 @@
 
 **Interfaces:** 使用Task1操作判断；Options同时提供原生Obtained／Complete，ButtonText区分Reveal／View。prepare_test_browsable_history使用原生结算资源或明确未支持，不返回不可用夹具的假成功。
 
-- [ ] 编写GUI核验：旧DLL揭晓后原ID不可重读应失败；本次审阅已观察到的旧历史页点击崩溃作为夹具RED，避免重复触发同一已知准备故障。
-- [ ] 先核实原生结算详情资源的存在、类型和连接生命周期，再实现夹具；不凭文件名假定可用。必要调查更新记录及Ruling，继续不依赖此资源的工作。
-- [ ] 扩展章节选项；验证同ID揭晓→重读、可用分页及返回，未获得项不变。
-- [ ] GUI：错误房间纠正、真实死亡／胜利、局部展示与禁用、非法参数、过期、正常连续动作、无关时间线、滚动中变化、原生详情返回或精确支持边界。Expected：所有已支持场景通过，不重复通过范围。
-- [ ] 编译零警告／错误，C#检查、全Python通过；最终产物准备到隔离运行目录，记录SHA。Mod0.80.0、MCP0.82.0、schema47。
-- [ ] 提交并记录实测边界。
+- [x] 编写GUI核验：旧DLL揭晓后原ID不可重读应失败；本次审阅已观察到的旧历史页点击崩溃作为夹具RED，避免重复触发同一已知准备故障。
+- [x] 先核实原生结算详情资源的存在、类型和连接生命周期，再实现夹具；不凭文件名假定可用。必要调查更新记录及Ruling，继续不依赖此资源的工作。
+- [x] 扩展章节选项；验证同ID揭晓→重读、可用分页及返回，未获得项不变。
+- [x] GUI：错误房间纠正、真实死亡／胜利、局部展示与禁用、非法参数、过期、正常连续动作、无关时间线、滚动中变化、原生详情返回或精确支持边界。Expected：所有已支持场景通过，不重复通过范围。
+- [x] 编译零警告／错误，C#检查、全Python通过；最终产物准备到隔离运行目录，记录SHA。Mod0.80.0、MCP0.82.0、schema47。
+- [x] 提交并记录实测边界。
 
 ### Task 3: 文档、样例与一次独立审阅
 

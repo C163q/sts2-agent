@@ -14,7 +14,7 @@
 | `advance_dialogue()` | 点击当前建筑师继续/回应按钮一次；与先古之民共用工具 |
 | `proceed()` | 点击建筑师最后的前进，沿原生流程进入“胜利？”结算 |
 | `inspect_run_result(preset?)` | 当前完整或展示中的结算页；full/default提供已允许悬停的效果和解释，summary保留文字、名称与提示标题 |
-| `run_result_option({"option_id":"continue"})` | 点击 `run_result.options` 中实际启用的一个按钮或解锁条目 |
+| `run_result_option({"option_id":"continue"})` | 点击 `run_result.options` 中实际启用的按钮、待揭晓或已揭晓章节 |
 
 第三幕最后 Boss 的奖励页 `proceed` 返回 `scene: "epilogue"`。依次操作观察提供的 `advance_dialogue` 或 `proceed`，不会跳过台词。结算使用 `scene: "run_result"`，按 `options` 继续、解锁、确认或返回。`main_menu` 按钮的文字有时是 Unlock，点击后先进入时间线；只有 `scene: "main_menu"`、结算字段为空时才真正回到菜单。工具不新开一局。
 
@@ -67,7 +67,7 @@ inspect_run_result.summary同样省略页面提示的description、药水／遗�
 
 查看只要求对应单人结算页面可读，不要求按钮可点击；展示中返回not_ready及已显示内容。执行、基础观察和专项查看使用RunResultInspection的共同读取，展示与操作就绪分开。原生hover_sources列出当前可浏览的提示图标，已提供提示与不可用来源互斥且共同覆盖该清单；徽章／发现／卡牌／药水／遗物引用另与实际条目核对。该清单与unavailable_hover_sources仅用于完整协议校验，公开输出不含内部列表；完整字段及同次scene/screen先校验，再投影预设，坏响应清除许可。无结算、无关菜单、非单人、模态／物品详情覆盖和过渡给出具体提示；明确纯读取拒绝保留已有许可，首次失败不授予许可。
 
-当前原生本局详情页的滚动文字与物品不按视口截断，基础观察和详情使用同一浏览范围；读取不改变滚动位置。隐藏、透明、非滚动画外控件以及未揭示解锁仍不读取，按钮仍按真实可点击状态判断。当前游戏基线原生禁用了 View Run 按钮，工具不会启用它；该页修复使用仅测试模式的原生页面夹具验证，范围见[浏览内容审查](../research/2026-11-02-browsable-content-audit.md)。
+本局详情页的滚动文字与物品不按视口截断，基础观察和详情使用同一浏览范围；读取不改变滚动位置。隐藏、透明、非滚动画外控件以及未揭示解锁仍不读取，按钮按真实可点击状态判断。当前原版禁用了View Run；其详情资源包含普通历史子页，但原生打开方法没有初始化返回导航。没有有效菜单栈的历史页可以读取，操作返回具体拒绝且不提供启用的按钮。隔离夹具使用原生资源与NRunSubmenuStack.Push／Pop验证浏览和返回，不启用正式入口，见[结算选项实施记录](../research/2026-11-08-result-option-recovery-implementation.md)。
 
 失败汇总死亡原因、本局详情结果句与日期均转写为英语。原生生成当前文本时保留完整本地化来源及日期输入，观察只转写当前标签，不重新生成死亡句、不改变游戏语言或区域。基础观察与详情共用该结果；源码、实际 full 和验证范围见[结算观察实施记录](../research/2026-11-03-result-observation-implementation.md)。
 
@@ -75,11 +75,13 @@ inspect_run_result.summary同样省略页面提示的description、药水／遗�
 
 ## 解锁及等待
 
-时间线可能出现多个待揭示条目，`epoch:N` 是工具定位 ID，不是提前公开的物品结果。与地图/牌组浏览一致，当前时间线中可浏览的待揭示条目可以列出；选择离屏条目时先沿原生滚动流程将它展示，再重新核对并点击。每个章节和确认页分别返回，不自动领取后续页。
+时间线的待揭晓和已揭晓条目分别提供Reveal、View选项，沿用同一`epoch:N`定位ID；悬停标题由相同source关联。原生尚未获得的条目仍只提供实际可见说明。重新打开已揭晓条目可阅读章节，原生提供时可用next_chapter／previous_chapter翻页；关闭后返回时间线。
+
+与地图／牌组浏览一致，当前时间线中可浏览的条目完整列出；选择离屏条目时先沿原生滚动流程将它展示，再重新核对相同页面及按钮。每个章节和确认页分别返回。进度解锁不属于本局牌组／物品获得，普通翻页events为空。
 
 就绪检查包括打字、原生结算创建的补间动画、分数条及各解锁页的入场动画；按钮启用不等于所有可见计数已经稳定。到达已知边界后仍要求观察连续 250 毫秒不变，25 秒内未满足则返回 `timeout/complete=false`。未知模态不自动点击。
 
-每日挑战榜单、原生启用的查看本局/章节翻页入口按当前按钮识别；它们不改变本局胜负。本版本部分入口本来隐藏或禁用，工具不强行启用。相关未实测范围见验证记录。
+每日挑战榜单按原生实际提供的按钮识别，尚未补充GUI实测；View Run的正常入口仍禁用。结算翻页和章节重读不改变本局胜负，验证范围见结算选项实施记录。
 
 建筑师使用原生战斗背景；当前可读的界面、对象、遗物、药水及地图工具会列入 `available_actions`，具体合法性仍由调用入口校验。关闭地图会恢复当前对话；不会因此提供普通出牌或结束回合。工具可用性核查见[验证记录](../research/2026-10-31-observation-presets-validation.md)。
 
@@ -87,4 +89,4 @@ inspect_run_result.summary同样省略页面提示的description、药水／遗�
 
 建筑师牌组覆盖期间，五种观察预设均可读取当前覆盖页，并接受原生允许的药水／遗物只读工具；底层对白和推进对话、使用药水等动作仍被覆盖。缺陷与修复的验证证据见[覆盖页核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md#已确认缺陷建筑师牌组覆盖)。
 
-独立终章验证使用[verify_run_ending.py](../../tests/game/verifiers/verify_run_ending.py)。胜利回执检查没有玩法动作及连续玩法许可，允许保留只读工具；继续验证结算、历史、解锁和返回主菜单。完整victory_unlock与建筑师专项的证据及限制见[前进修复记录](../research/2026-11-06-proceed-recovery-implementation.md)。
+结算动作验证使用[verify_result_option.py](../../tests/game/verifiers/verify_result_option.py)，隔离套件为[gui_suite_result_option.json](../../tests/game/data/gui_suite_result_option.json)；失败与胜利流程使用独立终局实例。胜利回执不续接玩法许可，后续检查原生解锁、稳定ID重读、章节翻页、滚动后拒绝及返回主菜单。读取预设另由[verify_result_inspection.py](../../tests/game/verifiers/verify_result_inspection.py)核验。

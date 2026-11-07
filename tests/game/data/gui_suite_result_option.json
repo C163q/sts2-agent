@@ -1,0 +1,8 @@
+[
+  {"name":"basic","scenarios":{"play":"basic"},"steps":[
+    {"name":"verify","verifier":"verify_result_option.py","args":["--scenario","basic"]}
+  ]},
+  {"name":"history","scenarios":{"navigation":"boss3"},"steps":[
+    {"name":"verify","verifier":"verify_result_option.py","args":["--scenario","history"]}
+  ]}
+]

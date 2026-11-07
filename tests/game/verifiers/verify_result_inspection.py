@@ -119,7 +119,8 @@ async def verify(args):
             if phase=='unlock'and value['run_result']['cards']:
                 await progress('cards_'+str(index))
             options=[o for o in value['run_result']['options']if o['enabled']];assert options,value
-            selected=next((o for o in options if o['id']in{'continue','confirm','back'}),options[0])
+            selected=next((o for o in options if o['id']in{'continue','confirm','back'}),
+                          next((o for o in options if o['text']=='Reveal'),options[0]))
             await call('run_result_option',{'option_id':selected['id']},label='direct_'+phase)
         else:raise AssertionError('Unlock flow did not finish')
         await rejected('menu_without_result')

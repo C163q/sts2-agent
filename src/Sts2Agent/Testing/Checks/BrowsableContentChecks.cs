@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.Nodes.CommonUi;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using MegaCrit.Sts2.Core.Nodes.Screens.GameOverScreen;
 using MegaCrit.Sts2.Core.Nodes.Screens.RunHistoryScreen;
+using MegaCrit.Sts2.Core.Nodes.Screens;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
 using MegaCrit.Sts2.Core.Saves.Runs;
@@ -42,26 +43,47 @@ internal static class BrowsableContentChecks
     {
         if (results.Current is not { Root: NGameOverScreen over, Phase: "summary" })
             throw new InvalidOperationException("Expected a completed isolated run summary.");
-        var history = PrivateFields.Read(over, "_history")
-            ?? throw new InvalidOperationException("The native result has no history.");
-        // This version disables View Run. Prepare its native page only in the isolated fixture.
-        var page = ResourceLoader.Load<PackedScene>(NRunHistory.AssetPaths[0]).Instantiate<NRunHistory>();
-        over.AddChild(page);
-        AccessTools.Method(typeof(NRunHistory), "DisplayRun").Invoke(page, [history]);
-        page.Show();
-        page.GetNode<NBackButton>("BackButton").Enable();
-        // The starting deck groups into three rows and fits. Add a long native UI fixture.
-        var content = page.GetNode<Control>("ScreenContents/Content");
-        content.CustomMinimumSize = new Vector2(content.CustomMinimumSize.X, 3000);
-        var spacer = new Control { Name = "BrowsableFixture", CustomMinimumSize = new Vector2(500, 1500), Size = new Vector2(500, 1500) };
-        spacer.AddChild(new Label { Text = "Scrollable content fixture", Position = new Vector2(60, 1300), Size = new Vector2(400, 40) });
-        content.AddChild(spacer);
-        for (int i = 0; i < 90; i++)
+        var stack = VisibleUi.Descendants<NRunSubmenuStack>(NRun.Instance!).Single();
+        if (stack.SubmenusOpen) throw new InvalidOperationException("The isolated run submenu stack must be empty.");
+        // The native result wrapper does not initialize its embedded submenu in this version.
+        var wrapper = ResourceLoader.Load<PackedScene>("res://scenes/screens/run_history_screen/run_history_screen_via_game_over_screen.tscn")
+            .Instantiate<Control>();
+        var page = wrapper.GetNode<NRunHistory>("RunHistory");
+        over.AddChild(wrapper);
+        page.Hide();
+        void Closed()
         {
-            await frame();
-            if (i >= 10 && results.Current is { Phase: "history" } current && results.Ready(current)) return;
+            if (ReferenceEquals(stack.Peek(), page)) return;
+            stack.StackModified -= Closed;
+            wrapper.QueueFree();
         }
-        throw new InvalidOperationException("The native history fixture did not become readable.");
+        stack.StackModified += Closed;
+        try
+        {
+            stack.Push(page);
+            // The starting deck groups into three rows and fits. Add a long native UI fixture.
+            var content = page.GetNode<Control>("ScreenContents/Content");
+            content.CustomMinimumSize = new Vector2(content.CustomMinimumSize.X, 3000);
+            var spacer = new Control { Name = "BrowsableFixture", CustomMinimumSize = new Vector2(500, 1500), Size = new Vector2(500, 1500) };
+            spacer.AddChild(new Label { Text = "Scrollable content fixture", Position = new Vector2(60, 1300), Size = new Vector2(400, 40) });
+            content.AddChild(spacer);
+            for (int i = 0; i < 90; i++)
+            {
+                await frame();
+                if (i >= 10 && results.Current is { Phase: "history" } current && results.Ready(current)) return;
+            }
+            throw new InvalidOperationException("The native history fixture did not become readable.");
+        }
+        catch
+        {
+            if (ReferenceEquals(stack.Peek(), page)) stack.Pop();
+            else
+            {
+                stack.StackModified -= Closed;
+                wrapper.QueueFree();
+            }
+            throw;
+        }
     }
 
     public static object Run(RewardInspection rewards, RunResultInspection results, Func<string> observe)
@@ -96,6 +118,18 @@ internal static class BrowsableContentChecks
         else if (results.Current is { Root: NRunHistory history })
         {
             JsonElement Read() => JsonSerializer.SerializeToElement(results.Read(full: true));
+            Check("history uses the native result wrapper", history.GetParent().SceneFilePath.EndsWith("/run_history_screen_via_game_over_screen.tscn"));
+            var navigation = PrivateFields.Read(history, "_stack");
+            Check("history has active native return navigation", navigation is MegaCrit.Sts2.Core.Nodes.Screens.MainMenu.NSubmenuStack stack
+                && ReferenceEquals(stack.Peek(), history));
+            try
+            {
+                AccessTools.Field(typeof(NRunHistory), "_stack").SetValue(history, null);
+                Check("unbound history return is rejected", results.ActionUnavailableReason(results.Current)?.Contains("navigation") == true);
+                Check("unbound history does not offer enabled actions", Read().GetProperty("options").EnumerateArray()
+                    .All(option => !option.GetProperty("enabled").GetBoolean()));
+            }
+            finally { AccessTools.Field(typeof(NRunHistory), "_stack").SetValue(history, navigation); }
             var scroll = history.GetNode<NScrollableContainer>("ScreenContents");
             var content = scroll.GetNode<Control>("Content");
             var labels = VisibleUi.Descendants<CanvasItem>(content).Where(VisibleUi.Shown)

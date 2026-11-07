@@ -108,6 +108,9 @@ internal sealed class RunResultInspection
         if (!DisplayComplete(context!)) return "The run result page is still displaying text or animation. Wait before choosing an option.";
         if (context!.Root is NTimelineScreen timeline && timeline.GetNodeOrNull<Control>("%InputBlocker") is { Visible: true })
             return "The timeline is still updating. Wait for the current unlock animation to finish.";
+        if (context.Root is NRunHistory history && (PrivateFields.Optional(history, "_stack") is not NSubmenuStack stack
+            || !ReferenceEquals(stack.Peek(), history)))
+            return "The native run-history page has no active return navigation. This game version does not enable View Run from the result page.";
         return Options(context).Any(o => Clickable(o.button)) ? null
             : "No result option is enabled yet. Wait, then use get_observation or inspect_run_result to read the current options.";
     }
@@ -141,7 +144,8 @@ internal sealed class RunResultInspection
         }
         else if (root is NTimelineScreen timeline)
         {
-            foreach (var slot in VisibleUi.Descendants<NEpochSlot>(timeline).Where(s => s.State == EpochSlotState.Obtained && VisibleUi.Shown(s)))
+            foreach (var slot in VisibleUi.Descendants<NEpochSlot>(timeline)
+                .Where(s => (s.State is EpochSlotState.Obtained or EpochSlotState.Complete) && VisibleUi.Shown(s)))
                 if (epochIds.TryGetValue(slot, out int id)) yield return ($"epoch:{id}", slot);
             if (root.GetNodeOrNull<NClickableControl>("BackButton") is { } back && VisibleUi.OnScreen(back)) yield return ("back", back);
         }
@@ -166,7 +170,8 @@ internal sealed class RunResultInspection
         return value == null ? null : item is Label && System.Text.RegularExpressions.Regex.IsMatch(value, @"\A\[\d+/\d+\]\z")
             ? value : EnglishEventText.Label(item, value);
     }
-    private static string ButtonText(NClickableControl button) => button is NEpochSlot ? "Reveal"
+    private static string ButtonText(NClickableControl button) => button is NEpochSlot slot
+        ? slot.State == EpochSlotState.Complete ? "View" : "Reveal"
         : string.Join(" ", VisibleUi.Descendants<CanvasItem>(button).Select(Text).Where(t => !string.IsNullOrWhiteSpace(t)).Distinct());
 
     private static string DiscoveryKind(NDiscoveredItem item) => item.Name.ToString().Replace("Discovered", "").ToLowerInvariant();
