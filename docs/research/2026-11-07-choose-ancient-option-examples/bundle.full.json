@@ -1,0 +1,22 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "selection_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ],
+  "selection": {
+    "type": "bundle",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": []
+  }
+}

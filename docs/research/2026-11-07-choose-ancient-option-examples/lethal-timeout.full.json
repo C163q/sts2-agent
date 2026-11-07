@@ -1,0 +1,8 @@
+{
+  "error": {
+    "code": "timeout",
+    "message": "The request timed out; execution outcome is unknown. Read the current state and do not retry the action automatically.",
+    "recovery": "get_observation",
+    "outcome": "unknown"
+  }
+}

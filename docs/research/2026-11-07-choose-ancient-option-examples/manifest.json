@@ -1,0 +1,236 @@
+[
+  {
+    "file": "normal.full.json",
+    "description": "普通馈赠：遗物、最大生命与生命反馈",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 33,
+    "native_files": [
+      ".tmp/2026-11-07-choose-ancient-option-review/game/ipc/responses/4c6e5dcc549348c482fc5d5148f75687.json"
+    ],
+    "sha256": "5eb5aa9a14e8011bc96e4ebe7f56a014afe45ad2cabb30069f9d10567f06c6bc"
+  },
+  {
+    "file": "replace.full.json",
+    "description": "替换遗物的完整反馈",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 96,
+    "native_files": [
+      ".tmp/2026-11-07-choose-ancient-option-review/game/ipc/responses/2a2030a82f9943928a4a57c11a437edd.json"
+    ],
+    "sha256": "68e98e2d36b381ef5aab9b955708101e02f6124e54a9147603e335b33f129c4a"
+  },
+  {
+    "file": "replace.default.json",
+    "description": "纠正拒绝后刷新观察，default领取",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "default",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 86,
+    "native_files": [
+      ".tmp/2026-11-07-choose-ancient-option-review/game/ipc/responses/9de417058d09444ba48db263c31d93b7.json"
+    ],
+    "sha256": "68e98e2d36b381ef5aab9b955708101e02f6124e54a9147603e335b33f129c4a"
+  },
+  {
+    "file": "transform.full.json",
+    "description": "领取后停在变牌选择",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 106,
+    "native_files": [
+      ".tmp/2026-11-07-choose-ancient-option-review/game/ipc/responses/14458351786a470a81478604befb274f.json"
+    ],
+    "sha256": "46215321ada113f9e7f4a7ff12605ab35cb352c5654b5ef0bd931f824ec4f12a"
+  },
+  {
+    "file": "bundle.full.json",
+    "description": "领取后停在卡牌包选择，事件数组为空",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 123,
+    "native_files": [
+      ".tmp/2026-11-07-choose-ancient-option-review/game/ipc/responses/38c4b5a0238b430b80e45b156c67dd70.json"
+    ],
+    "sha256": "d0d7d84282927eb9cf9033e9485dff36c389a893a4e015546701868fa6123461"
+  },
+  {
+    "file": "nested-rewards.full.json",
+    "description": "领取后停在额外奖励页",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 138,
+    "native_files": [
+      ".tmp/2026-11-07-choose-ancient-option-review/game/ipc/responses/ba897394b17644e9b4c758f451d1d008.json"
+    ],
+    "sha256": "a05819ab4aa5793fc60dad9643609dcf666fd7bf93424ca6205ab0fc71340bd0"
+  },
+  {
+    "file": "lethal-timeout.full.json",
+    "description": "致死披风：运行时致命错误后MCP超时",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 153,
+    "native_files": [],
+    "sha256": "a4a2794fcd7f027d14d27a416485f1ae4eede845915953427946cf513067fc58"
+  },
+  {
+    "file": "unknown-option.full.json",
+    "description": "不存在的选项ID被拒绝",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 2147483647
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 19,
+    "native_files": [
+      ".tmp/2026-11-07-choose-ancient-option-review/game/ipc/responses/b107ef813c4a425cbfaf7faae00f0a82.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "correct-after-rejection.full.json",
+    "description": "纠正ID仍被要求重新观察",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 21,
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "already-obtained.full.json",
+    "description": "领取完毕后重复旧选项",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 36,
+    "native_files": [
+      ".tmp/2026-11-07-choose-ancient-option-review/game/ipc/responses/fd31e9bd00c04f47a25bfb8fa958e766.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "dialogue-unfinished.full.json",
+    "description": "对话未结束时选择馈赠",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 45,
+    "native_files": [
+      ".tmp/2026-11-07-choose-ancient-option-review/game/ipc/responses/5212bd9773124d30ae0e2a00231ddf9b.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "地图覆盖时选择馈赠",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 61,
+    "native_files": [
+      ".tmp/2026-11-07-choose-ancient-option-review/game/ipc/responses/6e1882e321924a399d3201bf8f1eb6b2.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "disabled.full.json",
+    "description": "当前按钮已禁用",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 81,
+    "native_files": [
+      ".tmp/2026-11-07-choose-ancient-option-review/game/ipc/responses/04340845846449deb385345399387f14.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "选牌覆盖时再次选择馈赠",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 109,
+    "native_files": [
+      ".tmp/2026-11-07-choose-ancient-option-review/game/ipc/responses/3d5ff66f6cff4fc28e03c167bf806744.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "stale.full.json",
+    "description": "外部已选择，旧观察正确拒绝",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/remaining/evidence.json",
+    "row_index": 11,
+    "native_files": [
+      ".tmp/2026-11-07-choose-ancient-option-review/remaining/game/ipc/responses/a1cbe4e6cb074f098c5bdd38d93d8c32.json"
+    ],
+    "sha256": "42a71b30fd7304b95d71e071e2d2c183c103a658fa8a8f2cba2d7b84ebec4a60"
+  },
+  {
+    "file": "cold.full.json",
+    "description": "首次动作没有观察许可",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-choose-ancient-option-review/evidence.json",
+    "row_index": 10,
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  }
+]
