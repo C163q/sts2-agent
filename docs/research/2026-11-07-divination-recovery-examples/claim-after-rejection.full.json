@@ -1,0 +1,37 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible",
+    "view": "divination"
+  },
+  "available_actions": [
+    "proceed",
+    "use_potion",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_targets",
+    "inspect_event"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "potion": {
+          "slot_index": 0,
+          "name": "Strength Potion"
+        },
+        "type": "potion_obtained",
+        "sequence": 1
+      }
+    ]
+  },
+  "reward_result": {
+    "reward_id": 0,
+    "status": "claimed"
+  }
+}

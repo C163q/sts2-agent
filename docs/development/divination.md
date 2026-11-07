@@ -56,6 +56,8 @@ inspect_event({"include_image":true}) 在文字结果后另附 ImageContent PNG�
 
 无棋盘、地图／牌组／奖励／选牌覆盖、结算中或已经结束会给具体原因和对应工具提示。明确未交互的拒绝保留已有许可，可直接继续合法操作；首次拒绝不生成许可。交互后的错误、未知或坏响应仍须重新读取，完整规则见[MCP调用和错误语义](mcp.md#调用和错误语义)。
 
+divine在揭开前核对状态令牌、页面与目标格；已清除格会提示选择`#`格，不可交互格会提示等待。明确未点击的拒绝保留已有许可，可直接改选合法格或处理当前奖励／选牌／前进。available_actions与执行共用揭开检查，至少存在一个可交互格才列出divine。格子交互检查独立于图案显示，原生透明的点击区域仍按其输入状态判断。
+
 phase 为 playing、settling 或 finished。观察可读取已经展示的结算过程，动作继续要求原生输入与动画就绪。动作等待实际揭开、资源及奖励稳定；次数归零后仍可能需要奖励或选牌输入，按[共享动作边界](end-turn.md#动作完成与画面稳定)处理。
 
 地图、牌组、奖励或其他界面覆盖时，divination.status:covered，其余底层字段为 null，不返回碎片与底层图像。关闭地图或浏览页后可以直接继续合法操作。finished 隐藏次数、工具与教学，只有原生前进启用时才允许 proceed。
@@ -64,4 +66,4 @@ phase 为 playing、settling 或 finished。观察可读取已经展示的结算
 
 ## 验证入口
 
-按[测试指南](roundtrip.md)编译并准备隔离实例，使用[工具切换专项](../../tests/game/data/gui_suite_divination_tool_view.json)验证冷调用、重复选择、覆盖拒绝与合法后续操作；事件／占卜文字观察使用tests/game/data/gui_suite_event_inspection.json。UI显示夹具与隐藏真值仅用于私有测试入口，不进入公开工具目录；自然揭开和UI夹具验证的范围分别记录在[文字观察实施](../research/2026-11-07-event-inspection-text-implementation.md)及[工具切换实施](../research/2026-11-07-divination-tool-view-implementation.md)。
+按[测试指南](roundtrip.md)编译并准备隔离实例，使用[揭开专项](../../tests/game/data/gui_suite_divination_recovery.json)验证大小范围、拒绝后直接继续及原生奖励／诅咒时机，结果见[揭开实施](../research/2026-11-07-divination-recovery-implementation.md)。[工具切换专项](../../tests/game/data/gui_suite_divination_tool_view.json)验证冷调用、重复选择、覆盖拒绝与合法后续操作；事件／占卜文字观察使用tests/game/data/gui_suite_event_inspection.json。UI显示夹具与隐藏真值仅用于私有测试入口，不进入公开工具目录；自然揭开和UI夹具验证的范围分别记录在[文字观察实施](../research/2026-11-07-event-inspection-text-implementation.md)及[工具切换实施](../research/2026-11-07-divination-tool-view-implementation.md)。

@@ -1,0 +1,284 @@
+[
+  {
+    "file": "reveal.full.json",
+    "description": "正常小范围揭开",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/small/verify/evidence.json",
+    "row_index": 11,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/67fbc43400644ad1a93e201d24b2b543.json"
+    ],
+    "sha256": "76ac8019e0fbc3d51502f904d9531821ed99ed42cfaf312aabbd99ef612abf95"
+  },
+  {
+    "file": "reveal.default.json",
+    "description": "default揭开回执",
+    "tool": "divine",
+    "arguments": {
+      "preset": "default",
+      "x": 5,
+      "y": 6
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/small/verify/evidence.json",
+    "row_index": 13,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/267dfe467aea4334aa48458b46aea1ec.json"
+    ],
+    "sha256": "76ac8019e0fbc3d51502f904d9531821ed99ed42cfaf312aabbd99ef612abf95"
+  },
+  {
+    "file": "already-cleared.full.json",
+    "description": "已清除格具体拒绝，保留许可",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/cleared/verify/evidence.json",
+    "row_index": 9,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/f42422339b0947a7a1857b33eaf78389.json"
+    ],
+    "sha256": "5b64b14e1baed6fe6f4aa22cc99609dd4571a5c28a0e0c352c9711d1586964f3"
+  },
+  {
+    "file": "after-rejection.full.json",
+    "description": "拒绝后直接揭开合法格",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 6
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/cleared/verify/evidence.json",
+    "row_index": 11,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/8451e2959c7a4f3da23b5d76e0e578f2.json"
+    ],
+    "sha256": "76ac8019e0fbc3d51502f904d9531821ed99ed42cfaf312aabbd99ef612abf95"
+  },
+  {
+    "file": "no-board.full.json",
+    "description": "无棋盘具体拒绝",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui/no_board/verify/evidence.json",
+    "row_index": 3,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui/game/ipc/responses/aaa86338db7c414abb4711a66112662f.json"
+    ],
+    "sha256": "db11018f5dc6182a3e327d9422e3a5596721ee8e2df9c70f8b9de0b04019bbe2"
+  },
+  {
+    "file": "end-turn-after-rejection.full.json",
+    "description": "无棋盘拒绝后直接结束回合",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui/no_board/verify/evidence.json",
+    "row_index": 5,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui/game/ipc/responses/b54becfe962d409ba5619feab6330fde.json"
+    ],
+    "sha256": "8b4acc9df56505809510e04fc9cdafc7e7f19184a62d37b26ed87bf647ab3400"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "地图覆盖时提示close_map",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/covered/verify/evidence.json",
+    "row_index": 6,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/8346bf22cbe44986af4fd2717031d2eb.json"
+    ],
+    "sha256": "ef428ff1fcceed84328b43550ab34076d2a1e166449c727fe608e1f7eb3b7c82"
+  },
+  {
+    "file": "deck-covered.full.json",
+    "description": "牌组覆盖时提示close_card_view",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/covered/verify/evidence.json",
+    "row_index": 12,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/aa99fef09cee4bd687df20082586ec05.json"
+    ],
+    "sha256": "f2773b01ed509749d0e648ecef550034bef3eb23bd2f6c755a46192ffa949bef"
+  },
+  {
+    "file": "finished.full.json",
+    "description": "占卜已结束时提示proceed",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/finished/verify/evidence.json",
+    "row_index": 13,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/4cd332bd77da478fb5625864edd22d5c.json"
+    ],
+    "sha256": "7cd00368fee06519d68f2f58833a4b6cb9a1481f635d213c87877bdf05cfd7cf"
+  },
+  {
+    "file": "proceed-after-rejection.full.json",
+    "description": "已结束拒绝后直接前进",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/finished/verify/evidence.json",
+    "row_index": 15,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/8b470573f20346268aeb189667ab263f.json"
+    ],
+    "sha256": "b18d81aa2cfb037aa4b0725ec501fd414b1894917c221bd11ec5a61ff059c6a4"
+  },
+  {
+    "file": "rewards-covered.full.json",
+    "description": "奖励覆盖时提示inspect_rewards",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/rewards/verify/evidence.json",
+    "row_index": 12,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/fb54f346888e4351810b0ab7f6ddd2bb.json"
+    ],
+    "sha256": "6936af087e6f852a696ce319311a3ff553566f953872e79b19e8310f9591d052"
+  },
+  {
+    "file": "claim-after-rejection.full.json",
+    "description": "拒绝后腾出药水槽并领取奖励",
+    "tool": "claim_reward",
+    "arguments": {
+      "preset": "full",
+      "reward_id": 0
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/rewards/verify/evidence.json",
+    "row_index": 15,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/9a326e8ad8744782af79afcf4c44b47d.json"
+    ],
+    "sha256": "bbe715b4b5113e395494e7c2dc5a1d3fb16e1d6816208f1af545a3355fef0062"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "选牌覆盖时提示inspect_selection",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/selection/verify/evidence.json",
+    "row_index": 13,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/e00a3c71349c4fd48694c6b64dd92995.json"
+    ],
+    "sha256": "488a73ddd21f000c8e088d3cac4a80b13bdd90d5a1681ac138920c94d9e95769"
+  },
+  {
+    "file": "selection-after-rejection.full.json",
+    "description": "拒绝后直接跳过卡牌奖励",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "skip"
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/selection/verify/evidence.json",
+    "row_index": 15,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/f08e8de473124d76b98aaddffef77707.json"
+    ],
+    "sha256": "bc90d7a3a8b8db483ef0d3b22e505cfebff04ed5f371b4b46b01a0624e45b64c"
+  },
+  {
+    "file": "curse.full.json",
+    "description": "诅咒立即加入永久牌组",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 3,
+      "y": 4
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/curse/verify/evidence.json",
+    "row_index": 5,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/d96427aa71554ee5a0fac98543baf425.json"
+    ],
+    "sha256": "b56316c76cb0856e5f39dc6c7128fcc799d464b094a387ba7e3630e7a89899ab"
+  },
+  {
+    "file": "direct-next.full.json",
+    "description": "成功后无观察地连续揭开",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 6
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/direct/verify/evidence.json",
+    "row_index": 6,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/2e4d01928b40439db3503e51524abb89.json"
+    ],
+    "sha256": "76ac8019e0fbc3d51502f904d9531821ed99ed42cfaf312aabbd99ef612abf95"
+  },
+  {
+    "file": "rewards.full.json",
+    "description": "次数归零后展示奖励，无取得事件",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 0
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/rewards/verify/evidence.json",
+    "row_index": 9,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/b8942837d59d46479a41d16194e6e861.json"
+    ],
+    "sha256": "e88949a693cc2f2a5923f3d920a7eb6ceb95a09e4d63ac29b95639140f5f7a21"
+  },
+  {
+    "file": "finished-reveal.full.json",
+    "description": "次数归零并完成占卜",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 0
+    },
+    "source": ".tmp/2026-11-07-divination-recovery/gui-remaining/finished/verify/evidence.json",
+    "row_index": 10,
+    "native_files": [
+      ".tmp/2026-11-07-divination-recovery/gui-remaining/game/ipc/responses/d186f25dfc614cafb75fa86a30b24366.json"
+    ],
+    "sha256": "d8f16332aebc6bc20aefae24714a2fb7e889b0b9b0fc663d79fa48c10beb3ade"
+  }
+]

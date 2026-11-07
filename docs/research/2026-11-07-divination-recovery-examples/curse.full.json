@@ -1,0 +1,32 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible",
+    "view": "divination"
+  },
+  "available_actions": [
+    "set_divination_tool",
+    "divine",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 3,
+          "name": "Doubt"
+        },
+        "pile": "deck",
+        "type": "card_added",
+        "sequence": 1
+      }
+    ]
+  }
+}

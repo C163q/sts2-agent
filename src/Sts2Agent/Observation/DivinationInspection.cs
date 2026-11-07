@@ -42,10 +42,25 @@ internal static class DivinationInspection
         return "Wait for the divination board to finish opening or return from the covering dialog.";
     }
 
-    public static string? ToolSwitchUnavailableReason(NCrystalSphereScreen? screen) =>
-        PageUnavailableReason(screen, "switching divination tools")
+    private static string? InteractionUnavailableReason(NCrystalSphereScreen? screen, string purpose) =>
+        PageUnavailableReason(screen, purpose)
         ?? (Finished(screen!) ? "Divination is finished. Use proceed to continue."
-            : !Ready(screen!) ? "Wait for the current reveal, rewards, and animations to finish before switching divination tools." : null);
+            : !Ready(screen!) ? $"Wait for the current reveal, rewards, and animations to finish before {purpose}." : null);
+
+    public static string? ToolSwitchUnavailableReason(NCrystalSphereScreen? screen) =>
+        InteractionUnavailableReason(screen, "switching divination tools");
+
+    public static string? RevealUnavailableReason(NCrystalSphereScreen? screen) =>
+        InteractionUnavailableReason(screen, "revealing a divination cell")
+        ?? (Cells(screen!).Any(Clickable) ? null
+            : "No covered divination cell is currently interactive. Wait for the board to become available; inspect_event shows its state.");
+
+    public static string? CellUnavailableReason(NCrystalSphereCell? cell)
+    {
+        if (cell == null) return "No current divination cell matches these coordinates. Use inspect_event to read the board.";
+        if (!cell.Entity.IsHidden) return "This divination cell is already uncovered. Choose a # cell; inspect_event shows the board.";
+        return Clickable(cell) ? null : "This covered divination cell is not currently interactive. Wait for the board to become available.";
+    }
 
     public static string? ToolUnavailableReason(NCrystalSphereScreen screen, string tool)
     {

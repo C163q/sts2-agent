@@ -128,7 +128,7 @@ internal sealed partial class GameAdapter
         {
             if (new[] { "big", "small" }.Any(tool => DivinationInspection.ToolUnavailableReason(divination, tool) == null))
                 actions.Add("set_divination_tool");
-            if (DivinationInspection.Playing(divination)) actions.Add("divine");
+            if (DivinationInspection.RevealUnavailableReason(divination) == null) actions.Add("divine");
         }
         if (EventInspection.Current is { } currentEvent && EventInspection.ActionUnavailableReason(currentEvent) == null)
         {

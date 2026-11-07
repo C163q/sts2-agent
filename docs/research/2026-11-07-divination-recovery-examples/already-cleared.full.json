@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This divination cell is already uncovered. Choose a # cell; inspect_event shows the board.",
+    "recovery": "choose_legal_action"
+  }
+}

@@ -44,7 +44,7 @@ internal sealed partial class GameAdapter
             || !args.TryGetProperty("x", out var xv) || !args.TryGetProperty("y", out var yv)
             || xv.ValueKind != JsonValueKind.Number || yv.ValueKind != JsonValueKind.Number
             || !xv.TryGetInt32(out x) || !yv.TryGetInt32(out y) || x is < 0 or > 10 || y is < 0 or > 10))
-            return FileMailbox.Error(request.Id, "invalid_request", "Expected integer coordinates from 0 to 10.");
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request", "Expected integer coordinates from 0 to 10.");
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current board before acting.");
         var screen = DivinationInspection.Current;
@@ -54,15 +54,14 @@ internal sealed partial class GameAdapter
                 return ResponseBuilder.Error(request.Id, "illegal_action", rejection, publicMessage: true, uiUnchanged: true);
             return InspectionSuccess(request, before, new { divination = DivinationInspection.Read() });
         }
-        if (screen == null || !DivinationInspection.Ready(screen))
-            return FileMailbox.Error(request.Id, "illegal_action", "Return to an available divination board.");
-        NClickableControl? button = !DivinationInspection.Playing(screen) ? null
-            : DivinationInspection.Cells(screen).SingleOrDefault(c => c.Entity.X == x && c.Entity.Y == y && DivinationInspection.Clickable(c));
-        if (button?.IsEnabled != true)
-            return FileMailbox.Error(request.Id, "illegal_action", "The requested divination action is unavailable.");
+        if (DivinationInspection.RevealUnavailableReason(screen) is { } unavailable)
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", unavailable);
+        var button = DivinationInspection.Cells(screen!).SingleOrDefault(c => c.Entity.X == x && c.Entity.Y == y);
+        if (DivinationInspection.CellUnavailableReason(button) is { } unavailableCell)
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", unavailableCell);
         var run = RunManager.Instance.DebugOnlyGetState();
         UiChanged();
-        button.ForceClick();
+        button!.ForceClick();
         var (after, reason) = await ActionObservation(() => !ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
             ? "interrupted" : NonCombatBoundary());
         return TransitionSuccess(request, after, reason);

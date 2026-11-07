@@ -1,0 +1,194 @@
+[
+  {
+    "name": "no_board",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_recovery.py",
+        "args": [
+          "--scenario",
+          "no_board"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "small",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_recovery.py",
+        "args": [
+          "--scenario",
+          "small"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "big",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_recovery.py",
+        "args": [
+          "--scenario",
+          "big"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "cleared",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_recovery.py",
+        "args": [
+          "--scenario",
+          "cleared"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "covered",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_recovery.py",
+        "args": [
+          "--scenario",
+          "covered"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "finished",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_recovery.py",
+        "args": [
+          "--scenario",
+          "finished"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "rewards",
+    "scenarios": {
+      "event": "crystal_full"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_recovery.py",
+        "args": [
+          "--scenario",
+          "rewards"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "selection",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_recovery.py",
+        "args": [
+          "--scenario",
+          "selection"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "curse",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_recovery.py",
+        "args": [
+          "--scenario",
+          "curse"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "gold",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_recovery.py",
+        "args": [
+          "--scenario",
+          "gold"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "relic",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_recovery.py",
+        "args": [
+          "--scenario",
+          "relic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "direct",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_recovery.py",
+        "args": [
+          "--scenario",
+          "direct"
+        ]
+      }
+    ]
+  }
+]

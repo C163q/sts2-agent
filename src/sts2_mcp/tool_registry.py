@@ -170,8 +170,7 @@ SPECS = (
     ToolSpec(
         name='divine',
         schema=DIVINE_SCHEMA,
-        description='Spend one reveal centered on a # divination cell. Read the updated text board with inspect_event '
-            'or get_observation. May pause for rewards or choices.',
+        description='Reveal a # cell with the current divination tool, spending one reveal. May pause for rewards or choices.',
         annotations=action,
         category='action',
         effect='action',
@@ -180,7 +179,8 @@ SPECS = (
         records_events=True,
         reader='transition_details:end_turn_details',
         parser='divination_details:divination_arguments',
-        parser_operation=True),
+        parser_operation=True,
+        unsubmitted_rejection_unchanged=True),
     ToolSpec(
         name='inspect_event',
         schema=EVENT_SCHEMA,
