@@ -10,7 +10,7 @@ from sts2_mcp.output.selection_presets import SELECTION_SCHEMA
 from sts2_mcp.output.relic_presets import RELIC_SCHEMA
 from sts2_mcp.output.potion_presets import POTION_SCHEMA as POTION_INSPECTION_SCHEMA
 from sts2_mcp.output.combatant_presets import COMBATANT_SCHEMA
-from sts2_mcp.output.run_ending_details import OPTION_SCHEMA as RESULT_OPTION_SCHEMA
+from sts2_mcp.output.run_ending_details import OPTION_SCHEMA as RESULT_OPTION_SCHEMA, INSPECTION_SCHEMA as RESULT_INSPECTION_SCHEMA
 from sts2_mcp.output.map_details import MAP_SCHEMA, TRAVEL_SCHEMA
 from sts2_mcp.output.deck_presets import DECK_SCHEMA
 from sts2_mcp.output.pile_presets import PILE_SCHEMA
@@ -101,15 +101,17 @@ class ToolSpec:
 SPECS = (
     ToolSpec(
         name='inspect_run_result',
-        schema=NO_ARGUMENTS,
-        description='Read the current run result page, badge/discovery hover help and revealed unlock details. Does not advance pages.',
+        schema=RESULT_INSPECTION_SCHEMA,
+        description='Read the current result or associated unlock page. summary keeps names and tip titles without effect text; not_ready marks an updating display.',
         annotations=read_only,
         category='inspection',
         effect='read',
         requires_permission=False,
         returns_transition=False,
         records_events=False,
-        reader='run_ending_details:inspect_result_details'),
+        reader='run_ending_details:inspect_result_details',
+        projector='run_ending_details:result_preset',
+        native_keys=()),
     ToolSpec(
         name='run_result_option',
         schema=RESULT_OPTION_SCHEMA,

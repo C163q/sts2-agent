@@ -37,7 +37,7 @@ class RunResultSummaryTests(unittest.IsolatedAsyncioTestCase):
             'options': [{'id': 'continue', 'text': 'Continue', 'enabled': True}],
             'cards': [{'id': 'card:0', 'name': 'Automation', 'type': 'Power', 'energy_cost': '1'},
                       {'id': 'card:1', 'name': 'Star card', 'type': 'Skill', 'energy_cost': '0', 'star_cost': '2'}],
-            'relics': [], 'potions': [],
+            'relics': [], 'potions': [], 'hover_tips': [],
         })
         self.assertEqual(tools.snapshot_id, 'result-1')
         self.assertEqual(client.raw, original)

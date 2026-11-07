@@ -13,12 +13,12 @@
 | `get_observation()` | 获取当前台词或当前结算页；不提前展开后页 |
 | `advance_dialogue()` | 点击当前建筑师继续/回应按钮一次；与先古之民共用工具 |
 | `proceed()` | 点击建筑师最后的前进，沿原生流程进入“胜利？”结算 |
-| `inspect_run_result()` | 当前结算页详情，增加徽章、发现图标的悬停说明，时间线图标的原生说明，以及已显示解锁物品的效果与解释 |
+| `inspect_run_result(preset?)` | 当前完整或展示中的结算页；full/default提供已允许悬停的效果和解释，summary保留文字、名称与提示标题 |
 | `run_result_option({"option_id":"continue"})` | 点击 `run_result.options` 中实际启用的一个按钮或解锁条目 |
 
 第三幕最后 Boss 的奖励页 `proceed` 返回 `scene: "epilogue"`。依次操作观察提供的 `advance_dialogue` 或 `proceed`，不会跳过台词。结算使用 `scene: "run_result"`，按 `options` 继续、解锁、确认或返回。`main_menu` 按钮的文字有时是 Unlock，点击后先进入时间线；只有 `scene: "main_menu"`、结算字段为空时才真正回到菜单。工具不新开一局。
 
-成功动作使用现有 `transition`：`action_completed/complete=true` 表示下一页已就绪，可按许可规则继续；当前页内容和按钮通过观察或 `inspect_run_result` 按需读取。首次进入已就绪的胜利结算页返回 `run_won/complete=true`，失败结算页返回 `run_lost/complete=true`，依据与原生横幅相同的胜负判据。终局 available_actions 可保留实际可用的只读查看工具；列表不必为空，但不续接玩法许可。刚进入建筑师对话仍为 `action_completed`；结算后翻页、解锁和返回菜单同样为 `action_completed`，不重复报告胜负。终局回执不保留连续动作许可，需通过观察或详情取得当前结算操作。成功详情也刷新状态令牌；过期观察、超时、不确定结果或人工改动后重新读取当前状态。MCP 工具除通用 `preset` 外只接受 `option_id`，底层文件操作不接受额外参数；按钮、页面身份和状态令牌在游戏线程再次核对。工具将时间线绑定到本次结算的原生菜单栈；人工返回菜单同样结束关联。工具入口不用于操作平常打开的时间线或其他主菜单页面。
+成功动作使用现有 `transition`：`action_completed/complete=true` 表示下一页已就绪，可按许可规则继续；当前页内容和按钮通过观察或 `inspect_run_result` 按需读取。首次进入已就绪的胜利结算页返回 `run_won/complete=true`，失败结算页返回 `run_lost/complete=true`，依据与原生横幅相同的胜负判据。终局 available_actions 可保留实际可用的只读查看工具；列表不必为空，但不续接玩法许可。刚进入建筑师对话仍为 `action_completed`；结算后翻页、解锁和返回菜单同样为 `action_completed`，不重复报告胜负。终局回执不保留连续动作许可，需通过观察或详情取得当前结算操作。成功详情也刷新状态令牌；过期观察、超时、不确定结果或人工改动后重新读取当前状态。inspect_run_result接受default/full/summary，默认default；run_result_option另接受option_id，底层查看操作不接受额外参数；按钮、页面身份和状态令牌在游戏线程再次核对。工具将时间线绑定到本次结算的原生菜单栈；人工返回菜单同样结束关联。工具入口不用于操作平常打开的时间线或其他主菜单页面。
 
 advance_dialogue的明确点击前拒绝保留已有许可，并区分页面覆盖、等待对话／按钮就绪和最终前进；可直接关闭覆盖页或改用proceed。已有许可的恢复遵循[统一错误语义](mcp.md#调用和错误语义)。两类对话的参数均只有default/full，建筑师可用性由EpilogueInspection.DialogueUnavailableReason集中维护，执行、continue.enabled及available_actions共用；最终proceed继续沿用原生胜利流程。run_result_option的原生拒绝仍要求重新读取当前结算。
 
@@ -51,7 +51,7 @@ advance_dialogue的明确点击前拒绝保留已有许可，并区分页面覆�
 | `score_lines` | 当前可见计分行，每项为 `label`、`value` |
 | `badges` | 当前可见徽章名称及 `bronze/silver/gold` 外观等级；悬停效果在详情调用中读取 |
 | `discoveries` | 当前发现图标的类别及显示数量，`cards/relics/potions/enemies/epochs` |
-| `cards` | 当前解锁页中已显示卡牌的完整牌面及逐牌悬停解释；不包含后续页面的卡牌 |
+| `cards` | 当前已揭示卡牌；基础观察为face／摘要，详情full/default为完整牌面，summary为共用卡牌摘要 |
 | `relics` / `potions` | 当前已显示的解锁物品名称；效果由详情调用提供 |
 | `options` | 当前按钮的 `id`、`text`、`enabled`；调用时原样传回 ID |
 
@@ -59,7 +59,11 @@ advance_dialogue的明确点击前拒绝保留已有许可，并区分页面覆�
 
 基础观察的结算卡牌full/default采用[face格式](hand-inspection.md#共用卡牌格式)，summary采用共用摘要；inspect_run_result的完整牌面和逐牌解释保留在卡牌条目内。详情另增加页面级 `hover_tips`，来源如 `badge:0`、`discovery:cards`；卡牌、遗物、药水的附加说明位于各自条目。原生发现提示最多列十个名称，之后用省略号，工具保留这个限制。累计建筑师伤害与随机死亡语句来自已显示标签的本地化来源，不能重新抽签或根据当前存档重算。
 
-get_observation 的 summary 保留当前结算主体和全部 texts、options、空列表，只将已显示 cards 压缩为共用卡牌摘要，卡牌 ID 仍为 card:N 字符串。稀有度和卡池保留在基础观察full/default，正文及逐牌解释由inspect_run_result提供；顶栏继续独立复用共用摘要。完整规则见[观察预设](observation.md#mcp-输出预设)。
+get_observation三种内容预设共用结算静态主体，页面hover_tips只保留source/title，药水和遗物只保留名称，texts、options和空列表保留。卡牌full/default使用face_full/face_default，summary使用共用摘要，ID仍为card:N。顶栏继续独立处理，见[观察预设](observation.md#mcp-输出预设)。
+
+inspect_run_result.summary同样省略页面提示的description、药水／遗物正文和附加解释，卡牌使用共用摘要；完整故事正文保留。full/default提供允许读取的完整效果。不可悬停项保留静态信息，以null正文／空解释及notes.hover_tips_unavailable指明来源；summary省略该悬停note，但保留notes.presentation。
+
+查看只要求对应单人结算页面可读，不要求按钮可点击；展示中返回not_ready及已显示内容。执行、基础观察和专项查看使用RunResultInspection的共同读取，展示与操作就绪分开。原生hover_sources及unavailable_hover_sources仅用于完整协议和关联校验，公开输出不含这些内部列表；完整字段及同次scene/screen先校验，再投影预设，坏响应清除许可。无结算、无关菜单、非单人、模态／物品详情覆盖和过渡给出具体提示；明确纯读取拒绝保留已有许可，首次失败不授予许可。
 
 当前原生本局详情页的滚动文字与物品不按视口截断，基础观察和详情使用同一浏览范围；读取不改变滚动位置。隐藏、透明、非滚动画外控件以及未揭示解锁仍不读取，按钮仍按真实可点击状态判断。当前游戏基线原生禁用了 View Run 按钮，工具不会启用它；该页修复使用仅测试模式的原生页面夹具验证，范围见[浏览内容审查](../research/2026-11-02-browsable-content-audit.md)。
 

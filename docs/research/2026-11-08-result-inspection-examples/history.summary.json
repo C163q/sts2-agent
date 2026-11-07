@@ -1,0 +1,67 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "run_result": {
+    "status": "visible",
+    "phase": "history",
+    "texts": [
+      "November 8, 2026, 1:37 AM",
+      "Seed: STS2AGENTROUNDTRIP",
+      "Singleplayer: Standard",
+      "v0.107.1",
+      "0/80",
+      "99",
+      "2",
+      "00:10",
+      "“The Ironclad has made it to the top?”",
+      "Overgrowth",
+      "Hive",
+      "Glory",
+      "Relics (1): 1 Starter",
+      "Cards (10): 10 Starter",
+      "5x Strike",
+      "4x Defend",
+      "Bash",
+      "Scrollable content fixture",
+      "Share"
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "back",
+        "text": "",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [
+      {
+        "name": "Burning Blood"
+      }
+    ],
+    "potions": [],
+    "hover_tips": [
+      {
+        "source": "badge:0",
+        "title": "Highlander"
+      },
+      {
+        "source": "badge:1",
+        "title": "Flawless"
+      },
+      {
+        "source": "badge:2",
+        "title": "Speediest"
+      },
+      {
+        "source": "badge:3",
+        "title": "Tiny Deck"
+      }
+    ]
+  }
+}

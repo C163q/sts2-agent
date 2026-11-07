@@ -1,0 +1,115 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "run_result": {
+    "status": "visible",
+    "phase": "summary",
+    "title": "Victory...?",
+    "texts": [
+      "Floors Climbed: 2",
+      "+40",
+      "Gold Gained: 0",
+      "+0",
+      "Bosses Slain: 1",
+      "+100",
+      "Epoch Unlocked!",
+      "[130/500]",
+      "Unlocks Remaining: 17",
+      "Discoveries",
+      "12",
+      "2",
+      "5",
+      "Victory...?",
+      "Unlock"
+    ],
+    "score_lines": [
+      {
+        "label": "Floors Climbed: 2",
+        "value": "+40"
+      },
+      {
+        "label": "Gold Gained: 0",
+        "value": "+0"
+      },
+      {
+        "label": "Bosses Slain: 1",
+        "value": "+100"
+      }
+    ],
+    "badges": [
+      {
+        "name": "Highlander",
+        "rarity": "bronze"
+      },
+      {
+        "name": "Flawless",
+        "rarity": "bronze"
+      },
+      {
+        "name": "Speediest",
+        "rarity": "gold"
+      },
+      {
+        "name": "Tiny Deck",
+        "rarity": "silver"
+      }
+    ],
+    "discoveries": [
+      {
+        "kind": "cards",
+        "count": 12
+      },
+      {
+        "kind": "enemies",
+        "count": 2
+      },
+      {
+        "kind": "epochs",
+        "count": 5
+      }
+    ],
+    "options": [
+      {
+        "id": "main_menu",
+        "text": "Unlock",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [],
+    "potions": [],
+    "hover_tips": [
+      {
+        "source": "badge:0",
+        "title": "Highlander"
+      },
+      {
+        "source": "badge:1",
+        "title": "Flawless"
+      },
+      {
+        "source": "badge:2",
+        "title": "Speediest"
+      },
+      {
+        "source": "badge:3",
+        "title": "Tiny Deck"
+      },
+      {
+        "source": "discovery:cards",
+        "title": "Discovered Cards"
+      },
+      {
+        "source": "discovery:enemies",
+        "title": "Discovered Enemies"
+      },
+      {
+        "source": "discovery:epochs",
+        "title": "Discovered Epochs"
+      }
+    ]
+  }
+}

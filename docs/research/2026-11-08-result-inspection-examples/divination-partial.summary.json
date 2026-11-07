@@ -1,0 +1,72 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible",
+    "view": "divination"
+  },
+  "top_bar": {
+    "gold": 1009,
+    "deck_count": 10,
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1
+  },
+  "event": {
+    "status": "covered"
+  },
+  "divination": {
+    "status": "not_ready",
+    "phase": "settling",
+    "remaining": 3,
+    "tool": "big",
+    "tools": [
+      {
+        "id": "big",
+        "text": "Big Divination",
+        "enabled": false
+      },
+      {
+        "id": "small",
+        "text": "Small Divination",
+        "enabled": false
+      }
+    ],
+    "grid": {
+      "columns": 11,
+      "rows": 11,
+      "cell_rows": [
+        "...#####...",
+        "..#######..",
+        ".#########.",
+        "###########",
+        "###########",
+        "###########",
+        "###########",
+        "###########",
+        ".#########.",
+        "..#######..",
+        "...#####..."
+      ],
+      "visible_fragments": []
+    }
+  },
+  "available_actions": [
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ],
+  "notes": {
+    "presentation": {
+      "message": "The page is still updating; displayed values and lists may be incomplete.",
+      "sources": [
+        "divination"
+      ]
+    }
+  }
+}

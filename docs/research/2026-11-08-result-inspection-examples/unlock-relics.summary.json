@@ -1,0 +1,40 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "run_result": {
+    "status": "visible",
+    "phase": "unlock",
+    "texts": [
+      "Relics Unlocked!",
+      "The following relics will appear in future runs.",
+      "Confirm"
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [
+      {
+        "name": "Red Skull"
+      },
+      {
+        "name": "Paper Phrog"
+      },
+      {
+        "name": "Ruined Helmet"
+      }
+    ],
+    "potions": [],
+    "hover_tips": []
+  }
+}

@@ -1,6 +1,6 @@
 # 基础观察卡牌与展示完成状态核验
 
-> 当前状态：源码调研及基础观察face规则确认完成；产品尚未修改。统一展示完成状态仍为待设计事项，不能把content_complete写成已有接口。
+> 当前状态：本文保留2272c12之前的调研证据；face统一和页面主体status语义已按[定稿](2026-11-07-inspect-run-result-review.md#输出定稿)实现，验证及独立审阅进度见[实施记录](2026-11-08-result-inspection-implementation.md)。未新增content_complete。
 
 本记录对应a7e8a0d基线，承接[结算详情审阅](2026-11-07-inspect-run-result-review.md)。本轮没有启动游戏、构建或修改工具参数，只核对源码、文档与当前卡牌投影。
 

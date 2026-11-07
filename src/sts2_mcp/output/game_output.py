@@ -72,5 +72,5 @@ def gameplay_fields(state, *, operation=None, arguments=None):
         shape = {**shape, 'event': {**ROOM_EVENT, 'options': nullable([{**ROOM_EVENT_OPTION, 'hover_tips': [TIP]}])}}
     if 'hover_tips' in (state.get('run_result') or {}):
         from sts2_mcp.output.run_ending_details import result_details
-        return {**format_game_cards({**project(state, shape), 'run_result': result_details(state['run_result'], full=True)}, shop_mode=shop_mode), **relic_payload, **batch_payload}
+        return {**format_game_cards({**project(state, shape), 'run_result': result_details(state['run_result'], full=operation == 'inspect_run_result' or any('description' in tip for tip in state['run_result']['hover_tips']))}, shop_mode=shop_mode), **relic_payload, **batch_payload}
     return {**format_game_cards(project(state, shape), shop_mode=shop_mode), **relic_payload, **batch_payload}

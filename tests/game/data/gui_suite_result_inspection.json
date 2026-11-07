@@ -1,0 +1,34 @@
+[
+  {
+    "name": "wrong_room",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_result_inspection.py",
+        "args": [
+          "--scenario",
+          "wrong_room"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "history",
+    "scenarios": {
+      "navigation": "boss3"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_result_inspection.py",
+        "args": [
+          "--scenario",
+          "history"
+        ]
+      }
+    ]
+  }
+]

@@ -14,7 +14,7 @@ def state(phase='outcome'):
     raw.update(snapshot_id='result-1', scene='run_result', top_bar=None, event=None,
                screen={'status': 'visible', 'view': 'run_result'}, available_actions=['run_result_option'],
                run_result={'status': 'visible', 'phase': phase, 'title': 'Victory?', 'texts': ['Your damage: 100'],
-                           'score_lines': [], 'badges': [], 'discoveries': [], 'cards': [], 'relics': [], 'potions': [],
+                           'score_lines': [], 'badges': [], 'discoveries': [], 'cards': [], 'relics': [], 'potions': [], 'hover_tips': [],
                            'options': [{'id': 'continue', 'text': 'Continue', 'enabled': True}]})
     return raw
 
@@ -68,7 +68,7 @@ class EndingOutputTests(unittest.TestCase):
     def test_detail_hover_help_is_only_accepted_by_dedicated_inspection(self):
         raw = state('summary'); raw['run_result']['hover_tips'] = [
             {'source': 'discovery:cards', 'title': 'Cards', 'description': 'Discovered 12 cards\n\nA\n....'}]
-        self.assertNotIn('hover_tips', observation_details(raw)['run_result'])
+        self.assertEqual(observation_details(raw)['run_result']['hover_tips'], [{'source': 'discovery:cards', 'title': 'Cards'}])
         details = inspection_details('inspect_run_result', raw)
         self.assertEqual(details['run_result']['hover_tips'], raw['run_result']['hover_tips'])
 

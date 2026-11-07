@@ -40,9 +40,14 @@ internal sealed partial class GameAdapter
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Observe the current result before acting.");
         var context = runResultInspection.Current;
+        if (inspect)
+        {
+            if (runResultInspection.InspectionUnavailableReason(context) is { } unavailable)
+                return ResponseBuilder.Error(request.Id, "illegal_action", unavailable, publicMessage: true, uiUnchanged: true);
+            return InspectionSuccess(request, before, new { run_result = runResultInspection.Read(full: true) });
+        }
         if (context == null || !RunResultInspection.Exposed(context) || !runResultInspection.Ready(context))
             return FileMailbox.Error(request.Id, "illegal_action", "The run result is unavailable.");
-        if (inspect) return InspectionSuccess(request, before, new { run_result = runResultInspection.Read(full: true) });
         var button = runResultInspection.Options(context).FirstOrDefault(o => o.id == id).button;
         if (button == null || !RunResultInspection.Clickable(button))
             return FileMailbox.Error(request.Id, "illegal_action", "The requested result button is unavailable.");

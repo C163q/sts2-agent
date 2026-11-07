@@ -160,46 +160,110 @@ internal sealed class RunResultInspection
     private static object Badge(NBadge badge) => EnglishEventText.Read(() => new {
         name = PrivateFields.Read(badge, "_title") is LocString title ? EnglishCardText.Plain(title.GetFormattedText()) : "",
         rarity = Path.GetFileNameWithoutExtension(badge.GetNode<TextureRect>("%BadgeHolder").Texture.ResourcePath).Replace("badge_", "") });
-    private static object[] Cards(Node root) => VisibleUi.Descendants<NCard>(root)
+    private static object[] Cards(Node root, bool hover, List<string> unavailable) => VisibleUi.Descendants<NCard>(root)
         .Where(c => CombatObservation.CardVisible(c, VisibleUi.Browsable) && c.Visibility == ModelVisibility.Visible && c.Model != null).Select((card, index) =>
         EnglishEventText.Read(() => {
             var result = BrowsedCard.Read(card.Model!, $"card:{index}", PileType.None, upgrades: false, full: true, appearance: true);
+            var description = card.GetNodeOrNull<CanvasItem>("%DescriptionLabel");
+            if (!VisibleUi.Browsable(description) || description is RichTextLabel { VisibleRatio: < .999f })
+                result["description"] = null;
+            if (!hover)
+            {
+                result["hover_tips"] = Array.Empty<HoverTipText>();
+                unavailable.Add("run_result.cards.card:" + index);
+            }
             return (object)result;
         })).ToArray();
+
+    public string? InspectionUnavailableReason(Context? context)
+    {
+        if (context == null) return NGame.Instance?.MainMenu != null
+            ? "No run result is associated with this menu. Use get_observation to read the current screen."
+            : "No run result page is available. Use get_observation to continue the current run.";
+        if (!singleplayer) return "Run result inspection requires a local single-player result.";
+        if (NModalContainer.Instance?.OpenModal != null) return "Resolve the covering dialog before inspecting the run result.";
+        if (VisibleUi.Shown(NGame.Instance?.InspectCardScreen) || VisibleUi.Shown(NGame.Instance?.InspectRelicScreen))
+            return "Close the native card or relic details panel before inspecting the run result.";
+        if (RunUi.Transitioning()) return "Wait for the screen transition before inspecting the run result.";
+        return Exposed(context) ? null : "The run result page is currently covered or hidden.";
+    }
 
     public object? Read(bool full = false)
     {
         if (Current is not { } context) return null;
-        bool exposed = Exposed(context), ready = Ready(context);
+        bool exposed = Exposed(context), ready = Ready(context), complete = DisplayComplete(context);
         var root = context.Root;
+        bool hover = exposed && complete && (root is not NTimelineScreen timeline
+            || timeline.GetNodeOrNull<Control>("%InputBlocker") is not { Visible: true });
+        var badges = exposed ? VisibleUi.Descendants<NBadge>(root).Where(VisibleUi.Browsable).ToArray() : [];
+        List<string> unavailable = [];
         var result = new Dictionary<string, object?> {
-            ["status"] = PresentationState.Status(exposed, DisplayComplete(context)), ["phase"] = context.Phase,
+            ["status"] = PresentationState.Status(exposed, complete), ["phase"] = context.Phase,
             ["title"] = exposed && root is NGameOverScreen ? Text(root.GetNode<NCommonBanner>("%Banner").label) : null,
-            ["texts"] = exposed ? VisibleUi.Descendants<CanvasItem>(root).Where(n => !InsideCard(n)).Select(Text).Where(t => !string.IsNullOrWhiteSpace(t)).Distinct().ToArray() : [],
-            ["score_lines"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NScoreLine>(root).Where(VisibleUi.Browsable).Select(line => new {
-                label = Text(line.GetNode<CanvasItem>("%Label")) ?? "", value = Text(line.GetNode<CanvasItem>("%Score")) ?? "" }).ToArray() : Array.Empty<object>(),
-            ["badges"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NBadge>(root).Where(VisibleUi.Browsable).Select(Badge).ToArray() : Array.Empty<object>(),
-            ["discoveries"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NDiscoveredItem>(root).Where(VisibleUi.Browsable).Select(item => new {
-                kind = DiscoveryKind(item), count = int.TryParse(Text(item.GetNode<CanvasItem>("%Label")), out int count) ? count : 0 }).ToArray() : Array.Empty<object>(),
-            ["options"] = exposed ? Options(context).Select(o => new { id = o.id, text = ButtonText(o.button), enabled = ready && Clickable(o.button) }).ToArray() : Array.Empty<object>() };
-        result["cards"] = exposed ? Cards(root) : Array.Empty<object>();
-        result["relics"] = exposed ? VisibleUi.Descendants<NRelicBasicHolder>(root).Where(h => VisibleUi.Browsable(h) && VisibleUi.Browsable(h.Relic.Icon))
-            .Select(h => full ? (object)RelicInspection.Details(h.Relic.Model, null) : EnglishEventText.Read(() => (object)new { name = EnglishCardText.Plain(h.Relic.Model.Title.GetFormattedText()) })).ToArray() : Array.Empty<object>();
-        result["potions"] = exposed ? VisibleUi.Descendants<NPotionHolder>(root).Where(h => VisibleUi.Browsable(h) && h.HasPotion && VisibleUi.Browsable(h.Potion))
-            .Select(h => full ? (object)PotionInspection.Details(h.Potion!.Model) : EnglishEventText.Read(() => (object)new { name = EnglishCardText.Plain(h.Potion!.Model.Title.GetFormattedText()) })).ToArray() : Array.Empty<object>();
-        if (full) result["hover_tips"] = exposed ? VisibleUi.Descendants<NClickableControl>(root).Where(c => c is not NEpochSlot && VisibleUi.Browsable(c))
-            // Ordinary navigation buttons in this heterogeneous list do not own hover text.
-            .Select(control => (control, tip: PrivateFields.Optional(control, "_hoverTip") as IHoverTip))
-            .Where(pair => pair.tip != null).Select(pair => EnglishEventText.Read(() => new {
-                source = pair.control is NBadge ? "badge:" + VisibleUi.Descendants<NBadge>(root).ToList().IndexOf((NBadge)pair.control)
-                    : pair.control is NDiscoveredItem discovery ? "discovery:" + DiscoveryKind(discovery) : pair.control.Name.ToString(), title = EnglishEventText.Tip(pair.tip!).title,
-                description = EnglishEventText.Tip(pair.tip!).description })).Cast<object>().Concat(
-                root is NTimelineScreen ? VisibleUi.Descendants<NEpochSlot>(root).Where(s => VisibleUi.Shown(s) && epochIds.ContainsKey(s)).Select(slot => EnglishEventText.Read(() => {
-                    var info = slot.model.UnlockInfo;
-                    info.Add("IsRevealed", slot.State == EpochSlotState.Complete);
-                    var tip = HoverTipText.From(new HoverTip(slot.model.Title, info));
-                    return (object)new { source = $"epoch:{epochIds[slot]}", title = tip.title, description = tip.description };
-                })) : Array.Empty<object>()).ToArray() : Array.Empty<object>();
+            ["texts"] = exposed ? VisibleUi.Descendants<CanvasItem>(root).Where(node => !InsideCard(node)).Select(Text)
+                .Where(text => !string.IsNullOrWhiteSpace(text)).Distinct().ToArray() : [],
+            ["score_lines"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NScoreLine>(root)
+                .Where(VisibleUi.Browsable).Select(line => new { label = Text(line.GetNode<CanvasItem>("%Label")) ?? "",
+                    value = Text(line.GetNode<CanvasItem>("%Score")) ?? "" }).ToArray() : Array.Empty<object>(),
+            ["badges"] = context.Phase == "summary" ? badges.Select(Badge).ToArray() : Array.Empty<object>(),
+            ["discoveries"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NDiscoveredItem>(root)
+                .Where(VisibleUi.Browsable).Select(item => new { kind = DiscoveryKind(item),
+                    count = int.TryParse(Text(item.GetNode<CanvasItem>("%Label")), out int count) ? count : 0 }).ToArray() : Array.Empty<object>(),
+            ["options"] = exposed ? Options(context).Select(option => new { id = option.id,
+                text = ButtonText(option.button), enabled = ready && Clickable(option.button) }).ToArray() : Array.Empty<object>() };
+        result["cards"] = exposed ? Cards(root, hover, unavailable) : Array.Empty<object>();
+        result["relics"] = exposed ? VisibleUi.Descendants<NRelicBasicHolder>(root)
+            .Where(holder => VisibleUi.Browsable(holder) && VisibleUi.Browsable(holder.Relic.Icon)).Select((holder, index) => {
+                if (!full) return EnglishEventText.Read(() => (object)new { name = EnglishCardText.Plain(holder.Relic.Model.Title.GetFormattedText()) });
+                if (hover && HoverAccess.CanFocus(holder)) return (object)RelicInspection.Details(holder.Relic.Model, null);
+                unavailable.Add("run_result.relics." + index);
+                return EnglishEventText.Read(() => (object)new { name = EnglishCardText.Plain(holder.Relic.Model.Title.GetFormattedText()),
+                    description = (string?)null, hover_tips = Array.Empty<HoverTipText>() });
+            }).ToArray() : Array.Empty<object>();
+        result["potions"] = exposed ? VisibleUi.Descendants<NPotionHolder>(root)
+            .Where(holder => VisibleUi.Browsable(holder) && holder.HasPotion && VisibleUi.Browsable(holder.Potion)).Select((holder, index) => {
+                if (!full) return EnglishEventText.Read(() => (object)new { name = EnglishCardText.Plain(holder.Potion!.Model.Title.GetFormattedText()) });
+                if (hover && HoverAccess.CanFocus(holder)) return (object)PotionInspection.Details(holder.Potion!.Model);
+                unavailable.Add("run_result.potions." + index);
+                return EnglishEventText.Read(() => (object)new { name = EnglishCardText.Plain(holder.Potion!.Model.Title.GetFormattedText()),
+                    description = (string?)null, hover_tips = Array.Empty<HoverTipText>() });
+            }).ToArray() : Array.Empty<object>();
+
+        List<object> tips = [];
+        List<string> sources = [];
+        HashSet<string> identities = [];
+        void AddTip(string source, NClickableControl control, Func<HoverTipText> read)
+        {
+            string candidate = source;
+            for (int suffix = 1; !identities.Add(candidate); suffix++) candidate = source + ":" + suffix;
+            source = candidate;
+            if (!hover || !HoverAccess.CanFocus(control)) { unavailable.Add("run_result.hover_tips." + source); return; }
+            var tip = read();
+            tips.Add(full ? new { source, tip.title, tip.description } : (object)new { source, tip.title });
+            sources.Add(source);
+        }
+        if (exposed)
+        {
+            foreach (var control in VisibleUi.Descendants<NClickableControl>(root).Where(control => control is not NEpochSlot && VisibleUi.Browsable(control)))
+            {
+                // Navigation controls in this heterogeneous tree have no hover text.
+                if (PrivateFields.Optional(control, "_hoverTip") is not IHoverTip tip) continue;
+                string source = control is NBadge badge ? "badge:" + Array.IndexOf(badges, badge)
+                    : control is NDiscoveredItem discovery ? "discovery:" + DiscoveryKind(discovery) : control.Name.ToString();
+                AddTip(source, control, () => EnglishEventText.Read(() => EnglishEventText.Tip(tip)));
+            }
+            if (root is NTimelineScreen)
+                foreach (var slot in VisibleUi.Descendants<NEpochSlot>(root).Where(slot => VisibleUi.Shown(slot) && epochIds.ContainsKey(slot)))
+                    AddTip("epoch:" + epochIds[slot], slot, () => EnglishEventText.Read(() => {
+                        var info = slot.model.UnlockInfo;
+                        info.Add("IsRevealed", slot.State == EpochSlotState.Complete);
+                        return HoverTipText.From(new HoverTip(slot.model.Title, info));
+                    }));
+        }
+        result["hover_tips"] = tips.ToArray();
+        // Kept in native snapshots to validate associations; public projections omit these lists.
+        result["hover_sources"] = sources.ToArray();
+        result["unavailable_hover_sources"] = unavailable.Distinct().ToArray();
         return result;
     }
 }

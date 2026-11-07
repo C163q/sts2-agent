@@ -112,6 +112,9 @@ def observation_details(state):
     elif ('respond_to_confirmation' in result['available_actions']
           or result['screen'] == {'status': 'visible', 'view': 'confirmation'}):
         raise ValueError('Missing event confirmation.')
-    from sts2_mcp.output.run_ending_details import validate_ending
+    from sts2_mcp.output.run_ending_details import validate_ending, result_details, result_summary
+    if state.get('run_result') is not None:
+        result['run_result'] = result_summary(result_details(state['run_result'],
+            require_complete=state.get('schema_version', 0) >= 47), card_mode='face_full')
     return format_game_cards(validate_presentations(validate_ending(result)), shop_mode="face_full", deck_mode='face_full',
                              pile_mode='face_full', selection_mode='face_full', result_mode='face_full')

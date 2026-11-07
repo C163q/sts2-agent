@@ -17,7 +17,17 @@ internal static class PresentationFixture
         object? tweenOwner = null;
         string? tweenField = null;
         RichTextLabel? text = null;
-        if (results.Current is { } result) { root = result.Root; }
+        if (results.Current is { } result)
+        {
+            root = result.Root;
+            if (root is not MegaCrit.Sts2.Core.Nodes.Screens.GameOverScreen.NGameOverScreen)
+            {
+                tweenField = new[] { "_screenTween", "_cardTween", "_tween", "_textTween" }
+                    .FirstOrDefault(field => AccessTools.Field(root.GetType(), field) != null);
+                if (tweenField == null) throw new InvalidOperationException("The native result page has no known display tween.");
+                tweenOwner = root;
+            }
+        }
         else if (EpilogueInspection.Current is { } epilogue)
         {
             root = epilogue.Layout;

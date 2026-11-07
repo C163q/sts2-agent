@@ -47,9 +47,9 @@ class AvailableViewTests(unittest.TestCase):
         raw = result_state()
         raw['run_result'].update(status='not_ready')
         raw['run_result']['options'][0]['enabled'] = False
-        raw['available_actions'] = ['inspect_potions', 'inspect_relics']
+        raw['available_actions'] = ['inspect_potions', 'inspect_relics', 'inspect_run_result']
         self.assertEqual(observation_details(raw)['available_actions'], raw['available_actions'])
-        for action in ('run_result_option', 'inspect_run_result', 'play_card', 'inspect_deck'):
+        for action in ('run_result_option', 'play_card', 'inspect_deck'):
             broken = copy.deepcopy(raw)
             broken['available_actions'].append(action)
             with self.subTest(action=action), self.assertRaises(ValueError):

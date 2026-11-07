@@ -1,0 +1,30 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "run_result": {
+    "status": "visible",
+    "phase": "tutorial",
+    "title": null,
+    "texts": [
+      "Proceed",
+      "In the Timeline, reveal Epochs to unlock cards, relics, and much more..."
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "continue",
+        "text": "Proceed",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [],
+    "potions": [],
+    "hover_tips": []
+  }
+}

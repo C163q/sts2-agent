@@ -1,0 +1,59 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "run_result": {
+    "status": "visible",
+    "phase": "unlock",
+    "texts": [
+      "Cards Unlocked!",
+      "The following cards will appear in future runs.",
+      "Confirm"
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "cards": [
+      {
+        "id": "card:0",
+        "name": "Automation",
+        "type": "Power",
+        "rarity": "uncommon",
+        "visual_card_pool": "colorless",
+        "energy_cost": "1"
+      },
+      {
+        "id": "card:1",
+        "name": "Entropy",
+        "type": "Power",
+        "rarity": "rare",
+        "visual_card_pool": "colorless",
+        "energy_cost": "1"
+      },
+      {
+        "id": "card:2",
+        "name": "Catastrophe",
+        "type": "Skill",
+        "rarity": "uncommon",
+        "visual_card_pool": "colorless",
+        "energy_cost": "2"
+      }
+    ],
+    "relics": [],
+    "potions": [],
+    "hover_tips": []
+  },
+  "available_actions": [
+    "run_result_option",
+    "inspect_run_result"
+  ]
+}

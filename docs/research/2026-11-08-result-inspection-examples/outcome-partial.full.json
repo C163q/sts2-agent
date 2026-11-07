@@ -1,0 +1,39 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "run_result": {
+    "status": "not_ready",
+    "phase": "outcome",
+    "title": "Victory...?",
+    "texts": [
+      "Victory...?",
+      "You dealt 140 damage to the Architect... but it wasn't enough...\nYou have dealt a total of 140 damage to the Architect.",
+      "Continue"
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "continue",
+        "text": "Continue",
+        "enabled": false
+      }
+    ],
+    "cards": [],
+    "relics": [],
+    "potions": [],
+    "hover_tips": []
+  },
+  "notes": {
+    "presentation": {
+      "message": "The page is still updating; displayed values and lists may be incomplete.",
+      "sources": [
+        "run_result"
+      ]
+    }
+  }
+}

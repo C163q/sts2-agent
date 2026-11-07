@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "No run result is associated with this menu. Use get_observation to read the current screen.",
+    "recovery": "choose_legal_action"
+  }
+}

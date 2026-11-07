@@ -78,7 +78,7 @@ class CardModeTests(unittest.TestCase):
                 self.assertNotIn('description', pair['after'])
             self.assertIsNone(apply_preset(result, 'default')['selection']['upgrade_preview']['before']['enchantment'])
 
-    def test_result_observation_keeps_card_faces_and_drops_general_hover_help(self):
+    def test_result_observation_keeps_card_faces_and_general_tip_titles(self):
         from sts2_mcp.output.game_output import observation_details
         from tests.python.test_run_ending import state
         data = state('summary')
@@ -89,7 +89,7 @@ class CardModeTests(unittest.TestCase):
         result = observation_details(data)['run_result']
         self.assertNotIn('hover_tips', result['cards'][0])
         self.assertNotIn('description', result['cards'][0])
-        self.assertNotIn('hover_tips', result)
+        self.assertEqual(result['hover_tips'], [{'source': 'secret', 'title': 'General'}])
 
     def test_fixed_face_boundary_and_comparison_null_context(self):
         from sts2_mcp.output.card_format import format_card

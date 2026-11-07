@@ -1,6 +1,6 @@
 # inspect_run_result 核验与建议
 
-> 当前状态：摘要、统一face及主体status语义已定稿，进入实施与验证；尚未核销。总进度见[工具清单](2026-11-02-mcp-tool-review.md)。
+> 当前状态：摘要、统一face及主体status已实现并完成游戏验收，最后完整回归及独立审阅进行中；尚未核销。[最新结果](2026-11-08-result-inspection-implementation.md)。总进度见[工具清单](2026-11-02-mcp-tool-review.md)。
 
 已整理[19份典型实际JSON](2026-11-07-inspect-run-result-examples/README.md)：17份full、2份default。源码、原始证据及验证限制见[开发核验](2026-11-07-inspect-run-result-development-notes.md)。
 

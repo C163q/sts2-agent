@@ -192,10 +192,8 @@ internal sealed partial class GameAdapter
         if (ending != null)
         {
             if (UiInspection.CanRead()) actions.Add("inspect_ui");
-            if (runResultInspection.Ready(ending))
-            {
+            if (runResultInspection.InspectionUnavailableReason(ending) == null)
                 actions.Add("inspect_run_result");
-            }
             if (PotionInspection.VisibleHolders() != null) actions.Add("inspect_potions");
             if (RelicInspection.VisibleHolders() != null) actions.Add("inspect_relics");
             return actions.Distinct().ToList();

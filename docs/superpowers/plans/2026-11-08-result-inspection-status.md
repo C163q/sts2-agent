@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-> 当前状态：实施中，共3项，完成2项；基础观察face与共用展示状态已完成，正在处理结算详情及最终验收／审阅／合入。暂无阻塞。
+> 当前状态：实施中，共3项，完成3项；实现与最终验收完成，正在提交及独立审阅，剩余合入main。暂无阻塞。
 
 **Goal:** 基础观察统一face，页面status准确表达展示进度，结算详情提供可靠诊断、校验及summary。
 
@@ -58,11 +58,11 @@
 
 **Interfaces:** RunResultInspection.InspectionUnavailableReason提供具体只读拒绝；Read提供当前完整或部分可见内容及提示来源；result_summary按已确认字段投影；get_observation复用静态结果并保留face卡牌。
 
-- [ ] 编写错配页面／缺字段／提示来源／summary／读取恢复用例，先运行确认RED。
-- [ ] 实现详情读取与动作分离、具体错误、当前协议完整校验和summary；隐藏或不可悬停提示不越界，徽章引用使用当前基础列表。
-- [ ] 统一版本Mod0.79.0、MCP0.81.0、schema47；更新必要协议消费者与真实验证器。
-- [ ] 专项、完整Python、构建、C#及GUI通过：胜负首屏／汇总、教程、时间线、章节、卡牌／药水／遗物解锁、本局详情夹具、无关菜单、partial／禁用及错误恢复。
-- [ ] 导出真实full/default/summary JSON，验证来源／链接／DLL／自有进程退出，更新现行文档并提交`feat: add consistent run result inspection presets`。
+- [x] 编写错配页面／缺字段／提示来源／summary／读取恢复用例，先运行确认RED。
+- [x] 实现详情读取与动作分离、具体错误、当前协议完整校验和summary；隐藏或不可悬停提示不越界，徽章引用使用当前基础列表。
+- [x] 统一版本Mod0.79.0、MCP0.81.0、schema47；更新必要协议消费者与真实验证器。
+- [x] 专项、完整Python、构建、C#及GUI通过：胜负首屏／汇总、教程、时间线、章节、卡牌／药水／遗物解锁、本局详情夹具、无关菜单、partial／禁用及错误恢复。
+- [x] 导出真实full/default/summary JSON，验证来源／链接／DLL／自有进程退出，更新现行文档并提交`feat: add consistent run result inspection presets`。
 
 ## 最终交付
 

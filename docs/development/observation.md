@@ -78,7 +78,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 普通事件主体在 get_observation.full/default/summary 中均使用 inspect_event.summary：省略页面叙事 event.description、悬停说明及 lethal_warning:false；保留选项效果 description、true 警告、启用状态和前进按钮。完整已展示正文及选项悬停解释由 inspect_event.full/default 提供。共用规则见[事件接口](events.md#基础观察与详情)。
 
-审判（Trial）同样省略页面叙事，confirmation.description 保留，不能按字段名递归删除后果说明。建筑师 epilogue 主体沿用 default。占卜在 full/default/summary 中均省略固定教学 divination.instructions，保留文字棋盘、可见碎片、次数、工具和当前完整对白；基础观察不返回 PNG，也不接受 include_image。详情教学和可选图像见[占卜接口](divination.md)。
+审判（Trial）同样省略页面叙事，confirmation.description 保留，不能按字段名递归删除后果说明。建筑师 epilogue 主体沿用 default。结算主体三种内容预设共用静态名称／提示标题，卡牌full/default为face、summary为卡牌摘要，见[结算接口](run-ending.md#结算观察)。占卜在 full/default/summary 中均省略固定教学 divination.instructions，保留文字棋盘、可见碎片、次数、工具和当前完整对白；基础观察不返回 PNG，也不接受 include_image。详情教学和可选图像见[占卜接口](divination.md)。
 
 已就绪且未被更高层覆盖的牌组页提供完整 `deck`、`view_upgrades` 和 `sort.by/descending`，分别对应 UI 的升级模式、主排序与方向。full/default/summary 的牌组卡牌采用 face_full／face_default／共用卡牌摘要，均无正文和悬停解释；ID 和显示顺序与 inspect_deck 相同，后者的 card_ids 不会限制基础观察。关闭或被覆盖后不附缓存内容，详细边界见[牌组接口](deck-inspection.md)。actions_only/top_bar 不增加牌组数据。
 
