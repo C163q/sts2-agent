@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销39项。choose_ancient_option三项整改已实现并验收，待独立审阅及合并；用户报告原版也会发生致死崩溃，该项另作原版可复现记录。其余4项尚未开始，共5项未核销。buy_item独立审阅的非阻塞建议见其实施记录。
+> 当前状态：工具核验进行中，共44项，已核销40项。choose_ancient_option三项整改已完成实现、验收及独立审阅并合入main；用户报告原版也会发生致死崩溃，该项另作原版可复现记录。剩余4项尚未核销。buy_item独立审阅的非阻塞建议见其实施记录。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -97,7 +97,7 @@
 ### 先古之民与对话（3 项）
 
 - [x] `inspect_ancient`：查看先古之民对话与馈赠。阶段：完成并合入main；[输出定稿](2026-11-07-inspect-ancient-review.md#输出定稿)、[实施记录](2026-11-07-ancient-inspection-presets-implementation.md)及[23份修复返回](2026-11-07-ancient-inspection-fixed-examples/README.md)。四项问题、summary与option_ids已实现，807项Python、145项C#、12组GUI及85项双模式私有入口门控通过；原[16份审阅JSON](2026-11-07-inspect-ancient-examples/README.md)保留基线。
-- [ ] `choose_ancient_option`：选择馈赠。阶段：实现与验收完成、待独立审阅；[输出定稿](2026-11-07-choose-ancient-option-review.md#输出定稿)、[实施记录](2026-11-07-ancient-choice-recovery-implementation.md)及[24份修复返回](2026-11-07-ancient-choice-fixed-examples/README.md)。三项整改已实现，811项Python、145项C#和18组GUI通过；原版可复现崩溃已按用户要求列入游戏升级至v0.111后的复测TODO。原[16份审阅返回](2026-11-07-choose-ancient-option-examples/README.md)保持基线。
+- [x] `choose_ancient_option`：选择馈赠。阶段：完成并合入main；[输出定稿](2026-11-07-choose-ancient-option-review.md#输出定稿)、[实施记录](2026-11-07-ancient-choice-recovery-implementation.md)及[24份修复返回](2026-11-07-ancient-choice-fixed-examples/README.md)。三项整改已实现，811项Python、145项C#和18组GUI通过；原版可复现崩溃已按用户要求列入游戏升级至v0.111后的复测TODO。原[16份审阅返回](2026-11-07-choose-ancient-option-examples/README.md)保持基线。
 - [ ] `advance_dialogue`：推进先古之民或建筑师对话。
 
 ### 结算（2 项）

@@ -1,6 +1,6 @@
 # choose_ancient_option 核验与建议
 
-> 当前状态：三项项目整改及参数已确认，实现与18组验收已完成，待独立审阅及合并；原版可复现崩溃按用户要求留待游戏升级至v0.111后复测。下文现状和原JSON保留e4b1979审阅基线，输出定稿是实施依据；最新结果见[实施记录](2026-11-07-ancient-choice-recovery-implementation.md)。
+> 当前状态：三项项目整改及参数已确认，实现、18组验收及独立审阅已完成并合入main；原版可复现崩溃按用户要求留待游戏升级至v0.111后复测。下文现状和原JSON保留e4b1979审阅基线，输出定稿是实施依据；最新结果见[实施记录](2026-11-07-ancient-choice-recovery-implementation.md)。
 
 总流程见[工具清单](2026-11-02-mcp-tool-review.md)。[16份完整实测JSON](2026-11-07-choose-ancient-option-examples/README.md)包含15份full、一份default；源码、验证细节及限制见[开发核验](2026-11-07-choose-ancient-option-development-notes.md)。
 
