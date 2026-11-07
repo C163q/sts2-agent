@@ -1,6 +1,6 @@
 # Trial 确认响应恢复实施记录
 
-> 当前状态：实现与验收完成，共1项，已完成1项；九类GUI及十七份JSON核对完成，待独立最终审阅及合入，无阻塞。
+> 当前状态：实现、验收及独立审阅完成，共1项，已完成1项；审阅指出的长期断言缺口已按迁移要求补齐并验证，待归档与合入，无阻塞。
 
 定稿见[响应审阅](2026-11-07-respond-to-confirmation-review.md#输出定稿)，步骤见[实施计划](../superpowers/plans/2026-11-07-confirmation-response-recovery.md)。原错误与十二份旧JSON见[开发核验](2026-11-07-respond-to-confirmation-development-notes.md)。
 
@@ -30,6 +30,8 @@
 | 有效GUI RED | 修正夹具入口后，仅夹具中间DLL27c9d496…6c42；两个禁用按钮仍列respond_to_confirmation，MCP将矛盾观察判为transport_error；19.098684643秒，PID30952已退出，gui-red-wired/report.json |
 | Python GREEN | 新5项通过，0.056秒；python-green.log |
 | 完整Python | 796项通过，38.433秒；python-full.log |
+| 审阅补充回归 | 新2项：空工具列表、混入玩法动作及错误场景三个变异先被旧断言漏过，0.001秒；补齐后2项通过，0.001秒；review-python-red-valid／green-valid.log |
+| 最终完整Python | 798项通过，39.751秒；python-final-fixed.log |
 | C# | 145项通过；csharp.log |
 | 最终构建 | 3.86秒，零警告／错误；build.log |
 
@@ -66,6 +68,22 @@ Python在原生通信边界使用替身，测试真实GameTools与会话策略�
 随后直接选择Trial的DoubleDown成功。两按钮禁用观察保留标题／正文／options及两个enabled:false，available_actions为空；只禁用confirm时仍提供respond_to_confirmation，错误后可直接cancel。终态仍保留原生失败及结算查看工具，未将确认放弃当作普通完成。
 
 verify_delivery.py核对已运行日志、RED／GREEN、三批GUI、进程退出、DLL、版本、十七份JSON及相对链接，不重复构建。
+
+## 独立审阅与补齐验证
+
+独立只读审阅范围70d6655..f32e88b，原分级Critical0、Important0、Minor1，结论可合入。未发现产品缺陷；唯一发现是长期GUI验证器确认分支缺少终态查看工具断言，当前样本与交付检查已有该证据。
+
+最终处理将此项按已确认的“迁移旧验证器终态断言”视为需要补齐的交付验证缺口，在唯一修复回合中完成：从既有run_lost检查抽出实际GUI使用的validate_confirmation_outcome，以已保存的真实回执作输入；空列表、混入玩法动作及错误场景三个变异先失败，再增加结算场景、inspect_run_result存在及无玩法动作断言。未修改Mod／MCP生产代码或重新构建。
+
+首次抽取函数的缩进错误导致review-python-red／green导入失败，不计为有效RED；python-final.log为797项、1个导入错误，gui-review-confirm也在导入处失败，14.518266834秒，PID34821已退出。这些失败全部保留。修正缩进并还原旧断言后得到上述有效RED→GREEN；最终798项通过，确认GUI单场复查25.399057854秒通过，PID36095已退出、同一最终DLL。没有重复九类套件或独立启动场景，没有第二次独立审阅。
+
+裁决按记录顺序为：
+
+1. 终态断言属于已确认迁移内容，需补齐后交付；若此判断过严，代价仅是额外回归验证时间。
+2. 多人及其他来源弹窗的自动响应保持规格范围，未知来源拒绝已有实测；若范围判断不符，其他来源仍需人工处理。
+3. shell参数入口及完全不使用suite启动器的方式不作已实测宣称；已验证自有GameSession管理的非复用分支，纯CLI或非suite封装仍可能需要单独修正。
+
+没有剩余暂缓项；审阅摘要见证据根final-review.md。初始四个及审阅复查两个自有GUI进程均已退出，最终产品DLL保持b5096c3e…41ad。
 
 ## 未验证范围
 

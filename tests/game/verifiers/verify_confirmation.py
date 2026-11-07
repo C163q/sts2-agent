@@ -7,8 +7,15 @@ import sys
 from pathlib import Path
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
+from sts2_mcp.output.available_tools import GAME_ACTIONS
 from sts2_mcp.roundtrip_client import Client
 from tests.game.support.verification_runtime import ensure_run, ipc_directory
+
+def validate_confirmation_outcome(receipt):
+    assert receipt['transition']['complete'] and receipt['transition']['stop_reason'] == 'run_lost', receipt
+    assert receipt['scene'] == 'run_result' and receipt['screen'] == {'status': 'visible', 'view': 'run_result'}, receipt
+    assert 'inspect_run_result' in receipt['available_actions'], receipt
+    assert not GAME_ACTIONS.intersection(receipt['available_actions']), receipt
 
 async def verify(args):
     assert not args.report.exists(), 'Use a fresh evidence path.'
@@ -131,7 +138,7 @@ async def verify(args):
                 return
             if name == 'confirm':
                 receipt = await call('respond_to_confirmation', {'option': 'confirm'}, label='confirm_run')
-                assert receipt['transition']['complete'] and receipt['transition']['stop_reason'] == 'run_lost', receipt
+                validate_confirmation_outcome(receipt)
                 truth = await native('check_test_confirmation')
                 assert truth['state']['abandoned'] and truth['state']['ended'] and (not truth['state']['pending']) and (truth['state']['hp'] == 0), truth
                 await call('respond_to_confirmation', {'option': 'cancel'}, error='observation_required', label='after_run_lost')

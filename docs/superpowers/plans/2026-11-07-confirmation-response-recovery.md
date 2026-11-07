@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-> 当前状态：实现与验收完成，共1项，已完成1项；九类GUI及十七份JSON已核对，待独立最终审阅及合入，无阻塞。
+> 当前状态：实现、验收及独立审阅完成，共1项，已完成1项；终态回归断言已补齐，最终798项及确认复查通过，待归档与合入，无阻塞。
 
 **Goal:** respond_to_confirmation明确拒绝后可直接继续合法操作，提示及可用操作与真实按钮状态一致。
 
@@ -43,5 +43,5 @@
 
 ## 最终审阅与合入
 
-- [ ] 一次独立最终审阅；必要问题按RED→GREEN修复。
+- [x] 一次独立最终审阅；长期终态断言按既定迁移要求补齐，变异RED→GREEN及完整798项、确认GUI复查通过。
 - [ ] 核对归档任务工作目录、合入main并删除临时分支；核销工具与同步清单阶段。
