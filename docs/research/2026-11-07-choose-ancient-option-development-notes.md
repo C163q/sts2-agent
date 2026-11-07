@@ -1,6 +1,6 @@
 # choose_ancient_option 开发核验依据
 
-> 当前状态：审阅完成；四项问题待确认处理范围，未修改产品或测试代码。11类玩法场景中10类完成现状核验；致死馈赠经两次MCP和一次有效原生鼠标点击复现，根因未定。鼠标补查见[对照记录](2026-11-07-ancient-native-click-recheck.md)，下文验证统计保留原审阅基线。用户决策内容见[核验与建议](2026-11-07-choose-ancient-option-review.md)。
+> 当前状态：审阅完成；三项项目问题待处理，另有原版可复现崩溃记录，未修改产品或测试代码。11类玩法场景中10类完成现状核验；隔离致死崩溃经两次MCP和一次有效原生鼠标点击复现，用户随后报告原版也崩溃。补查见[对照记录](2026-11-07-ancient-native-click-recheck.md)，下文验证统计保留原审阅基线。用户决策内容见[核验与建议](2026-11-07-choose-ancient-option-review.md)。
 
 ## 基线与证据
 
@@ -18,7 +18,7 @@
 | ANCIENT-CHOICE-01 | 中 | [AncientRequest](../../src/Sts2Agent/Adapter/GameAdapter.Ancient.cs)的参数、页面及按钮拒绝使用FileMailbox.Error，未提供action_submitted:false，注册也没有unsubmitted_rejection_unchanged。实测明确拒绝时执行标记均未交互／未提交、前后snapshot_id相同，下一项合法动作仍observation_required；待修复。 |
 | ANCIENT-CHOICE-02 | 中 | 页面／按钮两类illegal_action没有public_message，MCP统一为通用消息。无房间、无效ID、已领取、对话中段、禁用及地图／牌组／选牌／奖励覆盖均不能区分；待修复。 |
 | ANCIENT-CHOICE-03 | 中 | ScrollBoxes领取进入bundle时回执events为空，同次原始观察top_bar已列出Scroll Boxes。相同最终DLL的前一项GUI验证也出现相同结果；是可见获取反馈缺口，尚未修复。 |
-| ANCIENT-CHOICE-04 | 高；根因待定 | cape_lethal夹具最大生命9，当前可见且启用的DistinguishedCape带true警告；选择后游戏stdout出现“Fatal error. Invalid Program: attempted to call a UnmanagedCallersOnly method from managed code.”，MCP无原生回执，最终timeout。全新实例首局独立复现，非多次重置特有现象；未定位到具体组件。 |
+| ANCIENT-CHOICE-04 | 影响高；原版可复现，底层根因待定 | cape_lethal夹具选择后有UnmanagedCallersOnly致命错误及MCP超时，原生鼠标也复现；用户后续报告原版同样崩溃。现按原版可复现问题记录，不阻塞其余三项项目整改；未取得原版日志确认异常是否完全相同。 |
 
 ## 原生执行与已接入记录
 
@@ -58,7 +58,7 @@ lethal-repeat在全新实例首局使用MCP选择一次致死斗篷，仍有相�
 
 日志在致命错误前有“How did the game end??”，对应NRunHistory.GetGameOverType无法从记录判定结束类型的分支。RunHistoryUtilities从地图历史读取死因，当前隔离夹具使用直接进入事件房间的准备方式；需要核验历史准备和真实对局是否一致。该提醒不是崩溃调用栈，不能直接当作根因。
 
-原审阅没有取得有效原生鼠标选择对照。用户授权后的[补查](2026-11-07-ancient-native-click-recheck.md)已核对第一项悬停并通过原生点击复现相同致命错误，进程SIGABRT退出；无需choose_ancient_option专有调用路径也会发生。尚未测试不加载Mod／RitsuLib的实例或自然推进至低最大生命先古房间的对局，因此仍需区分共用Mod／结算、本地化Hook、依赖、游戏及夹具。后续应取得可靠调用栈或进一步对照，再决定修复位置。
+原审阅没有取得有效原生鼠标选择对照。用户授权后的[补查](2026-11-07-ancient-native-click-recheck.md)已通过原生点击复现相同致命错误，进程SIGABRT退出；用户随后报告原版也崩溃。由此将问题移出本工具整改前置范围，另作原版可复现记录。尚未取得原版日志确认相同异常，也未核验自然推进的低最大生命对局，具体底层根因仍待可靠调用栈或进一步对照。
 
 其他未穷尽范围包括所有先古／角色／遗物组合、多人、第三方UI，以及人工打断时序。现有选牌和奖励工具继续处理后续输入，未新增批量选择或summary需求。
 
@@ -66,4 +66,4 @@ lethal-repeat在全新实例首局使用MCP选择一次致死斗篷，仍有相�
 
 先古读取、选择和推进目前共用一个适配器分支，但只读已拥有具体诊断，动作仍使用旧合并拒绝。建议集中页面、选择动作与单项不可用原因，让执行、选项enabled和available_actions复用；只对已确认未点击／未改UI的choose_ancient_option拒绝提供保证及注册恢复策略。stale、已交互和不确定输出保持撤销。advance_dialogue的完整动作审阅仍留后续。
 
-参数维持option_id和default/full。文档已同步上述已核实缺口，避免把尚未覆盖的事件或死亡流程写成完整支持；差异记录`.tmp/2026-11-07-choose-ancient-option-documentation-report.md`。四项发现属于当前工具审阅，未擅自加入用户TODO。
+参数维持option_id和default/full。文档已同步上述缺口与原版反馈，项目整改建议范围为前三项；第四项保留问题及证据，不宣称正常死亡流程已通过验收。差异记录`.tmp/2026-11-07-choose-ancient-option-documentation-report.md`；未擅自加入用户TODO。
