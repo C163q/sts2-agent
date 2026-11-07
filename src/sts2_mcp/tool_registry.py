@@ -115,14 +115,14 @@ SPECS = (
     ToolSpec(
         name='run_result_option',
         schema=RESULT_OPTION_SCHEMA,
-        description='Click one offered result button or unlock entry. Stops at the next page; only scene=main_menu confirms return to menu. '
-            'Does not start a new run.',
+        description='Click one enabled result button or timeline entry. Stops at the next page; only scene=main_menu confirms return to menu.',
         annotations=action,
         category='action',
         effect='action',
         requires_permission=True,
         returns_transition=True,
         records_events=True,
+        unsubmitted_rejection_unchanged=True,
         reader='transition_details:end_turn_details',
         parser='run_ending_details:option_arguments',
         parser_operation=False),

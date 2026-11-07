@@ -100,9 +100,27 @@ internal sealed class RunResultInspection
         && !new[] { "_tween", "_textTween", "_buttonTween", "_unlockTween", "_cardTween", "_relicTween", "_potionTween", "_screenTween", "_backstopTween", "_lineGrowTween" }
             .Any(field => RewardInspection.Animating(context.Root, field));
 
-    public bool Ready(Context context) => singleplayer && Exposed(context) && DisplayComplete(context)
-        && (context.Root is not NTimelineScreen timeline || timeline.GetNodeOrNull<Control>("%InputBlocker") is not { Visible: true })
-        && Options(context).Any(o => Clickable(o.button));
+    public bool Ready(Context context) => ActionUnavailableReason(context) == null;
+
+    public string? ActionUnavailableReason(Context? context)
+    {
+        if (InspectionUnavailableReason(context) is { } unavailable) return unavailable;
+        if (!DisplayComplete(context!)) return "The run result page is still displaying text or animation. Wait before choosing an option.";
+        if (context!.Root is NTimelineScreen timeline && timeline.GetNodeOrNull<Control>("%InputBlocker") is { Visible: true })
+            return "The timeline is still updating. Wait for the current unlock animation to finish.";
+        return Options(context).Any(o => Clickable(o.button)) ? null
+            : "No result option is enabled yet. Wait, then use get_observation or inspect_run_result to read the current options.";
+    }
+
+    public string? OptionUnavailableReason(Context? context, string id, out NClickableControl? button)
+    {
+        button = null;
+        if (ActionUnavailableReason(context) is { } unavailable) return unavailable;
+        button = Options(context!).FirstOrDefault(o => o.id == id).button;
+        if (button == null) return $"The result option '{id}' is not offered on this page. Use an enabled ID from get_observation or inspect_run_result.";
+        return Clickable(button) ? null
+            : $"The result option '{id}' is disabled or still animating. Choose an enabled option or wait for the animation to finish.";
+    }
 
     // Use the same result as the native banner; victory also kills the player during the epilogue.
     public static string? Outcome(Context context) => context.Root is NGameOverScreen over
@@ -180,11 +198,11 @@ internal sealed class RunResultInspection
         if (context == null) return NGame.Instance?.MainMenu != null
             ? "No run result is associated with this menu. Use get_observation to read the current screen."
             : "No run result page is available. Use get_observation to continue the current run.";
-        if (!singleplayer) return "Run result inspection requires a local single-player result.";
-        if (NModalContainer.Instance?.OpenModal != null) return "Resolve the covering dialog before inspecting the run result.";
+        if (!singleplayer) return "Run result access requires a local single-player result.";
+        if (NModalContainer.Instance?.OpenModal != null) return "Resolve the covering dialog before using the run result.";
         if (VisibleUi.Shown(NGame.Instance?.InspectCardScreen) || VisibleUi.Shown(NGame.Instance?.InspectRelicScreen))
-            return "Close the native card or relic details panel before inspecting the run result.";
-        if (RunUi.Transitioning()) return "Wait for the screen transition before inspecting the run result.";
+            return "Close the native card or relic details panel before using the run result.";
+        if (RunUi.Transitioning()) return "Wait for the screen transition before using the run result.";
         return Exposed(context) ? null : "The run result page is currently covered or hidden.";
     }
 

@@ -36,7 +36,7 @@ internal sealed partial class GameAdapter
             || args.EnumerateObject().Count() != 1 || !args.TryGetProperty("option_id", out var option)
             || option.ValueKind != JsonValueKind.String || (id = option.GetString()) == null
             || !Regex.IsMatch(id, @"\A[a-z][a-z0-9_]*(?::[0-9]+)?\z")))
-            return FileMailbox.Error(request.Id, "invalid_request", "A current result option_id is required.");
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request", "A current result option_id is required.");
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Observe the current result before acting.");
         var context = runResultInspection.Current;
@@ -46,28 +46,34 @@ internal sealed partial class GameAdapter
                 return ResponseBuilder.Error(request.Id, "illegal_action", unavailable, publicMessage: true, uiUnchanged: true);
             return InspectionSuccess(request, before, new { run_result = runResultInspection.Read(full: true) });
         }
-        if (context == null || !RunResultInspection.Exposed(context) || !runResultInspection.Ready(context))
-            return FileMailbox.Error(request.Id, "illegal_action", "The run result is unavailable.");
-        var button = runResultInspection.Options(context).FirstOrDefault(o => o.id == id).button;
-        if (button == null || !RunResultInspection.Clickable(button))
-            return FileMailbox.Error(request.Id, "illegal_action", "The requested result button is unavailable.");
+        if (runResultInspection.OptionUnavailableReason(context, id!, out var button) is { } reasonUnavailable)
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", reasonUnavailable);
+        bool interacted = false;
+        void BeginInteraction()
+        {
+            if (!interacted) UiChanged();
+            interacted = true;
+        }
         if (button is NEpochSlot slot && !VisibleUi.OnScreen(slot))
         {
-            await context.Root.GetNode<NSlotsContainer>("%SlotsContainer").LerpToSlot(slot.GlobalPosition.X);
-            if (!ReferenceEquals(runResultInspection.Current?.Root, context.Root) || !runResultInspection.Ready(context)
-                || !RunResultInspection.Clickable(slot) || !VisibleUi.OnScreen(slot))
-                return FileMailbox.Error(request.Id, "illegal_action", "The unlock screen changed while scrolling.");
+            BeginInteraction();
+            await context!.Root.GetNode<NSlotsContainer>("%SlotsContainer").LerpToSlot(slot.GlobalPosition.X);
+            if (!ReferenceEquals(runResultInspection.Current?.Root, context.Root)
+                || runResultInspection.OptionUnavailableReason(context, id!, out var currentButton) != null
+                || !ReferenceEquals(currentButton, slot) || !VisibleUi.OnScreen(slot))
+                return ResponseBuilder.Error(request.Id, "illegal_action",
+                    "The timeline or its option changed while scrolling. Use get_observation or inspect_run_result before choosing again.", publicMessage: true);
         }
         bool returningToMenu = id == "main_menu" || runResultInspection.ReturningToMenu;
         if (id == "main_menu") runResultInspection.Leaving();
-        UiChanged();
+        BeginInteraction();
         if (id is "next_chapter" or "previous_chapter")
         {
             // These native paginators subscribe to MouseReleased, not Released.
             using var release = new InputEventMouseButton { ButtonIndex = MouseButton.Left, Pressed = false };
-            button.EmitSignal(NClickableControl.SignalName.MouseReleased, release);
+            button!.EmitSignal(NClickableControl.SignalName.MouseReleased, release);
         }
-        else button.ForceClick();
+        else button!.ForceClick();
         var (after, reason) = await ActionObservation(() => NModalContainer.Instance?.OpenModal != null ? "manual_input_required"
             : returningToMenu && NGame.Instance?.MainMenu is { } targetMenu && !targetMenu.SubmenuStack.SubmenusOpen
                 && !RunUi.Transitioning() ? "action_completed" : NonCombatBoundary(includeRunOutcome: false));
