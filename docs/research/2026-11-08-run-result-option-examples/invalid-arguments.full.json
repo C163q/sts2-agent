@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "option_id is required.",
+    "recovery": "correct_request"
+  }
+}
