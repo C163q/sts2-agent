@@ -34,6 +34,8 @@ Agent未在此实例中完成不加载Mod／依赖或自然推进的对照；用
 
 原版方案以-nomods跳过Mod加载，通过settings.save的full_console启用原生控制台，并用ancient VAKUU DISTINGUISHED_CAPE打开馈赠；源码核对的原生命令还会补写地图历史。用户的结果说明，Mod、RitsuLib及MCP不是发生崩溃的必要条件；该问题按原版也可复现记录，不再作为选择工具三项整改的前置阻塞。
 
+用户另要求游戏升级至v0.111后进行复测，已记录在[后续待办](../development/TODO.md)。
+
 尚未取得用户原版崩溃日志，不能声称它与隔离环境的UnmanagedCallersOnly错误完全相同，也不能据此确定具体底层根因。原始隔离失败和无效鼠标探针继续保留；原版问题的记录不表示已修复或已完成正常死亡结算验收。
 
 ## 验证与范围

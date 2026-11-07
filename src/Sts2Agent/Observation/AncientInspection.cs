@@ -27,19 +27,28 @@ internal sealed class AncientInspection
         && RunUi.NonCombatVisible() && NRun.Instance?.GlobalUi.Overlays.ScreenCount == 0
         && !VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen) && VisibleUi.Shown(context.Layout);
 
-    public static string? InspectionUnavailableReason(Context? context)
+    public static string? InspectionUnavailableReason(Context? context) => PageUnavailableReason(context, false);
+
+    private static string? PageUnavailableReason(Context? context, bool choosing)
     {
-        if (!RunManager.Instance.IsInProgress) return "No local run is available for ancient inspection.";
+        string purpose = choosing ? "choosing an ancient gift" : "inspecting the ancient";
+        if (!RunManager.Instance.IsInProgress) return $"No local run is available for {purpose}.";
         if (context == null) return "No supported ancient is available on the current screen.";
-        if (!RunContext.Singleplayer) return "Ancient inspection requires a local single-player run.";
+        if (!RunContext.Singleplayer) return "Ancient interaction requires a local single-player run.";
         if (Exposed(context)) return null;
         if (VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen)) return NRun.Instance!.GlobalUi.MapScreen.IsOpen
-            ? "Close the map with close_map before inspecting the ancient." : "Wait for the map to finish closing before inspecting the ancient.";
-        if (CardView.Current != null) return "Close the card browsing page with close_card_view before inspecting the ancient.";
+            ? $"Close the map with close_map before {purpose}." : $"Wait for the map to finish closing before {purpose}.";
+        if (CardView.Current != null) return $"Close the card browsing page with close_card_view before {purpose}.";
         if (CardSelection.Current != null) return "Resolve the current card selection; inspect_selection shows its choices.";
         if (RewardInspection.Current != null) return "Resolve the current reward page; inspect_rewards shows its rows.";
         return "The ancient is covered by a dialog or a screen transition.";
     }
+
+    public static string? ChoiceUnavailableReason(Context? context) => PageUnavailableReason(context, true)
+        ?? (context!.Model.IsFinished ? "This ancient gift has already been chosen. Use proceed to continue."
+            : !Ready(context) ? "Wait for the ancient dialogue, options, and current gift effects to finish."
+            : DisplayedContinue(context) != null ? "Finish the current dialogue with advance_dialogue before choosing an ancient gift."
+            : null);
 
     public static bool Busy => Current is { } current
         && PrivateFields.Read(RunManager.Instance.EventSynchronizer, "_pendingOptionTasks") is IEnumerable<Task> tasks
@@ -68,10 +77,19 @@ internal sealed class AncientInspection
     public static bool CanHover(NEventOptionButton button) => Shown(button) && !button.Option.IsLocked && button.IsEnabled
         && (button.GetMouseFilterWithOverride() != Control.MouseFilterEnum.Ignore
             || button.GetFocusModeWithOverride() == Control.FocusModeEnum.All);
-    public static bool Clickable(NEventOptionButton button) => Shown(button) && VisibleUi.OnScreen(button)
-        && button.IsEnabled && !button.Option.IsLocked
-        && button.MouseFilter != Control.MouseFilterEnum.Ignore && (!button.Option.WasChosen || button.Option.IsProceed)
-        && !RewardInspection.Animating(button, "_animInTween");
+    public static string? OptionUnavailableReason(NEventOptionButton button)
+    {
+        if (button.Option.IsLocked) return "This ancient gift is locked. Use inspect_ancient to read its requirements.";
+        if (button.Option.WasChosen && !button.Option.IsProceed)
+            return "This ancient gift has already been chosen. Use inspect_ancient to read the current options.";
+        if (!button.IsEnabled || RewardInspection.Animating(button, "_animInTween"))
+            return "Wait for this ancient gift option to become enabled after the current activity.";
+        if (!Shown(button) || !VisibleUi.OnScreen(button) || button.MouseFilter == Control.MouseFilterEnum.Ignore)
+            return "This ancient gift option is not currently visible and interactive. Use inspect_ancient to read the current options.";
+        return null;
+    }
+
+    public static bool Clickable(NEventOptionButton button) => OptionUnavailableReason(button) == null;
 
     public static NEventOptionButton? Proceed(Context context) => context.Layout.OptionButtons
         .FirstOrDefault(b => b.Option.IsProceed && Shown(b));
@@ -105,6 +123,7 @@ internal sealed class AncientInspection
         if (!Exposed(current)) return new { status = "covered", name = (string?)null, epithet = (string?)null, description = (string?)null,
             dialogue = (object?)null, options = (object?)null, @continue = (object?)null, proceed = (object?)null };
         bool ready = Ready(current);
+        bool canChoose = ChoiceUnavailableReason(current) == null;
         return EnglishCardText.Read(() =>
         {
             var lines = VisibleUi.Descendants<NAncientDialogueLine>(current.Layout).Where(line =>
@@ -120,7 +139,7 @@ internal sealed class AncientInspection
                 var result = new Dictionary<string, object?> { ["id"] = ids[b.Option],
                     ["title"] = EnglishCardText.Plain(b.Option.Title.GetFormattedText()),
                     ["description"] = EnglishCardText.Plain(b.Option.Description.GetFormattedText()),
-                    ["enabled"] = ready && DisplayedContinue(current) == null && Clickable(b),
+                    ["enabled"] = canChoose && Clickable(b),
                     ["lethal_warning"] = b.Option.WillKillPlayer?.Invoke(current.Model.Owner!) ?? false };
                 if (full) result["hover_tips"] = CanHover(b)
                     ? (b.Option.Relic is { } relic ? EnglishRelicText.ExtraTips(relic) : b.Option.HoverTips).Select(HoverTipText.From).ToArray()

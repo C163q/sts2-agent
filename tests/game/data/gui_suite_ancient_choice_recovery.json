@@ -1,0 +1,290 @@
+[
+  {
+    "name": "no_ancient",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "no_ancient"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "basic",
+    "scenarios": {
+      "ancient": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "default",
+    "scenarios": {
+      "ancient": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "default"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "dialogue",
+    "scenarios": {
+      "ancient": "dialogue"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "dialogue"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "covered",
+    "scenarios": {
+      "ancient": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "covered"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "disabled",
+    "scenarios": {
+      "ancient": "touch"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "disabled"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "offscreen",
+    "scenarios": {
+      "ancient": "touch"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "offscreen"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hidden",
+    "scenarios": {
+      "ancient": "touch"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "hidden"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "stale",
+    "scenarios": {
+      "ancient": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "stale"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "transform",
+    "scenarios": {
+      "ancient": "transform"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "transform"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "bundle",
+    "scenarios": {
+      "ancient": "bundle"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "bundle"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nested",
+    "scenarios": {
+      "ancient": "nested"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "nested"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "touch",
+    "scenarios": {
+      "ancient": "touch"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "touch"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "inventory_visibility",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_inventory_events.py",
+        "args": [
+          "--scenario",
+          "visibility"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "legacy_stability",
+    "scenarios": {
+      "navigation": "boss1"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_stability.py",
+        "args": [
+          "--scenario",
+          "travel"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "event_inventory",
+    "scenarios": {
+      "event": "upgrade"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_inventory_events.py",
+        "args": [
+          "--scenario",
+          "upgrade"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hidden_inventory",
+    "scenarios": {
+      "ancient": "bundle"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "hidden_inventory"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "hidden_top_bar",
+    "scenarios": {
+      "ancient": "bundle"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_choice_recovery.py",
+        "args": [
+          "--scenario",
+          "hidden_top_bar"
+        ]
+      }
+    ]
+  }
+]

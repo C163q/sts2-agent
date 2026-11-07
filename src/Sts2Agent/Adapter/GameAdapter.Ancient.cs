@@ -11,11 +11,12 @@ internal sealed partial class GameAdapter
     private async Task<string> AncientRequest(Request request, JsonElement before)
     {
         bool inspect = request.Operation == "inspect_ancient";
+        bool choose = request.Operation == "choose_ancient_option";
         int optionId = -1;
-        if (request.Operation == "choose_ancient_option" && (request.Arguments is not { } args
+        if (choose && (request.Arguments is not { } args
             || args.EnumerateObject().Count() != 1 || !args.TryGetProperty("option_id", out var id)
             || id.ValueKind != JsonValueKind.Number || !id.TryGetInt32(out optionId) || optionId < 0))
-            return FileMailbox.Error(request.Id, "invalid_request", "A nonnegative option_id is required.");
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request", "A nonnegative Int32 option_id is required.");
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current ancient before acting.");
         var context = AncientInspection.Current;
@@ -25,19 +26,33 @@ internal sealed partial class GameAdapter
                 return ResponseBuilder.Error(request.Id, "illegal_action", rejection, publicMessage: true, uiUnchanged: true);
             return InspectionSuccess(request, before, ancientInspection.Inspect());
         }
-        if (context == null || !AncientInspection.Exposed(context) || !RunContext.Singleplayer || !AncientInspection.Ready(context))
-            return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player ancient.");
-        NClickableControl? button = request.Operation == "advance_dialogue" ? AncientInspection.Continue(context)
-            : ancientInspection.Find(context, optionId);
-        if (button?.IsEnabled != true || button is MegaCrit.Sts2.Core.Nodes.Events.NEventOptionButton option
-            && (!AncientInspection.Clickable(option) || AncientInspection.Continue(context) != null))
-            return FileMailbox.Error(request.Id, "illegal_action", "The requested dialogue or option is unavailable.");
+        NClickableControl? button;
+        if (choose)
+        {
+            if (AncientInspection.ChoiceUnavailableReason(context) is { } unavailable)
+                return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", unavailable);
+            var option = ancientInspection.Find(context!, optionId);
+            if (option == null)
+                return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action",
+                    "No current ancient gift matches option_id. It may have been used or replaced; inspect_ancient shows the current IDs.");
+            if (AncientInspection.OptionUnavailableReason(option) is { } optionUnavailable)
+                return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", optionUnavailable);
+            button = option;
+        }
+        else
+        {
+            if (context == null || !AncientInspection.Exposed(context) || !RunContext.Singleplayer || !AncientInspection.Ready(context))
+                return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player ancient.");
+            button = AncientInspection.Continue(context);
+            if (button?.IsEnabled != true)
+                return FileMailbox.Error(request.Id, "illegal_action", "The requested dialogue or option is unavailable.");
+        }
         var run = RunManager.Instance.DebugOnlyGetState();
         UiChanged();
         // Match the native mouse/controller release; EventSynchronizer owns the option task.
         button.ForceClick();
         var (after, reason) = await ActionObservation(() => ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
-            && ReferenceEquals(context.Model, AncientInspection.Current?.Model) ? NonCombatBoundary() : "interrupted");
+            && ReferenceEquals(context!.Model, AncientInspection.Current?.Model) ? NonCombatBoundary() : "interrupted");
         return TransitionSuccess(request, after, reason);
     }
 }

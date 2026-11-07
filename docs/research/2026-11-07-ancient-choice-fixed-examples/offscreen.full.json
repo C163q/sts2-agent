@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This ancient gift option is not currently visible and interactive. Use inspect_ancient to read the current options.",
+    "recovery": "choose_legal_action"
+  }
+}

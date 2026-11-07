@@ -35,10 +35,9 @@ internal sealed class RunResourceJournal : IDisposable
         {
             if (!ReferenceEquals(player, LocalContext.GetMe(RunManager.Instance.DebugOnlyGetState()))) return false;
             if (RunUi.TopBarReadable()) return true;
-            if (CardSelection.Current != null) return false;
             var global = NRun.Instance?.GlobalUi;
             var game = NGame.Instance;
-            // Native choices complete before removing their overlay; the top bar stays drawn in this handoff.
+            // Known native choices can keep the top bar drawn while their input boundary opens or closes.
             return global != null && game != null && VisibleUi.OnScreen(global.TopBar) && !RunUi.Transitioning()
                 && !global.CapstoneContainer.InUse && !VisibleUi.Shown(global.MapScreen)
                 && !VisibleUi.Shown(game.InspectCardScreen) && !VisibleUi.Shown(game.InspectRelicScreen)

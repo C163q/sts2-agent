@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Finish the current dialogue with advance_dialogue before choosing an ancient gift.",
+    "recovery": "choose_legal_action"
+  }
+}

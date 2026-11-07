@@ -140,7 +140,8 @@ internal sealed partial class GameAdapter
             if (AncientInspection.Continue(ancient) != null) actions.Add("advance_dialogue");
             else
             {
-                if (ancient.Layout.OptionButtons.Any(b => !b.Option.IsProceed && AncientInspection.Clickable(b))) actions.Add("choose_ancient_option");
+                if (AncientInspection.ChoiceUnavailableReason(ancient) == null
+                    && ancient.Layout.OptionButtons.Any(b => !b.Option.IsProceed && AncientInspection.Clickable(b))) actions.Add("choose_ancient_option");
             }
         }
         if (ShopInspection.Current is { } shop)

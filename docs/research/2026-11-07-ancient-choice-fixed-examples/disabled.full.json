@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Wait for this ancient gift option to become enabled after the current activity.",
+    "recovery": "choose_legal_action"
+  }
+}

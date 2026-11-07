@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "No current ancient gift matches option_id. It may have been used or replaced; inspect_ancient shows the current IDs.",
+    "recovery": "choose_legal_action"
+  }
+}
