@@ -89,7 +89,7 @@ MCP 启动时默认读取仓库根目录的 `mcp-config.json`，与启动进程�
 .tmp/mcp-venv/bin/python scripts/gui_suite.py --suite tests/game/data/gui_suite_screenshots.json --output .tmp/screenshot-check/gui
 ```
 
-[verify_screenshots.py](../../tests/game/verifiers/verify_screenshots.py)从STS2_AGENT_VERIFY_IPC_DIR取得目标目录；suite用gui场景复用已有对局，独立menu／headless场景要求新实例位于主菜单。工具集合从注册表校验，不固定数量。报告及capture目录须使用新位置，已有报告／图片时拒绝覆盖。
+[verify_screenshots.py](../../tests/game/verifiers/verify_screenshots.py)要求显式设置STS2_AGENT_VERIFY_IPC_DIR；变量缺失或空白时，在创建客户端、报告和配置前拒绝，不回退到共享IPC。suite用gui场景复用已有对局，独立menu／headless场景要求新实例位于主菜单。工具集合从注册表校验，不固定数量。报告及capture目录须使用新位置，已有报告／图片时拒绝覆盖。
 
 独立headless验证先在一个终端启动实例：
 

@@ -6,6 +6,7 @@ import argparse
 import asyncio
 import hashlib
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -18,6 +19,8 @@ from sts2_mcp.roundtrip_client import Client
 
 
 async def verify(args):
+    if not os.environ.get('STS2_AGENT_VERIFY_IPC_DIR', '').strip():
+        raise ValueError('STS2_AGENT_VERIFY_IPC_DIR must explicitly identify the owned test instance.')
     report = args.report.resolve()
     capture_dir = report.parent / 'captures'
     config = report.parent / 'screenshot-config.json'
