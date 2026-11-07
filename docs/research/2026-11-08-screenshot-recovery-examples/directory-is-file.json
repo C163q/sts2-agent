@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "screenshot_save_failed",
+    "message": "The configured screenshot directory or one of its parents is a file. Configure a directory and restart the MCP connection.",
+    "recovery": "check_screenshot_directory"
+  }
+}

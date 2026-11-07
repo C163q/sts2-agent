@@ -2,6 +2,8 @@
 
 > 当前状态：三项整改已确认，正在实施；下文现状和9份样例保留b104d84审阅基线。总进度见[工具清单](2026-11-02-mcp-tool-review.md)。
 
+修复后的规则、实际返回与验收见[实施记录](2026-11-08-screenshot-recovery-implementation.md)。
+
 本工具用于把当前游戏视口保存为PNG，便于记录和对照游玩过程。输出是本地文件位置及尺寸；客户端读取该文件后才能将其作为视觉输入。源码和验证边界见[开发核验](2026-11-08-capture-screenshot-development-notes.md)，返回见[9份实际JSON](2026-11-08-capture-screenshot-examples/README.md)。
 
 ## 优先处理的问题

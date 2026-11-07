@@ -1,0 +1,7 @@
+[
+  {
+    "name": "screenshots",
+    "scenarios": {"potion": "skill"},
+    "steps": [{"name": "verify", "verifier": "verify_screenshots.py", "args": ["--scenario", "gui"]}]
+  }
+]

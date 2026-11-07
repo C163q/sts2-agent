@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "Screenshot capture is disabled. Enable screenshots.enabled in the MCP config and restart the connection.",
+    "recovery": "check_configuration"
+  }
+}

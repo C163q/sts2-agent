@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "screenshot_save_failed",
+    "message": "The screenshot filename or path is too long for this filesystem. Use a shorter filename or configured directory.",
+    "recovery": "change_filename"
+  }
+}

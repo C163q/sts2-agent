@@ -1,0 +1,169 @@
+[
+  {
+    "file": "named.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {
+      "filename": "combat.png"
+    },
+    "source_report": ".tmp/2026-11-08-screenshot-recovery/gui/screenshots/verify/evidence.json",
+    "source_index": 4,
+    "source_label": "combat",
+    "native_files": [
+      ".tmp/2026-11-08-screenshot-recovery/gui/game/ipc/responses/cab4e22b3c3942bbb6b2e724fefb20b8.json"
+    ],
+    "sha256": "889a9fa9fd8989613d2de9b4cb85113c77e27090e438eae48fd272a751d6b247"
+  },
+  {
+    "file": "automatic.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {},
+    "source_report": ".tmp/2026-11-08-screenshot-recovery/gui/screenshots/verify/evidence.json",
+    "source_index": 21,
+    "source_label": "automatic",
+    "native_files": [
+      ".tmp/2026-11-08-screenshot-recovery/gui/game/ipc/responses/ba886867e033416db4d5faea1a59d41a.json"
+    ],
+    "sha256": "2b05c846012a0da7fd3278e79f5bb003178d2079aa33a060622f3bd9cdb5ab96"
+  },
+  {
+    "file": "duplicate.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {
+      "filename": "combat.png"
+    },
+    "source_report": ".tmp/2026-11-08-screenshot-recovery/gui/screenshots/verify/evidence.json",
+    "source_index": 7,
+    "source_label": "duplicate",
+    "native_files": [
+      ".tmp/2026-11-08-screenshot-recovery/gui/game/ipc/responses/8108625a6d0b4c7b869dec9899786180.json"
+    ],
+    "sha256": "a072bbfe926cffef2ffe89b20fe2a97be1e1f51492d6c9e7baba6c7a852f34e6"
+  },
+  {
+    "file": "direct-after-duplicate.json",
+    "kind": "actual_mcp",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "source_report": ".tmp/2026-11-08-screenshot-recovery/gui/screenshots/verify/evidence.json",
+    "source_index": 9,
+    "source_label": "direct_after_duplicate",
+    "native_files": [
+      ".tmp/2026-11-08-screenshot-recovery/gui/game/ipc/responses/c55cde6775134be0a5f6dffca47810f0.json"
+    ],
+    "sha256": "e0ed199cb448327ed2745b6acc5aa4eb42d5a1c29e43f433596097e58a338ffe"
+  },
+  {
+    "file": "directory-is-file.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {},
+    "source_report": ".tmp/2026-11-08-screenshot-recovery/gui/screenshots/verify/evidence.json",
+    "source_index": 12,
+    "source_label": "directory_is_file",
+    "native_files": [
+      ".tmp/2026-11-08-screenshot-recovery/gui/game/ipc/responses/f6a51753b16948bea409c71e82c96e74.json"
+    ],
+    "sha256": "9bbb950408a24358837ed64a4e99433735cec214c0a23469cc7d5626e34135f3"
+  },
+  {
+    "file": "long-filename.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {
+      "filename": "界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界.png"
+    },
+    "source_report": ".tmp/2026-11-08-screenshot-recovery/gui/screenshots/verify/evidence.json",
+    "source_index": 16,
+    "source_label": "long_filename",
+    "native_files": [
+      ".tmp/2026-11-08-screenshot-recovery/gui/game/ipc/responses/5b7992c77c8c44708783d4e3e686d926.json"
+    ],
+    "sha256": "da17c14cdeffe96ac3334228191eb468a9396dcd9309288a4a006513048a0466"
+  },
+  {
+    "file": "direct-selection-skip.json",
+    "kind": "actual_mcp",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "skip"
+    },
+    "source_report": ".tmp/2026-11-08-screenshot-recovery/gui/screenshots/verify/evidence.json",
+    "source_index": 33,
+    "source_label": "direct_selection_skip",
+    "native_files": [
+      ".tmp/2026-11-08-screenshot-recovery/gui/game/ipc/responses/6f694c640b194fcf9acfd78d61d33a37.json"
+    ],
+    "sha256": "56e7addc198d5ef6956c9dab5218beba98d3722ebd8f3d48ed2631434dc760d0"
+  },
+  {
+    "file": "bad-filename.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {
+      "filename": "../escape.png"
+    },
+    "source_report": ".tmp/2026-11-08-screenshot-recovery/gui/screenshots/verify/evidence.json",
+    "source_index": 19,
+    "source_label": "bad_path",
+    "native_files": [],
+    "sha256": "459b77fec26b90211bf7f586bc765956d8096aa42183b1311918b5ba325f8a4e"
+  },
+  {
+    "file": "disabled.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {},
+    "source_report": ".tmp/2026-11-08-screenshot-recovery/gui/screenshots/verify/evidence.json",
+    "source_index": 41,
+    "source_label": "disabled",
+    "native_files": [],
+    "sha256": "bba0732ddd9c496680c667e2161ab5d256a00a6af7b048f6cfa71c6d9dbbae50"
+  },
+  {
+    "file": "menu.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {
+      "filename": "menu.png"
+    },
+    "source_report": ".tmp/2026-11-08-screenshot-recovery/menu/evidence.json",
+    "source_index": 4,
+    "source_label": "menu",
+    "native_files": [
+      ".tmp/2026-11-08-screenshot-recovery/menu/game/ipc/responses/5ded84edca654ec6ad4b435684a19b83.json"
+    ],
+    "sha256": "805d9b4b9cd345e10db908d7ca52a77ff3afe091da52bce4323120f3754c5697"
+  },
+  {
+    "file": "headless.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {},
+    "source_report": ".tmp/2026-11-08-screenshot-recovery/headless/evidence.json",
+    "source_index": 6,
+    "source_label": "headless_warm",
+    "native_files": [
+      ".tmp/2026-11-08-screenshot-recovery/headless/game/ipc/responses/a056638ac1d94f03949d4a0186190f4b.json"
+    ],
+    "sha256": "48d39358c348328894a6a64dcd780f86bb98a31501cbc340450c24329806888b"
+  },
+  {
+    "file": "headless-next-action.json",
+    "kind": "actual_mcp",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "source_report": ".tmp/2026-11-08-screenshot-recovery/headless/evidence.json",
+    "source_index": 7,
+    "source_label": "headless_revokes_permission",
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  }
+]

@@ -83,6 +83,24 @@ MCP 启动时默认读取仓库根目录的 `mcp-config.json`，与启动进程�
 .tmp/mcp-venv/bin/python -m unittest discover -s tests -t . -p test_screenshots.py
 ```
 
-真实游戏验证须使用独立存档、IPC及日志目录，运行时准备见[往返指南](roundtrip.md)。[verify_screenshots.py](../../tests/game/verifiers/verify_screenshots.py)仍使用过时的工具数量断言和固定IPC路径，尚未迁入当前隔离测试流程，不作为可直接运行的验收入口。
+真实游戏验证使用独立存档、IPC及日志目录，运行时准备见[往返指南](roundtrip.md)。图形套件会创建测试局、使用技能药水和结束回合：
 
-当前图形画面、保存错误与headless的核验结果及脚本缺口见[截图工具审阅](../research/2026-11-08-capture-screenshot-development-notes.md)。旧阶段证据保留于[截图验证](../research/2026-10-30-screenshots-validation.md)。
+```sh
+.tmp/mcp-venv/bin/python scripts/gui_suite.py --suite tests/game/data/gui_suite_screenshots.json --output .tmp/screenshot-check/gui
+```
+
+[verify_screenshots.py](../../tests/game/verifiers/verify_screenshots.py)从STS2_AGENT_VERIFY_IPC_DIR取得目标目录；suite用gui场景复用已有对局，独立menu／headless场景要求新实例位于主菜单。工具集合从注册表校验，不固定数量。报告及capture目录须使用新位置，已有报告／图片时拒绝覆盖。
+
+独立headless验证先在一个终端启动实例：
+
+```sh
+python3 scripts/run_roundtrip.py --work-dir .tmp/screenshot-check/headless-game
+```
+
+另一个终端运行：
+
+```sh
+STS2_AGENT_VERIFY_IPC_DIR="$PWD/.tmp/screenshot-check/headless-game/ipc" .tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_screenshots --scenario headless --report .tmp/screenshot-check/headless/evidence.json
+```
+
+menu场景使用同样的显式IPC约定和独立图形实例。当前验证结果及限制见[截图恢复实施记录](../research/2026-11-08-screenshot-recovery-implementation.md)；旧[审阅基线](../research/2026-11-08-capture-screenshot-development-notes.md)和[早期验证](../research/2026-10-30-screenshots-validation.md)保留其原始范围。

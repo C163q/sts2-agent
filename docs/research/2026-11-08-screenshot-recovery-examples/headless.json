@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "screenshot_unavailable",
+    "message": "The game viewport cannot be captured. Use a running graphical game instance.",
+    "recovery": "check_game_window"
+  }
+}
