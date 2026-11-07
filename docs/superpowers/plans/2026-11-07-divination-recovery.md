@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-> 当前状态：实现与验收完成，共1项，已完成1项；15类GUI与十八份JSON核对通过，待独立最终审阅及合入，无阻塞。
+> 当前状态：已完成，共1项，已完成1项；独立最终审阅通过并合入main，清单阶段提醒已在核销时同步，无剩余步骤或阻塞。
 
 **Goal:** divine明确拒绝后可直接继续合法操作，原因及可用操作与实际揭开条件一致。
 
@@ -44,5 +44,5 @@
 
 ## 最终审阅与合入
 
-- [ ] 一次独立最终审阅，必要问题按RED→GREEN修复。
-- [ ] 归档并校验任务工作目录，合入main、删除临时分支、核销工具。
+- [x] 一次独立最终审阅；无产品问题，清单阶段提醒纳入既定收尾。
+- [x] 归档并校验任务工作目录，合入main、删除临时分支、核销工具。

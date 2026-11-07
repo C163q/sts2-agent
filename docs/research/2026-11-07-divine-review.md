@@ -1,6 +1,6 @@
 # divine 核验与设计建议
 
-> 当前状态：定稿已实现并完成验收，待独立审阅及合入；[实施记录](2026-11-07-divination-recovery-implementation.md)与[十八份修复后JSON](2026-11-07-divination-recovery-examples/README.md)另存，下文现状与十七份旧JSON保留审阅基线。总流程见[工具清单](2026-11-02-mcp-tool-review.md)，源码与原问题依据见[开发核验](2026-11-07-divine-development-notes.md)。
+> 当前状态：定稿已实现并完成验收、独立审阅及合入main；[实施记录](2026-11-07-divination-recovery-implementation.md)与[十八份修复后JSON](2026-11-07-divination-recovery-examples/README.md)另存，下文现状与十七份旧JSON保留审阅基线。总流程见[工具清单](2026-11-02-mcp-tool-review.md)，源码与原问题依据见[开发核验](2026-11-07-divine-development-notes.md)。
 
 ## 优先问题
 

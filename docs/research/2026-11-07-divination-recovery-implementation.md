@@ -1,6 +1,6 @@
 # divine 拒绝恢复实施记录
 
-> 当前状态：实现与验收完成，共1项，已完成1项；15类GUI及十八份JSON核对通过，待独立最终审阅及合入，无阻塞。
+> 当前状态：已完成，共1项，已完成1项；15类GUI及十八份JSON核对通过，独立最终审阅通过并合入main，无剩余步骤或阻塞。
 
 定稿见[揭开审阅](2026-11-07-divine-review.md#输出定稿)，步骤见[实施计划](../superpowers/plans/2026-11-07-divination-recovery.md)。原错误与十七份旧JSON保留于[开发核验](2026-11-07-divine-development-notes.md)。
 
@@ -58,6 +58,12 @@ Python以原生通信边界替身测试真实GameTools／会话恢复；明确�
 
 首批no_board通过，small在非法参数遍历时覆盖了命令行参数变量，写报告出现AttributeError。仅改验证器循环变量名，保留原报告与异常，未改产品或重建DLL；剩余14类在新目录一次通过。两批共15类完成、16次尝试，执行阶段分别48.729382489秒和405.448854013秒；gui/report.json、gui-remaining/report.json保留结果，PID24123与24529均已退出，均加载最终754f1743…0f8c。
 
-样本逐份核对来源行及SHA-256；verify_delivery.py检查RED／GREEN、完整测试与构建日志、三批进程退出、DLL、版本、十八份JSON、直接连续揭开和相对链接，不重新构建。待独立审阅完成后核销工具。
+样本逐份核对来源行及SHA-256；verify_delivery.py检查RED／GREEN、完整测试与构建日志、三批进程退出、DLL、版本、十八份JSON、直接连续揭开和相对链接，不重新构建。
 
 尚未新增真正忙碌中途、异常隐藏／禁用格、人工并发切页、多人、第三方内容、超时及全部奖励组合的GUI验证；这些条件按源码核对。卡牌选择覆盖由claim_reward产生，不能作为divine直接返回choice_required的实测。
+
+## 独立审阅与合入
+
+独立只读审阅范围a712e1f..c126b20，结论可合入：Critical0、Important0、Minor1，Declined to judge为空。唯一Minor是工具清单阶段文字尚未更新，已在原计划的最终核销中同步；没有进入产品修复回合，无剩余暂缓项或设计裁决。审阅逐份核对十八份JSON及来源／参数／SHA，并核对原生、测试和GUI证据，没有重新构建或启动游戏；摘要见证据根final-review.md。
+
+实现提交c126b20已快进合入main，临时分支fix/divination-recovery已删除，工具清单核销为37/44。任务工作目录5个文件复制并逐份校验SHA-256后归档至证据根inline-workspace，原件已删除，兄弟目录未改。既有TODO仅更新相关工具覆盖范围，未新增用户待办；未正式安装Mod或推送。
