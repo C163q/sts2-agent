@@ -1,0 +1,54 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "choose_event_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_event"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 80,
+        "after": 82,
+        "type": "max_hp_changed",
+        "sequence": 1
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 40,
+        "after": 42,
+        "type": "hp_changed",
+        "sequence": 2
+      },
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 42,
+        "after": 39,
+        "type": "hp_changed",
+        "sequence": 3
+      }
+    ]
+  }
+}

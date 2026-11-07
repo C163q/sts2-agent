@@ -1,0 +1,24 @@
+{
+  "scene": "rewards",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "claim_reward",
+    "proceed",
+    "use_potion",
+    "discard_potion",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_targets",
+    "inspect_rewards"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": []
+  }
+}

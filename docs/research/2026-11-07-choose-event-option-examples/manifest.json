@@ -1,0 +1,222 @@
+[
+  {
+    "file": "event-next-page.full.json",
+    "description": "Abyssal Baths：最大生命与生命变化后翻页",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 19,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/1bc04e141fa440c19a0f649351174e14.json"
+    ],
+    "sha256": "0f648198e6904dc1a013a9281d43bc9b78f09762ea6c6453ac0e20793d193806"
+  },
+  {
+    "file": "event-finished.default.json",
+    "description": "Abyssal Baths：完成事件，下一步 proceed",
+    "arguments": {
+      "preset": "default",
+      "option_id": 3
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 23,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/ed7408c8db7c4e46a0a9b3f4d71ab1b6.json"
+    ],
+    "sha256": "d796b2fe99dc0bf3b1d6ba317125c7041aa6c00f8d0bb9cc0e8d0c657096d40d"
+  },
+  {
+    "file": "upgrade-selection.full.json",
+    "description": "Aroma of Chaos：进入升级选牌",
+    "arguments": {
+      "preset": "full",
+      "option_id": 9
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 35,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/0533ea24a7dc423a89ac387d0d4662b2.json"
+    ],
+    "sha256": "cf628c99e186dbc5fef66a68f3e64579aa7aa9372dd354f82291a3226f4ce7c7"
+  },
+  {
+    "file": "card-rewards.full.json",
+    "description": "Brain Leech：扣血后打开奖励页",
+    "arguments": {
+      "preset": "full",
+      "option_id": 11
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 42,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/43295c2f4c844dab930edf012265b131.json"
+    ],
+    "sha256": "fbe419a89cd12b957da10ecbd9427756d092eb7e61aafc2a0ca7ff826b265bef"
+  },
+  {
+    "file": "confirmation.full.json",
+    "description": "Trial：打开原生放弃确认框",
+    "arguments": {
+      "preset": "full",
+      "option_id": 15
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 51,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/eb7889c8fd82419a86ee9f551216a7aa.json"
+    ],
+    "sha256": "6795a7b73c36784ad59d66410f5974ab46d6b12e3b0dd9ff47b7c596dc93bbf6"
+  },
+  {
+    "file": "divination.full.json",
+    "description": "Crystal Sphere：付费后打开占卜",
+    "arguments": {
+      "preset": "full",
+      "option_id": 16
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 58,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/fa93d5160ea84a0482796ce28f9d3aa0.json"
+    ],
+    "sha256": "c55c9a450fe024eb4f4c9a4cf2313e1b66210ee698842a78525201c5281066fc"
+  },
+  {
+    "file": "combat-selection.full.json",
+    "description": "进入战斗，首回合自动效果要求选牌",
+    "arguments": {
+      "preset": "full",
+      "option_id": 20
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 67,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/2cef00ed73374f3490ffb102142d5b10.json"
+    ],
+    "sha256": "7f3ae35ef36b218654a0b72d686c082010b6b0f649c5ba9fd03d52b50fef6dbb"
+  },
+  {
+    "file": "run-lost.full.json",
+    "description": "危险选项导致整局失败",
+    "arguments": {
+      "preset": "full",
+      "option_id": 21
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 72,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/01740e39a84c4718b942557fcb3cddcc.json"
+    ],
+    "sha256": "66f98edd6f20cd3b6b675e111251ef6814bba1346b2618c81e1e3f8b55c403ce"
+  },
+  {
+    "file": "fairy-rescue.full.json",
+    "description": "危险选项触发原生复活",
+    "arguments": {
+      "preset": "full",
+      "option_id": 23
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 77,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/d32eed7353ff4e25afcc224fffa1eb84.json"
+    ],
+    "sha256": "75d97e771de24c1f08522409234975ed5f1e3455621776705d5b0f049a0456b3"
+  },
+  {
+    "file": "potion-rewards.full.json",
+    "description": "Potion Courier：打开药水奖励页",
+    "arguments": {
+      "preset": "full",
+      "option_id": 27
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 82,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/d9033a3d980745ca9a4f9062ef90c752.json"
+    ],
+    "sha256": "e88949a693cc2f2a5923f3d920a7eb6ceb95a09e4d63ac29b95639140f5f7a21"
+  },
+  {
+    "file": "missing-option.full.json",
+    "description": "不存在的选项 ID 被拒绝",
+    "arguments": {
+      "preset": "full",
+      "option_id": 2147483647
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 16,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/6572950f15ca4c07acc8a5e5526212ab.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "locked-option.full.json",
+    "description": "锁定选项被拒绝",
+    "arguments": {
+      "preset": "full",
+      "option_id": 7
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 30,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/8e574bb89f2a47008a0a5e7e813a92bf.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "地图覆盖期间拒绝事件选择",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 10,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/0cf7bbb3eab04db4bed4c2a4729a3ba7.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "升级选牌期间拒绝事件选择",
+    "arguments": {
+      "preset": "full",
+      "option_id": 8
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 37,
+    "native_files": [
+      ".tmp/2026-11-07-choose-event-option-review/game/ipc/responses/d91244059ca7417b8b877ee69221d03b.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "after-rejection.full.json",
+    "description": "被拒绝后改选合法选项，仍要求观察",
+    "arguments": {
+      "preset": "full",
+      "option_id": 5
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 31,
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "invalid-option.full.json",
+    "description": "布尔值 ID 在 MCP 本地拒绝",
+    "arguments": {
+      "preset": "full",
+      "option_id": true
+    },
+    "source": ".tmp/2026-11-07-choose-event-option-review/evidence.json",
+    "row_index": 8,
+    "native_files": [],
+    "sha256": "7c23300d17bf727f75ff0195b9d03c2886daf87d609480b1feefecb2acfa520b"
+  }
+]
