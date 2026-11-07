@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-> 当前状态：实现与验收完成，共1项，已完成1项；等待独立最终审阅及合入，无阻塞。
+> 当前状态：已完成，共1项，已完成1项；独立最终审阅通过并合入main，无剩余步骤或阻塞。
 
 **Goal:** choose_event_option点击前拒绝给出具体原因，并允许直接继续合法操作。
 
@@ -44,5 +44,5 @@
 
 ## 最终审阅与合入
 
-- [ ] 独立最终审阅，必要问题按RED→GREEN处理。
-- [ ] 归档并校验本任务工作目录，自行合入main、删除已合并分支并核销工具。
+- [x] 独立最终审阅，必要问题按RED→GREEN处理。
+- [x] 归档并校验本任务工作目录，自行合入main、删除已合并分支并核销工具。
