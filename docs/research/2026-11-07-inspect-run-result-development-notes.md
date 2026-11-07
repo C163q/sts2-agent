@@ -74,3 +74,9 @@ GUI读取覆盖7个phase：outcome、summary、tutorial、timeline、epoch、unl
 ## 未验证边界
 
 未新增每日挑战榜单、多人、所有角色／故事组合、实际模态覆盖、动画时序和禁用悬停故障注入。leaderboard仅依据原生类与当前实现识别；没有本轮完整JSON。右键查看／升级仍按用户TODO留待统一设计，未在本工具提前实现。没有新增TODO、未改工具行为或预设。
+
+## 基础观察预设补充核对
+
+2026-11-08在ecbb594基线上，将本轮已有真实原生基础观察分别经过当前get_observation三种预设重放，覆盖时间线、卡牌／药水／遗物解锁共12种组合。证据为`.tmp/2026-11-08-result-content-design/preset-checks.json`及check_presets.py；没有重新启动游戏或修改产品。
+
+三种预设均省略页面级hover_tips；药水／遗物均仅name。卡牌full/default保留description和逐牌hover_tips，summary使用共用卡牌摘要；null过滤仍按既有规则。因此新的详情summary标题策略并非现有基础观察行为。已在审阅报告分开记录已确认摘要、待确认content_complete及基础观察同步建议；显示完整性不得直接复用包含按钮等条件的Ready。

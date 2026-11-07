@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销41项。inspect_run_result已完成现状核验及设计建议，等待讨论具体诊断、响应校验和读取就绪策略；剩余3项尚未核销。buy_item独立审阅的非阻塞建议见其实施记录。
+> 当前状态：工具核验进行中，共44项，已核销41项。inspect_run_result的summary已确认，内容完整性提示及基础观察同步方案仍在讨论；剩余3项尚未核销。buy_item独立审阅的非阻塞建议见其实施记录。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -102,7 +102,7 @@
 
 ### 结算（2 项）
 
-- [ ] `inspect_run_result`：查看结算页面及已揭示详情。阶段：设计讨论；[审阅与建议](2026-11-07-inspect-run-result-review.md)、[开发核验](2026-11-07-inspect-run-result-development-notes.md)及[19份实际JSON](2026-11-07-inspect-run-result-examples/README.md)已整理；33项相关Python、七类phase及原生历史页10项浏览检查完成，错误诊断、响应校验及读取／动作就绪拆分待讨论，尚未修改工具行为。
+- [ ] `inspect_run_result`：查看结算页面及已揭示详情。阶段：设计讨论；[审阅与建议](2026-11-07-inspect-run-result-review.md)、[开发核验](2026-11-07-inspect-run-result-development-notes.md)及[19份实际JSON](2026-11-07-inspect-run-result-examples/README.md)已整理；33项相关Python、七类phase及原生历史页10项浏览检查完成，summary保留页面提示source/title的方案已确认；content_complete提示、基础观察同步及读取／动作就绪拆分仍待定稿，尚未修改工具行为。
 - [ ] `run_result_option`：点击结算按钮或解锁条目。
 
 ### 截图（1 项，按配置启用）
