@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销38项。respond_to_confirmation已完成实现、验收及独立审阅并合入main，终态断言缺口已补齐；剩余6项尚未核销，无阻塞。buy_item独立审阅的非阻塞建议见其实施记录。
+> 当前状态：工具核验进行中，共44项，已核销38项。inspect_ancient已完成审阅及典型返回核验，待确认修复与参数方案；其余5项尚未开始，合计6项未核销，无阻塞。buy_item独立审阅的非阻塞建议见其实施记录。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -96,7 +96,7 @@
 
 ### 先古之民与对话（3 项）
 
-- [ ] `inspect_ancient`：查看先古之民对话与馈赠。
+- [ ] `inspect_ancient`：查看先古之民对话与馈赠。阶段：审阅完成、待确认方案；[核验与建议](2026-11-07-inspect-ancient-review.md)、[开发依据](2026-11-07-inspect-ancient-development-notes.md)及[16份实际JSON](2026-11-07-inspect-ancient-examples/README.md)。31项相关Python及七类GUI已核验；具体错误、页面交叉校验、致死警告和显示／悬停边界待处理，summary与option_ids为候选参数。
 - [ ] `choose_ancient_option`：选择馈赠。
 - [ ] `advance_dialogue`：推进先古之民或建筑师对话。
 

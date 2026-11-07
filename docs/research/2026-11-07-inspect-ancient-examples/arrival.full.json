@@ -1,0 +1,43 @@
+{
+  "scene": "ancient",
+  "ancient": {
+    "status": "visible",
+    "name": "Neow",
+    "epithet": "Mother of Resurrection (Exiled)",
+    "description": null,
+    "dialogue": [
+      {
+        "speaker": "Neow",
+        "text": "I’ve... remade you....\n...go... ..up....."
+      }
+    ],
+    "options": [
+      {
+        "id": 0,
+        "title": "Nutritious Oyster",
+        "description": "Raise your Max HP by 11.",
+        "enabled": false,
+        "hover_tips": []
+      },
+      {
+        "id": 1,
+        "title": "Neow's Talisman",
+        "description": "Upgrade 1 of your Strikes and 1 of your Defends.",
+        "enabled": false,
+        "hover_tips": []
+      },
+      {
+        "id": 2,
+        "title": "Precarious Shears",
+        "description": "Remove 2 cards from your Deck. Lose 16 HP.",
+        "enabled": false,
+        "hover_tips": []
+      }
+    ],
+    "continue": null,
+    "proceed": null
+  },
+  "screen": {
+    "status": "visible"
+  }
+}

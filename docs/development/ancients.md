@@ -26,6 +26,8 @@ get_observation 的 summary 保留与 default 相同的先古主体，共用顶�
 - `options`：当前显示的选项，每项有稳定整数 `id`、`title`、`description`、`enabled`。正文已在界面展开，基础观察可以提供；`inspect_ancient` 增加逐项 `hover_tips`。通常为遗物三选一，但不固定数量或强制要求选项包含遗物。
 - `continue`、`proceed`：当前按钮的 `text`、`enabled`，没有时为 `null`。对话未完成、动画、领取进行中或原生锁定时不允许选项动作。
 
+`inspect_ancient`成功结果包含同次快照的`scene`、`screen`和`ancient`，接受`preset:default/full`。覆盖页拒绝查看；没有先古房间或被其他页面覆盖时，目前只返回通用错误，具体诊断与读取边界的待修复问题见[工具核验](../research/2026-11-07-inspect-ancient-review.md)。
+
 例如已展开的选项摘要：
 
 ```json
@@ -69,9 +71,9 @@ get_observation 的 summary 保留与 default 相同的先古主体，共用顶�
 
 ## 状态与验证
 
-动作需要当前观察许可，条件与[其他 MCP 动作](mcp.md#调用和错误语义)相同。选项 ID 按当前实际选项身份分配，原生翻页后旧 ID 不再匹配。详情成功时刷新状态令牌；覆盖页不允许穿透点击。普通完成返回 `action_completed`；选牌返回 `choice_required`；嵌套奖励通过场景和可用工具标识，内容按需观察或查看奖励。超时不自动重试。
+动作需要当前观察许可，条件与[其他 MCP 动作](mcp.md#调用和错误语义)相同。选项 ID 按当前实际选项身份分配，原生翻页后旧 ID 不再匹配。详情成功时刷新状态令牌；确定性读取拒绝保留已有许可，不为首次失败建立许可。覆盖页不允许穿透点击。普通完成返回 `action_completed`；选牌返回 `choice_required`；嵌套奖励通过场景和可用工具标识，内容按需观察或查看奖励。超时不自动重试。
 
-到达房间、继续对话及返回页面时，可行动条件还检查原生内容滚动、说明淡入、名称横幅显隐及其入场补间。选项已经能点击，不代表称号等可见字段已经稳定；须等这些有限过渡结束后才报告可行动。称号仍按当时的实际可见性输出，状态指纹不忽略它；成功详情后可直接选择，不要求额外调用 `get_observation`。复现和验证见[先古之民入场稳定性修复](../research/2026-11-01-ancient-stability.md)。
+到达房间、继续对话及返回页面时，可行动条件还检查原生内容滚动、说明淡入、名称横幅显隐及其入场补间。选项已经能点击，不代表称号等可见字段已经稳定；须等这些有限过渡结束后才报告可行动。称号仍按当时的实际可见性输出，状态指纹不忽略它。详情可以在过渡中读取已显示内容，此时选项的`enabled`可能为false；成功详情中选项为`enabled:true`时可直接选择，不要求额外调用 `get_observation`。复现和验证见[先古之民入场稳定性修复](../research/2026-11-01-ancient-stability.md)及[详情核验](../research/2026-11-07-inspect-ancient-development-notes.md)。
 
 图形验证须使用[隔离测试实例](roundtrip.md)，例如：
 

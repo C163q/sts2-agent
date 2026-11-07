@@ -1,0 +1,224 @@
+[
+  {
+    "file": "not-ancient.full.json",
+    "description": "无先古之民时的拒绝",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/evidence.json",
+    "row_index": 2,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/game/ipc/responses/4bc0f8eeae3c43b996abae954fa29ef7.json"
+    ],
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "legal-after-rejection.full.json",
+    "description": "错误查看后直接结束回合",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/evidence.json",
+    "row_index": 3,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/game/ipc/responses/43ecdc3a098b46d59c07e75fa8e4b544.json"
+    ],
+    "sha256": "8b4acc9df56505809510e04fc9cdafc7e7f19184a62d37b26ed87bf647ab3400"
+  },
+  {
+    "file": "arrival.full.json",
+    "description": "刚进入房间、选项尚未稳定",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 2,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/final/game/ipc/responses/7a5e47d24de14159b7731b0ec6e1edab.json"
+    ],
+    "sha256": "45b7395d86f144ac1d74da30b0efe1f3a141ca2353bf28b4ae5aa2354ddbffd1"
+  },
+  {
+    "file": "choices.full.json",
+    "description": "普通三选一、选项已启用",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 16,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/final/game/ipc/responses/82ad1bef069241349cd3a54fc20c8e48.json"
+    ],
+    "sha256": "24681080f3c302bf7dc8ecac374e98daf3d235d97fab5163535acaab577f3ebd"
+  },
+  {
+    "file": "choices-observation.full.json",
+    "description": "基础观察中的同类先古主体",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 6,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/final/game/ipc/responses/bafe9b7bf28f423284f504a31422cc30.json"
+    ],
+    "sha256": "7b69c8aa6dd659fd0d12860141d22780aedf5439bbf9d6a0dc35ed67292182eb"
+  },
+  {
+    "file": "returning.default.json",
+    "description": "牌组返回后、短暂过渡中的default",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "default"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 14,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/final/game/ipc/responses/d630f571c5fa4271ad479bb577e08faf.json"
+    ],
+    "sha256": "8c820729a9138e3328c57dc6f0415bcd87f300059309468790d8343df60ee481"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "地图覆盖时拒绝",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 9,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/final/game/ipc/responses/1d92480d9ae0421db743039236ef5053.json"
+    ],
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "deck-covered.full.json",
+    "description": "牌组覆盖时拒绝",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 12,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/final/game/ipc/responses/d7e7daa0f83844e2b2ae498525450512.json"
+    ],
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "summary-unsupported.json",
+    "description": "当前不支持summary的本地参数错误",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "summary"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 7,
+    "native_files": [],
+    "sha256": "4d9fc2591fa95fd3be4aa5da9e9069924310da95773916f6dee00df473d4e31e"
+  },
+  {
+    "file": "dialogue.full.json",
+    "description": "已显示对话与继续按钮",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 23,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/final/game/ipc/responses/50abda6a5f6d4845b177637999fb0685.json"
+    ],
+    "sha256": "72799529346f4108d1d8f16c1390ef16a46310493bd4273e2bbc185a68df2433"
+  },
+  {
+    "file": "dialogue-finished.full.json",
+    "description": "对话完成后可选择",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 30,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/final/game/ipc/responses/9c4f350ed51d4c588e96b3889cc588d1.json"
+    ],
+    "sha256": "21409f0407a2c8fbc3b782ad5f9f0ad704389ccc83fac65a0265c2c0ce4f7804"
+  },
+  {
+    "file": "relic-references.full.json",
+    "description": "欧洛巴斯：当前角色遗物与卡牌的悬停解释",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 40,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/final/game/ipc/responses/d78b16045df443d4a202840589cea5fc.json"
+    ],
+    "sha256": "6b298fc441dd5d74e277f6228c7624b6099664708f78fba54ac8afd75d599814"
+  },
+  {
+    "file": "obtained.full.json",
+    "description": "获得馈赠后只剩前进按钮",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 18,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/final/game/ipc/responses/2d3f5a29a9e149d39c0c89eab0f3064c.json"
+    ],
+    "sha256": "996cdee9986e2442ee404bf6153d57b910c448c9f0ef3e213f91a6e6fce76320"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "变牌选择覆盖时拒绝",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 53,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/final/game/ipc/responses/57e5c49a95fa43e69b0b7cf0eb90b810.json"
+    ],
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "bundle-covered.full.json",
+    "description": "卡牌包选择覆盖时拒绝",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 65,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/final/game/ipc/responses/6d112b9da32845988aa1a7f5cef5ccc8.json"
+    ],
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "rewards-covered.full.json",
+    "description": "嵌套奖励覆盖时拒绝",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-ancient-review/final/evidence.json",
+    "row_index": 77,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-ancient-review/final/game/ipc/responses/199bc42e705a4199b8384b5e3241f3ef.json"
+    ],
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  }
+]

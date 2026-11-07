@@ -1,0 +1,95 @@
+{
+  "scene": "ancient",
+  "map": null,
+  "screen": {
+    "status": "visible"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 80,
+    "max_hp": 80,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null,
+        "grayed_out": false,
+        "pulsing": false
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": {
+    "status": "visible",
+    "name": "Neow",
+    "epithet": "Mother of Resurrection (Exiled)",
+    "description": null,
+    "dialogue": [
+      {
+        "speaker": "Neow",
+        "text": "I’ve... remade you....\n...go... ..up....."
+      }
+    ],
+    "options": [
+      {
+        "id": 0,
+        "title": "Nutritious Oyster",
+        "description": "Raise your Max HP by 11.",
+        "enabled": true
+      },
+      {
+        "id": 1,
+        "title": "Neow's Talisman",
+        "description": "Upgrade 1 of your Strikes and 1 of your Defends.",
+        "enabled": true
+      },
+      {
+        "id": 2,
+        "title": "Precarious Shears",
+        "description": "Remove 2 cards from your Deck. Lose 16 HP.",
+        "enabled": true
+      }
+    ],
+    "continue": null,
+    "proceed": null
+  },
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "choose_ancient_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_ancient"
+  ]
+}
