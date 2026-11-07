@@ -41,11 +41,9 @@ internal sealed partial class GameAdapter
         }
         else
         {
-            if (context == null || !AncientInspection.Exposed(context) || !RunContext.Singleplayer || !AncientInspection.Ready(context))
-                return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player ancient.");
-            button = AncientInspection.Continue(context);
-            if (button?.IsEnabled != true)
-                return FileMailbox.Error(request.Id, "illegal_action", "The requested dialogue or option is unavailable.");
+            if (AncientInspection.DialogueUnavailableReason(context) is { } unavailable)
+                return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", unavailable);
+            button = AncientInspection.Continue(context!)!;
         }
         var run = RunManager.Instance.DebugOnlyGetState();
         UiChanged();

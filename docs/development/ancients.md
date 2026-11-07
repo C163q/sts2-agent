@@ -80,7 +80,9 @@ option_ids接受非负Int32数组：省略或null取全部，[]返回空options�
 
 动作需要当前观察许可，条件与[其他 MCP 动作](mcp.md#调用和错误语义)相同。选项 ID 按当前实际选项身份分配，原生翻页后旧 ID 不再匹配。详情成功时刷新状态令牌；确定性读取拒绝保留已有许可，不为首次失败建立许可。覆盖页不允许穿透点击。普通完成返回 `action_completed`；选牌返回 `choice_required`；嵌套奖励通过场景和可用工具标识，内容按需观察或查看奖励。超时不自动重试。
 
-choose_ancient_option在明确点击前拒绝且未改UI时保留已有许可，可直接改选、推进对话、处理选牌／奖励、关闭覆盖页或前进；具体原因区分无房间、覆盖、等待、对话未完成、已领取、无效ID及按钮不可用。过期观察、已交互、未知或坏响应不按此规则恢复。页面／动作／单项判断由AncientInspection集中维护，执行、选项enabled及available_actions共用。
+choose_ancient_option和advance_dialogue在明确点击前拒绝且未改UI时保留已有许可，可直接改选、推进对话、处理选牌／奖励或前进。错误区分无房间、覆盖、等待、对话未完成／已结束、已领取、无效ID及按钮不可用，并提示对应工具。地图和牌组关闭工具本身不要求玩法许可。过期观察、已交互、未知或坏响应仍要求重新读取。
+
+页面、馈赠及对话可用性由AncientInspection集中维护，执行、按钮enabled及available_actions共用。advance_dialogue只推进一句，等下一可操作状态稳定后返回action_completed；最后一句启用馈赠选择，后续使用choose_ancient_option。普通翻句events为空，当前台词按需通过get_observation或inspect_ancient读取。
 
 已识别的原生选牌页在进入／退出过渡中，仍真实画出的顶栏继续参与资源及物品事件采样。卡牌包打开时记录已显示的Scroll Boxes获取一次，未选定包内卡牌不提前记录加入；真实隐藏UI的变动仍不公开，恢复显示也不回放隐藏期间事件。
 

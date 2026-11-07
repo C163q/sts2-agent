@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The Architect dialogue is finished. Use proceed for the final button.",
+    "recovery": "choose_legal_action"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "Close the card browsing page with close_card_view before advancing the Architect dialogue.",
+    "recovery": "choose_legal_action"
+  }
+}

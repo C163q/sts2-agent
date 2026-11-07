@@ -1,0 +1,114 @@
+[
+  {
+    "name": "wrong_room",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_dialogue_recovery.py",
+        "args": [
+          "--scenario",
+          "wrong_room"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "basic",
+    "scenarios": {
+      "ancient": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_dialogue_recovery.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "dialogue",
+    "scenarios": {
+      "ancient": "dialogue"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_dialogue_recovery.py",
+        "args": [
+          "--scenario",
+          "dialogue"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "default",
+    "scenarios": {
+      "ancient": "dialogue"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_dialogue_recovery.py",
+        "args": [
+          "--scenario",
+          "default"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "selection",
+    "scenarios": {
+      "ancient": "bundle"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_dialogue_recovery.py",
+        "args": [
+          "--scenario",
+          "selection"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "rewards",
+    "scenarios": {
+      "ancient": "nested"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_dialogue_recovery.py",
+        "args": [
+          "--scenario",
+          "rewards"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "stale",
+    "scenarios": {
+      "ancient": "dialogue"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_dialogue_recovery.py",
+        "args": [
+          "--scenario",
+          "stale"
+        ]
+      }
+    ]
+  }
+]

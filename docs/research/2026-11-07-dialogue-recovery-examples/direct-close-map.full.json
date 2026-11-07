@@ -1,0 +1,15 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "advance_dialogue",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_ancient"
+  ]
+}

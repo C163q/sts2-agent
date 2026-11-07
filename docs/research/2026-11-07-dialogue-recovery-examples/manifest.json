@@ -1,0 +1,336 @@
+[
+  {
+    "file": "ancient-first.full.json",
+    "description": "先古推进到下一句",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/dialogue/verify/evidence.json",
+    "row_index": 19,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/39d03603bcc544c39d1d273375eb5be6.json"
+    ],
+    "sha256": "8faa1b2f2b7bd588e582ce291f74f9afef662210bc7b06a2e44e19d9b3415d17"
+  },
+  {
+    "file": "ancient-to-gifts.full.json",
+    "description": "先古推进到馈赠",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/dialogue/verify/evidence.json",
+    "row_index": 21,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/892691f09bc94a6ab6920a71db985ea8.json"
+    ],
+    "sha256": "379a363db0110dd0cf2e3e7665d212989492ecb853ae7e62e7a53c63b6f9e7c6"
+  },
+  {
+    "file": "ancient.default.json",
+    "description": "实际default推进",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "default"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/default/verify/evidence.json",
+    "row_index": 19,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/9d653cba84d24eaa986c9d467e0fe748.json"
+    ],
+    "sha256": "8faa1b2f2b7bd588e582ce291f74f9afef662210bc7b06a2e44e19d9b3415d17"
+  },
+  {
+    "file": "no-dialogue.full.json",
+    "description": "错误房间的具体原因",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/wrong_room/verify/evidence.json",
+    "row_index": 3,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/3ee237aafca8417caaed34020da4fb85.json"
+    ],
+    "sha256": "ed555e501e698026d92d89304a4b1d85b5d7a69057c8a401233226099ecb6b10"
+  },
+  {
+    "file": "direct-end-turn.full.json",
+    "description": "拒绝后直接结束回合",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/wrong_room/verify/evidence.json",
+    "row_index": 5,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/bc488a585a78424098359c608e7eb9bc.json"
+    ],
+    "sha256": "8b4acc9df56505809510e04fc9cdafc7e7f19184a62d37b26ed87bf647ab3400"
+  },
+  {
+    "file": "gifts-ready.full.json",
+    "description": "当前应选择馈赠",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/basic/verify/evidence.json",
+    "row_index": 6,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/ee65733eb25247529b272b643268205d.json"
+    ],
+    "sha256": "ade9faf49e25acadacdd6ff9f5db22abd7ace434a2a41d1c1c701a0213651d34"
+  },
+  {
+    "file": "direct-gift.full.json",
+    "description": "拒绝后直接选择馈赠",
+    "tool": "choose_ancient_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 0
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/basic/verify/evidence.json",
+    "row_index": 8,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/a324e6117e1c4c60b41f5dd3e6610921.json"
+    ],
+    "sha256": "5eb5aa9a14e8011bc96e4ebe7f56a014afe45ad2cabb30069f9d10567f06c6bc"
+  },
+  {
+    "file": "gift-finished.full.json",
+    "description": "已领取，应前进",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/basic/verify/evidence.json",
+    "row_index": 10,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/b008e37764084e44b7dafb4cecabe400.json"
+    ],
+    "sha256": "cc9b4a5271d1d962e7108fca6465f1f7fbec89e3c87e6f97d040a10ebcff913a"
+  },
+  {
+    "file": "direct-proceed.full.json",
+    "description": "拒绝后直接前进",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/basic/verify/evidence.json",
+    "row_index": 12,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/90b75c0703a4463d8d670b8e240c357a.json"
+    ],
+    "sha256": "d623c40cdc36610a87b5dba269bb1553949c9c6019439fd44326f3c679718e9c"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "提示关闭地图",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/dialogue/verify/evidence.json",
+    "row_index": 4,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/9ad3378c54e043c089820b787eaf634c.json"
+    ],
+    "sha256": "d44718a3fecd35825ba384fcaa7da58d284dc81b282ab9ccddb14f8e4ffcd24d"
+  },
+  {
+    "file": "direct-close-map.full.json",
+    "description": "直接关闭地图",
+    "tool": "close_map",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/dialogue/verify/evidence.json",
+    "row_index": 6,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/038daaada85548cd822ae34f94d00e8e.json"
+    ],
+    "sha256": "341c7b3f99534981cb72884578194e54428f24cded3d499a27b497d5dfe905af"
+  },
+  {
+    "file": "deck-covered.full.json",
+    "description": "提示关闭牌组",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/dialogue/verify/evidence.json",
+    "row_index": 10,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/bf0d2dce55164264abc8b521a427398e.json"
+    ],
+    "sha256": "5eadabb61492272fd65c9814611df416702b2bb4a49ad3472ed00260552b3d13"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "提示处理当前选择",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/selection/verify/evidence.json",
+    "row_index": 6,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/20549ea346114d31bf93b26b8218a39c.json"
+    ],
+    "sha256": "488a73ddd21f000c8e088d3cac4a80b13bdd90d5a1681ac138920c94d9e95769"
+  },
+  {
+    "file": "direct-preview.full.json",
+    "description": "拒绝后直接预览卡牌包",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "bundle:0"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/selection/verify/evidence.json",
+    "row_index": 8,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/f2903e12790142a78ea160cb022ac9f4.json"
+    ],
+    "sha256": "d0d7d84282927eb9cf9033e9485dff36c389a893a4e015546701868fa6123461"
+  },
+  {
+    "file": "rewards-covered.full.json",
+    "description": "提示处理当前奖励",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/rewards/verify/evidence.json",
+    "row_index": 6,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/98d6996db2464c65a2af0e5f848faa66.json"
+    ],
+    "sha256": "6936af087e6f852a696ce319311a3ff553566f953872e79b19e8310f9591d052"
+  },
+  {
+    "file": "direct-reward-proceed.full.json",
+    "description": "拒绝后直接处理奖励",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/rewards/verify/evidence.json",
+    "row_index": 8,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/597715936b80462fbbe037bdcc34a786.json"
+    ],
+    "sha256": "7b80308dfe4fec589be1b1879839d2addc7d427a68e08ee04f71ef351d4d843f"
+  },
+  {
+    "file": "stale.full.json",
+    "description": "外部推进后拒绝旧观察",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/stale/verify/evidence.json",
+    "row_index": 4,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/gui/game/ipc/responses/c7c5631b52094dbabe88de737739446d.json"
+    ],
+    "sha256": "42a71b30fd7304b95d71e071e2d2c183c103a658fa8a8f2cba2d7b84ebec4a60"
+  },
+  {
+    "file": "after-stale.full.json",
+    "description": "过期拒绝不恢复许可",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/gui/stale/verify/evidence.json",
+    "row_index": 5,
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "architect-map-covered.full.json",
+    "description": "建筑师地图覆盖",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/architect/evidence.json",
+    "row_index": 6,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/architect/game/ipc/responses/76d2869d7efc45d8b760caa9806c9591.json"
+    ],
+    "sha256": "9b2befc15bb187fd8de7b5a9d5f394cac16f542db836ac0063b1645919b94846"
+  },
+  {
+    "file": "architect-deck-covered.full.json",
+    "description": "建筑师牌组覆盖",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/architect/evidence.json",
+    "row_index": 12,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/architect/game/ipc/responses/1ab8b3502c544981a37345242742f834.json"
+    ],
+    "sha256": "cbb342f72ad6d57358d7ecf9f96fa0fe31bbc1be75743c86c2a52c49336dabb2"
+  },
+  {
+    "file": "architect-advance.full.json",
+    "description": "建筑师推进到最终按钮",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/architect/evidence.json",
+    "row_index": 20,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/architect/game/ipc/responses/58655169d7dd4311aed96f25796088b6.json"
+    ],
+    "sha256": "65502389093edaff284b1e6fc2118ad8cd5a96c2256310ac2b30400b7612cfc7"
+  },
+  {
+    "file": "architect-final.full.json",
+    "description": "建筑师最终按钮提示proceed",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/architect/evidence.json",
+    "row_index": 23,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/architect/game/ipc/responses/c9fa4e7e7f3b407f88d1e9d12caa8772.json"
+    ],
+    "sha256": "83653aa9717c42b01660095189ccb3aff9bb43afa5adc6404f9380b2baf3a340"
+  },
+  {
+    "file": "architect-direct-proceed.full.json",
+    "description": "拒绝后直接原生前进并run_won",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/architect/evidence.json",
+    "row_index": 25,
+    "native_files": [
+      ".tmp/2026-11-07-dialogue-advance-recovery/architect/game/ipc/responses/3edabc708a384d1bbe9559220d5b7f90.json"
+    ],
+    "sha256": "a5ae69deebcd93ef6460aa31701e11e7138f5da8dc40e923badb5734ed398b3d"
+  },
+  {
+    "file": "terminal-no-permission.full.json",
+    "description": "胜利后不续接玩法许可",
+    "tool": "advance_dialogue",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-dialogue-advance-recovery/architect/evidence.json",
+    "row_index": 26,
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  }
+]

@@ -27,11 +27,10 @@ internal sealed class AncientInspection
         && RunUi.NonCombatVisible() && NRun.Instance?.GlobalUi.Overlays.ScreenCount == 0
         && !VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen) && VisibleUi.Shown(context.Layout);
 
-    public static string? InspectionUnavailableReason(Context? context) => PageUnavailableReason(context, false);
+    public static string? InspectionUnavailableReason(Context? context) => PageUnavailableReason(context, "inspecting the ancient");
 
-    private static string? PageUnavailableReason(Context? context, bool choosing)
+    private static string? PageUnavailableReason(Context? context, string purpose)
     {
-        string purpose = choosing ? "choosing an ancient gift" : "inspecting the ancient";
         if (!RunManager.Instance.IsInProgress) return $"No local run is available for {purpose}.";
         if (context == null) return "No supported ancient is available on the current screen.";
         if (!RunContext.Singleplayer) return "Ancient interaction requires a local single-player run.";
@@ -44,11 +43,25 @@ internal sealed class AncientInspection
         return "The ancient is covered by a dialog or a screen transition.";
     }
 
-    public static string? ChoiceUnavailableReason(Context? context) => PageUnavailableReason(context, true)
+    public static string? ChoiceUnavailableReason(Context? context) => PageUnavailableReason(context, "choosing an ancient gift")
         ?? (context!.Model.IsFinished ? "This ancient gift has already been chosen. Use proceed to continue."
             : !Ready(context) ? "Wait for the ancient dialogue, options, and current gift effects to finish."
             : DisplayedContinue(context) != null ? "Finish the current dialogue with advance_dialogue before choosing an ancient gift."
             : null);
+
+    public static string? DialogueUnavailableReason(Context? context)
+    {
+        if (context == null)
+            return RunManager.Instance.IsInProgress
+                ? "No supported ancient or Architect dialogue is available on the current screen."
+                : "No local run is available for advancing dialogue.";
+        return PageUnavailableReason(context, "advancing the ancient dialogue")
+            ?? (context.Model.IsFinished ? "This ancient gift has already been chosen. Use proceed to continue."
+                : !Ready(context) ? "Wait for the ancient dialogue, options, and current gift effects to finish."
+                : Continue(context) != null ? null
+                : DisplayedContinue(context) != null ? "The ancient dialogue continue area is not currently interactive. Use inspect_ancient to read the current dialogue."
+                : "The ancient dialogue is finished. Use choose_ancient_option to choose a gift.");
+    }
 
     public static bool Busy => Current is { } current
         && PrivateFields.Read(RunManager.Instance.EventSynchronizer, "_pendingOptionTasks") is IEnumerable<Task> tasks
@@ -157,7 +170,7 @@ internal sealed class AncientInspection
                 @continue = next == null ? null : new { text = VisibleUi.DisplayedText(label, ".") == null ? null :
                     (PrivateFields.Read(current.Layout, "_dialogue") as IReadOnlyList<AncientDialogueLine>)?
                         .ElementAtOrDefault((int)PrivateFields.Read(current.Layout, "_currentDialogueLine")!)?.NextButtonText is { } nextText
-                        ? EnglishCardText.Plain(nextText.GetFormattedText()) : null, enabled = ready && Continue(current) != null },
+                        ? EnglishCardText.Plain(nextText.GetFormattedText()) : null, enabled = DialogueUnavailableReason(current) == null },
                 proceed = proceed == null ? null : new { text = EnglishCardText.Plain(proceed.Option.Title.GetFormattedText()),
                     enabled = ready && Clickable(proceed) } };
         });

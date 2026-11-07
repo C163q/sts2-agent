@@ -18,7 +18,9 @@
 
 第三幕最后 Boss 的奖励页 `proceed` 返回 `scene: "epilogue"`。依次操作观察提供的 `advance_dialogue` 或 `proceed`，不会跳过台词。结算使用 `scene: "run_result"`，按 `options` 继续、解锁、确认或返回。`main_menu` 按钮的文字有时是 Unlock，点击后先进入时间线；只有 `scene: "main_menu"`、结算字段为空时才真正回到菜单。工具不新开一局。
 
-成功动作使用现有 `transition`：`action_completed/complete=true` 表示下一页已就绪，可按许可规则继续；当前页内容和按钮通过观察或 `inspect_run_result` 按需读取。首次进入已就绪的胜利结算页返回 `run_won/complete=true`，失败结算页返回 `run_lost/complete=true`，依据与原生横幅相同的胜负判据。终局 available_actions 可保留实际可用的只读查看工具；列表不必为空，但不续接玩法许可。刚进入建筑师对话仍为 `action_completed`；结算后翻页、解锁和返回菜单同样为 `action_completed`，不重复报告胜负。终局回执不保留连续动作许可，需通过观察或详情取得当前结算操作。成功详情也刷新状态令牌；失败、超时或人工改动后重新读取当前状态。MCP 工具除通用 `preset` 外只接受 `option_id`，底层文件操作不接受额外参数；按钮、页面身份和状态令牌在游戏线程再次核对。工具将时间线绑定到本次结算的原生菜单栈；人工返回菜单同样结束关联。工具入口不用于操作平常打开的时间线或其他主菜单页面。
+成功动作使用现有 `transition`：`action_completed/complete=true` 表示下一页已就绪，可按许可规则继续；当前页内容和按钮通过观察或 `inspect_run_result` 按需读取。首次进入已就绪的胜利结算页返回 `run_won/complete=true`，失败结算页返回 `run_lost/complete=true`，依据与原生横幅相同的胜负判据。终局 available_actions 可保留实际可用的只读查看工具；列表不必为空，但不续接玩法许可。刚进入建筑师对话仍为 `action_completed`；结算后翻页、解锁和返回菜单同样为 `action_completed`，不重复报告胜负。终局回执不保留连续动作许可，需通过观察或详情取得当前结算操作。成功详情也刷新状态令牌；过期观察、超时、不确定结果或人工改动后重新读取当前状态。MCP 工具除通用 `preset` 外只接受 `option_id`，底层文件操作不接受额外参数；按钮、页面身份和状态令牌在游戏线程再次核对。工具将时间线绑定到本次结算的原生菜单栈；人工返回菜单同样结束关联。工具入口不用于操作平常打开的时间线或其他主菜单页面。
+
+advance_dialogue的明确点击前拒绝保留已有许可，并区分页面覆盖、等待对话／按钮就绪和最终前进；可直接关闭覆盖页或改用proceed。已有许可的恢复遵循[统一错误语义](mcp.md#调用和错误语义)。两类对话的参数均只有default/full，建筑师可用性由EpilogueInspection.DialogueUnavailableReason集中维护，执行、continue.enabled及available_actions共用；最终proceed继续沿用原生胜利流程。run_result_option的原生拒绝仍要求重新读取当前结算。
 
 ## 建筑师观察
 

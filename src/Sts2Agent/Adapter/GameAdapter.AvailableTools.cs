@@ -137,7 +137,7 @@ internal sealed partial class GameAdapter
         }
         if (AncientInspection.Current is { } ancient && AncientInspection.Ready(ancient))
         {
-            if (AncientInspection.Continue(ancient) != null) actions.Add("advance_dialogue");
+            if (AncientInspection.DialogueUnavailableReason(ancient) == null) actions.Add("advance_dialogue");
             else
             {
                 if (AncientInspection.ChoiceUnavailableReason(ancient) == null
@@ -179,8 +179,7 @@ internal sealed partial class GameAdapter
         if (epilogue != null && map == null)
         {
             actions.Clear();
-            if (EpilogueInspection.Ready(epilogue) && EpilogueInspection.Button(epilogue) is { } epilogueButton)
-                if (!EpilogueInspection.IsProceed(epilogueButton)) actions.Add("advance_dialogue");
+            if (EpilogueInspection.DialogueUnavailableReason(epilogue) == null) actions.Add("advance_dialogue");
         }
         if (ending != null)
         {

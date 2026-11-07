@@ -26,6 +26,27 @@ internal static class EpilogueInspection
     public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context)
         && !EventTaskTracker.Pending && !NavigationTasks.ChangingAct && LineReady(context)
         && Button(context) is { } button && EventInspection.Clickable(button);
+
+    public static string? DialogueUnavailableReason(Context? context)
+    {
+        if (!RunManager.Instance.IsInProgress) return "No local run is available for advancing dialogue.";
+        if (context == null) return "No Architect dialogue is available on the current screen.";
+        if (!RunContext.Singleplayer) return "Advancing the Architect dialogue requires a local single-player run.";
+        if (!Exposed(context))
+        {
+            if (VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen)) return NRun.Instance!.GlobalUi.MapScreen.IsOpen
+                ? "Close the map with close_map before advancing the Architect dialogue."
+                : "Wait for the map to finish closing before advancing the Architect dialogue.";
+            if (CardView.Current != null) return "Close the card browsing page with close_card_view before advancing the Architect dialogue.";
+            if (CardSelection.Current != null) return "Resolve the current card selection; inspect_selection shows its choices.";
+            if (RewardInspection.Current != null) return "Resolve the current reward page; inspect_rewards shows its rows.";
+            return "The Architect dialogue is covered by a dialog or a screen transition.";
+        }
+        if (Button(context) is { } button && IsProceed(button))
+            return "The Architect dialogue is finished. Use proceed for the final button.";
+        return Ready(context) ? null : "Wait for the Architect dialogue and its button to finish appearing.";
+    }
+
     public static object? Read()
     {
         if (Current is not { } context) return null;
@@ -43,7 +64,8 @@ internal static class EpilogueInspection
         }
         var button = exposed ? Button(context) : null;
         object? ButtonText(bool proceed) => button != null && IsProceed(button) == proceed ? EnglishEventText.Read(() => (object)new {
-            text = EnglishCardText.Plain(button.Option.Title.GetFormattedText()), enabled = ready }) : null;
+            text = EnglishCardText.Plain(button.Option.Title.GetFormattedText()),
+            enabled = proceed ? ready : DialogueUnavailableReason(context) == null }) : null;
         return new { status = !exposed ? "covered" : ready ? "visible" : "not_ready", dialogue,
             @continue = ButtonText(false), proceed = ButtonText(true) };
     }

@@ -17,10 +17,9 @@ internal sealed partial class GameAdapter
         if (request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Observe the current dialogue before acting.");
         var context = EpilogueInspection.Current;
-        var button = context == null ? null : EpilogueInspection.Button(context);
-        if (context == null || !EpilogueInspection.Ready(context) || button == null
-            || EpilogueInspection.IsProceed(button))
-            return FileMailbox.Error(request.Id, "illegal_action", "The requested dialogue action is unavailable.");
+        if (EpilogueInspection.DialogueUnavailableReason(context) is { } unavailable)
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", unavailable);
+        var button = EpilogueInspection.Button(context!)!;
         var run = RunManager.Instance.DebugOnlyGetState();
         UiChanged();
         button.ForceClick();
