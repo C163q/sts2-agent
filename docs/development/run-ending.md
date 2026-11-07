@@ -45,7 +45,7 @@ advance_dialogue的明确点击前拒绝保留已有许可，并区分页面覆�
 
 | 字段 | 含义 |
 | --- | --- |
-| `status` | `visible`、`not_ready` 或 `covered` |
+| `status` | 当前展示完成、展示中或被覆盖，见[共用展示状态](observation.md#页面主体的展示状态)；与按钮是否可用分开 |
 | `phase` | `outcome` 首屏、`summary` 汇总、`tutorial` 时间线教程、`timeline`、`epoch` 章节故事、`unlock` 解锁确认；原生提供时也识别 `history` 和 `leaderboard` |
 | `title` / `texts` | 当前已展示页面的横幅与文本，英文转写；可滚动内容完整读取，保留 `Victory...?` 中的问号和分数进度 `[140/200]` |
 | `score_lines` | 当前可见计分行，每项为 `label`、`value` |

@@ -23,8 +23,7 @@ internal static class DivinationInspection
 
     public static bool Exposed(NCrystalSphereScreen screen) => ReferenceEquals(Current, screen) && OnlyOverlay
         && RunUi.NonCombatVisible() && !VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen)
-        && VisibleUi.Shown(screen) && VisibleUi.Shown(screen.GetNode<Control>("%Items"))
-        && !RewardInspection.Animating(screen, "_fadeTween");
+        && VisibleUi.Shown(screen) && VisibleUi.Shown(screen.GetNode<Control>("%Items"));
 
     public static string? InspectionUnavailableReason(NCrystalSphereScreen? screen) =>
         PageUnavailableReason(screen, "inspecting divination");
@@ -96,8 +95,14 @@ internal static class DivinationInspection
             || VisibleUi.Descendants<NCrystalSphereItem>(screen).Any(item => RewardInspection.Animating(item, "_tween"));
     }
 
+    public static bool DisplayComplete(NCrystalSphereScreen screen)
+    {
+        var text = screen.GetNode<Node>("%Dialogue").GetNode<RichTextLabel>("%Text");
+        return !RewardInspection.Animating(screen, "_fadeTween") && !Revealing(screen) && (!VisibleUi.Shown(text) || text.VisibleRatio >= .999f);
+    }
+
     public static bool Ready(NCrystalSphereScreen screen) => Exposed(screen) && RunContext.Singleplayer
-        && !DivinationTasks.Pending(screen) && !Revealing(screen) && !RunUi.CardPreviewsPending()
+        && !DivinationTasks.Pending(screen) && DisplayComplete(screen) && !RunUi.CardPreviewsPending()
         && !RunUi.ResourceMotionPending() && !RelicObtainTracker.Pending && RunManager.Instance.ActionQueueSet.IsEmpty
         && (Finished(screen) ? !EventTaskTracker.Pending : Model(screen).DivinationCount > 0);
 
@@ -150,7 +155,7 @@ internal static class DivinationInspection
             var dialogue = screen.GetNode<NCrystalSphereDialogue>("%Dialogue");
             var label = dialogue.GetNode<RichTextLabel>("%Text");
             return (object)new {
-                status = "visible", phase = finished && ready ? "finished" : ready ? "playing" : "settling",
+                status = PresentationState.Status(true, DisplayComplete(screen)), phase = finished && ready ? "finished" : ready ? "playing" : "settling",
                 remaining = VisibleUi.OnScreen(screen.GetNode<Control>("%DivinationsLeft")) ? (int?)model.DivinationCount : null,
                 tool = toolsShown ? SelectedTool(screen) : null,
                 tools = toolsShown ? new[] { "big", "small" }.Select(id => new { id,

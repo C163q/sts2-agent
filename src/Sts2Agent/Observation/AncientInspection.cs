@@ -67,10 +67,12 @@ internal sealed class AncientInspection
         && PrivateFields.Read(RunManager.Instance.EventSynchronizer, "_pendingOptionTasks") is IEnumerable<Task> tasks
         && tasks.Any(t => !t.IsCompleted) || RelicObtainTracker.Pending;
 
+    public static bool DisplayComplete(Context context) => !MotionPending(context);
+
     public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context)
         && !Busy && !RunUi.CardPreviewsPending() && !RunUi.ResourceMotionPending()
         && !NTargetManager.Instance.IsInSelection && RunManager.Instance.ActionQueueSet.IsEmpty
-        && !MotionPending(context)
+        && DisplayComplete(context)
         && (Continue(context) != null || context.Layout.OptionButtons.Any(Shown));
 
     private static bool MotionPending(Context context) => RewardInspection.Animating(context.Layout, "_contentTween")
@@ -162,7 +164,7 @@ internal sealed class AncientInspection
             var proceed = Proceed(current);
             var next = DisplayedContinue(current);
             var label = PrivateFields.Read(current.Layout, "_fakeNextButtonLabel") as Control;
-            return (object)new { status = "visible", name = EnglishCardText.Plain(current.Model.Title.GetFormattedText()),
+            return (object)new { status = PresentationState.Status(true, DisplayComplete(current)), name = EnglishCardText.Plain(current.Model.Title.GetFormattedText()),
                 epithet = VisibleUi.DisplayedText(PrivateFields.Read(current.Layout, "_ancientNameBanner") as Control, "%Epithet") == null
                     ? null : EnglishCardText.Plain(current.Model.Epithet.GetFormattedText()),
                 description = VisibleUi.DisplayedText(current.Layout, "%EventDescription") == null ? null

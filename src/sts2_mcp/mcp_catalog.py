@@ -9,6 +9,7 @@ SERVER_INSTRUCTIONS = (
     "Relic grayed_out/pulsing false flags are also omitted in default/summary; other omissions never mean zero, false, empty or unchanged. "
     "Use full to preserve all existing nulls; other named presets retain their own behavior. "
     "Call tools sequentially and decide after each result. "
+    "A page body status of not_ready means its display is still updating; visible does not mean all buttons are enabled. "
     "available_actions lists currently offered tool names; arguments and state are checked at call time. "
     "Use IDs from current observations or inspections. "
     "Action receipts contain context and events, not full state or state deltas. "

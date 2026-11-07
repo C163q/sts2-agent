@@ -23,8 +23,10 @@ internal static class EpilogueInspection
     private static bool LineReady(Context context) => PrivateFields.Read(context.Model, "_speechBubble") is not NSpeechBubbleVfx bubble
         || bubble.GetNodeOrNull<RichTextLabel>("%Text") is { VisibleRatio: >= 0.999f } label && VisibleUi.OnScreen(label)
             && VisibleUi.Shown(bubble);
+    public static bool DisplayComplete(Context context) => LineReady(context)
+        && !context.Layout.OptionButtons.Any(button => RewardInspection.Animating(button, "_animInTween"));
     public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context)
-        && !EventTaskTracker.Pending && !NavigationTasks.ChangingAct && LineReady(context)
+        && !EventTaskTracker.Pending && !NavigationTasks.ChangingAct && DisplayComplete(context)
         && Button(context) is { } button && EventInspection.Clickable(button);
 
     public static string? DialogueUnavailableReason(Context? context)
@@ -66,7 +68,7 @@ internal static class EpilogueInspection
         object? ButtonText(bool proceed) => button != null && IsProceed(button) == proceed ? EnglishEventText.Read(() => (object)new {
             text = EnglishCardText.Plain(button.Option.Title.GetFormattedText()),
             enabled = proceed ? ready : DialogueUnavailableReason(context) == null }) : null;
-        return new { status = !exposed ? "covered" : ready ? "visible" : "not_ready", dialogue,
+        return new { status = PresentationState.Status(exposed, DisplayComplete(context)), dialogue,
             @continue = ButtonText(false), proceed = ButtonText(true) };
     }
 }

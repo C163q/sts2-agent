@@ -6,7 +6,7 @@ namespace Sts2Agent;
 internal static class TestDispatchChecks
 {
     private static readonly string[] Operations = [
-        "configure_test_run", "reset_test_run", "get_test_session", "set_test_combatant_hover",
+        "set_test_presentation", "configure_test_run", "reset_test_run", "get_test_session", "set_test_combatant_hover",
         "set_test_relic_hover", "set_test_relic_display", "check_test_display_readers", "set_test_capture_failure", "check_test_dispatch", "check_test_run_result_text", "check_test_card_additions", "check_test_permanent_cards",
         "check_test_combat_handoff", "check_test_death_notifications", "check_test_orb_events", "check_test_companions",
         "check_test_blades", "check_test_orb_visibility", "check_test_capacity", "check_test_combat_resources", "check_test_relic_counters",

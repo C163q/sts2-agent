@@ -1,0 +1,146 @@
+[
+  {
+    "name": "event",
+    "scenarios": {
+      "event": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_presentation_status.py",
+        "args": [
+          "--scenario",
+          "event"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ancient",
+    "scenarios": {
+      "ancient": "dialogue"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_presentation_status.py",
+        "args": [
+          "--scenario",
+          "ancient"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "rewards",
+    "scenarios": {
+      "navigation": "boss1"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_presentation_status.py",
+        "args": [
+          "--scenario",
+          "rewards"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "rest_site",
+    "scenarios": {
+      "rest": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_presentation_status.py",
+        "args": [
+          "--scenario",
+          "rest_site"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "shop",
+    "scenarios": {
+      "shop": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_presentation_status.py",
+        "args": [
+          "--scenario",
+          "shop"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "treasure",
+    "scenarios": {
+      "treasure": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_presentation_status.py",
+        "args": [
+          "--scenario",
+          "treasure"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "divination",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_presentation_status.py",
+        "args": [
+          "--scenario",
+          "divination"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "epilogue",
+    "scenarios": {
+      "navigation": "boss3"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_presentation_status.py",
+        "args": [
+          "--scenario",
+          "epilogue"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "run_result",
+    "scenarios": {
+      "navigation": "boss3"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_presentation_status.py",
+        "args": [
+          "--scenario",
+          "run_result"
+        ]
+      }
+    ]
+  }
+]

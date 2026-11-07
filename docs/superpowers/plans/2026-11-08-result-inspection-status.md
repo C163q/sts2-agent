@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-> 当前状态：实施中，共3项，完成0项；正在处理基础观察卡牌，剩余共用展示状态、结算详情及最终验收／审阅／合入。暂无阻塞。
+> 当前状态：实施中，共3项，完成2项；基础观察face与共用展示状态已完成，正在处理结算详情及最终验收／审阅／合入。暂无阻塞。
 
 **Goal:** 基础观察统一face，页面status准确表达展示进度，结算详情提供可靠诊断、校验及summary。
 
@@ -37,20 +37,20 @@
 
 **Interfaces:** format_game_cards增加selection_mode/result_mode，默认full以保留专项路径；observation_details显式传face_full。default仍走公共空值入口。
 
-- [ ] 编写所有候选／卡包／比较／结算face及专项完整保留用例，运行专项确认RED。
-- [ ] 实现显式模式映射；更新与目标相反的既有断言，不改历史样例。
-- [ ] 专项及完整Python套件通过；提交`fix: use card faces throughout basic observations`。
+- [x] 编写所有候选／卡包／比较／结算face及专项完整保留用例，运行专项确认RED。
+- [x] 实现显式模式映射；更新与目标相反的既有断言，不改历史样例。
+- [x] 专项及完整Python套件通过；提交`fix: use card faces throughout basic observations`。
 
 ### Task 2: 页面主体展示状态与操作就绪分离
 
-**Files:** 新增src/Sts2Agent/Observation/PresentationState.cs；修改EventInspection、AncientInspection、EpilogueInspection、RunResultInspection、DivinationInspection、ShopInspection、TreasureInspection、RewardInspection、RestSiteInspection；Python共用页面状态及各详情校验；测试状态夹具及GUI验证器。
+**Files:** 新增src/Sts2Agent/Observation/PresentationState.cs；将RunResultMotion扩为共用PresentationMotion；修改EventInspection、AncientInspection、EpilogueInspection、RunResultInspection、DivinationInspection、ShopInspection、TreasureInspection、RewardInspection、RestSiteInspection；Python共用页面状态及各详情校验；测试状态夹具及GUI验证器。
 
 **Interfaces:** PresentationState.Status(bool exposed,bool complete)输出三种状态；每类页面DisplayComplete使用已核对的原生展示信号。Ready维持原操作条件，新增或复用DisplayComplete，不能用按钮或任务就绪代替展示进度。
 
-- [ ] 编写Python not_ready部分数据、visible禁用按钮及screen可见性分离用例；原生状态／动画夹具先在旧DLL确认失败。
-- [ ] 核对目标程序集的展示字段；实现共用入口和对应原生DisplayComplete，详情／基础观察复用；不完整时统一note。
-- [ ] Python解析允许not_ready并核对上下文；既有状态有业务意义时保留phase/view/chest，操作检查不放宽。
-- [ ] 构建、C#、Python专项及完整套件通过；原生跨页面稳定／动画／禁用／恢复GUI验证；提交`refactor: separate presentation status from action readiness`。
+- [x] 编写Python not_ready部分数据、visible禁用按钮及screen可见性分离用例；原生状态／动画夹具先在旧DLL确认失败。
+- [x] 核对目标程序集的展示字段；实现共用入口和对应原生DisplayComplete，详情／基础观察复用；不完整时统一note。
+- [x] Python解析允许not_ready并核对上下文；既有状态有业务意义时保留phase/view/chest，操作检查不放宽。
+- [x] 构建、C#、Python专项及完整套件通过；原生跨页面稳定／动画／禁用／恢复GUI验证；提交`refactor: separate presentation status from action readiness`。
 
 ### Task 3: 结算详情诊断、摘要与完整校验
 

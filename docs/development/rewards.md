@@ -1,5 +1,7 @@
 # 战后搜刮与前进
 
+页面主体的visible／not_ready／covered及部分内容提示遵循[共用展示状态](observation.md#页面主体的展示状态)，按钮可操作性另行判断。
+
 版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
 
 本接口逐项操作原生奖励界面；地图选路另用 `travel_to_node`。地图查看继续使用 `inspect_map` / `close_map`，卡牌奖励继续使用[选牌工具](card-selection.md)。

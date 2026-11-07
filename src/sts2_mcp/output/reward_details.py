@@ -1,3 +1,4 @@
+from sts2_mcp.output.presentation_status import PAGE_STATUSES, READABLE_STATUSES
 from sts2_mcp.output.value_shapes import project, TIP
 from sts2_mcp.output.contracts.rooms import REWARDS, REWARD_ITEM
 from sts2_mcp.output.scene_context import scene_context
@@ -26,7 +27,7 @@ def reward_arguments(operation, arguments):
 def rewards_details(value, *, full=False):
     item_shape = {**REWARD_ITEM, 'hover_tips': [TIP]} if full else REWARD_ITEM
     result = project(value, {**REWARDS, 'items': ([item_shape],)})
-    if set(result) != set(REWARDS) or result['status'] not in {'visible', 'covered'}:
+    if set(result) != set(REWARDS) or result['status'] not in PAGE_STATUSES:
         raise ValueError('Invalid rewards structure.')
     if result['status'] == 'covered':
         if result['title'] is not None or result['items'] is not None or result['proceed'] is not None or full:

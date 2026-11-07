@@ -30,7 +30,7 @@ public static class BridgeMod
         RelicObtainTracker.Initialize();
         EventTaskTracker.Initialize();
         NavigationTasks.Initialize();
-        RunResultMotion.Initialize();
+        PresentationMotion.Initialize();
         CombatMotion.Initialize();
         EventConfirmation.Initialize();
         DivinationTasks.Initialize();

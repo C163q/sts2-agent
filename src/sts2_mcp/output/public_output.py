@@ -56,6 +56,11 @@ def assemble_details(details, *, operation=None):
     if operation == "inspect_selection":
         result["selection"]["cards"], result["hover_tips"] = share_hand_tips(result["selection"]["cards"])
     notes = {}
+    from sts2_mcp.output.presentation_status import PAGE_CONTEXTS
+    pending = [key for key in PAGE_CONTEXTS if (result.get(key) or {}).get('status') == 'not_ready']
+    if pending:
+        notes['presentation'] = {'message': 'The page is still updating; displayed values and lists may be incomplete.',
+                                 'sources': pending}
     if 'nodes_by_type' in (result.get('map') or {}):
         notes['map'] = 'Map connections omitted; use inspect_map for details.'
     unavailable = result.pop('unavailable_hover_sources', [])

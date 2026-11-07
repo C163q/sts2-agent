@@ -1,3 +1,4 @@
+from sts2_mcp.output.presentation_status import PAGE_STATUSES, READABLE_STATUSES
 from sts2_mcp.output.value_shapes import project, TEXT, TIP
 from sts2_mcp.output.contracts.rooms import DIVINATION, DIVINATION_TEXT_GRID
 import base64
@@ -42,7 +43,7 @@ def divination_details(value, *, require_text=False):
     text = require_text or isinstance(value, dict) and 'cell_rows' in (value.get('grid') or {})
     shape = {**DIVINATION, 'grid': (DIVINATION_TEXT_GRID,)} if text else DIVINATION
     result = project(value, shape)
-    if set(result) != set(DIVINATION) or result['status'] not in {'visible', 'covered'}:
+    if set(result) != set(DIVINATION) or result['status'] not in PAGE_STATUSES:
         raise ValueError('Invalid divination state.')
     if result['status'] == 'covered':
         if any(result[k] is not None for k in result if k != 'status'): raise ValueError('Hidden divination contents.')
@@ -81,7 +82,7 @@ def divination_details(value, *, require_text=False):
 
 def attach_divination_image(payload, state):
     current = payload.get('divination') or {}
-    if current.get('status') != 'visible': return payload
+    if current.get('status') not in READABLE_STATUSES: return payload
     data, width, height = _png_data(state['divination_image'])
     if current['grid']['image'] != {'width': width, 'height': height}:
         raise ValueError('Divination image dimensions do not match the grid.')

@@ -32,6 +32,16 @@ internal sealed partial class GameAdapter
 {
     private async Task<string?> TestRequestBeforeCapture(Request request)
     {
+        if (request.Operation == "set_test_presentation" && testMode
+            && (System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+                || testSettings.Get("STS2_AGENT_TEST_ENDING_SCENARIO") != null))
+        {
+            if (request.Arguments is not { } args || args.EnumerateObject().Count() != 1
+                || !args.TryGetProperty("mode", out var mode) || mode.ValueKind != JsonValueKind.String
+                || mode.GetString() is not ("partial" or "disabled" or "normal"))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected test presentation mode.");
+            return Success(request, JsonSerializer.Serialize(PresentationFixture.Set(mode.GetString()!, runResultInspection)));
+        }
         if (request.Operation == "set_test_ancient_display" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
             && testSettings.Get("STS2_AGENT_TEST_ANCIENT_SCENARIO") != null)

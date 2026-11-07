@@ -1,3 +1,4 @@
+from sts2_mcp.output.presentation_status import PAGE_STATUSES, READABLE_STATUSES
 from sts2_mcp.output.value_shapes import project, TEXT
 from sts2_mcp.output.scene_context import scene_context
 from sts2_mcp.output.contracts.rooms import REST_SITE, REST_OPTION
@@ -17,7 +18,7 @@ def rest_option_arguments(arguments):
 def rest_site_details(value, *, full=False):
     option_shape = {**REST_OPTION, 'description': TEXT} if full else REST_OPTION
     result = project(value, {**REST_SITE, 'options': ([option_shape],)})
-    if set(result) != set(REST_SITE) or result['status'] not in {'visible', 'covered'}:
+    if set(result) != set(REST_SITE) or result['status'] not in PAGE_STATUSES:
         raise ValueError('Invalid rest site structure.')
     if result['status'] == 'covered':
         if full or any(result[key] is not None for key in ('prompt', 'description', 'options', 'proceed')):

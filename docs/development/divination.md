@@ -1,5 +1,7 @@
 # 占卜小游戏
 
+页面主体的visible／not_ready／covered及部分内容提示遵循[共用展示状态](observation.md#页面主体的展示状态)，按钮可操作性另行判断。
+
 版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。支持单人原生 Crystal Sphere，先用[事件工具](events.md)进入小游戏。
 
 ## 工具与图像

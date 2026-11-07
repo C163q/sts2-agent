@@ -1,3 +1,4 @@
+from sts2_mcp.output.presentation_status import PAGE_STATUSES, READABLE_STATUSES
 from sts2_mcp.output.value_shapes import project, TIP, TEXT
 from sts2_mcp.output.contracts.rooms import TREASURE, TREASURE_RELIC
 from sts2_mcp.output.scene_context import scene_context
@@ -23,7 +24,7 @@ def loot_arguments(arguments):
 def treasure_details(value, *, full=False):
     relic_shape = {**TREASURE_RELIC, 'description': TEXT, 'hover_tips': [TIP]} if full else TREASURE_RELIC
     result = project(value, {**TREASURE, 'relic': (relic_shape,)})
-    if set(result) != set(TREASURE) or result['status'] not in {'visible', 'covered'}:
+    if set(result) != set(TREASURE) or result['status'] not in PAGE_STATUSES:
         raise ValueError('Invalid treasure structure.')
     if result['status'] == 'covered':
         if full or any(result[key] is not None for key in ('chest', 'relic', 'proceed')):

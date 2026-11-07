@@ -63,9 +63,13 @@ internal static class RestSiteInspection
 
     public static bool Clickable(NRestSiteButton button) => OptionUnavailableReason(button) == null;
 
+    public static bool DisplayComplete(NRestSiteRoom room) => !RewardInspection.Animating(room, "_choicesTween")
+        && !RewardInspection.Animating(room, "_descriptionTween")
+        && (room.Options.Count == 0 || Buttons(room).Length == room.Options.Count);
+
     public static bool Ready(NRestSiteRoom room)
     {
-        if (!Exposed(room) || !RunManager.Instance.ActionQueueSet.IsEmpty
+        if (!Exposed(room) || !DisplayComplete(room) || !RunManager.Instance.ActionQueueSet.IsEmpty
             || RewardInspection.Animating(room, "_choicesTween")
             || RewardInspection.Animating(room, "_descriptionTween")) return false;
         var buttons = Buttons(room);
@@ -120,7 +124,7 @@ internal static class RestSiteInspection
         var button = Proceed(room);
         object? proceed = button == null ? null : new { text = EnglishCardText.Read(() =>
             EnglishCardText.Plain(NProceedButton.ProceedLoc.GetFormattedText())), enabled = ready && button.IsEnabled };
-        return new { status = "visible", prompt = VisibleUi.DisplayedText(room, "%Header") == null ? null :
+        return new { status = PresentationState.Status(true, DisplayComplete(room)), prompt = VisibleUi.DisplayedText(room, "%Header") == null ? null :
             EnglishCardText.Read(() => EnglishCardText.Plain(new LocString("rest_site_ui", "PROMPT").GetFormattedText())),
             description, options, proceed };
     }

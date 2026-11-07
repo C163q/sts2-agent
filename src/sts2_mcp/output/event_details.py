@@ -1,3 +1,4 @@
+from sts2_mcp.output.presentation_status import PAGE_STATUSES, READABLE_STATUSES
 from sts2_mcp.output.value_shapes import project, TIP
 from sts2_mcp.output.contracts.rooms import ROOM_EVENT, ROOM_EVENT_OPTION
 
@@ -18,7 +19,7 @@ def event_arguments(operation, arguments):
 def event_details(value, *, full=False):
     shape = {**ROOM_EVENT, 'options': ([{**ROOM_EVENT_OPTION, 'hover_tips': [TIP]}],)} if full else ROOM_EVENT
     result = project(value, shape)
-    if set(result) != set(ROOM_EVENT) or result['status'] not in {'visible', 'covered'}:
+    if set(result) != set(ROOM_EVENT) or result['status'] not in PAGE_STATUSES:
         raise ValueError('Invalid event state.')
     if result['status'] == 'covered':
         if full or any(result[key] is not None for key in set(ROOM_EVENT) - {'status'}):
@@ -45,7 +46,7 @@ def inspect_event_details(state):
     if state.get('divination') is not None:
         from sts2_mcp.output.divination_details import divination_details
         board = divination_details(state['divination'], require_text=state.get('schema_version', 0) >= 45)
-    if board is not None and board['status'] == 'visible':
+    if board is not None and board['status'] in READABLE_STATUSES:
         if (context['screen'] != {'status': 'visible', 'view': 'divination'}
                 or state.get('event') is not None and state['event'].get('status') != 'covered'):
             raise ValueError('Divination is not the exposed screen.')

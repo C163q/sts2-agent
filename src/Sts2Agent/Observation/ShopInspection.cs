@@ -48,7 +48,7 @@ internal sealed class ShopInspection
 
     public static string? InspectionUnavailableReason(Context? context)
         => PageUnavailableReason(context, PagePurpose.Inspect)
-            ?? (!context!.Inventory.IsOpen ? "Open the shop with open_shop before inspecting its goods." : null);
+            ?? (!context!.Inventory.IsOpen && !Animating(context) ? "Open the shop with open_shop before inspecting its goods." : null);
 
     private static string? PageUnavailableReason(Context? context, PagePurpose operation)
     {
@@ -73,7 +73,7 @@ internal sealed class ShopInspection
         if (RewardInspection.Current != null) return $"Resolve the current reward page before {purpose}; inspect_rewards shows its rows.";
         if (RunUi.Transitioning()) return $"Wait for the screen transition before {purpose}.";
         if (!Exposed(context)) return "The shop is covered by a dialog or another screen.";
-        if (Animating(context)) return "Wait for the shop inventory to finish opening or closing.";
+        if (operation != PagePurpose.Inspect && Animating(context)) return "Wait for the shop inventory to finish opening or closing.";
         return null;
     }
 
@@ -114,6 +114,8 @@ internal sealed class ShopInspection
         if (ActivityUnavailableReason(context, "buying shop goods") is { } pending) return pending;
         return !Back(context).IsEnabled ? "Wait for the shop controls to become enabled before buying goods." : null;
     }
+
+    public static bool DisplayComplete(Context context) => !Animating(context);
 
     public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context) && !Animating(context)
         && ActivityUnavailableReason(context, "using shop controls") == null
@@ -206,7 +208,7 @@ internal sealed class ShopInspection
             && !CanHover(context, slot)).Select(slot => "shop.items." + ids[slot].id).ToArray();
         return EnglishCardText.Read(() => new
         {
-            status = "visible", view,
+            status = PresentationState.Status(true, DisplayComplete(context)), view,
             items = opened && !animating ? slots.Select(slot => ReadItem(slot, canPurchase, full, CanHover(context, slot))).ToArray() : null,
             open = !opened && !animating && MerchantShown(context) ? new { enabled = OpenUnavailableReason(context) == null } : null,
             back = opened && !animating && VisibleUi.OnScreen(Back(context)) ? new { enabled = CloseUnavailableReason(context) == null } : null,

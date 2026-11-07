@@ -94,11 +94,13 @@ internal sealed class RunResultInspection
         && !VisibleUi.Shown(NGame.Instance?.InspectRelicScreen);
 
     private static bool TextReady(Node root) => VisibleUi.Descendants<RichTextLabel>(root).Where(VisibleUi.Browsable).All(l => l.VisibleRatio >= .999f);
-    public bool Ready(Context context) => singleplayer && Exposed(context) && TextReady(context.Root)
+    public static bool DisplayComplete(Context context) => TextReady(context.Root)
         && (context.Root is not NGameOverScreen over || PrivateFields.Read(over, "_isAnimatingSummary") is not true
-            && !RunResultMotion.Pending(over))
+            && !PresentationMotion.Pending(over))
         && !new[] { "_tween", "_textTween", "_buttonTween", "_unlockTween", "_cardTween", "_relicTween", "_potionTween", "_screenTween", "_backstopTween", "_lineGrowTween" }
-            .Any(field => RewardInspection.Animating(context.Root, field))
+            .Any(field => RewardInspection.Animating(context.Root, field));
+
+    public bool Ready(Context context) => singleplayer && Exposed(context) && DisplayComplete(context)
         && (context.Root is not NTimelineScreen timeline || timeline.GetNodeOrNull<Control>("%InputBlocker") is not { Visible: true })
         && Options(context).Any(o => Clickable(o.button));
 
@@ -171,7 +173,7 @@ internal sealed class RunResultInspection
         bool exposed = Exposed(context), ready = Ready(context);
         var root = context.Root;
         var result = new Dictionary<string, object?> {
-            ["status"] = !exposed ? "covered" : ready ? "visible" : "not_ready", ["phase"] = context.Phase,
+            ["status"] = PresentationState.Status(exposed, DisplayComplete(context)), ["phase"] = context.Phase,
             ["title"] = exposed && root is NGameOverScreen ? Text(root.GetNode<NCommonBanner>("%Banner").label) : null,
             ["texts"] = exposed ? VisibleUi.Descendants<CanvasItem>(root).Where(n => !InsideCard(n)).Select(Text).Where(t => !string.IsNullOrWhiteSpace(t)).Distinct().ToArray() : [],
             ["score_lines"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NScoreLine>(root).Where(VisibleUi.Browsable).Select(line => new {

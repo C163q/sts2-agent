@@ -1,5 +1,7 @@
 # 先古之民
 
+页面主体的visible／not_ready／covered及部分内容提示遵循[共用展示状态](observation.md#页面主体的展示状态)，按钮可操作性另行判断。
+
 版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
 
 支持实际单人的常规先古之民房间，使用原生对话及事件选项流程；不自动选择遗物或前往地图节点。终章建筑师使用[终章接口](run-ending.md)，与常规先古之民共用 `advance_dialogue`。普通问号事件使用[通用事件工具](events.md)。
@@ -20,7 +22,7 @@ get_observation 的 full/default/summary 共用 inspect_ancient.summary 的静�
 
 `ancient` 字段：
 
-- `status`：`visible` 或 `covered`。覆盖时其余字段全部为 `null`。
+- `status`：`visible`、`not_ready` 或 `covered`。覆盖时其余字段全部为 `null`。
 - `name`、`epithet`、`description`：先古名称、已显示的称号及当前说明，原生无说明时为 `null`。
 - `dialogue`：当前可见的对话行，每项有英语 `speaker`、`text`。不返回未显示的后文。
 - `options`：当前显示的选项，每项有稳定整数 `id`、`title`、`description`、`enabled`。正文已在界面展开，基础观察可以提供；`inspect_ancient` 增加逐项 `hover_tips`。通常为遗物三选一，但不固定数量或强制要求选项包含遗物。

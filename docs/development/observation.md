@@ -22,6 +22,14 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 玩法输出按声明的结构递归投影，未知嵌套字段不会转发；基础观察的 `player.hand` 不包含正文或悬停解释。已提供字段须符合对应类型，布尔值不能代替数字。MCP 与非 raw 文件客户端对基础观察和动作结果检查全部必需顶层观察字段，格式错误返回 `transport_error`，不保留动作令牌。这个检查不证明游戏采样本身符合可见信息边界；Mod 的显示过滤仍是读取依据。
 
+## 页面主体的展示状态
+
+事件、先古之民、建筑师、结算、奖励、火堆、商店、宝箱和占卜主体的status统一表达当前页展示进度：visible表示当前展示完成，not_ready表示仍在分阶段展示、当前文字／数值／列表可能不完整，covered表示被覆盖。get_observation和对应详情读取同一判断；not_ready结果带notes.presentation及来源列表。不增加content_complete。
+
+该状态与screen.status的可见／覆盖含义分开，也与操作合法性分开。展示完成但按钮禁用时仍为visible；enabled和available_actions继续依据原生操作条件。尚未翻开的占卜格子、未打开的宝箱或未来解锁不代表当前展示未完成。占卜phase、商店view及宝箱chest保留各自业务阶段。
+
+原生PresentationState统一生成主体状态，各页面DisplayComplete核对当前展示信号，Ready保留原生队列、交互与按钮守卫。计分及宝箱集合的有限入场／退场补间由PresentationMotion按弱引用采样，读取不阻塞游戏线程。
+
 ## 场景上下文
 
 基础观察、动作回执和所有已返回 scene 的详情工具，使用同一含义与判定入口：

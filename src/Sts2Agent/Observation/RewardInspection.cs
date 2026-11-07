@@ -40,7 +40,9 @@ internal sealed class RewardInspection
     public static bool Animating(object owner, string field) => PrivateFields.Optional(owner, field) is Tween tween
         && GodotObject.IsInstanceValid(tween) && tween.IsRunning();
 
-    public static bool Ready(NRewardsScreen screen) => Exposed(screen) && !Animating(screen, "_fadeTween")
+    public static bool DisplayComplete(NRewardsScreen screen) => !Animating(screen, "_fadeTween");
+
+    public static bool Ready(NRewardsScreen screen) => Exposed(screen) && DisplayComplete(screen)
         && !Buttons(screen).Any(b => !b.IsEnabled) && RunManager.Instance.ActionQueueSet.IsEmpty
         && !CombatManager.Instance.IsInProgress;
 
@@ -61,7 +63,7 @@ internal sealed class RewardInspection
     private static string? UnavailableReason(NRewardsScreen? screen, bool claiming)
     {
         if (screen != null && GodotObject.IsInstanceValid(screen) && screen.IsNodeReady()
-            && RunManager.Instance.IsSingleplayerOrFakeMultiplayer && Ready(screen)) return null;
+            && RunManager.Instance.IsSingleplayerOrFakeMultiplayer && (claiming ? Ready(screen) : Exposed(screen))) return null;
         if (!RunManager.Instance.IsInProgress)
             return claiming ? "No local run is available for claiming rewards." : "No local run is available for reward inspection.";
         if (!RunManager.Instance.IsSingleplayerOrFakeMultiplayer)
@@ -129,7 +131,7 @@ internal sealed class RewardInspection
             if (displayed != null && EnglishCardText.Plain(loc.GetFormattedText()) == displayed)
                 title = EnglishCardText.Read(() => EnglishCardText.Plain(loc.GetFormattedText()));
         }
-        return new { status = "visible", title, items = rows, proceed };
+        return new { status = PresentationState.Status(true, DisplayComplete(screen)), title, items = rows, proceed };
     }
 
     public static async Task Reveal(NRewardsScreen screen, NRewardButton button, Func<Task> frame, Func<bool> unchanged,

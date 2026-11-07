@@ -1,3 +1,4 @@
+from sts2_mcp.output.presentation_status import PAGE_STATUSES, READABLE_STATUSES
 from sts2_mcp.output.value_shapes import project, TIP, TEXT, nullable
 from sts2_mcp.output.contracts.rooms import SHOP, SHOP_ITEM, SHOP_CARD
 from sts2_mcp.output.scene_context import scene_context
@@ -37,7 +38,7 @@ def item_shape(kind, full=False, used=False):
 
 def shop_details(value, *, full=False):
     result = project(value, SHOP)
-    if set(result) != set(SHOP) or result['status'] not in {'visible', 'covered'}:
+    if set(result) != set(SHOP) or result['status'] not in PAGE_STATUSES:
         raise ValueError('Invalid shop structure.')
     if result['status'] == 'covered':
         if full or any(result[key] is not None for key in ('view', 'items', 'open', 'back', 'proceed')):
@@ -46,7 +47,7 @@ def shop_details(value, *, full=False):
     if result['view'] not in {'merchant', 'inventory', 'opening', 'closing'}:
         raise ValueError('Invalid shop view.')
     if result['view'] != 'inventory':
-        if full or result['items'] is not None or result['back'] is not None:
+        if (full and result['status'] != 'not_ready') or result['items'] is not None or result['back'] is not None:
             raise ValueError('Unopened shop contents.')
     else:
         if result['items'] is None or result['open'] is not None or result['proceed'] is not None:

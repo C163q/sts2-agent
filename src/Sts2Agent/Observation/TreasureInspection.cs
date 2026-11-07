@@ -61,9 +61,17 @@ internal static class TreasureInspection
     public static NProceedButton? Proceed(NTreasureRoom room) => VisibleUi.OnScreen(room.ProceedButton)
         && VisibleUi.Text(room.ProceedButton, "%Label") is { Length: > 0 } ? room.ProceedButton : null;
 
+    public static bool DisplayComplete(NTreasureRoom room)
+    {
+        if (!Opened(room)) return Chest(room).MouseFilter != Control.MouseFilterEnum.Ignore;
+        var collection = Collection(room);
+        return !PresentationMotion.Pending(collection)
+            && (Picking(room) ? collection.Modulate.A >= .99f : !VisibleUi.Shown(collection));
+    }
+
     public static bool Ready(NTreasureRoom room)
     {
-        if (!RunContext.Singleplayer || !Exposed(room) || !RunManager.Instance.ActionQueueSet.IsEmpty || RelicObtainTracker.Pending) return false;
+        if (!RunContext.Singleplayer || !Exposed(room) || !DisplayComplete(room) || !RunManager.Instance.ActionQueueSet.IsEmpty || RelicObtainTracker.Pending) return false;
         if (!Opened(room)) return Chest(room).IsEnabled && VisibleUi.OnScreen(Chest(room));
         if (Proceed(room)?.IsEnabled != true) return false;
         return Picking(room) ? RelicClickable(room) : !VisibleUi.Shown(Collection(room));
@@ -115,7 +123,7 @@ internal static class TreasureInspection
         if (Current is not { } room) return null;
         if (!Exposed(room)) return new { status = "covered", chest = (string?)null, relic = (object?)null, proceed = (object?)null };
         bool ready = Ready(room);
-        string chest = Opened(room) ? "open" : Chest(room).IsEnabled ? "closed" : "opening";
+        string chest = Opened(room) ? "open" : DisplayComplete(room) ? "closed" : "opening";
         object? relic = null;
         if (Relic(room) is { } holder)
         {
@@ -140,6 +148,6 @@ internal static class TreasureInspection
             text = EnglishCardText.Read(() => EnglishCardText.Plain((button.IsSkip ? NProceedButton.SkipLoc : NProceedButton.ProceedLoc).GetFormattedText())),
             enabled = ready && button.IsEnabled, skips_remaining = button.IsSkip
         };
-        return new { status = "visible", chest, relic, proceed };
+        return new { status = PresentationState.Status(true, DisplayComplete(room)), chest, relic, proceed };
     }
 }

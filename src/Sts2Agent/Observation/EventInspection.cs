@@ -66,8 +66,11 @@ internal sealed class EventInspection
         is { VisibleRatio: >= 0.999f } description && VisibleUi.OnScreen(description)
         && !RewardInspection.Animating(context.Layout, "_descriptionTween");
 
+    public static bool DisplayComplete(Context context) => TextComplete(context)
+        && context.Layout.OptionButtons.Where(Shown).All(button => !RewardInspection.Animating(button, "_animInTween"));
+
     public static bool Ready(Context context) => RunContext.Singleplayer && Exposed(context)
-        && !EventTaskTracker.Pending && !RelicObtainTracker.Pending && TextComplete(context)
+        && !EventTaskTracker.Pending && !RelicObtainTracker.Pending && DisplayComplete(context)
         && !RunUi.CardPreviewsPending() && !RunUi.ResourceMotionPending()
         && !NTargetManager.Instance.IsInSelection && RunManager.Instance.ActionQueueSet.IsEmpty
         && context.Layout.OptionButtons.Any(Shown)
@@ -134,7 +137,7 @@ internal sealed class EventInspection
                 return result;
             }).ToArray();
             var proceed = Proceed(current);
-            return (object)new { status = "visible",
+            return (object)new { status = PresentationState.Status(true, DisplayComplete(current)),
                 name = VisibleUi.Text(current.Layout, "%Title") == null ? null : EnglishCardText.Plain(current.Model.Title.GetFormattedText()),
                 description = TextComplete(current) && current.Model.Description is { } text ? EnglishCardText.Plain(text.GetFormattedText()) : null,
                 options,

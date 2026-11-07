@@ -1,3 +1,4 @@
+from sts2_mcp.output.presentation_status import PAGE_STATUSES, READABLE_STATUSES
 from sts2_mcp.output.value_shapes import project, TIP
 from sts2_mcp.output.contracts.rooms import ANCIENT, ANCIENT_OPTION
 
@@ -22,7 +23,7 @@ def ancient_arguments(operation, arguments):
 def ancient_details(value, *, full=False, require_warning=False):
     shape = {**ANCIENT, 'options': ([{**ANCIENT_OPTION, 'hover_tips': [TIP]}],)} if full else ANCIENT
     result = project(value, shape)
-    if set(result) != set(ANCIENT) or result['status'] not in {'visible', 'covered'}:
+    if set(result) != set(ANCIENT) or result['status'] not in PAGE_STATUSES:
         raise ValueError('Invalid ancient state.')
     if result['status'] == 'covered':
         if full or any(result[key] is not None for key in set(ANCIENT) - {'status'}):

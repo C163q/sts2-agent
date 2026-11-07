@@ -12,7 +12,7 @@ PREVIEW_PATHS = (
 
 def preserve_null(path, parent):
     """Keep facts and comparisons intact; array elements are never removed."""
-    if path == ('treasure', 'relic') and parent.get('status') == 'visible':
+    if path == ('treasure', 'relic') and parent.get('status') in {'visible', 'not_ready'}:
         return True
     if path[:3] == ('transition', 'events', '*'):
         return True

@@ -1,3 +1,4 @@
+from sts2_mcp.output.presentation_status import READABLE_STATUSES, validate_presentations
 from sts2_mcp.output.value_shapes import project
 from sts2_mcp.output.contracts.observation import OBSERVATION, OPTIONAL_OBSERVATION
 from sts2_mcp.output.contracts.combat import HEALTH
@@ -73,7 +74,7 @@ def observation_details(state):
         from sts2_mcp.output.ancient_presets import ancient_summary
         result['ancient'] = ancient_summary(ancient_details(result['ancient'],
             require_warning=state.get('schema_version', 0) >= 46))
-        if result['ancient']['status'] == 'visible' and (result['scene'] != 'ancient' or result['screen'] != {'status': 'visible'}):
+        if result['ancient']['status'] in READABLE_STATUSES and (result['scene'] != 'ancient' or result['screen'] != {'status': 'visible'}):
             raise ValueError('Ancient is not the exposed screen.')
     elif result['scene'] == 'ancient':
         raise ValueError('Missing ancient state.')
@@ -81,7 +82,7 @@ def observation_details(state):
         from sts2_mcp.output.event_details import event_details
         from sts2_mcp.output.event_presets import event_summary
         result['event'] = event_summary(event_details(result['event']))
-        if result['event']['status'] == 'visible' and (result['scene'] != 'event' or result['screen'] != {'status': 'visible'}):
+        if result['event']['status'] in READABLE_STATUSES and (result['scene'] != 'event' or result['screen'] != {'status': 'visible'}):
             raise ValueError('Event is not the exposed screen.')
     elif result['scene'] == 'event':
         raise ValueError('Missing event state.')
@@ -90,7 +91,7 @@ def observation_details(state):
         from sts2_mcp.output.event_presets import divination_summary
         result['divination'] = divination_summary(divination_details(state['divination'],
             require_text=state.get('schema_version', 0) >= 45))
-        if result['divination']['status'] == 'visible' and (result['scene'] != 'event'
+        if result['divination']['status'] in READABLE_STATUSES and (result['scene'] != 'event'
                 or result['screen'] != {'status': 'visible', 'view': 'divination'}
                 or (result.get('event') or {}).get('status') != 'covered'):
             raise ValueError('Divination is not the exposed screen.')
@@ -112,5 +113,5 @@ def observation_details(state):
           or result['screen'] == {'status': 'visible', 'view': 'confirmation'}):
         raise ValueError('Missing event confirmation.')
     from sts2_mcp.output.run_ending_details import validate_ending
-    return format_game_cards(validate_ending(result), shop_mode="face_full", deck_mode='face_full',
+    return format_game_cards(validate_presentations(validate_ending(result)), shop_mode="face_full", deck_mode='face_full',
                              pile_mode='face_full', selection_mode='face_full', result_mode='face_full')
