@@ -15,9 +15,10 @@ from sts2_mcp.mcp_catalog import SERVER_INSTRUCTIONS, tool_definitions
 from sts2_mcp.output.player_output import player_result
 from sts2_mcp.roundtrip_client import Client
 from sts2_mcp.mcp_config import load_config
+from sts2_mcp.screenshot_tool import screenshots_disabled
 
 
-SERVER_VERSION = "0.82.0"
+SERVER_VERSION = "0.83.0"
 
 def tool_result(payload):
     content = [TextContent(type="text", text=json.dumps(payload, ensure_ascii=False, separators=(",", ":")))]
@@ -43,6 +44,8 @@ def create_server(tools, *, screenshots_enabled=False):
     @server.call_tool(validate_input=False)
     async def call_tool(name, arguments):
         if name not in handlers:
+            if name == 'capture_screenshot':
+                return tool_result(screenshots_disabled())
             return tool_result(player_result({"ok": False, "error": {"code": "invalid_request"}}))
         return tool_result(await handlers[name](arguments))
 

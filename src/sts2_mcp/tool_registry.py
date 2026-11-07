@@ -767,8 +767,7 @@ SPECS = (
     ToolSpec(
         name='capture_screenshot',
         schema=SCREENSHOT_SCHEMA,
-        description="Save the current game viewport as PNG in the configured directory; return its path and dimensions. "
-            "Does not change the UI or prepare an action.",
+        description="Save the current game viewport as a PNG in the configured directory; return its local file path and pixel dimensions.",
         annotations=view,
         category='screenshot',
         effect='file',

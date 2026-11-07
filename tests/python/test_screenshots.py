@@ -218,6 +218,9 @@ class ScreenshotStdioTests(unittest.IsolatedAsyncioTestCase):
                             result = await session.call_tool('capture_screenshot', {})
                             self.assertTrue(result.isError)
                             self.assertEqual(result.structuredContent['error']['code'], 'invalid_request')
+                            self.assertIn('config', result.structuredContent['error']['message'].lower())
+                            self.assertIn('restart', result.structuredContent['error']['message'].lower())
+                            self.assertEqual(result.structuredContent['error']['recovery'], 'check_configuration')
                             self.assertEqual(game.operations, [])
                             continue
                         first = await session.call_tool('capture_screenshot', {'filename': '01.png'})

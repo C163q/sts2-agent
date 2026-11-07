@@ -41,6 +41,7 @@ class ExecutionEvidence(Enum):
     SUBMITTED = 'submitted'
     INTERACTION_STARTED = 'interaction_started'
     UNSUBMITTED_UNCHANGED = 'unsubmitted_ui_unchanged'
+    CAPTURED_READ_ONLY = 'captured_read_only'
     SUCCESS = 'success'
 
 
@@ -100,7 +101,9 @@ class GameSession:
                         request.effect == 'read' and payload['error']['code'] in self.READ_REJECTIONS
                         and response.evidence not in {ExecutionEvidence.SUBMITTED, ExecutionEvidence.INTERACTION_STARTED}
                         or (request.requires_permission or request.spec.unchanged_view_rejections)
-                        and response.evidence is ExecutionEvidence.UNSUBMITTED_UNCHANGED)
+                        and response.evidence is ExecutionEvidence.UNSUBMITTED_UNCHANGED
+                        or request.effect == 'file' and response.evidence is ExecutionEvidence.CAPTURED_READ_ONLY
+                        and previous.token == response.token)
                     if retain and self.permission.generation == generation:
                         self.permission.replace(previous.token)
                         payload = retained_rejection(payload)
@@ -196,7 +199,15 @@ class GameSession:
             if not isinstance(token, str) or not token:
                 raise ValueError('Missing observation token.')
             if request.effect == 'file':
-                payload = await anyio.to_thread.run_sync(self.screenshots.save, state, arguments)
+                read_only_capture = facts is not None and facts['state_captured'] \
+                    and not facts['ui_interaction_started'] and not facts['action_submission_observed']
+                if facts is not None and not read_only_capture:
+                    raise ValueError('Contradictory screenshot execution evidence.')
+                try:
+                    payload = await anyio.to_thread.run_sync(self.screenshots.save, state, arguments)
+                except ScreenshotError as error:
+                    evidence = ExecutionEvidence.CAPTURED_READ_ONLY if read_only_capture and error.known_refusal else ExecutionEvidence.UNKNOWN
+                    return GameResponse(error.public_result(), token, evidence)
             else:
                 payload = decode_success(operation, state, arguments)
                 if request.media_required:
@@ -205,7 +216,7 @@ class GameSession:
                     payload['available_actions'] = public_tools(payload['available_actions'])
             return GameResponse(payload, token, ExecutionEvidence.SUCCESS)
         except ScreenshotError as error:
-            return GameResponse(self._public_error({'code': error.code}, request))
+            return GameResponse(error.public_result())
         except (OSError, ValueError, KeyError, TypeError, RuntimeError) as error:
             code = 'timeout' if isinstance(error, TimeoutError) else 'transport_error'
             logging.getLogger(__name__).warning('Game request failed: %s', error)

@@ -3,6 +3,7 @@ from sts2_mcp.tool_registry import TOOLS, SPECS
 from sts2_mcp.request_arguments import normalize_request
 from sts2_mcp.game_session import GameSession
 from sts2_mcp.output.error_output import invalid_request
+from sts2_mcp.screenshot_tool import screenshots_disabled
 
 
 class GameTools:
@@ -28,7 +29,7 @@ class GameTools:
         try:
             request = normalize_request(TOOLS[name], arguments)
             if request.effect == 'file' and self.screenshots is None:
-                raise ValueError('Screenshots are disabled.')
+                return screenshots_disabled()
         except ValueError as error:
             return invalid_request(str(error))
         return await self.session.execute(request)
