@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销43项。capture_screenshot三项整改和验收完成，待一次独立审阅；run_result_option及buy_item的非阻断建议见各自实施记录。
+> 当前状态：逐项工具核验已完成，共44项，已核销44项。capture_screenshot完成三项整改、验收及独立审阅单轮修复并合入main；其文档命令建议、run_result_option及buy_item的非阻断建议见各自实施记录。用户TODO仍按其范围另行处理。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -107,7 +107,7 @@
 
 ### 截图（1 项，按配置启用）
 
-- [ ] `capture_screenshot`：[定稿](2026-11-08-capture-screenshot-review.md#输出定稿)三项整改和验收完成，待独立审阅；[实施记录](2026-11-08-screenshot-recovery-implementation.md)及[12份修复后实际JSON](2026-11-08-screenshot-recovery-examples/README.md)。20项截图相关、全量843项Python和gui／menu／headless三类隔离验收通过，8张PNG字节核对一致；原[9份审阅返回](2026-11-08-capture-screenshot-examples/README.md)保持旧基线。
+- [x] `capture_screenshot`：[定稿](2026-11-08-capture-screenshot-review.md#输出定稿)三项整改及独立审阅I1的单轮修复完成并合入main；[实施记录](2026-11-08-screenshot-recovery-implementation.md)及[12份修复后实际JSON](2026-11-08-screenshot-recovery-examples/README.md)。21项相关、全量844项Python和gui／menu／headless三类隔离验收通过，8张PNG字节核对一致；M1文档建议保留，原[9份审阅返回](2026-11-08-capture-screenshot-examples/README.md)保持旧基线。
 
 ## 单项记录方式
 

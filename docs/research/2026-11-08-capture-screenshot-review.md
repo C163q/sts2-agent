@@ -1,6 +1,6 @@
 # capture_screenshot 核验与建议
 
-> 当前状态：三项整改已确认，正在实施；下文现状和9份样例保留b104d84审阅基线。总进度见[工具清单](2026-11-02-mcp-tool-review.md)。
+> 当前状态：三项整改、验收及独立审阅单轮修复完成并合入main；下文现状和9份样例保留b104d84审阅基线。总进度见[工具清单](2026-11-02-mcp-tool-review.md)。
 
 修复后的规则、实际返回与验收见[实施记录](2026-11-08-screenshot-recovery-implementation.md)。
 
