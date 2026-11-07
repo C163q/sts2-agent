@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-> 当前状态：实施中，共3项，完成3项；实现与最终验收完成，正在提交及独立审阅，剩余合入main。暂无阻塞。
+> 当前状态：已完成，共3项，完成3项；实现、验收及独立审阅单轮修复完成并合入main，临时分支清理。无阻塞。结果及边界见[实施记录](../../research/2026-11-08-result-inspection-implementation.md)。
 
 **Goal:** 基础观察统一face，页面status准确表达展示进度，结算详情提供可靠诊断、校验及summary。
 

@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销41项。inspect_run_result、基础观察face及展示状态已实现并完成GUI验收，正在最终回归和独立审阅；剩余3项尚未核销。buy_item独立审阅的非阻塞建议见其实施记录。
+> 当前状态：工具核验进行中，共44项，已核销42项。inspect_run_result、基础观察face及展示状态已完成实现、验收和独立审阅单轮修复并合入main；剩余run_result_option及capture_screenshot。buy_item独立审阅的非阻塞建议见其实施记录。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -102,7 +102,7 @@
 
 ### 结算（2 项）
 
-- [ ] `inspect_run_result`：查看结算页面及已揭示详情。阶段：设计讨论；[审阅与建议](2026-11-07-inspect-run-result-review.md)、[开发核验](2026-11-07-inspect-run-result-development-notes.md)及[19份实际JSON](2026-11-07-inspect-run-result-examples/README.md)已整理；33项相关Python、七类phase及原生历史页10项浏览检查完成，summary保留页面提示source/title的方案已确认；基础观察全部卡牌统一face的目标已确认，差异及其他页面的展示状态见[跨场景核验](2026-11-08-observation-consistency-review.md)；展示完成标识及读取／动作就绪拆分仍待定稿，尚未修改工具行为。
+- [x] `inspect_run_result`：结算／解锁查看；[定稿](2026-11-07-inspect-run-result-review.md#输出定稿)及[实施记录](2026-11-08-result-inspection-implementation.md)完成summary、具体诊断、部分读取和严格关联校验，同时统一基础观察face与九类主体展示状态。828项Python、145项C#、13类最终GUI及10项浏览检查通过；一次独立审阅I1／M1经单轮TDD修复和原生重验，提供[36份最终返回](2026-11-08-result-inspection-examples/README.md)，已合入main。
 - [ ] `run_result_option`：点击结算按钮或解锁条目。
 
 ### 截图（1 项，按配置启用）
