@@ -3,7 +3,7 @@
   "name": "STS2 Agent Roundtrip Spike",
   "author": "sts2_agent",
   "description": "Visible English observations and native gameplay actions over local IPC.",
-  "version": "0.77.1",
+  "version": "0.77.2",
   "has_dll": true,
   "has_pck": false,
   "affects_gameplay": true,

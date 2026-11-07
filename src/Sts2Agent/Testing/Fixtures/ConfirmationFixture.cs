@@ -10,6 +10,14 @@ internal static class ConfirmationFixture
 
     public static void Cancel() => EventConfirmation.Contents((NAbandonRunConfirmPopup)NModalContainer.Instance!.OpenModal!).NoButton.ForceClick();
 
+    public static void SetButtons(bool confirm, bool cancel)
+    {
+        var popup = EventConfirmation.Current ?? throw new InvalidOperationException("A supported Trial confirmation is required.");
+        var contents = EventConfirmation.Contents(popup);
+        contents.YesButton.SetEnabled(confirm);
+        contents.NoButton.SetEnabled(cancel);
+    }
+
     public static void Reopen()
     {
         Cancel();

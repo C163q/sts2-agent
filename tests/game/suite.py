@@ -16,6 +16,7 @@ from sts2_mcp.roundtrip_client import Client
 
 CATALOG = json.loads((ROOT / 'tests/game/data/test_scenarios.json').read_text())
 SUPPORTED_VERIFIERS = {
+    'verify_confirmation.py',
     'verify_divination_recovery.py',
     'verify_divination_tool_view.py',
     'verify_choose_event_option_review.py',
@@ -127,6 +128,7 @@ def load_cases(path):
             if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
+                'verify_confirmation.py': ('no_dialog','cancel','replacement','unowned','covered','confirm','buttons'),
                 'verify_divination_recovery.py': ('no_board','small','big','cleared','covered','finished','rewards','selection','curse','gold','relic','direct'),
                 'verify_divination_tool_view.py': ('no_board','playing','finished','rewards','selection'),
                 'verify_choose_event_option_review.py': ('no_event','basic','locked','upgrade','reward','trial','crystal','dense_choice','combat','death','rescue','potions'),

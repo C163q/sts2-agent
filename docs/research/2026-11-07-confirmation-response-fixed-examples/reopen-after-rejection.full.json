@@ -1,0 +1,15 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "visible",
+    "view": "confirmation"
+  },
+  "available_actions": [
+    "respond_to_confirmation"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": []
+  }
+}

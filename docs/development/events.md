@@ -132,6 +132,8 @@ Trial 第二次拒绝会打开原生放弃本局确认框。`get_observation` �
 
 `confirmation` 在没有受支持弹窗时为 `null`。操作只接受由当前单人 Trial 事件实际打开、仍属于同一对局的原生弹窗，主菜单或设置打开的同类型弹窗不会因此得到支持。外部取消后再打开同样文字的新弹窗会使旧观察失效。遮挡期间底层事件、顶栏、地图及药水操作不可用。
 
+没有受支持弹窗、未知来源、页面覆盖、动画／事件等待及按钮不可交互分别给出具体原因。明确点击前且UI未改变的拒绝保留已有许可，可直接改选启用按钮或继续当前合法操作；首次无许可、过期、已交互、未知／坏响应仍须读取。执行、选项enabled与available_actions共用检查，至少一个按钮可交互才提供respond_to_confirmation；两按钮均不可用时仍可读取确认框。
+
 未知弹窗继续返回覆盖状态、空动作列表及人工输入说明；触发动作返回 `manual_input_required`。工具不自动确认或取消任何弹窗。
 
 终章建筑师使用[终章接口](run-ending.md)。多人、第三方事件及其他专属 UI 未接通。注册事件数量及源码分类见[调研](../research/2026-10-31-events.md)，不代表所有事件、分支和遗物组合均已实测。
@@ -152,4 +154,4 @@ python3 scripts/run_roundtrip.py --windowed --event-scenario tea
 
 使用全新报告和截图路径。验证会真实点击、购买或选择，不得连接正式对局。源码依据见[调研](../research/2026-10-31-events.md)，实际验证及限制见[验证记录](../research/2026-10-31-events-validation.md)。
 
-确认框的当前调用、六类场景与典型完整返回见[响应工具审阅](../research/2026-11-07-respond-to-confirmation-review.md)。独立旧验证器[verify_confirmation.py](../../tests/game/verifiers/verify_confirmation.py)仍使用固定IPC及旧完整观察／终态空动作列表断言，尚未迁移当前输出与自有实例流程；历史结果见[确认弹窗验证](../research/2026-10-31-event-confirmation-validation.md)。
+确认框使用[专项套件](../../tests/game/data/gui_suite_confirmation_recovery.json)及[verify_confirmation.py](../../tests/game/verifiers/verify_confirmation.py)核验。验证器接受共享自有实例，也可在配置Trial的新隔离实例主菜单单独运行`--scenario cancel|confirm --report <新路径>`；confirm会结束该测试对局。当前调用与完整回执见[实施记录](../research/2026-11-07-confirmation-response-recovery-implementation.md)；历史结果见[确认弹窗验证](../research/2026-10-31-event-confirmation-validation.md)。

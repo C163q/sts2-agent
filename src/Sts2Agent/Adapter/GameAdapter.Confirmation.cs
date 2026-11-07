@@ -12,17 +12,17 @@ internal sealed partial class GameAdapter
         if (request.Arguments is not { } args || args.EnumerateObject().Count() != 1
             || !args.TryGetProperty("option", out var value) || value.ValueKind != JsonValueKind.String
             || value.GetString() is not ("confirm" or "cancel"))
-            return FileMailbox.Error(request.Id, "invalid_request", "Expected confirm or cancel.");
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request", "Expected confirm or cancel.");
         if (request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current confirmation before acting.");
         var popup = EventConfirmation.Current;
-        if (popup == null || !EventConfirmation.Ready(popup))
-            return FileMailbox.Error(request.Id, "illegal_action", "No supported event confirmation is available.");
+        if (EventConfirmation.ActionUnavailableReason(popup) is { } unavailable)
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", unavailable);
         bool confirming = value.GetString() == "confirm";
-        var contents = EventConfirmation.Contents(popup);
+        var contents = EventConfirmation.Contents(popup!);
         var button = confirming ? contents.YesButton : contents.NoButton;
-        if (!EventConfirmation.Clickable(popup, button))
-            return FileMailbox.Error(request.Id, "illegal_action", "The confirmation button is unavailable.");
+        if (EventConfirmation.ButtonUnavailableReason(popup!, button) is { } unavailableButton)
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", unavailableButton);
         var run = RunManager.Instance.DebugOnlyGetState();
         UiChanged();
         button.ForceClick();

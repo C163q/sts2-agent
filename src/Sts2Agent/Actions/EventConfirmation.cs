@@ -69,8 +69,39 @@ internal static class EventConfirmation
     public static bool BackdropAnimating => NModalContainer.Instance is { } modal
         && RewardInspection.Animating(modal, "_backstopTween");
 
-    public static bool Clickable(NAbandonRunConfirmPopup popup, NPopupYesNoButton button) => Ready(popup)
-        && VisibleUi.OnScreen(button) && button.IsEnabled && button.MouseFilter != Control.MouseFilterEnum.Ignore;
+    private static string? PageUnavailableReason(NAbandonRunConfirmPopup? popup)
+    {
+        if (popup == null && NModalContainer.Instance?.OpenModal != null)
+            return "This dialog is not a supported Trial confirmation. Resolve it in game before continuing.";
+        if (VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen))
+            return "The map is open or closing. Use close_map to return to the current room before responding to a Trial confirmation.";
+        if (CardView.Current != null)
+            return "Close the card browsing page with close_card_view before responding to a Trial confirmation.";
+        if (popup == null) return "No supported Trial confirmation is open. Use the current screen's available actions.";
+        if (!RunContext.Singleplayer) return "A local single-player run is required for a Trial confirmation.";
+        return Exposed(popup) ? null : "The Trial confirmation is opening or covered. Wait for the dialog or return from the covering screen.";
+    }
+
+    public static string? ActionUnavailableReason(NAbandonRunConfirmPopup? popup)
+    {
+        if (PageUnavailableReason(popup) is { } reason) return reason;
+        if (!Ready(popup!)) return "Wait for the Trial confirmation animations and pending event or abandon effects to finish.";
+        var contents = Contents(popup!);
+        return Clickable(popup!, contents.YesButton) || Clickable(popup!, contents.NoButton) ? null
+            : "No confirmation button is currently interactive. Wait for an enabled option.";
+    }
+
+    public static string? ButtonUnavailableReason(NAbandonRunConfirmPopup popup, NPopupYesNoButton button)
+    {
+        if (!Ready(popup)) return "Wait for the Trial confirmation and its current effects to finish.";
+        if (!VisibleUi.OnScreen(button)) return "This confirmation button is not visible. Read the current dialog before continuing.";
+        if (!button.IsEnabled) return "This confirmation button is disabled. Choose an enabled option.";
+        return button.MouseFilter == Control.MouseFilterEnum.Ignore
+            ? "This confirmation button is not currently interactive. Wait for an enabled option." : null;
+    }
+
+    public static bool Clickable(NAbandonRunConfirmPopup popup, NPopupYesNoButton button) =>
+        ButtonUnavailableReason(popup, button) == null;
 
     public static object? Read()
     {

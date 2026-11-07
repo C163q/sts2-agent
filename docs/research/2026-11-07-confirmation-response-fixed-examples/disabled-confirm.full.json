@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This confirmation button is disabled. Choose an enabled option.",
+    "recovery": "choose_legal_action"
+  }
+}

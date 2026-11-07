@@ -15,7 +15,7 @@ internal static class TestDispatchChecks
         "prepare_test_browsable_result", "prepare_test_browsable_history", "check_test_browsable_content", "check_test_top_bar",
         "check_test_selection_observation", "check_test_selection_prompt", "check_test_afflictions", "check_test_hand_resources", "check_test_enchantments",
         "capture_test_power_tips", "capture_test_gas_bomb_intent", "check_test_confirmation", "open_test_unowned_confirmation",
-        "cancel_test_confirmation", "reopen_test_confirmation", "check_test_divination", "check_test_event",
+        "cancel_test_confirmation", "reopen_test_confirmation", "set_test_confirmation_buttons", "check_test_divination", "check_test_event",
         "check_test_event_english", "prepare_test_event_victory", "check_test_ancient", "start_test_ancient_combat",
         "check_test_navigation", "finish_test_navigation_boss", "set_test_navigation_drawing", "clear_test_navigation_drawing",
         "scroll_test_navigation", "arm_test_navigation_scroll_failure", "clear_test_navigation_scroll_failure",

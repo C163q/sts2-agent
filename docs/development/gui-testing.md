@@ -25,6 +25,7 @@
 | 占卜工具冷切换、重复选择、覆盖拒绝恢复及揭开续接 | [divination_tool_view](../../tests/game/data/gui_suite_divination_tool_view.json)；[输出定稿](../research/2026-11-07-set-divination-tool-review.md#输出定稿) |
 | 事件选择的具体拒绝、直接恢复、翻页、选牌、奖励、确认框、占卜与战斗进入 | [choose_event_option_review](../../tests/game/data/gui_suite_choose_event_option_review.json)；[输出定稿](../research/2026-11-07-choose-event-option-review.md#输出定稿) |
 | 占卜揭开范围、明确拒绝后直接继续、奖励与诅咒时机 | [divination_recovery](../../tests/game/data/gui_suite_divination_recovery.json)；[输出定稿](../research/2026-11-07-divine-review.md#输出定稿) |
+| Trial确认框响应、来源／实例校验、拒绝恢复与按钮状态 | [confirmation_recovery](../../tests/game/data/gui_suite_confirmation_recovery.json)；[输出定稿](../research/2026-11-07-respond-to-confirmation-review.md#输出定稿) |
 | 架构组合回归与四项契约样例采集 | [architecture_refactor](../../tests/game/data/gui_suite_architecture_refactor.json) |
 | 药水静态／完整预设、原槽位筛选与显示边界 | [potion_inspection](../../tests/game/data/gui_suite_potion_inspection.json) |
 | 遗物静态图标状态、原下标对照、错误续接及专项验证 | [relic_inspection](../../tests/game/data/gui_suite_relic_inspection.json) |

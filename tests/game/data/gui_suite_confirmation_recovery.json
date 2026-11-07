@@ -1,0 +1,114 @@
+[
+  {
+    "name": "no_dialog",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_confirmation.py",
+        "args": [
+          "--scenario",
+          "no_dialog"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "cancel",
+    "scenarios": {
+      "event": "trial"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_confirmation.py",
+        "args": [
+          "--scenario",
+          "cancel"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "replacement",
+    "scenarios": {
+      "event": "trial"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_confirmation.py",
+        "args": [
+          "--scenario",
+          "replacement"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "unowned",
+    "scenarios": {
+      "event": "trial"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_confirmation.py",
+        "args": [
+          "--scenario",
+          "unowned"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "covered",
+    "scenarios": {
+      "event": "trial"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_confirmation.py",
+        "args": [
+          "--scenario",
+          "covered"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "confirm",
+    "scenarios": {
+      "event": "trial"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_confirmation.py",
+        "args": [
+          "--scenario",
+          "confirm"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "buttons",
+    "scenarios": {
+      "event": "trial"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_confirmation.py",
+        "args": [
+          "--scenario",
+          "buttons"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "No confirmation button is currently interactive. Wait for an enabled option.",
+    "recovery": "choose_legal_action"
+  }
+}

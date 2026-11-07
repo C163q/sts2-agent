@@ -32,6 +32,16 @@ internal sealed partial class GameAdapter
 {
     private async Task<string?> TestRequestBeforeCapture(Request request)
     {
+        if (request.Operation == "set_test_confirmation_buttons" && testMode
+            && testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") == "trial" && LocalPlayer != null)
+        {
+            if (request.Arguments is not { } buttons || buttons.EnumerateObject().Count() != 2
+                || !buttons.TryGetProperty("confirm", out var confirm) || confirm.ValueKind is not (JsonValueKind.True or JsonValueKind.False)
+                || !buttons.TryGetProperty("cancel", out var cancel) || cancel.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected boolean confirm and cancel button states.");
+            ConfirmationFixture.SetButtons(confirm.GetBoolean(), cancel.GetBoolean());
+            return Success(request, await SettledObservation());
+        }
         if (request.Operation is "set_test_event_display" or "set_test_divination_display" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
             && testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") != null)

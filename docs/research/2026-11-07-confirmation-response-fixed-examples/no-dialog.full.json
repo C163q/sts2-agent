@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "No supported Trial confirmation is open. Use the current screen's available actions.",
+    "recovery": "choose_legal_action"
+  }
+}

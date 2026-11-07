@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This dialog is not a supported Trial confirmation. Resolve it in game before continuing.",
+    "recovery": "choose_legal_action"
+  }
+}

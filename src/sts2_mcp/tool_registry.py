@@ -141,8 +141,7 @@ SPECS = (
     ToolSpec(
         name='respond_to_confirmation',
         schema=CONFIRMATION_SCHEMA,
-        description='Respond to the visible Trial event confirmation. Confirm abandons this run; cancel returns to the event. '
-            'Other dialogs require manual input.',
+        description='Respond to the visible Trial confirmation: confirm abandons this run; cancel returns to the event.',
         annotations=action,
         category='action',
         effect='action',
@@ -151,7 +150,8 @@ SPECS = (
         records_events=True,
         reader='transition_details:end_turn_details',
         parser='confirmation_details:confirmation_arguments',
-        parser_operation=False),
+        parser_operation=False,
+        unsubmitted_rejection_unchanged=True),
     ToolSpec(
         name='set_divination_tool',
         schema=TOOL_SCHEMA,

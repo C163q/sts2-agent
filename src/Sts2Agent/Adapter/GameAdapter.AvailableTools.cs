@@ -168,7 +168,7 @@ internal sealed partial class GameAdapter
         if (EventConfirmation.Current is { } dialog && EventConfirmation.Exposed(dialog))
         {
             actions.Clear();
-            if (EventConfirmation.Ready(dialog)) actions.Add("respond_to_confirmation");
+            if (EventConfirmation.ActionUnavailableReason(dialog) == null) actions.Add("respond_to_confirmation");
         }
         if (map != null)
         {

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The map is open or closing. Use close_map to return to the current room before responding to a Trial confirmation.",
+    "recovery": "choose_legal_action"
+  }
+}
