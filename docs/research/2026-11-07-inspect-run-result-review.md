@@ -1,6 +1,6 @@
 # inspect_run_result 核验与建议
 
-> 当前状态：summary规则已确认；内容完整性提示及基础观察同步方案仍在讨论。尚未修改工具行为、未核销。总进度见[工具清单](2026-11-02-mcp-tool-review.md)。
+> 当前状态：summary及基础观察统一face规则已确认；展示完成状态的共用设计仍在讨论。尚未修改工具行为、未核销。总进度见[工具清单](2026-11-02-mcp-tool-review.md)。
 
 已整理[19份典型实际JSON](2026-11-07-inspect-run-result-examples/README.md)：17份full、2份default。源码、原始证据及验证限制见[开发核验](2026-11-07-inspect-run-result-development-notes.md)。
 
@@ -46,9 +46,9 @@
 
 尚未新增筛选需求，现有default/full保持。两项正确性问题仍优先于预设实现；尚未开始修改产品代码。
 
-## 显示未完成时的提示（待确认）
+## 显示未完成时的提示（待统一设计）
 
-现有status:not_ready表示页面未达到操作就绪条件，可能涉及动画、文字、输入阻挡或按钮状态；它不能独立表达内容是否完整。建议增加当前页的content_complete，并让inspect_run_result及get_observation的full/default/summary使用同一次读取的判断：
+现有status:not_ready表示页面未达到操作就绪条件，可能涉及动画、文字、输入阻挡或按钮状态；它不能独立表达内容是否完整。content_complete目前在产品中不存在，下列为候选语义，不能仅按结算设计后直接当作通用规则。其他场景的现有表示及统一设计边界见[跨场景核验](2026-11-08-observation-consistency-review.md#content_complete是否已有)。
 
 - false：当前页仍在展示过程中，返回值只代表已显示部分，数值／列表可能继续变化；附简短note说明。
 - true：当前页的展示流程已完成，不代表后续页面或未揭示解锁也已读取。
@@ -66,7 +66,7 @@
 }
 ```
 
-仅保留not_ready并补note也能提示等待，但会继续混合内容展示和操作条件；优先建议独立content_complete字段。该方案尚待确认及原生展示时序核验。
+仅保留not_ready并补note会继续混合内容展示和操作条件；是否增加独立字段、放在哪个主体，以及向哪些场景统一接入，尚未定稿。先核对共用语义和各页面原生展示时序，不先为结算实现局部例外。
 
 ## get_observation的现状及同步建议
 
@@ -79,6 +79,6 @@
 | 页面级hover_tips | 不返回 | 不返回 | 不返回 |
 | 当前页文字、分数、徽章、发现和按钮 | 保留 | 按default处理 | 保留 |
 
-因此基础观察尚未具备已确认summary中的页面级source/title；时间线可能只剩Reveal和ID。建议为基础观察同步补齐这些标题，并与inspect_run_result复用同一静态内容入口；卡牌继续沿用此前已定稿的full/default完整、summary摘要约定。此同步方案待确认，不把建议描述为现有能力。
+因此基础观察尚未具备已确认summary中的页面级source/title；时间线可能只剩Reveal和ID。建议为基础观察同步补齐这些标题，并与inspect_run_result复用静态内容入口。卡牌的已确认目标为所有基础观察full/default采用face_full/face_default、summary采用共用卡牌摘要；上表的完整卡牌是当前实现差异，展开选牌及比较也需统一，不能保留为目标规则。范围与证据见[跨场景核验](2026-11-08-observation-consistency-review.md)。时间线标题同步仍为建议，不把尚未实现内容描述为现有能力。
 
 读取及错误判断可以在现有RunResultInspection内整理，无须重构整套结算流程。run_result_option的动作拒绝恢复留待下一项审阅，不因本工具的纯读取恢复正常而推断动作工具也已完成。

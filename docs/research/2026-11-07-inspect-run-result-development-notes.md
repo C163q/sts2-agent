@@ -80,3 +80,7 @@ GUI读取覆盖7个phase：outcome、summary、tutorial、timeline、epoch、unl
 2026-11-08在ecbb594基线上，将本轮已有真实原生基础观察分别经过当前get_observation三种预设重放，覆盖时间线、卡牌／药水／遗物解锁共12种组合。证据为`.tmp/2026-11-08-result-content-design/preset-checks.json`及check_presets.py；没有重新启动游戏或修改产品。
 
 三种预设均省略页面级hover_tips；药水／遗物均仅name。卡牌full/default保留description和逐牌hover_tips，summary使用共用卡牌摘要；null过滤仍按既有规则。因此新的详情summary标题策略并非现有基础观察行为。已在审阅报告分开记录已确认摘要、待确认content_complete及基础观察同步建议；显示完整性不得直接复用包含按钮等条件的Ready。
+
+## 基础观察统一规则及跨场景状态复核
+
+2026-11-08确认get_observation全部标准卡牌full/default采用face_full/face_default。之前重放证明的“结算完整卡牌”只是当前实现，不能继续作为目标。展开候选、卡包和比较也仍使用full，迁移应覆盖这些位置。content_complete在产品中没有实现；事件、先古、建筑师等也存在分阶段展示或局部就绪表示。完整源码分类及设计边界见[跨场景核验](2026-11-08-observation-consistency-review.md)，尚未进行接口修改。
