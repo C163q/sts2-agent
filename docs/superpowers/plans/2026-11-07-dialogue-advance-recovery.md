@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-> 当前状态：实现与验收完成，共1项，完成1项；正在提交及准备独立审阅，剩余合入main。暂无阻塞。
+> 当前状态：已完成，共1项，完成1项；实现、验收及独立审阅完成并合入main，临时分支清理。无阻塞。结果及边界见[实施记录](../../research/2026-11-07-dialogue-recovery-implementation.md)。
 
 **Goal:** 先古之民和建筑师明确未点击的推进拒绝保留已有许可，并给出具体原因。
 
@@ -47,4 +47,4 @@
 - [x] Step 3: 实现两个DialogueUnavailableReason，共用原有页面／就绪判断；三个消费位置接入。点击前错误改明确拒绝，底层多余参数同样明确拒绝；注册恢复策略，保留stale及点击后的不确定语义。
 - [x] Step 4: Python专项转绿；构建及C#检查、完整Python套件通过。准备隔离运行时并执行GUI：错误房间、对话中段／结束、已领馈赠、选牌、奖励、地图／牌组、stale；单独终章验证覆盖、最终按钮及run_won。预期明确拒绝不改快照且下一合法动作无需观察，成功仍原生推进一步。
 - [x] Step 5: 更新维护文档及版本，导出真实full/default回执，检查来源、链接、DLL和自有进程退出；提交`fix: preserve dialogue permission and rejection reasons`。
-- [ ] Step 6: 一次全分支独立审阅；按实际影响处置，必要修复RED→GREEN，不重复审阅。完成记录和核销，合入main并删除临时分支。
+- [x] Step 6: 一次全分支独立审阅；按实际影响处置，必要修复RED→GREEN，不重复审阅。完成记录和核销，合入main并删除临时分支。
