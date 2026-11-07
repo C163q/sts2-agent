@@ -1,6 +1,6 @@
 # run_result_option 核验与建议
 
-> 当前状态：三项修复及详情页夹具的补验范围已确认，正在实施；审阅基线的实际返回和限制保留如下。总进度见[工具清单](2026-11-02-mcp-tool-review.md)。
+> 当前状态：三项修复、详情页夹具和验收完成，经一次独立审阅后合入main；原审阅基线保留如下。最新结果见[实施记录](2026-11-08-result-option-recovery-implementation.md)，总进度见[工具清单](2026-11-02-mcp-tool-review.md)。
 
 下文现状对应f033e35审阅基线；修复后的代码、验收及样例见[实施记录](2026-11-08-result-option-recovery-implementation.md)。
 

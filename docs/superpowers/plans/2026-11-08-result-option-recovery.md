@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
-> 当前状态：实施中，共3项，已完成2项；正在整理最终样例和文档，剩余一次独立审阅及合入。暂无阻塞。
+> 当前状态：已完成实现、验收、一次独立审阅及合入main，共3项全部完成；保留1项非阻断测试建议，见实施记录。专属工作区已归档校验后清理，无剩余实现或阻塞。
 
 **Goal:** 修复结算动作的许可恢复、具体原因及已揭晓章节查看，并核验原生结算详情的返回流程。
 
@@ -64,5 +64,5 @@
 
 - [x] 更新现行规则和版本；导出实际完整JSON，标明场景、参数、来源与校验值。Expected：没有生成数据冒充GUI调用。
 - [x] 验证样例重放、相对链接、版本、最终DLL一致、自有进程退出；不在无变化情况下重复编译／测试。
-- [ ] 提交实现和证据后，按executing-plans做一次全分支独立审阅。Critical／Important仅一轮TDD修复并重新验收受影响部分；Minor和所有Ruling完整记录并披露，不二次派审。
-- [ ] 已拥有的技能工作区归档校验后删除；自行快进合main、删除临时分支，工作区干净。Expected：不推送、不安装、没有未披露遗留。
+- [x] 提交实现和证据后，按executing-plans做一次全分支独立审阅。Critical／Important均无；Minor1项及验证边界完整记录，未进行修复轮或二次派审。
+- [x] 已拥有的技能工作区归档校验后删除；自行快进合main、删除临时分支，工作区干净。Expected：不推送、不安装、没有未披露遗留。
