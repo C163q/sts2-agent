@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "stale_state",
+    "message": "The observation is outdated. Read the current state before choosing an action.",
+    "recovery": "get_observation"
+  }
+}
