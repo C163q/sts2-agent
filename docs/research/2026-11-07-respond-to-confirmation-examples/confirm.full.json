@@ -1,0 +1,18 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "available_actions": [
+    "inspect_ui",
+    "inspect_run_result",
+    "inspect_potions",
+    "inspect_relics"
+  ],
+  "transition": {
+    "stop_reason": "run_lost",
+    "complete": true,
+    "events": []
+  }
+}

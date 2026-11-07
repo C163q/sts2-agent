@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销37项。divine已完成实现、验收与独立审阅并合入main；剩余7项尚未核销，无阻塞。buy_item独立审阅的非阻塞建议见其实施记录。
+> 当前状态：工具核验进行中，共44项，已核销37项。respond_to_confirmation已完成六类场景与十二份JSON核验，处于设计讨论，两项产品修复及旧验证器迁移建议待确认；剩余7项尚未核销，无阻塞。buy_item独立审阅的非阻塞建议见其实施记录。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -92,7 +92,7 @@
 - [x] `choose_event_option`：选择事件选项。[输出定稿](2026-11-07-choose-event-option-review.md#输出定稿)已实现，页面／动作／单项检查统一，明确点击前拒绝保留许可并给具体原因；[实施与验证](2026-11-07-event-option-recovery-implementation.md)及[十八份修复后JSON](2026-11-07-event-option-fixed-examples/README.md)已交付，独立审阅通过并合入main。
 - [x] `set_divination_tool`：切换占卜揭示范围。[输出定稿](2026-11-07-set-divination-tool-review.md#输出定稿)已实现；可直接调用，成功为actions_only，具体拒绝保留已有许可；[实施与验证](2026-11-07-divination-tool-view-implementation.md)及[十三份实际JSON](2026-11-07-divination-tool-view-examples/README.md)已交付，独立审阅通过并合入main。
 - [x] `divine`：执行一次占卜揭示。[输出定稿](2026-11-07-divine-review.md#输出定稿)已实现，具体前置拒绝保留已有许可；[实施与验证](2026-11-07-divination-recovery-implementation.md)及[十八份实际JSON](2026-11-07-divination-recovery-examples/README.md)已交付，独立审阅通过并合入main。
-- [ ] `respond_to_confirmation`：响应试炼事件的确认框。
+- [ ] `respond_to_confirmation`：响应试炼事件的确认框。阶段：设计讨论；[核验与建议](2026-11-07-respond-to-confirmation-review.md)、[开发核验](2026-11-07-respond-to-confirmation-development-notes.md)及[十二份实际JSON](2026-11-07-respond-to-confirmation-examples/README.md)已交付，两项产品修复及旧验证器迁移待确认。
 
 ### 先古之民与对话（3 项）
 

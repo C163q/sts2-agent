@@ -128,7 +128,7 @@ Trial 第二次拒绝会打开原生放弃本局确认框。`get_observation` �
 {"option":"cancel"}
 ```
 
-`respond_to_confirmation` 的 `option` 仅接受 `cancel` 或 `confirm` 字符串，不接受额外字段。取消点击原生 No，等待遮罩退出后返回原事件；可以直接复用结果，再点 Double Down 打开新确认框。确认点击原生 Yes，走 `RunManager.Abandon`，等待原生失败信号和放弃任务完成，返回 `run_lost`、`complete: true`、空动作列表；不自动点击失败画面的后续按钮，装饰动画仍可能继续。
+`respond_to_confirmation` 的 `option` 仅接受 `cancel` 或 `confirm` 字符串，不接受额外字段。取消点击原生 No，等待遮罩退出后返回原事件；可以直接复用结果，再点 Double Down 打开新确认框。确认点击原生 Yes，走 `RunManager.Abandon`，等待原生失败信号和放弃任务完成，返回 `run_lost`、`complete: true`；回执保留实际可读且无需玩法许可的查看工具，例如 `inspect_run_result`，旧玩法许可不续接。工具不自动推进结算，具体流程见[终章与结算](run-ending.md)。
 
 `confirmation` 在没有受支持弹窗时为 `null`。操作只接受由当前单人 Trial 事件实际打开、仍属于同一对局的原生弹窗，主菜单或设置打开的同类型弹窗不会因此得到支持。外部取消后再打开同样文字的新弹窗会使旧观察失效。遮挡期间底层事件、顶栏、地图及药水操作不可用。
 
@@ -152,4 +152,4 @@ python3 scripts/run_roundtrip.py --windowed --event-scenario tea
 
 使用全新报告和截图路径。验证会真实点击、购买或选择，不得连接正式对局。源码依据见[调研](../research/2026-10-31-events.md)，实际验证及限制见[验证记录](../research/2026-10-31-events-validation.md)。
 
-确认框使用 `--event-scenario trial` 启动新的隔离实例，运行 `tests/game/verifiers/verify_confirmation.py --scenario cancel|confirm --report <新路径>`；两个场景须分别启动实例。`confirm` 会结束该测试对局。结果见[确认弹窗验证](../research/2026-10-31-event-confirmation-validation.md)。
+确认框的当前调用、六类场景与典型完整返回见[响应工具审阅](../research/2026-11-07-respond-to-confirmation-review.md)。独立旧验证器[verify_confirmation.py](../../tests/game/verifiers/verify_confirmation.py)仍使用固定IPC及旧完整观察／终态空动作列表断言，尚未迁移当前输出与自有实例流程；历史结果见[确认弹窗验证](../research/2026-10-31-event-confirmation-validation.md)。

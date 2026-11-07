@@ -1,0 +1,173 @@
+[
+  {
+    "file": "cancel.full.json",
+    "description": "取消并回到Trial",
+    "tool": "respond_to_confirmation",
+    "arguments": {
+      "preset": "full",
+      "option": "cancel"
+    },
+    "source": ".tmp/2026-11-07-respond-to-confirmation-review/remaining/evidence.json",
+    "row_index": 14,
+    "native_files": [
+      ".tmp/2026-11-07-respond-to-confirmation-review/remaining/game/ipc/responses/ac5326f6728b42ca9ddbeea9aaa241e7.json"
+    ],
+    "sha256": "23664b630319a907ee4fb3fa8d4b470d0563cd579e7dbe942c4c842e1a74c90f"
+  },
+  {
+    "file": "cancel.default.json",
+    "description": "再次取消，default回执",
+    "tool": "respond_to_confirmation",
+    "arguments": {
+      "preset": "default",
+      "option": "cancel"
+    },
+    "source": ".tmp/2026-11-07-respond-to-confirmation-review/remaining/evidence.json",
+    "row_index": 24,
+    "native_files": [
+      ".tmp/2026-11-07-respond-to-confirmation-review/remaining/game/ipc/responses/f5bb0b63a3074290ac906dc4b17898c7.json"
+    ],
+    "sha256": "23664b630319a907ee4fb3fa8d4b470d0563cd579e7dbe942c4c842e1a74c90f"
+  },
+  {
+    "file": "confirm.full.json",
+    "description": "确认放弃，进入失败结算",
+    "tool": "respond_to_confirmation",
+    "arguments": {
+      "preset": "full",
+      "option": "confirm"
+    },
+    "source": ".tmp/2026-11-07-respond-to-confirmation-review/remaining/evidence.json",
+    "row_index": 70,
+    "native_files": [
+      ".tmp/2026-11-07-respond-to-confirmation-review/remaining/game/ipc/responses/cac5d3bec18f4e31a6a3548fb013d349.json"
+    ],
+    "sha256": "16815b40235f4ba8045cb952f463ea6a46ba1f2983d4cf3a23305c436d21dd5e"
+  },
+  {
+    "file": "no-dialog.full.json",
+    "description": "没有确认框时拒绝",
+    "tool": "respond_to_confirmation",
+    "arguments": {
+      "preset": "full",
+      "option": "cancel"
+    },
+    "source": ".tmp/2026-11-07-respond-to-confirmation-review/evidence.json",
+    "row_index": 4,
+    "native_files": [
+      ".tmp/2026-11-07-respond-to-confirmation-review/game/ipc/responses/585dd128031345138d66a840e88660a3.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "after-rejection.full.json",
+    "description": "拒绝后结束回合仍要求观察",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-respond-to-confirmation-review/evidence.json",
+    "row_index": 6,
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "already-closed.full.json",
+    "description": "取消后重复响应拒绝",
+    "tool": "respond_to_confirmation",
+    "arguments": {
+      "preset": "full",
+      "option": "cancel"
+    },
+    "source": ".tmp/2026-11-07-respond-to-confirmation-review/remaining/evidence.json",
+    "row_index": 17,
+    "native_files": [
+      ".tmp/2026-11-07-respond-to-confirmation-review/remaining/game/ipc/responses/7d1eb70ab9264919a54c02102227b289.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "reopen-after-rejection.full.json",
+    "description": "重复响应拒绝后，合法重开仍要求观察",
+    "tool": "choose_event_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": 3
+    },
+    "source": ".tmp/2026-11-07-respond-to-confirmation-review/remaining/evidence.json",
+    "row_index": 20,
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "unowned.full.json",
+    "description": "非Trial来源同类弹窗拒绝",
+    "tool": "respond_to_confirmation",
+    "arguments": {
+      "preset": "full",
+      "option": "cancel"
+    },
+    "source": ".tmp/2026-11-07-respond-to-confirmation-review/remaining/evidence.json",
+    "row_index": 46,
+    "native_files": [
+      ".tmp/2026-11-07-respond-to-confirmation-review/remaining/game/ipc/responses/b03c0303d88943af87e346618bee11ba.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "replaced-popup.full.json",
+    "description": "同文案新弹窗使旧观察过期",
+    "tool": "respond_to_confirmation",
+    "arguments": {
+      "preset": "full",
+      "option": "cancel"
+    },
+    "source": ".tmp/2026-11-07-respond-to-confirmation-review/remaining/evidence.json",
+    "row_index": 36,
+    "native_files": [
+      ".tmp/2026-11-07-respond-to-confirmation-review/remaining/game/ipc/responses/49b87ba1026b4be1a7161887e09fc29e.json"
+    ],
+    "sha256": "42a71b30fd7304b95d71e071e2d2c183c103a658fa8a8f2cba2d7b84ebec4a60"
+  },
+  {
+    "file": "cancel-fresh.full.json",
+    "description": "读取新弹窗后成功取消",
+    "tool": "respond_to_confirmation",
+    "arguments": {
+      "preset": "full",
+      "option": "cancel"
+    },
+    "source": ".tmp/2026-11-07-respond-to-confirmation-review/remaining/evidence.json",
+    "row_index": 39,
+    "native_files": [
+      ".tmp/2026-11-07-respond-to-confirmation-review/remaining/game/ipc/responses/fcd7377896574affbf1fda81d6bed356.json"
+    ],
+    "sha256": "23664b630319a907ee4fb3fa8d4b470d0563cd579e7dbe942c4c842e1a74c90f"
+  },
+  {
+    "file": "cold-call.full.json",
+    "description": "首次无许可响应拒绝",
+    "tool": "respond_to_confirmation",
+    "arguments": {
+      "preset": "full",
+      "option": "cancel"
+    },
+    "source": ".tmp/2026-11-07-respond-to-confirmation-review/remaining/evidence.json",
+    "row_index": 1,
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "invalid-option.full.json",
+    "description": "布尔option在MCP本地拒绝",
+    "tool": "respond_to_confirmation",
+    "arguments": {
+      "preset": "full",
+      "option": true
+    },
+    "source": ".tmp/2026-11-07-respond-to-confirmation-review/remaining/evidence.json",
+    "row_index": 7,
+    "native_files": [],
+    "sha256": "2d3be42f2a98c0290a2e21f9c878069ccf98f3c6c2853a9418a3efdcf464037a"
+  }
+]
