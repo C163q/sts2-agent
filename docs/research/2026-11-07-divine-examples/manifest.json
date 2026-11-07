@@ -1,0 +1,268 @@
+[
+  {
+    "file": "small.full.json",
+    "description": "小范围揭开一格",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 19,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/game/ipc/responses/7984bf9a6912440c914872860a855c54.json"
+    ],
+    "sha256": "76ac8019e0fbc3d51502f904d9531821ed99ed42cfaf312aabbd99ef612abf95"
+  },
+  {
+    "file": "big-edge.full.json",
+    "description": "大范围在左边缘裁剪",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 0,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 31,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/game/ipc/responses/34da1e242e594b44ae1f9cfb77d35a57.json"
+    ],
+    "sha256": "76ac8019e0fbc3d51502f904d9531821ed99ed42cfaf312aabbd99ef612abf95"
+  },
+  {
+    "file": "small.default.json",
+    "description": "default精简动作回执",
+    "tool": "divine",
+    "arguments": {
+      "preset": "default",
+      "x": 5,
+      "y": 6
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 21,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/game/ipc/responses/b15601a6192b40cda5b5ace824c3fba5.json"
+    ],
+    "sha256": "76ac8019e0fbc3d51502f904d9531821ed99ed42cfaf312aabbd99ef612abf95"
+  },
+  {
+    "file": "finished.full.json",
+    "description": "次数耗尽并完成占卜",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 0
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 80,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/game/ipc/responses/e749079cffd04874aa9ad55473345f66.json"
+    ],
+    "sha256": "d8f16332aebc6bc20aefae24714a2fb7e889b0b9b0fc663d79fa48c10beb3ade"
+  },
+  {
+    "file": "rewards.full.json",
+    "description": "次数耗尽后展示奖励",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 0
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 96,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/game/ipc/responses/8cffe4135830438f9b5525d8234dad48.json"
+    ],
+    "sha256": "e88949a693cc2f2a5923f3d920a7eb6ceb95a09e4d63ac29b95639140f5f7a21"
+  },
+  {
+    "file": "curse.full.json",
+    "description": "诅咒立即加入永久牌组",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 3,
+      "y": 4
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 125,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/game/ipc/responses/9baf783589a64a7d9a14db5b25f31cf1.json"
+    ],
+    "sha256": "b56316c76cb0856e5f39dc6c7128fcc799d464b094a387ba7e3630e7a89899ab"
+  },
+  {
+    "file": "cold-call.full.json",
+    "description": "未取得许可的首次揭开",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 8,
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "invalid-coordinate.full.json",
+    "description": "布尔坐标在MCP本地拒绝",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": true,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 14,
+    "native_files": [],
+    "sha256": "9a31113bbd9b0a7211212d708a814087cb4aa4dd3d7122a06e1d90af80c735ea"
+  },
+  {
+    "file": "no-board.full.json",
+    "description": "无占卜棋盘时拒绝",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 4,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/game/ipc/responses/cd8614fbfba0414e9f6d15eb8471a7db.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "already-cleared.full.json",
+    "description": "已清除格子拒绝",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 45,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/game/ipc/responses/696d153e7cc34395903eba6944cb8516.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "地图覆盖时拒绝",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 59,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/game/ipc/responses/fce3e095d803466294cfcb1f01cdab48.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "deck-covered.full.json",
+    "description": "牌组覆盖时拒绝",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 65,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/game/ipc/responses/f283346e4f8d494dba4319db31bf202d.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "finished-rejection.full.json",
+    "description": "已结束后拒绝",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 83,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/game/ipc/responses/3e25ce3cd87a45a59404bb81507a6276.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "rewards-covered.full.json",
+    "description": "奖励覆盖时拒绝",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 99,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/game/ipc/responses/1b31cf52f9da44c593b01a8090ef3e80.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "奖励选牌覆盖时拒绝",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 116,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/game/ipc/responses/31bb5a249fdc42f79b38288f70214243.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "after-rejection.full.json",
+    "description": "拒绝后改选合法格仍要求观察",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 6
+    },
+    "source": ".tmp/2026-11-07-divine-review/evidence.json",
+    "row_index": 47,
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "direct-next.full.json",
+    "description": "成功揭开后直接再次揭开",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 6
+    },
+    "source": ".tmp/2026-11-07-divine-review/remaining/evidence.json",
+    "row_index": 39,
+    "native_files": [
+      ".tmp/2026-11-07-divine-review/remaining/game/ipc/responses/ed244bd703254e468b053d3ed013f36a.json"
+    ],
+    "sha256": "76ac8019e0fbc3d51502f904d9531821ed99ed42cfaf312aabbd99ef612abf95"
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "x must be integer.",
+    "recovery": "correct_request"
+  }
+}
