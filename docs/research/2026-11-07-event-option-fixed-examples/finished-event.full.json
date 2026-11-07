@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This event is finished. Use proceed to continue.",
+    "recovery": "choose_legal_action"
+  }
+}

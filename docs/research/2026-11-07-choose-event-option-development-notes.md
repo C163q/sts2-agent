@@ -1,6 +1,6 @@
 # choose_event_option 开发核验依据
 
-> 当前状态：现状核验完成；实现尚未开始。用户决策内容见[审阅与建议](2026-11-07-choose-event-option-review.md)。
+> 当前状态：定稿已进入实施，当前验证进度见[实施记录](2026-11-07-event-option-recovery-implementation.md)；以下保留审阅基线。用户决策内容见[审阅与建议](2026-11-07-choose-event-option-review.md)。
 
 ## 问题依据
 
@@ -60,4 +60,4 @@ DenseVegetation.Rest 治疗并生成 Fight 选项；Fight 进入战斗。新鲜�
 
 执行前拒绝使用现有 RejectedBeforeSubmission，并在注册启用 unsubmitted_rejection_unchanged；保持 stale_state、点击后的异常与未知结果不续接许可。原始请求参数错误也应使用明确未交互的拒绝；无需新建另一套许可机制。
 
-上述内容为建议，尚未授权实施；TODO 清单保持原有范围。
+上述建议已纳入输出定稿；实现与验收另见实施记录，TODO清单保持原有范围。

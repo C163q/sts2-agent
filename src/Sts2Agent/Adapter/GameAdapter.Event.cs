@@ -14,7 +14,7 @@ internal sealed partial class GameAdapter
         if (request.Operation == "choose_event_option" && (request.Arguments is not { } args
             || args.EnumerateObject().Count() != 1 || !args.TryGetProperty("option_id", out var id)
             || id.ValueKind != JsonValueKind.Number || !id.TryGetInt32(out optionId) || optionId < 0))
-            return FileMailbox.Error(request.Id, "invalid_request", "A nonnegative option_id is required.");
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "invalid_request", "A nonnegative Int32 option_id is required.");
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current event before acting.");
         var context = EventInspection.Current;
@@ -24,12 +24,14 @@ internal sealed partial class GameAdapter
                 return ResponseBuilder.Error(request.Id, "illegal_action", rejection, publicMessage: true, uiUnchanged: true);
             return InspectionSuccess(request, before, new { @event = eventInspection.Read(full: true) });
         }
-        if (context == null || !EventInspection.Exposed(context) || !RunContext.Singleplayer
-            || !inspect && !EventInspection.Ready(context))
-            return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player event.");
-        var button = eventInspection.Find(context, optionId);
-        if (button == null || !EventInspection.Clickable(button))
-            return FileMailbox.Error(request.Id, "illegal_action", "The requested event option is unavailable.");
+        if (EventInspection.ActionUnavailableReason(context) is { } unavailable)
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", unavailable);
+        var button = eventInspection.Find(context!, optionId);
+        if (button == null)
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action",
+                "No current event option matches option_id. It may have been used or replaced; inspect_event shows the current IDs.");
+        if (EventInspection.OptionUnavailableReason(button) is { } unavailableOption)
+            return FileMailbox.RejectedBeforeSubmission(request.Id, "illegal_action", unavailableOption);
         var run = RunManager.Instance.DebugOnlyGetState();
         var enteringCombat = CombatJournalScope.Current!;
         UiChanged();

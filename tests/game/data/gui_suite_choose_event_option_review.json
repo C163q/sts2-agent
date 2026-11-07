@@ -1,0 +1,194 @@
+[
+  {
+    "name": "no_event",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_choose_event_option_review.py",
+        "args": [
+          "--scenario",
+          "no_event"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "basic",
+    "scenarios": {
+      "event": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_choose_event_option_review.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "locked",
+    "scenarios": {
+      "event": "locked"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_choose_event_option_review.py",
+        "args": [
+          "--scenario",
+          "locked"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "upgrade",
+    "scenarios": {
+      "event": "upgrade"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_choose_event_option_review.py",
+        "args": [
+          "--scenario",
+          "upgrade"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "reward",
+    "scenarios": {
+      "event": "reward"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_choose_event_option_review.py",
+        "args": [
+          "--scenario",
+          "reward"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "trial",
+    "scenarios": {
+      "event": "trial"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_choose_event_option_review.py",
+        "args": [
+          "--scenario",
+          "trial"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "crystal",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_choose_event_option_review.py",
+        "args": [
+          "--scenario",
+          "crystal"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "dense_choice",
+    "scenarios": {
+      "event": "dense_choice"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_choose_event_option_review.py",
+        "args": [
+          "--scenario",
+          "dense_choice"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "combat",
+    "scenarios": {
+      "event": "dense"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_choose_event_option_review.py",
+        "args": [
+          "--scenario",
+          "combat"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "death",
+    "scenarios": {
+      "event": "death"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_choose_event_option_review.py",
+        "args": [
+          "--scenario",
+          "death"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "rescue",
+    "scenarios": {
+      "event": "rescue"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_choose_event_option_review.py",
+        "args": [
+          "--scenario",
+          "rescue"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "potions",
+    "scenarios": {
+      "event": "potions"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_choose_event_option_review.py",
+        "args": [
+          "--scenario",
+          "potions"
+        ]
+      }
+    ]
+  }
+]

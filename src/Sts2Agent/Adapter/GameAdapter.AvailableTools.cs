@@ -128,7 +128,7 @@ internal sealed partial class GameAdapter
         {
             if (DivinationInspection.Playing(divination)) { actions.Add("set_divination_tool"); actions.Add("divine"); }
         }
-        if (EventInspection.Current is { } currentEvent && EventInspection.Ready(currentEvent))
+        if (EventInspection.Current is { } currentEvent && EventInspection.ActionUnavailableReason(currentEvent) == null)
         {
             if (currentEvent.Layout.OptionButtons.Any(b => !ReferenceEquals(b, EventInspection.Proceed(currentEvent)) && EventInspection.Clickable(b)))
                 actions.Add("choose_event_option");

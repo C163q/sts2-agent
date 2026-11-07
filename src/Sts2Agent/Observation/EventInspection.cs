@@ -36,20 +36,31 @@ internal sealed class EventInspection
         && RunUi.NonCombatVisible() && NRun.Instance?.GlobalUi.Overlays.ScreenCount == 0
         && !VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen) && VisibleUi.Shown(context.Layout);
 
-    public static string? InspectionUnavailableReason(Context? context)
+    public static string? InspectionUnavailableReason(Context? context) => PageUnavailableReason(context, false);
+
+    private static string? PageUnavailableReason(Context? context, bool choosing)
     {
-        if (!RunManager.Instance.IsInProgress) return "No local run is available for event inspection.";
+        if (!RunManager.Instance.IsInProgress) return choosing
+            ? "No local run is available for choosing an event option." : "No local run is available for event inspection.";
         if (context == null) return "No supported event is available on the current screen.";
-        if (!RunContext.Singleplayer) return "Event inspection requires a local single-player run.";
+        if (!RunContext.Singleplayer) return choosing
+            ? "Choosing an event option requires a local single-player run." : "Event inspection requires a local single-player run.";
         if (Exposed(context)) return null;
-        if (VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen)) return "Close the map with close_map before inspecting the event.";
-        if (CardView.Current != null) return "Close the card browsing page with close_card_view before inspecting the event.";
+        string purpose = choosing ? "choosing an event option" : "inspecting the event";
+        if (VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen)) return NRun.Instance!.GlobalUi.MapScreen.IsOpen
+            ? $"Close the map with close_map before {purpose}." : $"Wait for the map to finish closing before {purpose}.";
+        if (CardView.Current != null) return $"Close the card browsing page with close_card_view before {purpose}.";
         if (CardSelection.Current != null) return "Resolve the current card selection; inspect_selection shows its choices.";
         if (RewardInspection.Current != null) return "Resolve the current reward page; inspect_rewards shows its rows.";
-        if (DivinationInspection.Current != null) return "Wait for the divination board to finish opening.";
-        if (EventConfirmation.Current != null) return "Resolve the confirmation with respond_to_confirmation before inspecting the event.";
+        if (DivinationInspection.Current != null) return choosing
+            ? "Use the current divination tools; inspect_event shows the board." : "Wait for the divination board to finish opening.";
+        if (EventConfirmation.Current != null) return $"Resolve the confirmation with respond_to_confirmation before {purpose}.";
         return "The event is covered by a dialog or a screen transition.";
     }
+
+    public static string? ActionUnavailableReason(Context? context) => PageUnavailableReason(context, true)
+        ?? (context!.Model.IsFinished ? "This event is finished. Use proceed to continue."
+            : !Ready(context) ? "Wait for the event text, options, and current effects to finish before choosing another option." : null);
 
     private static bool TextComplete(Context context) => context.Layout.GetNodeOrNull<RichTextLabel>("%EventDescription")
         is { VisibleRatio: >= 0.999f } description && VisibleUi.OnScreen(description)
@@ -68,10 +79,19 @@ internal sealed class EventInspection
         && button.IsEnabled && (button.GetMouseFilterWithOverride() != Control.MouseFilterEnum.Ignore
             || button.GetFocusModeWithOverride() == Control.FocusModeEnum.All);
 
-    public static bool Clickable(NEventOptionButton button) => Shown(button) && VisibleUi.OnScreen(button) && button.IsEnabled && !button.Option.IsLocked
-        && button.MouseFilter != Control.MouseFilterEnum.Ignore
-        && (!button.Option.WasChosen || PrivateFields.Read(button.Option, "<DisableOnChosen>k__BackingField") is false)
-        && !RewardInspection.Animating(button, "_animInTween");
+    public static string? OptionUnavailableReason(NEventOptionButton button)
+    {
+        if (button.Option.IsLocked) return "This event option is locked. Use inspect_event to read its requirements.";
+        if (button.Option.WasChosen && PrivateFields.Read(button.Option, "<DisableOnChosen>k__BackingField") is not false)
+            return "This event option has already been used. Use inspect_event to read the remaining options.";
+        if (!button.IsEnabled || RewardInspection.Animating(button, "_animInTween"))
+            return "Wait for this event option to become enabled after the current activity.";
+        if (!Shown(button) || !VisibleUi.OnScreen(button) || button.MouseFilter == Control.MouseFilterEnum.Ignore)
+            return "This event option is not currently visible and interactive. Use inspect_event after its button finishes appearing.";
+        return null;
+    }
+
+    public static bool Clickable(NEventOptionButton button) => OptionUnavailableReason(button) == null;
 
     private static bool IsProceed(Context context, NEventOptionButton button) => context.Model.IsFinished
         && button.Option is { IsProceed: true, TextKey: "PROCEED" } && !context.Model.CurrentOptions.Contains(button.Option);
@@ -100,6 +120,7 @@ internal sealed class EventInspection
         if (!Exposed(current)) return new { status = "covered", name = (string?)null, description = (string?)null,
             options = (object?)null, proceed = (object?)null };
         bool ready = Ready(current);
+        bool canChoose = ActionUnavailableReason(current) == null;
         return EnglishEventText.Read(() =>
         {
             var options = current.Layout.OptionButtons.Where(b => !IsProceed(current, b) && Shown(b)).Select(b =>
@@ -107,7 +128,7 @@ internal sealed class EventInspection
                 var result = new Dictionary<string, object?> { ["id"] = ids[b.Option],
                     ["title"] = EnglishCardText.Plain(b.Option.Title.GetFormattedText()),
                     ["description"] = EnglishCardText.Plain(b.Option.Description.GetFormattedText()),
-                    ["enabled"] = ready && Clickable(b),
+                    ["enabled"] = canChoose && Clickable(b),
                     ["lethal_warning"] = VisibleUi.Shown(b.GetNodeOrNull<CanvasItem>("RedFlash")) };
                 if (full) result["hover_tips"] = CanHover(b) ? b.Option.HoverTips.Select(EnglishEventText.Tip).ToArray() : Array.Empty<HoverTipText>();
                 return result;

@@ -1,0 +1,31 @@
+{
+  "scene": "event",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "selection_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection"
+  ],
+  "selection": {
+    "type": "deck_upgrade",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": [
+      {
+        "card": {
+          "id": 6,
+          "name": "Strike"
+        },
+        "type": "card_selected",
+        "sequence": 1
+      }
+    ]
+  }
+}

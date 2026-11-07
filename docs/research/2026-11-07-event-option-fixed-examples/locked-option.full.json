@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "This event option is locked. Use inspect_event to read its requirements.",
+    "recovery": "choose_legal_action"
+  }
+}

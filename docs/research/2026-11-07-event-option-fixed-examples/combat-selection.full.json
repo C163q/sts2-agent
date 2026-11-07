@@ -1,0 +1,78 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "covered"
+  },
+  "available_actions": [
+    "select_card",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_selection",
+    "set_selection_view"
+  ],
+  "selection": {
+    "type": "grid",
+    "status": "visible"
+  },
+  "transition": {
+    "stop_reason": "choice_required",
+    "complete": true,
+    "events": [
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 0,
+        "after": 3,
+        "type": "energy_changed",
+        "sequence": 1
+      },
+      {
+        "card": {
+          "id": 0,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 2
+      },
+      {
+        "card": {
+          "id": 1,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 3
+      },
+      {
+        "card": {
+          "id": 2,
+          "name": "Strike"
+        },
+        "type": "card_drawn",
+        "sequence": 4
+      },
+      {
+        "card": {
+          "id": 3,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 5
+      },
+      {
+        "card": {
+          "id": 4,
+          "name": "Defend"
+        },
+        "type": "card_drawn",
+        "sequence": 6
+      }
+    ]
+  },
+  "notes": {
+    "selection": "Use set_selection_view(view=\"battlefield\") (eye icon) to view combat."
+  }
+}

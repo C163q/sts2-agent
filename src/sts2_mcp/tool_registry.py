@@ -197,14 +197,15 @@ SPECS = (
     ToolSpec(
         name='choose_event_option',
         schema=EVENT_OPTION_SCHEMA,
-        description='Choose one enabled event option; lethal_warning marks the visible red warning. '
-            'Handle subsequent card selections, rewards or combat separately.',
+        description='Choose one enabled event option by ID. Follow the resulting selection, reward, divination or combat screen; '
+            'use proceed after the event is finished.',
         annotations=action,
         category='action',
         effect='action',
         requires_permission=True,
         returns_transition=True,
         records_events=True,
+        unsubmitted_rejection_unchanged=True,
         reader='transition_details:end_turn_details',
         parser='event_details:event_arguments',
         parser_operation=True),

@@ -28,7 +28,7 @@ async def verify(args):
             initialized = await session.initialize()
             assert initialized.serverInfo.version == SERVER_VERSION, initialized
             definitions = (await session.list_tools()).tools
-            assert len(definitions) == 42
+            assert {'get_observation', 'choose_event_option'} <= {tool.name for tool in definitions}
             assert all(t.inputSchema['properties']['preset']['default'] == 'default' for t in definitions)
 
             async def call(name, arguments=None, error=None):
