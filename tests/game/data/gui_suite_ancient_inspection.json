@@ -1,0 +1,194 @@
+[
+  {
+    "name": "no_ancient",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_inspection.py",
+        "args": [
+          "--scenario",
+          "no_ancient"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "basic",
+    "scenarios": {
+      "ancient": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_inspection.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "dialogue",
+    "scenarios": {
+      "ancient": "dialogue"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_inspection.py",
+        "args": [
+          "--scenario",
+          "dialogue"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "touch",
+    "scenarios": {
+      "ancient": "touch"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_inspection.py",
+        "args": [
+          "--scenario",
+          "touch"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "selection",
+    "scenarios": {
+      "ancient": "transform"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_inspection.py",
+        "args": [
+          "--scenario",
+          "selection"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "bundle",
+    "scenarios": {
+      "ancient": "bundle"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_inspection.py",
+        "args": [
+          "--scenario",
+          "bundle"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nested",
+    "scenarios": {
+      "ancient": "nested"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_inspection.py",
+        "args": [
+          "--scenario",
+          "nested"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "safe",
+    "scenarios": {
+      "ancient": "cape"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_inspection.py",
+        "args": [
+          "--scenario",
+          "safe"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "lethal",
+    "scenarios": {
+      "ancient": "cape_lethal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_inspection.py",
+        "args": [
+          "--scenario",
+          "lethal"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "display",
+    "scenarios": {
+      "ancient": "touch"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_inspection.py",
+        "args": [
+          "--scenario",
+          "display"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "legacy_basic",
+    "scenarios": {
+      "ancient": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancients.py",
+        "args": [
+          "--scenario",
+          "basic"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "legacy_stability",
+    "scenarios": {
+      "navigation": "boss1"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ancient_stability.py",
+        "args": [
+          "--scenario",
+          "travel"
+        ]
+      }
+    ]
+  }
+]

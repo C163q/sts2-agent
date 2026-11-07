@@ -1,0 +1,39 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "visible"
+  },
+  "ancient": {
+    "status": "visible",
+    "name": "Neow",
+    "epithet": "Mother of Resurrection (Exiled)",
+    "description": null,
+    "dialogue": [
+      {
+        "speaker": "Neow",
+        "text": "I’ve... remade you....\n...go... ..up....."
+      }
+    ],
+    "options": [
+      {
+        "id": 0,
+        "title": "Nutritious Oyster",
+        "description": "Raise your Max HP by 11.",
+        "enabled": true,
+        "lethal_warning": false,
+        "hover_tips": []
+      }
+    ],
+    "continue": null,
+    "proceed": null
+  },
+  "errors": [
+    {
+      "code": "option_ids_not_found",
+      "option_ids": [
+        2147483646,
+        2147483647
+      ]
+    }
+  ]
+}

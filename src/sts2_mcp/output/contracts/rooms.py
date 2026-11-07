@@ -18,7 +18,7 @@ SHOP_ITEM = {'id': int, 'kind': str, 'position': str, 'price': NUMBER, 'affordab
 SHOP = {'status': str, 'view': TEXT, 'items': nullable([SHOP_ITEM]),
         'open': nullable({'enabled': bool}), 'back': nullable({'enabled': bool}),
         'proceed': nullable({'text': str, 'enabled': bool})}
-ANCIENT_OPTION = {'id': int, 'title': str, 'description': str, 'enabled': bool}
+ANCIENT_OPTION = {'id': int, 'title': str, 'description': str, 'enabled': bool, 'lethal_warning': bool}
 ROOM_EVENT_OPTION = {**ANCIENT_OPTION, 'lethal_warning': bool}
 ROOM_EVENT = {'status': str, 'name': TEXT, 'description': TEXT, 'options': nullable([ROOM_EVENT_OPTION]),
               'proceed': nullable({'text': str, 'enabled': bool})}

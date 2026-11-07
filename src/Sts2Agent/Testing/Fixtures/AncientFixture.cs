@@ -1,4 +1,6 @@
 using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.GameActions;
+using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
@@ -18,10 +20,13 @@ internal static class AncientFixture
     public static async Task Configure(string scenario, Player player, Func<Task> frame)
     {
         RunManager.Instance.DebugOnlyGetState()!.ActFloor = 1;
+        if (scenario == "cape_lethal")
+            await CreatureCmd.LoseMaxHp(new ThrowingPlayerChoiceContext(), player.Creature, player.Creature.MaxHp - 9, isFromCard: false);
         (AncientEventModel model, string option) = scenario switch {
             "touch" => ((AncientEventModel)ModelDb.Event<Orobas>(), "TOUCH_OF_OROBAS"),
             "tooth" => ((AncientEventModel)ModelDb.Event<Pael>(), "PAELS_TOOTH"),
             "eye" => ((AncientEventModel)ModelDb.Event<Pael>(), "PAELS_EYE"),
+            "cape" or "cape_lethal" => ((AncientEventModel)ModelDb.Event<Vakuu>(), "DISTINGUISHED_CAPE"),
             "earring" => ((AncientEventModel)ModelDb.Event<Vakuu>(), "WHISPERING_EARRING"),
             "shrymp" => ((AncientEventModel)ModelDb.Event<Orobas>(), "ELECTRIC_SHRYMP"),
             "multi" => ((AncientEventModel)ModelDb.Event<Tanx>(), "TRI_BOOMERANG"),

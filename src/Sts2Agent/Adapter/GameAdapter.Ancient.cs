@@ -19,10 +19,14 @@ internal sealed partial class GameAdapter
         if (!inspect && request.ExpectedState != before.GetProperty("snapshot_id").GetString())
             return FileMailbox.Error(request.Id, "stale_state", "Read the current ancient before acting.");
         var context = AncientInspection.Current;
-        if (context == null || !AncientInspection.Exposed(context) || !RunContext.Singleplayer
-            || !inspect && !AncientInspection.Ready(context))
+        if (inspect)
+        {
+            if (AncientInspection.InspectionUnavailableReason(context) is { } rejection)
+                return ResponseBuilder.Error(request.Id, "illegal_action", rejection, publicMessage: true, uiUnchanged: true);
+            return InspectionSuccess(request, before, ancientInspection.Inspect());
+        }
+        if (context == null || !AncientInspection.Exposed(context) || !RunContext.Singleplayer || !AncientInspection.Ready(context))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available single-player ancient.");
-        if (inspect) return InspectionSuccess(request, before, new { ancient = ancientInspection.Read(full: true) });
         NClickableControl? button = request.Operation == "advance_dialogue" ? AncientInspection.Continue(context)
             : ancientInspection.Find(context, optionId);
         if (button?.IsEnabled != true || button is MegaCrit.Sts2.Core.Nodes.Events.NEventOptionButton option

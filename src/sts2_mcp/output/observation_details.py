@@ -70,7 +70,11 @@ def observation_details(state):
         raise ValueError('Missing shop state.')
     if result.get('ancient') is not None:
         from sts2_mcp.output.ancient_details import ancient_details
-        result['ancient'] = ancient_details(result['ancient'])
+        from sts2_mcp.output.ancient_presets import ancient_summary
+        result['ancient'] = ancient_summary(ancient_details(result['ancient'],
+            require_warning=state.get('schema_version', 0) >= 46))
+        if result['ancient']['status'] == 'visible' and (result['scene'] != 'ancient' or result['screen'] != {'status': 'visible'}):
+            raise ValueError('Ancient is not the exposed screen.')
     elif result['scene'] == 'ancient':
         raise ValueError('Missing ancient state.')
     if result.get('event') is not None:

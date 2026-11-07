@@ -1,0 +1,21 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "visible"
+  },
+  "ancient": {
+    "status": "visible",
+    "name": "Neow",
+    "epithet": "Mother of Resurrection (Exiled)",
+    "description": null,
+    "dialogue": [
+      {
+        "speaker": "Neow",
+        "text": "I’ve... remade you....\n...go... ..up....."
+      }
+    ],
+    "options": [],
+    "continue": null,
+    "proceed": null
+  }
+}

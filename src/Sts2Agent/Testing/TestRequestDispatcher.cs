@@ -32,6 +32,16 @@ internal sealed partial class GameAdapter
 {
     private async Task<string?> TestRequestBeforeCapture(Request request)
     {
+        if (request.Operation == "set_test_ancient_display" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1"
+            && testSettings.Get("STS2_AGENT_TEST_ANCIENT_SCENARIO") != null)
+        {
+            if (request.Arguments is not { } options || options.EnumerateObject().Count() != 1
+                || !options.TryGetProperty("mode", out var mode) || mode.ValueKind != JsonValueKind.String
+                || mode.GetString() is not ("normal" or "offscreen" or "clipped" or "hidden" or "transparent" or "disabled" or "no_hover" or "controller_only"))
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected an ancient display mode.");
+            return Success(request, JsonSerializer.Serialize(AncientDisplayFixture.Set(mode.GetString()!)));
+        }
         if (request.Operation == "set_test_confirmation_buttons" && testMode
             && testSettings.Get("STS2_AGENT_TEST_EVENT_SCENARIO") == "trial" && LocalPlayer != null)
         {

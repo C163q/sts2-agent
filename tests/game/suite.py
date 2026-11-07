@@ -16,6 +16,7 @@ from sts2_mcp.roundtrip_client import Client
 
 CATALOG = json.loads((ROOT / 'tests/game/data/test_scenarios.json').read_text())
 SUPPORTED_VERIFIERS = {
+    'verify_ancient_inspection.py',
     'verify_confirmation.py',
     'verify_divination_recovery.py',
     'verify_divination_tool_view.py',
@@ -214,6 +215,7 @@ def load_cases(path):
                                               'bloodletting', 'gather_light', 'preview_draw', 'preview_messy'),
                 'verify_observation_sources.py': ('map', 'views', 'selection'),
                 'verify_ancient_stability.py': ('direct', 'travel', 'travel_action'),
+                'verify_ancient_inspection.py': ('basic', 'dialogue', 'touch', 'selection', 'bundle', 'nested', 'safe', 'lethal', 'display', 'no_ancient'),
                 'verify_ancients.py': CATALOG['ancient'],
                 'verify_map_presets.py': ('flight', 'combat', 'entry', 'double'),
                 'verify_reward_alternatives.py': ('paels_wing', 'driftwood'),

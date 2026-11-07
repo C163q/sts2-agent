@@ -1,0 +1,77 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "visible"
+  },
+  "ancient": {
+    "status": "visible",
+    "name": "Vakuu",
+    "epithet": "The First Demon",
+    "dialogue": [
+      {
+        "speaker": "Vakuu",
+        "text": "Give yourself to me and you will be feared as much as I."
+      }
+    ],
+    "options": [
+      {
+        "id": 0,
+        "title": "Distinguished Cape",
+        "description": "Lose 9 Max HP. Add 3 Apparitions to your Deck.",
+        "enabled": true,
+        "lethal_warning": false,
+        "hover_tips": [
+          {
+            "title": "Apparition",
+            "description": "Ethereal.\nGain 1 Intangible.\nExhaust."
+          },
+          {
+            "title": "Intangible",
+            "description": "Reduce all damage taken and HP loss to 1 this turn."
+          },
+          {
+            "title": "Ethereal",
+            "description": "If this card is in your Hand at the end of this turn, it is Exhausted."
+          },
+          {
+            "title": "Exhaust",
+            "description": "Removed until the end of combat."
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "title": "Distinguished Cape",
+        "description": "Lose 9 Max HP. Add 3 Apparitions to your Deck.",
+        "enabled": true,
+        "lethal_warning": false,
+        "hover_tips": [
+          {
+            "title": "Apparition",
+            "description": "Ethereal.\nGain 1 Intangible.\nExhaust."
+          },
+          {
+            "title": "Intangible",
+            "description": "Reduce all damage taken and HP loss to 1 this turn."
+          },
+          {
+            "title": "Ethereal",
+            "description": "If this card is in your Hand at the end of this turn, it is Exhausted."
+          },
+          {
+            "title": "Exhaust",
+            "description": "Removed until the end of combat."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Lord's Parasol",
+        "description": "When you encounter the Merchant, immediately obtain EVERYTHING he sells.",
+        "enabled": true,
+        "lethal_warning": false,
+        "hover_tips": []
+      }
+    ]
+  }
+}

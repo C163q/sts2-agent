@@ -39,7 +39,7 @@ flowchart LR
 | `divine(x,y)` | 点击仍覆盖的占卜格子；棋盘及图像按需观察 |
 | `inspect_event(preset?, include_image?)` | [当前通用事件](events.md)正文、选项与悬停解释；summary 为静态摘要；占卜默认文字，include_image:true 按需附图 |
 | `choose_event_option(option_id)` | 点击一个启用的事件选项，保留原生后续流程与致死警告 |
-| `inspect_ancient()` | [当前先古之民](ancients.md)的选项及悬停解释 |
+| `inspect_ancient(preset?, option_ids?)` | [当前先古之民](ancients.md)的对话、馈赠与悬停解释；支持静态summary及选项ID筛选 |
 | `choose_ancient_option(option_id)` | 点击一个已显示且启用的先古选项 |
 | `advance_dialogue()` | 推进先古之民或建筑师的一句原生对话，不选择遗物 |
 | `open_shop()` / `close_shop()` | 点击[商店](shop.md)的商人或返回按钮，实际展开/收回商品页 |
@@ -201,7 +201,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 结构化读取直接续接动作的实现与验证范围见[验证记录](../research/2026-11-01-observation-sources.md)。
 
-成功时 `structuredContent` 是玩法对象，`content` 同时提供相同对象的紧凑 JSON 文本。[占卜](divination.md)的完整观察和详情还带独立 PNG 图像内容，需要支持图像的客户端和视觉模型；图片不进入文字 JSON，也不依赖截图工具配置；`actions_only/top_bar` 预设及动作回执不返回棋盘或图像；summary 仍保留棋盘与图像。正文中的换行和空格保留；终端与证据文件使用两空格缩进。对象本身没有排版属性，客户端决定如何转换为模型输入。协议、文本、显示的区别及官方依据见 [项目审阅](../research/2026-10-29-project-review.md#mcp-json-与官方实践)。
+成功时 `structuredContent` 是玩法对象，`content` 同时提供相同对象的紧凑 JSON 文本。[占卜](divination.md)基础观察和详情默认返回文字棋盘，inspect_event可用include_image:true附带独立PNG内容块；图片不进入文字JSON，也不依赖截图工具配置。get_observation没有图片参数，actions_only/top_bar及动作回执不返回棋盘。正文中的换行和空格保留；终端与证据文件使用两空格缩进。对象本身没有排版属性，客户端决定如何转换为模型输入。协议、文本、显示的区别及官方依据见 [项目审阅](../research/2026-10-29-project-review.md#mcp-json-与官方实践)。
 
 输出递归过滤未知字段，不转发原始响应包装、状态令牌或测试入口；`available_actions` 只保留当前可用的公开查看与操作工具，省略观察、截图及测试入口并去重。MCP 与非 raw 文件客户端共用按原生操作的成功解码；基础观察和动作结果检查全部必需顶层观察字段，对已提供的嵌套字段检查类型，再进行输出精简；错误结果不生成新动作令牌，只有上述明确拒绝会保留旧许可。原始文件协议见 [原型接口](roundtrip.md#原型接口)。
 

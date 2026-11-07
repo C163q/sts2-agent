@@ -227,7 +227,7 @@ python3 -m tests.game.verifiers.verify_roundtrip --ipc-dir .tmp/roundtrip/ipc --
 
 商店基础观察的 `shop`、商品摘要、补货 ID 和药水可用提示见[商店接口](shop.md)。未打开或被覆盖时不读取商品，完整效果需显式查看。
 
-先古之民基础观察包含已显示的对话及选项正文，结构和悬停边界见[先古之民](ancients.md)。
+先古之民基础观察的full/default/summary共用inspect_ancient.summary的静态主体：保留已显示的对话、馈赠正文及true致死警告，省略悬停解释和false警告；其余结构和可见边界见[先古之民](ancients.md)。
 
 ## 占卜棋盘
 

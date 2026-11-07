@@ -232,7 +232,9 @@
     "transform",
     "bundle",
     "nested",
-    "pandora"
+    "pandora",
+    "cape",
+    "cape_lethal"
   ],
   "event": [
     "basic",

@@ -1,0 +1,17 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "visible"
+  },
+  "ancient": {
+    "status": "visible",
+    "name": "Neow",
+    "epithet": "Mother of Resurrection (Exiled)",
+    "dialogue": [],
+    "options": [],
+    "proceed": {
+      "text": "Proceed",
+      "enabled": true
+    }
+  }
+}

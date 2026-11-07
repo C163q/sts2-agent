@@ -1,8 +1,8 @@
 # inspect_ancient 核验与建议
 
-> 当前状态：审阅完成，等待确认修复范围与参数设计，尚未修改工具行为。七类典型场景已核验，31项相关Python检查通过；工具清单仍为38/44项完成，无阻塞。
+> 当前状态：修复范围与参数方案已确认，产品与验收已完成，待独立审阅及合并，无阻塞。审阅基线为831975d；下文现状与旧JSON保留该基线，输出定稿作为实施依据。
 
-总流程见[工具清单](2026-11-02-mcp-tool-review.md)。[16份完整实测JSON](2026-11-07-inspect-ancient-examples/README.md)包含14份full、一份default，以及一份不支持summary的错误；源码位置、验证过程及未验证范围见[开发核验](2026-11-07-inspect-ancient-development-notes.md)。
+总流程见[工具清单](2026-11-02-mcp-tool-review.md)。[16份完整实测JSON](2026-11-07-inspect-ancient-examples/README.md)包含14份full、一份default，以及一份不支持summary的错误；修复后的实现及验证见[实施记录](2026-11-07-ancient-inspection-presets-implementation.md)；审阅源码位置、验证过程及未验证范围见[开发核验](2026-11-07-inspect-ancient-development-notes.md)。
 
 ## 优先处理的问题
 
@@ -32,13 +32,13 @@
 
 **没有发现查看报错后必须重新观察的问题。**已有许可时，错误查看后可以直接end_turn、close_map或close_card_view；[实际结束回合返回](2026-11-07-inspect-ancient-examples/legal-after-rejection.full.json)。首次调用inspect_ancient也可以成功，不要求预先get_observation。当前enabled为true时，成功详情后可直接选择；页面过渡中应依据最新enabled及可用动作决定后续操作。
 
-## 参数与摘要建议
+## 输出定稿
 
-推荐新增summary，沿用基础观察已有的先古主体：保留名称、称号、说明、已展示对话、选项id／title／description／enabled，以及continue／proceed；省略全部hover_tips。馈赠正文用于判断收益，应当保留。新增致死警告后，summary省略false，default/full保留布尔值。
+新增summary，沿用基础观察已有的先古主体：保留名称、称号、说明、已展示对话、选项id／title／description／enabled，以及continue／proceed；省略全部hover_tips。馈赠正文用于判断收益，应当保留。新增致死警告后，summary省略false，default/full保留布尔值。
 
 get_observation的full/default/summary继续共用静态先古格式，与inspect_ancient.summary统一；其顶栏、卡牌选择等仍按各自规则处理。
 
-筛选有两个可行选择：通常只有三项馈赠，可以维持无筛选；也可以像火堆一样加入option_ids，供LLM仅展开某项的悬停解释。推荐后者：
+加入option_ids，供LLM选择需要查看的馈赠：
 
 ```json
 {"preset":"full","option_ids":[0,2]}
@@ -51,4 +51,4 @@ get_observation的full/default/summary继续共用静态先古格式，与inspec
 
 不建议增加任意字段路径筛选：当前主体已较小，选项筛选和悬停说明开关足以表达主要查看需求。工具现有描述较简洁，新增规则宜放在参数说明中。
 
-以上为待确认建议；当前调用summary仍会得到invalid_request，[实际返回](2026-11-07-inspect-ancient-examples/summary-unsupported.json)。
+修复四项优先问题后接入上述预设与筛选。审阅基线调用summary会得到invalid_request，[旧实际返回](2026-11-07-inspect-ancient-examples/summary-unsupported.json)保留为对照。

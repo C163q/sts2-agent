@@ -1,0 +1,37 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "visible"
+  },
+  "ancient": {
+    "status": "visible",
+    "name": "Orobas",
+    "epithet": "Living Rainbow",
+    "dialogue": [
+      {
+        "speaker": "Orobas",
+        "text": "Puppet puppet!! All the way up here?! Take these, take take!"
+      }
+    ],
+    "options": [
+      {
+        "id": 0,
+        "title": "Touch of Orobas",
+        "description": "Replace Burning Blood with Black Blood.",
+        "enabled": false
+      },
+      {
+        "id": 1,
+        "title": "Radiant Pearl",
+        "description": "At the start of each combat, add 1 Luminesce into your Hand.",
+        "enabled": true
+      },
+      {
+        "id": 2,
+        "title": "Archaic Tooth",
+        "description": "Transform Bash into Break.",
+        "enabled": true
+      }
+    ]
+  }
+}

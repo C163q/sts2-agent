@@ -1,0 +1,97 @@
+{
+  "scene": "ancient",
+  "map": null,
+  "screen": {
+    "status": "visible"
+  },
+  "turn": null,
+  "player": null,
+  "enemies": null,
+  "allies": null,
+  "top_bar": {
+    "hp": 9,
+    "max_hp": 9,
+    "gold": 99,
+    "floor": 1,
+    "ascension": null,
+    "deck_count": 10,
+    "room_icon": null,
+    "bosses": [
+      "Vantom"
+    ],
+    "potion_slots": [
+      null,
+      null,
+      null
+    ],
+    "relic_count": 1,
+    "relics": [
+      {
+        "name": "Burning Blood",
+        "counter": null,
+        "melted": null,
+        "grayed_out": false,
+        "pulsing": false
+      }
+    ],
+    "map_visible": true,
+    "deck_visible": true,
+    "settings_visible": true
+  },
+  "buttons": null,
+  "selection": null,
+  "rewards": null,
+  "rest_site": null,
+  "treasure": null,
+  "shop": null,
+  "ancient": {
+    "status": "visible",
+    "name": "Vakuu",
+    "epithet": "The First Demon",
+    "description": null,
+    "dialogue": [
+      {
+        "speaker": "Vakuu",
+        "text": "Give yourself to me and you will be feared as much as I."
+      }
+    ],
+    "options": [
+      {
+        "id": 0,
+        "title": "Distinguished Cape",
+        "description": "Lose 9 Max HP. Add 3 Apparitions to your Deck.",
+        "enabled": true,
+        "lethal_warning": true
+      },
+      {
+        "id": 1,
+        "title": "Distinguished Cape",
+        "description": "Lose 9 Max HP. Add 3 Apparitions to your Deck.",
+        "enabled": true,
+        "lethal_warning": true
+      },
+      {
+        "id": 2,
+        "title": "Lord's Parasol",
+        "description": "When you encounter the Merchant, immediately obtain EVERYTHING he sells.",
+        "enabled": true
+      }
+    ],
+    "continue": null,
+    "proceed": null
+  },
+  "event": null,
+  "divination": null,
+  "confirmation": null,
+  "epilogue": null,
+  "run_result": null,
+  "available_actions": [
+    "choose_ancient_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_ancient"
+  ]
+}

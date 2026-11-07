@@ -1,0 +1,92 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "visible"
+  },
+  "ancient": {
+    "status": "visible",
+    "name": "Orobas",
+    "epithet": "Living Rainbow",
+    "description": null,
+    "dialogue": [
+      {
+        "speaker": "Orobas",
+        "text": "Puppet puppet!! All the way up here?! Take these, take take!"
+      }
+    ],
+    "options": [
+      {
+        "id": 0,
+        "title": "Touch of Orobas",
+        "description": "Replace Burning Blood with Black Blood.",
+        "enabled": false,
+        "lethal_warning": false,
+        "hover_tips": []
+      },
+      {
+        "id": 1,
+        "title": "Radiant Pearl",
+        "description": "At the start of each combat, add 1 Luminesce into your Hand.",
+        "enabled": true,
+        "lethal_warning": false,
+        "hover_tips": [
+          {
+            "title": "Energy",
+            "description": "Energy is used to play cards from your Hand."
+          },
+          {
+            "title": "Luminesce",
+            "description": "Retain.\nGain <Energy> <Energy>.\nExhaust."
+          },
+          {
+            "title": "Energy",
+            "description": "Energy is used to play cards from your Hand."
+          },
+          {
+            "title": "Exhaust",
+            "description": "Removed until the end of combat."
+          },
+          {
+            "title": "Retain",
+            "description": "Retained cards are not discarded at the end of turn."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Archaic Tooth",
+        "description": "Transform Bash into Break.",
+        "enabled": true,
+        "lethal_warning": false,
+        "hover_tips": [
+          {
+            "title": "Vulnerable",
+            "description": "Vulnerable creatures take 50% more damage from Attacks."
+          },
+          {
+            "title": "Bash",
+            "description": "Deal 8 damage.\nApply 2 Vulnerable."
+          },
+          {
+            "title": "Vulnerable",
+            "description": "Vulnerable creatures take 50% more damage from Attacks."
+          },
+          {
+            "title": "Break",
+            "description": "Deal 20 damage.\nApply 5 Vulnerable."
+          }
+        ]
+      }
+    ],
+    "continue": null,
+    "proceed": null
+  },
+  "notes": {
+    "hover_tips_unavailable": {
+      "message": "Hover help is currently unavailable for these displayed icons.",
+      "sources": [
+        "ancient.options.0"
+      ]
+    }
+  }
+}

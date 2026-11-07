@@ -1,0 +1,24 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "visible"
+  },
+  "ancient": {
+    "status": "visible",
+    "name": "Neow",
+    "epithet": "Mother of Resurrection (Exiled)",
+    "description": null,
+    "dialogue": [
+      {
+        "speaker": "Neow",
+        "text": "..remember.. the.. first..time\n...you ..came...before me.."
+      }
+    ],
+    "options": [],
+    "continue": {
+      "text": null,
+      "enabled": true
+    },
+    "proceed": null
+  }
+}

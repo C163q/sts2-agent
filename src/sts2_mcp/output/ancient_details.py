@@ -19,7 +19,7 @@ def ancient_arguments(operation, arguments):
     return dict(arguments)
 
 
-def ancient_details(value, *, full=False):
+def ancient_details(value, *, full=False, require_warning=False):
     shape = {**ANCIENT, 'options': ([{**ANCIENT_OPTION, 'hover_tips': [TIP]}],)} if full else ANCIENT
     result = project(value, shape)
     if set(result) != set(ANCIENT) or result['status'] not in {'visible', 'covered'}:
@@ -32,7 +32,9 @@ def ancient_details(value, *, full=False):
         raise ValueError('Missing ancient contents.')
     ids = set()
     for option in result['options']:
-        if (set(option) != set(shape['options'][0][0]) or option['id'] < 0 or option['id'] in ids
+        if (set(option) != (set(shape['options'][0][0]) if require_warning or 'lethal_warning' in option
+                                else set(shape['options'][0][0]) - {'lethal_warning'})
+                or not 0 <= option['id'] <= 2147483647 or option['id'] in ids
                 or full and any(set(tip) != set(TIP) for tip in option['hover_tips'])):
             raise ValueError('Invalid ancient option.')
         ids.add(option['id'])
@@ -45,5 +47,17 @@ def ancient_details(value, *, full=False):
 
 
 def inspect_ancient_details(state):
-    if state.get('scene') != 'ancient': raise ValueError('Invalid ancient inspection scene.')
-    return {'scene': 'ancient', 'ancient': ancient_details(state['ancient'], full=True)}
+    from sts2_mcp.output.scene_context import scene_context
+    context = scene_context(state)
+    if context['scene'] != 'ancient' or context['screen'] != {'status': 'visible'}:
+        raise ValueError('Invalid ancient inspection context.')
+    ancient = ancient_details(state['ancient'], full=True, require_warning=state.get('schema_version', 0) >= 46)
+    sources = state.get('unavailable_hover_sources', [])
+    possible = {'ancient.options.' + str(option['id']) for option in ancient['options'] if not option['hover_tips']}
+    if (not isinstance(sources, list) or any(not isinstance(source, str) or source not in possible for source in sources)
+            or len(sources) != len(set(sources))):
+        raise ValueError('Invalid unavailable ancient option hover evidence.')
+    result = {**context, 'ancient': ancient}
+    if sources:
+        result['unavailable_hover_sources'] = list(sources)
+    return result

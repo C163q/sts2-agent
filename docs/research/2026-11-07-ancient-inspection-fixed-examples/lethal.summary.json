@@ -1,0 +1,26 @@
+{
+  "scene": "ancient",
+  "screen": {
+    "status": "visible"
+  },
+  "ancient": {
+    "status": "visible",
+    "name": "Vakuu",
+    "epithet": "The First Demon",
+    "dialogue": [
+      {
+        "speaker": "Vakuu",
+        "text": "Give yourself to me and you will be feared as much as I."
+      }
+    ],
+    "options": [
+      {
+        "id": 0,
+        "title": "Distinguished Cape",
+        "description": "Lose 9 Max HP. Add 3 Apparitions to your Deck.",
+        "enabled": true,
+        "lethal_warning": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,339 @@
+[
+  {
+    "file": "normal.full.json",
+    "description": "普通馈赠完整详情",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/basic/verify/evidence.json",
+    "row_index": 4,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/69731c91c55e4cb98716e3f45b1a9780.json"
+    ],
+    "sha256": "96990e769ac0c25409d1da1d4f4d0f7d6b0280f8f9af329ffbdd46902996970e"
+  },
+  {
+    "file": "normal.summary.json",
+    "description": "保留馈赠正文的摘要",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "summary"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/basic/verify/evidence.json",
+    "row_index": 5,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/a91df9e132de4d6aa59d954a1b2b5d6b.json"
+    ],
+    "sha256": "a955bb49ea317f3f37637e1e62907079fc43baca0cd9bace3a57fece32d3e1df"
+  },
+  {
+    "file": "missing-ids.full.json",
+    "description": "混合筛选与合并缺失ID",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full",
+      "option_ids": [
+        2147483646,
+        0,
+        2147483647,
+        2147483646
+      ]
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/basic/verify/evidence.json",
+    "row_index": 13,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/1f29267aab2e4b9a814fd540143eb7bd.json"
+    ],
+    "sha256": "3289ed75e5091e96732a9786892fa86c9f0cceac77ebf1ad068c05972b6922c4"
+  },
+  {
+    "file": "empty-filter.full.json",
+    "description": "空筛选保留对话及上下文",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full",
+      "option_ids": []
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/basic/verify/evidence.json",
+    "row_index": 11,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/bcf3018667154cf587e35154d69e541c.json"
+    ],
+    "sha256": "c67c0a564d50a8841bbaa0b79d9f564a7a0c33865e9781a704963a5c6cd9f0b7"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "地图覆盖的具体原因",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/basic/verify/evidence.json",
+    "row_index": 17,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/2e6ac6c936794476a67b06d89bf66170.json"
+    ],
+    "sha256": "0058701cb4d4dcac90d6d550963669cbd1ae5574b7b3ebd8052620fad8e7fe07"
+  },
+  {
+    "file": "deck-covered.full.json",
+    "description": "牌组覆盖的具体原因",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/basic/verify/evidence.json",
+    "row_index": 20,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/eb49cad1cd5e4b9b8937979666c49ba2.json"
+    ],
+    "sha256": "4a5cfb1564b948ddedca8005b572a0e416c5e4ef22b36581301f1dffdc9294a9"
+  },
+  {
+    "file": "wrong-room.full.json",
+    "description": "首次错误读取不建立许可",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/no_ancient/verify/evidence.json",
+    "row_index": 0,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/077df3009a4d4b089ba10f8c1f793632.json"
+    ],
+    "sha256": "366926ae13f1ec67f0f0c926d7c2112324ddc0d988b78460dad4847874cff368"
+  },
+  {
+    "file": "continued.full.json",
+    "description": "已有许可时错误读取后直接结束回合",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/no_ancient/verify/evidence.json",
+    "row_index": 4,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/ecabd16bf05048799c4aa7cc4b3a8693.json"
+    ],
+    "sha256": "8b4acc9df56505809510e04fc9cdafc7e7f19184a62d37b26ed87bf647ab3400"
+  },
+  {
+    "file": "dialogue.full.json",
+    "description": "只显示已揭示台词及继续按钮",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/dialogue/verify/evidence.json",
+    "row_index": 0,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/2820c2cf31f249caab39dc38555c4a8f.json"
+    ],
+    "sha256": "3fe8fc2b679ecb18c6e5d1a77483fc43dd62b18102a7745662fcfccc1fb9fc3a"
+  },
+  {
+    "file": "references.full.json",
+    "description": "当前角色遗物和卡牌的引用",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/touch/verify/evidence.json",
+    "row_index": 4,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/b6de0256108e436db8cd749b3b2d2e94.json"
+    ],
+    "sha256": "646ba559f067bfb9c4fcee2d4ca8d461702d5f9b8963d79bb96c280ce2b6352a"
+  },
+  {
+    "file": "obtained.summary.json",
+    "description": "领取后保留前进按钮",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "summary",
+      "option_ids": []
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/basic/verify/evidence.json",
+    "row_index": 25,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/c2dad10bd92848fab62f118e8eabf888.json"
+    ],
+    "sha256": "55b52886c2e74fa57320fb3b9ac65e45d153863a3a04b00cd37e0b17db06cf48"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "选牌覆盖的具体提示",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/selection/verify/evidence.json",
+    "row_index": 7,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/2ca7ca9b418c497496d2b5102fc4336b.json"
+    ],
+    "sha256": "488a73ddd21f000c8e088d3cac4a80b13bdd90d5a1681ac138920c94d9e95769"
+  },
+  {
+    "file": "rewards-covered.full.json",
+    "description": "奖励覆盖的具体提示",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/nested/verify/evidence.json",
+    "row_index": 7,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/c72100a2eb744c4ea0a842c32fdd6157.json"
+    ],
+    "sha256": "6936af087e6f852a696ce319311a3ff553566f953872e79b19e8310f9591d052"
+  },
+  {
+    "file": "safe.default.json",
+    "description": "安全选项在default保留false",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "default"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/safe/verify/evidence.json",
+    "row_index": 5,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/16114bf52e1b44899d0d2ee60ca1c39d.json"
+    ],
+    "sha256": "5d4b7c8d205df7456a95b930f2de6f418358a729ee46a5082974b6a22c32d3f3"
+  },
+  {
+    "file": "lethal.full.json",
+    "description": "原生致死红框对应true",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/lethal/verify/evidence.json",
+    "row_index": 4,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/66d468842c544d83a52795e92a23a7f5.json"
+    ],
+    "sha256": "325024e601beec2fe575e3bac45e4157f85a30507ac93f8440f9c4e8d591e431"
+  },
+  {
+    "file": "lethal.summary.json",
+    "description": "摘要保留true警告",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "summary",
+      "option_ids": [
+        0
+      ]
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/lethal/verify/evidence.json",
+    "row_index": 10,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/63d2fa312792428e97469b9b4b79183a.json"
+    ],
+    "sha256": "7a02af147a79ca45575422df602c198e6eab8418c1c90c790cb35959817edfd5"
+  },
+  {
+    "file": "lethal-observation.full.json",
+    "description": "基础观察保留true警告",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/lethal/verify/evidence.json",
+    "row_index": 7,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/482d0ce5b425462a80918cea658f014a.json"
+    ],
+    "sha256": "c2d082b0e969dee5c1824ef90bf9b5d833f97c33efce1c43f506088cdd859b90"
+  },
+  {
+    "file": "offscreen.full.json",
+    "description": "离屏馈赠仍完整可读且不可点击",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/display/verify/evidence.json",
+    "row_index": 6,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/fdf9e29ae8ee449db3391d35b11b5e0a.json"
+    ],
+    "sha256": "ead509bfa44e1f8e07a3ca8ab9132929306dd9b750c2ecd2eef087ffb23714b9"
+  },
+  {
+    "file": "no-hover.full.json",
+    "description": "无法悬停保留正文并给来源note",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/display/verify/evidence.json",
+    "row_index": 11,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/ee307c98f20441e79c046c537399ffe3.json"
+    ],
+    "sha256": "da7527367e4ca46a6f072d56c15ab2fa631b786f073f1759e824356aa98c8688"
+  },
+  {
+    "file": "no-hover-filtered.full.json",
+    "description": "筛选去掉无关悬停note",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full",
+      "option_ids": [
+        1,
+        2
+      ]
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/display/verify/evidence.json",
+    "row_index": 12,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/6b212d57f4204f20826cb5464db93019.json"
+    ],
+    "sha256": "b58ba945ccd308c621c9b7be1b4ee39bd0f0518e92cbb4fd39c1bee9114f6f37"
+  },
+  {
+    "file": "no-hover.summary.json",
+    "description": "摘要省略悬停正文及相关note",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "summary"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/display/verify/evidence.json",
+    "row_index": 13,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/3bd223f91c20485da46aa2346bb2d4e5.json"
+    ],
+    "sha256": "3895c29fd389d24b487107a0da8c7be9ebc9df563eacd283321df7316b5bc664"
+  },
+  {
+    "file": "hidden.full.json",
+    "description": "真正隐藏的馈赠仍排除",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/display/verify/evidence.json",
+    "row_index": 28,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/dbc5cd9d4cda4806a64be4ce74e5a5f3.json"
+    ],
+    "sha256": "b58ba945ccd308c621c9b7be1b4ee39bd0f0518e92cbb4fd39c1bee9114f6f37"
+  },
+  {
+    "file": "clipped.full.json",
+    "description": "真实裁剪的馈赠仍排除",
+    "tool": "inspect_ancient",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-ancient-inspection-presets/gui/display/verify/evidence.json",
+    "row_index": 38,
+    "native_files": [
+      ".tmp/2026-11-07-ancient-inspection-presets/gui/game/ipc/responses/1a88382ee827478a968f0b8fe6cd43f9.json"
+    ],
+    "sha256": "b58ba945ccd308c621c9b7be1b4ee39bd0f0518e92cbb4fd39c1bee9114f6f37"
+  }
+]

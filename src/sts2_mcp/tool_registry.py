@@ -28,6 +28,7 @@ from sts2_mcp.output.treasure_presets import TREASURE_SCHEMA
 from sts2_mcp.output.shop_details import BUY_SCHEMA
 from sts2_mcp.output.shop_presets import SHOP_SCHEMA
 from sts2_mcp.output.ancient_details import ANCIENT_OPTION_SCHEMA
+from sts2_mcp.output.ancient_presets import ANCIENT_SCHEMA
 from sts2_mcp.output.event_details import EVENT_OPTION_SCHEMA
 from sts2_mcp.output.event_presets import EVENT_SCHEMA
 from sts2_mcp.output.confirmation_details import CONFIRMATION_SCHEMA
@@ -213,7 +214,7 @@ SPECS = (
         parser_operation=True),
     ToolSpec(
         name='inspect_ancient',
-        schema=NO_ARGUMENTS,
+        schema=ANCIENT_SCHEMA,
         description='Read the current ancient dialogue, displayed gift options and their hover help.',
         annotations=read_only,
         category='inspection',
@@ -221,7 +222,10 @@ SPECS = (
         requires_permission=False,
         returns_transition=False,
         records_events=False,
-        reader='ancient_details:inspect_ancient_details'),
+        reader='ancient_details:inspect_ancient_details',
+        parser='ancient_presets:ancient_inspection_arguments',
+        projector='ancient_presets:ancient_preset',
+        native_keys=()),
     ToolSpec(
         name='choose_ancient_option',
         schema=ANCIENT_OPTION_SCHEMA,

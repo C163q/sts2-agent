@@ -119,7 +119,7 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
             successful = [case for case in cases if case['tool'] == tool.name and 'error' not in expected[case['expected_ref']]]
             presets = {case['arguments'].get('preset') for case in successful}
             # Dedicated preset tests cover additions to the frozen refactor baseline.
-            added = {'summary'} if tool.name in {'inspect_potions', 'inspect_map', 'inspect_rewards', 'inspect_treasure', 'inspect_rest_site', 'inspect_shop', 'inspect_event'} else set()
+            added = {'summary'} if tool.name in {'inspect_potions', 'inspect_map', 'inspect_rewards', 'inspect_treasure', 'inspect_rest_site', 'inspect_shop', 'inspect_event', 'inspect_ancient'} else set()
             self.assertGreaterEqual(presets, {None, *(set(tool.inputSchema['properties']['preset']['enum']) - added)})
             self.assertTrue(any(case['tool'] == tool.name and case.get('error') for case in cases))
             self.assertTrue(any(case['tool'] == tool.name and 'unknown_field' in case['arguments'] for case in cases))

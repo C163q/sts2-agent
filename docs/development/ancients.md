@@ -6,14 +6,14 @@
 
 下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
 
-get_observation 的 summary 保留与 default 相同的先古主体，共用顶栏及选牌仍按[观察预设](observation.md#mcp-输出预设)独立精简。
+get_observation 的 full/default/summary 共用 inspect_ancient.summary 的静态先古主体；共用顶栏及选牌仍按[观察预设](observation.md#mcp-输出预设)独立处理。
 
 ## 工具与观察
 
 | 工具 | 行为 |
 | --- | --- |
 | `get_observation()` | `scene: "ancient"` 和 `ancient` 对象；只列已经显示的对话和选项 |
-| `inspect_ancient()` | 读取当前选项正文及原生悬停解释，不推进对话或提前查看领取结果 |
+| `inspect_ancient(preset?, option_ids?)` | 读取已展示对话、馈赠正文及悬停解释；summary省略悬停解释，option_ids按当前选项ID筛选 |
 | `advance_dialogue()` | 点击原生对话继续区域一次，不选择遗物 |
 | `choose_ancient_option({"option_id":0})` | 点击一个启用的当前选项；可能立即生效，也可能停在选牌或奖励 |
 | `proceed()` | 点击先古之民原生前进选项，通常打开地图，不选择节点 |
@@ -24,9 +24,16 @@ get_observation 的 summary 保留与 default 相同的先古主体，共用顶�
 - `name`、`epithet`、`description`：先古名称、已显示的称号及当前说明，原生无说明时为 `null`。
 - `dialogue`：当前可见的对话行，每项有英语 `speaker`、`text`。不返回未显示的后文。
 - `options`：当前显示的选项，每项有稳定整数 `id`、`title`、`description`、`enabled`。正文已在界面展开，基础观察可以提供；`inspect_ancient` 增加逐项 `hover_tips`。通常为遗物三选一，但不固定数量或强制要求选项包含遗物。
+- `options[].lethal_warning`：原生选项的致死红框判断，来自游戏回调。详情full/default保留true/false，summary及基础观察仅保留true；旧schema缺失此字段时不补造false。
 - `continue`、`proceed`：当前按钮的 `text`、`enabled`，没有时为 `null`。对话未完成、动画、领取进行中或原生锁定时不允许选项动作。
 
-`inspect_ancient`成功结果包含同次快照的`scene`、`screen`和`ancient`，接受`preset:default/full`。覆盖页拒绝查看；没有先古房间或被其他页面覆盖时，目前只返回通用错误，具体诊断与读取边界的待修复问题见[工具核验](../research/2026-11-07-inspect-ancient-review.md)。
+`inspect_ancient`成功结果包含同次快照的`scene`、`screen`和`ancient`，要求当前先古页面可见。无房间、非单人及覆盖页拒绝给出具体原因；地图／牌组覆盖提示关闭工具，选牌／奖励覆盖提示对应详情工具。完整响应的页面、字段和悬停来源先校验，再进行筛选及预设投影。
+
+预设支持default、full、summary，默认default。full保留空值；default应用[通用空值规则](mcp.md#输出预设)；summary在default基础上省略全部hover_tips及false警告，保留页面说明、已展示对话、馈赠效果正文及按钮。
+
+option_ids接受非负Int32数组：省略或null取全部，[]返回空options；保留页面顺序、对话和按钮，重复ID去重。缺失ID合并到`errors:[{code:"option_ids_not_found",option_ids:[...]}]`，匹配项照常返回。选项已有稳定ID，无须返回筛选后位置映射。
+
+文字及馈赠读取不按视口截断，仍排除真实隐藏、透明、裁剪和未揭示内容。可见而不能悬停的选项保留正文，完整详情返回空hover_tips，并通过`notes.hover_tips_unavailable.sources`给出`ancient.options.<id>`；note随筛选缩小，summary省略此类note。点击仍检查按钮在屏幕内且可操作。
 
 例如已展开的选项摘要：
 
