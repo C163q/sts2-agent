@@ -1,0 +1,158 @@
+[
+  {
+    "file": "cold-switch.full.json",
+    "description": "无先前MCP观察直接切换",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-divination-tool-view/gui/playing/verify/evidence.json",
+    "row_index": 3,
+    "sha256": "10773dbcd90a3e8a2437f892c62f2e3d0b6fcd093e2c57983bddd121dff1bd27"
+  },
+  {
+    "file": "same-tool.full.json",
+    "description": "重复当前工具，快照不变",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-divination-tool-view/gui/playing/verify/evidence.json",
+    "row_index": 7,
+    "sha256": "10773dbcd90a3e8a2437f892c62f2e3d0b6fcd093e2c57983bddd121dff1bd27"
+  },
+  {
+    "file": "switch-big.default.json",
+    "description": "切回大范围，default",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "default",
+      "tool": "big"
+    },
+    "source": ".tmp/2026-11-07-divination-tool-view/gui/playing/verify/evidence.json",
+    "row_index": 10,
+    "sha256": "10773dbcd90a3e8a2437f892c62f2e3d0b6fcd093e2c57983bddd121dff1bd27"
+  },
+  {
+    "file": "direct-reveal.full.json",
+    "description": "冷切换后直接揭开，保留动作回执",
+    "tool": "divine",
+    "arguments": {
+      "preset": "full",
+      "x": 5,
+      "y": 5
+    },
+    "source": ".tmp/2026-11-07-divination-tool-view/gui/playing/verify/evidence.json",
+    "row_index": 5,
+    "sha256": "76ac8019e0fbc3d51502f904d9531821ed99ed42cfaf312aabbd99ef612abf95"
+  },
+  {
+    "file": "cold-unavailable.full.json",
+    "description": "首次无棋盘拒绝不生成许可",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-divination-tool-view/gui/no_board/verify/evidence.json",
+    "row_index": 1,
+    "sha256": "519a802dadc3c6adc43313a489698272b9130c106ab5e0b39a3d6e7f8a116da8"
+  },
+  {
+    "file": "no-board.full.json",
+    "description": "已有许可的无棋盘拒绝",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-divination-tool-view/gui/no_board/verify/evidence.json",
+    "row_index": 6,
+    "sha256": "db11018f5dc6182a3e327d9422e3a5596721ee8e2df9c70f8b9de0b04019bbe2"
+  },
+  {
+    "file": "map-covered.full.json",
+    "description": "地图覆盖时提示close_map",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-divination-tool-view/gui/playing/verify/evidence.json",
+    "row_index": 24,
+    "sha256": "ad778a59ae5865383cdcc8df5d90316933585a4ea95f2a205fef684f46380f5f"
+  },
+  {
+    "file": "deck-covered.full.json",
+    "description": "牌组覆盖时提示close_card_view",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-divination-tool-view/gui/playing/verify/evidence.json",
+    "row_index": 32,
+    "sha256": "ba9ed0b8deb4e1b18a6d98484528b4f0b7ccb9f3b3b0fc3a257882f186be1467"
+  },
+  {
+    "file": "finished.full.json",
+    "description": "结束后提示proceed",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-divination-tool-view/gui/finished/verify/evidence.json",
+    "row_index": 14,
+    "sha256": "7cd00368fee06519d68f2f58833a4b6cb9a1481f635d213c87877bdf05cfd7cf"
+  },
+  {
+    "file": "rewards-covered.full.json",
+    "description": "奖励覆盖时提示inspect_rewards",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-divination-tool-view/gui/rewards/verify/evidence.json",
+    "row_index": 15,
+    "sha256": "6936af087e6f852a696ce319311a3ff553566f953872e79b19e8310f9591d052"
+  },
+  {
+    "file": "selection-covered.full.json",
+    "description": "选牌覆盖时提示inspect_selection",
+    "tool": "set_divination_tool",
+    "arguments": {
+      "preset": "full",
+      "tool": "small"
+    },
+    "source": ".tmp/2026-11-07-divination-tool-view/gui/selection/verify/evidence.json",
+    "row_index": 16,
+    "sha256": "488a73ddd21f000c8e088d3cac4a80b13bdd90d5a1681ac138920c94d9e95769"
+  },
+  {
+    "file": "proceed-after-rejection.full.json",
+    "description": "拒绝后直接proceed",
+    "tool": "proceed",
+    "arguments": {
+      "preset": "full"
+    },
+    "source": ".tmp/2026-11-07-divination-tool-view/gui/finished/verify/evidence.json",
+    "row_index": 16,
+    "sha256": "b18d81aa2cfb037aa4b0725ec501fd414b1894917c221bd11ec5a61ff059c6a4"
+  },
+  {
+    "file": "selection-after-rejection.full.json",
+    "description": "拒绝后直接跳过奖励选牌",
+    "tool": "selection_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "skip"
+    },
+    "source": ".tmp/2026-11-07-divination-tool-view/gui/selection/verify/evidence.json",
+    "row_index": 18,
+    "sha256": "bc90d7a3a8b8db483ef0d3b22e505cfebff04ed5f371b4b46b01a0624e45b64c"
+  }
+]

@@ -6,15 +6,40 @@ namespace Sts2Agent;
 
 internal sealed partial class GameAdapter
 {
+    private async Task<string> SetDivinationTool(Request request)
+    {
+        string? tool;
+        if (request.Arguments is not { } arguments || arguments.EnumerateObject().Count() != 1
+            || !arguments.TryGetProperty("tool", out var value) || value.ValueKind != JsonValueKind.String
+            || (tool = value.GetString()) is not ("big" or "small"))
+            return ResponseBuilder.Error(request.Id, "invalid_request", "Expected tool to be big or small.",
+                publicMessage: true, uiUnchanged: true);
+        var screen = DivinationInspection.Current;
+        if (DivinationInspection.ToolSwitchUnavailableReason(screen) is { } reason)
+            return ResponseBuilder.Error(request.Id, "illegal_action", reason, publicMessage: true, uiUnchanged: true);
+        if (DivinationInspection.ToolUnavailableReason(screen!, tool) is { } unavailable)
+            return ResponseBuilder.Error(request.Id, "illegal_action", unavailable, publicMessage: true, uiUnchanged: true);
+        var run = RunManager.Instance.DebugOnlyGetState();
+        if (DivinationInspection.SelectedTool(screen!) != tool)
+        {
+            UiChanged();
+            DivinationInspection.Tool(screen!, tool).ForceClick();
+        }
+        string state = await SettledObservation();
+        if (!ReferenceEquals(run, RunManager.Instance.DebugOnlyGetState())
+            || !ReferenceEquals(screen, DivinationInspection.Current)
+            || DivinationInspection.ToolUnavailableReason(screen!, tool) != null
+            || DivinationInspection.SelectedTool(screen!) != tool)
+            return FileMailbox.Error(request.Id, "illegal_action",
+                "The divination board changed while switching tools. Read the current screen before continuing.", publicMessage: true);
+        return Success(request, state);
+    }
+
     private async Task<string> DivinationRequest(Request request, JsonElement before)
     {
+        if (request.Operation == "set_divination_tool") return await SetDivinationTool(request);
         bool inspect = request.Operation == "inspect_event";
-        string? tool = null;
         int x = -1, y = -1;
-        if (request.Operation == "set_divination_tool" && (request.Arguments is not { } toolArgs
-            || toolArgs.EnumerateObject().Count() != 1 || !toolArgs.TryGetProperty("tool", out var value)
-            || value.ValueKind != JsonValueKind.String || (tool = value.GetString()) is not ("big" or "small")))
-            return FileMailbox.Error(request.Id, "invalid_request", "Expected big or small tool.");
         if (request.Operation == "divine" && (request.Arguments is not { } args || args.EnumerateObject().Count() != 2
             || !args.TryGetProperty("x", out var xv) || !args.TryGetProperty("y", out var yv)
             || xv.ValueKind != JsonValueKind.Number || yv.ValueKind != JsonValueKind.Number
@@ -32,7 +57,6 @@ internal sealed partial class GameAdapter
         if (screen == null || !DivinationInspection.Ready(screen))
             return FileMailbox.Error(request.Id, "illegal_action", "Return to an available divination board.");
         NClickableControl? button = !DivinationInspection.Playing(screen) ? null
-            : tool != null ? DivinationInspection.Tool(screen, tool)
             : DivinationInspection.Cells(screen).SingleOrDefault(c => c.Entity.X == x && c.Entity.Y == y && DivinationInspection.Clickable(c));
         if (button?.IsEnabled != true)
             return FileMailbox.Error(request.Id, "illegal_action", "The requested divination action is unavailable.");

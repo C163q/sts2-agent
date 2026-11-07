@@ -1,0 +1,82 @@
+[
+  {
+    "name": "no_board",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_tool_view.py",
+        "args": [
+          "--scenario",
+          "no_board"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "playing",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_tool_view.py",
+        "args": [
+          "--scenario",
+          "playing"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "finished",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_tool_view.py",
+        "args": [
+          "--scenario",
+          "finished"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "rewards",
+    "scenarios": {
+      "event": "crystal_full"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_tool_view.py",
+        "args": [
+          "--scenario",
+          "rewards"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "selection",
+    "scenarios": {
+      "event": "crystal"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_divination_tool_view.py",
+        "args": [
+          "--scenario",
+          "selection"
+        ]
+      }
+    ]
+  }
+]

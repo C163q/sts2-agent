@@ -12,7 +12,8 @@ from tests.python.test_tool_contracts import DATA
 
 MALFORMED = {
     'get_state': ('enemies', [None]), 'close_card_view': ('enemies', [None]),
-    'close_map': ('enemies', [None]), 'set_selection_view': ('enemies', [None]), 'inspect_hand': ('hand', [None]),
+    'close_map': ('enemies', [None]), 'set_selection_view': ('enemies', [None]),
+    'set_divination_tool': ('enemies', [None]), 'inspect_hand': ('hand', [None]),
     'inspect_targets': ('targets', [None]), 'inspect_ui': ('hover_tips', [None]),
     'inspect_potions': ('potion_slots', [False]), 'inspect_relics': ('relics', [False]),
     'inspect_combatants': ('enemies', [None]), 'inspect_deck': ('deck', [False]),

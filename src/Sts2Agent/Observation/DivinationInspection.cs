@@ -26,16 +26,35 @@ internal static class DivinationInspection
         && VisibleUi.Shown(screen) && VisibleUi.Shown(screen.GetNode<Control>("%Items"))
         && !RewardInspection.Animating(screen, "_fadeTween");
 
-    public static string? InspectionUnavailableReason(NCrystalSphereScreen? screen)
+    public static string? InspectionUnavailableReason(NCrystalSphereScreen? screen) =>
+        PageUnavailableReason(screen, "inspecting divination");
+
+    private static string? PageUnavailableReason(NCrystalSphereScreen? screen, string purpose)
     {
         if (screen == null) return "No divination board is available on the current screen.";
-        if (!RunContext.Singleplayer) return "Divination inspection requires a local single-player run.";
+        if (!RunContext.Singleplayer) return $"A local single-player run is required for {purpose}.";
         if (Exposed(screen)) return null;
-        if (VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen)) return "Close the map with close_map before inspecting divination.";
-        if (CardView.Current != null) return "Close the card browsing page with close_card_view before inspecting divination.";
+        if (VisibleUi.Shown(NRun.Instance?.GlobalUi.MapScreen)) return NRun.Instance!.GlobalUi.MapScreen.IsOpen
+            ? $"Close the map with close_map before {purpose}." : $"Wait for the map to finish closing before {purpose}.";
+        if (CardView.Current != null) return $"Close the card browsing page with close_card_view before {purpose}.";
         if (CardSelection.Current != null) return "Resolve the current card selection; inspect_selection shows its choices.";
         if (RewardInspection.Current != null) return "Resolve the current reward page; inspect_rewards shows its rows.";
         return "Wait for the divination board to finish opening or return from the covering dialog.";
+    }
+
+    public static string? ToolSwitchUnavailableReason(NCrystalSphereScreen? screen) =>
+        PageUnavailableReason(screen, "switching divination tools")
+        ?? (Finished(screen!) ? "Divination is finished. Use proceed to continue."
+            : !Ready(screen!) ? "Wait for the current reveal, rewards, and animations to finish before switching divination tools." : null);
+
+    public static string? ToolUnavailableReason(NCrystalSphereScreen screen, string tool)
+    {
+        if (ToolSwitchUnavailableReason(screen) is { } reason) return reason;
+        var button = Tool(screen, tool);
+        return button.IsEnabled && VisibleUi.Displayed(button)
+            && (button.GetMouseFilterWithOverride() != Control.MouseFilterEnum.Ignore
+                || button.GetFocusModeWithOverride() == Control.FocusModeEnum.All)
+            ? null : "This divination tool button is not currently interactive. Wait for the board to become available.";
     }
 
     public static NCrystalSphereCell[] Cells(NCrystalSphereScreen screen) => screen.GetNode<Control>("%Cells")
@@ -48,6 +67,8 @@ internal static class DivinationInspection
         && VisibleUi.OnScreen(button) && VisibleUi.Text(button, "%Label") is { Length: > 0 } ? button : null;
 
     private static CrystalSphereMinigame Model(NCrystalSphereScreen screen) => (CrystalSphereMinigame)PrivateFields.Read(screen, "_entity")!;
+    public static string SelectedTool(NCrystalSphereScreen screen) =>
+        Model(screen).CrystalSphereTool == CrystalSphereMinigame.CrystalSphereToolType.Big ? "big" : "small";
     private static bool Finished(NCrystalSphereScreen screen) => !Tool(screen, "big").Visible && Proceed(screen)?.IsEnabled == true;
 
     private static bool Revealing(NCrystalSphereScreen screen)
@@ -116,9 +137,9 @@ internal static class DivinationInspection
             return (object)new {
                 status = "visible", phase = finished && ready ? "finished" : ready ? "playing" : "settling",
                 remaining = VisibleUi.OnScreen(screen.GetNode<Control>("%DivinationsLeft")) ? (int?)model.DivinationCount : null,
-                tool = toolsShown ? model.CrystalSphereTool == CrystalSphereMinigame.CrystalSphereToolType.Big ? "big" : "small" : null,
+                tool = toolsShown ? SelectedTool(screen) : null,
                 tools = toolsShown ? new[] { "big", "small" }.Select(id => new { id,
-                    text = Text("button.DIVINATION_LABEL_" + id.ToUpperInvariant()), enabled = ready && Tool(screen, id).IsEnabled }).ToArray() : null,
+                    text = Text("button.DIVINATION_LABEL_" + id.ToUpperInvariant()), enabled = ToolUnavailableReason(screen, id) == null }).ToArray() : null,
                 instructions = VisibleUi.OnScreen(screen.GetNode<Control>("%Instructions")) ? new {
                     title = Text("minigame.instructions.title"), description = Text("minigame.instructions.description") } : null,
                 dialogue = VisibleUi.OnScreen(label) && label.VisibleRatio >= 0.999f && DivinationTasks.Dialogue(dialogue) is { } spoken

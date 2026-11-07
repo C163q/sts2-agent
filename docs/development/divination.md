@@ -8,7 +8,7 @@
 | --- | --- |
 | get_observation(preset?) | 文字棋盘、已揭开碎片、次数、工具、当前对白及可用动作；full/default/summary 均省略固定教学，不返回 PNG |
 | inspect_event(preset?, include_image?) | 共用文字棋盘；full/default 另提供当前展示的教学，summary 省略教学；include_image:true 按需附上当前棋盘 PNG，默认 false |
-| set_divination_tool({"tool":"small"}) | 点击小范围工具；big 为大范围，不消耗次数 |
+| set_divination_tool({"tool":"small"}) | 切换小范围工具；big为大范围，不消耗次数；可直接调用，返回actions_only格式 |
 | divine({"x":5,"y":5}) | 点击一个仍被覆盖的格子，消耗一次次数 |
 | proceed() | 点击结算后实际启用的前进按钮 |
 
@@ -50,7 +50,11 @@ inspect_event({"include_image":true}) 在文字结果后另附 ImageContent PNG�
 
 ## 动作、覆盖与结算
 
-大范围以指定格为中心揭开按边界裁剪的3×3，小范围揭开一格。参数严格接受 big/small 或整数坐标，额外字段、布尔坐标、字符串、浮点数和越界值均拒绝。切换、揭开和前进都点击原生按钮；动作返回[精简回执](mcp.md#动作返回格式)，后续按需观察棋盘。
+大范围以指定格为中心揭开按边界裁剪的3×3，小范围揭开一格。参数严格接受 big/small 或整数坐标，额外字段、布尔坐标、字符串、浮点数和越界值均拒绝。操作复用原生按钮；揭开和前进返回[精简动作回执](mcp.md#动作返回格式)，后续按需观察棋盘。
+
+工具切换为视图操作，不要求已有观察许可；成功返回scene、screen及available_actions，刷新许可供后续揭开使用，不返回transition或图片。重复选择当前工具同样成功。切换前检查页面、忙碌和按钮状态，成功前确认仍属同一对局、棋盘及实际选中工具；完整棋盘和工具值由观察读取。该接口与Mod应配套更新，旧Mod仍要求切换前提供状态令牌。
+
+无棋盘、地图／牌组／奖励／选牌覆盖、结算中或已经结束会给具体原因和对应工具提示。明确未交互的拒绝保留已有许可，可直接继续合法操作；首次拒绝不生成许可。交互后的错误、未知或坏响应仍须重新读取，完整规则见[MCP调用和错误语义](mcp.md#调用和错误语义)。
 
 phase 为 playing、settling 或 finished。观察可读取已经展示的结算过程，动作继续要求原生输入与动画就绪。动作等待实际揭开、资源及奖励稳定；次数归零后仍可能需要奖励或选牌输入，按[共享动作边界](end-turn.md#动作完成与画面稳定)处理。
 
@@ -60,4 +64,4 @@ phase 为 playing、settling 或 finished。观察可读取已经展示的结算
 
 ## 验证入口
 
-按[测试指南](roundtrip.md)编译并准备隔离实例，使用 tests/game/data/gui_suite_event_inspection.json 运行事件／占卜专项。UI 显示夹具与隐藏真值仅用于私有测试入口，不进入公开工具目录；自然揭开和 UI 夹具验证的范围分别记录在[实施记录](../research/2026-11-07-event-inspection-text-implementation.md)。
+按[测试指南](roundtrip.md)编译并准备隔离实例，使用[工具切换专项](../../tests/game/data/gui_suite_divination_tool_view.json)验证冷调用、重复选择、覆盖拒绝与合法后续操作；事件／占卜文字观察使用tests/game/data/gui_suite_event_inspection.json。UI显示夹具与隐藏真值仅用于私有测试入口，不进入公开工具目录；自然揭开和UI夹具验证的范围分别记录在[文字观察实施](../research/2026-11-07-event-inspection-text-implementation.md)及[工具切换实施](../research/2026-11-07-divination-tool-view-implementation.md)。

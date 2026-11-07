@@ -8,7 +8,7 @@ internal sealed partial class GameAdapter
     private static readonly HashSet<string> RecordedActions = [
         "play_card", "play_cards", "end_turn", "use_potion", "discard_potion", "select_card", "selection_option",
         "claim_reward", "proceed", "choose_rest_option", "loot_treasure", "open_shop", "close_shop", "buy_item",
-        "choose_ancient_option", "advance_dialogue", "choose_event_option", "set_divination_tool", "divine",
+        "choose_ancient_option", "advance_dialogue", "choose_event_option", "divine",
         "respond_to_confirmation", "travel_to_node", "run_result_option"
     ];
 

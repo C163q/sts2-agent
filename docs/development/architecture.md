@@ -86,7 +86,7 @@ Mod 构建需要自行安装游戏程序集，见[构建前提](roundtrip.md#前
 
 `tool_registry.SPECS` 为公开名称、原生 operation、参数 schema／解析绑定、预设、reader／投影绑定与执行规则的唯一登记。目录、GameTools 方法、公开工具分类及成功解码从该表派生；reader 的模块／函数显式绑定，在解码时解析，避免领域分类反向导入总装配。截图独立登记且无玩法 preset；文件客户端的测试入口及 close_deck 别名保持私有兼容。
 
-`request_arguments.normalize_request` 先检查公共类型、范围、枚举、必填与跨字段条件，再调用领域解析器；输出原生参数、投影参数及独立执行类别，不通过 handler 签名或 readOnlyHint 猜测行为。普通 inspect_selection 为读取，显式 view_upgrades 为页面操作；set_divination_tool 虽使用页面 annotation，仍需动作许可并记录 transition。媒体需求通过原生 response_options 接入，不作为公开工具参数。
+`request_arguments.normalize_request` 先检查公共类型、范围、枚举、必填与跨字段条件，再调用领域解析器；输出原生参数、投影参数及独立执行类别，不通过 handler 签名或 readOnlyHint 猜测行为。普通inspect_selection为读取，显式view_upgrades为页面操作；set_divination_tool为不要求已有许可的视图切换，成功返回actions_only，揭开仍由divine记录动作。媒体需求通过原生response_options接入，不作为公开工具参数。
 
 `output/filtering.py` 共用可选筛选校验、位置选择与悬停关联裁剪；精确 UI 路径、战斗对象前缀、卡牌身份及遗物位置仍保持各自含义。公共筛选省略／null 表示全部，[] 表示空集合；遗物提示和结果映射均引用未筛选列表。完整解码先于筛选、摘要与最终 null 过滤。
 

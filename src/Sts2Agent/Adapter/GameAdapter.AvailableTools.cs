@@ -126,7 +126,9 @@ internal sealed partial class GameAdapter
         }
         if (DivinationInspection.Current is { } divination && DivinationInspection.Exposed(divination))
         {
-            if (DivinationInspection.Playing(divination)) { actions.Add("set_divination_tool"); actions.Add("divine"); }
+            if (new[] { "big", "small" }.Any(tool => DivinationInspection.ToolUnavailableReason(divination, tool) == null))
+                actions.Add("set_divination_tool");
+            if (DivinationInspection.Playing(divination)) actions.Add("divine");
         }
         if (EventInspection.Current is { } currentEvent && EventInspection.ActionUnavailableReason(currentEvent) == null)
         {

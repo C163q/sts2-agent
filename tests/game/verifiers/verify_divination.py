@@ -64,7 +64,8 @@ async def verify(args):
             inspected = await call('inspect_event')
             assert inspected['divination']['phase'] == data['divination']['phase']
             assert inspected['divination']['grid']['cell_rows'] == data['divination']['grid']['cell_rows']
-            data = await observe_after_action(call, await call('set_divination_tool', {'tool': 'small'}))
+            await call('set_divination_tool', {'tool': 'small'})
+            data = await call('get_observation')
             assert data['divination']['tool'] == 'small', data
             data = await observe_after_action(call, await call('divine', {'x': 5, 'y': 5}))
             geometry = await asyncio.to_thread(raw.call, 'check_test_divination')
@@ -77,7 +78,8 @@ async def verify(args):
             assert data['divination']['remaining'] == (2 if args.option == 0 else 5), data
             await call('divine', {'x': 5, 'y': 5}, error='illegal_action')
             data = await call('get_observation')
-            data = await observe_after_action(call, await call('set_divination_tool', {'tool': 'big'}))
+            await call('set_divination_tool', {'tool': 'big'})
+            data = await call('get_observation')
             if args.scenario in {'curse', 'rewards', 'full', 'relic'}:
                 kind = {'curse': 'CrystalSphereCurse', 'rewards': 'CrystalSpherePotion', 'full': 'CrystalSpherePotion', 'relic': 'CrystalSphereRelic'}[args.scenario]
                 item = next(i for i in geometry['state']['items'] if i['kind'] == kind)

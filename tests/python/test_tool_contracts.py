@@ -54,7 +54,7 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                     want.update(potion_discard=copy.deepcopy(DISCARD_UNKNOWN), available_actions=[])
                 if want.get('screen', {}).get('view') == 'map':
                     want['screen']['status'] = 'covered'
-                if case['tool'] in {'close_card_view', 'close_map'} and 'error' not in want:
+                if case['tool'] in {'close_card_view', 'close_map', 'set_divination_tool'} and 'error' not in want:
                     # The approved action contract replaces the frozen partial observation.
                     want = {key: want[key] for key in ('scene', 'screen', 'available_actions')}
                 if case['tool'] == 'set_selection_view' and 'error' not in want:
@@ -96,6 +96,8 @@ class ToolContractTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(result, want)
                 self.assertEqual(getattr(result, 'image', None), None if board_text else case.get('expected_image'))
                 native_calls = copy.deepcopy(case['native_calls'])
+                if case['tool'] == 'set_divination_tool':
+                    for call in native_calls: call['expected_state'] = None
                 if case['tool'] == 'inspect_deck':
                     for call in native_calls:
                         if call['arguments'] == {}: call['arguments'] = None
@@ -149,6 +151,8 @@ class FileContractTests(unittest.TestCase):
                     want = {key: want[key] for key in ('scene', 'screen', 'available_actions')}
                 if case['tool'] == 'inspect_pile' and '--preset' in case['argv'] and 'summary' in case['argv'] and want.get('status') == 'opened':
                     want.pop('message', None)
+                if case['tool'] == 'set_divination_tool':
+                    want.pop('transition', None)
                 if case['tool'] == 'inspect_shop':
                     want['top_bar'] = {key: value for key, value in want.get('top_bar', {}).items()
                         if key in {'gold', 'potion_slots', 'deck_count', 'relic_count'}}

@@ -35,7 +35,7 @@ flowchart LR
 | `inspect_run_result()` | [终章结算](run-ending.md)当前页、发现与徽章悬停说明、解锁物品详情 |
 | `run_result_option(option_id)` | 点击当前结算按钮或待揭示解锁条目，逐页操作至主菜单 |
 | `respond_to_confirmation(option)` | 明确确认或取消[当前 Trial 事件确认框](events.md#事件确认弹窗)，确认会结束本局 |
-| `set_divination_tool(tool)` | [占卜](divination.md)切换大小工具，不消耗次数 |
+| `set_divination_tool(tool)` | [占卜](divination.md)切换大小工具，不消耗次数；可直接调用，返回actions_only |
 | `divine(x,y)` | 点击仍覆盖的占卜格子；棋盘及图像按需观察 |
 | `inspect_event(preset?, include_image?)` | [当前通用事件](events.md)正文、选项与悬停解释；summary 为静态摘要；占卜默认文字，include_image:true 按需附图 |
 | `choose_event_option(option_id)` | 点击一个启用的事件选项，保留原生后续流程与致死警告 |
@@ -189,7 +189,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 所有工具的本地参数错误都在发送前拒绝，保留此前已有许可，不生成新许可。纯读取（基础观察及不改变 UI 的详情）遇到原生明确的 `invalid_request/illegal_action/expired_request` 也保留已有许可；首次读取失败不会生成许可。外部状态改变后，下一动作仍须通过 Mod 的 stale_state 校验。控制器冲突、坏响应、连接失败、超时、异常或取消清除许可。
 
-`inspect_selection` 省略 `view_upgrades` 时属于纯读取；显式提供该参数则可能改变 UI，与地图、牌组、牌堆及查看页切换一样，不能仅凭明确拒绝的错误码恢复许可。inspect_deck／inspect_pile／inspect_map／close_card_view／close_map／set_selection_view 的已审查拒绝另有原生“本请求未交互”保证；只有显式保证为 true、证据不矛盾且已有许可时保留，返回 choose_legal_action。缺少保证、已交互或未知结果仍要求观察；该例外不推广到其他页面工具。这些页面操作不要求已有动作许可。`set_divination_tool` 虽只切换占卜工具，仍须已有许可、记录事件并返回动作回执；MCP annotations 不代替执行策略。
+`inspect_selection` 省略 `view_upgrades` 时属于纯读取；显式提供该参数则可能改变 UI，与地图、牌组、牌堆及查看页切换一样，不能仅凭明确拒绝的错误码恢复许可。inspect_deck／inspect_pile／inspect_map／close_card_view／close_map／set_selection_view／set_divination_tool 的已审查拒绝另有原生“本请求未交互”保证；只有显式保证为 true、证据不矛盾且已有许可时保留，返回 choose_legal_action。缺少保证、已交互或未知结果仍要求观察；该例外不推广到其他页面工具。这些页面操作不要求已有动作许可。`set_divination_tool`仅切换当前占卜工具，成功返回actions_only并刷新许可，不记录玩法事件；具体检查见[占卜接口](divination.md#动作覆盖与结算)。MCP annotations不代替注册的执行策略。
 
 游戏动作仅在原生证明“未提交且 UI 未改变”时保留旧许可。`play_card`、`play_cards`、`end_turn`、`use_potion`、`discard_potion`、`select_card`、`selection_option`、`travel_to_node`、`claim_reward`、`choose_rest_option`、`loot_treasure`、`proceed`、`open_shop`、`close_shop`、`buy_item` 与 `choose_event_option` 的已审查前置拒绝提供这一保证；费用、目标和选择／覆盖／按钮状态会给具体提示，例如能量不足被拒后可直接结束回合，选牌期间误用 end_turn 被拒后可直接继续合法选择，无效候选或按钮被拒后可直接改用有效候选或按钮。travel_to_node 在地图未开、被覆盖、绘图或目标非候选等明确拒绝时可直接纠正；claim_reward 的奖励 ID 无效、页面覆盖或尚未就绪等明确拒绝也可直接纠正，具体契约见[奖励领取](rewards.md#领取与后续选择)。loot_treasure 在首次点击前的已开箱、无遗物或覆盖等明确拒绝也可直接纠正；已经开箱后的第二阶段不具备整次请求未交互保证。proceed 在地图／牌组／选牌／确认框覆盖、未完成活动或对白、商品页展开等点击前拒绝时保留已有许可，并提示相应工具。open_shop在商品页已打开、地图／牌组／选择覆盖及未就绪等点击前拒绝时保留已有许可，提示inspect_shop、close_shop或当前页面工具；具体条件见[商店接口](shop.md#打开观察与详情)。close_shop在商品页已关闭、覆盖或未就绪等点击前拒绝时保留已有许可，可直接打开或处理当前选择／奖励；同见商店接口。buy_item的页面、ID、单品交互及金币等明确前置拒绝也保留许可；进入原生购买后不能把领取失败当作未交互，pending表示继续当前选择／奖励。结果ID与请求一致后才可续接，见商店接口。地图与奖励的滚动已经属于交互，滚动后的失败不会恢复许可。批量部分提交后的失败不具备整批未提交保证。缺少标记的旧 Mod、其他动作拒绝或执行结果未知时不恢复许可。占卜等操作返回 `screenshot_unavailable` 仍可能已经改变游戏，返回 `outcome:"unknown"` 并要求观察，不能把图像失败当作玩法未执行。
 

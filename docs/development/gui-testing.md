@@ -22,6 +22,7 @@
 
 | 专项 | 清单 |
 | --- | --- |
+| 占卜工具冷切换、重复选择、覆盖拒绝恢复及揭开续接 | [divination_tool_view](../../tests/game/data/gui_suite_divination_tool_view.json)；[输出定稿](../research/2026-11-07-set-divination-tool-review.md#输出定稿) |
 | 事件选择的具体拒绝、直接恢复、翻页、选牌、奖励、确认框、占卜与战斗进入 | [choose_event_option_review](../../tests/game/data/gui_suite_choose_event_option_review.json)；[输出定稿](../research/2026-11-07-choose-event-option-review.md#输出定稿) |
 | 架构组合回归与四项契约样例采集 | [architecture_refactor](../../tests/game/data/gui_suite_architecture_refactor.json) |
 | 药水静态／完整预设、原槽位筛选与显示边界 | [potion_inspection](../../tests/game/data/gui_suite_potion_inspection.json) |

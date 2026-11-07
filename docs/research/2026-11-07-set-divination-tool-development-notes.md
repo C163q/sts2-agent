@@ -1,6 +1,6 @@
 # set_divination_tool 开发核验依据
 
-> 当前状态：现状核验与设计讨论；产品行为未修改。用户决策内容见[核验与建议](2026-11-07-set-divination-tool-review.md)。
+> 当前状态：定稿已进入实施，当前验收见[实施记录](2026-11-07-divination-tool-view-implementation.md)；以下保留审阅基线。用户决策内容见[核验与建议](2026-11-07-set-divination-tool-review.md)。
 
 ## 问题依据
 
