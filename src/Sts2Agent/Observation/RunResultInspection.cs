@@ -205,8 +205,8 @@ internal sealed class RunResultInspection
             ["score_lines"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NScoreLine>(root)
                 .Where(VisibleUi.Browsable).Select(line => new { label = Text(line.GetNode<CanvasItem>("%Label")) ?? "",
                     value = Text(line.GetNode<CanvasItem>("%Score")) ?? "" }).ToArray() : Array.Empty<object>(),
-            ["badges"] = context.Phase == "summary" ? badges.Select(Badge).ToArray() : Array.Empty<object>(),
-            ["discoveries"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NDiscoveredItem>(root)
+            ["badges"] = badges.Select(Badge).ToArray(),
+            ["discoveries"] = exposed ? VisibleUi.Descendants<NDiscoveredItem>(root)
                 .Where(VisibleUi.Browsable).Select(item => new { kind = DiscoveryKind(item),
                     count = int.TryParse(Text(item.GetNode<CanvasItem>("%Label")), out int count) ? count : 0 }).ToArray() : Array.Empty<object>(),
             ["options"] = exposed ? Options(context).Select(option => new { id = option.id,
@@ -237,10 +237,10 @@ internal sealed class RunResultInspection
             string candidate = source;
             for (int suffix = 1; !identities.Add(candidate); suffix++) candidate = source + ":" + suffix;
             source = candidate;
+            sources.Add(source);
             if (!hover || !HoverAccess.CanFocus(control)) { unavailable.Add("run_result.hover_tips." + source); return; }
             var tip = read();
             tips.Add(full ? new { source, tip.title, tip.description } : (object)new { source, tip.title });
-            sources.Add(source);
         }
         if (exposed)
         {

@@ -63,7 +63,7 @@ get_observation三种内容预设共用结算静态主体，页面hover_tips只�
 
 inspect_run_result.summary同样省略页面提示的description、药水／遗物正文和附加解释，卡牌使用共用摘要；完整故事正文保留。full/default提供允许读取的完整效果。不可悬停项保留静态信息，以null正文／空解释及notes.hover_tips_unavailable指明来源；summary省略该悬停note，但保留notes.presentation。
 
-查看只要求对应单人结算页面可读，不要求按钮可点击；展示中返回not_ready及已显示内容。执行、基础观察和专项查看使用RunResultInspection的共同读取，展示与操作就绪分开。原生hover_sources及unavailable_hover_sources仅用于完整协议和关联校验，公开输出不含这些内部列表；完整字段及同次scene/screen先校验，再投影预设，坏响应清除许可。无结算、无关菜单、非单人、模态／物品详情覆盖和过渡给出具体提示；明确纯读取拒绝保留已有许可，首次失败不授予许可。
+查看只要求对应单人结算页面可读，不要求按钮可点击；展示中返回not_ready及已显示内容。执行、基础观察和专项查看使用RunResultInspection的共同读取，展示与操作就绪分开。原生hover_sources列出当前可浏览的提示图标，已提供提示与不可用来源互斥且共同覆盖该清单；徽章／发现／卡牌／药水／遗物引用另与实际条目核对。该清单与unavailable_hover_sources仅用于完整协议校验，公开输出不含内部列表；完整字段及同次scene/screen先校验，再投影预设，坏响应清除许可。无结算、无关菜单、非单人、模态／物品详情覆盖和过渡给出具体提示；明确纯读取拒绝保留已有许可，首次失败不授予许可。
 
 当前原生本局详情页的滚动文字与物品不按视口截断，基础观察和详情使用同一浏览范围；读取不改变滚动位置。隐藏、透明、非滚动画外控件以及未揭示解锁仍不读取，按钮仍按真实可点击状态判断。当前游戏基线原生禁用了 View Run 按钮，工具不会启用它；该页修复使用仅测试模式的原生页面夹具验证，范围见[浏览内容审查](../research/2026-11-02-browsable-content-audit.md)。
 

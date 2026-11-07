@@ -9,7 +9,7 @@
     "phase": "history",
     "title": null,
     "texts": [
-      "November 8, 2026, 1:37 AM",
+      "November 8, 2026, 1:59 AM",
       "Seed: STS2AGENTROUNDTRIP",
       "Singleplayer: Standard",
       "v0.107.1",
@@ -30,7 +30,24 @@
       "Share"
     ],
     "score_lines": [],
-    "badges": [],
+    "badges": [
+      {
+        "name": "Highlander",
+        "rarity": "bronze"
+      },
+      {
+        "name": "Flawless",
+        "rarity": "bronze"
+      },
+      {
+        "name": "Speediest",
+        "rarity": "gold"
+      },
+      {
+        "name": "Tiny Deck",
+        "rarity": "silver"
+      }
+    ],
     "discoveries": [],
     "options": [
       {

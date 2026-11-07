@@ -58,6 +58,10 @@ def result_details(value, full=False, *, require_complete=False):
         if not fields <= card.keys() or not re.fullmatch(r'card:[0-9]+', card['id']) or card['id'] in card_ids:
             raise ValueError('Incomplete or duplicate result card.')
         card_ids.add(card['id'])
+        if require_complete and (
+                card['enchantment'] is not None and not {'name','dimmed'} <= card['enchantment'].keys()
+                or card['affliction'] is not None and set(card['affliction']) != {'name'}):
+            raise ValueError('Incomplete result card appearance.')
         if full and any(set(tip) != set(TIP) for tip in card['hover_tips']):
             raise ValueError('Incomplete result card help.')
     for key in ('relics','potions'):
@@ -72,11 +76,46 @@ def result_details(value, full=False, *, require_complete=False):
             raise ValueError('Incomplete or duplicate result hover help.')
         sources.append(tip['source'])
     if require_complete:
-        offered = value.get('hover_sources')
+        rendered = value.get('hover_sources')
         unavailable = value.get('unavailable_hover_sources')
-        if offered != sources or not isinstance(unavailable, list) or any(
-                not isinstance(source, str) or not source.startswith('run_result.') for source in unavailable
-                ) or len(set(unavailable)) != len(unavailable):
+        if (not isinstance(rendered, list) or any(not isinstance(source, str) or not source for source in rendered)
+                or len(set(rendered)) != len(rendered) or not isinstance(unavailable, list)
+                or any(not isinstance(source, str) for source in unavailable)
+                or len(set(unavailable)) != len(unavailable)):
+            raise ValueError('Invalid result hover associations.')
+
+        def validate_tip_reference(source):
+            if source.startswith('badge:'):
+                suffix = source.removeprefix('badge:')
+                if not suffix.isdecimal() or not 0 <= int(suffix) < len(result['badges']):
+                    raise ValueError('Invalid result badge reference.')
+            elif source.startswith('discovery:'):
+                if source.removeprefix('discovery:') not in {item['kind'] for item in result['discoveries']}:
+                    raise ValueError('Invalid result discovery reference.')
+            elif source.startswith('epoch:') and not re.fullmatch(r'epoch:[0-9]+', source):
+                raise ValueError('Invalid result epoch reference.')
+
+        for source in rendered: validate_tip_reference(source)
+        missing_tips = set()
+        for path in unavailable:
+            if path.startswith('run_result.hover_tips.'):
+                source = path.removeprefix('run_result.hover_tips.')
+                if source not in rendered or source in sources:
+                    raise ValueError('Conflicting result hover availability.')
+                validate_tip_reference(source); missing_tips.add(source)
+            elif path.startswith('run_result.cards.'):
+                identity = path.removeprefix('run_result.cards.')
+                if identity not in card_ids or next(card for card in result['cards'] if card['id'] == identity).get('hover_tips'):
+                    raise ValueError('Invalid unavailable result card reference.')
+            else:
+                match = re.fullmatch(r'run_result\.(relics|potions)\.([0-9]+)', path)
+                if match is None: raise ValueError('Invalid unavailable result source.')
+                kind, index = match[1], int(match[2])
+                if index >= len(result[kind]): raise ValueError('Invalid unavailable result item reference.')
+                item = result[kind][index]
+                if full and (item['description'] is not None or item['hover_tips']):
+                    raise ValueError('Conflicting result item hover availability.')
+        if set(rendered) != set(sources) | missing_tips or set(sources) - set(rendered):
             raise ValueError('Invalid result hover associations.')
     if result['status'] == 'covered' and (result['title'] is not None or any(result[key] for key in (
             'texts','score_lines','badges','discoveries','options','cards','relics','potions','hover_tips'))):

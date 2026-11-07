@@ -55,7 +55,15 @@ class ResultInspectionPresetTests(unittest.IsolatedAsyncioTestCase):
                    lambda r:r['run_result']['potions'][0].pop('description'),
                    lambda r:r['run_result']['badges'][0].pop('name'),
                    lambda r:r['run_result']['hover_tips'][0].update(source='badge:999'),
-                   lambda r:r['run_result'].pop('hover_sources')]
+                   lambda r:r['run_result'].pop('hover_sources'),
+                   lambda r:(r['run_result']['hover_tips'][0].update(source='badge:999'),
+                             r['run_result']['hover_sources'].__setitem__(0,'badge:999')),
+                   lambda r:r['run_result'].update(unavailable_hover_sources=['run_result.hover_tips.badge:0']),
+                   lambda r:r['run_result'].update(unavailable_hover_sources=['run_result.relics.999']),
+                   lambda r:r['run_result'].update(unavailable_hover_sources=['run_result.potions.999']),
+                   lambda r:r['run_result'].update(unavailable_hover_sources=['run_result.cards.card:999']),
+                   lambda r:r['run_result']['cards'][0].update(enchantment={}),
+                   lambda r:r['run_result']['cards'][0].update(affliction={})]
         for preset in ('full','default','summary'):
             for mutate in mutations:
                 with self.subTest(preset=preset,mutation=mutate):
@@ -95,6 +103,15 @@ class ResultInspectionPresetTests(unittest.IsolatedAsyncioTestCase):
         client.raw['turn']=1
         value=await GameTools(client).get_observation()
         self.assertEqual(value.get('error',{}).get('code'),'transport_error',value)
+
+    async def test_unavailable_rendered_epoch_has_no_tip_until_hoverable(self):
+        client=ResultPacket();client.raw['run_result'].update(phase='timeline',cards=[],relics=[],potions=[],badges=[],discoveries=[],
+            hover_tips=[],hover_sources=['epoch:9'],unavailable_hover_sources=['run_result.hover_tips.epoch:9'],
+            options=[{'id':'back','text':'Back','enabled':True}])
+        value=await GameTools(client).inspect_run_result({'preset':'summary'})
+        self.assertNotIn('error',value)
+        self.assertEqual(value['run_result']['hover_tips'],[])
+        self.assertNotIn('hover_tips_unavailable',value.get('notes',{}))
 
     async def test_epoch_tip_need_not_be_a_currently_clickable_option(self):
         client=ResultPacket();client.raw['run_result'].update(phase='timeline',cards=[],relics=[],potions=[],badges=[],discoveries=[],
