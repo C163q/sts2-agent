@@ -112,4 +112,5 @@ def observation_details(state):
           or result['screen'] == {'status': 'visible', 'view': 'confirmation'}):
         raise ValueError('Missing event confirmation.')
     from sts2_mcp.output.run_ending_details import validate_ending
-    return format_game_cards(validate_ending(result), shop_mode="face_full", deck_mode='face_full', pile_mode='face_full')
+    return format_game_cards(validate_ending(result), shop_mode="face_full", deck_mode='face_full',
+                             pile_mode='face_full', selection_mode='face_full', result_mode='face_full')

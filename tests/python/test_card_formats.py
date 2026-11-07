@@ -67,14 +67,18 @@ class CardModeTests(unittest.TestCase):
                  'hover_tips': [{'title': 'Block', 'description': 'After help.'}]}
         data['selection'].update(type='hand_upgrade', selected_ids=[5], cards=[before],
                                  upgrade_preview={'before': before, 'after': after})
-        for reader in (observation_details, lambda value: inspection_details('inspect_selection', value)):
+        for detailed, reader in ((False, observation_details), (True, lambda value: inspection_details('inspect_selection', value))):
             result = player_result({'ok': True, 'state': reader(data)}, operation='inspect_selection')
             pair = result['selection']['upgrade_preview']
-            self.assertEqual(pair['before']['hover_tips'], [{'title': 'Block', 'description': 'Before help.'}])
-            self.assertEqual(pair['after']['hover_tips'], [{'title': 'Block', 'description': 'After help.'}])
+            if detailed:
+                self.assertEqual(pair['before']['hover_tips'], [{'title': 'Block', 'description': 'Before help.'}])
+                self.assertEqual(pair['after']['hover_tips'], [{'title': 'Block', 'description': 'After help.'}])
+            else:
+                self.assertNotIn('hover_tips', pair['before'])
+                self.assertNotIn('description', pair['after'])
             self.assertIsNone(apply_preset(result, 'default')['selection']['upgrade_preview']['before']['enchantment'])
 
-    def test_result_cards_keep_help_but_general_result_help_stays_dedicated(self):
+    def test_result_observation_keeps_card_faces_and_drops_general_hover_help(self):
         from sts2_mcp.output.game_output import observation_details
         from tests.python.test_run_ending import state
         data = state('summary')
@@ -83,7 +87,8 @@ class CardModeTests(unittest.TestCase):
                                         'hover_tips': [{'title': 'Block', 'description': 'Card help.'}]}]
         data['run_result']['hover_tips'] = [{'source': 'secret', 'title': 'General', 'description': 'Dedicated only.'}]
         result = observation_details(data)['run_result']
-        self.assertEqual(result['cards'][0]['hover_tips'], [{'title': 'Block', 'description': 'Card help.'}])
+        self.assertNotIn('hover_tips', result['cards'][0])
+        self.assertNotIn('description', result['cards'][0])
         self.assertNotIn('hover_tips', result)
 
     def test_fixed_face_boundary_and_comparison_null_context(self):

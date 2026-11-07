@@ -20,7 +20,8 @@ def format_card(card, mode, *, path=()):
     return result
 
 
-def format_game_cards(payload, *, shop_mode="face_full", deck_mode='full', pile_mode='full'):
+def format_game_cards(payload, *, shop_mode="face_full", deck_mode='full', pile_mode='full',
+                      selection_mode='full', result_mode='full'):
     """Route validated page card objects, keeping references and choice metadata separate."""
     def cards(items, mode):
         return None if items is None else [format_card(card, mode) for card in items]
@@ -37,7 +38,7 @@ def format_game_cards(payload, *, shop_mode="face_full", deck_mode='full', pile_
     selection = payload.get('selection')
     if selection is not None:
         def candidates(items):
-            return [format_card(card, 'full') for card in items]
+            return [format_card(card, selection_mode) for card in items]
         if selection.get('cards') is not None:
             selection['cards'] = candidates(selection['cards'])
         for bundle in selection.get('bundles', []):
@@ -48,9 +49,9 @@ def format_game_cards(payload, *, shop_mode="face_full", deck_mode='full', pile_
         for pair in pairs:
             for side in ('before', 'after'):
                 if pair[side] is not None:
-                    pair[side] = format_card(pair[side], 'full')
+                    pair[side] = format_card(pair[side], selection_mode)
     if payload.get('run_result') is not None:
-        payload['run_result']['cards'] = cards(payload['run_result']['cards'], 'full')
+        payload['run_result']['cards'] = cards(payload['run_result']['cards'], result_mode)
     for item in (payload.get('shop') or {}).get('items') or []:
         if item['kind'] == 'card':
             item['card'] = format_card(item['card'], shop_mode)

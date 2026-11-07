@@ -63,7 +63,7 @@ class RestSiteOutputTests(unittest.TestCase):
         raw['selection'].update(type='deck_upgrade', selected_ids=[5], upgrade_previews=[{'before': before, 'after': after}])
         result = inspection_details('get_state', raw)['selection']
         self.assertEqual(result['upgrade_previews'][0]['after'],
-                         {'id': 5, 'name': 'Defend+', 'description': 'Gain 8 Block.'})
+                         {'id': 5, 'name': 'Defend+'})
         raw['selection']['upgrade_previews'][0]['after']['id'] = 100
         with self.assertRaises(ValueError): inspection_details('get_state', raw)
         raw['selection']['upgrade_previews'][0]['after']['id'] = 5

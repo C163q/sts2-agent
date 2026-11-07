@@ -70,7 +70,8 @@ class SelectionBoundaryTests(unittest.TestCase):
         after = {**before, 'name': 'Defend+', 'description': 'Gain 8 Block.', 'seed': 'private'}
         data['selection']['upgrade_preview'] = {'before': before, 'after': after, 'clone': 'private'}
         result = observation_details(data)['selection']
-        self.assertEqual(result['upgrade_preview']['after']['description'], 'Gain 8 Block.')
+        self.assertEqual(result['upgrade_preview']['after']['name'], 'Defend+')
+        self.assertNotIn('description', result['upgrade_preview']['after'])
         self.assertNotIn('clone', result['upgrade_preview'])
         self.assertNotIn('seed', result['upgrade_preview']['after'])
         self.assertEqual(result['upgrade_preview']['before']['id'], result['upgrade_preview']['after']['id'])
@@ -130,7 +131,8 @@ class SelectionBoundaryTests(unittest.TestCase):
         self.assertEqual(result.get("selection", {}).get("prompt"), "Choose a Card")
         card = result["selection"]["cards"][0]
         self.assertNotIn("seed", card)
-        self.assertEqual(card["hover_tips"], [{"title": "Block", "description": "Prevents damage"}])
+        self.assertNotIn("hover_tips", card)
+        self.assertNotIn("description", card)
         self.assertNotIn("callback", result["selection"]["options"][0])
 
     def test_hidden_choices_reject_inconsistent_payload(self):

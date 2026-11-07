@@ -57,9 +57,9 @@ advance_dialogue的明确点击前拒绝保留已有许可，并区分页面覆�
 
 `top_bar` 仅在原生结算上方确实可见时保留；不由本局历史补出未显示的数值。战斗、事件、奖励等底层操作不再提供。初始 `outcome` 页不会提前给出分数行、徽章或发现列表。
 
-当前卡牌在 full/default 基础观察和详情中均采用共用完整格式，逐牌解释保留在卡牌条目内；基础观察尚待迁移到已确认的[统一face规则](hand-inspection.md#共用卡牌格式)，专项详情继续提供完整牌面。详情另增加页面级 `hover_tips`，来源如 `badge:0`、`discovery:cards`；卡牌、遗物、药水的附加说明位于各自条目。原生发现提示最多列十个名称，之后用省略号，工具保留这个限制。累计建筑师伤害与随机死亡语句来自已显示标签的本地化来源，不能重新抽签或根据当前存档重算。
+基础观察的结算卡牌full/default采用[face格式](hand-inspection.md#共用卡牌格式)，summary采用共用摘要；inspect_run_result的完整牌面和逐牌解释保留在卡牌条目内。详情另增加页面级 `hover_tips`，来源如 `badge:0`、`discovery:cards`；卡牌、遗物、药水的附加说明位于各自条目。原生发现提示最多列十个名称，之后用省略号，工具保留这个限制。累计建筑师伤害与随机死亡语句来自已显示标签的本地化来源，不能重新抽签或根据当前存档重算。
 
-get_observation 的 summary 保留当前结算主体和全部 texts、options、空列表，只将已显示 cards 压缩为共用卡牌摘要，卡牌 ID 仍为 card:N 字符串。正文、稀有度和卡池保留在 full/default 及 inspect_run_result；顶栏继续独立复用共用摘要。完整规则见[观察预设](observation.md#mcp-输出预设)。
+get_observation 的 summary 保留当前结算主体和全部 texts、options、空列表，只将已显示 cards 压缩为共用卡牌摘要，卡牌 ID 仍为 card:N 字符串。稀有度和卡池保留在基础观察full/default，正文及逐牌解释由inspect_run_result提供；顶栏继续独立复用共用摘要。完整规则见[观察预设](observation.md#mcp-输出预设)。
 
 当前原生本局详情页的滚动文字与物品不按视口截断，基础观察和详情使用同一浏览范围；读取不改变滚动位置。隐藏、透明、非滚动画外控件以及未揭示解锁仍不读取，按钮仍按真实可点击状态判断。当前游戏基线原生禁用了 View Run 按钮，工具不会启用它；该页修复使用仅测试模式的原生页面夹具验证，范围见[浏览内容审查](../research/2026-11-02-browsable-content-audit.md)。
 

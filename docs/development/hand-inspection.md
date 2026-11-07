@@ -92,7 +92,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 
 卡牌字段由 `output/card_format.py` 统一投影。内部 face_full/face_default 固定不含 description 或 hover_tips；full/default 提供正文和可读悬停解释；summary 共用本页摘要规则。这些是内部内容模式，不增加公开 face 参数。
 
-当前基础观察的手牌、商店、牌组／牌堆采用face，展开候选、卡包、比较和结算仍采用full/default；专项详情提供完整牌面。已确认但尚未实现的统一目标是：get_observation全部标准卡牌full/default采用face_full/face_default，summary采用共用摘要，专项详情保持各自完整格式。迁移范围及当前差异见[跨场景核验](../research/2026-11-08-observation-consistency-review.md)。
+get_observation全部标准卡牌在full/default中采用face_full/face_default，不提供卡牌正文或逐牌悬停解释；summary采用共用摘要。范围包括手牌、商店、牌组／牌堆、选牌候选、卡包、所有比较侧及结算／解锁卡牌。专项详情继续提供各自完整牌面；原始身份及比较上下文保持。
 
 普通 null 由统一 preset 入口过滤，比较的 before/after 仍保留必要空值；各工具保留自己的 ID、顺序、上下文和提示关联。原生实卡读取与网格隔离克隆分别保留，不重算持有卡牌。卡牌身份引用、transition 来源、悬浮君王之剑和一般悬停文本不扩展成完整卡牌。
 

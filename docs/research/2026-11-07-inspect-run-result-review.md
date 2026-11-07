@@ -1,6 +1,6 @@
 # inspect_run_result 核验与建议
 
-> 当前状态：summary及基础观察统一face规则已确认；展示完成状态的共用设计仍在讨论。尚未修改工具行为、未核销。总进度见[工具清单](2026-11-02-mcp-tool-review.md)。
+> 当前状态：摘要、统一face及主体status语义已定稿，进入实施与验证；尚未核销。总进度见[工具清单](2026-11-02-mcp-tool-review.md)。
 
 已整理[19份典型实际JSON](2026-11-07-inspect-run-result-examples/README.md)：17份full、2份default。源码、原始证据及验证限制见[开发核验](2026-11-07-inspect-run-result-development-notes.md)。
 
@@ -46,27 +46,13 @@
 
 尚未新增筛选需求，现有default/full保持。两项正确性问题仍优先于预设实现；尚未开始修改产品代码。
 
-## 显示未完成时的提示（待统一设计）
+## 展示完成状态定稿
 
-现有status:not_ready表示页面未达到操作就绪条件，可能涉及动画、文字、输入阻挡或按钮状态；它不能独立表达内容是否完整。content_complete目前在产品中不存在，下列为候选语义，不能仅按结算设计后直接当作通用规则。其他场景的现有表示及统一设计边界见[跨场景核验](2026-11-08-observation-consistency-review.md#content_complete是否已有)。
+不新增content_complete。页面主体status统一：not_ready表示当前页仍在展示、内容可能尚不完整；visible表示当前页展示完成；covered表示被覆盖。screen.status继续表达场景可见／覆盖。展示完成但按钮禁用时，主体仍visible，enabled及available_actions按实际操作条件判断。
 
-- false：当前页仍在展示过程中，返回值只代表已显示部分，数值／列表可能继续变化；附简短note说明。
-- true：当前页的展示流程已完成，不代表后续页面或未揭示解锁也已读取。
-- 该字段在三种预设均保留。文字／计分／入场展示状态与操作就绪分开判断，不能直接用Ready作为content_complete。按钮不可用也可能同时存在完整内容。
+get_observation与专项查看使用同次读取的共同状态。结算、建筑师及已核对会分阶段展示的事件、先古、占卜、商店、宝箱、奖励和火堆采用同义判断，不能只将操作Ready改名。地图／牌组等仅就绪后才返回主体的既有入口保持；选择候选完整列表的读取范围保持。
 
-例如展示中的相关字段（示意，并非当前接口已有输出）：
-
-```json
-{
-  "run_result": {
-    "status": "not_ready",
-    "phase": "summary",
-    "content_complete": false
-  }
-}
-```
-
-仅保留not_ready并补note会继续混合内容展示和操作条件；是否增加独立字段、放在哪个主体，以及向哪些场景统一接入，尚未定稿。先核对共用语义和各页面原生展示时序，不先为结算实现局部例外。
+not_ready时允许查看当前已经显示的内容，附简短note，未显示文字、未揭示物品及不可悬停说明继续受UI边界约束。未揭占卜格子、未开宝箱及未来解锁不表示当前页面展示未完成；装饰动画不作为展示阻塞。
 
 ## get_observation的现状及同步建议
 
@@ -82,3 +68,7 @@
 因此基础观察尚未具备已确认summary中的页面级source/title；时间线可能只剩Reveal和ID。建议为基础观察同步补齐这些标题，并与inspect_run_result复用静态内容入口。卡牌的已确认目标为所有基础观察full/default采用face_full/face_default、summary采用共用卡牌摘要；上表的完整卡牌是当前实现差异，展开选牌及比较也需统一，不能保留为目标规则。范围与证据见[跨场景核验](2026-11-08-observation-consistency-review.md)。时间线标题同步仍为建议，不把尚未实现内容描述为现有能力。
 
 读取及错误判断可以在现有RunResultInspection内整理，无须重构整套结算流程。run_result_option的动作拒绝恢复留待下一项审阅，不因本工具的纯读取恢复正常而推断动作工具也已完成。
+
+## 输出定稿
+
+实现两项已确认问题、结算详情summary、基础观察全部标准卡牌face迁移，以及上文主体status语义。页面级提示的source/title同步到基础观察，卡牌仍由基础观察自身preset采用face或摘要。读取不再要求按钮可点击，动作执行条件保持原守卫。完整响应校验先于摘要投影，坏响应不得刷新许可。无新增筛选参数，run_result_option动作恢复保留下一工具审阅。实施计划见[计划](../superpowers/plans/2026-11-08-result-inspection-status.md)。

@@ -1,5 +1,7 @@
 # 选牌与查看战场
 
+基础观察中的候选、卡包及比较牌采用[共用face格式](hand-inspection.md#共用卡牌格式)，正文和逐牌解释由inspect_selection提供。
+
 版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
 
 [搜刮工具](rewards.md) 负责打开奖励入口，这些接口操作已经打开的原生选牌界面，不负责点击事件选项；[出牌工具](card-play.md) 和 [药水工具](potion-actions.md) 可触发后续选择。通用接口依据见 [选牌设计](../research/2026-10-30-card-selection-design.md)，手牌升级依据见 [补充调研与验证](../research/2026-10-30-hand-upgrade-selection.md)。

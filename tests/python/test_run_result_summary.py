@@ -43,7 +43,7 @@ class RunResultSummaryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(client.raw, original)
         for preset in ('full', 'default'):
             current = await tools.get_observation({'preset': preset})
-            self.assertEqual(current['run_result']['cards'][0]['description'], 'Every 10 cards you draw, gain <Energy>.')
+            self.assertNotIn('description', current['run_result']['cards'][0])
             self.assertEqual(current['run_result']['cards'][0]['rarity'], 'uncommon')
             self.assertEqual(current['run_result']['cards'][0]['visual_card_pool'], 'colorless')
         detail = await tools.inspect_run_result()
