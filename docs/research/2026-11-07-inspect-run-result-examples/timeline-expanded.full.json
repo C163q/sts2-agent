@@ -1,0 +1,143 @@
+{
+  "scene": "run_result",
+  "run_result": {
+    "status": "visible",
+    "phase": "timeline",
+    "title": null,
+    "texts": [],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "back",
+        "text": "",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [],
+    "potions": [],
+    "hover_tips": [
+      {
+        "source": "epoch:1",
+        "title": "Preon",
+        "description": "Unlocked by accumulating score."
+      },
+      {
+        "source": "epoch:13",
+        "title": "Scribbles",
+        "description": "Unlock by accumulating score."
+      },
+      {
+        "source": "epoch:16",
+        "title": "Nemesis",
+        "description": "Kill 15 Bosses with the Silent to reveal this Epoch."
+      },
+      {
+        "source": "epoch:2",
+        "title": "Seeds",
+        "description": "Beat Act 3 three times to reveal this Epoch."
+      },
+      {
+        "source": "epoch:3",
+        "title": "The Pact",
+        "description": "Beat Act 3 with the Ironclad."
+      },
+      {
+        "source": "epoch:4",
+        "title": "Devastation",
+        "description": "Beat Act 2 with the Ironclad."
+      },
+      {
+        "source": "epoch:17",
+        "title": "Trophies",
+        "description": "Beat Act 3 with the Silent to reveal this Epoch."
+      },
+      {
+        "source": "epoch:5",
+        "title": "The Ironclad",
+        "description": "Beat Act 1 with the Ironclad."
+      },
+      {
+        "source": "epoch:18",
+        "title": "Poisoner",
+        "description": "Kill 15 Elites with the Silent to reveal this Epoch."
+      },
+      {
+        "source": "epoch:6",
+        "title": "Ablaze",
+        "description": "Kill 15 Elites with the Ironclad to reveal this Epoch."
+      },
+      {
+        "source": "epoch:19",
+        "title": "Bigger Prey",
+        "description": "Beat Act 1 with the Silent to reveal this Epoch."
+      },
+      {
+        "source": "epoch:7",
+        "title": "Orobas",
+        "description": "Play a run with every character to reveal this Epoch."
+      },
+      {
+        "source": "epoch:20",
+        "title": "Anomalous Planet",
+        "description": "Play a run with the Silent to reveal this Epoch."
+      },
+      {
+        "source": "epoch:21",
+        "title": "Ill",
+        "description": "Beat Act 2 with the Silent to reveal this Epoch."
+      },
+      {
+        "source": "epoch:8",
+        "title": "Snuffed",
+        "description": "Kill 15 Bosses with the Ironclad to reveal this Epoch."
+      },
+      {
+        "source": "epoch:14",
+        "title": "Open",
+        "description": "Unlock by accumulating score."
+      },
+      {
+        "source": "epoch:9",
+        "title": "Fog Rolls In",
+        "description": "Played a run with the Ironclad."
+      },
+      {
+        "source": "epoch:0",
+        "title": "Neow",
+        "description": "Completed your first run."
+      },
+      {
+        "source": "epoch:15",
+        "title": "Underdocks",
+        "description": "Unlock by accumulating score."
+      },
+      {
+        "source": "epoch:10",
+        "title": "Darv",
+        "description": "Encounter all other Ancients to reveal this Epoch."
+      },
+      {
+        "source": "epoch:22",
+        "title": "Soup",
+        "description": "Beat Ascension 1 with the Silent to reveal this Epoch."
+      },
+      {
+        "source": "epoch:11",
+        "title": "My Face",
+        "description": "Beat Ascension 1 with the Ironclad to reveal this Epoch."
+      },
+      {
+        "source": "epoch:12",
+        "title": "The Daily",
+        "description": "Play a single run with all characters and beat Act 3 to reveal this Epoch."
+      }
+    ]
+  },
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  }
+}

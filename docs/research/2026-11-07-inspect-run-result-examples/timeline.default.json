@@ -1,0 +1,32 @@
+{
+  "scene": "run_result",
+  "run_result": {
+    "status": "visible",
+    "phase": "timeline",
+    "texts": [],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "epoch:0",
+        "text": "Reveal",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [],
+    "potions": [],
+    "hover_tips": [
+      {
+        "source": "epoch:0",
+        "title": "Neow",
+        "description": "Play a single run to reveal this Epoch."
+      }
+    ]
+  },
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  }
+}

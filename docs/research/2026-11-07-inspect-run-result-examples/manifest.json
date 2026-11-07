@@ -1,0 +1,268 @@
+[
+  {
+    "file": "victory-outcome.full.json",
+    "description": "胜利首屏",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 10,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/eb4ad93e01c84daa88565eeb3824c588.json"
+    ],
+    "sha256": "91c0f3cff3e269ee570ea3f2c6bd4fb44f41e44d19cafdc970527738f30be50e"
+  },
+  {
+    "file": "death-outcome.full.json",
+    "description": "失败首屏",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/death-pages/evidence.json",
+    "row_index": 3,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/death-pages/game/ipc/responses/0347cf62dfeb48f38cad0331fe86276c.json"
+    ],
+    "sha256": "01ddd03c381f687cc75bc954cd1146db00a3a176e27bccf538e794a88bd9de16"
+  },
+  {
+    "file": "victory-summary.full.json",
+    "description": "胜利汇总：徽章和发现悬停",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 18,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/9023de5d46b946e0a42583a459a51225.json"
+    ],
+    "sha256": "1389a6f32ad6d286d09cddcf5848c88f609eeafaef732f4ec9732decd1446550"
+  },
+  {
+    "file": "death-summary.full.json",
+    "description": "失败汇总",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/death-pages/evidence.json",
+    "row_index": 11,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/death-pages/game/ipc/responses/5181fe3dbe244e35af93cea050c629f9.json"
+    ],
+    "sha256": "17cabacb7cdeed657ae51a34d0cb29d6f02dffe5c79e302375bafb679907f29a"
+  },
+  {
+    "file": "tutorial.full.json",
+    "description": "首次时间线教程",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 27,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/7e91ede7a1e34abda605aae7e9db819e.json"
+    ],
+    "sha256": "72e3bfebb97e3b21fad57fdccd24e92db72613ec4fbd51ded3c019ecd4be0cb5"
+  },
+  {
+    "file": "timeline.full.json",
+    "description": "时间线：仅一项待揭晓",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 33,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/1cf0513204f1469b9780aecd37337192.json"
+    ],
+    "sha256": "c56f482aef3dc9851e0a331322a33d0a42ce3700701248abc8a60df121c9965c"
+  },
+  {
+    "file": "timeline-expanded.full.json",
+    "description": "时间线：已完成、未获得等图标的悬停",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 137,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/2a643a2aa5294191b4f6396e92010e8b.json"
+    ],
+    "sha256": "d617d2ecdd298e2afb59d3fd048d38bb8027798f27aefa180dea002d77502837"
+  },
+  {
+    "file": "epoch.full.json",
+    "description": "章节故事",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 40,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/9051071b7c4349faa367b7732d6441de.json"
+    ],
+    "sha256": "73c048daaf7d7d1ae35393fbe3ab0296f2c92009f7d4932f7b53c7bec346823e"
+  },
+  {
+    "file": "unlock.full.json",
+    "description": "非物品类解锁提示",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 46,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/9cbdcc506a094f36ac368c1beef308c4.json"
+    ],
+    "sha256": "74caaab511e5c52ddf8d2e12c3563d688ffc66662b7f503f513d27d85be515e9"
+  },
+  {
+    "file": "unlock-cards.full.json",
+    "description": "三张已揭示卡牌",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 63,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/b1c4d521e94e47ea9e6a998757cc53ab.json"
+    ],
+    "sha256": "654b2597234fc76dec287600617c1f157f20e67df67075b4acb1ac63ff7788c0"
+  },
+  {
+    "file": "unlock-potions.full.json",
+    "description": "三瓶已揭示药水",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 79,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/60a7d036030d4e95af343eacde368d3b.json"
+    ],
+    "sha256": "4d7b156a9b3e47cb89ef06fdab45eaf64e28289398ff0658ac2aabdb44ec22d8"
+  },
+  {
+    "file": "unlock-relics.full.json",
+    "description": "三件已揭示遗物",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 100,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/e3e7140ea5bf41bfa43ba2857e3a45b8.json"
+    ],
+    "sha256": "fac2b294b9a1578fc7a46c4d9909ad7c9fd22ce8089932598966d75eff28fcc3"
+  },
+  {
+    "file": "history.full.json",
+    "description": "当前版本禁用入口的原生本局详情测试夹具",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/history-pages/evidence.json",
+    "row_index": 30,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/history-pages/game/ipc/responses/c5dd4b9b15804655bf5897d9c3027a0a.json"
+    ],
+    "sha256": "ccb03de561d3aaeeaa68275f7904ba258502c4e38e6940e69f99a0b3ba8a214d"
+  },
+  {
+    "file": "wrong-room.full.json",
+    "description": "已有许可时错误房间的拒绝",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/combat/evidence.json",
+    "row_index": 4,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/combat/game/ipc/responses/fe26bbeffc1745aca0d9426d2407e2aa.json"
+    ],
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "cold-wrong-room.full.json",
+    "description": "首次读取错误房间，不授予许可",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/combat/evidence.json",
+    "row_index": 0,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/combat/game/ipc/responses/86bcff1f87164d53988f9852727dacea.json"
+    ],
+    "sha256": "e71feeedf6997c01f43a5546259378fc863984e93a1eb92bd0e7737590cdd0cc"
+  },
+  {
+    "file": "menu.full.json",
+    "description": "已返回菜单，不再有本局结算",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 143,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/5b3d66c1852745eabefac0ca1ae6f0a8.json"
+    ],
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "unowned-timeline.full.json",
+    "description": "普通菜单中打开的时间线不属于本局结算",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 147,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/411307aca0694d9f8f491bcd925240a0.json"
+    ],
+    "sha256": "d159ae59ab340f3e815d448b947f2c65a8b0c1b2788c86e76ba7e33854704088"
+  },
+  {
+    "file": "victory-outcome.default.json",
+    "description": "实际default首屏",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "default"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 13,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/2f2cc1f002b045738eb228fe2109cb15.json"
+    ],
+    "sha256": "91c0f3cff3e269ee570ea3f2c6bd4fb44f41e44d19cafdc970527738f30be50e"
+  },
+  {
+    "file": "timeline.default.json",
+    "description": "实际default时间线",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "default"
+    },
+    "evidence": ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/evidence.json",
+    "row_index": 36,
+    "native_files": [
+      ".tmp/2026-11-07-inspect-run-result-review/victory_unlock-pages/game/ipc/responses/f828898b220f43118b4fff5df0aa7c5d.json"
+    ],
+    "sha256": "4552aa6b6f231362e892743a5e6380daf50a6787293e6aed0c4d6efd19e7dd1d"
+  }
+]

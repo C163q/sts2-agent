@@ -1,0 +1,81 @@
+{
+  "scene": "run_result",
+  "run_result": {
+    "status": "visible",
+    "phase": "unlock",
+    "title": null,
+    "texts": [
+      "Cards Unlocked!",
+      "The following cards will appear in future runs.",
+      "Confirm"
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "cards": [
+      {
+        "id": "card:0",
+        "name": "Automation",
+        "type": "Power",
+        "rarity": "uncommon",
+        "visual_card_pool": "colorless",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Every 10 cards you draw, gain <Energy>.",
+        "hover_tips": [
+          {
+            "title": "Energy",
+            "description": "Energy is used to play cards from your Hand."
+          }
+        ]
+      },
+      {
+        "id": "card:1",
+        "name": "Entropy",
+        "type": "Power",
+        "rarity": "rare",
+        "visual_card_pool": "colorless",
+        "energy_cost": "1",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "At the start of your turn, Transform 1 card in your Hand.",
+        "hover_tips": [
+          {
+            "title": "Transform",
+            "description": "Transformed cards become a random card of any rarity."
+          }
+        ]
+      },
+      {
+        "id": "card:2",
+        "name": "Catastrophe",
+        "type": "Skill",
+        "rarity": "uncommon",
+        "visual_card_pool": "colorless",
+        "energy_cost": "2",
+        "star_cost": null,
+        "enchantment": null,
+        "affliction": null,
+        "description": "Play 2 random card from your Draw Pile.",
+        "hover_tips": []
+      }
+    ],
+    "relics": [],
+    "potions": [],
+    "hover_tips": []
+  },
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  }
+}

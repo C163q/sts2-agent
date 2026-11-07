@@ -1,0 +1,57 @@
+{
+  "scene": "run_result",
+  "run_result": {
+    "status": "visible",
+    "phase": "unlock",
+    "title": null,
+    "texts": [
+      "Potions Unlocked!",
+      "The following potions will appear in future runs.",
+      "Confirm"
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [],
+    "potions": [
+      {
+        "description": "Heal for 20% of your Max HP.",
+        "hover_tips": [],
+        "name": "Blood Potion"
+      },
+      {
+        "description": "All cards containing Strike gain 1 Replay this combat.",
+        "hover_tips": [
+          {
+            "title": "Replay",
+            "description": "Plays this card an additional time."
+          }
+        ],
+        "name": "Soldier's Stew"
+      },
+      {
+        "description": "Exhaust any number of cards in your Hand.",
+        "hover_tips": [
+          {
+            "title": "Exhaust",
+            "description": "Removed until the end of combat."
+          }
+        ],
+        "name": "Ashwater"
+      }
+    ],
+    "hover_tips": []
+  },
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  }
+}

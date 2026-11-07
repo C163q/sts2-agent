@@ -1,0 +1,62 @@
+{
+  "scene": "run_result",
+  "run_result": {
+    "status": "visible",
+    "phase": "unlock",
+    "title": null,
+    "texts": [
+      "Relics Unlocked!",
+      "The following relics will appear in future runs.",
+      "Confirm"
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [
+      {
+        "description": "While your HP is at or below 50%, you have 3 additional Strength.",
+        "hover_tips": [
+          {
+            "title": "Strength",
+            "description": "Strength adds additional damage to Attacks."
+          }
+        ],
+        "name": "Red Skull"
+      },
+      {
+        "description": "Enemies with Vulnerable take 75% more damage rather than 50%.",
+        "hover_tips": [
+          {
+            "title": "Vulnerable",
+            "description": "Vulnerable creatures take 50% more damage from Attacks."
+          }
+        ],
+        "name": "Paper Phrog"
+      },
+      {
+        "description": "The first time you gain Strength each combat, double the amount gained.",
+        "hover_tips": [
+          {
+            "title": "Strength",
+            "description": "Strength adds additional damage to Attacks."
+          }
+        ],
+        "name": "Ruined Helmet"
+      }
+    ],
+    "potions": [],
+    "hover_tips": []
+  },
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  }
+}
