@@ -1,6 +1,6 @@
 # respond_to_confirmation 核验与设计建议
 
-> 当前状态：定稿已实现并完成验收及独立审阅，终态断言缺口已补齐，待合入；[实施记录](2026-11-07-confirmation-response-recovery-implementation.md)与[十七份修复后JSON](2026-11-07-confirmation-response-fixed-examples/README.md)另存，下文现状及十二份旧JSON保留审阅基线。总流程见[工具清单](2026-11-02-mcp-tool-review.md)，原问题依据见[开发核验](2026-11-07-respond-to-confirmation-development-notes.md)。
+> 当前状态：定稿已实现并完成验收、独立审阅及合入main，终态断言缺口已补齐；[实施记录](2026-11-07-confirmation-response-recovery-implementation.md)与[十七份修复后JSON](2026-11-07-confirmation-response-fixed-examples/README.md)另存，下文现状及十二份旧JSON保留审阅基线。总流程见[工具清单](2026-11-02-mcp-tool-review.md)，原问题依据见[开发核验](2026-11-07-respond-to-confirmation-development-notes.md)。
 
 ## 优先问题
 
