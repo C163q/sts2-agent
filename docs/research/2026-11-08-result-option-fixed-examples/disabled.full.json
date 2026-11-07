@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "No result option is enabled yet. Wait, then use get_observation or inspect_run_result to read the current options.",
+    "recovery": "choose_legal_action"
+  }
+}

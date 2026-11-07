@@ -2,6 +2,8 @@
 
 > 当前状态：三项修复及详情页夹具的补验范围已确认，正在实施；审阅基线的实际返回和限制保留如下。总进度见[工具清单](2026-11-02-mcp-tool-review.md)。
 
+下文现状对应f033e35审阅基线；修复后的代码、验收及样例见[实施记录](2026-11-08-result-option-recovery-implementation.md)。
+
 本工具点击当前结算页面提供的按钮或章节条目，一次处理一个操作。本文用于确认修复范围与参数；源码和验证限制单列在[开发核验](2026-11-08-run-result-option-development-notes.md)，典型返回见[15份实际JSON](2026-11-08-run-result-option-examples/README.md)。
 
 ## 优先处理的问题

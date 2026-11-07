@@ -1,0 +1,16 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "available_actions": [
+    "run_result_option",
+    "inspect_run_result"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": []
+  }
+}

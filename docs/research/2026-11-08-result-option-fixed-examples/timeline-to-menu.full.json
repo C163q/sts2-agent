@@ -1,0 +1,12 @@
+{
+  "scene": "main_menu",
+  "screen": {
+    "status": "not_applicable"
+  },
+  "available_actions": [],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": []
+  }
+}

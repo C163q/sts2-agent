@@ -1,0 +1,33 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "run_result": {
+    "status": "visible",
+    "phase": "epoch",
+    "title": null,
+    "texts": [
+      "Chapter 5 - Neow",
+      "The Reopening",
+      "Close",
+      "Mother of resurrection, Neow, awakened from her slumber.\n\n“Rise.. champion..... again. Again...”",
+      "Unlocked the Ancient: Neow."
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "continue",
+        "text": "Close",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [],
+    "potions": [],
+    "hover_tips": []
+  }
+}

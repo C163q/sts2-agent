@@ -1,0 +1,44 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "run_result": {
+    "status": "visible",
+    "phase": "epoch",
+    "title": null,
+    "texts": [
+      "Chapter 2 - Devastation",
+      "The Ironclad",
+      "Close",
+      "The Ironclad’s strength surges!\n\nThe flames of the Demonic pact course through his blood. Cuts and bruises heal rapidly. The Valleyguard are cleaved in two, the Desert Tribe are burned to a crisp, Wind Walkers smashed into the ground, and even a familiar horde of aggressive bronze-cladded warriors are set ablaze with these exciting new flames!\n\nAll of the Ironclad’s enemies are shown no mercy. All of the Ironclads... Ironclad?\n...where is everyone?",
+      "Placeholder",
+      "Unlocked relics: Red Skull, 纸蛙, and 损毁头盔."
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "continue",
+        "text": "Close",
+        "enabled": true
+      },
+      {
+        "id": "next_chapter",
+        "text": "",
+        "enabled": true
+      },
+      {
+        "id": "previous_chapter",
+        "text": "",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [],
+    "potions": [],
+    "hover_tips": []
+  }
+}

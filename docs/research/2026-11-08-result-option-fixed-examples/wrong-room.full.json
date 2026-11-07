@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "No run result page is available. Use get_observation to continue the current run.",
+    "recovery": "choose_legal_action"
+  }
+}

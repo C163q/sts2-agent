@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The result option 'missing' is not offered on this page. Use an enabled ID from get_observation or inspect_run_result.",
+    "recovery": "choose_legal_action"
+  }
+}

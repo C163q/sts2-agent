@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The run result page is still displaying text or animation. Wait before choosing an option.",
+    "recovery": "choose_legal_action"
+  }
+}

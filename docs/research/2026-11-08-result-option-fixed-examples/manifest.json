@@ -1,0 +1,356 @@
+[
+  {
+    "file": "wrong-room.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "continue"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-suite/basic/verify/evidence.json",
+    "source_index": 3,
+    "source_label": "wrong_room",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-suite/game/ipc/responses/4a58ada95ea54c92b50b1a01af42ef31.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "62bc715348db86f575e1289b9953df5b7594687542252b2b506ebcd6bcca7edc",
+    "note": "错误房间，具体提示并保留已有许可。"
+  },
+  {
+    "file": "partial.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "continue"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-errors/evidence.json",
+    "source_index": 5,
+    "source_label": "partial",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-errors/game/ipc/responses/2be09210576a4340a333a297798a753d.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "6d97be1b7c46a1dcd807080e227d42327e90812a97765305214b19b2996c7c0e",
+    "note": "结算仍在展示；拒绝不改变画面。"
+  },
+  {
+    "file": "disabled.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "continue"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-errors/evidence.json",
+    "source_index": 15,
+    "source_label": "disabled",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-errors/game/ipc/responses/16f858fc4bae4447bb604fc9d6970d86.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "8b778fb2a1e9e38bf9e513ef7f79ae9bc5ba83297c92743bbfb60c6e1f725ac3",
+    "note": "按钮全部禁用，区别于展示未完成。"
+  },
+  {
+    "file": "unknown-option.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "missing"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-errors/evidence.json",
+    "source_index": 25,
+    "source_label": "unknown_option",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-errors/game/ipc/responses/6f7be85c98154d1da8cf4baf4fc4c19a.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "b154b504da4c8a06a999e5a179105cedeafbfe35d176e924bc747ec988352791",
+    "note": "不存在的ID，提示查看当前选项。"
+  },
+  {
+    "file": "stale.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "continue"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-errors/evidence.json",
+    "source_index": 33,
+    "source_label": "stale",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-errors/game/ipc/responses/4c820075363a4c2495d910264dc7a8df.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "42a71b30fd7304b95d71e071e2d2c183c103a658fa8a8f2cba2d7b84ebec4a60",
+    "note": "外部原生操作后的过期状态仍要求读取。"
+  },
+  {
+    "file": "outcome-continue.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "continue"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 9,
+    "source_label": "outcome_continue",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-flow/game/ipc/responses/e762d08ba7524919a5e3211b056d1e14.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "fc3b2b0e72927b0a79cef7f7d416f7d4e5484113240ce2767f5de8b25c7f13c3",
+    "note": "胜利首屏进入汇总。"
+  },
+  {
+    "file": "summary-main-menu.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "main_menu"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 10,
+    "source_label": "summary_main_menu",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-flow/game/ipc/responses/01c87db9ce234d4eb15b43eed924b56f.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "9277747a910f520d16cdb6c78fb7cc455d73beb07c077fc5522c99cbad46cf83",
+    "note": "按钮名main_menu仍可能先进入时间线教程。"
+  },
+  {
+    "file": "tutorial.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "continue"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 12,
+    "source_label": "tutorial_0",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-flow/game/ipc/responses/88413b1ef2b3410d92629201090bdd66.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "9277747a910f520d16cdb6c78fb7cc455d73beb07c077fc5522c99cbad46cf83",
+    "note": "教程继续。"
+  },
+  {
+    "file": "timeline-before-reveal.full.json",
+    "kind": "actual_mcp",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 13,
+    "source_label": "page_1",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-flow/game/ipc/responses/a26915042c09465b832a710269698e68.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "934453d4e52d6019bbcd93a69bad7ad54e55b15ad1590bd119c7ca17493baa21",
+    "note": "待揭晓的epoch:0使用Reveal。"
+  },
+  {
+    "file": "timeline-after-reveal.full.json",
+    "kind": "actual_mcp",
+    "tool": "get_observation",
+    "arguments": {
+      "preset": "full"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 18,
+    "source_label": "page_3",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-flow/game/ipc/responses/10e50c28138849079ae7678e834b7eb8.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "9026f4d46b4f20af4de05790d41e2c665384f662138814006f4f32aa07dbc022",
+    "note": "相同epoch:0已揭晓，改为View。"
+  },
+  {
+    "file": "reopen-epoch.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "epoch:0"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 19,
+    "source_label": "reopen_completed_epoch",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-flow/game/ipc/responses/a5a0c3182375443a879d40f6a1c7ea9a.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "9277747a910f520d16cdb6c78fb7cc455d73beb07c077fc5522c99cbad46cf83",
+    "note": "使用原epoch ID重读章节。"
+  },
+  {
+    "file": "reopened-epoch-details.full.json",
+    "kind": "actual_mcp",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 20,
+    "source_label": "reopened_epoch",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-flow/game/ipc/responses/4ced29a6b6ff458598c733e049d79c38.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "352cd7b275127bf84e86a4376392f24afd424ff17b5ea34f7b28be3792b1d13e",
+    "note": "重读后专项查看实际章节正文。"
+  },
+  {
+    "file": "chapter-page.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "next_chapter"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 61,
+    "source_label": "chapter_page",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-flow/game/ipc/responses/867ecf32a6e74858bafe023e004b45a6.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "9277747a910f520d16cdb6c78fb7cc455d73beb07c077fc5522c99cbad46cf83",
+    "note": "原生下一章按钮。"
+  },
+  {
+    "file": "chapter-after-page.full.json",
+    "kind": "actual_mcp",
+    "tool": "inspect_run_result",
+    "arguments": {
+      "preset": "full"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 62,
+    "source_label": "chapter_after_page",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-flow/game/ipc/responses/c81ce760f9924066a82b0b180b200199.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "095c141998e5c237ae420db31de7a7d04021317b67d6a20f8f021fbd4ea58443",
+    "note": "翻页后的实际正文。"
+  },
+  {
+    "file": "direct-confirm.default.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "default",
+      "option_id": "confirm"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 17,
+    "source_label": "direct_confirm_2",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-flow/game/ipc/responses/f2c529db766a4153a002397fd3dca842.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "9277747a910f520d16cdb6c78fb7cc455d73beb07c077fc5522c99cbad46cf83",
+    "note": "章节继续后不再读取，直接确认解锁。"
+  },
+  {
+    "file": "scroll-changed.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "epoch:1"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 25,
+    "source_label": "scroll_changed",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-flow/game/ipc/responses/a52d07860d784352828aa8217d15bdd1.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "9732aeb26848d3e57db860305712e7b065ae42eb961d7121d2ff58a0525d245b",
+    "note": "滚动中按钮禁用，拒绝点击。"
+  },
+  {
+    "file": "after-scroll.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "back"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 26,
+    "source_label": "after_scroll",
+    "native_files": [],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e",
+    "note": "已发生交互，下一动作要求重新观察。"
+  },
+  {
+    "file": "history-back.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "back"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-suite/history/verify/evidence.json",
+    "source_index": 16,
+    "source_label": "history_back",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-suite/game/ipc/responses/801d67b57814449dad00e0af45579742.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "fc3b2b0e72927b0a79cef7f7d416f7d4e5484113240ce2767f5de8b25c7f13c3",
+    "note": "正确原生导航夹具返回汇总；正常View Run入口仍禁用。"
+  },
+  {
+    "file": "timeline-to-menu.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "back"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 65,
+    "source_label": "timeline_17",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-flow/game/ipc/responses/a41b0cf48d05453caf0f715307d06703.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "060970c0a289939b559a3e5e8272f7b74c95db22d8747a0ec276a4c9d0dd9f7e",
+    "note": "实际回到主菜单。"
+  },
+  {
+    "file": "unowned-timeline.full.json",
+    "kind": "actual_mcp",
+    "tool": "run_result_option",
+    "arguments": {
+      "preset": "full",
+      "option_id": "back"
+    },
+    "source_report": ".tmp/2026-11-08-result-option-recovery/gui-flow/evidence.json",
+    "source_index": 75,
+    "source_label": "unowned_timeline",
+    "native_files": [
+      ".tmp/2026-11-08-result-option-recovery/gui-flow/game/ipc/responses/d8b4799b89b54d1c8f2d38cb52a3ec42.json"
+    ],
+    "mod_sha256": "2a87d3a18c4c34dca800132ed4cdb489f4ac8e20dc1e9ec3bfb6be84cfb4a1b5",
+    "sha256": "c2d0091855851391dc88bd694e1e77f25c7a22c2a14b0bb72d6db92151fd4e30",
+    "note": "无关联的菜单时间线被拒绝。"
+  }
+]

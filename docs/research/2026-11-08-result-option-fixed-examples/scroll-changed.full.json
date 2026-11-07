@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "illegal_action",
+    "message": "The timeline or its option changed while scrolling. Use get_observation or inspect_run_result before choosing again.",
+    "recovery": "get_observation"
+  }
+}
