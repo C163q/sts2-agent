@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "Expected a PNG filename without directory components.",
+    "recovery": "correct_request"
+  }
+}

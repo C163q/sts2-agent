@@ -49,7 +49,7 @@ MCP 启动时默认读取仓库根目录的 `mcp-config.json`，与启动进程�
 }
 ```
 
-`filename` 可省略，此时生成 UTC 时间加随机后缀的文件名；指定时仅接受最长 128 字符、以 `.png` 结尾的文件名，不能含目录分隔符或控制字符。目录由配置确定。已有同名文件或符号链接返回 `file_exists`，不会覆盖。完整文件通过独占方式发布，保存失败不留下半张目标图片。
+`filename` 可省略，此时生成 UTC 时间加随机后缀的文件名；指定时仅接受5至128字符、以小写`.png`结尾的文件名，不能含目录分隔符或ASCII控制字符，另受目标文件系统的长度限制。目录由配置确定。已有同名文件或符号链接返回 `file_exists`，不会覆盖。完整文件通过独占方式发布，保存失败不留下半张目标图片。
 
 成功结果仅有 `path`、`width`、`height`，`content` 为同一对象的紧凑 JSON。工具不向 LLM 返回图片或 base64；客户端需要自行读取文件才能将其作为视觉输入。该工具有本地写文件副作用，MCP 注解为非只读、非破坏、非幂等。
 
@@ -81,10 +81,6 @@ MCP 启动时默认读取仓库根目录的 `mcp-config.json`，与启动进程�
 .tmp/mcp-venv/bin/python -m unittest discover -s tests -t . -p test_screenshots.py
 ```
 
-真实游戏验证只用于独立实例，先按[往返指南](roundtrip.md)准备运行时。图形验证启动参数为 `python3 scripts/run_roundtrip.py --windowed --potion-scenario skill`，在新实例主菜单运行：
+真实游戏验证须使用独立存档、IPC及日志目录，运行时准备见[往返指南](roundtrip.md)。[verify_screenshots.py](../../tests/game/verifiers/verify_screenshots.py)仍使用过时的工具数量断言和固定IPC路径，尚未迁入当前隔离测试流程，不作为可直接运行的验收入口。
 
-```sh
-.tmp/mcp-venv/bin/python -m tests.game.verifiers.verify_screenshots --report .tmp/screenshot-check/graphical.json
-```
-
-验证会创建测试战斗、喝技能药水、切换选牌/战场、打开地图及牌组、结束一个回合，并保存截图。重复执行须更换报告目录，避免覆盖检查触发。headless 验证另启动新的无窗口测试实例，并给验证命令增加 `--headless`。阶段证据与未验证范围见[截图验证](../research/2026-10-30-screenshots-validation.md)。
+当前图形画面、保存错误与headless的核验结果及脚本缺口见[截图工具审阅](../research/2026-11-08-capture-screenshot-development-notes.md)。旧阶段证据保留于[截图验证](../research/2026-10-30-screenshots-validation.md)。

@@ -1,0 +1,119 @@
+[
+  {
+    "file": "named.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {
+      "filename": "combat.png"
+    },
+    "source_report": ".tmp/2026-11-08-screenshot-tool-review/gui/evidence.json",
+    "source_index": 5,
+    "source_label": "combat",
+    "native_files": [
+      ".tmp/2026-11-08-screenshot-tool-review/gui/game/ipc/responses/b16e7009fa9b46e989d187b75fc031d1.json"
+    ],
+    "sha256": "5f28914aa03131c81fce78fb697785fbd30d83e8e2703b672fd6b1f5d1589c9e"
+  },
+  {
+    "file": "automatic.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {},
+    "source_report": ".tmp/2026-11-08-screenshot-tool-review/gui/evidence.json",
+    "source_index": 21,
+    "source_label": "automatic_one",
+    "native_files": [
+      ".tmp/2026-11-08-screenshot-tool-review/gui/game/ipc/responses/52a44c28dae84678b6b29434e4341ca8.json"
+    ],
+    "sha256": "a5ef62836c9212b4962cf2880bd6630f3419443ff78b12b7baeef5f567659d62"
+  },
+  {
+    "file": "duplicate.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {
+      "filename": "combat.png"
+    },
+    "source_report": ".tmp/2026-11-08-screenshot-tool-review/gui/evidence.json",
+    "source_index": 10,
+    "source_label": "duplicate",
+    "native_files": [
+      ".tmp/2026-11-08-screenshot-tool-review/gui/game/ipc/responses/c42aad321c82460c9392e3c3397cdd5e.json"
+    ],
+    "sha256": "a072bbfe926cffef2ffe89b20fe2a97be1e1f51492d6c9e7baba6c7a852f34e6"
+  },
+  {
+    "file": "duplicate-next-action.json",
+    "kind": "actual_mcp",
+    "tool": "end_turn",
+    "arguments": {
+      "preset": "full"
+    },
+    "source_report": ".tmp/2026-11-08-screenshot-tool-review/gui/evidence.json",
+    "source_index": 12,
+    "source_label": "duplicate_then_end_turn",
+    "native_files": [],
+    "sha256": "a18539ac6f8366d0909baa0748c24d131d27915fab3c7e3395c5a1b86b061d9e"
+  },
+  {
+    "file": "invalid-filename.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {
+      "filename": "../escape.png"
+    },
+    "source_report": ".tmp/2026-11-08-screenshot-tool-review/gui/evidence.json",
+    "source_index": 16,
+    "source_label": "invalid_directory",
+    "native_files": [],
+    "sha256": "459b77fec26b90211bf7f586bc765956d8096aa42183b1311918b5ba325f8a4e"
+  },
+  {
+    "file": "invalid-preset.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {
+      "preset": "full"
+    },
+    "source_report": ".tmp/2026-11-08-screenshot-tool-review/gui/evidence.json",
+    "source_index": 17,
+    "source_label": "invalid_preset",
+    "native_files": [],
+    "sha256": "cbaa33b5cf807fd71b50318887565e95e34f0bc398d0165b1baea54605a2c0b1"
+  },
+  {
+    "file": "save-failed.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {},
+    "source_report": ".tmp/2026-11-08-screenshot-tool-review/gui-remaining/evidence.json",
+    "source_index": 2,
+    "source_label": "directory_is_file",
+    "native_files": [],
+    "sha256": "c6c1263cc7bf11dd2a3822e439f14b437b7d6d274173fdbe1e4ae07b143ee9e0"
+  },
+  {
+    "file": "disabled.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {},
+    "source_report": ".tmp/2026-11-08-screenshot-tool-review/gui-remaining/evidence.json",
+    "source_index": 5,
+    "source_label": "disabled",
+    "native_files": [],
+    "sha256": "f00c9df47636f2f7d329ecd5ec14914318239a1ad14a1924916d335de4bf7bd6"
+  },
+  {
+    "file": "headless.json",
+    "kind": "actual_mcp",
+    "tool": "capture_screenshot",
+    "arguments": {},
+    "source_report": ".tmp/2026-11-08-screenshot-tool-review/headless/evidence.json",
+    "source_index": 1,
+    "source_label": "headless",
+    "native_files": [
+      ".tmp/2026-11-08-screenshot-tool-review/headless/game/ipc/responses/9bb152cc26294b2890de4db6e2fa931b.json"
+    ],
+    "sha256": "48d39358c348328894a6a64dcd780f86bb98a31501cbc340450c24329806888b"
+  }
+]

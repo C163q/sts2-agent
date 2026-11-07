@@ -1,6 +1,6 @@
 # MCP 工具逐项核验与参数设计
 
-> 当前状态：工具核验进行中，共44项，已核销43项。run_result_option完成实现、验收和一次独立审阅并合入main；剩余capture_screenshot。run_result_option及buy_item的非阻断建议见各自实施记录。
+> 当前状态：工具核验进行中，共44项，已核销43项。capture_screenshot已完成现状审阅，三项整改建议待确认；run_result_option及buy_item的非阻断建议见各自实施记录。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
@@ -107,7 +107,7 @@
 
 ### 截图（1 项，按配置启用）
 
-- [ ] `capture_screenshot`：保存当前游戏画面。
+- [ ] `capture_screenshot`：现状审阅完成；[审阅建议](2026-11-08-capture-screenshot-review.md)、[开发核验](2026-11-08-capture-screenshot-development-notes.md)及[9份实际JSON](2026-11-08-capture-screenshot-examples/README.md)。11项相关Python检查通过；六种图形画面、保存错误、配置关闭及headless已核验。建议保持filename及三字段返回，先处理本地保存失败后的许可、具体错误原因和过时实测脚本；尚未修改产品行为。
 
 ## 单项记录方式
 

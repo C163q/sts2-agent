@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "screenshot_save_failed",
+    "message": "The screenshot could not be saved. Check the configured directory, permissions and free space.",
+    "recovery": "check_screenshot_directory"
+  }
+}

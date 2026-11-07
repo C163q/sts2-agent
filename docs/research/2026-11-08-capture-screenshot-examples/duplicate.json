@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "file_exists",
+    "message": "That screenshot filename already exists. Choose another filename; existing files are never overwritten.",
+    "recovery": "change_filename"
+  }
+}

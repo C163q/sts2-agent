@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "preset is not accepted; allowed fields: filename.",
+    "recovery": "correct_request"
+  }
+}
