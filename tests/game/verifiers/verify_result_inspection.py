@@ -51,6 +51,8 @@ async def verify(args):
             before=await native();full=await call('inspect_run_result',label=label+'_full')
             assert before['snapshot_id']==(await native())['snapshot_id'],label
             body=full['run_result'];assert body['status']=='visible',full
+            text_checks = await native('check_test_run_result_text')
+            assert text_checks['passed'], text_checks
             assert 'hover_sources'not in body and 'unavailable_hover_sources'not in body
             summary=await call('inspect_run_result',{'preset':'summary'},label=label+'_summary')
             compact=summary['run_result']

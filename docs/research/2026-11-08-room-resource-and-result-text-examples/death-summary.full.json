@@ -1,0 +1,61 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "run_result": {
+    "status": "visible",
+    "phase": "summary",
+    "title": "Conquered",
+    "texts": [
+      "[10/200]",
+      "Unlocks Remaining: 18",
+      "Discoveries",
+      "“The Ironclad was felled by a Group of Slimes.”"
+    ],
+    "score_lines": [
+      {
+        "label": "Floors Climbed: 1",
+        "value": "+10"
+      },
+      {
+        "label": "Gold Gained: 0",
+        "value": "+0"
+      }
+    ],
+    "badges": [],
+    "discoveries": [
+      {
+        "kind": "enemies",
+        "count": 3
+      },
+      {
+        "kind": "epochs",
+        "count": 1
+      }
+    ],
+    "options": [
+      {
+        "id": "main_menu",
+        "text": "Unlock",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [],
+    "potions": [],
+    "hover_tips": [
+      {
+        "source": "discovery:enemies",
+        "title": "Discovered Enemies",
+        "description": "You discovered 3 new enemies this run.\n\nLeaf Slime (S)\nLeaf Slime (M)\nTwig Slime (S)"
+      },
+      {
+        "source": "discovery:epochs",
+        "title": "Discovered Epochs",
+        "description": "You discovered 1 new epoch this run."
+      }
+    ]
+  }
+}

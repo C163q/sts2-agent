@@ -49,7 +49,7 @@ run_result_option在明确未交互的拒绝后保留已有许可，并提示没
 | --- | --- |
 | `status` | 当前展示完成、展示中或被覆盖，见[共用展示状态](observation.md#页面主体的展示状态)；与按钮是否可用分开 |
 | `phase` | `outcome` 首屏、`summary` 汇总、`tutorial` 时间线教程、`timeline`、`epoch` 章节故事、`unlock` 解锁确认；原生提供时也识别 `history` 和 `leaderboard` |
-| `title` / `texts` | 当前已展示页面的横幅与文本，英文转写；可滚动内容完整读取，保留 `Victory...?` 中的问号和分数进度 `[140/200]` |
+| `title` / `texts` | title 为横幅；texts 为尚未由结构字段表达的正文、故事、总分进度和提示，英文转写并完整读取可滚动内容。保留 `Victory...?` 中的问号和 `[140/200]` 等进度 |
 | `score_lines` | 当前可见计分行，每项为 `label`、`value` |
 | `badges` | 当前可见徽章名称及 `bronze/silver/gold` 外观等级；悬停效果在详情调用中读取 |
 | `discoveries` | 当前发现图标的类别及显示数量，`cards/relics/potions/enemies/epochs` |
@@ -62,6 +62,8 @@ run_result_option在明确未交互的拒绝后保留已有许可，并提示没
 基础观察的结算卡牌full/default采用[face格式](hand-inspection.md#共用卡牌格式)，summary采用共用摘要；inspect_run_result的完整牌面和逐牌解释保留在卡牌条目内。详情另增加页面级 `hover_tips`，来源如 `badge:0`、`discovery:cards`；卡牌、遗物、药水的附加说明位于各自条目。原生发现提示最多列十个名称，之后用省略号，工具保留这个限制。累计建筑师伤害与随机死亡语句来自已显示标签的本地化来源，不能重新抽签或根据当前存档重算。
 
 get_observation三种内容预设共用结算静态主体，页面hover_tips只保留source/title，药水和遗物只保留名称，texts、options和空列表保留。卡牌full/default使用face_full/face_default，summary使用共用摘要，ID仍为card:N。顶栏继续独立处理，见[观察预设](observation.md#mcp-输出预设)。
+
+texts 按原生控件归属排除已由 title、score_lines、discoveries 和 options 表达的文字；不同位置的独立正文即使文字相同也保留。时间线章节槽的 Reveal／View 是操作名，不代替槽位本身的可见说明。未结构化的正文和进度继续保留，基础观察及详情的三种内容预设共用同一读取规则。
 
 inspect_run_result.summary同样省略页面提示的description、药水／遗物正文和附加解释，卡牌使用共用摘要；完整故事正文保留。full/default提供允许读取的完整效果。不可悬停项保留静态信息，以null正文／空解释及notes.hover_tips_unavailable指明来源；summary省略该悬停note，但保留notes.presentation。
 

@@ -1,0 +1,83 @@
+{
+  "mod_version": "0.81.0",
+  "mcp_version": "0.84.0",
+  "schema": 47,
+  "mod_sha256": "a7b382db0eac2aacae42ebb53e769171ee8710b7d47b7f3f1987fe0959b0cf8f",
+  "samples": [
+    {
+      "file": "maw-bank-rest.full.json",
+      "tool": "travel_to_node",
+      "arguments": {
+        "preset": "full",
+        "node_id": "map:1:2:0"
+      },
+      "evidence": ".tmp/2026-11-08-room-resource-and-result-text/final-resources/rest/verify/evidence.json",
+      "native_files": []
+    },
+    {
+      "file": "planisphere-unknown.full.json",
+      "tool": "travel_to_node",
+      "arguments": {
+        "preset": "full",
+        "node_id": "map:1:2:0"
+      },
+      "evidence": ".tmp/2026-11-08-room-resource-and-result-text/final-resources/unknown/verify/evidence.json",
+      "native_files": []
+    },
+    {
+      "file": "death-summary.full.json",
+      "tool": "inspect_run_result",
+      "arguments": {
+        "preset": "full"
+      },
+      "evidence": ".tmp/2026-11-08-room-resource-and-result-text/text-green-death/evidence.json",
+      "native_files": [
+        ".tmp/2026-11-08-room-resource-and-result-text/text-green-death/game/ipc/responses/8a58063c80114a66b5093068de5343b4.json"
+      ]
+    },
+    {
+      "file": "death-summary.summary.json",
+      "tool": "inspect_run_result",
+      "arguments": {
+        "preset": "summary"
+      },
+      "evidence": ".tmp/2026-11-08-room-resource-and-result-text/text-green-death/evidence.json",
+      "native_files": [
+        ".tmp/2026-11-08-room-resource-and-result-text/text-green-death/game/ipc/responses/6046a1d957424b16a809f378a4a5df09.json"
+      ]
+    },
+    {
+      "file": "observation-victory-summary.full.json",
+      "tool": "get_observation",
+      "arguments": {
+        "preset": "full"
+      },
+      "evidence": ".tmp/2026-11-08-room-resource-and-result-text/text-green-victory/evidence.json",
+      "native_files": [
+        ".tmp/2026-11-08-room-resource-and-result-text/text-green-victory/game/ipc/responses/b6566fb2d0644bbb98608a7ca4bfe7f0.json"
+      ]
+    },
+    {
+      "file": "epoch-story.full.json",
+      "tool": "inspect_run_result",
+      "arguments": {
+        "preset": "full"
+      },
+      "evidence": ".tmp/2026-11-08-room-resource-and-result-text/text-green-victory/evidence.json",
+      "native_files": [
+        ".tmp/2026-11-08-room-resource-and-result-text/text-green-victory/game/ipc/responses/d46d0b88e37148088be8bd6ed766d386.json"
+      ]
+    },
+    {
+      "file": "history.full.json",
+      "tool": "inspect_run_result",
+      "arguments": {
+        "preset": "full"
+      },
+      "evidence": ".tmp/2026-11-08-room-resource-and-result-text/history-isolated/verify/evidence.json",
+      "native_files": [
+        ".tmp/2026-11-08-room-resource-and-result-text/history-isolated/game/ipc/responses/28c412a684494a2c8a26150bf892bc99.json"
+      ]
+    }
+  ]
+}

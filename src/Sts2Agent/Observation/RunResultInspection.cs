@@ -175,11 +175,6 @@ internal sealed class RunResultInspection
         : string.Join(" ", VisibleUi.Descendants<CanvasItem>(button).Select(Text).Where(t => !string.IsNullOrWhiteSpace(t)).Distinct());
 
     private static string DiscoveryKind(NDiscoveredItem item) => item.Name.ToString().Replace("Discovered", "").ToLowerInvariant();
-    private static bool InsideCard(Node node)
-    {
-        for (var parent = node.GetParent(); parent != null; parent = parent.GetParent()) if (parent is NCard) return true;
-        return false;
-    }
     private static object Badge(NBadge badge) => EnglishEventText.Read(() => new {
         name = PrivateFields.Read(badge, "_title") is LocString title ? EnglishCardText.Plain(title.GetFormattedText()) : "",
         rarity = Path.GetFileNameWithoutExtension(badge.GetNode<TextureRect>("%BadgeHolder").Texture.ResourcePath).Replace("badge_", "") });
@@ -219,21 +214,37 @@ internal sealed class RunResultInspection
         bool hover = exposed && complete && (root is not NTimelineScreen timeline
             || timeline.GetNodeOrNull<Control>("%InputBlocker") is not { Visible: true });
         var badges = exposed ? VisibleUi.Descendants<NBadge>(root).Where(VisibleUi.Browsable).ToArray() : [];
+        var scoreLines = exposed && context.Phase == "summary"
+            ? VisibleUi.Descendants<NScoreLine>(root).Where(VisibleUi.Browsable).ToArray() : [];
+        var discoveries = exposed ? VisibleUi.Descendants<NDiscoveredItem>(root).Where(VisibleUi.Browsable).ToArray() : [];
+        var options = exposed ? Options(context).ToArray() : [];
+        var title = exposed && root is NGameOverScreen ? root.GetNode<NCommonBanner>("%Banner").label : null;
+        var represented = new List<Node>();
+        if (exposed)
+        {
+            represented.AddRange(VisibleUi.Descendants<NCard>(root));
+            if (title != null) represented.Add(title);
+            foreach (var line in scoreLines)
+            {
+                represented.Add(line.GetNode<CanvasItem>("%Label"));
+                represented.Add(line.GetNode<CanvasItem>("%Score"));
+            }
+            represented.AddRange(discoveries.Select(item => item.GetNode<CanvasItem>("%Label")));
+            // Epoch option text is an action verb; the slot's own labels still belong to the page.
+            represented.AddRange(options.Where(option => option.button is not NEpochSlot).Select(option => option.button));
+        }
         List<string> unavailable = [];
         var result = new Dictionary<string, object?> {
             ["status"] = PresentationState.Status(exposed, complete), ["phase"] = context.Phase,
-            ["title"] = exposed && root is NGameOverScreen ? Text(root.GetNode<NCommonBanner>("%Banner").label) : null,
-            ["texts"] = exposed ? VisibleUi.Descendants<CanvasItem>(root).Where(node => !InsideCard(node)).Select(Text)
-                .Where(text => !string.IsNullOrWhiteSpace(text)).Distinct().ToArray() : [],
-            ["score_lines"] = exposed && context.Phase == "summary" ? VisibleUi.Descendants<NScoreLine>(root)
-                .Where(VisibleUi.Browsable).Select(line => new { label = Text(line.GetNode<CanvasItem>("%Label")) ?? "",
-                    value = Text(line.GetNode<CanvasItem>("%Score")) ?? "" }).ToArray() : Array.Empty<object>(),
+            ["title"] = title == null ? null : Text(title),
+            ["texts"] = exposed ? RunResultText.Read(root, represented) : [],
+            ["score_lines"] = scoreLines.Select(line => new { label = Text(line.GetNode<CanvasItem>("%Label")) ?? "",
+                    value = Text(line.GetNode<CanvasItem>("%Score")) ?? "" }).ToArray(),
             ["badges"] = badges.Select(Badge).ToArray(),
-            ["discoveries"] = exposed ? VisibleUi.Descendants<NDiscoveredItem>(root)
-                .Where(VisibleUi.Browsable).Select(item => new { kind = DiscoveryKind(item),
-                    count = int.TryParse(Text(item.GetNode<CanvasItem>("%Label")), out int count) ? count : 0 }).ToArray() : Array.Empty<object>(),
-            ["options"] = exposed ? Options(context).Select(option => new { id = option.id,
-                text = ButtonText(option.button), enabled = ready && Clickable(option.button) }).ToArray() : Array.Empty<object>() };
+            ["discoveries"] = discoveries.Select(item => new { kind = DiscoveryKind(item),
+                    count = int.TryParse(Text(item.GetNode<CanvasItem>("%Label")), out int count) ? count : 0 }).ToArray(),
+            ["options"] = options.Select(option => new { id = option.id,
+                text = ButtonText(option.button), enabled = ready && Clickable(option.button) }).ToArray() };
         result["cards"] = exposed ? Cards(root, hover, unavailable) : Array.Empty<object>();
         result["relics"] = exposed ? VisibleUi.Descendants<NRelicBasicHolder>(root)
             .Where(holder => VisibleUi.Browsable(holder) && VisibleUi.Browsable(holder.Relic.Icon)).Select((holder, index) => {

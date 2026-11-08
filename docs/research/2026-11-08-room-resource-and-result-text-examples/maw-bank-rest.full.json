@@ -1,0 +1,32 @@
+{
+  "scene": "rest_site",
+  "screen": {
+    "status": "visible"
+  },
+  "available_actions": [
+    "choose_rest_option",
+    "inspect_ui",
+    "inspect_potions",
+    "inspect_relics",
+    "inspect_deck",
+    "inspect_map",
+    "inspect_rest_site"
+  ],
+  "transition": {
+    "stop_reason": "action_completed",
+    "complete": true,
+    "events": [
+      {
+        "target": {
+          "id": 0,
+          "kind": "player",
+          "name": "The Ironclad"
+        },
+        "before": 100,
+        "after": 112,
+        "type": "gold_changed",
+        "sequence": 1
+      }
+    ]
+  }
+}
