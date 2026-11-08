@@ -41,11 +41,19 @@ internal sealed partial class GameAdapter
             string current = Observe();
             if (current != previous)
                 stableSince = DateTime.UtcNow;
-            else if (DateTime.UtcNow - stableSince >= TimeSpan.FromMilliseconds(250))
+            else if (DateTime.UtcNow - stableSince >= TimeSpan.FromMilliseconds(250)
+                && !PresentationPending(current))
                 return current;
             previous = current;
         }
         return previous;
+    }
+
+    private static bool PresentationPending(string state)
+    {
+        using var document = JsonDocument.Parse(state);
+        return document.RootElement.EnumerateObject().Any(property => property.Value.ValueKind == JsonValueKind.Object
+            && property.Value.TryGetProperty("status", out var status) && status.GetString() == "not_ready");
     }
 
     private static async Task ObservationFrame()

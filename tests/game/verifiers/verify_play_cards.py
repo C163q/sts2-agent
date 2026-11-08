@@ -129,6 +129,9 @@ async def verify(args):
                 return [row['status'] for row in detail['results']]
 
             statuses = results(receipt)
+            if args.scenario in {'energy', 'stars'}:
+                reason = receipt['card_plays']['results'][2]['reason'].lower()
+                assert ('energy' if args.scenario == 'energy' else 'star') in reason, receipt
             if args.scenario == 'pending_reset':
                 assert receipt['transition']['stop_reason'] == 'choice_required'
                 assert statuses == ['played', 'resolving', 'queued', 'queued']

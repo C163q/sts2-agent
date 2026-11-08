@@ -20,7 +20,7 @@
 
 | 范围 | 能力与说明 |
 | --- | --- |
-| 观察与查询 | [读取当前画面](docs/development/observation.md)，按需查看手牌、战斗对象、药水、遗物及界面帮助；专项工具见[查看说明](docs/development/README.md#专门查看) |
+| 观察与查询 | [读取当前画面](docs/development/observation.md)，包括毒／灾厄血条预示；按需查看手牌、战斗对象、药水、遗物及界面帮助；专项工具见[查看说明](docs/development/README.md#专门查看) |
 | 战斗 | [单张或连续出牌、查询目标](docs/development/card-play.md)，[结束回合并读取期间变化](docs/development/end-turn.md)，[使用或丢弃药水](docs/development/potion-actions.md) |
 | 选牌与浏览 | [选择、确认或跳过卡牌](docs/development/card-selection.md)，查看[全牌组](docs/development/deck-inspection.md)和[战斗牌堆](docs/development/pile-inspection.md) |
 | 地图与奖励 | [查看地图并选路](docs/development/map-inspection.md)，[领取、跳过战后奖励及前进](docs/development/rewards.md) |
@@ -37,8 +37,8 @@
 | 项目 | 当前版本或要求 |
 | --- | --- |
 | 游戏 | Linux `v0.107.1`，release 分支，构建 `59260271` |
-| 本项目 Mod | `0.82.0` |
-| MCP 服务 | `0.85.0` |
+| 本项目 Mod | `0.83.0` |
+| MCP 服务 | `0.86.0` |
 | RitsuLib | `0.6.10`，使用游戏 `0.107.1` 的兼容运行时，获取方式见[构建指南](docs/development/roundtrip.md#前提与构建) |
 | .NET | 9 SDK，用于从源码构建 Mod |
 | Python | 3.10 或以上，按[MCP 接入指南](docs/development/mcp.md#安装与游戏前提)安装依赖 |

@@ -1,12 +1,28 @@
 """Validate shared static combatant fields without observation assembly."""
 from sts2_mcp.output.value_shapes import project, nullable
-from sts2_mcp.output.contracts.combat import BLADE, ORB, ORB_SLOTS, HEALTH
+from sts2_mcp.output.contracts.combat import BLADE, ORB, ORB_SLOTS, HEALTH, HEALTH_PREVIEW, HP_PREVIEW
 
 
-def health_fields(value, *, required=False):
+def preview_fields(value, *, required=False):
+    if 'hp_preview' not in value:
+        if required:
+            raise ValueError('Missing combatant health preview.')
+        return {}
+    result = project(value, HEALTH_PREVIEW)
+    preview = result['hp_preview']
+    if preview is not None and (set(preview) != set(HP_PREVIEW)
+            or preview['lethal'] not in (None, 'poison', 'doom')
+            or any(preview[key] is not None and preview[key] < 0 for key in ('poison_damage', 'doom_threshold'))
+            or value.get('hp_display') != 'numeric'):
+        raise ValueError('Invalid combatant health preview.')
+    return result
+
+
+def health_fields(value, *, required=False, preview_required=False):
+    preview = preview_fields(value, required=preview_required)
     present = set(value) & set(HEALTH)
     if not present and not required:
-        return {}
+        return preview
     if present != set(HEALTH):
         raise ValueError('Incomplete combatant health.')
     result = project(value, HEALTH)
@@ -16,7 +32,7 @@ def health_fields(value, *, required=False):
             or status == 'numeric' and (result['hp'] is None or result['max_hp'] is None)
             or status != 'numeric' and (result['hp'] is not None or result['max_hp'] is not None)):
         raise ValueError('Invalid combatant health.')
-    return result
+    return {**result, **preview}
 
 
 def health_summary(compact, original):

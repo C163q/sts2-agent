@@ -107,6 +107,8 @@ GameTools 仅负责公开入口、参数拒绝与规范化请求；GameSession.e
 
 战斗对象的可见生命、格挡、状态、意图及同伴共享关系由 CombatantInspection.Read 的 Summary 级统一读取，get_observation 另行组合资源与手牌字段；Full 只在同一对象顺序上增加悬停说明。生命摘要也使用公共格式入口。原生校验、Python 对象筛选和公共空值过滤分别负责不同阶段，见[战斗对象契约](combatant-inspection.md)。
 
+[HealthBarPreview](../../src/Sts2Agent/Observation/HealthBarPreview.cs) 保存原生血条渲染使用的毒／灾厄预示，供两种观察共用；[CardPlayFailureCapture](../../src/Sts2Agent/Actions/CardPlayFailureCapture.cs) 保存实际执行检查拒绝的公开说明，供批量逐张结果使用。两者随 Mod 初始化安装已核对的原生采集入口，验证见[游玩反馈记录](../research/2026-11-09-playthrough-feedback.md)。
+
 `VisibleUi.OnScreen` 用于屏幕内控件和战场身体，`Displayed` 用于无需按视口截断的展示图标，`Browsable` 用于已打开的原生滚动列表。调用处按对象所在区域选择读取条件。`RelicInspection.Static` 供顶栏与详情共用静态字段；`PotionInspection.DisplayedHolders/Static` 共用槽位展示与静态字段，详情另检悬停条件；动作定位保留独立的位置及输入门控。置灰、可见性与可悬停性分别判断。具体边界见[遗物](relic-inspection.md#读取边界)和[战斗对象](combatant-inspection.md#读取边界)。
 
 通用反射读取由 `PrivateFields` 负责：`Read` 缺少必需字段时明确失败，字段值本身可合法为 null。`Optional` 仅用于选牌多类型界面的 prefs／已选卡／完成源、动画字段探测及结算多类型按钮的提示探测；这些调用的类型差异仍由领域代码负责。不得用 Optional 掩盖目标 API 绑定缺失。实节点与浏览克隆继续分别通过 CardPresentation／BrowsedCard 读取，共用 CardAppearance 的外观组装，保留克隆牌堆及目标上下文和比较侧别。

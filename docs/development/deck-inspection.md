@@ -32,7 +32,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_deck --sort-
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_card_view
 ```
 
-`close_card_view` 同时支持原生牌组、抽牌堆、弃牌堆和消耗牌堆查看页。成功返回与 `get_observation.actions_only` 相同的上下文：scene、screen、available_actions，以及存在待处理选择时的 selection.type/status；不返回牌面、房间正文、顶栏、notes 或 transition。通用 default/full 均保持该最小结构。MCP 与普通文件 CLI 共用投影，底层 `--raw` 仍保留完整快照。成功刷新 MCP 动作许可，已有足够信息时可直接继续合法操作。
+`close_card_view` 同时支持原生牌组、抽牌堆、弃牌堆和消耗牌堆查看页。成功返回与 `get_observation.actions_only` 相同的上下文：scene、screen、available_actions，以及存在待处理选择时的 selection.type/status。页面仍在更新时保留 `notes.presentation`，其含义见[页面展示进度](observation.md#场景上下文)。通用 default/full 均使用这一范围。MCP 与普通文件 CLI 共用投影，底层 `--raw` 保留完整快照。成功刷新 MCP 动作许可，已有足够信息时可直接继续合法操作。
 
 调用不需要 `expected_state`；文件参数校验及当前页面复核仍然生效。当前没有受支持的卡牌查看页，或页面被卡牌详情等更高层界面覆盖时，`close_card_view` 返回 `illegal_action`，不会关闭其他页面。关闭的前置拒绝区分无浏览页、选择页面、浏览页被覆盖／隐藏／未就绪及返回按钮缺失／隐藏／禁用，并给出安全原因；仅原生明确保证未交互时保留已有 MCP 许可。没有旧许可不会因拒绝获得许可，已点击、超时、取消或坏回复仍按未知／失败结果处理，见[MCP 错误语义](mcp.md#调用和错误语义)。
 
@@ -85,7 +85,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc close_card_view
 
 基础观察在 `screen.view` 标记 `deck/draw_pile/discard_pile/exhaust_pile/map` 等受支持查看页。只关闭最上面的卡牌页：战斗叠地图叠牌组时，返回地图；地图单独打开时调用通用关闭会拒绝。当前版本原生容器关闭会调用 `Unpause`，即使地图仍打开；本项目不增加自定义暂停计数，地图仍按遮挡页面处理，不能据此执行战斗动作。
 
-关闭请求在首个异步等待前点击原生返回并移除当前页，之后仅等待／采样实际画面；这与查看请求必须继续读取原目标页不同。反馈等待期间若出现新页面，返回所采样的当前上下文，不再次关闭新页面。
+关闭请求在首个异步等待前点击原生返回并移除当前页，之后在两秒内等待快照稳定与明确的 `not_ready` 展示进度完成；等待到期仍返回实际画面及适用的更新提示。反馈等待期间若出现新页面，返回所采样的当前上下文。
 
 旧文件操作 `close_deck` 仅为兼容保留，仍只关闭牌组，不注册为 MCP 工具。
 

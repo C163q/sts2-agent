@@ -69,11 +69,12 @@ def validate_source(source, player, enemies, allies):
 def combatant_details(state):
     context = scene_context(state)
     required = state.get('schema_version', 0) >= 48
+    preview_required = state.get('schema_version', 0) >= 49
     if not isinstance(state["enemies"], list):
         raise ValueError("Invalid combatant details.")
     player = None if state["player"] is None else {"powers": powers(state["player"]["powers"])}
     if player is not None:
-        player.update(health_fields(state['player'], required=required))
+        player.update(health_fields(state['player'], required=required, preview_required=preview_required))
     if player is not None and 'orb_slots' in state['player']:
         player['orb_slots'] = orb_slots(state['player']['orb_slots'])
     if player is not None and 'sovereign_blades' in state['player']:
@@ -83,7 +84,7 @@ def combatant_details(state):
         if not isinstance(state['allies'], list):
             raise ValueError('Invalid public allies.')
         allies = [{'id': item['id'], 'name': nullable_text(item['name']), 'powers': powers(item['powers']),
-                   **health_fields(item, required=required)}
+                   **health_fields(item, required=required, preview_required=preview_required)}
                   for item in state['allies']]
         for source, ally in zip(state['allies'], allies, strict=True):
             if 'block_shared_with' in source:
@@ -98,7 +99,7 @@ def combatant_details(state):
             raise ValueError("Invalid combatant identity.")
         enemies.append({"id": identity, "name": nullable_text(enemy["name"]),
                         "powers": powers(enemy["powers"]), "intents": intents(enemy["intents"]),
-                        **health_fields(enemy, required=required)})
+                        **health_fields(enemy, required=required, preview_required=preview_required)})
     if not isinstance(state["hover_tips"], list):
         raise ValueError("Invalid combatant hover tips.")
     tips = []

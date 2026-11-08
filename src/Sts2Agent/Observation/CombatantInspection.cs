@@ -30,6 +30,7 @@ internal sealed class CombatantInspection(CombatantInspection.Level level)
         public int? max_hp => health.maximum;
         public string hp_display => health.display;
         public int? block { get; } = CombatObservation.Block(node);
+        public HealthBarPreview.Preview? hp_preview { get; } = HealthBarPreview.Read(node);
     }
     internal sealed class PlayerText(NCreature node, PowerText[]? powers, OrbInspection.OrbText?[]? orbSlots,
         SovereignBladeInspection.BladeText[] blades) : HealthText(node)

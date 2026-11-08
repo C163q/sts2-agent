@@ -89,6 +89,7 @@ internal sealed class CombatObservation
         {
             character = player.Character.Id.Entry,
             common.player.hp, common.player.max_hp, common.player.hp_display, common.player.block,
+            common.player.hp_preview,
             energy = resources.Energy, max_energy = resources.Maximum, stars = resources.Stars,
             powers = common.player.powers,
             orb_slots = common.player.orb_slots,
@@ -143,7 +144,7 @@ internal sealed class CombatObservation
             {
                 ["id"] = shared.id, ["name"] = shared.name,
                 ["hp"] = shared.hp, ["max_hp"] = shared.max_hp, ["hp_display"] = shared.hp_display,
-                ["block"] = shared.block, ["powers"] = shared.powers
+                ["block"] = shared.block, ["powers"] = shared.powers, ["hp_preview"] = shared.hp_preview
             };
             if (shared.block_shared_with != null) result["block_shared_with"] = shared.block_shared_with;
             return (object)result;

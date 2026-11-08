@@ -27,6 +27,8 @@ public static class BridgeMod
         EnglishEventText.Initialize();
         EnglishRunResultText.Initialize();
         TurnCapture.Initialize();
+        CardPlayFailureCapture.Initialize();
+        HealthBarPreview.Initialize();
         RelicObtainTracker.Initialize();
         EventTaskTracker.Initialize();
         NavigationTasks.Initialize();

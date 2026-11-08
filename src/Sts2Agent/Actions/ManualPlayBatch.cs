@@ -22,6 +22,7 @@ internal sealed class ManualPlayBatch : IDisposable, ILifecycleObserver
         public CardPlayProgress Progress { get; } = new();
         public PlayCardAction? Action;
         public string? Rejection;
+        public string? CancellationReason;
         public Action<GameAction>? Began, Canceled, Finished;
     }
 
@@ -53,6 +54,13 @@ internal sealed class ManualPlayBatch : IDisposable, ILifecycleObserver
         turn = player.PlayerCombatState!.TurnNumber;
         lifecycle = RitsuLibFramework.SubscribeLifecycle(this, replayCurrentState: false);
         queue.ActionEnqueued += Enqueued;
+        CardPlayFailureCapture.Rejected += Rejected;
+    }
+
+    private void Rejected(PlayCardAction action, string reason)
+    {
+        var item = Items.FirstOrDefault(item => ReferenceEquals(item.Action, action));
+        if (item != null) item.CancellationReason = reason;
     }
 
     public bool Submit(Item item)
@@ -132,7 +140,7 @@ internal sealed class ManualPlayBatch : IDisposable, ILifecycleObserver
             status = item.Progress.Status,
             reason = item.Progress.Status switch {
                 "not_submitted" => item.Rejection ?? "Submission stopped before this card.",
-                "not_played" => item.Progress.Canceled ? "The native card play was canceled."
+                "not_played" => item.Progress.Canceled ? item.CancellationReason ?? "The native card play was canceled."
                     : "The native action ended without playing this card.",
                 "unknown" => "The card play result could not be confirmed.",
                 _ => (string?)null }
@@ -144,6 +152,7 @@ internal sealed class ManualPlayBatch : IDisposable, ILifecycleObserver
         if (disposed) return;
         disposed = true;
         queue.ActionEnqueued -= Enqueued;
+        CardPlayFailureCapture.Rejected -= Rejected;
         lifecycle.Dispose();
         foreach (var item in Items)
             if (item.Action is { } action)

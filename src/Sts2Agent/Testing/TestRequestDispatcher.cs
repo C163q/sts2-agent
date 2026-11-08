@@ -174,6 +174,15 @@ internal sealed partial class GameAdapter
                 return FileMailbox.Error(request.Id, "invalid_request", "Expected test enabled flag.");
             return Success(request, JsonSerializer.Serialize(RelicHoverFixture.SetEnabled(flag.GetBoolean())));
         }
+        if (request.Operation == "set_test_health_preview" && testMode
+            && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
+        {
+            if (request.Arguments is not { } options || options.EnumerateObject().Count() != 1
+                || !options.TryGetProperty("mode", out var mode) || mode.ValueKind != JsonValueKind.String || LocalPlayer == null)
+                return FileMailbox.Error(request.Id, "invalid_request", "Expected a health preview fixture mode.");
+            var result = await HealthPreviewFixture.Set(mode.GetString()!, LocalPlayer, ObservationFrame);
+            return Success(request, JsonSerializer.Serialize(result));
+        }
         if (request.Operation == "set_test_combatant_hover" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")
         {

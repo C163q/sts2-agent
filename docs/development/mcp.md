@@ -251,7 +251,7 @@ MCP 会话保存最近一次有效观察的状态令牌，并将其用于动作�
 | `transition` | 原有停止原因、完成标记及完整事件序列，字段见[期间事件](end-turn.md) |
 | `potion_discard` | 仅 discard_potion 提供本次请求的槽位、名称及结果；排队与实际事件的关系见[药水动作](potion-actions.md#丢弃结果与排队) |
 | `selection` | 仅有待处理选择时出现，只含 `type` 和 `status` |
-| `notes` | 仅在需要时提供选牌查看/返回或人工输入提示 |
+| `notes` | 适用的页面更新、选牌查看／返回或人工输入提示；页面进度见[场景上下文](observation.md#场景上下文) |
 | `purchase_result`、`reward_result` | 原生流程有相应结果时保留，区分成功、失败及未获得 |
 | `card_plays` | 连续出牌及其未完成批次的后续动作返回逐张状态，通过 batch_id 关联；详见[逐张结果](card-play.md#逐张结果) |
 

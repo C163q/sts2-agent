@@ -16,6 +16,7 @@ from sts2_mcp.roundtrip_client import Client
 
 CATALOG = json.loads((ROOT / 'tests/game/data/test_scenarios.json').read_text())
 SUPPORTED_VERIFIERS = {
+    'verify_hp_preview.py',
     'verify_screenshots.py',
     'verify_result_option.py',
     'verify_result_inspection.py',
@@ -188,7 +189,7 @@ def load_cases(path):
                     'card_logic', 'cancel', 'hand_choice', 'choose_one', 'combat_pile', 'victory', 'death',
                     'covered', 'noncombat', 'random', 'x_cost', 'hook'),
                 'verify_turn_transitions.py': ('headbutt_empty', 'headbutt_single', 'headbutt_multiple', 'shining', 'hatchet', 'hatchet_draw', 'knife', 'won', 'lost', 'checks', 'preflight', 'noncombat'),
-                'verify_card_view_close.py': ('combat', 'selection', 'battlefield'),
+                'verify_card_view_close.py': ('combat', 'selection', 'battlefield', 'ancient'),
                 'verify_pile_inspection.py': ('draw', 'combat', 'selection', 'battlefield'),
                 'verify_deck_inspection.py': ('combat', 'context', 'selection', 'shop', 'epilogue'),
                 'verify_relic_inspection.py': ('combat', 'context'),

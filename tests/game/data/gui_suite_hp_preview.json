@@ -1,0 +1,3 @@
+[
+  {"name":"health_previews","scenarios":{"play":"basic"},"steps":[{"name":"verify","verifier":"verify_hp_preview.py","args":[]}]}
+]

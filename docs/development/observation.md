@@ -24,7 +24,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 ## 页面主体的展示状态
 
-事件、先古之民、建筑师、结算、奖励、火堆、商店、宝箱和占卜主体的status统一表达当前页展示进度：visible表示当前展示完成，not_ready表示仍在分阶段展示、当前文字／数值／列表可能不完整，covered表示被覆盖。`get_observation` 和对应详情共用判断；`not_ready` 结果带 `notes.presentation` 及来源列表。
+事件、先古之民、建筑师、结算、奖励、火堆、商店、宝箱和占卜主体的status统一表达当前页展示进度：visible表示当前展示完成，not_ready表示仍在分阶段展示、当前文字／数值／列表可能不完整，covered表示被覆盖。`get_observation` 和对应详情共用判断；`not_ready` 结果带 `notes.presentation` 及来源列表，提醒可用动作也可能尚未齐全，应待页面稳定后重新读取。actions_only、top_bar 及使用同一精简投影的关闭回执保留此提示。
 
 该状态与screen.status的可见／覆盖含义分开，也与操作合法性分开。展示完成但按钮禁用时仍为visible；enabled和available_actions继续依据原生操作条件。尚未翻开的占卜格子、未打开的宝箱或未来解锁不代表当前展示未完成。占卜phase、商店view及宝箱chest保留各自业务阶段。
 
@@ -64,6 +64,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 summary 的战斗内容按以下规则精简：
 
 - 玩家、敌人及友方的 `hp/max_hp/hp_display` 合并为 `health`：正常为 `"70/80"`，无限为 `"∞"`，死亡为 `"dead"`，无法识别显示为 `"unknown"`。隐藏或数字不完整时显式保留 `health:null`。
+- 可见毒／灾厄血条的 `hp_preview` 保留，字段含义见[血条预示](combatant-inspection.md#血条预示)。
 - 完整能量对合并为 `energy:"3/3"` 并移除 `max_energy`；数字不完整时省略能量。`stars` 保持原有意义。
 - 空 `powers/orb_slots/sovereign_blades` 省略；非空球槽数组保留位置和空槽 `null`。友方共享格挡标记保留。
 - 手牌使用[共用摘要](hand-inspection.md#参数与返回范围)，保留身份、费用、可见附魔、Affliction、费用颜色、非空标记及有效描边。
@@ -121,6 +122,7 @@ actions_only/top_bar 按上表的最小范围返回。基础观察独立读取�
 | `turn` | 当前结束回合按钮显示的回合号；未显示数字时为空 |
 | `player.character` | 当前可见角色身份，例如 `IRONCLAD` |
 | `hp`、`max_hp`、`hp_display` | 实际显示的生命数字，以及 `numeric/dead/infinite/hidden/unknown` 显示状态；用于角色和敌人 |
+| `hp_preview` | 玩家、敌人与友方当前血条的毒／灾厄预示；含义及空值见[血条预示](combatant-inspection.md#血条预示) |
 | `block`、`energy`、`max_energy`、`stars` | 当前可见资源与计数 |
 | `player.hand[]` | 从左到右排列的当前可见手牌，包含稳定 ID、名称、固有属性、显示费用与标记，不含卡牌正文 |
 | `deck[]`、`view_upgrades`、`sort` | 仅在当前牌组页可读时出现；完整排序列表及 UI 实际设置，卡牌无正文／悬停解释 |

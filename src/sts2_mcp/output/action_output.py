@@ -11,7 +11,7 @@ def action_result(payload):
         if key in payload:
             result[key] = payload[key]
     notes = {key: value for key, value in payload.get('notes', {}).items()
-             if key in {'selection', 'interaction'}}
+             if key in {'selection', 'interaction', 'presentation'}}
     if notes:
         result['notes'] = notes
     return result

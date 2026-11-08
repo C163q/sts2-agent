@@ -5,7 +5,7 @@ from sts2_mcp.output.contracts.combat import HEALTH
 from sts2_mcp.output.scene_context import SCENES as OBSERVATION_SCENES, scene_context
 from sts2_mcp.output.available_tools import public_tools
 from sts2_mcp.output.card_format import format_game_cards
-from sts2_mcp.output.combat_fields import validate_identities, blade_refs, orb_slots
+from sts2_mcp.output.combat_fields import validate_identities, blade_refs, orb_slots, preview_fields
 from sts2_mcp.output.selection_details import selection_details
 
 
@@ -21,6 +21,9 @@ def observation_details(state):
     from sts2_mcp.output.pile_details import pile_observation
     result.update(pile_observation(state))
     result['available_actions'] = public_tools(result['available_actions'])
+    for unit in [result['player'], *(result['enemies'] or []), *(result.get('allies') or [])]:
+        if unit is not None:
+            unit.update(preview_fields(unit, required=state.get('schema_version', 0) >= 49))
     count = (result.get('top_bar') or {}).get('relic_count')
     if count is not None and count < 0:
         raise ValueError('Invalid relic count.')

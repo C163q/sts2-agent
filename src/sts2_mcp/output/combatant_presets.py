@@ -3,7 +3,7 @@ from sts2_mcp.output.filtering import optional_filter, linked_help, filter_indic
 from copy import deepcopy
 from sts2_mcp.output.combat_fields import health_summary
 
-HEALTH_FIELDS = ('hp', 'max_hp', 'hp_display', 'health', 'block')
+HEALTH_FIELDS = ('hp', 'max_hp', 'hp_display', 'health', 'block', 'hp_preview')
 
 
 COMBATANT_SCHEMA = {'type': 'object', 'properties': {
@@ -32,6 +32,8 @@ def _source_paths(payload):
 
     def entries(path, value):
         paths.add(path)
+        if isinstance(value, dict):
+            paths.update(f'{path}.{key}' for key in value)
         if isinstance(value, list):
             paths.update(f'{path}.{i}' for i in range(len(value)))
 

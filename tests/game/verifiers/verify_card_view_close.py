@@ -34,6 +34,31 @@ async def verify(args):
                 return result
 
             await call('get_observation')
+            if args.scenario == 'ancient':
+                for _ in range(3):
+                    await call('inspect_deck')
+                    closed = await call('close_card_view')
+                    assert 'choose_ancient_option' in closed['available_actions'], closed
+                    current = await call('inspect_ancient')
+                    assert current['ancient']['status'] == 'visible', current
+                for preset in ('full', 'default'):
+                    await call('inspect_deck')
+                    partial = await asyncio.to_thread(raw.call, 'set_test_presentation', arguments={'mode': 'partial'})
+                    assert partial['ok'], partial
+                    try:
+                        closed = await call('close_card_view', {'preset': preset})
+                        assert closed['notes']['presentation']['sources'] == ['ancient'], closed
+                        assert 'choose_ancient_option' not in closed['available_actions'], closed
+                        for compact in ('actions_only', 'top_bar'):
+                            viewed = await call('get_observation', {'preset': compact})
+                            assert viewed['notes']['presentation']['sources'] == ['ancient'], viewed
+                    finally:
+                        restored = await asyncio.to_thread(raw.call, 'set_test_presentation', arguments={'mode': 'normal'})
+                        assert restored['ok'], restored
+                    current = await call('inspect_ancient')
+                option = next(o for o in current['ancient']['options'] if o['enabled'])
+                await call('choose_ancient_option', {'option_id': option['id']})
+                return
             if args.scenario == 'selection':
                 await call('choose_rest_option', {'option_id': 'SMITH'})
                 choosing = await call('get_observation')
@@ -81,6 +106,6 @@ async def verify(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--scenario', choices=('combat', 'selection', 'battlefield'), required=True)
+    parser.add_argument('--scenario', choices=('combat', 'selection', 'battlefield', 'ancient'), required=True)
     parser.add_argument('--report', type=Path, required=True)
     asyncio.run(verify(parser.parse_args()))

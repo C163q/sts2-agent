@@ -3,7 +3,7 @@ from sts2_mcp.output.player_output import ENEMY_ATTACK_INTENT_NOTE
 
 
 def assert_combatant_inspection(details, observed):
-    health_keys = {'hp', 'max_hp', 'hp_display', 'block'}
+    health_keys = {'hp', 'max_hp', 'hp_display', 'block', 'hp_preview'}
     assert {k: details[k] for k in ('scene', 'screen')} == {k: observed[k] for k in ('scene', 'screen')}
     assert {'scene', 'screen', 'player', 'enemies', 'allies', 'hover_tips'} <= details.keys(), details
     assert set(details) <= {'scene', 'screen', 'player', 'enemies', 'allies', 'hover_tips', 'notes'}, details

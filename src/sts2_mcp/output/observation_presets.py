@@ -25,6 +25,8 @@ def observation_preset(payload, preset):
     if preset == 'summary':
         return observation_summary(payload)
     result = {key: payload[key] for key in ('scene', 'screen', 'available_actions')}
+    if 'presentation' in payload.get('notes', {}):
+        result['notes'] = {'presentation': payload['notes']['presentation']}
     if payload.get('selection') is not None:
         result['selection'] = {key: payload['selection'][key] for key in ('type', 'status')}
     if preset == 'top_bar':

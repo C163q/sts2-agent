@@ -21,7 +21,7 @@ from sts2_mcp.screenshot_tool import screenshots_disabled
 from sts2_mcp.stdio_transport import Stdin, Stdout
 
 
-SERVER_VERSION = "0.85.0"
+SERVER_VERSION = "0.86.0"
 
 def tool_result(payload):
     content = [TextContent(type="text", text=json.dumps(payload, ensure_ascii=False, separators=(",", ":")))]

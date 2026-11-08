@@ -560,7 +560,7 @@ SPECS = (
     ToolSpec(
         name='inspect_combatants',
         schema=COMBATANT_SCHEMA,
-        description="Read exposed combatant health, Block, powers, intents, orbs and floating Sovereign Blades. "
+        description="Read exposed combatant health, poison/Doom health-bar previews, Block, powers, intents, orbs and floating Sovereign Blades. "
             "summary keeps static data without hover help. sources selects objects or groups by canonical paths; [] selects none. "
             "Full hover help is unavailable during card drag/aim/play; disabled icons remain with a note.",
         annotations=read_only,

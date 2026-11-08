@@ -59,7 +59,7 @@ def assemble_details(details, *, operation=None):
     from sts2_mcp.output.presentation_status import PAGE_CONTEXTS
     pending = [key for key in PAGE_CONTEXTS if (result.get(key) or {}).get('status') == 'not_ready']
     if pending:
-        notes['presentation'] = {'message': 'The page is still updating; displayed values and lists may be incomplete.',
+        notes['presentation'] = {'message': 'The page is still updating; displayed values, lists and available actions may be incomplete. Read current state again after it settles.',
                                  'sources': pending}
     if 'nodes_by_type' in (result.get('map') or {}):
         notes['map'] = 'Map connections omitted; use inspect_map for details.'

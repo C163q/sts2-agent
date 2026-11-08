@@ -22,6 +22,7 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 | scene/screen | 本次快照的房间／结算场景和页面；含义见[场景上下文](observation.md#场景上下文) |
 | player／enemies[]／allies[] 的 hp/max_hp/hp_display/block | full/default 的可见生命、生命显示状态和格挡，与基础观察相同；没有格挡图标时为 0，生命条不可读时为 null |
 | player／enemies[]／allies[] 的 health | summary 的生命摘要：例如 "70/80"、"∞"、"dead"、"unknown"；隐藏生命显式保留 null |
+| player／enemies[]／allies[] 的 hp_preview | [血条预示](#血条预示)：毒的绿色段、灾厄的紫色段和致死字体颜色；各预设共用 |
 | player.powers | 当前展示的状态 name/amount |
 | player.orb_slots | 原生球槽队列，保留真正的空槽 null；每个球为 name/passive/evoke，数值只取已展示标签 |
 | player.sovereign_blades | 当前悬浮剑的绑定卡牌 id/name，沿用基础观察与手牌的稳定 ID；按 ID 排列 |
@@ -35,6 +36,20 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 
 能量、手牌、牌堆计数及可用动作分别通过 inspect_hand、牌堆工具或 get_observation 查看。不可读玩家在 full 中为 player:null；隐藏容器为 powers/intents:null，已展示但没有条目为 []；无显示计数为 amount:null，不以模型 Amount 补齐。default/summary 省略普通 null，球槽数组中的真实空位与 summary 的 health:null 保留。
 
+## 血条预示
+
+基础观察与 `inspect_combatants` 共用 `hp_preview`，full 保留下列空值，default/summary 按通用规则过滤。
+
+| 字段 | 当前显示含义 |
+| --- | --- |
+| poison_damage | 绿色段预示的下次毒结算掉血，包括原生已计入的额外毒触发及修正，封顶当前生命；绿色段未显示时为 null |
+| doom_threshold | 紫色段表示的灾厄阈值；紫色段未显示时为 null |
+| lethal | 生命数字为致死绿色时是 `"poison"`，致死紫色时是 `"doom"`，普通颜色为 null。原生紫色判定已计入先触发的毒伤害 |
+
+两种颜色段均未显示，或生命条／生命数字不可读时，整个 `hp_preview` 为 null。毒已致死时原生会隐藏紫色段，此时 doom_threshold 也为 null。以上是当前画面的结算预示，随后状态变化可改变结果。
+
+[HealthBarPreview](../../src/Sts2Agent/Observation/HealthBarPreview.cs) 在原生 `NHealthBar.RefreshForeground` 渲染时记录其使用的数值；读取时检查实际颜色段与字体显示。观察读取复用该记录，保持与已渲染画面一致。
+
 ## 对象与来源筛选
 
 路径针对**当前未筛选的本工具列表**；与生物 ID 分别使用，页面变化后按新读取的路径定位。使用点分隔的完整路径段匹配；enemies.1 不匹配 enemies.10。
@@ -45,6 +60,7 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 | player.block / enemies.0.block | 玩家／第一敌人的格挡 |
 | enemies.0.hp / enemies.0.max_hp / enemies.0.hp_display | full/default 的第一敌人生命字段 |
 | enemies.0.health | summary 的第一敌人生命摘要 |
+| enemies.0.hp_preview / enemies.0.hp_preview.poison_damage | 第一敌人的整个血条预示／毒掉血预示；同样支持 doom_threshold 和 lethal |
 | player.powers / player.powers.0 | 全部玩家状态／第一条状态 |
 | player.orb_slots.0 | 第一球槽，包括真实空槽 |
 | player.sovereign_blades.0 | 第一把悬浮剑 |
@@ -75,6 +91,8 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 get_observation 的 full/summary 和本工具 summary 共用战斗对象读取入口的静态级别，包含可见生命、格挡和同伴共享关系；基础观察另行组装资源与手牌。两工具共用生命摘要格式。内部静态结果保留原始 null、空列表和数字，各工具最后应用自己的公开预设。full 在同一静态顺序上补充说明，不能因鼠标交互禁用而移除状态或意图。
 
 底层 schema 48 的战斗对象必须包含完整生命字段；旧响应未提供这些字段时按旧格式读取，不推断缺少的数字。部分生命字段、错误类型或不合法显示状态均视为坏响应，校验先于 sources 筛选。
+
+schema 49 起，战斗对象还必须包含可为 null 的 `hp_preview`。缺字段或坏预示在投影及筛选前拒绝；旧 schema 的缺省值保持旧格式。
 
 支持无遮挡战场及原生可查看的建筑师背景。选牌覆盖、地图、牌组、牌堆、模态框、未就绪或隐藏战场拒绝；通过眼睛切回战场可读，保留 notes.selection。没有额外要求必须是玩家回合或动作队列为空，但不保证动画任意时点都稳定。
 
@@ -111,5 +129,7 @@ python3 -m tests.game.verifiers.verify_combatants --ipc-dir .tmp/live/ipc --outp
 ```
 
 完整预设、对象筛选、球／剑／同伴、错误续接及不可悬停 note 使用[combatant_presets 清单](../../tests/game/data/gui_suite_combatant_presets.json)，执行方法见[图形测试](gui-testing.md)。set_test_combatant_hover 仅在测试模式与套件双门控下开放文件请求，测试脚本 finally 恢复，不属于 MCP 玩法工具。
+
+血条预示的普通、致死、复合、额外毒触发与隐藏显示用[hp_preview 清单](../../tests/game/data/gui_suite_hp_preview.json)验证；其场景设置接口同样受测试模式与套件双门控约束。
 
 源码核对与验证证据见[工具审阅](../research/2026-11-03-inspect-combatants-review.md)和[实施记录](../research/2026-11-03-combatants-implementation.md)，适用范围以各记录注明的基线与用例为准。全部状态模板、第三方悬停、多人模式及任意动画组合尚未穷举验证。
