@@ -1,0 +1,29 @@
+{
+  "scene": "run_result",
+  "screen": {
+    "status": "visible",
+    "view": "run_result"
+  },
+  "run_result": {
+    "status": "visible",
+    "phase": "unlock",
+    "title": null,
+    "texts": [
+      "Neow will now greet you at the start of each run..."
+    ],
+    "score_lines": [],
+    "badges": [],
+    "discoveries": [],
+    "options": [
+      {
+        "id": "confirm",
+        "text": "Confirm",
+        "enabled": true
+      }
+    ],
+    "cards": [],
+    "relics": [],
+    "potions": [],
+    "hover_tips": []
+  }
+}

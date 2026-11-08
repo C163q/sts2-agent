@@ -98,10 +98,20 @@ internal static class EnglishEventText
     }
 
     private static void BindLabel(Node __instance, string __0)
+        => BindSource(__instance, __0);
+
+    public static void BindSource(Node node, string displayed)
     {
         if (!Capturing) return;
-        Labels.Remove(__instance);
-        Labels.Add(__instance, Composites.TryGetValue(__0, out var retained) ? retained : CaptureText(__0));
+        Labels.Remove(node);
+        Labels.Add(node, Composites.TryGetValue(displayed, out var retained) ? retained : CaptureText(displayed));
+    }
+
+    public static void CopySource(Node source, Node target, string displayed)
+    {
+        Labels.Remove(target);
+        if (Labels.TryGetValue(source, out var bound) && bound.Original == displayed)
+            Labels.Add(target, bound);
     }
 
     public static void RetainComposite(string text)

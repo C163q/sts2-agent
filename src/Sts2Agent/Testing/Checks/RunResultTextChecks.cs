@@ -10,6 +10,8 @@ internal static class RunResultTextChecks
     public static object Read(RunResultInspection results)
     {
         var root = results.Current?.Root ?? throw new InvalidOperationException("Expected a displayed result page.");
+        var nativeLabels = VisibleUi.Descendants<CanvasItem>(root)
+            .Where(node => node is Label or RichTextLabel).Select(node => (node, text: node is Label label ? label.Text : ((RichTextLabel)node).Text)).ToArray();
         var texts = VisibleUi.Descendants<CanvasItem>(root).Where(VisibleUi.Browsable)
             .Select(node => node switch { Label label => label.Text, RichTextLabel rich => rich.Text, _ => null })
             .Where(text => !string.IsNullOrWhiteSpace(text)).Distinct().ToArray();
@@ -41,6 +43,8 @@ internal static class RunResultTextChecks
                 && duplicated.RootElement.GetProperty("texts").EnumerateArray().Any(t => t.GetString() == collision));
         }
         finally { root.RemoveChild(narrative); narrative.QueueFree(); }
+        Check("native_labels_remain_unchanged", nativeLabels.All(item =>
+            (item.node is Label label ? label.Text : ((RichTextLabel)item.node).Text) == item.text));
         return new { texts, culture = LocManager.Instance.CultureInfo.Name, passed, checks };
     }
 }

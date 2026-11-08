@@ -1,11 +1,16 @@
 """Inspect result phases, summaries, progress, hover boundaries and read recovery."""
 from scripts._bootstrap import ROOT
 import argparse, asyncio, json, sys, time
+import re
 from pathlib import Path
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from sts2_mcp.roundtrip_client import Client
 from tests.game.support.verification_runtime import ensure_run, ipc_directory
+
+
+def validate_text_language(body):
+    assert all(not re.search(r'[\u4e00-\u9fff]', text) for text in body['texts']), body
 
 
 async def verify(args):
@@ -30,6 +35,8 @@ async def verify(args):
                 row.update(execution=packet.get('execution'),native_error=packet.get('error'))
             record(row);assert data==json.loads(reply.content[0].text),reply
             assert reply.isError==bool(error)and data.get('error',{}).get('code')==error,data
+            if not error and data.get('run_result') is not None:
+                validate_text_language(data['run_result'])
             return data
         async def native(operation='get_state',arguments=None):
             packet=await asyncio.to_thread(raw.call,operation,arguments=arguments,response_options={'include_divination_image':False})
