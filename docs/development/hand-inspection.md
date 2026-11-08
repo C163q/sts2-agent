@@ -79,7 +79,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 ```json
 {
   "notes": {
-    "card_values": "Card values are contextual previews. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again."
+    "card_values": "Card values are contextual previews; aiming may change target-specific values."
   }
 }
 ```

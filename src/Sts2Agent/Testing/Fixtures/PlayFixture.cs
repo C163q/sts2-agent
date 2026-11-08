@@ -53,6 +53,19 @@ internal static class PlayFixture
             await PowerCmd.Apply<ThornsPower>(new ThrowingPlayerChoiceContext(), player.Creature, 10, player.Creature, null);
         await CardPileCmd.RemoveFromCombat(state.AllCards.ToArray());
         state.Energy = scenario == "energy" ? 0 : scenario == "x_cost" ? 2 : scenario is "energy_chain" or "orb_chain" ? 3 : 20;
+        if (scenario == "pen_nib")
+        {
+            await RelicCmd.Obtain<PenNib>(player);
+            for (int i = 0; i < 9; i++) player.GetRelic<PenNib>()!.NotifyAttackPlayed();
+            foreach (var enemy in combat.Enemies)
+            {
+                await CreatureCmd.SetMaxHp(enemy, 300);
+                await CreatureCmd.SetCurrentHp(enemy, 300);
+            }
+            await CardPileCmd.AddGeneratedCardsToCombat(new CardModel[] {
+                combat.CreateCard<StrikeIronclad>(player), combat.CreateCard<DefendIronclad>(player) }, PileType.Hand, player);
+            return;
+        }
         if (scenario.StartsWith("batch_", StringComparison.Ordinal))
         {
             await BatchPlayFixture.Configure(scenario[6..], player);

@@ -73,10 +73,10 @@ reward_ids 按当前最上层奖励页的 items[].id 筛选。省略或 null 取
 动作返回[精简回执](mcp.md#动作返回格式)，保留 `transition` 和 `reward_result`：
 
 ```json
-{"reward_result": {"reward_id": 1, "status": "not_claimed"}}
+{"reward_result": {"reward_id": 1, "status": "not_claimed", "reason": "potion_belt_full"}}
 ```
 
-`status` 为 `claimed`、`not_claimed`、`not_obtained` 或 `pending`。`not_obtained` 表示药水奖励行已被原生处理并消耗，但玩家没有获得该药水，例如添水禁止获取；后续以当前奖励行和药水栏为准。满槽等原生拒绝通常返回 `not_claimed`，保留奖励行；需要腾出药水槽时，由模型另外调用 `discard_potion` 或合法的 `use_potion`，再决定是否领取。`pending` 表示已进入选择或后续交互，不能据此认为已获得奖励，也不能自动重试。`complete` 仍只确认 `stop_reason` 所述边界。
+`status` 为 `claimed`、`not_claimed`、`not_obtained` 或 `pending`。`not_obtained` 表示药水奖励行已被原生处理并消耗，但玩家没有获得该药水，例如添水禁止获取；后续以当前奖励行和药水栏为准。药水满槽时返回 `not_claimed` 并附 `reason:"potion_belt_full"`，保留奖励行；由模型另外调用 `discard_potion` 或合法的 `use_potion` 腾出槽位，再决定是否领取。`reason` 仅在已确认该原因时提供；旧版或其他未领取结果可以只有 status。`pending` 表示已进入选择或后续交互，不能据此认为已获得奖励，也不能自动重试。`complete` 仍只确认 `stop_reason` 所述边界。
 
 点开卡牌奖励后，在已显示的候选中使用 `select_card`，或点击当前 `selection.options` 提供的 `selection_option`。卡牌奖励的 Skip 与整页跳过不同：原生通常返回搜刮列表并保留这一奖励入口，可以重新打开。奖励卡牌启用和入场动画完成后才返回可继续选择的边界。已识别的原生大卡预览存在时，奖励视为被覆盖；等待其结束后再提供奖励动作。领取遗物若打开另一张奖励页，到达新页面即返回，供模型继续决策。
 

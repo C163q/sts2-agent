@@ -165,12 +165,14 @@ actions_only/top_bar 按上表的最小范围返回。基础观察独立读取�
 ```json
 {
   "notes": {
-    "enemy_attack_intents": "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
+    "enemy_attack_intents": "Attack intents include current preview modifiers; block and damage redirection affect HP loss."
   }
 }
 ```
 
-敌人攻击意图已经按当前本地玩家计算，包含适用的易伤、污染等效果，不能再对意图数字重复应用同一效果。意图仍是当前预览，不保证等于最终生命损失。
+敌人意图描述返回状态中接下来要执行的动作；`transition.events` 描述本次调用期间已经结算的动作。结束回合后敌人可能已切换意图，核对上一轮伤害须使用攻击前的意图。
+
+攻击意图已经按当前本地玩家计算，包含适用的易伤、污染等效果；估算生命损失时还须考虑格挡和伤害转移，例如 Osty 代受伤。已包含的预览修正只计算一次。
 
 `card_values` 仅属于 [查看手牌详情](hand-inspection.md) 的结果，基础战斗观察不输出。手牌数值可能已经包含缩小等修正，但未包含某个敌人的易伤，对准目标后会重新预览。仅查看手牌、不包含敌人意图的结果不附带 `enemy_attack_intents`。
 

@@ -2,8 +2,8 @@
 from copy import deepcopy
 
 
-ENEMY_ATTACK_INTENT_NOTE = "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
-CARD_VALUE_NOTE = "Card values are contextual previews. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again."
+ENEMY_ATTACK_INTENT_NOTE = "Attack intents include current preview modifiers; block and damage redirection affect HP loss."
+CARD_VALUE_NOTE = "Card values are contextual previews; aiming may change target-specific values."
 
 
 def share_hand_tips(hand):
@@ -59,7 +59,7 @@ def assemble_details(details, *, operation=None):
     from sts2_mcp.output.presentation_status import PAGE_CONTEXTS
     pending = [key for key in PAGE_CONTEXTS if (result.get(key) or {}).get('status') == 'not_ready']
     if pending:
-        notes['presentation'] = {'message': 'The page is still updating; displayed values, lists and available actions may be incomplete. Read current state again after it settles.',
+        notes['presentation'] = {'message': 'Page updating; displayed content and available actions may be incomplete. Read again after it settles.',
                                  'sources': pending}
     if 'nodes_by_type' in (result.get('map') or {}):
         notes['map'] = 'Map connections omitted; use inspect_map for details.'

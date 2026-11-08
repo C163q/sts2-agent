@@ -25,6 +25,25 @@ def state(status='visible'):
 
 
 class RewardOutputTests(unittest.TestCase):
+    def test_full_potion_belt_reason_survives_claim_projection(self):
+        raw = state()
+        raw.update(transition={'stop_reason': 'action_completed', 'complete': True, 'events': []},
+                   reward_result={'reward_id': 12, 'status': 'not_claimed', 'reason': 'potion_belt_full'})
+        result = inspection_details('claim_reward', raw)
+        self.assertEqual(result['reward_result'], {
+            'reward_id': 12, 'status': 'not_claimed', 'reason': 'potion_belt_full'})
+
+    def test_invalid_or_contradictory_claim_reasons_are_rejected(self):
+        for status, reason in [('claimed', 'potion_belt_full'), ('pending', 'potion_belt_full'),
+                               ('not_obtained', 'potion_belt_full'), ('not_claimed', 'unknown'),
+                               ('not_claimed', None), ('not_claimed', True)]:
+            with self.subTest(status=status, reason=reason):
+                raw = state()
+                raw.update(transition={'stop_reason': 'action_completed', 'complete': True, 'events': []},
+                           reward_result={'reward_id': 12, 'status': status, 'reason': reason})
+                with self.assertRaises((ValueError, TypeError)):
+                    inspection_details('claim_reward', raw)
+
     def test_observation_keeps_visible_reward_rows_but_filters_hidden_fields(self):
         raw = state()
         raw['rewards']['items'][1].update(cards=[{'name': 'Secret candidate'}], backend_id=999)

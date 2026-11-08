@@ -65,9 +65,12 @@ async def verify(args):
                     assert time.monotonic() < deadline, observed
                     await asyncio.sleep(.1)
 
-            async def claim(row, status='claimed', reason='action_completed', **kwargs):
+            async def claim(row, status='claimed', reason='action_completed', result_reason=None, **kwargs):
                 receipt = await call('claim_reward', {'reward_id': row['id'], **kwargs})
-                assert receipt['reward_result'] == {'reward_id': row['id'], 'status': status}, receipt
+                expected = {'reward_id': row['id'], 'status': status}
+                if result_reason is not None:
+                    expected['reason'] = result_reason
+                assert receipt['reward_result'] == expected, receipt
                 assert receipt['transition']['stop_reason'] == reason and receipt['transition']['complete'], receipt
                 assert not {'rewards', 'player', 'top_bar', 'enemies'} & receipt.keys(), receipt
                 return receipt
@@ -128,8 +131,10 @@ async def verify(args):
                 await call('select_card', {'card_id': selection['selection']['cards'][0]['id']})
             elif args.scenario == 'full':
                 potion = by_type('potion')
-                receipt = await claim(potion, status='not_claimed')
-                assert not any(e['type'] == 'potion_obtained' for e in receipt['transition']['events']), receipt
+                for preset in ('full', 'default'):
+                    receipt = await claim(potion, status='not_claimed', result_reason='potion_belt_full', preset=preset)
+                    assert not any(e['type'] == 'potion_obtained' for e in receipt['transition']['events']), receipt
+                    assert any(r['id'] == potion['id'] for r in (await call('inspect_rewards'))['rewards']['items'])
                 await call('discard_potion', {'potion_slot': 0})
                 await claim(potion)
             elif args.scenario == 'linked':

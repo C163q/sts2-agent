@@ -16,6 +16,7 @@ from sts2_mcp.roundtrip_client import Client
 
 CATALOG = json.loads((ROOT / 'tests/game/data/test_scenarios.json').read_text())
 SUPPORTED_VERIFIERS = {
+    'verify_necrobinder_feedback.py',
     'verify_relic_settling.py',
     'verify_hp_preview.py',
     'verify_screenshots.py',
@@ -137,6 +138,7 @@ def load_cases(path):
             if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
+                'verify_necrobinder_feedback.py': ('pen_nib', 'soul', 'manual_sources'),
                 'verify_screenshots.py': ('gui',),
                 'verify_result_option.py': ('basic', 'history'),
                 'verify_result_inspection.py': ('wrong_room','history'),

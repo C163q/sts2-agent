@@ -533,7 +533,7 @@ internal sealed partial class GameAdapter
             NGame game = NGame.Instance!;
             await game.StartNewSingleplayerRun(testSettings.Get("STS2_AGENT_TEST_PLAY_SCENARIO") switch
                 {
-                    "companions_osty" or "companions_first" => ModelDb.Character<Necrobinder>(),
+                    "companions_osty" or "companions_first" or "companions_soul" => ModelDb.Character<Necrobinder>(),
                     "companions_blade" => ModelDb.Character<Regent>(),
                     "orbs" or "orb_chain" => ModelDb.Character<Defect>(),
                     _ => ModelDb.Character<Ironclad>()

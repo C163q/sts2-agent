@@ -616,7 +616,7 @@
       }
     ],
     "notes": {
-      "card_values": "Card values are contextual previews. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again."
+      "card_values": "Card values are contextual previews; aiming may change target-specific values."
     }
   },
   "result-24": {
@@ -697,7 +697,7 @@
       }
     ],
     "notes": {
-      "card_values": "Card values are contextual previews. Target-specific modifiers may apply only when aiming. Do not apply included modifiers again."
+      "card_values": "Card values are contextual previews; aiming may change target-specific values."
     }
   },
   "result-25": {
@@ -899,7 +899,7 @@
       }
     ],
     "notes": {
-      "enemy_attack_intents": "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
+      "enemy_attack_intents": "Attack intents include current preview modifiers; block and damage redirection affect HP loss."
     }
   },
   "result-35": {
@@ -934,7 +934,7 @@
       }
     ],
     "notes": {
-      "enemy_attack_intents": "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
+      "enemy_attack_intents": "Attack intents include current preview modifiers; block and damage redirection affect HP loss."
     }
   },
   "result-36": {

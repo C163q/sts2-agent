@@ -37,6 +37,7 @@
 | 单张出牌回执、拒绝恢复及原生连续出牌行为调研 | [play_card_review](../../tests/game/data/gui_suite_play_card_review.json) |
 | Bullet Time 入队检查、Survivor／Dagger Throw 手动与自动弃牌 | [second_playthrough](../../tests/game/data/gui_suite_second_playthrough.json)；[核验记录](../research/2026-11-09-second-playthrough-feedback.md) |
 | Happy Flower 两次激活后的令牌稳定、直接续接与真实过期拒绝 | [relic_settling](../../tests/game/data/gui_suite_relic_settling.json)；[核验记录](../research/2026-11-09-second-playthrough-feedback.md) |
+| Pen Nib 计数与稳定性、Soul 生成后立即抽走、手动／自动来源、药水满槽原因及 Osty 伤害拆分 | [necrobinder_feedback](../../tests/game/data/gui_suite_necrobinder_feedback.json)；[核验记录](../research/2026-11-09-necrobinder-feedback.md) |
 | 公开批量出牌、逐张结果、原生选择续接与跨局清理 | [play_cards](../../tests/game/data/gui_suite_play_cards.json) |
 | 药水明确拒绝恢复、单槽交互、自动用药／获得事件与地图覆盖 | [potion_recovery](../../tests/game/data/gui_suite_potion_recovery.json)；[验证记录](../research/2026-11-05-potion-actions-implementation.md) |
 | 丢弃药水的槽位、自动药水、奖励腾槽、错误续接及覆盖边界 | [discard_potion_review](../../tests/game/data/gui_suite_discard_potion_review.json)；[核验记录](../research/2026-11-05-discard-potion-development-notes.md) |

@@ -80,7 +80,7 @@ async def verify(args):
                 receipt = await call('play_card', {'card_id': defend['id']})
                 assert receipt['transition']['complete'] and 'player' not in receipt
                 played = next(e for e in receipt['transition']['events'] if e['type'] == 'card_played')
-                assert 'source' in played and played['source'] is None, played
+                assert 'source' not in played, played
                 assert (await call('end_turn', {'preset': 'full'}))['transition']['complete']
             elif args.scenario == 'orbs':
                 slots, original = state['player']['orb_slots'], full['player']['orb_slots']

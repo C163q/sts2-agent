@@ -16,7 +16,11 @@ internal static class CompanionFixture
         player.PlayerCombatState.Energy = 20;
         var cards = new List<CardModel>();
         void Add<T>() where T : CardModel => cards.Add(combat.CreateCard<T>(player));
-        if (scenario == "companions_blade")
+        if (scenario == "companions_soul")
+        {
+            Add<Reave>(); Add<Reave>(); Add<Fetch>(); Add<Fetch>();
+        }
+        else if (scenario == "companions_blade")
         {
             Add<WroughtInWar>(); Add<RefineBlade>(); Add<DefendRegent>();
             await ForgeCmd.Forge(5, player, null);

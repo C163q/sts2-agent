@@ -129,11 +129,14 @@ internal sealed partial class GameAdapter
                     && RewardInspection.Ready(current);
                 return boundary is "choice_required" or "manual_input_required" || finished || nestedReward ? boundary : null;
             });
-            object? rewardResult = row == null ? null : new
+            Dictionary<string, object?>? rewardResult = row == null ? null : new()
             {
-                reward_id = rewardId, status = claimed == true ? potionReward != null && !potionObtained ? "not_obtained" : "claimed"
+                ["reward_id"] = rewardId, ["status"] = claimed == true ? potionReward != null && !potionObtained ? "not_obtained" : "claimed"
                     : claimed == false ? "not_claimed" : "pending"
             };
+            // PotionReward.OnSelect returns false only for the native TooFull result.
+            if (rewardResult != null && claimed == false && potionReward != null)
+                rewardResult["reason"] = "potion_belt_full";
             return TransitionSuccess(request, after, reason, rewardResult: rewardResult);
         }
         finally

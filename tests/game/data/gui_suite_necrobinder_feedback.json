@@ -1,0 +1,12 @@
+[
+  {"name":"pen_nib","scenarios":{"play":"pen_nib"},"steps":[
+    {"name":"verify","verifier":"verify_necrobinder_feedback.py","args":["--scenario","pen_nib"]}]},
+  {"name":"soul","scenarios":{"play":"companions_soul"},"steps":[
+    {"name":"verify","verifier":"verify_necrobinder_feedback.py","args":["--scenario","soul"]}]},
+  {"name":"manual_sources","scenarios":{"turn":"hellraiser"},"steps":[
+    {"name":"verify","verifier":"verify_necrobinder_feedback.py","args":["--scenario","manual_sources"]}]},
+  {"name":"full_potion","scenarios":{"reward":"full"},"steps":[
+    {"name":"verify","verifier":"verify_claim_reward_review.py","args":["--scenario","full"]}]},
+  {"name":"osty","scenarios":{"play":"companions_osty"},"steps":[
+    {"name":"verify","verifier":"verify_companions.py","args":["--scenario","checks"]}]}
+]

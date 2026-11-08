@@ -353,7 +353,7 @@ internal sealed class TurnJournal : IDisposable, ILifecycleObserver
         if (autoplay.HasValue)
         {
             fields["autoplay"] = autoplay.Value;
-            fields["source"] = autoSources.GetValueOrDefault(card);
+            if (autoplay.Value) fields["source"] = autoSources.GetValueOrDefault(card);
         }
         if (Entity(target) is { } identity) fields["target"] = identity;
         buffer.Add(type, fields);

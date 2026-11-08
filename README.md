@@ -37,8 +37,8 @@
 | 项目 | 当前版本或要求 |
 | --- | --- |
 | 游戏 | Linux `v0.107.1`，release 分支，构建 `59260271` |
-| 本项目 Mod | `0.84.0` |
-| MCP 服务 | `0.87.0` |
+| 本项目 Mod | `0.85.0` |
+| MCP 服务 | `0.88.0` |
 | RitsuLib | `0.6.10`，使用游戏 `0.107.1` 的兼容运行时，获取方式见[构建指南](docs/development/roundtrip.md#前提与构建) |
 | .NET | 9 SDK，用于从源码构建 Mod |
 | Python | 3.10 或以上，按[MCP 接入指南](docs/development/mcp.md#安装与游戏前提)安装依赖 |
