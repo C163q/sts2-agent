@@ -7,7 +7,7 @@
 | 位置 | 职责 |
 | --- | --- |
 | [项目 README](../README.md) | 面向用户说明项目定位、当前能力、使用入口和必要前提 |
-| [协作约定](../AGENTS.md) | 简短、可执行的协作要求，详细规则通过链接引用 |
+| [开发流程与协作约定](../AGENTS.md) | 开发阅读入口、实施与交付要求，详细操作通过链接引用 |
 | [文档规范](documentation.md) | 可跨项目复用的文档编写与维护规则 |
 | `docs/ai/` | 对应 AI 开发环境的专项约定，在适用环境和任务下阅读 |
 | [开发与接口文档](development/README.md) | 持续维护构建、配置、Mod 加载、工具协议、错误语义及开发验证流程 |
@@ -15,6 +15,8 @@
 | `docs/research/` | 带日期的调查、规格、计划、审阅与验证记录，保留任务要求、证据、适用版本和未验证事项 |
 
 当前 Mod、MCP、游戏及依赖兼容基线统一维护在[项目 README](../README.md#当前版本与前提)；专题文档链接该基线，带日期的证据保留其核对版本。
+
+核对组件版本时，查看[Mod 清单](../src/Sts2Agent/Sts2Agent.json)与[MCP 服务入口](../src/sts2_mcp/mcp_server.py)。游戏基线的证据见[目标程序集核对与验证](research/2026-11-03-result-observation-implementation.md)，底层观察结构版本见[观察格式说明](development/observation.md)。
 
 ## 游戏与上游资料
 

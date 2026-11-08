@@ -4,17 +4,37 @@
 
 ## 前提与构建
 
-- 自行安装 Linux 版《杀戮尖塔 2》，按 [README 配置路径](../../README.md#开发与运行入口)，在当前终端加载 `.env`。游戏路径通过 `Sts2Dir` 和 `--game-dir` 传入。
+- 自行安装 Linux 版《杀戮尖塔 2》。游戏路径通过 `Sts2Dir` 和 `--game-dir` 传入。
 - 按 [global.json](../../global.json) 安装兼容 SDK，需要对应的 .NET 引用包，单独安装运行时不足以编译。
 - 安装 Python 3；本文原有文件客户端和验证脚本只使用标准库，MCP 服务的额外依赖见接入指南。
-- `RitsuLibDir` 指向兼容 RitsuLib 的完整目录，可直接使用 Steam 创意工坊安装。手工获取时按[README 中的发布包说明](../../README.md#当前版本与前提)下载并解压；目录须直接包含 `RitsuLib.References.props`、`mod_manifest.json`、根 DLL、`assets.zip`、`shared/` 和匹配的 `compat/` 子目录，不能只复制根 DLL。
+- `RitsuLibDir` 指向兼容 RitsuLib 的完整目录，可直接使用 Steam 创意工坊安装。目录须直接包含 `RitsuLib.References.props`、`mod_manifest.json`、根 DLL、`assets.zip`、`shared/` 和匹配的 `compat/` 子目录。
 - 构建引用上述本地库与游戏自带程序集，不下载 NuGet 包；[NuGet.Config](../../src/Sts2Agent/NuGet.Config)不启用远程源。
 
-在仓库根目录执行：
+手工获取 RitsuLib 时，使用[作者发布的兼容包](https://github.com/BAKAOLC/STS2-RitsuLib/releases/tag/v0.6.10) `STS2.RitsuLib.Compat.0.107.1.0.6.10.github.zip`，完整解压后作为 `RitsuLibDir`。已核对的发布包 SHA-256 为 `3c7dafb8a8d36d66891abd6c601aec6f43de9890693d1b583e67e2c6d71ebfb5`。
+
+### 路径配置
+
+在仓库根目录复制[配置示例](../../.env.example)：
+
+```sh
+cp .env.example .env
+```
+
+根据机器环境编辑 `.env`，将 `Sts2Dir` 填为游戏安装目录的绝对路径，`RitsuLibDir` 填为完整兼容运行时的目录。在执行构建、准备或安装命令的终端中加载配置：
+
+```sh
+. ./.env
+```
+
+### 构建与测试准备
+
+在仓库根目录构建 Mod：
 
 ```sh
 env DOTNET_CLI_HOME=/tmp/sts2-agent-dotnet NUGET_PACKAGES=/tmp/sts2-agent-nuget DOTNET_CLI_TELEMETRY_OPTOUT=1 dotnet build src/Sts2Agent/Sts2Agent.csproj -p:Sts2Dir="${Sts2Dir:?请先配置并加载 .env}" -p:RitsuLibDir="${RitsuLibDir:?请先配置并加载 .env}"
 ```
+
+正常游戏安装继续按[加载指南](live-game.md#安装文件)操作。需要独立测试实例时，再执行：
 
 ```sh
 python3 scripts/prepare_roundtrip.py --game-dir "${Sts2Dir:?请先配置并加载 .env}" --ritsu-lib-dir "${RitsuLibDir:?请先配置并加载 .env}"

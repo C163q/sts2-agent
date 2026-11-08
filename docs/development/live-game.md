@@ -4,7 +4,7 @@
 
 ## 安装文件
 
-按 [README](../../README.md#开发与运行入口)配置路径并在当前终端加载 `.env`，再按[构建指南](roundtrip.md#前提与构建)生成产物。退出游戏后，在仓库根目录分别执行：
+按[路径配置](roundtrip.md#路径配置)在当前终端加载 `.env`，再按[构建指南](roundtrip.md#前提与构建)生成产物。退出游戏后，在仓库根目录分别执行：
 
 ```sh
 mkdir -p "${Sts2Dir:?请先配置并加载 .env}/mods/Sts2Agent"
@@ -47,6 +47,6 @@ LLM 接入另按[MCP 指南](mcp.md#安装与游戏前提)安装 Python 依赖�
 - 更新 Mod：退出游戏，构建并替换 DLL／清单，完整启动游戏。更新 Python 或 MCP 配置：重连客户端。两端有配套变更时同时更新；工具描述来自 Python，不能据此判断游戏内 DLL 版本。
 - 请求超时：检查游戏是否运行、Mod 是否启用并重启、启动变量是否生效，以及双方通信目录和权限。动作超时后先读取实际状态，禁止自动重发，见[MCP 错误语义](mcp.md#调用和错误语义)。
 - 游戏日志出现 `[Sts2Agent] Main-thread pump attached.` 表示主线程通信入口已连接；`STS2_AGENT_IPC_DIR is unset, bridge disabled.` 表示环境变量未传入游戏。
-- 字段或场景与预期不符：先核对安装清单、游戏启动日志和 `get_state --raw` 中的 schema，再与[当前基线](../../README.md#当前版本与前提)比较。清单文件不能证明运行中的游戏已经重启，也不能替代 DLL 核对。
+- 字段或场景与预期不符：先核对安装清单、游戏启动日志和 `get_state --raw` 中的 schema，再与[底层结构版本](observation.md)及[兼容基线](../../README.md#当前版本与前提)比较。清单文件不能证明运行中的游戏已经重启，也不能替代 DLL 核对。
 
 例如，旧 DLL 可能已能输出附魔的悬停效果，却没有基础观察／summary 的结构化附魔字段；此时只更新 Python 无法补齐游戏端读取，实例见[r9 版本核查](../research/2026-11-02-r9-enchantments.md)。

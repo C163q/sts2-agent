@@ -1,6 +1,6 @@
 # 游戏基础观察 JSON
 
-输出语言为英语，游戏本身可以继续使用中文。底层结构版本及兼容基线统一见[项目 README](../../README.md#当前版本与前提)。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
+输出语言为英语，游戏本身可以继续使用中文。底层结构版本由[观察序列化入口](../../src/Sts2Agent/Observation/GameObservation.cs)中的 `schema_version` 定义；游戏及依赖兼容基线见[项目 README](../../README.md#当前版本与前提)。信息范围遵循 [可见信息边界](../observation.md)，安装见 [正常游戏加载与读取](live-game.md)。
 
 ## 读取和控制信息
 
@@ -211,7 +211,7 @@ MCP 的恢复入口名为 get_observation，错误及权限语义统一见[MCP �
 
 显示检查覆盖有效性、显示开关、父级透明度、视口、祖先裁剪和描边 Shader 宽度。打开地图、菜单、教学、详情或过渡期间保守返回 `covered`。当前仍用矩形近似，不承诺逐像素判断卡牌之间或任意 Mod 图层的遮挡。
 
-按 [README](../../README.md#开发与运行入口) 加载路径配置，再按 [往返指南](roundtrip.md) 构建，在独立实例验证：
+按[路径配置](roundtrip.md#路径配置)加载 `.env`，再按[往返指南](roundtrip.md)构建，在独立实例验证：
 
 ```sh
 python3 scripts/prepare_roundtrip.py --game-dir "${Sts2Dir:?请先配置并加载 .env}" --language zhs
