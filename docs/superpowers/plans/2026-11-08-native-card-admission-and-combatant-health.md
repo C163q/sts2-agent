@@ -1,6 +1,6 @@
 # 原生出牌接受与战斗对象生命实施计划
 
-> 当前状态：两项实现及验证完成，共 2 项，已完成 2 项。正在进行一次独立全分支审阅，之后合入 main；无阻塞。
+> 当前状态：已完成，共 2 项，已完成 2 项。实现、验证与一次独立全分支审阅均完成，无遗留或阻塞。证据见[实施记录](../../research/2026-11-08-native-card-admission-and-combatant-health-implementation.md)。
 >
 > **For agentic workers:** 使用 superpowers:executing-plans 在当前会话逐项实施，按 RED→GREEN 验证；完成后一次独立审阅。
 
@@ -52,4 +52,4 @@
 
 ## 收尾
 
-两任务完成后一次独立全分支审阅；重要问题一次 RED→GREEN 修复，轻微建议另记。保存证据，清理自有测试进程和本计划临时技能目录，合入 main 并删除分支。
+两项完成后的一次独立全分支审阅结论为 Ready，没有 Critical／Important／Minor 或排除判断项。测试进程均已退出；本计划临时技能目录归档校验后清理，按项目约定合入 main 并删除临时分支。

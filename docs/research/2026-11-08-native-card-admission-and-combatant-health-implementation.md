@@ -1,6 +1,6 @@
 # 原生出牌接受与战斗对象生命实现
 
-> 当前状态：两项实现与验证完成，共 2 项，已完成 2 项。正在进行独立代码审阅，之后合入 main；无阻塞。
+> 当前状态：已完成，共 2 项，已完成 2 项。实现、验证和一次独立代码审阅均完成，无遗留或阻塞。实现提交为 `5cfe4fe`、`0929ee9`。
 
 需求依据为[中期反馈复核](2026-11-08-mid-playtest-feedback-review.md)，步骤见[实施计划](../superpowers/plans/2026-11-08-native-card-admission-and-combatant-health.md)。开始基线为 `d2db4f0`；交付目标 Mod `0.82.0`、MCP `0.85.0`、底层观察 schema 48。游戏与 RitsuLib 源码依据沿用[开发核验](2026-11-08-mid-playtest-feedback-development-notes.md)。
 
@@ -41,3 +41,5 @@ schema 48 要求完整生命字段；旧响应没有这些字段时维持原格�
 ## 交付范围
 
 未修改 TODO、正式游戏存档或已安装 Mod。新增字段不从模型补齐隐藏生命；schema 48 的完整性要求只应用于新增版本响应。
+
+独立审阅结论为 Ready，没有 Critical、Important、Minor 或排除判断事项；报告归档于证据目录 `inline-workspace/final-review.md`。两项实施使用当前工作区临时分支；筛选叶路径对应当前预设，full/default 的 hp 与 summary 的 health 分别使用，未扩大为跨预设别名。六个有记录的自有测试游戏均已退出，进程核对见 `process-cleanup.json`。
