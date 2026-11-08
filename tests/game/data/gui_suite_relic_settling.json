@@ -1,0 +1,7 @@
+[
+  {
+    "name": "happy_flower",
+    "scenarios": {"turn": "happy_flower"},
+    "steps": [{"name": "verify", "verifier": "verify_relic_settling.py", "args": []}]
+  }
+]

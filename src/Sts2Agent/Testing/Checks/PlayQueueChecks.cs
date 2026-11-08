@@ -16,19 +16,29 @@ namespace Sts2Agent;
 internal static class PlayQueueChecks
 {
     public static readonly string[] Modes = ["ordered", "energy", "stars", "target", "random_exhaust",
-        "hand_exhaust", "automatic_hand", "choose_one", "combat_pile", "victory", "death", "immediate_death"];
+        "hand_exhaust", "automatic_hand", "choose_one", "combat_pile", "victory", "death", "immediate_death",
+        "bullet_time", "survivor_manual", "survivor_auto", "dagger_manual", "dagger_auto"];
 
     public static async Task<object> Run(string mode, Player player, CombatObservation observation,
         Func<Task> frame, Func<string> observe)
     {
         var combat = CombatManager.Instance.DebugOnlyGetState()!;
         await CardPileCmd.RemoveFromCombat(player.PlayerCombatState!.AllCards.ToArray());
-        await PlayerCmd.SetEnergy(mode == "energy" ? 3 : 20, player);
+        await PlayerCmd.SetEnergy(mode is "energy" or "bullet_time" ? 3 : 20, player);
         await PlayerCmd.SetStars(3, player);
         var cards = new List<CardModel>();
         CardModel Add<T>() where T : CardModel { var card = combat.CreateCard<T>(player); cards.Add(card); return card; }
         switch (mode)
         {
+            case "bullet_time": Add<BulletTime>(); Add<StrikeIronclad>(); Add<StrikeIronclad>();
+                Add<StrikeIronclad>(); Add<DefendIronclad>(); break;
+            case "survivor_manual": Add<Survivor>(); Add<DefendIronclad>(); Add<PiercingWail>(); break;
+            case "survivor_auto": Add<Survivor>(); Add<PiercingWail>(); break;
+            case "dagger_manual": case "dagger_auto":
+                Add<DaggerThrow>();
+                if (mode == "dagger_manual") Add<DefendIronclad>();
+                await CardPileCmd.AddGeneratedCardToCombat(combat.CreateCard<PiercingWail>(player), PileType.Draw, player);
+                break;
             case "energy": Add<StrikeIronclad>(); Add<Bash>(); Add<StrikeIronclad>(); Add<DefendIronclad>().SetToFreeThisTurn(); break;
             case "stars": Add<StrikeIronclad>(); Add<DefendIronclad>().SetStarCostThisCombat(2);
                 Add<DefendIronclad>().SetStarCostThisCombat(2); Add<DefendIronclad>(); break;
@@ -90,7 +100,7 @@ internal static class PlayQueueChecks
                 bool accepted = cards[i].TryManualPlay(TargetInspection.RequiresTarget(cards[i]) ? target : null);
                 submissions.Add(new { index = i, card_id = ids[i], accepted, previous_first_state = previousState });
             }
-            bool choiceMode = mode is "hand_exhaust" or "choose_one" or "combat_pile";
+            bool choiceMode = mode is "hand_exhaust" or "choose_one" or "combat_pile" or "survivor_manual" or "dagger_manual";
             if (choiceMode)
             {
                 await Wait(() => CardSelection.AwaitingInput);
@@ -118,6 +128,13 @@ internal static class PlayQueueChecks
                 JsonSerializer.SerializeToElement(s).GetProperty("previous_first_state").GetString() == "Executing");
             bool outcome = mode switch
             {
+                "bullet_time" => Played(0) && !Enumerable.Range(1, 4).Any(Played)
+                    && submissions.Skip(1).All(s => !JsonSerializer.SerializeToElement(s).GetProperty("accepted").GetBoolean()),
+                "survivor_manual" => Played(0) && !Played(1) && !Played(2) && WasCanceled(1) && WasCanceled(2),
+                "dagger_manual" => Played(0) && !Played(1) && WasCanceled(1),
+                "survivor_auto" => Played(0) && !Played(1) && !WasCanceled(1)
+                    && player.PlayerCombatState!.DiscardPile.Cards.Any(c => c is PiercingWail),
+                "dagger_auto" => Played(0) && player.PlayerCombatState!.DiscardPile.Cards.Any(c => c is PiercingWail),
                 "energy" or "stars" => Played(0) && Played(1) && !Played(2) && WasCanceled(2) && Played(3),
                 "target" => Played(0) && !Played(1) && WasCanceled(1) && Played(2),
                 "hand_exhaust" => Played(0) && !Played(1) && !Played(2) && WasCanceled(1) && WasCanceled(2),
@@ -128,7 +145,9 @@ internal static class PlayQueueChecks
                 "immediate_death" => Played(0) && !Played(1) && !Played(2) && !player.Creature.IsAlive,
                 _ => Enumerable.Range(0, cards.Count).All(Played)
             };
-            return new { passed = acceptedAll && outcome && queuedBeforeChoiceOrCompletion, mode, before, submissions, choosing, paused, lifecycle,
+            bool admission = mode == "bullet_time"
+                ? JsonSerializer.SerializeToElement(submissions[0]).GetProperty("accepted").GetBoolean() : acceptedAll;
+            return new { passed = admission && outcome && queuedBeforeChoiceOrCompletion, mode, before, submissions, choosing, paused, lifecycle,
                 actions = actions.Select((a, i) => new { index = i, state = a.State.ToString(),
                     played = i < cards.Count && Played(i), canceled = i < cards.Count && WasCanceled(i) }).ToArray(),
                 events, after = JsonSerializer.Deserialize<JsonElement>(observe()) };

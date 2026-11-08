@@ -39,8 +39,9 @@ internal static class RunUi
             || VisibleUi.Descendants<NRelicInventoryHolder>(run.GlobalUi.RelicInventory)
                 .Any(holder => holder.IsNodeReady() && !holder.IsQueuedForDeletion()
                     && (RewardInspection.Animating(holder, "_obtainedTween")
-                        // Pael's Wing resets its counter after an independent activation task.
-                        || holder.Relic.Model is PaelsWing wing && PrivateFields.Read(wing, "_isActivating") is true)));
+                        // These relics reset visible counters after independent activation tasks.
+                        || holder.Relic.Model is PaelsWing or HappyFlower
+                            && PrivateFields.Read(holder.Relic.Model, "_isActivating") is true)));
 
     public static bool CardPreviewsPending()
     {

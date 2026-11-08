@@ -14,7 +14,8 @@ from tests.game.support.verification_runtime import ensure_run, ipc_directory
 
 
 QUEUE_MODES = ('ordered', 'energy', 'stars', 'target', 'random_exhaust', 'hand_exhaust',
-               'automatic_hand', 'choose_one', 'combat_pile', 'victory', 'death', 'immediate_death')
+               'automatic_hand', 'choose_one', 'combat_pile', 'victory', 'death', 'immediate_death',
+               'bullet_time', 'survivor_manual', 'survivor_auto', 'dagger_manual', 'dagger_auto')
 PUBLIC_MODES = ('basic', 'energy', 'stars', 'unplayable', 'card_logic', 'cancel', 'hand_choice',
                 'choose_one', 'combat_pile', 'victory', 'death', 'covered', 'noncombat', 'random', 'x_cost', 'hook')
 SCENARIOS = (*('queue_' + mode for mode in QUEUE_MODES), *PUBLIC_MODES)

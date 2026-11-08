@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models.Cards;
 using MegaCrit.Sts2.Core.Models.Powers;
+using MegaCrit.Sts2.Core.Models.Relics;
 
 namespace Sts2Agent;
 
@@ -15,6 +16,15 @@ internal static class TurnFixture
     {
         var choice = new ThrowingPlayerChoiceContext();
         var combat = CombatManager.Instance.DebugOnlyGetState()!;
+        if (scenario == "happy_flower")
+        {
+            await RelicCmd.Obtain<HappyFlower>(player);
+            player.GetRelic<HappyFlower>()!.TurnsSeen = 2;
+            await CardPileCmd.RemoveFromCombat(player.PlayerCombatState!.AllCards.ToArray());
+            await CardPileCmd.AddGeneratedCardsToCombat(Enumerable.Range(0, 30)
+                .Select(_ => combat.CreateCard<DefendIronclad>(player)), PileType.Draw, player);
+            return;
+        }
         if (scenario == "handoff") { CombatHandoffFixture.Configure(player, endTurn: true); return; }
         if (scenario is "normal" or "thieving_hopper") return;
         if (scenario is "wither" or "wither_death")

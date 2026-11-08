@@ -467,8 +467,9 @@ SPECS = (
     ToolSpec(
         name='play_cards',
         schema=BATCH_SCHEMA,
-        description='Queue current hand cards in order using native rules. Invalidated plays may be skipped. '
-            "Choices can pause or cancel queued plays; unsubmitted entries are not saved for later. Check card_plays for each card's status.",
+        description='Queue current hand cards in order using native rules. Each submission checks current costs/resources; '
+            'let cost reductions or energy gains resolve before submitting cards that depend on them. '
+            'Choices can pause or cancel queued plays. Check card_plays after resolving a choice, then submit any remaining plays you still want.',
         annotations=action,
         category='action',
         effect='action',

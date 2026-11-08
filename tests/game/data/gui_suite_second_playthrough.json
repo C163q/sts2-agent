@@ -1,0 +1,17 @@
+[
+  {"name": "bullet_time", "scenarios": {"play": "basic"}, "steps": [
+    {"name": "native", "verifier": "verify_play_card_review.py", "args": ["--scenario", "queue_bullet_time"]}
+  ]},
+  {"name": "survivor_manual", "scenarios": {"play": "basic"}, "steps": [
+    {"name": "native", "verifier": "verify_play_card_review.py", "args": ["--scenario", "queue_survivor_manual"]}
+  ]},
+  {"name": "survivor_auto", "scenarios": {"play": "basic"}, "steps": [
+    {"name": "native", "verifier": "verify_play_card_review.py", "args": ["--scenario", "queue_survivor_auto"]}
+  ]},
+  {"name": "dagger_manual", "scenarios": {"play": "basic"}, "steps": [
+    {"name": "native", "verifier": "verify_play_card_review.py", "args": ["--scenario", "queue_dagger_manual"]}
+  ]},
+  {"name": "dagger_auto", "scenarios": {"play": "basic"}, "steps": [
+    {"name": "native", "verifier": "verify_play_card_review.py", "args": ["--scenario", "queue_dagger_auto"]}
+  ]}
+]
