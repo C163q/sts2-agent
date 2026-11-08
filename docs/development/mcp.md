@@ -270,7 +270,7 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 历史外部层兼容重构的检查、样本回放与当时未重新执行的游戏内验证范围见[项目审阅](../research/2026-10-29-project-review.md)。当前只提供 stdio，未实现 HTTP 服务；客户端及场景的实际覆盖以对应验证记录为准。
 
-全部工具的说明、参数提示与官方实践核查见[工具提示词审阅](../research/2026-11-01-mcp-tool-prompts.md)。维护入口和说明分层见[代码结构的变更入口](architecture.md#变更入口)。
+工具说明、参数提示与官方实践的核查见[提示词收尾审阅](../research/2026-11-08-tool-prompts-final-review.md)，原始分层调整见[早期审阅](../research/2026-11-01-mcp-tool-prompts.md)。维护入口和说明分层见[代码结构的变更入口](architecture.md#变更入口)。
 
 统一预设的语义审查、实现与验证范围见[空值语义记录](../research/2026-11-02-default-preset-null-audit.md)。
 
