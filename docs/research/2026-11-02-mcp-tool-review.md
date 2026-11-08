@@ -2,6 +2,8 @@
 
 > 当前状态：逐项工具核验已完成，共44项，已核销44项。capture_screenshot完成三项整改、验收及独立审阅单轮修复并合入main；其文档命令建议、run_result_option及buy_item的非阻断建议见各自实施记录。用户TODO仍按其范围另行处理。
 
+早期全流程反馈的[收尾复核](2026-11-08-early-playtest-feedback-review.md)确认佩尔后续前进及战败后的直接结算查看已可用；地图移动期间资源漏记和结算文字重复仍建议处理，尚未实施。
+
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 
 ## 范围与基线
