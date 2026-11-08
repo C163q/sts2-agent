@@ -269,6 +269,12 @@ MCP 会话保存最近一次有效观察的状态令牌，并将其用于动作�
 
 连接内部请求串行执行。文件锁约束本项目 MCP server；玩家与直接文件客户端的输入由 Mod 在主线程通过状态令牌与合法性复核处理。当前不支持多个 agent 同时控制同一对局。历史启动锁修复见 [记录](../research/2026-10-29-mcp-startup-lock.md)。
 
+### 服务退出
+
+服务收到 `SIGINT`（包括 Ctrl+C）、`SIGTERM`、stdin EOF 或 stdout 管道断开时，取消当前会话与文件响应等待，释放控制锁，以状态码 0 退出。正常关闭过程保持 stderr 安静；其他运行错误仍按错误路径报告。已发布到游戏的请求可能继续执行，重新连接后应先读取当前状态。
+
+[stdio 退出流程](../../src/sts2_mcp/mcp_server.py)负责信号与会话取消；[stdio 流适配](../../src/sts2_mcp/stdio_transport.py)为 SDK 提供可取消的 POSIX 读写。[文件客户端](../../src/sts2_mcp/roundtrip_client.py)通过可选的 `check_cancelled` 回调停止等待，独立 CLI 使用原有超时。回归验证见[退出测试](../../tests/python/test_mcp_shutdown.py)。
+
 ## 验证与范围
 
 无需游戏的自动检查见 [代码结构与验证](architecture.md#无需游戏的验证)。独立游戏验证须先按 [往返指南](roundtrip.md) 启动新的测试实例，再在主菜单执行：

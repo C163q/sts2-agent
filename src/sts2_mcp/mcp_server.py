@@ -1,6 +1,8 @@
 import argparse
 import json
 import math
+import signal
+import sys
 from pathlib import Path
 
 import anyio
@@ -16,6 +18,7 @@ from sts2_mcp.output.player_output import player_result
 from sts2_mcp.roundtrip_client import Client
 from sts2_mcp.mcp_config import load_config
 from sts2_mcp.screenshot_tool import screenshots_disabled
+from sts2_mcp.stdio_transport import Stdin, Stdout
 
 
 SERVER_VERSION = "0.85.0"
@@ -54,8 +57,19 @@ def create_server(tools, *, screenshots_enabled=False):
 
 async def run_stdio(tools, screenshots_enabled=False):
     server = create_server(tools, screenshots_enabled=screenshots_enabled)
-    async with stdio_server() as (read, write):
-        await server.run(read, write, server.create_initialization_options())
+    with anyio.open_signal_receiver(signal.SIGINT, signal.SIGTERM) as signals:
+        async with anyio.create_task_group() as group:
+            async def stop_on_signal():
+                async for _ in signals:
+                    group.cancel_scope.cancel()
+                    return
+
+            group.start_soon(stop_on_signal)
+            stdin = Stdin(sys.stdin.fileno(), group.cancel_scope)
+            stdout = Stdout(sys.stdout.fileno(), group.cancel_scope)
+            async with stdio_server(stdin=stdin, stdout=stdout) as (read, write):
+                await server.run(read, write, server.create_initialization_options())
+            group.cancel_scope.cancel()
 
 
 def main():
@@ -72,9 +86,12 @@ def main():
         parser.error(str(error))
     lease = ControllerLease(args.ipc_dir)
     try:
-        tools = GameTools(Client(lease.directory, timeout=args.timeout), controller=lease,
+        tools = GameTools(Client(lease.directory, timeout=args.timeout,
+                                 check_cancelled=anyio.from_thread.check_cancelled), controller=lease,
                           screenshot_directory=settings.screenshot_directory)
         anyio.run(run_stdio, tools, settings.screenshot_directory is not None)
+    except KeyboardInterrupt:
+        pass
     except (OSError, RuntimeError) as error:
         parser.exit(1, f"MCP controller startup failed: {error}\n")
     finally:

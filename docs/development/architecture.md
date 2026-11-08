@@ -25,6 +25,7 @@
 | [roundtrip_client.py](../../src/sts2_mcp/roundtrip_client.py) | 标准库文件客户端与 CLI；默认玩法输出，`--raw` 保留诊断协议 |
 | [game_tools.py](../../src/sts2_mcp/game_tools.py)、[game_session.py](../../src/sts2_mcp/game_session.py)、[controller_lease.py](../../src/sts2_mcp/controller_lease.py) | 串行游戏会话、动作令牌、每个 IPC 目录的进程控制锁；文件请求在线程中等待 |
 | [tool_registry.py](../../src/sts2_mcp/tool_registry.py)、[request_arguments.py](../../src/sts2_mcp/request_arguments.py)、[mcp_catalog.py](../../src/sts2_mcp/mcp_catalog.py)、[mcp_server.py](../../src/sts2_mcp/mcp_server.py) | ToolSpec 单一登记、公共参数规范化、工具描述与 schema、stdio 分派及结果封装 |
+| [stdio_transport.py](../../src/sts2_mcp/stdio_transport.py) | SDK stdio 流的 POSIX 适配；读写线程协作取消，EOF 或管道断开触发会话退出，行为见[服务退出](mcp.md#服务退出) |
 | [output/](../../src/sts2_mcp/output/) | `contracts/` 定义纯字段结构，`*_details` 校验领域数据，`inspection_details` 按原生操作分派，`response_pipeline.decode_success` 统一生产成功解码；`public_output` 整合共享解释与 notes，`game_output/player_output` 保留直接调用兼容；`error_output` 管理公开错误，`null_fields` 维护空值规则，`presets` 保留空值过滤兼容导入，`card_format` 统一牌面内容模式，`resource_summary` 共用资源摘要；`observation_presets/selection_summary/top_bar_summary` 提供容器摘要，`action_output` 精简动作回执 |
 | [mcp_config.py](../../src/sts2_mcp/mcp_config.py)、[screenshot_tool.py](../../src/sts2_mcp/screenshot_tool.py) | 截图配置和独占文件保存；`output/media.py` 提供媒体承载及 PNG 格式校验，占卜另校验图像像素及棋盘一致性 |
 | [scripts/](../../scripts/) | 常用 CLI、运行时准备／启动及 `_bootstrap.py` 源码路径引导 |

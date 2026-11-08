@@ -16,11 +16,13 @@ from sts2_mcp.output.player_output import (
 
 
 class Client:
-    def __init__(self, directory, timeout=40):
+    def __init__(self, directory, timeout=40, *, check_cancelled=None):
         self.directory = Path(directory)
         self.timeout = timeout
+        self.check_cancelled = check_cancelled or (lambda: None)
 
     def call(self, operation, expected_state=None, request_id=None, arguments=None, *, response_options=None):
+        self.check_cancelled()
         request_id = request_id or uuid.uuid4().hex
         if len(request_id) != 32 or uuid.UUID(hex=request_id).hex != request_id:
             raise ValueError("Request id must be a lowercase UUID hex string.")
@@ -38,10 +40,12 @@ class Client:
         target = requests / (request_id + ".json")
         temporary = target.with_suffix(".tmp")
         temporary.write_text(json.dumps(request))
+        self.check_cancelled()
         os.replace(temporary, target)
         deadline = time.monotonic() + self.timeout
         response = responses / target.name
         while time.monotonic() < deadline:
+            self.check_cancelled()
             if response.exists():
                 result = json.loads(response.read_text())
                 if result["id"] != request_id:
