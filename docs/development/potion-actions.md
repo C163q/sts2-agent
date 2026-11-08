@@ -4,7 +4,7 @@
 
 使用及丢弃均提交原生动作；游戏负责扣除药水、效果、记录和触发。依据见 [源码核对](../research/2026-10-30-potion-actions.md)。
 
-下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
+含 null 的字段说明与示例按 full 表达；默认输出的空值处理见[公共预设](mcp.md#输出预设)。
 
 ## 查询与定位
 
@@ -24,12 +24,12 @@
 }
 ```
 
-- `usable` 表示当前允许请求使用；`reason` 是不能使用的简短原因，否则为 `null`。这不是效果预测或未来执行保证。
+- `usable` 表示当前允许请求使用；`reason` 是不能使用的简短原因，否则为 `null`。执行时还会复核当前条件。
 - `discardable` 单独报告能否丢弃。例如瓶中精灵不能手动用，但通常能丢弃；禁止移除药水时两者都为 `false`。
 - `target_type` 为已核对的 `self/any_player/any_enemy/all_enemies/targeted_no_creature`。`requires_target` 决定请求是否必须带目标，不直接等同于目标类型是否含“单体”。
 - `targets` 是当前可指定对象或指示范围，不保证列出全部效果对象。战斗生物 ID 为整数，与敌人观察一致；战斗外自身为 `self`，商人为 `merchant`。不预抽随机目标或生成未来候选，不附送药水正文。
 
-查询不会打开菜单或进入瞄准，成功时刷新状态令牌。药水正文通过 [inspect_potions](potion-inspection.md) 读取。
+查询为只读操作，成功时刷新状态令牌。药水正文通过 [inspect_potions](potion-inspection.md) 读取。
 
 允许丢弃的选牌界面也可查询药水：usable 为 false，reason 说明先完成选牌，discardable 单独反映当前能否请求丢弃。已经排队的槽位不能重复使用或丢弃，查询会说明等待原因。
 
@@ -74,9 +74,11 @@ queued 停在当前 choice_required，可以继续选牌或丢弃其他合法槽
 
 结果采用[精简动作回执](mcp.md#动作返回格式)，包含 [transition](end-turn.md)。战斗中停止于 `player_ready/choice_required/combat_won/combat_lost`；战斗外已完成动作时为 `action_completed`。原生取消后恢复可行动为 `action_canceled`；超时或中断不代表动作没有执行，不能自动重发。
 
-`potion_used/potion_discarded` 记录已见药水的槽位和名称，使用事件表示药水已被原生使用流程移除，不代表所有后续效果已完成。记录依据此前已显示的药水身份与仍暴露的槽位，不要求已移除的旧图标还在，也不要求其他槽位能点击；隐藏期间不补记用药，恢复显示后不回放。伤害等沿用现有战报；药水自动触发也可出现在结束回合等其他动作的记录中。不声称提供完整资源变化或因果树。
+`potion_used/potion_discarded` 记录已见药水的槽位和名称，使用事件表示药水已被原生使用流程移除，不代表所有后续效果已完成。记录依据此前已显示的药水身份与仍暴露的槽位，不要求已移除的旧图标还在，也不要求其他槽位能点击；隐藏期间不补记用药，恢复显示后不回放。伤害等沿用现有战报；药水自动触发也可出现在结束回合等其他动作的记录中。支持的变化类别见[期间事件](end-turn.md#事件语义)。
 
 ## 验证
+
+用药与丢弃入口见 [GameAdapter.Potions](../../src/Sts2Agent/Adapter/GameAdapter.Potions.cs)，可用性与目标条件见 [GameAdapter.PotionRules](../../src/Sts2Agent/Adapter/GameAdapter.PotionRules.cs)，公开结果校验见 [potion_action_details](../../src/sts2_mcp/output/potion_action_details.py)。
 
 隔离实例入口：`python3 scripts/run_roundtrip.py --potion-scenario basic`。另一终端执行：
 

@@ -17,7 +17,7 @@
 | `type` | `choose_one`、`reward`、`grid`、`combat_pile`、`deck`、`hand`、`hand_upgrade`、`deck_upgrade`、`deck_enchant`、`deck_transform`、`bundle`、`view_cards` 或 `unsupported` |
 | `status` | `visible` 为选牌页面；`battlefield` 为点击眼睛后查看战场；`covered` 为被其他页面覆盖；`unsupported` 为尚未接通的选择类型 |
 | `prompt`、`min_select`、`max_select` | 当前选择提示与数量范围；隐藏时为 `null` |
-| `cards` | 当前候选页的完整可浏览列表，包含稳定整数 `id`；已经展开显示的牌面可附正文，手牌摘要不自动展开正文 |
+| `cards` | 当前候选页的完整可浏览列表，包含稳定整数 `id`；基础观察仅提供牌面字段，正文及悬停解释由 inspect_selection 提供 |
 | `selected_ids` | 当前已选项目；隐藏时为 `null` |
 | `options` | 当前显示的按钮及 `id`、英语 `text`、`enabled`；未启用不能点击 |
 | `can_view_battlefield` | 原生眼睛当前可用，可显式切换视图 |
@@ -26,7 +26,7 @@
 | `upgrade_previews` | 仅 `deck_upgrade` 提供；已经显示的单牌或多牌升级比较，未进入预览或隐藏时为空列表 |
 | `upgrade_preview` | 仅 `hand_upgrade` 提供；已显示的升级前后牌面 `before`、`after`，未选择或隐藏时为 `null` |
 
-`cards` 在查看战场、被覆盖或未支持时为 `null`，与没有候选的空列表不同。网格候选按原生列表顺序完整返回，不按滚动位置截断；基础观察的已展开牌面使用共用完整格式，含正文和逐牌悬停解释；半隐藏手牌及未展开卡包保持无正文的 face 格式。`inspect_selection()` 默认显式读取整个可浏览候选列表、正文及共享 `hover_tips`，不会展开尚未生成的结果。省略 `view_upgrades` 时不改变 UI。候选的共享解释通过整数 `card_ids` 关联；比较两侧的解释分别保留在 before/after 卡牌中，不因原牌 ID 相同而混合。手牌选择沿用战斗手牌 ID，升级预览的克隆仍使用原牌 ID。
+`cards` 在查看战场、被覆盖或未支持时为 `null`，与没有候选的空列表不同。网格候选按原生列表顺序完整返回，不按滚动位置截断；基础观察的候选、卡包和比较牌统一使用无正文及悬停解释的 face 格式。`inspect_selection()` 默认显式读取整个可浏览候选列表、正文及共享 `hover_tips`，不会展开尚未生成的结果。省略 `view_upgrades` 时不改变 UI。候选的共享解释通过整数 `card_ids` 关联；比较两侧的解释分别保留在 before/after 卡牌中，不因原牌 ID 相同而混合。手牌选择沿用战斗手牌 ID，升级预览的克隆仍使用原牌 ID。
 
 基础观察和查看结果按情境附简短 `notes.selection`：选择遮挡时提示用眼睛查看战场；查看战场时提醒仍有选择待完成，须返回选择界面；牌组、牌堆或地图覆盖选择时提醒先关闭当前查看页。这些说明不重复候选正文或按钮列表。
 
@@ -70,7 +70,7 @@
 
 火堆及事件等牌组升级选择 `deck_upgrade`、牌组变形选择 `deck_transform`，以及潘多拉魔盒等结果页 `view_cards` 提供原生升级复选框。以当前 `can_view_upgrades` 为准；控制器模式隐藏的控件、确认预览背后的控件都不能强行点击。其他选择页没有该开关，例如卡牌奖励、普通移除和附魔；手牌升级已有的选中前后比较保持原有行为。
 
-显式传入 `view_upgrades` 后，等待 UI 稳定再返回新状态和令牌，页面保留本次模式。`cards` 的名称、费用、正文与当前普通／升级牌面一致；仅预览可升级卡牌，原本不能升级的牌保持原样。ID 仍指向原牌，不能将预览克隆当成额外候选。不会实际升级、选择或确认卡牌，也不会改变当前选中项。既有 `upgrade_previews` 和随机变牌比较独立保留，不因候选升级模式而生成未来结果。
+显式传入 `view_upgrades` 后，等待 UI 稳定再返回新状态和令牌，页面保留本次模式。`cards` 的名称、费用、正文与当前普通／升级牌面一致；仅预览可升级卡牌，原本不能升级的牌保持原样。ID 仍指向原牌，不能将预览克隆当成额外候选。该操作切换显示模式，保留当前已选项；实际升级在确认选择后执行。既有 `upgrade_previews` 和随机变牌比较独立保留，不因候选升级模式而生成未来结果。
 
 当前没有可操作的升级复选框时，保留当前数据并附 `errors:[{"code":"upgrade_view_unavailable"}]`，MCP `isError:false`。若同时有筛选错误，两项依次合并；仍按本次 `preset`、`card_ids` 返回有效数据。不传该参数不会产生此错误。选择已被隐藏或切换时仍返回顶层 `illegal_action`，不返回隐藏候选。
 
@@ -78,7 +78,7 @@
 
 ## 操作
 
-`select_card({"card_id": 7})` 等价于点击一张候选。多选界面会选择或取消该项，单选界面可能立即提交；原生需要确认时必须再调用 `selection_option`。它不直接更改牌组，不绕过选择结果的网络同步，不替代正常结算。
+`select_card({"card_id": 7})` 等价于点击一张候选。多选界面会选择或取消该项，单选界面可能立即提交；原生需要确认时必须再调用 `selection_option`。选择结果沿原生同步与结算流程处理。
 
 选中／取消通过 `transition.events` 的 `card_selected/card_deselected` 直接反馈，格式见[期间事件](end-turn.md#事件语义)。原生替换旧牌会先记录取消再记录选中；最后一张立即提交仍保留反馈，实际后续效果继续按顺序记录。无效输入或已选满而原生未改变选择时不生成事件；成功也可能仍等待确认。`selection_option` 的 `cancel_preview` 返回候选时，已选项的取消复用相同记录；确认关闭和页面清理不生成取消，整包选择不冒充单张选牌。
 
@@ -111,7 +111,7 @@
 
 ## 眼睛与现有查看工具
 
-调用 `set_selection_view({"view":"battlefield"})` 点击原生眼睛。此后基础观察及 `inspect_hand`、`inspect_combatants`、`inspect_ui`、药水、遗物详情按当前可见性工作；牌组、地图和牌堆还要求各自原生入口可用。小型候选和简单网格使用其自己的牌堆入口，不能强行点击被禁用的战斗按钮。
+调用 `set_selection_view({"view":"battlefield"})` 点击原生眼睛。此后基础观察及 `inspect_hand`、`inspect_combatants`、`inspect_ui`、药水、遗物详情按当前可见性工作；牌组、地图和牌堆还要求各自原生入口可用。小型候选和简单网格使用其自己的牌堆入口，沿各自已启用的原生入口操作。
 
 该工具保留 `view:battlefield/selection` 和 `preset:default/full`；成功仅返回 `scene`、`screen`、`available_actions` 和 `selection:{type,status}`，与基础观察的 actions_only 内容一致，不带 transition。底层文件协议及成功解码仍使用完整状态，公共输出精简不会改变许可刷新。需要完整新画面或预览时，再调用基础观察或相关详情；已知候选 ID 或确认按钮可直接续接。首次切换也不要求先读取；若尚不知道候选 ID，须通过公开观察或详情取得所需信息。
 
@@ -121,7 +121,7 @@
 
 ## 动作后的结算
 
-选牌动作与 `end_turn` 使用同一可感知事件记录，返回[精简动作回执](mcp.md#动作返回格式)。点击多选但尚未确认时停在 `choice_required`；真正提交后等待后续选择、玩家可行动、胜负或超时。非战斗选择回到[通用事件](events.md)、[先古之民](ancients.md)、商店、宝箱房、搜刮或[休息处](rest-site.md)时使用 `action_completed`；父事件的异步效果、卡牌预览和资源动画仍须完成。其余非战斗选择完成使用 `selection_resolved`。事件字段、`complete` 和超时恢复规则见 [结束回合](end-turn.md)。连续选择每次单独操作，不自动代选，也不会因等待期间出现下一次选择而一直挂起。
+选牌动作与 `end_turn` 使用同一可感知事件记录，返回[精简动作回执](mcp.md#动作返回格式)。点击多选但尚未确认时停在 `choice_required`；真正提交后等待后续选择、玩家可行动、胜负或超时。非战斗选择回到[通用事件](events.md)、[先古之民](ancients.md)、商店、宝箱房、搜刮或[休息处](rest-site.md)时使用 `action_completed`；父事件的异步效果、卡牌预览和资源动画仍须完成。其余非战斗选择完成使用 `selection_resolved`。事件字段、`complete` 和超时恢复规则见 [结束回合](end-turn.md)。连续选择每次单独操作，到达下一选择边界时返回，由调用者继续决策。
 
 选择状态直接来自界面，不要求已经完成过一次回合。选择悖论在第一回合开始时也可识别并操作。暴政消耗和本版本计划妥当保留手牌使用同一手牌接口。
 
@@ -139,3 +139,5 @@
 - `view_cards` 是潘多拉魔盒等已经完成变化后的结果页，不是再次选牌。使用列出的 `confirm` 关闭；不能点击其中卡牌当作选择。
 
 覆盖页会隐藏以上附加信息。没有进入原生选牌时不强行创建界面，例如合法附魔候选不足原生数量时，游戏可能直接处理。先古之民领取效果复用这些工具，不为每件遗物复制工具。
+
+读取与动作分别见 [SelectionInspection](../../src/Sts2Agent/Observation/SelectionInspection.cs)和 [GameAdapter.Selection](../../src/Sts2Agent/Adapter/GameAdapter.Selection.cs)，公开卡牌筛选与预设见 [selection_presets](../../src/sts2_mcp/output/selection_presets.py)。

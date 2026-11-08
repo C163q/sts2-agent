@@ -6,7 +6,6 @@
 
 地图覆盖战斗及牌组／三类牌堆浏览时也可查看仍然显示的遗物；顶栏和交互边界见[基础观察](observation.md#mcp-输出预设)。
 
-
 成功结果的 `scene/screen` 来自本次快照，表示当前房间与覆盖状态，统一规则见[MCP 上下文](mcp.md#成功结果的场景上下文)。
 
 ## 读取
@@ -71,9 +70,11 @@ MCP 调用 `inspect_relics()` 默认返回省略普通空值的完整详情，�
 展示与悬停分开判断。普通 `RelicStatus.Disabled` 只是图标变灰，仍可查看说明；控件须满足原生启用／`AllowFocusWhileDisabled` 条件，且鼠标或控制器焦点至少有一个入口。已显示但当前不能悬停时，full 保留静态字段、`description:null`，不生成悬停解释，并附 `notes.hover_tips_unavailable`。其中 `sources` 使用未筛选列表地址，例如 `relics.2`，筛选后只保留命中条目；default 按公共规则省略正文空值，summary 跳过说明并不生成这条 note。没有额外关键词与提示格式异常不等同于不能悬停。
 基础观察的 `top_bar.relic_count` 独立计数持有条目；禁用或临时隐藏某个条目不会将其当作失去遗物，也不保证它可由本工具查看。字段及摘要预设见[观察说明](observation.md#mcp-输出预设)。
 
-正文和附带说明取自已显示遗物实例的 `RelicModel.HoverTips`，与原生悬停入口相同。只输出原生悬停正文，不附送风味文本、内部计数、获取楼层、未来触发结果或概率推演。不会调用 `OnFocus`、触发动画、切换语言、设置目标或打开遗物检查页。格式化对 `EnergyVar.ColorPrefix` 的临时修改在 `finally` 恢复，未知提示类型整次报错，不静默丢弃。
+正文和附带说明取自已显示遗物实例的 `RelicModel.HoverTips`，与原生悬停入口相同。只输出原生悬停正文，信息范围见[可见信息边界](../observation.md)。读取在当前实例的同步作用域内完成。格式化对 `EnergyVar.ColorPrefix` 的临时修改在 `finally` 恢复，未知提示类型整次报错，不静默丢弃。
 
 ## 验证
+
+游戏端展示与正文读取见 [RelicInspection](../../src/Sts2Agent/Observation/RelicInspection.cs)，公开校验与下标关联见 [relic_details](../../src/sts2_mcp/output/relic_details.py)及 [relic_presets](../../src/sts2_mcp/output/relic_presets.py)。
 
 扩大的非战斗查看范围及动作列表一致性见[可用工具修复记录](../research/2026-11-02-available-actions-fix.md)。
 
@@ -83,6 +84,6 @@ MCP 调用 `inspect_relics()` 默认返回省略普通空值的完整详情，�
 python3 -m tests.game.verifiers.verify_relics --ipc-dir .tmp/live/ipc --output .tmp/live/relic-inspection.json --report .tmp/live/relic-inspection-check.json
 ```
 
-两份脚本共享静态字段、上下文、不可悬停说明和提示原下标关联断言，并检查重复读取一致、前后基础观察令牌不变及文件／MCP 输出一致。完整专项套件见[图形测试](gui-testing.md)，图标状态、筛选映射、错误续接和实际熔化的证据见[实施记录](../research/2026-11-04-relic-inspection-implementation.md)。令牌只覆盖已导出的基础观察，不是全部游戏内部状态的版本。
+两份脚本共享静态字段、上下文、不可悬停说明和提示原下标关联断言，并检查重复读取一致、前后基础观察令牌不变及文件／MCP 输出一致。完整专项套件见[图形测试](gui-testing.md)，图标状态、筛选映射、错误续接和实际熔化的证据见[实施记录](../research/2026-11-04-relic-inspection-implementation.md)。令牌覆盖范围见[文件协议](roundtrip.md#原型接口)。
 
 独立中文实例可使用 `scripts/run_roundtrip.py --windowed --capture --check-relics` 准备原生遗物获取及读取检查，不能为正式游戏设置测试标志。历史样本和检查数量见[遗物实施记录](../research/2026-10-29-relic-inspection-plan.md)及[MCP 实施记录](../research/2026-10-29-mcp-relic-inspection.md)，后续预设、熔化及非战斗范围见上文专项记录；全部遗物、第三方悬停和多人尚未穷举验证。

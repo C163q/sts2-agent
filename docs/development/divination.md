@@ -1,8 +1,8 @@
 # 占卜小游戏
 
-页面主体的visible／not_ready／covered及部分内容提示遵循[共用展示状态](observation.md#页面主体的展示状态)，按钮可操作性另行判断。
-
 版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。支持单人原生 Crystal Sphere，先用[事件工具](events.md)进入小游戏。
+
+页面主体的展示进度见[共用展示状态](observation.md#页面主体的展示状态)，按钮启用状态按当前操作条件判断。
 
 ## 工具与图像
 
@@ -67,5 +67,7 @@ phase 为 playing、settling 或 finished。观察可读取已经展示的结算
 完整当前对白只在文字渐显完成时返回。瞬态对白与动态图像不使许可过期；次数、工具、棋盘、忙碌状态和页面变化仍会复核。观察不切换游戏语言，不主动生成或领取奖励。
 
 ## 验证入口
+
+可见棋盘与部位转写见 [DivinationBoard](../../src/Sts2Agent/Observation/DivinationBoard.cs)及 [DivinationGlyphs](../../src/Sts2Agent/Observation/DivinationGlyphs.cs)，动作见 [GameAdapter.Divination](../../src/Sts2Agent/Adapter/GameAdapter.Divination.cs)，公开棋盘校验见 [divination_details](../../src/sts2_mcp/output/divination_details.py)。
 
 按[测试指南](roundtrip.md)编译并准备隔离实例，使用[揭开专项](../../tests/game/data/gui_suite_divination_recovery.json)验证大小范围、拒绝后直接继续及原生奖励／诅咒时机，结果见[揭开实施](../research/2026-11-07-divination-recovery-implementation.md)。[工具切换专项](../../tests/game/data/gui_suite_divination_tool_view.json)验证冷调用、重复选择、覆盖拒绝与合法后续操作；事件／占卜文字观察使用tests/game/data/gui_suite_event_inspection.json。UI显示夹具与隐藏真值仅用于私有测试入口，不进入公开工具目录；自然揭开和UI夹具验证的范围分别记录在[文字观察实施](../research/2026-11-07-event-inspection-text-implementation.md)及[工具切换实施](../research/2026-11-07-divination-tool-view-implementation.md)。

@@ -2,7 +2,7 @@
 
 版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
 
-文件操作 `inspect_ui` 与同名 [MCP 工具](mcp.md)只读返回当前可见顶栏、战斗通用入口、资源图标和空充能球槽的英语悬停说明。不移动鼠标、不打开窗口、不切换游戏语言。手牌、药水、遗物、能力、意图与已有球的效果使用各自的专门查看工具。
+文件操作 `inspect_ui` 与同名 [MCP 工具](mcp.md)只读返回当前可见顶栏、战斗通用入口、资源图标和空充能球槽的英语悬停说明。说明按当前可悬停入口读取，信息边界见[观察约定](../observation.md)。手牌、药水、遗物、能力、意图与已有球的效果使用各自的专门查看工具。
 
 ## 调用与参数
 
@@ -23,11 +23,11 @@ inspect_ui(preset="full", sources=["player.energy"])
 | 参数 | 行为 |
 | --- | --- |
 | `preset` | 默认 `default`，按[公共预设](mcp.md#输出预设)省略普通空值；`full` 保留空值；`summary` 在 default 基础上省略每条提示的 `description`，保留标题、来源和上下文 |
-| `sources` | 按提示来源路径精确匹配。省略或 `null` 表示全部，`[]` 表示不返回提示；重复值去重，提示与来源保持原生顺序。共享提示只保留匹配的来源；不会将 `top_bar` 当作路径前缀 |
+| `sources` | 按提示来源路径精确匹配。省略或 `null` 表示全部，`[]` 表示不返回提示；重复值去重，提示与来源保持原生顺序。共享提示只保留精确匹配的来源，例如 top_bar.hp |
 
 未匹配来源集中返回 `errors:[{"code":"ui_sources_unavailable","sources":[...]}]`，其余匹配提示仍正常返回；可能是来源拼写错误，也可能是当前页面没有该入口或不允许悬停。未知参数、非法预设、非字符串或空字符串来源等返回 `invalid_request`。
 
-summary 可先列出可查询来源，再用 default 加 sources 读取所需正文。完整原生响应先校验，再筛选和摘要；筛选不会掩盖未选中数据的格式错误，也不会改变原生状态令牌。
+summary 可先列出可查询来源，再用 default 加 sources 读取所需正文。完整原生响应先校验，再筛选和摘要，统一处理见[MCP 输出规则](mcp.md#输出预设)。
 
 ## 返回格式
 
@@ -55,13 +55,15 @@ summary 可先列出可查询来源，再用 default 加 sources 读取所需正
 
 ## 可见范围
 
-顶栏与战斗区域独立判断。事件、火堆、商店、奖励、先古之民、宝箱、地图／牌组／牌堆覆盖、选牌页、建筑师及结算中，只要顶栏按原生 UI 仍可见可读，就提供对应帮助；不会因此穿透读取被遮住的战斗资源。主菜单、模态遮挡和过渡等没有可读区域的情况返回 illegal_action，可用性以 get_observation.available_actions 为准。
+顶栏与战斗区域独立判断。事件、火堆、商店、奖励、先古之民、宝箱、地图／牌组／牌堆覆盖、选牌页、建筑师及结算中，只要顶栏按原生 UI 仍可见可读，就提供对应帮助。战斗资源按战斗区域的实际显示情况独立判断。主菜单、模态遮挡和过渡等没有可读区域的情况返回 illegal_action，可用性以 get_observation.available_actions 为准。
 
 顶栏包括可悬停的头像／进阶、生命、金币、当前房间、楼层、可见首领、地图、牌组与设置入口。头像遵循原生 ShowTip，不补出隐藏首领。战斗区域包括能量、星星、抽牌／弃牌／消耗堆入口、结束回合与空充能球槽；牌堆须已绑定，结束回合遵循玩家准备状态，完整球栏及空槽须可读可悬停。
 
 固定入口仍按可见性、视口与裁剪筛选；禁用控件按原生 AllowFocusWhileDisabled 决定是否能提供帮助。这些入口不属于可滚动候选列表，不补齐隐藏图标。地图、牌组与牌堆只提供入口帮助，不读取其中内容或顺序；不添加原生没有的格挡帮助。
 
 ## 验证
+
+游戏端悬停读取见 [UiInspection](../../src/Sts2Agent/Observation/UiInspection.cs)，公开字段校验与预设见 [ui_details](../../src/sts2_mcp/output/ui_details.py)及 [ui_presets](../../src/sts2_mcp/output/ui_presets.py)。
 
 当前完整跨场景回归为 [gui_suite_ui_context.json](../../tests/game/data/gui_suite_ui_context.json)，通过[图形测试套件](gui-testing.md)执行；通关终章通过独立实例的 verify_ui_context.py --scenario ending 验证，不放入复用套件。
 

@@ -10,7 +10,7 @@
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state > .tmp/live/observation.json
 ```
 
-默认输出面向 LLM 的玩法内容，成功结果直接包含 `scene`、`screen`、`player` 等字段，没有 `ok`、外层 `state`、请求 ID、状态令牌、会话、结构版本或语言字段。版本、种子、Mod 调试覆盖层也不再作为玩法内容返回。
+默认输出面向 LLM 的玩法内容，成功结果直接包含 `scene`、`screen`、`player` 等字段，没有 `ok`、外层 `state`、请求 ID、状态令牌、会话、结构版本或语言字段。种子和 Mod 调试覆盖层属于内部信息。
 
 需要控制信息或排查问题时执行：
 
@@ -18,13 +18,13 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state > .tmp/liv
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 ```
 
-`--raw` 保留原始文件协议：成功为 `id/ok/state`，`state` 内保留 `snapshot_id/schema_version/language/session` 及战斗、界面、选择、物品、房间、结算等代际字段；失败为 `id/ok/error`。Python 的 `Client.call()` 同样返回原始响应。生产入口通过 `response_pipeline.decode_success(operation, state, native_arguments)` 完整校验并转换成功结果，不改写原响应；旧 `player_result(response, operation="get_state")` 仍支持片段投影兼容调用，但不能替代完整校验。共享解释与 notes 在公开装配层生成。外部客户端必须自行保存最近的原始令牌，动作仍带 `expected_state` 校验；省略 LLM 可见令牌不等于绕过校验。[本地 MCP](mcp.md) 复用同一玩法输出转换。
+`--raw` 保留原始文件协议：成功为 `id/ok/state`，`state` 内保留 `snapshot_id/schema_version/language/session` 及战斗、界面、选择、物品、房间、结算等代际字段；失败为 `id/ok/error`。Python 的 `Client.call()` 同样返回原始响应。生产入口通过 `response_pipeline.decode_success(operation, state, native_arguments)` 完整校验并转换成功结果，不改写原响应；旧 `player_result(response, operation="get_state")` 仍支持片段投影兼容调用，但不能替代完整校验。共享解释与 notes 在公开装配层生成。外部客户端必须自行保存最近的原始令牌，动作仍带 `expected_state` 校验。[本地 MCP](mcp.md) 复用同一玩法输出转换。
 
-玩法输出按声明的结构递归投影，未知嵌套字段不会转发；基础观察的 `player.hand` 不包含正文或悬停解释。已提供字段须符合对应类型，布尔值不能代替数字。MCP 与非 raw 文件客户端对基础观察和动作结果检查全部必需顶层观察字段，格式错误返回 `transport_error`，不保留动作令牌。这个检查不证明游戏采样本身符合可见信息边界；Mod 的显示过滤仍是读取依据。
+玩法输出按声明的结构递归投影，未知嵌套字段不会转发；基础观察的 `player.hand` 不包含正文或悬停解释。已提供字段须符合对应类型，布尔值不能代替数字。MCP 与非 raw 文件客户端对基础观察和动作结果检查全部必需顶层观察字段，格式错误返回 `transport_error`，不保留动作令牌。游戏端依据实际 UI 做显示过滤，Python 负责协议结构与类型校验。
 
 ## 页面主体的展示状态
 
-事件、先古之民、建筑师、结算、奖励、火堆、商店、宝箱和占卜主体的status统一表达当前页展示进度：visible表示当前展示完成，not_ready表示仍在分阶段展示、当前文字／数值／列表可能不完整，covered表示被覆盖。get_observation和对应详情读取同一判断；not_ready结果带notes.presentation及来源列表。不增加content_complete。
+事件、先古之民、建筑师、结算、奖励、火堆、商店、宝箱和占卜主体的status统一表达当前页展示进度：visible表示当前展示完成，not_ready表示仍在分阶段展示、当前文字／数值／列表可能不完整，covered表示被覆盖。`get_observation` 和对应详情共用判断；`not_ready` 结果带 `notes.presentation` 及来源列表。
 
 该状态与screen.status的可见／覆盖含义分开，也与操作合法性分开。展示完成但按钮禁用时仍为visible；enabled和available_actions继续依据原生操作条件。尚未翻开的占卜格子、未打开的宝箱或未来解锁不代表当前展示未完成。占卜phase、商店view及宝箱chest保留各自业务阶段。
 
@@ -47,7 +47,56 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 
 ## MCP 输出预设
 
-`get_observation()` 等同于 `get_observation({"preset":"default"})`，保留完整基础观察的内容范围并省略普通空值；`preset:"full"` 保留原有空值。普通手牌仍不附正文或悬停详情，选牌可浏览面板按下述范围读取；统一规则见[MCP 输出预设](mcp.md#输出预设)。`get_observation({"preset":"actions_only"})` 仅返回以下上下文及工具名，例为战斗中的手牌选择：
+`get_observation` 的五种预设均实时采样、完整校验结果并刷新内部动作令牌。参数仅有可选字符串 `preset`；非法值或额外字段返回 `invalid_request`，保留已有许可。令牌与失败恢复见[MCP 调用语义](mcp.md#调用和错误语义)，普通空值及事件例外见[公共输出规则](mcp.md#输出预设)。
+
+| 预设 | 返回范围 |
+| --- | --- |
+| `default`（默认） | 完整基础观察，省略普通空值 |
+| `full` | 与 default 相同的内容范围，保留普通空值 |
+| `summary` | 在 default 上精简战斗对象、卡牌和顶栏，场景主体见下表 |
+| `actions_only` | `scene`、`screen`、`available_actions`，以及有待处理选择时的 `selection.type/status` |
+| `top_bar` | actions_only 加上 default 顶栏，保留 `relic_count`、移除 `relics`；顶栏生命仍用 `hp/max_hp` |
+
+基础观察中的所有标准卡牌，full/default 使用[无正文的牌面格式](hand-inspection.md#共用卡牌格式)，summary 使用共用卡牌摘要。适用于手牌、选牌候选、卡包、比较两侧、商店、牌组／牌堆和结算卡牌；正文及悬停解释由专项详情提供。
+
+### 战斗与顶栏摘要
+
+summary 的战斗内容按以下规则精简：
+
+- 玩家、敌人及友方的 `hp/max_hp/hp_display` 合并为 `health`：正常为 `"70/80"`，无限为 `"∞"`，死亡为 `"dead"`，无法识别显示为 `"unknown"`。隐藏或数字不完整时显式保留 `health:null`。
+- 完整能量对合并为 `energy:"3/3"` 并移除 `max_energy`；数字不完整时省略能量。`stars` 保持原有意义。
+- 空 `powers/orb_slots/sovereign_blades` 省略；非空球槽数组保留位置和空槽 `null`。友方共享格挡标记保留。
+- 手牌使用[共用摘要](hand-inspection.md#参数与返回范围)，保留身份、费用、可见附魔、Affliction、费用颜色、非空标记及有效描边。
+- 意图、按钮、可用工具和仍适用的 notes 保留。
+
+各场景的顶栏独立处理：full/default 保留可见顶栏；summary 仅保留 `gold/potion_slots/deck_count/relic_count`；top_bar 使用上表范围。顶栏不可读时按对应预设的空值规则处理，数量以原生可读值为准。
+
+地图、牌组和牌堆覆盖时，`screen.status:covered` 表示下层场景被覆盖，仍实际显示的顶栏继续可读。顶栏自身的隐藏、透明、视口、裁剪及弹窗遮挡另行判断。药水与遗物查看的条件见[药水边界](potion-inspection.md#显示与悬停边界)和[遗物边界](relic-inspection.md#读取边界)。
+
+### 场景主体与专项详情
+
+full/default/summary 共用各场景的静态主体；summary 再精简其中的卡牌和公共顶栏。以下表格列出基础观察的内容入口，完整契约由对应专题维护。
+
+| 场景或页面 | 基础观察与详情分工 |
+| --- | --- |
+| [选牌](card-selection.md#观察与信息范围) | 返回整个可浏览候选及已展开比较；保留提示、数量限制、全部已选 ID、按钮、升级模式、附魔操作说明和随机标记。summary 省略空的包／列表预览，保留 cards、selected_ids、options 空数组 |
+| [奖励](rewards.md#观察与详情) | 静态奖励行、标题和按钮；悬停帮助由 inspect_rewards 提供 |
+| [休息处](rest-site.md#观察与详情) | 选项名称、启用状态及按钮；顶层和选项 description 由 inspect_rest_site 提供 |
+| [宝箱](treasure.md#观察与详情) | 箱子状态、已显示遗物名称与按钮；可见主体在 default/summary 中也保留 relic:null |
+| [商店](shop.md#打开观察与详情) | 已展示商品的购买字段和卡牌牌面；商品 ID 位于 items[].id。完整效果由 inspect_shop 提供 |
+| [先古之民](ancients.md#工具与观察) | 已显示对话、馈赠正文与按钮；仅保留 true 致死警告，悬停解释由 inspect_ancient 提供 |
+| [事件](events.md#基础观察与详情) | 选项效果、启用状态、true 致死警告及前进按钮；页面叙事与悬停解释由 inspect_event 提供 |
+| [确认框](events.md#事件确认弹窗) | 保留标题、完整后果说明与按钮 |
+| [建筑师](run-ending.md#建筑师观察) | 当前完整气泡及按钮 |
+| [结算](run-ending.md#结算观察) | 当前 texts、分数、徽章、发现、静态物品名称和提示标题、按钮及空列表；完整正文效果和悬停说明由 inspect_run_result 提供 |
+| [占卜](divination.md) | 文字棋盘、可见碎片、次数、工具及当前完整对白；教学和可选 PNG 由 inspect_event 提供 |
+| [牌组](deck-inspection.md#生命周期及验证) | 已打开且就绪页面的完整 deck、升级模式及排序；ID 与原生顺序保持 |
+| [战斗牌堆](pile-inspection.md#已打开牌堆的基础观察) | 已打开且就绪页面的 pile、cards、message；summary 省略底部固定 message |
+| [地图](map-inspection.md#地图选路) | 整幕 nodes_by_type 分类、当前节点及原生候选；notes.map 提示用 inspect_map 查看连接及节点详情 |
+
+actions_only/top_bar 按上表的最小范围返回。基础观察独立读取当前 UI；详情调用的 `card_ids`、`max_steps` 等输出筛选只作用于该次详情结果。关闭、覆盖或未就绪的浏览页按各自契约返回，避免沿用缓存内容。
+
+例如，actions_only 在手牌选择中可返回：
 
 ```json
 {
@@ -58,45 +107,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state --raw
 }
 ```
 
-这是结构示例，工具名仅用于说明字段形态；实际列表随按钮、持有物及交互状态变化，以当前完整返回为准。`scene` 仍表示底层房间或战斗；`screen.view` 标识地图、牌组／牌堆、占卜、确认、建筑师或结算，`selection.type/status` 区分选牌及查看战场，没有待处理选择时省略 `selection`。精简输出不附候选参数、提示、数值或占卜图像；后续需要详情时调用相应工具或再次完整观察。
-
-五种预设都会实时读取、完整校验并刷新内部动作令牌，精简模式不改变游戏 UI，也不改变后续动作的精简回执格式，见[MCP 动作返回](mcp.md#动作返回格式)。只允许可选字符串 `preset: default/full/actions_only/summary/top_bar`；非法值或额外字段返回 `invalid_request`，保留已有许可且不请求游戏。读取被明确拒绝与结果未知的处理分别遵循[MCP 错误语义](mcp.md#调用和错误语义)。预设属于 MCP 输出投影，底层文件 `get_state` 仍返回完整状态。
-
-`preset:"summary"` 基于 default 分别处理共用顶栏、战斗观察、当前卡牌选择、结算卡牌、商店卡牌、普通事件和占卜教学说明；共用部分先于场景分派执行：
-
-- 玩家、敌人及友方的 `hp/max_hp/hp_display` 合并为 `health`：正常为 `"70/80"`，无限为 `"∞"`，死亡为 `"dead"`，无法识别显示为 `"unknown"`，隐藏时显式保留 `null`。不补隐藏生命数字，格式为 numeric 但数字不完整时也保留 `health:null`。
-- 玩家能量合并为 `energy:"3/3"`，移除 `max_energy`；数字不可完整读取时省略，不拼接猜测值。`stars` 保持原有意义。
-- `powers/orb_slots/sovereign_blades` 为 `[]` 时省略；有空槽的非空球数组保留位置及 null 元素。友方共享格挡标记保留。
-- `player.hand` 复用 [inspect_hand 的摘要字段](hand-inspection.md#参数与返回范围)，移除稀有度和卡池，保留费用颜色、标记及可见附魔；空值遵循本预设的 default 规则。
-- 所有场景的 `top_bar` 独立复用同一摘要，仅保留 `gold/potion_slots/deck_count/relic_count`；隐藏时省略，不从遗物明细推算未知数量。其他字段、意图、按钮、可用工具及适用 notes 保留。非战斗主体及当前选择按下述规则精简。
-
-当前选择页的 `selection` 候选、包内卡牌和已展开的比较均复用手牌摘要，省略正文、稀有度、卡池、空 `unplayable_markers` 和 `outline:"none"`；其他描边、非空标记及可见附魔保留。空 bundles 与空 `upgrade_previews/enchant_previews/transform_previews` 省略，cards／selected_ids／options 的空数组保留。提示、数量限制、全部已选 ID、按钮启用状态、升级模式、附魔操作说明及随机结果标记保留；比较中的未知身份、随机 after:null 不补齐。
-
-奖励和宝箱的房间主体保持与default一致，不省略标题、选项、空列表或按钮状态。火堆在full/default/summary中共用[静态格式](rest-site.md#观察与详情)，省略顶层与选项description；完整说明由inspect_rest_site.default/full提供，其他空值按各自预设处理。宝箱可见时 default／summary 保留 `treasure.relic:null`；被覆盖时仍省略，完整规则见[公共空值规则](mcp.md#输出预设)。弹出的选牌使用上述共用摘要，顶栏独立精简。
-
-商店的商品卡牌复用共用卡牌摘要：保留已有的名称、类型和费用，省略 rarity／visual_card_pool；商品 ID 保持在 items[].id，card 内不额外生成 ID。价格、affordable、enabled、on_sale、position、已用删牌项等商品信息仍沿用 default。商店卡牌沿用其网格上下文的可见外观字段；未显示的费用颜色、描边或不可打出标记不补造；卡牌正文继续通过 inspect_shop 查看。先古之民主体保持 default。
-
-普通事件主体在 get_observation.full/default/summary 中均使用 inspect_event.summary：省略页面叙事 event.description、悬停说明及 lethal_warning:false；保留选项效果 description、true 警告、启用状态和前进按钮。完整已展示正文及选项悬停解释由 inspect_event.full/default 提供。共用规则见[事件接口](events.md#基础观察与详情)。
-
-审判（Trial）同样省略页面叙事，confirmation.description 保留，不能按字段名递归删除后果说明。建筑师 epilogue 主体沿用 default。结算主体三种内容预设共用静态名称／提示标题，卡牌full/default为face、summary为卡牌摘要，见[结算接口](run-ending.md#结算观察)。占卜在 full/default/summary 中均省略固定教学 divination.instructions，保留文字棋盘、可见碎片、次数、工具和当前完整对白；基础观察不返回 PNG，也不接受 include_image。详情教学和可选图像见[占卜接口](divination.md)。
-
-已就绪且未被更高层覆盖的牌组页提供完整 `deck`、`view_upgrades` 和 `sort.by/descending`，分别对应 UI 的升级模式、主排序与方向。full/default/summary 的牌组卡牌采用 face_full／face_default／共用卡牌摘要，均无正文和悬停解释；ID 和显示顺序与 inspect_deck 相同，后者的 card_ids 不会限制基础观察。关闭或被覆盖后不附缓存内容，详细边界见[牌组接口](deck-inspection.md)。actions_only/top_bar 不增加牌组数据。
-
-已就绪且未被更高层覆盖的战斗牌堆页提供 pile、cards、message；full/default/summary 的卡牌分别采用 face_full／face_default／共用摘要，均无正文或悬停解释，底部固定 message 在 summary 省略。原生显示顺序及 ID 与 inspect_pile 一致，不继承 card_ids 筛选，不读取真实抽取顺序；关闭或覆盖后不附缓存，actions_only/top_bar 不增加这些字段。详见[牌堆接口](pile-inspection.md#已打开牌堆的基础观察)。
-
-地图覆盖（`screen.view:map`）时，full/default/summary 的 map 均返回整幕节点的 `nodes_by_type` 分类、当前节点及原生可选节点；不含连接、名称、揭晓类型或任务标记。`notes.map` 提醒连接省略、详情用 inspect_map。基础观察不继承详情的 max_steps；actions_only/top_bar 不附地图或这条 note，地图未就绪／关闭／被覆盖时也不附 note。完整规则见[地图接口](map-inspection.md#地图选路)。所有浏览页均先处理共用顶栏摘要，保留被覆盖选择的元数据，不对下层战斗再次压缩；分工依据见[共用顶栏记录](../research/2026-11-02-shared-top-bar-summary.md)。
-
-结算的 `run_result` 主体沿用 default，保留完整的当前页 texts、分数、徽章、发现、options 及空列表；已显示的 cards 复用卡牌摘要，保留字符串 card:N ID、名称、类型和费用等字段，省略正文、稀有度及卡池。需要正文或悬停说明时调用 inspect_run_result。full/default 的结算卡牌使用共用完整格式，包含逐牌悬停解释；结算页其他悬停帮助仍由专项详情提供。主菜单与 unrecognized 主体沿用 default；共用顶栏规则独立适用。约定及验证见[结算观察实施记录](../research/2026-11-03-result-observation-implementation.md)。
-
-已打开候选页的 full/default/summary 都提供整个原生可浏览列表，包含滚动区域外的候选，保持原生顺序及原牌 ID。读取不滚动或选择卡牌；确认预览只提供该页展示内容，眼睛与覆盖页继续隐藏选择。卡面附魔按实际显示规则读取，字段及界面操作见[选牌接口](card-selection.md)。
-
-`preset:"top_bar"` 在 actions_only 的场景、页面、选择 type/status 和工具名上增加 default 的顶栏字段，移除 `top_bar.relics` 并保留 `relic_count`。不套用 summary 的顶栏四字段限制，也不合并顶栏 hp/max_hp；不返回战斗单位、手牌、房间正文、notes 或占卜图像。遗物效果通过 `inspect_relics` 查看。顶栏不可读时省略，不伪造空顶栏。
-
-full/default 顶栏提供 `relic_count`，表示原生遗物栏登记的持有数量；整个遗物栏不可读时为 null。它独立于是否可悬停或位于屏幕内，不从筛选后的明细列表求长度。旧 Mod 缺少该字段时，各预设省略数量，不猜测成零或列表长度；更新排错见[正常游戏指南](live-game.md#更新与排错)。样例与验证范围见[战斗核验记录](../research/2026-11-02-get-observation-combat.md)。
-
-`available_actions` 包含当前原生页面允许的详情和页面工具，例如 `inspect_selection`、`set_selection_view`、`close_card_view`、`close_map`，不是全部已安装工具。工具出现不意味着任意卡牌、目标、商品或选项参数都有效，也不保证调用前状态不发生变化。列表不携带参数；从完整观察或专用详情读取候选后再提交。
-
-当前暴露的地图、牌组及抽牌／弃牌／消耗堆浏览页保留实际可见顶栏。`screen.status:covered` 表示下层战斗／房间被覆盖，不会单独使顶栏不可读；顶栏本身隐藏、透明、位于视口外，或受不支持的弹窗／详情／过渡遮挡时仍不读取。单个数字隐藏时不从模型补齐。药水说明和已显示遗物可通过相应 inspect 工具查看；遗物静态条目与悬停缺失 note 的边界见[遗物详情](relic-inspection.md#读取边界)，下层战斗和药水动作仍按原有条件限制；验证见[顶栏修复记录](../research/2026-11-02-top-bar-visibility.md)。
+工具名仅示意字段形态，实际列表随当前页面和交互条件变化。原生采样入口见[GameObservation](../../src/Sts2Agent/Observation/GameObservation.cs)，基础观察的卡牌格式由[成功解码](../../src/sts2_mcp/output/observation_details.py)选择，预设投影由[observation_presets](../../src/sts2_mcp/output/observation_presets.py)处理。
 
 ## 玩法字段
 
@@ -246,6 +257,5 @@ python3 -m tests.game.verifiers.verify_roundtrip --ipc-dir .tmp/roundtrip/ipc --
 地图展开且就绪时，`map` 返回整幕类型分组及原生候选；可选时列出 `travel_to_node`。连接与节点详情由 `inspect_map` 提供，见[地图接口](map-inspection.md#地图选路)。
 
 各场景工具可用性与早期预设验证见[核查记录](../research/2026-10-31-observation-presets-validation.md)；当前各场景 summary 的设计与实施证据见[逐项核验记录](../research/2026-11-02-get-observation-review.md)。
-
 
 原生采样由 GameObservation.Capture 统一管理同步与代次，ObservationSnapshot 同时持有 JSON、令牌及原生身份；详情共用该快照的上下文。公开格式不因此增加私有元数据，见[MCP 成功上下文](mcp.md#成功结果的场景上下文)。占卜的图片需求由响应选项控制，不参与逻辑令牌计算，见[占卜接口](divination.md#工具与图像)。

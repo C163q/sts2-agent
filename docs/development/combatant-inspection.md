@@ -1,6 +1,6 @@
 # 战斗对象与充能球详情
 
-版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。`inspect_combatants` 查看当前已展示的玩家、敌人、友方召唤物、充能球与悬浮君王之剑；不执行动作、不触发实际鼠标悬停、不修改语言、目标或游戏流程。场景遵循[统一上下文](observation.md#场景上下文)，建筑师背景仍为 epilogue。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。`inspect_combatants` 查看当前已展示的玩家、敌人、友方召唤物、充能球与悬浮君王之剑。场景遵循[统一上下文](observation.md#场景上下文)，建筑师背景仍为 epilogue。
 
 ## 参数与预设
 
@@ -19,7 +19,7 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 
 | 字段 | 内容 |
 | --- | --- |
-| scene/screen | 本次快照的房间／结算场景和页面；不因查看战场对象改写 scene |
+| scene/screen | 本次快照的房间／结算场景和页面；含义见[场景上下文](observation.md#场景上下文) |
 | player／enemies[]／allies[] 的 hp/max_hp/hp_display/block | full/default 的可见生命、生命显示状态和格挡，与基础观察相同；没有格挡图标时为 0，生命条不可读时为 null |
 | player／enemies[]／allies[] 的 health | summary 的生命摘要：例如 "70/80"、"∞"、"dead"、"unknown"；隐藏生命显式保留 null |
 | player.powers | 当前展示的状态 name/amount |
@@ -37,7 +37,7 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 
 ## 对象与来源筛选
 
-路径针对**当前未筛选的本工具列表**，不是生物 ID，也不保证与其他工具或下一次读取的下标相同。使用点分隔的完整路径段匹配；enemies.1 不匹配 enemies.10。
+路径针对**当前未筛选的本工具列表**；与生物 ID 分别使用，页面变化后按新读取的路径定位。使用点分隔的完整路径段匹配；enemies.1 不匹配 enemies.10。
 
 | 路径示例 | 选择范围 |
 | --- | --- |
@@ -55,7 +55,7 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 
 多个路径取并集；父路径已包含子路径时不重复返回。选择状态／意图时保留所属敌人或友方的 id/name，不附送其他未选中分支。合法空分组返回空分组，没有悬停说明的条目仍可返回静态数据；不存在的下标、错误路径或不支持的字段进入 errors。筛选不跳过原生响应的完整校验。
 
-叶路径对应当前预设的未筛选输出：full/default 使用 hp、max_hp、hp_display，summary 使用合并后的 health。选择生命或格挡不会附送其他状态及悬停说明。
+叶路径对应当前预设的未筛选输出：full/default 使用 hp、max_hp、hp_display，summary 使用合并后的 health。叶路径仅返回所选字段。
 
 数组紧凑返回，不用 null 填补未选中的位置。例如选择 enemies.2.powers.1，可产生以下定位映射：
 
@@ -74,7 +74,7 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 
 get_observation 的 full/summary 和本工具 summary 共用战斗对象读取入口的静态级别，包含可见生命、格挡和同伴共享关系；基础观察另行组装资源与手牌。两工具共用生命摘要格式。内部静态结果保留原始 null、空列表和数字，各工具最后应用自己的公开预设。full 在同一静态顺序上补充说明，不能因鼠标交互禁用而移除状态或意图。
 
-底层 schema 48 的战斗对象必须包含完整生命字段；旧响应未提供这些字段时按旧格式读取，不推断缺少的数字。部分生命字段、错误类型或不合法显示状态均视为坏响应，空 sources 不能掩盖这些问题。
+底层 schema 48 的战斗对象必须包含完整生命字段；旧响应未提供这些字段时按旧格式读取，不推断缺少的数字。部分生命字段、错误类型或不合法显示状态均视为坏响应，校验先于 sources 筛选。
 
 支持无遮挡战场及原生可查看的建筑师背景。选牌覆盖、地图、牌组、牌堆、模态框、未就绪或隐藏战场拒绝；通过眼睛切回战场可读，保留 notes.selection。没有额外要求必须是玩家回合或动作队列为空，但不保证动画任意时点都稳定。
 
@@ -93,6 +93,8 @@ get_observation 的 full/summary 和本工具 summary 共用战斗对象读取�
 无法识别的悬停类型、失效绑定、坏来源或格式异常仍整次失败，不能降级为普通 note 或由 [] 掩盖。意图预览数值的 note 只在返回相关意图数据时保留，规则见[数值说明](observation.md#数值预览说明)；没有 card_values note。
 
 ## 文件入口与验证
+
+静态与悬停读取见 [CombatantInspection](../../src/Sts2Agent/Observation/CombatantInspection.cs)，完整公开校验及来源筛选见 [combatant_details](../../src/sts2_mcp/output/combatant_details.py)和 [combatant_presets](../../src/sts2_mcp/output/combatant_presets.py)。
 
 文件客户端默认 full，支持与 MCP 相同的预设和筛选：
 

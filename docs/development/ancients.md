@@ -1,14 +1,14 @@
 # 先古之民
 
-页面主体的visible／not_ready／covered及部分内容提示遵循[共用展示状态](observation.md#页面主体的展示状态)，按钮可操作性另行判断。
-
 版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
 
-支持实际单人的常规先古之民房间，使用原生对话及事件选项流程；不自动选择遗物或前往地图节点。终章建筑师使用[终章接口](run-ending.md)，与常规先古之民共用 `advance_dialogue`。普通问号事件使用[通用事件工具](events.md)。
+支持实际单人的常规先古之民房间，沿原生对话与馈赠选择流程逐项操作。终章建筑师使用[终章接口](run-ending.md)，与常规先古之民共用 `advance_dialogue`。普通问号事件使用[通用事件工具](events.md)。
 
-下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
+含 null 的字段说明与示例按 full 表达；默认输出的空值处理见[公共预设](mcp.md#输出预设)。
 
 get_observation 的 full/default/summary 共用 inspect_ancient.summary 的静态先古主体；共用顶栏及选牌仍按[观察预设](observation.md#mcp-输出预设)独立处理。
+
+页面主体的展示进度见[共用展示状态](observation.md#页面主体的展示状态)，按钮启用状态按当前操作条件判断。
 
 ## 工具与观察
 
@@ -33,7 +33,7 @@ get_observation 的 full/default/summary 共用 inspect_ancient.summary 的静�
 
 预设支持default、full、summary，默认default。full保留空值；default应用[通用空值规则](mcp.md#输出预设)；summary在default基础上省略全部hover_tips及false警告，保留页面说明、已展示对话、馈赠效果正文及按钮。
 
-option_ids接受非负Int32数组：省略或null取全部，[]返回空options；保留页面顺序、对话和按钮，重复ID去重。缺失ID合并到`errors:[{code:"option_ids_not_found",option_ids:[...]}]`，匹配项照常返回。选项已有稳定ID，无须返回筛选后位置映射。
+option_ids接受非负Int32数组：省略或null取全部，[]返回空options；保留页面顺序、对话和按钮，重复ID去重。缺失ID合并到`errors:[{code:"option_ids_not_found",option_ids:[...]}]`，匹配项照常返回。返回项沿用原选项 ID。
 
 文字及馈赠读取不按视口截断，仍排除真实隐藏、透明、裁剪和未揭示内容。可见而不能悬停的选项保留正文，完整详情返回空hover_tips，并通过`notes.hover_tips_unavailable.sources`给出`ancient.options.<id>`；note随筛选缩小，summary省略此类note。点击仍检查按钮在屏幕内且可操作。
 
@@ -62,11 +62,11 @@ option_ids接受非负Int32数组：省略或null取全部，[]返回空options�
 }
 ```
 
-示例省略通用顶栏和其他空观察字段，选项数组仅展示一项，不表示该先古只提供一个选项。实际 ID 以当次观察为准。后续选牌使用[现有选择工具](card-selection.md)，额外奖励使用[搜刮工具](rewards.md)，可以逐项决定顺序。
+示例节选一个选项，完整结果还包含当前其他选项及公共观察。实际 ID 以当次观察为准。后续选牌使用[现有选择工具](card-selection.md)，额外奖励使用[搜刮工具](rewards.md)，可以逐项决定顺序。
 
 ## 遗物效果与其他场景
 
-不为每件遗物实现一套规则。游戏自身负责领取回调、自动出牌、额外回合、返还卡牌、附魔和商店等 hook；工具识别真实 UI 和可行动边界。选择或奖励会暂停领取任务，此时及时返回，不能等到整个领取结束才输出。
+游戏负责领取回调、自动出牌、额外回合、返还卡牌、附魔及商店等效果；工具复用原生流程并识别可行动边界。领取任务等待选择或奖励输入时，先返回该交互边界。
 
 | 遗物 | 原生行为与接口衔接 |
 | --- | --- |
@@ -80,6 +80,8 @@ option_ids接受非负Int32数组：省略或null取全部，[]返回空options�
 
 ## 状态与验证
 
+对话与馈赠读取见 [AncientInspection](../../src/Sts2Agent/Observation/AncientInspection.cs)，执行入口见 [GameAdapter.Ancient](../../src/Sts2Agent/Adapter/GameAdapter.Ancient.cs)，公开响应校验见 [ancient_details](../../src/sts2_mcp/output/ancient_details.py)。
+
 动作需要当前观察许可，条件与[其他 MCP 动作](mcp.md#调用和错误语义)相同。选项 ID 按当前实际选项身份分配，原生翻页后旧 ID 不再匹配。详情成功时刷新状态令牌；确定性读取拒绝保留已有许可，不为首次失败建立许可。覆盖页不允许穿透点击。普通完成返回 `action_completed`；选牌返回 `choice_required`；嵌套奖励通过场景和可用工具标识，内容按需观察或查看奖励。超时不自动重试。
 
 choose_ancient_option和advance_dialogue在明确点击前拒绝且未改UI时保留已有许可，可直接改选、推进对话、处理选牌／奖励或前进。错误区分无房间、覆盖、等待、对话未完成／已结束、已领取、无效ID及按钮不可用，并提示对应工具。地图和牌组关闭工具本身不要求玩法许可。过期观察、已交互、未知或坏响应仍要求重新读取。
@@ -88,9 +90,9 @@ choose_ancient_option和advance_dialogue在明确点击前拒绝且未改UI时�
 
 已识别的原生选牌页在进入／退出过渡中，仍真实画出的顶栏继续参与资源及物品事件采样。卡牌包打开时记录已显示的Scroll Boxes获取一次，未选定包内卡牌不提前记录加入；真实隐藏UI的变动仍不公开，恢复显示也不回放隐藏期间事件。
 
-致死斗篷在隔离环境有致命错误，用户也报告原版崩溃；现按原版可复现问题记录，Mod及MCP不是发生崩溃的必要条件，底层根因仍未确定。[用户TODO](TODO.md)要求游戏升级至v0.111后复测。原审阅和反馈来源见[选择馈赠核验](../research/2026-11-07-choose-ancient-option-review.md)。
+低最大生命下选择卓越斗篷（Distinguished Cape）存在崩溃记录，包含隔离环境证据与原版复现反馈，根因待确认。[用户TODO](TODO.md)要求游戏升级至v0.111后复测。原审阅和反馈来源见[选择馈赠核验](../research/2026-11-07-choose-ancient-option-review.md)。
 
-到达房间、继续对话及返回页面时，可行动条件还检查原生内容滚动、说明淡入、名称横幅显隐及其入场补间。选项已经能点击，不代表称号等可见字段已经稳定；须等这些有限过渡结束后才报告可行动。称号仍按当时的实际可见性输出，状态指纹不忽略它。详情可以在过渡中读取已显示内容，此时选项的`enabled`可能为false；成功详情中选项为`enabled:true`时可直接选择，不要求额外调用 `get_observation`。复现和验证见[先古之民入场稳定性修复](../research/2026-11-01-ancient-stability.md)及[详情核验](../research/2026-11-07-inspect-ancient-development-notes.md)。
+到达房间、继续对话及返回页面时，可行动条件还检查原生内容滚动、说明淡入、名称横幅显隐及其入场补间。可行动结果须等上述有限过渡结束，确保称号等可见字段稳定。称号仍按当时的实际可见性输出，状态指纹不忽略它。详情可以在过渡中读取已显示内容，此时选项的`enabled`可能为false；成功详情中选项为`enabled:true`时可直接选择，不要求额外调用 `get_observation`。复现和验证见[先古之民入场稳定性修复](../research/2026-11-01-ancient-stability.md)及[详情核验](../research/2026-11-07-inspect-ancient-development-notes.md)。
 
 图形验证须使用[隔离测试实例](roundtrip.md)，例如：
 

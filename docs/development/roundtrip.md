@@ -87,7 +87,7 @@ python3 -m tests.python.test_prepare_roundtrip
 | 基础观察 | 使用 `get_state`，对应 MCP 的 `get_observation` |
 | 游戏动作 | 调用方自行保存最新 `state.snapshot_id`，以 `expected_state` 提交；MCP 会话内部管理令牌 |
 | 详情及浏览页面 | 无须 `expected_state`，仍检查当前场景、遮挡、参数及原生合法性 |
-| 输出预设及筛选 | 不接受 MCP 的 `preset`、`card_ids`、`relic_indices` 或地图 `max_steps`；底层文件响应保留完整空值；牌组／牌堆 CLI 支持 --preset，牌组另支持 --card-ids，均只裁剪公开输出 |
+| 输出预设及筛选 | 不接受 MCP 的 `preset`、`card_ids`、`relic_indices` 或地图 `max_steps`；底层文件响应保留完整空值。CLI 的 --preset、--card-ids、--sources、--slot-indices 支持范围见各工具指南，均在 Python 层投影 |
 | 原生参数 | 牌堆 pile、牌组排序／升级模式，以及 `inspect_selection.view_upgrades` 按各工具定义传入 arguments；牌组／牌堆 CLI 的 --preset 只在 Python 投影，不传入 Mod |
 | 兼容操作 | `close_deck` 仅关闭牌组，不注册为 MCP；公开工具使用 `close_card_view` |
 | 截图 | 文件 `capture_screenshot` 返回图像载荷；可选 MCP 工具负责文件名和存盘，见[截图接口](screenshots.md)；普通 CLI 不公开此操作 |
@@ -95,9 +95,11 @@ python3 -m tests.python.test_prepare_roundtrip
 
 请求写入 `requests/<id>.json`，其中 `id` 是不带连字符的 UUID；先写临时文件再原子重命名为 `.json`。请求体包含 `id`、`operation`；动作另带 `expected_state`，有参数操作的选项放在 `arguments` 对象中。响应写入 `responses/<id>.json`，成功包含 `ok: true` 和 `state`，失败包含 `ok: false` 和 `error.code`、`error.message`。
 
-已审阅入口的明确拒绝可另带 `error.public_message`，表示经适配器确认可公开的原因；普通 message 仍可含私有诊断，不能直接转发。`play_card`／`play_cards`／`end_turn`／`use_potion`／`discard_potion` 在提交和 UI 变化之前被拒绝时另带布尔 `error.action_submitted:false`；inspect_deck／inspect_pile／close_card_view 的显式拒绝可带 `error.ui_unchanged:true`，保证该请求未进行 UI 交互，不表示外部状态没有变化。缺省不提供保证，false 也不能解释为未知结果已恢复。MCP 只对登记工具应用保证，检查其类型及与执行／提交事实的矛盾；完整语义见[MCP 错误处理](mcp.md#调用和错误语义)。这些控制字段不进入 LLM JSON，观察 schema 不因可选错误字段单独改变。inspect_combatants 的文件请求另支持可选 level:summary/full，默认为 full；详见[战斗对象入口](combatant-inspection.md#文件入口与验证)。
+明确拒绝可带 `error.public_message`，表示经适配器确认可公开的原因；普通 message 保留诊断用途。游戏动作在尚未提交且 UI 未变化的前置拒绝中可带 `error.action_submitted:false`；页面工具在本请求尚未交互时可带 `error.ui_unchanged:true`。恢复策略由[工具登记](../../src/sts2_mcp/tool_registry.py)声明，MCP 核对标记类型及其与执行事实是否一致，完整条件见[MCP 错误处理](mcp.md#调用和错误语义)。保证作用于本请求，外部输入仍可能改变状态。控制字段留在内部协议，LLM 仅接收公开原因与恢复指引。
 
-内部请求包装可带 `response_options:{"include_divination_image":false}`，它与游戏 `arguments` 分开，不是 MCP 工具参数。省略时仍按旧文件调用规则捕获可见占卜棋盘；显式布尔值控制是否附加该 PNG，不改变结构化采样、令牌或独立截图。未知选项、重复键和非布尔值会被拒绝。MCP 按最终输出是否需要棋盘传入：完整观察、summary、占卜详情及会返回棋盘的关闭页结果需要图片；动作回执和 actions_only/top_bar 不捕获图片。close_card_view 的最小结果也不请求棋盘，普通文件 CLI 同样省略；--raw 保留原始请求行为。
+战斗对象、药水和遗物详情支持内部 `arguments.level:full/summary`，默认 full；summary 仅读取静态展示。具体原生参数、不可悬停来源与公开投影分别见[战斗对象](combatant-inspection.md#文件入口与验证)、[药水](potion-inspection.md#文件客户端)和[遗物](relic-inspection.md)。
+
+内部请求包装可带 `response_options:{"include_divination_image":false}`，与游戏 `arguments` 分开。省略时按文件协议的默认行为捕获当前可见占卜棋盘；显式布尔值控制是否附加 PNG，结构化采样和逻辑令牌保持一致。未知选项、重复键和非布尔值会被拒绝。MCP 仅在 `inspect_event({"include_image":true})` 时请求占卜图片；基础观察、动作回执和关闭页面结果均使用文字输出。普通文件 CLI 的 close_card_view 显式关闭棋盘媒体；其他调用沿用文件协议默认行为，`--raw` 也保留该默认行为。媒体参数由[请求规范化](../../src/sts2_mcp/request_arguments.py)与[文件客户端](../../src/sts2_mcp/roundtrip_client.py)处理。
 
 适配器响应根部另有私有 `execution` 正向事实：`ui_interaction_started` 表示开始过 UI 交互，`action_submission_observed` 表示观察到原生动作提交，`state_captured` 表示完成过完整快照采样。后者不保证采样晚于最后一次动作或当前仍有效；所有 false 只表示未记录正向事实，不是“未执行”证明。异常、媒体或序列化失败保留已经记录的事实。MCP 会话校验这些控制字段，不转发给模型，也不据此自动重试或续权；矛盾的未提交标记作为坏响应拒绝。
 
@@ -111,12 +113,10 @@ python3 -m tests.python.test_prepare_roundtrip
 
 ## 验证边界
 
-底层动作流程已在独立实例中实测；无头启动存在 FMOD 音频初始化、音频资源及虚拟渲染器警告，不覆盖声音。图形观察的验证范围另见战斗观察说明，不能将无头验证描述为没有运行警告。
+底层动作流程已在独立实例中实测；无头启动存在 FMOD 音频初始化、音频资源及虚拟渲染器警告，不覆盖声音。图形观察的验证范围另见战斗观察说明，应按日志记录这些环境限制。
 
-原型已扩展可见战斗观察，字段与验证方式见 [游戏基础观察 JSON](observation.md)，范围按 [可见信息边界](../observation.md) 维护；未展开的手牌效果由专门查看调用提供。动作支持结束回合、出牌、使用/丢弃药水和已接通的选牌；stdio MCP 的当前工具范围见 [接入指南](mcp.md)。支持地图选路和跨幕，具体范围见[地图接口](map-inspection.md)；多玩家、断线恢复和异常退出恢复尚未覆盖。通信目录假设仅由可信的本地程序访问，不作为远程服务。
+基础观察、游戏动作和浏览工具的当前范围见[MCP 接口目录](mcp.md#工具范围)，字段与显示条件由各专题维护。多人、断线恢复和异常退出恢复尚未覆盖。通信目录供可信本地程序访问，当前实现仅用于本地通信。
 
 API 核对依据与实测结果见 [验证记录](../research/2026-10-28-roundtrip-validation.md)。
 
 终章专用验证使用 `--ending-scenario victory_unlock`、`death` 或 `event_death`，配合 `tests/game/verifiers/verify_run_ending.py`；每次启动单独创建 `.tmp/roundtrip/ending-userdata-*`，只复制测试设置，不继承其他测试存档。此模式创建可保存的隔离对局以验证原生结算、历史与解锁；测试标志和构造操作不作为公开 MCP 工具。 胜利回执允许保留只读工具，脚本验证没有玩法动作和连续玩法许可，再继续检查结算、解锁及返回菜单；完整回归见[前进修复记录](../research/2026-11-06-proceed-recovery-implementation.md)。
-
-原生 `inspect_relics` 接受可选 `arguments.level: "full"|"summary"`，省略为 full；summary 只读静态展示字段，原生仍保留 `description:null/hover_tips:[]`，公开层按[遗物预设](relic-inspection.md)投影。full 的 `unavailable_hover_sources` 使用未筛选的 `relics.N` 地址，只有真实无法读取悬停时提供。

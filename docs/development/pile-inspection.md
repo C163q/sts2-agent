@@ -22,13 +22,13 @@ close_card_view()
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_pile --pile draw --preset full
 ```
 
-MCP 另接受[通用 preset](mcp.md#输出预设)，默认省略普通空值，例如不可用时省略 cards；显式 full 保留 cards:null。`pile` 必填，只接受 `draw/discard/exhaust`；`preset` 默认 `default`，另可选 `full/summary`；不回显该参数。`card_ids` 可选，规则见下文。旧 `detail_level` 请求在 UI 操作前拒绝。未知参数、重复 JSON 字段、错误类型及非法枚举在 UI 操作之前拒绝。底层文件请求的 `arguments` 只含 pile，始终读取完整内容；preset／card_ids 由 MCP／文件 CLI 投影。`expected_state` 不需要。
+MCP 另接受[通用 preset](mcp.md#输出预设)，默认省略普通空值，例如不可用时省略 cards；显式 full 保留 cards:null。`pile` 必填，只接受 `draw/discard/exhaust`；`preset` 默认 `default`，另可选 `full/summary`；不回显该参数。`card_ids` 可选，规则见下文。未知参数、重复 JSON 字段、错误类型及非法枚举在 UI 操作之前拒绝。底层文件请求的 `arguments` 只含 pile，始终读取完整内容；preset／card_ids 由 MCP／文件 CLI 投影。`expected_state` 不需要。
 
 ## 卡牌筛选
 
-`card_ids` 使用当前战斗的 `pile:N` 字符串；省略或 null 取全部，[] 不取卡牌，重复 ID 去重，结果保持原生页面顺序。它们与手牌整数、永久牌组 `deck:N` 分开。筛选只裁剪返回内容，仍打开／复用目标页；不改变页面列表、抽牌顺序或后续基础观察。
+`card_ids` 使用当前战斗的 `pile:N` 字符串；省略或 null 取全部，[] 不取卡牌，重复 ID 去重，结果保持原生页面顺序。它们与手牌整数、永久牌组 `deck:N` 分开。筛选在原生页面完整读取后裁剪返回内容；调用仍打开或复用目标页。
 
-可读取的目标堆中，存在的 ID 正常返回；不在目标堆的 ID 合并为 `errors:[{"code":"cards_not_in_pile","card_ids":["pile:99"]}]`，整体仍成功。一个 ID 在其他牌堆存在也计为不在当前堆。共享 hover_tips 同步裁剪，引用仍为原卡 ID。完整原生回复先校验，空筛选或 summary 不能掩盖坏卡。
+可读取的目标堆中，存在的 ID 正常返回；不在目标堆的 ID 合并为 `errors:[{"code":"cards_not_in_pile","card_ids":["pile:99"]}]`，整体仍成功。一个 ID 在其他牌堆存在也计为不在当前堆。共享 hover_tips 同步裁剪，引用仍为原卡 ID。完整原生回复先校验，再生成筛选和预设结果。
 
 empty 的已知集合为 []，因此指定 ID 会报告不在该堆；unavailable 表示集合未知，不检查成员、不附缺失 ID 错误，也不读取隐藏内容。非法 ID 语法／类型始终在 UI 操作之前拒绝。
 
@@ -85,7 +85,7 @@ scene/screen 遵循[统一上下文](observation.md#场景上下文)；打开页
 
 `screen` 是操作后的实际页面状态；非空抽牌堆为 `{"status":"covered","view":"draw_pile"}`，另两堆对应 `discard_pile/exhaust_pile`。`message` 在已打开时是页面底部原生帮助，full/default 保留，summary 省略；空堆气泡和入口不可用原因在所有预设保留。
 
-浏览覆盖不再使实际可见的顶栏整体隐藏；相应药水／遗物可只读查看，战斗动作仍受覆盖限制。规则见[基础观察](observation.md#mcp-输出预设)。
+浏览覆盖时，实际可见的顶栏继续可读；相应药水／遗物可只读查看，战斗动作仍受覆盖限制。规则见[基础观察](observation.md#mcp-输出预设)。
 
 full/default 卡牌沿用[共用完整格式](hand-inspection.md#格式)，包括正文、费用和可见外观，并把附带解释在根级 `hover_tips` 按完整标题和正文去重，以 `card_ids` 关联；summary 沿用[共用卡牌摘要](hand-inspection.md#参数与返回范围)，省略正文、稀有度、卡池及解释。可读空列表的完整模式保留 `hover_tips: []`，不可用时不返回解释字段。所有文字使用英语，不切换游戏语言；不附送手牌、敌人意图、动作列表或数值 notes。
 
@@ -102,6 +102,8 @@ get_observation 在当前牌堆页已暴露、就绪且底部说明可读时返�
 基础观察仅只读当前页，不点击入口，不继承先前 card_ids 筛选；未打开、被更高层遮挡或关闭后不附缓存列表。actions_only/top_bar 不增加这三个字段。其余观察与顶栏规则见[基础观察](observation.md#mcp-输出预设)。
 
 ## 生命周期与验证
+
+页面请求入口见 [GameAdapter.Views](../../src/Sts2Agent/Adapter/GameAdapter.Views.cs)，原生牌堆读取见 [PileInspection](../../src/Sts2Agent/Observation/PileInspection.cs)，公开输出见 [pile_details](../../src/sts2_mcp/output/pile_details.py)及 [pile_presets](../../src/sts2_mcp/output/pile_presets.py)。
 
 UI 操作在游戏线程执行，异步等待不阻塞游戏。等待期间被人关闭、遮挡或换页时拒绝读取，不自动重开或关闭新页面。界面点击更新状态令牌中的 UI 代次，防止浏览后旧动作令牌重新有效。MCP 在成功校验查看结果后刷新状态令牌，包括空筛选、空堆或入口不可见的成功结果；打开的牌堆仍须先关闭，才能操作下层界面。非法参数在 IPC 前被拒绝时不清除原许可；原生明确保证该请求未进行 UI 交互时，也保留已有许可并给出安全具体原因。没有旧许可不会因失败而获得许可；关闭旧页／点击目标后的失败、矛盾证据、过期、超时或取消不能恢复旧许可。超时／取消不自动重试或发清理操作，应重新观察，完整语义见[MCP 错误规则](mcp.md#调用和错误语义)。
 

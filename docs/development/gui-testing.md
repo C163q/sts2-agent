@@ -20,13 +20,13 @@
 .tmp/mcp-venv/bin/python scripts/gui_suite.py --suite tests/game/data/gui_suite_selection_upgrades.json --output .tmp/gui-selection-upgrades
 ```
 
-| 专项 | 清单 |
+| 专项 | 清单与验证记录 |
 | --- | --- |
 | 占卜工具冷切换、重复选择、覆盖拒绝恢复及揭开续接 | [divination_tool_view](../../tests/game/data/gui_suite_divination_tool_view.json)；[输出定稿](../research/2026-11-07-set-divination-tool-review.md#输出定稿) |
 | 事件选择的具体拒绝、直接恢复、翻页、选牌、奖励、确认框、占卜与战斗进入 | [choose_event_option_review](../../tests/game/data/gui_suite_choose_event_option_review.json)；[输出定稿](../research/2026-11-07-choose-event-option-review.md#输出定稿) |
 | 占卜揭开范围、明确拒绝后直接继续、奖励与诅咒时机 | [divination_recovery](../../tests/game/data/gui_suite_divination_recovery.json)；[输出定稿](../research/2026-11-07-divine-review.md#输出定稿) |
 | Trial确认框响应、来源／实例校验、拒绝恢复与按钮状态 | [confirmation_recovery](../../tests/game/data/gui_suite_confirmation_recovery.json)；[输出定稿](../research/2026-11-07-respond-to-confirmation-review.md#输出定稿) |
-| 架构组合回归与四项契约样例采集 | [architecture_refactor](../../tests/game/data/gui_suite_architecture_refactor.json) |
+| 架构组合回归与契约样例采集 | [architecture_refactor](../../tests/game/data/gui_suite_architecture_refactor.json) |
 | 药水静态／完整预设、原槽位筛选与显示边界 | [potion_inspection](../../tests/game/data/gui_suite_potion_inspection.json) |
 | 遗物静态图标状态、原下标对照、错误续接及专项验证 | [relic_inspection](../../tests/game/data/gui_suite_relic_inspection.json) |
 | 展示／悬停分离、共用读取及相关场景 | [display_readers](../../tests/game/data/gui_suite_display_readers.json) |
@@ -39,7 +39,7 @@
 | 药水明确拒绝恢复、单槽交互、自动用药／获得事件与地图覆盖 | [potion_recovery](../../tests/game/data/gui_suite_potion_recovery.json)；[验证记录](../research/2026-11-05-potion-actions-implementation.md) |
 | 丢弃药水的槽位、自动药水、奖励腾槽、错误续接及覆盖边界 | [discard_potion_review](../../tests/game/data/gui_suite_discard_potion_review.json)；[核验记录](../research/2026-11-05-discard-potion-development-notes.md) |
 | 丢弃请求状态、选牌排队、防重复、后续事件及局间清理 | [potion_discard_queue](../../tests/game/data/gui_suite_potion_discard_queue.json) |
-| 药水使用回执、选择／战斗外边界、拒绝恢复与跨槽事件核验 | [use_potion_review](../../tests/game/data/gui_suite_use_potion_review.json)；现状证据及已知缺口见[审阅记录](../research/2026-11-04-use-potion-review.md) |
+| 药水使用回执、选择／战斗外边界、拒绝恢复与跨槽事件核验 | [use_potion_review](../../tests/game/data/gui_suite_use_potion_review.json)；[审阅记录](../research/2026-11-04-use-potion-review.md) |
 | 卡牌 Affliction、附魔、手牌 HUD 与浏览预设 | [card_formats](../../tests/game/data/gui_suite_card_formats.json) |
 | 战斗对象静态／完整级别、对象筛选、不可悬停提示及错误续接 | [combatant_presets](../../tests/game/data/gui_suite_combatant_presets.json) |
 | 查看错误说明、已有许可保留及零能量出牌拒绝后结束回合 | [inspection_errors](../../tests/game/data/gui_suite_inspection_errors.json) |
@@ -47,22 +47,22 @@
 | 候选升级模式与不支持反馈 | [selection_upgrades](../../tests/game/data/gui_suite_selection_upgrades.json) |
 | 选牌查看的具体拒绝、安全续接、覆盖边界及卡包／结果说明 | [selection_review](../../tests/game/data/gui_suite_selection_review.json)；[核验与实施](../research/2026-11-05-selection-inspection-implementation.md) |
 | 点击候选的选中／取消、替换、自动提交、预览、未知身份、滚动及拒绝恢复 | [select_card_review](../../tests/game/data/gui_suite_select_card_review.json)；[实施与验证](../research/2026-11-05-selection-feedback-implementation.md) |
-| 选择按钮的确认、返回、放弃、跳过、整包、奖励替代及明确拒绝后续接 | [selection_option_review](../../tests/game/data/gui_suite_selection_option_review.json)；[审阅](../research/2026-11-05-selection-option-review.md)。grid_manual 包含双重门控的禁用按钮／过期优先检查，人工扰动只用于验证拒绝，不代表自然游玩出现过同类静止按钮 |
+| 选择按钮的确认、返回、放弃、跳过、整包、奖励替代及明确拒绝后续接 | [selection_option_review](../../tests/game/data/gui_suite_selection_option_review.json)；[审阅](../research/2026-11-05-selection-option-review.md) |
 | 奖励预设与 ID 筛选、基础观察对照、拒绝续接及旧领取流程 | [reward_inspection_review](../../tests/game/data/gui_suite_reward_inspection_review.json)；[实施与验证](../research/2026-11-05-reward-inspection-presets-implementation.md) |
-| 火堆详情、灰置说明、覆盖拒绝与只读许可 | [rest_site_inspection_review](../../tests/game/data/gui_suite_rest_site_inspection_review.json)；[实施记录](../research/2026-11-06-rest-site-inspection-presets-implementation.md)，含预设／筛选和受保护的显示／淡出夹具 |
-| 火堆选择、确认／取消、追加奖励、拒绝续接与遗物计数 | [choose_rest_option_review](../../tests/game/data/gui_suite_choose_rest_option_review.json)；[定稿](../research/2026-11-06-choose-rest-option-review.md#输出定稿)。包括受保护的计数显示检查、按钮边界和自然战斗结束计数，支持同进程复用 |
-| 商店详情预设／双筛选、购买顶栏、显示焦点和只读拒绝恢复 | [shop_inspection_review](../../tests/game/data/gui_suite_shop_inspection_review.json)；[定稿](../research/2026-11-06-inspect-shop-review.md#输出定稿)。包含受保护ShopDisplayFixture的16组显示／焦点／顶栏扰动及双模式入口门控；UI属性在finally和局间重置恢复 |
-| 商店打开、重新打开、覆盖及拒绝后直接续接 | [open_shop_review](../../tests/game/data/gui_suite_open_shop_review.json)；[修复](../research/2026-11-07-shop-opening-recovery-implementation.md)。覆盖普通／假商人、删牌与阳伞、具体诊断、点击前证明、打开按钮一致性及原始参数拒绝 |
-| 商店关闭、覆盖拒绝的具体提示及直接续接 | [close_shop_review](../../tests/game/data/gui_suite_close_shop_review.json)；[修复](../research/2026-11-07-shop-closing-recovery-implementation.md)。覆盖普通／假商人、删牌、子奖励及阳伞，核对未提交证明、显示按钮一致性、原始参数拒绝和关闭后直接打开／前进 |
-| 商店购买、原生领取失败、补货、pending及稳定选择 | [buy_item_review](../../tests/game/data/gui_suite_buy_item_review.json)；[修复](../research/2026-11-07-shop-purchase-feedback-implementation.md)。核对具体提示／未提交证明和直接续接；choice_timing模式直接打开并购买，按同次原生响应核对已显示金币，随后立即选牌；不容忍stale或测试侧等待 |
-| 跨场景前进、覆盖拒绝和许可恢复 | [proceed_review](../../tests/game/data/gui_suite_proceed_review.json)；[实施记录](../research/2026-11-06-proceed-recovery-implementation.md)。建筑师与完整终章各使用全新进度独立实例 |
-| 开箱／分步领取、空箱、输入边界与明确拒绝恢复 | [loot_treasure_review](../../tests/game/data/gui_suite_loot_treasure_review.json)；[修复记录](../research/2026-11-06-treasure-loot-recovery-implementation.md)。验证具体诊断、原生证明与合法动作直接续接 |
-| 宝箱预设、空值、覆盖拒绝、纯读取续接与显示／悬停边界 | [treasure_inspection_review](../../tests/game/data/gui_suite_treasure_inspection_review.json)；[实施验证](../research/2026-11-06-treasure-inspection-presets-implementation.md)。显示扰动双重门控，finally 和局间重置恢复 |
-| 领取结果、满槽、互斥、嵌套、追回、拒绝续接与滚动失败边界 | [claim_reward_review](../../tests/game/data/gui_suite_claim_reward_review.json)；[修复记录](../research/2026-11-05-claim-reward-recovery-implementation.md)。滚动失败使用双重门控的原生按钮禁用扰动，finally 与局间重置恢复 |
+| 火堆详情、灰置说明、覆盖拒绝与只读许可 | [rest_site_inspection_review](../../tests/game/data/gui_suite_rest_site_inspection_review.json)；[实施记录](../research/2026-11-06-rest-site-inspection-presets-implementation.md) |
+| 火堆选择、确认／取消、追加奖励、拒绝续接与遗物计数 | [choose_rest_option_review](../../tests/game/data/gui_suite_choose_rest_option_review.json)；[定稿](../research/2026-11-06-choose-rest-option-review.md#输出定稿) |
+| 商店详情预设／双筛选、购买顶栏、显示焦点和只读拒绝恢复 | [shop_inspection_review](../../tests/game/data/gui_suite_shop_inspection_review.json)；[定稿](../research/2026-11-06-inspect-shop-review.md#输出定稿) |
+| 商店打开、重新打开、覆盖及拒绝后直接续接 | [open_shop_review](../../tests/game/data/gui_suite_open_shop_review.json)；[修复](../research/2026-11-07-shop-opening-recovery-implementation.md) |
+| 商店关闭、覆盖拒绝的具体提示及直接续接 | [close_shop_review](../../tests/game/data/gui_suite_close_shop_review.json)；[修复](../research/2026-11-07-shop-closing-recovery-implementation.md) |
+| 商店购买、原生领取失败、补货、pending及稳定选择 | [buy_item_review](../../tests/game/data/gui_suite_buy_item_review.json)；[修复](../research/2026-11-07-shop-purchase-feedback-implementation.md) |
+| 跨场景前进、覆盖拒绝和许可恢复 | [proceed_review](../../tests/game/data/gui_suite_proceed_review.json)；[实施记录](../research/2026-11-06-proceed-recovery-implementation.md) |
+| 开箱／分步领取、空箱、输入边界与明确拒绝恢复 | [loot_treasure_review](../../tests/game/data/gui_suite_loot_treasure_review.json)；[修复记录](../research/2026-11-06-treasure-loot-recovery-implementation.md) |
+| 宝箱预设、空值、覆盖拒绝、纯读取续接与显示／悬停边界 | [treasure_inspection_review](../../tests/game/data/gui_suite_treasure_inspection_review.json)；[实施验证](../research/2026-11-06-treasure-inspection-presets-implementation.md) |
+| 领取结果、满槽、互斥、嵌套、追回、拒绝续接与滚动失败边界 | [claim_reward_review](../../tests/game/data/gui_suite_claim_reward_review.json)；[修复记录](../research/2026-11-05-claim-reward-recovery-implementation.md) |
 | 地图旅行的到达回执、拒绝续接、滚动后失败与赐福鹿角 | [travel_review](../../tests/game/data/gui_suite_travel_review.json)；[修复与验证](../research/2026-11-05-travel-recovery-implementation.md) |
-| 地图关闭的最小结果、具体拒绝与许可续接、占卜无图像依赖及旧独立检查 | [close_map_review](../../tests/game/data/gui_suite_close_map_review.json)；[关闭结果实施](../research/2026-11-05-close-map-results-implementation.md)。combat 的第二步在同一就绪战斗中运行旧独立验证器 |
+| 地图关闭的最小结果、具体拒绝与许可续接、占卜无图像依赖及旧独立检查 | [close_map_review](../../tests/game/data/gui_suite_close_map_review.json)；[关闭结果实施](../research/2026-11-05-close-map-results-implementation.md) |
 | 地图分类、深度裁剪、飞鞋、幕起点、双 Boss、覆盖隐藏及拒绝续接 | [map_summary](../../tests/game/data/gui_suite_map_summary.json)；[地图交付](../research/2026-11-05-map-summary-implementation.md) |
-| 原生眼睛切换、紧凑结果、重复目标、保留选择／预览及拒绝后续接 | [selection_view_review](../../tests/game/data/gui_suite_selection_view_review.json)；[审阅与定稿](../research/2026-11-05-selection-view-review.md)。grid 用例包含双重门控的隐藏／禁用眼睛检查，扰动后恢复按钮和快照，不代表自然游玩出现了此种状态 |
+| 原生眼睛切换、紧凑结果、重复目标、保留选择／预览及拒绝后续接 | [selection_view_review](../../tests/game/data/gui_suite_selection_view_review.json)；[审阅与定稿](../research/2026-11-05-selection-view-review.md) |
 | 生成牌、奖励牌及公开加入去向 | [card_additions](../../tests/game/data/gui_suite_card_additions.json) |
 | default 公共空值规则及图片 | [default_presets](../../tests/game/data/gui_suite_default_presets.json) |
 | 战斗、顶栏、附魔与观察预设 | [observation_presets](../../tests/game/data/gui_suite_observation_presets.json) |
@@ -73,7 +73,7 @@
 | 牌组筛选、静态观察、升级排序、最小关闭和拒绝续接 | [deck_inspection](../../tests/game/data/gui_suite_deck_inspection.json) |
 | 可浏览奖励、历史及原生滚动容器 | [browsable_content](../../tests/game/data/gui_suite_browsable_content.json) |
 
-套件各自拥有 IPC、日志、截图和测试存档，使用已准备的运行时，不使用 Steam、正式存档或 `.tmp/live/ipc`。同一套件的新局共享测试进度和进程缓存，不能替代要求全新进程／进度的结算解锁或 `--check-*` 检查；这些场景按[单实例指南](roundtrip.md)执行。
+套件各自拥有 IPC、日志、截图和测试存档，使用已准备的运行时，不使用 Steam、正式存档或 `.tmp/live/ipc`。同一套件的新局共享测试进度和进程缓存，不能替代要求全新进程／进度的结算解锁或 `--check-*` 检查；这些场景按[单实例指南](roundtrip.md)执行。清单定义当前用例、步骤及场景组合，专项验证细节由其链接的记录维护。
 
 ## 清单与同局步骤
 
@@ -125,19 +125,13 @@
 
 历史执行数量、阶段耗时和样本见[套件验证记录](../research/2026-11-01-gui-suite.md)及各专项记录；清单列出用例不表示当前代码已运行通过。
 
-## 浏览覆盖顶栏
+## 显示与故障夹具
 
-[top_bar_views 清单](../../tests/game/data/gui_suite_top_bar_views.json)检查覆盖页、选择、换幕及弹窗下的实际顶栏。`check_test_top_bar` 只在双重门控下开放，测试隐藏／透明／离屏、标签来源与隐藏数字，UI 扰动在 finally 中恢复；证据见[顶栏核验](../research/2026-11-02-top-bar-visibility.md)。
+显示／悬停、顶栏、候选按钮与眼睛、商店焦点、奖励滚动、媒体故障等扰动仅在测试模式与套件双重门控下开放。夹具在 finally 或局间重置恢复 UI、引用和故障状态；其证据用于核对注入条件下的响应，自然游玩覆盖以对应验证记录注明的场景为准。
 
-## 可浏览列表与滚动内容
+- [top_bar_views](../../tests/game/data/gui_suite_top_bar_views.json) 核对覆盖页、选择、换幕和弹窗下的实际顶栏，以及隐藏／透明／离屏和数字来源，见[顶栏核验](../research/2026-11-02-top-bar-visibility.md)。
+- [browsable_content](../../tests/game/data/gui_suite_browsable_content.json) 核对完整列表、画外奖励定位、滚动、透明和容器裁剪边界，见[浏览审查](../research/2026-11-02-browsable-content-audit.md)。
+- 当前基线禁用 View Run；历史页夹具构造隔离记录、实例化原生 NRunHistory 并验证读取与返回。verify_run_result_observation 的 history 场景复用该夹具，死亡和完整胜利解锁仍独立启动，见[结算验证](../research/2026-11-03-result-observation-implementation.md)。
+- native_responses 核对文件媒体默认值、显式无图、取图失败的执行事实及 UI 变化后的错误；display_readers 核对静态展示与悬停入口分离。
 
-[browsable_content 清单](../../tests/game/data/gui_suite_browsable_content.json)检查完整列表、画外奖励定位、滚动不截断及隐藏／透明／内层裁剪／水平越界边界。读取不改变滚动位置，原生检查结束须恢复 UI；证据见[浏览内容审查](../research/2026-11-02-browsable-content-audit.md)。
-
-当前游戏基线禁用 View Run。历史页测试仅在双重门控下生成隔离历史、实例化原生 `NRunHistory` 并加入标记内容，不改变正常入口，也不代表正常游玩可点击该页。`verify_run_result_observation.py --scenario history` 复用此夹具；死亡与完整胜利解锁流程仍独立启动，范围见[结算观察验证](../research/2026-11-03-result-observation-implementation.md)。
-
-
-native_responses 的媒体故障夹具仅在 testMode 与 suite 同时开启时可用，局间重置会清除故障。它检查默认文件媒体、显式无图请求、图像失败时动作回执仍成功，以及实际 UI 已变化但旧文件媒体生成失败时的执行事实。注入故障不代表自然游戏已出现相同故障；完整结算仍须使用独立进度实例。
-
-`display_readers` 的不可悬停遗物通过双重测试门控夹具关闭鼠标与控制器入口，恢复后继续原生页面读取；这是人为注入的验证条件，不表示已观察到自然游玩中的同类遗物。
-
-架构组合的验证证据与适用范围见[验收记录](../research/2026-11-04-refactor-stage-7.md)，筛选、上下文和不可悬停的完整公开返回见[JSON 样例](../research/2026-11-04-refactor-contract-examples/README.md)。
+架构组合的基线、验证范围与完整公开返回见[验收记录](../research/2026-11-04-refactor-stage-7.md)及[JSON 样例](../research/2026-11-04-refactor-contract-examples/README.md)。

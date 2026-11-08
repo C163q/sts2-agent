@@ -1,6 +1,6 @@
 # 药水详情、摘要与槽位筛选
 
-版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。`inspect_potions` 读取当前已展示药水栏的静态信息及按需悬停说明，不使用或丢弃药水、不打开页面，也不生成未来随机选项。动作及目标另见[药水工具](potion-actions.md)。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。`inspect_potions` 读取当前已展示药水栏的静态信息及按需悬停说明。动作及目标另见[药水工具](potion-actions.md)。
 
 ## 参数与返回
 
@@ -39,7 +39,7 @@ summary 的 potion_slots 与 `get_observation.summary.top_bar.potion_slots` 相�
 
 ## 显示与悬停边界
 
-支持当前暴露的战斗顶栏、战斗外页面，以及地图、牌组和三类牌堆浏览覆盖上的药水栏；选牌页与切回战场时也按实际暴露情况读取。胜负结算仅在 outcome 页的顶栏暴露时可读，后续摘要与解锁页面不因此开放。只读查看不代表允许在这些页面使用药水。
+支持当前暴露的战斗顶栏、战斗外页面，以及地图、牌组和三类牌堆浏览覆盖上的药水栏；选牌页与切回战场时也按实际暴露情况读取。胜负结算仅在 outcome 页的顶栏暴露时可读，后续摘要与解锁页面不因此开放。用药条件见[场景与停止边界](potion-actions.md#场景与停止边界)。
 
 药水槽位与图标不按视口位置截断；隐藏、透明、无纹理、零面积或被实际裁剪的图标不能用于识别名称。容器或任一槽位无法确认时，基础观察将整栏标为未知，full 中为 potion_slots:null；详情返回带具体原因的 illegal_action。未知不当作确认空槽，也不删除位置。
 
@@ -61,8 +61,10 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_potions --pr
 
 ## 验证入口与范围
 
+静态及悬停读取见 [PotionInspection](../../src/Sts2Agent/Observation/PotionInspection.cs)，公开校验与槽位筛选见 [potion_details](../../src/sts2_mcp/output/potion_details.py)及 [potion_presets](../../src/sts2_mcp/output/potion_presets.py)。
+
 `verify_potions.py` 与 `verify_mcp_potions.py` 检查当前返回结构、同次上下文、位置与基础观察一致、共享解释及原始槽位关联，以及读取前后的令牌、语言与状态不变。
 
-[药水 GUI 清单](../../tests/game/data/gui_suite_potion_inspection.json)覆盖满栏重复提示、空槽、预设及筛选、不可悬停 note、隐藏／离屏边界、覆盖页、战斗与战斗外用药、丢弃及后续选牌。入口见[GUI 测试指南](gui-testing.md)。显隐扰动与关闭悬停入口均为隔离测试夹具，不能当作自然游玩发生频率的证据；测试路由不进入公开工具目录。
+[药水 GUI 清单](../../tests/game/data/gui_suite_potion_inspection.json)覆盖满栏重复提示、空槽、预设及筛选、不可悬停 note、隐藏／离屏边界、覆盖页、战斗与战斗外用药、丢弃及后续选牌。入口见[GUI 测试指南](gui-testing.md)。显隐及悬停扰动由隔离夹具注入，用于验证边界；自然游玩证据以实施记录注明的场景为准。
 
 源码核对、验证证据及未穷举范围见[实施记录](../research/2026-11-04-potion-inspection-implementation.md)。

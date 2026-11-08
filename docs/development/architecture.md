@@ -2,6 +2,15 @@
 
 当前版本与依赖基线见[项目 README](../../README.md#当前版本与前提)，接口目录见[开发文档索引](README.md)。游戏内 Mod、外部文件客户端与 MCP server 保持分离，不在游戏线程调用模型或等待文件请求。
 
+## 请求处理流程
+
+1. [GameTools](../../src/sts2_mcp/game_tools.py) 接收工具参数，[request_arguments](../../src/sts2_mcp/request_arguments.py) 按登记契约拆分原生参数、输出选项和执行类别。
+2. [GameSession](../../src/sts2_mcp/game_session.py) 串行发送请求、管理控制锁与动作许可；[文件客户端](../../src/sts2_mcp/roundtrip_client.py) 等待响应。
+3. 游戏侧 [RequestDispatcher](../../src/Sts2Agent/Adapter/RequestDispatcher.cs) 将请求交给对应读取或动作流程，在游戏线程核对页面、快照与合法性，沿原生流程执行。
+4. [response_pipeline](../../src/sts2_mcp/output/response_pipeline.py) 校验成功响应，组合公开解释，再由工具投影预设和筛选；完整结果通过校验后才刷新许可。
+
+“状态令牌”用于核对观察是否仍有效；“动作许可”是 MCP 会话对可继续提交动作的记录。底层请求字段见[文件协议](roundtrip.md#原型接口)，公开恢复行为见[MCP 调用语义](mcp.md#调用和错误语义)。
+
 ## 代码职责
 
 | 位置 | 职责与主要入口 |
@@ -35,9 +44,9 @@ C# 使用根 [Sts2Agent.sln](../../Sts2Agent.sln)，包含 Mod 和纯检查项�
 3. 外部层补齐响应校验、字段投影、参数 schema 和公共工具分类；会话许可在 `GameSession` 处理。工具提示只保留用途和独特限制，字段契约放在对应开发指南，公共规则见[MCP 接入](mcp.md)。
 4. 同步验证与文档，检查是否存在职责混杂或逻辑重复；重构需求按[协作约定](../../AGENTS.md)报告。
 
-基础观察与详情、动作许可和最终公开投影按此顺序处理；不能靠 summary 或空值过滤掩盖坏响应。当前校验不是通用 JSON Schema 验证：基础观察要求全部顶层字段，嵌套对象按已提供字段投影和检查类型。
+基础观察和动作结果检查必需顶层字段，嵌套对象按已提供字段投影并检查类型；完整校验先于 summary、筛选与空值投影。具体字段由各领域契约定义。
 
-输出投影不能证明游戏采样符合可见信息边界。采样仍须核对实际 UI、遮挡和生命周期；未知值不能伪造为 0 或空容器。英语读取须保留原生变量与引用来源，不靠全文相等猜测身份，不重新生成选项或随机结果。
+游戏采样须依据实际 UI、遮挡和生命周期判断可读性，按字段契约保留未知值。英语读取追踪原生变量和本地化引用来源，转写当前已生成的内容。
 
 动作等待须覆盖仍会改变观察的有限原生流程，包括飞牌的前置预览、资源显示和生物退场；不能仅凭队列为空或 JSON 短暂不变判断完成。具体停止原因及事件字段统一见[结束回合与期间事件](end-turn.md)。令牌、取消、重试与控制锁统一见[MCP 调用规则](mcp.md#调用和错误语义)，底层协议见[往返指南](roundtrip.md#原型接口)。
 
@@ -71,35 +80,33 @@ Mod 构建需要自行安装游戏程序集，见[构建前提](roundtrip.md#前
 
 游戏 API 或生命周期变化须验证加载和相关行为。只修改外部输出时，可先检查错误输入、真实 stdio 及合法游戏样本回放，但须明确是否重新运行真实游戏。历史检查数量和样本只在带日期的验证记录中维护。
 
-战斗对象的可见生命、格挡、状态、意图及同伴共享关系由 CombatantInspection.Read 的 Summary 级统一读取，get_observation 另行组合资源与手牌字段；Full 只在同一对象顺序上增加悬停说明。生命摘要也使用公共格式入口。原生校验、Python 对象筛选和公共空值过滤分别负责不同阶段，见[战斗对象契约](combatant-inspection.md)。
-
 ## Python 输出依赖
 
 生产 MCP 与非 raw 文件客户端均使用 `response_pipeline.decode_success(operation, state, native_arguments)`：先由 operation reader 完整校验并只保留声明内容，再用 `public_output.assemble_details` 整合共享解释和 notes；后续媒体附加、会话许可及筛选／preset 各自处理。领域读取器只向纯契约或更小的读取器依赖，不反向导入总装配。`tests/python/test_output_architecture.py` 检查包括函数内导入在内的循环依赖及边界。
 
 文件客户端设置 `include_observation=True`，在原生响应确有完整观察时，保留经过观察校验的完整状态，再合并该操作的专项详情；这维护其既有动作／关闭页面输出范围。MCP 仍按专用工具范围返回，游戏动作随后投影为精简回执。`--raw` 不走公开解码。
 
-`player_result` 及其旧导入路径仍可直接投影片段，供已有调用和验证代码兼容使用；它不替代按 operation 的完整校验。生产成功链路不再通过 GAMEPLAY 全工具字段并集猜测结果类型。卡牌格式化不推断 description 是否存在来决定生产读取范围；范围由领域契约与调用处明确选择。浏览工具的文件预设组合位于 `output/browse_output.py`。
-
+`player_result` 及兼容导入供已有片段调用和验证代码使用；生产入口按 operation 选择完整校验器，卡牌内容模式由领域契约与调用处显式选择。浏览工具的文件预设组合位于 `output/browse_output.py`。
 
 ## 工具登记与参数
 
 `tool_registry.SPECS` 为公开名称、原生 operation、参数 schema／解析绑定、预设、reader／投影绑定与执行规则的唯一登记。目录、GameTools 方法、公开工具分类及成功解码从该表派生；reader 的模块／函数显式绑定，在解码时解析，避免领域分类反向导入总装配。截图独立登记且无玩法 preset；文件客户端的测试入口及 close_deck 别名保持私有兼容。
 
-`request_arguments.normalize_request` 先检查公共类型、范围、枚举、必填与跨字段条件，再调用领域解析器；输出原生参数、投影参数及独立执行类别，不通过 handler 签名或 readOnlyHint 猜测行为。普通inspect_selection为读取，显式view_upgrades为页面操作；set_divination_tool为不要求已有许可的视图切换，成功返回actions_only，揭开仍由divine记录动作。媒体需求通过原生response_options接入，不作为公开工具参数。
+`request_arguments.normalize_request` 先检查公共类型、范围、枚举、必填与跨字段条件，再调用领域解析器；输出原生参数、投影参数及独立执行类别，不通过 handler 签名或 readOnlyHint 猜测行为。`inspect_selection` 省略 view_upgrades 时为读取，显式传入时为页面操作；`set_divination_tool` 为可直接调用的视图切换，成功返回 actions_only，揭开由 divine 记录动作。媒体需求通过内部 response_options 接入。
 
 `output/filtering.py` 共用可选筛选校验、位置选择与悬停关联裁剪；精确 UI 路径、战斗对象前缀、卡牌身份及遗物位置仍保持各自含义。公共筛选省略／null 表示全部，[] 表示空集合；遗物提示和结果映射均引用未筛选列表。完整解码先于筛选、摘要与最终 null 过滤。
-
 
 ## 会话与执行证据
 
 GameTools 仅负责公开入口、参数拒绝与规范化请求；GameSession.execute 统一控制锁、串行请求、成功校验、媒体、投影和许可更新，transport Client 仍独立等待文件。PermissionState 的令牌／代次在请求开始时捕获，动作不能借用排队后产生的许可；取消撤销许可并阻止在途结果重新授权。
 
-GameResponse在内部保存成功、已提交、未知、“未提交且UI未变”或明确只读取图的证据。动作的已审查前置拒绝以登记表为准；截图本地保存拒绝另要求有效图像、完整未交互取图证据及与旧许可相同的token。不从illegal_action、单个false或readOnlyHint推测未执行。成功投影完成后才发布许可，错误保留／失效规则统一见[MCP调用语义](mcp.md#调用和错误语义)。
+`GameResponse` 在内部保存成功、已提交、未知、“未提交且 UI 未变”或明确只读取图的证据。动作的已审查前置拒绝以登记表为准；截图本地保存拒绝另要求有效图像、完整未交互取图证据及与旧许可相同的token。恢复判断使用已核实的执行证据。成功投影完成后才发布许可，错误保留／失效规则统一见[MCP调用语义](mcp.md#调用和错误语义)。
 
 ## 展示与悬停读取
 
-`VisibleUi.OnScreen` 用于屏幕内控件和战场身体，`Displayed` 用于无需按视口截断的展示图标，`Browsable` 用于已打开的原生滚动列表。各入口仍检查自身显示边界，不能机械互换。`RelicInspection.Static` 供顶栏与详情共用静态字段；`PotionInspection.DisplayedHolders/Static` 共用槽位展示与静态字段，详情另检悬停条件；动作定位保留独立的位置及输入门控。不把灰色或禁用控件等同于隐藏。具体边界见[遗物](relic-inspection.md#读取边界)和[战斗对象](combatant-inspection.md#读取边界)。
+战斗对象的可见生命、格挡、状态、意图及同伴共享关系由 CombatantInspection.Read 的 Summary 级统一读取，get_observation 另行组合资源与手牌字段；Full 只在同一对象顺序上增加悬停说明。生命摘要也使用公共格式入口。原生校验、Python 对象筛选和公共空值过滤分别负责不同阶段，见[战斗对象契约](combatant-inspection.md)。
+
+`VisibleUi.OnScreen` 用于屏幕内控件和战场身体，`Displayed` 用于无需按视口截断的展示图标，`Browsable` 用于已打开的原生滚动列表。调用处按对象所在区域选择读取条件。`RelicInspection.Static` 供顶栏与详情共用静态字段；`PotionInspection.DisplayedHolders/Static` 共用槽位展示与静态字段，详情另检悬停条件；动作定位保留独立的位置及输入门控。置灰、可见性与可悬停性分别判断。具体边界见[遗物](relic-inspection.md#读取边界)和[战斗对象](combatant-inspection.md#读取边界)。
 
 通用反射读取由 `PrivateFields` 负责：`Read` 缺少必需字段时明确失败，字段值本身可合法为 null。`Optional` 仅用于选牌多类型界面的 prefs／已选卡／完成源、动画字段探测及结算多类型按钮的提示探测；这些调用的类型差异仍由领域代码负责。不得用 Optional 掩盖目标 API 绑定缺失。实节点与浏览克隆继续分别通过 CardPresentation／BrowsedCard 读取，共用 CardAppearance 的外观组装，保留克隆牌堆及目标上下文和比较侧别。
 

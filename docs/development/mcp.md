@@ -1,6 +1,6 @@
 # 本地 MCP 接入
 
-Linux 本地 stdio MCP server 在游戏外运行，通过文件 IPC 与 Mod 通信。服务不调用模型 API，不负责启动游戏或创建战斗；模型由 agent 客户端调用。
+Linux 本地 stdio MCP server 在游戏外运行，通过文件 IPC 与 Mod 通信。游戏由用户启动，模型由 agent 客户端调用。接入时先完成[安装](#安装与游戏前提)与客户端配置，再读取当前观察检查连通性。
 
 ## 通信方式与连接状态
 
@@ -11,7 +11,7 @@ flowchart LR
     C <-->|"Godot 主线程读取与动作"| D["游戏状态及原生流程"]
 ```
 
-游戏启动时，Mod 读取环境变量 `STS2_AGENT_IPC_DIR`；Python 服务使用 `--ipc-dir`。双方须指向同一个目录，它是配置的通信位置，不是自动发现的游戏进程。未设置游戏侧环境变量时，Mod 会加载但关闭通信入口；Python 服务不会因此阻止 MCP 握手或列出工具。
+游戏启动时，Mod 读取环境变量 `STS2_AGENT_IPC_DIR`；Python 服务使用 `--ipc-dir`。双方须指向同一个目录。未设置游戏侧环境变量时，Mod 会加载但关闭通信入口；Python 服务不会因此阻止 MCP 握手或列出工具。
 
 一次 `get_observation` 的流程如下：
 
@@ -22,13 +22,13 @@ flowchart LR
 
 动作请求还携带 MCP 会话保存的观察令牌，防止依据过期观察执行操作；该令牌不交给 LLM。协议字段与重复请求语义见[文件接口](roundtrip.md#原型接口)，动作等待边界见[动作观察说明](end-turn.md#动作完成与画面稳定)。
 
-当前没有进程扫描或独立心跳。MCP 初始化及工具发现成功只能证明 Python 服务可用；使用新请求成功读取观察，才说明游戏内 Mod 在该次请求中能够响应。Python 默认等候最多 40 秒；超时可能是游戏未运行、Mod 未启用、通信目录不同或游戏停止响应，不能仅凭超时区分原因。动作超时也不能证明动作未执行，须重新观察，禁止自动补发。排查入口见[正常游戏读取](live-game.md#读取敌人)。
+连接检查分两步：MCP 初始化及工具发现确认 Python 服务可用；新请求成功读取观察确认游戏内 Mod 能够响应。当前通过文件请求检测连通性，未实现进程扫描或独立心跳。Python 默认等待 40 秒；超时后检查游戏进程、Mod、通信目录和日志，见[正常游戏读取](live-game.md#读取敌人)。动作超时按[未知结果](#调用和错误语义)处理。
 
 ## 工具范围
 
-默认公开 43 个工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`，共 44 个。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 列出当前可用的查看与操作工具名，不含参数；省略观察、截图和测试入口。完整语义与精简预设见[观察输出预设](observation.md#mcp-输出预设)。
+默认公开下列玩法工具，可按[启动配置](screenshots.md#启动配置)增加 `capture_screenshot`。单个连接的目录固定，不按场景增删；调用时检查合法性。`available_actions` 列出当前可用的查看与操作工具名，不含参数；省略观察、截图和测试入口。完整语义与精简预设见[观察输出预设](observation.md#mcp-输出预设)。
 
-当前详情调用不返回 `available_actions`，可用 `get_observation({"preset":"actions_only"})` 获取。遗物查看读取当前已显示的遗物栏，不能悬停时保留静态字段并说明缺少帮助；牌组查看也支持原生按钮可用的非战斗页面。适用范围见[遗物详情](relic-inspection.md)和[牌组页面](deck-inspection.md)。
+当前详情调用不返回 `available_actions`，可用 `get_observation({"preset":"actions_only"})` 获取。各工具的适用场景和参数见下表链接的专题。
 
 | 工具 | 用途 |
 | --- | --- |
@@ -98,7 +98,7 @@ python3 -m venv .tmp/mcp-venv
 uv pip install --python .tmp/mcp-venv/bin/python -r requirements-mcp.txt
 ```
 
-正常 Steam 游戏的 Mod 安装和启动变量见 [正常游戏加载与读取](live-game.md)。游戏的 `STS2_AGENT_IPC_DIR` 必须与 MCP 的 `--ipc-dir` 指向同一目录，例如 `.tmp/live/ipc`。MCP server 不负责启动游戏或创建战斗。
+正常 Steam 游戏的 Mod 安装和启动变量见 [正常游戏加载与读取](live-game.md)。游戏的 `STS2_AGENT_IPC_DIR` 必须与 MCP 的 `--ipc-dir` 指向同一目录，例如 `.tmp/live/ipc`。
 
 ## 接入 Codex
 
@@ -138,7 +138,7 @@ approval_mode = "approve"
 
 ## 输出预设
 
-全部 43 个玩法 JSON 工具接受可选的 `preset`：
+玩法 JSON 工具均接受可选的 `preset`：
 
 | 预设 | 行为 |
 | --- | --- |
@@ -148,11 +148,11 @@ approval_mode = "approve"
 
 过滤保留以下例外：所有数组的 `null` 元素；`transition.events` 中已有的全部空值；选牌已展开的升级、附魔、变牌比较中 before / after 两侧的全部内容与空值。后者包括随机变牌的 `after:null`，但未展开的整个 `upgrade_preview:null` 可以省略。宝箱房 `treasure.status:"visible"` 时，保留已有的 `relic:null`，明确当前没有展示可领取遗物；covered 时仍省略，不据此推断隐藏内容。
 
-`0`、`false`、空字符串、空数组、空对象通常保留。仅省略根 `relics[]` 和 `top_bar.relics[]` 的 `grayed_out/pulsing:false`，以及 `transition.events[]` 中 `type:card_played` 的 `autoplay:false`；自动出牌的 true、其他 false（包括 melted）及事件 null 不受影响。数组长度、顺序和引用下标不变；过滤后为空的对象仍保留。省略不表示沿用上次值；普通省略字段不表示零、否或空集合，上述局部字段按各自契约解释。结果不是状态增量；需要明确空值和上述 false 时使用 full。
+`0`、`false`、空字符串、空数组、空对象通常保留。仅省略根 `relics[]` 和 `top_bar.relics[]` 的 `grayed_out/pulsing:false`，以及 `transition.events[]` 中 `type:card_played` 的 `autoplay:false`；自动出牌的 true、其他 false（包括 melted）及事件 null 不受影响。数组长度、顺序和引用下标不变；过滤后为空的对象仍保留。省略不表示沿用上次值；普通省略字段不表示零、否或空集合，上述局部字段按各自契约解释。每次结果独立表达当前读取内容；需要明确空值和上述 false 时使用 full。
 
-例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。遗物 summary 同样省略普通空值与两个 false 图标字段。`inspect_deck` / `inspect_pile` 同样使用 full/default/summary，默认完整内容；旧 detail_level 已移除。
+例如普通遗物的 `counter:null`、`melted:null` 在 default 中省略，蜡质遗物的 `melted:false/true` 保留。遗物 summary 同样省略普通空值与两个 false 图标字段。`inspect_deck` / `inspect_pile` 同样使用 full/default/summary，默认完整内容。
 
-各工具专用预设的完整字段规则由对应接口维护：`get_observation` 的 summary／top_bar 见[观察预设](observation.md#mcp-输出预设)，UI 帮助、手牌、选牌、药水和遗物摘要见各工具说明。不要把 default 保留空数组的公共规则套用到明确精简空列表的专用 summary。
+各工具专用预设的完整字段规则由对应接口维护：`get_observation` 的 summary／top_bar 见[观察预设](observation.md#mcp-输出预设)，UI 帮助、手牌、选牌、药水和遗物摘要见各工具说明。专用 summary 的空列表精简按各工具契约处理。
 
 该参数只控制 Python 公开输出，不转发给 Mod；先完整校验响应，再进行原有筛选与统一空值过滤；许可依据完整状态判断，公开投影成功后才发布。部分成功的 `errors`、顶层错误及显式请求的占卜图片保留。截图工具不提供 preset。其他标准库文件调用继续保留原有空值；牌组／牌堆 CLI 的 --preset 共用上述 Python 投影，底层 Mod 始终采样完整卡牌。
 
@@ -162,48 +162,77 @@ approval_mode = "approve"
 
 玩法 JSON 的成功结果统一包含 `scene` 和 `screen`，分别表示当前房间／结算场景及覆盖页，与同次基础观察一致；详情不按工具名重建场景。手牌、目标、药水和遗物也遵循该规则。截图存盘结果保持文件信息格式。
 
-原生详情从本次完整快照复制上下文、令牌及协议标识；Python 对新协议要求完整上下文，再进行筛选与预设。历史片段样本的兼容读取不补造场景，不能据此宣称旧 Mod 已提供新字段。原生请求与执行元数据见[文件协议](roundtrip.md#原型接口)，不进入 LLM 结果。
+原生详情从本次完整快照复制上下文、令牌及协议标识；Python 对新协议要求完整上下文，再进行筛选与预设。旧片段样本按其实际提供字段兼容读取。原生请求与执行元数据见[文件协议](roundtrip.md#原型接口)，不进入 LLM 结果。
 
 ## 调用和错误语义
 
-首次往返可以让 agent 执行：
+MCP 会话保存最近一次有效观察的状态令牌，并将其用于动作请求。模型通过公开工具决策，令牌由会话内部管理；Mod 在游戏线程复核当前状态与动作合法性。
 
-> 使用 sts2 工具读取当前战斗，结束一次回合，再读取状态，说明回合和生命值的变化。只结束一次回合。
+### 取得与续接动作许可
 
-`get_observation`、专项详情及查看/关闭/切换页面的成功结果都会刷新内部动作令牌；首次也可直接读取相关详情。只要已有足够信息，就不必额外调用 `get_observation`。例如 `inspect_map → travel_to_node`、`inspect_hand → play_card`、`close_card_view → end_turn`；覆盖页仍须显式关闭，工具不会穿透页面行动。
+成功的基础观察、专项详情和页面查看／切换／关闭结果会刷新许可。可以直接从相关详情开始，例如 `inspect_hand → play_card`、`inspect_map → travel_to_node`；需要操作下层页面时先关闭覆盖页。
 
-每次动作消耗当前令牌，服务完整校验动作后的状态，在满足以下条件时保存新的动作令牌并返回精简回执，可直接据此选择下一动作：
+游戏动作消耗已有许可。完整校验动作响应后，满足以下条件才以新状态续接许可：
 
-- `transition.complete == true`，并且 `available_actions` 包含实际游戏动作；若该动作结果只列出详情或页面查看工具，则不续接动作许可。
-- 停止原因为 `player_ready` 或 `action_completed` 时，普通动作画面可见且没有待处理选择；`choice_required` 则要求受支持的选择界面可见。
+- `transition.complete == true`，且 `available_actions` 包含实际游戏动作。
+- `player_ready` 或 `action_completed` 时，当前操作画面可见且没有待处理选择；`choice_required` 时，受支持的选择界面已可操作。
 
-连续出牌结果中，只要有一项 `status` 为 `unknown`，表示工具无法确认该牌的执行结果。此时须先用 `get_observation` 或相关查看工具读取当前状态，再提交下一次动作；如果选牌窗口已经显示，可以直接读 `inspect_selection`。正常的 `queued`（排队中）或 `resolving`（正在处理，可能等待选牌）不触发这条额外读取要求，可以按当前选牌界面继续操作。
+例如 `get_observation → play_card → play_card → end_turn` 可逐步续接，每步根据上一结果重新决策。需要新手牌、费用、目标或候选时按需查看。多个独立请求串行执行；调用只能使用自身开始时已有的许可及代次，排队期间产生的新许可供后续调用使用。
 
-discard_potion 的顶层 potion_discard.status 为 queued 时，可以直接继续当前选择；unknown 或 not_discarded 不续接动作许可，须先读取。该结果与实际事件的关系见[丢弃结果与排队](potion-actions.md#丢弃结果与排队)。
+特殊结果按各自契约处理：
 
-战斗外地图上的用药／丢弃成功返回 action_completed、complete:true 且仍有合法动作时，也可直接继续。此时 screen.status:covered 表示下层房间被地图覆盖；地图自身仍可操作，不要求额外读取。战斗中打开地图不因此允许出牌或用药。
+| 结果或场景 | 后续操作 |
+| --- | --- |
+| 连续出牌含 `unknown` | 先读取当前状态；已显示选牌时可直接 inspect_selection。正常 queued/resolving 可继续当前选择，见[逐张结果](card-play.md#逐张结果) |
+| 丢弃药水为 `queued` | 继续当前选择；unknown/not_discarded 先读取，见[丢弃排队](potion-actions.md#丢弃结果与排队) |
+| 战斗外地图上的用药／丢弃完成 | 满足正常续接条件时可继续操作。screen.status:covered 描述下层房间，地图仍可用；战斗内用药另按[场景条件](potion-actions.md#场景与停止边界)判断 |
+| 胜负、不完整结果、人工输入边界或无实际可执行动作 | 撤销动作许可；读取当前状态后按支持的交互继续。终局仍可提供无需已有许可的只读工具 |
+| 超时、异常、取消或执行结果未知 | 重新观察后决定；已提交的操作可能继续执行，禁止自动重发 |
 
-例如 `get_observation → play_card → play_card → end_turn`，或 `use_potion → inspect_selection → select_card`，中间无需为了取得许可再次读取相同观察。每一步根据上一返回结果重新决策，按需查询卡牌或目标。连续入队使用 play_cards 在一次已授权请求中逐项复查并提交；多个独立请求仍不能借用排队后才产生的新观察，同一连接的操作串行执行。
+### 拒绝后保留已有许可
 
-Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其他客户端使状态改变时返回 `stale_state`，不自动刷新或重试。坏响应、超时、游戏异常、取消、不完整结果、无可执行动作、未支持选择及胜负停止均不续接动作许可，须先重新读取当前状态再决定。取消不能撤回已提交给游戏的操作。状态令牌留在 MCP 内部，不增加模型参数，也不回放未收到的动作结果。
+本地参数错误在发送前拒绝，保留已有许可。原生错误按下表的执行证据处理；这些规则均以请求前已有许可为前提。
 
-所有工具的本地参数错误都在发送前拒绝，保留此前已有许可，不生成新许可。纯读取（基础观察及不改变 UI 的详情）遇到原生明确的 `invalid_request/illegal_action/expired_request` 也保留已有许可；首次读取失败不会生成许可。外部状态改变后，下一动作仍须通过 Mod 的 stale_state 校验。控制器冲突、坏响应、连接失败、超时、异常或取消清除许可。
+| 请求类别 | 保留条件 |
+| --- | --- |
+| 纯读取 | 原生明确返回 invalid_request/illegal_action/expired_request，且执行证据与只读事实一致 |
+| 页面查看或切换 | 工具登记允许此恢复，且原生明确保证本请求未进行 UI 交互，证据一致 |
+| 游戏动作 | 工具登记允许此恢复，且原生证明整次请求尚未提交动作、未改变 UI |
+| 截图保存 | 原生取图有效且只读证据完整、采样令牌与旧许可一致；具体成功与保存拒绝条件见[截图边界](screenshots.md#画面与动作边界) |
 
-`inspect_selection` 省略 `view_upgrades` 时属于纯读取；显式提供该参数则可能改变 UI，与地图、牌组、牌堆及查看页切换一样，不能仅凭明确拒绝的错误码恢复许可。inspect_deck／inspect_pile／inspect_map／close_card_view／close_map／set_selection_view／set_divination_tool 的已审查拒绝另有原生“本请求未交互”保证；只有显式保证为 true、证据不矛盾且已有许可时保留，返回 choose_legal_action。缺少保证、已交互或未知结果仍要求观察；该例外不推广到其他页面工具。这些页面操作不要求已有动作许可。`set_divination_tool`仅切换当前占卜工具，成功返回actions_only并刷新许可，不记录玩法事件；具体检查见[占卜接口](divination.md#动作覆盖与结算)。MCP annotations不代替注册的执行策略。
+保留条件由[ToolSpec](../../src/sts2_mcp/tool_registry.py)的执行分类与恢复策略登记，[GameSession](../../src/sts2_mcp/game_session.py)核对原生标记和执行事实。`inspect_selection` 省略 view_upgrades 时为纯读取，显式传入时按页面操作处理。各接口维护具体拒绝原因和操作条件。
 
-游戏动作仅在原生证明“未提交且 UI 未改变”时保留旧许可。`play_card`、`play_cards`、`end_turn`、`use_potion`、`discard_potion`、`select_card`、`selection_option`、`travel_to_node`、`claim_reward`、`choose_rest_option`、`loot_treasure`、`proceed`、`open_shop`、`close_shop`、`buy_item`、`choose_event_option`、`choose_ancient_option`、`advance_dialogue`、`divine`、`respond_to_confirmation`与`run_result_option` 的已审查前置拒绝提供这一保证；费用、目标和选择／覆盖／按钮状态会给具体提示，例如能量不足被拒后可直接结束回合，选牌期间误用 end_turn 被拒后可直接继续合法选择，无效候选或按钮被拒后可直接改用有效候选或按钮。travel_to_node 在地图未开、被覆盖、绘图或目标非候选等明确拒绝时可直接纠正；claim_reward 的奖励 ID 无效、页面覆盖或尚未就绪等明确拒绝也可直接纠正，具体契约见[奖励领取](rewards.md#领取与后续选择)。loot_treasure 在首次点击前的已开箱、无遗物或覆盖等明确拒绝也可直接纠正；已经开箱后的第二阶段不具备整次请求未交互保证。proceed 在地图／牌组／选牌／确认框覆盖、未完成活动或对白、商品页展开等点击前拒绝时保留已有许可，并提示相应工具。open_shop在商品页已打开、地图／牌组／选择覆盖及未就绪等点击前拒绝时保留已有许可，提示inspect_shop、close_shop或当前页面工具；具体条件见[商店接口](shop.md#打开观察与详情)。close_shop在商品页已关闭、覆盖或未就绪等点击前拒绝时保留已有许可，可直接打开或处理当前选择／奖励；同见商店接口。buy_item的页面、ID、单品交互及金币等明确前置拒绝也保留许可；进入原生购买后不能把领取失败当作未交互，pending表示继续当前选择／奖励。结果ID与请求一致后才可续接，见商店接口。地图、奖励和结算时间线的滚动已经属于交互，滚动后的失败不会恢复许可；结算选项的具体条件见[终局接口](run-ending.md#工具与流程)。批量部分提交后的失败不具备整批未提交保证。缺少标记的旧 Mod、其他动作拒绝或执行结果未知时不恢复许可。占卜等操作返回 `screenshot_unavailable` 仍可能已经改变游戏，返回 `outcome:"unknown"` 并要求观察，不能把图像失败当作玩法未执行。
+以下边界会影响整次请求的证明：
 
-许可同时记录令牌和代次。排队动作只能使用调用开始时已有的那一代许可，即使后来读取返回相同字符串，也不能借用；取消会使等待／在途请求无法重新发布已撤销的许可。执行证据与公开 JSON 分开保存，不向模型暴露控制字段。用户保存的实测记录尚未逐条对照，[两项待办](TODO.md#当前工具审阅结束后处理)仍保留。
+- 地图节点、奖励与结算选项开始滚动时已发生交互，滚动后的失败须重新观察。
+- 开箱后再领取是同次请求的第二阶段，已开箱后无法再证明整次请求未交互。
+- 连续出牌部分提交后，后续失败按已提交动作处理。
+- 请求图片的操作可能在取图失败前已改变游戏；此类失败返回 `outcome:unknown` 并要求观察。
 
-专项详情会使用本次成功读取的新令牌，不要求它与旧令牌相同。页面操作先清除旧令牌，完整校验成功响应后保存新令牌；空牌堆或入口不可用的成功结果也按返回时的实际状态刷新。页面操作失败、格式错误或取消不保存新令牌。截图只按采样与已有令牌及执行证据保留旧许可，具体成功／保存拒绝条件见截图说明，不提供新令牌。`close_card_view` 可保留下层地图，须继续 `close_map` 才能回到战斗。这些页面操作有 UI 副作用，客户端按自己的策略处理授权。
+缺少保证、矛盾响应、stale_state、控制权冲突、连接失败、超时、异常或取消会清除许可。外部状态即使在明确拒绝后改变，下一动作仍会接受 Mod 的状态复核。取消同时撤销许可代次，等待或在途请求随后返回也无法重新发布该代许可。
 
-顶层错误仍使用 `error.code/message/recovery`。Mod 只有显式标记为可公开的拒绝说明才进入 message；原始异常、路径及未知诊断字段不转发。本地参数错误指出字段和允许的类型／范围。`recovery:"correct_request"` 表示修正参数；已有许可被保留时，明确拒绝使用 `choose_legal_action`，可根据已有信息选择合法操作，按需再观察；没有已有许可可保留时，`illegal_action/expired_request/stale_state` 要求读取当前状态；`correct_request` 只表示修正请求，尚无许可时仍须先成功读取状态。内部公开说明和提交标记不进入 LLM JSON。
+### 错误与恢复指引
 
-结构化读取直接续接动作的实现与验证范围见[验证记录](../research/2026-11-01-observation-sources.md)。
+顶层业务错误为 `isError:true`，对象包含 `error.code/message/recovery`；执行结果未知时另有 `outcome:unknown`。message 仅使用已确认可公开的原生说明或本地参数提示，原始异常与路径留在诊断日志。标准输出专用于 MCP 消息，内部日志写入标准错误。
 
-成功时 `structuredContent` 是玩法对象，`content` 同时提供相同对象的紧凑 JSON 文本。[占卜](divination.md)基础观察和详情默认返回文字棋盘，inspect_event可用include_image:true附带独立PNG内容块；图片不进入文字JSON，也不依赖截图工具配置。get_observation没有图片参数，actions_only/top_bar及动作回执不返回棋盘。正文中的换行和空格保留；终端与证据文件使用两空格缩进。对象本身没有排版属性，客户端决定如何转换为模型输入。协议、文本、显示的区别及官方依据见 [项目审阅](../research/2026-10-29-project-review.md#mcp-json-与官方实践)。
+| 错误或 recovery | 处理 |
+| --- | --- |
+| `observation_required` | 先用 get_observation 或相关专项详情读取当前状态 |
+| `controller_busy` | 断开占用控制权的连接，再读取；当前连接仍可握手和发现工具 |
+| `stale_state` | 读取当前状态，重新核对动作或页面 |
+| `choose_legal_action` | 已有许可保留，可据已有信息纠正请求或选择合法操作，按需查看详情 |
+| `correct_request` | 修正参数；尚无许可时先取得有效观察 |
+| `illegal_action/expired_request` | 按 recovery 处理；未保留许可时先观察 |
+| `timeout/game_error` | 先观察实际结果，禁止自动重试动作 |
+| `transport_error` | 检查游戏、Mod、IPC 路径、权限与响应格式，再观察 |
 
-输出递归过滤未知字段，不转发原始响应包装、状态令牌或测试入口；`available_actions` 只保留当前可用的公开查看与操作工具，省略观察、截图及测试入口并去重。MCP 与非 raw 文件客户端共用按原生操作的成功解码；基础观察和动作结果检查全部必需顶层观察字段，对已提供的嵌套字段检查类型，再进行输出精简；错误结果不生成新动作令牌，只有上述明确拒绝会保留旧许可。原始文件协议见 [原型接口](roundtrip.md#原型接口)。
+用户实测反馈的后续对照范围见[待办](TODO.md#当前工具审阅结束后处理)，已完成的专项验证见[工具核验记录](../research/2026-11-02-mcp-tool-review.md)。
+
+## MCP 结果封装
+
+成功结果的 `structuredContent` 是玩法对象，`content` 同时提供相同对象的紧凑 JSON 文本。占卜的 `inspect_event({"include_image":true})` 另附独立 PNG 内容块；JSON 保留文字棋盘，图片与[截图存档](screenshots.md)分别配置。正文的换行和空格保留，终端与证据文件使用两空格缩进。
+
+生产 MCP 与非 raw 文件客户端共用[成功解码](../../src/sts2_mcp/output/response_pipeline.py)：先检查必需字段、类型与同次上下文，再生成输出预设、筛选和空值投影。完整响应通过校验后才发布新动作许可。原始通信包装、控制令牌及私有测试入口留在内部，文件原型见[底层协议](roundtrip.md#原型接口)。
 
 ## 前进与跳过
 
@@ -228,27 +257,17 @@ Mod 仍在执行前重新计算并核对状态令牌和合法性；玩家或其�
 
 实现与单次结果体积对照见[动作回执精简验证](../research/2026-11-01-compact-actions.md)。
 
-回执不附送玩家、敌人、手牌、顶栏、候选牌、升级预览、场景正文、占卜图像或无关空字段。事件不是完整状态差量；最新能量、费用、可出牌标记等不能仅靠战报还原。普通动作可以依据已有信息续接；抽牌、随机生成、费用变化、回合切换或需要新决策信息时，按需使用 `get_observation` 或专项详情。
+回执聚焦动作结果、期间事件和下一交互边界。最新手牌、资源、费用和候选通过 `get_observation` 或专项详情取得；抽牌、随机生成、费用变化与回合切换后，按新决策所需的信息查看。
 
 例如 `play_card → inspect_selection → select_card → inspect_selection → selection_option` 分别读取候选与确认预览，详情同时刷新状态令牌。`get_observation` 的完整内容、`actions_only` 预设、纯详情和切换查看页工具的格式不受动作精简影响。底层文件 IPC 仍保留完整状态和事件，等待稳定及过期校验也使用完整状态。
 
-业务错误为 `isError: true`，包含 `error.code/message/recovery`；执行结果未知时另带 `outcome: unknown`。内部异常写入标准错误，不交给模型；标准输出专用于 MCP 消息。
-
-| 错误 | 恢复方式 |
-| --- | --- |
-| `observation_required` | 读取当前状态，可用 `get_observation` 或相关专项详情；`recovery` 提供通用的 `get_observation` 恢复入口 |
-| `controller_busy` | 断开占用控制权的连接，再观察；当前连接仍可握手和发现工具 |
-| `stale_state` | 读取当前状态，再核对动作或页面是否合法 |
-| `illegal_action`、`expired_request` | 按 recovery 继续；choose_legal_action 表示已有许可保留，可据已有信息决策，其他情况先观察 |
-| `invalid_request` | 对照 schema 修正参数；已有许可按上述规则保留，没有许可时仍须先读取状态 |
-| `timeout`、`game_error` | 先观察结果，禁止自动重试动作 |
-| `transport_error` | 检查游戏、Mod、IPC 路径、权限与响应格式，再观察 |
+调用失败时按[错误与恢复指引](#错误与恢复指引)处理。
 
 ## 控制进程与生命周期
 
 每个 IPC 目录只允许一个实际控制游戏的 MCP 连接。初始化和工具发现不占锁；首次游戏请求获取 `.mcp-controller.lock` 系统锁，持有到服务进程退出。其他连接返回 `controller_busy`，不向游戏发请求；原连接断开后可在同一连接重新尝试。不要通过删除锁文件抢占控制权。
 
-连接内部请求串行执行。文件锁只约束本项目 MCP server，不能阻止玩家或直接文件客户端操作，因此 Mod 仍在主线程核对状态令牌与合法性。当前不支持多个 agent 同时控制同一对局。历史启动锁修复见 [记录](../research/2026-10-29-mcp-startup-lock.md)。
+连接内部请求串行执行。文件锁约束本项目 MCP server；玩家与直接文件客户端的输入由 Mod 在主线程通过状态令牌与合法性复核处理。当前不支持多个 agent 同时控制同一对局。历史启动锁修复见 [记录](../research/2026-10-29-mcp-startup-lock.md)。
 
 ## 验证与范围
 

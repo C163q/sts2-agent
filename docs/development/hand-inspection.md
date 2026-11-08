@@ -2,8 +2,7 @@
 
 版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
 
-文件接口 `inspect_hand` 读取全部当前可见手牌详情；同名 [MCP 工具](mcp.md) 支持返回预设和按 ID 筛选，输出英语，不切换游戏语言。它不移动鼠标、不出牌、不结束回合，也不读取牌堆内容；信息范围遵循 [观察约定](../observation.md)。
-
+文件接口 `inspect_hand` 读取全部当前可见手牌详情；同名 [MCP 工具](mcp.md) 支持返回预设和按 ID 筛选，输出英语，不切换游戏语言。手牌正文与解释的信息范围遵循 [观察约定](../observation.md)。
 
 成功结果的 `scene/screen` 来自本次快照，表示当前房间与覆盖状态，统一规则见[MCP 上下文](mcp.md#成功结果的场景上下文)。
 
@@ -15,7 +14,7 @@
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/live/hand-inspection.json
 ```
 
-安装和启动前提见 [正常游戏加载](live-game.md)。旧进程不会热加载新 DLL；首次接通 Mod 读取须按安装指南重启。文件调用不要求 `expected_state`，可用时出现在 `available_actions` 中；MCP 的动作令牌处理见 [调用语义](mcp.md#调用和错误语义)。诊断时可加 `--raw`，取得原始响应及采样前基础观察的 `snapshot_id`；默认玩法输出省略它。
+安装和启动前提见 [正常游戏加载](live-game.md)。文件调用不要求 `expected_state`，可用时出现在 `available_actions` 中；MCP 的动作令牌处理见 [调用语义](mcp.md#调用和错误语义)。诊断时可加 `--raw`，取得原始响应及采样前基础观察的 `snapshot_id`；默认玩法输出省略它。
 
 ## 参数与返回范围
 
@@ -32,7 +31,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 {"preset":"summary","card_ids":[1,2,3]}
 ```
 
-`summary` 的每张牌保留 `id/name/type/energy_cost`，按实际显示保留非空 `unplayable_markers` 和有颜色的 `outline`，以及实际显示的 `star_cost`、已有特殊费用颜色、可见 `enchantment` 和 `affliction`。附魔名称、显示计数及置灰字段与[基础观察](observation.md#手牌与身份)完全相同，summary 不附送其效果正文；full 沿用原生共享悬停提示提供正文。费用仍是显示字符串，保留 `X`、`?`；未显示耗星时省略 `star_cost`；空禁用标记和 `outline:"none"` 也省略。名称保留可见升级后缀，普通未知字段按 default 省略，不补真实内容或假定为零。摘要省略正文、稀有度、卡池、共享提示和 `notes.card_values`；选牌查看战场等仍适用的导航说明保留。标记和描边不等于可打出判断，合法性仍由 `inspect_targets` 或动作校验确认。
+`summary` 的每张牌保留 `id/name/type/energy_cost`，按实际显示保留非空 `unplayable_markers` 和有颜色的 `outline`，以及实际显示的 `star_cost`、已有特殊费用颜色、可见 `enchantment` 和 `affliction`。附魔名称、显示计数及置灰字段与[基础观察](observation.md#手牌与身份)完全相同，summary 不附送其效果正文；full 沿用原生共享悬停提示提供正文。费用仍是显示字符串，保留 `X`、`?`；未显示耗星时省略 `star_cost`；空禁用标记和 `outline:"none"` 也省略。名称保留可见升级后缀，普通空值按 default 规则省略。摘要省略正文、稀有度、卡池、共享提示和 `notes.card_values`；选牌查看战场等仍适用的导航说明保留。可打出性由 `inspect_targets` 或动作校验确认，标记和描边表达实际外观。
 
 `unplayable_markers` 的 energy/star 表示禁用图标所在的费用位置，不是不可打出的原因；资源不足通常显示为红色费用，而标记数组仍可能为空。无可读附魔或 Affliction 时，full 显式保留 `enchantment:null`、`affliction:null`，default 和 summary 省略普通空值；比较中的空值仍遵循统一例外规则。附魔不显示计数时不生成 amount。`affliction` 仅含已识别覆盖外观的英语 `name`，不返回内部层数；两种效果可以共存，效果解释通过完整详情查看。
 
@@ -55,7 +54,7 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 
 `card_ids` 元素须为 0 至 2147483647 的整数，布尔值、字符串和浮点数不接受；未知参数或非法 `preset` 整次返回 `invalid_request`，不请求游戏。与地图输出参数一致，这类本地参数错误保留旧动作许可。
 
-所有预设与空筛选都会读取并校验完整底层手牌后再投影，不能用筛选遮蔽格式损坏的数据；它们不改变 UI、游戏状态或原生状态指纹。成功读取刷新下一动作的许可，包括带合并错误或空结果的读取。此许可只代表当前状态已读取，不保证任何被筛出的卡牌可操作；过期状态、覆盖界面和真实动作合法性检查照常生效。底层请求失败仍返回普通顶层 `error`，不伪装成卡牌缺失。
+所有预设与空筛选均在完整底层校验后投影；成功读取刷新下一动作许可，包括空结果或带合并错误的结果。动作再按当前状态、页面和原生合法性复核。底层请求失败仍返回普通顶层 `error`，不伪装成卡牌缺失。
 
 明确拒绝保留已有许可，坏响应、超时、异常或取消仍清除许可；首次失败不生成许可。公开原因及恢复指示遵循[MCP 错误语义](mcp.md#调用和错误语义)。
 
@@ -87,7 +86,6 @@ python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc inspect_hand > .tmp/
 
 该结果不包含敌人及意图，也不附带 `enemy_attack_intents`。空手牌不附带数值说明。基础观察仍只返回半隐藏手牌允许提供的字段，不自动附送正文和解释。
 
-
 ## 共用卡牌格式
 
 卡牌字段由 `output/card_format.py` 统一投影。内部 face_full/face_default 固定不含 description 或 hover_tips；full/default 提供正文和可读悬停解释；summary 共用本页摘要规则。这些是内部内容模式，不增加公开 face 参数。
@@ -105,6 +103,8 @@ get_observation全部标准卡牌在full/default中采用face_full/face_default�
 英语格式化仅在当前线程的同步读取范围内生效，异常退出也恢复。工具绕过关键词和药水提示的语言缓存，不改全局语言或缓存条目；不调用 `NCard.UpdateVisuals`，也不重算当前战斗预览。Linux 初始化会让已安装的 `libgcc_s.so.1` 符号对游戏随附补丁库可见，无须设置 `LD_PRELOAD`。其他 Mod 的自定义提示、其他游戏版本及非中文界面的数字格式尚未验证；缺少英语资源或无法识别提示时显式报错，不混入其他语言或静默漏项。
 
 ## 只读验证
+
+游戏端读取见 [HandInspection](../../src/Sts2Agent/Observation/HandInspection.cs)，完整公开校验见 [hand_details](../../src/sts2_mcp/output/hand_details.py)，卡牌格式统一由 [card_format](../../src/sts2_mcp/output/card_format.py)维护。
 
 以下脚本只读取当前场景，要求操作期间不要手动改变游戏状态：
 

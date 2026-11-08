@@ -6,7 +6,7 @@
 
 中期游玩反馈的[复核](2026-11-08-mid-playtest-feedback-review.md)确认批量能量事件合并后与最终观察一致；原生调用决定出牌接受、战斗对象详情生命／格挡已完成[实现与验证](2026-11-08-native-card-admission-and-combatant-health-implementation.md)。
 
-[共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
+[共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。该重构完成后，逐工具内容审阅按下述流程完成；两项任务分别记录进度。
 
 ## 范围与基线
 

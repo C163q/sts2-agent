@@ -1,12 +1,12 @@
 # 问号房与通用事件
 
-页面主体的visible／not_ready／covered及部分内容提示遵循[共用展示状态](observation.md#页面主体的展示状态)，按钮可操作性另行判断。
-
 版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
 
-支持目标版本单人的原生默认事件和战斗背景事件；实际出现的战斗、商店、宝箱继续使用对应工具。问号是地图节点图标，不代表房内交互类型。
+支持目标版本单人的原生默认事件和战斗背景事件；实际出现的战斗、商店、宝箱继续使用对应工具。问号表示地图节点图标，进入后的实际房间决定所用工具。
 
-下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
+含 null 的字段说明与示例按 full 表达；默认输出的空值处理见[公共预设](mcp.md#输出预设)。
+
+页面主体的展示进度见[共用展示状态](observation.md#页面主体的展示状态)，按钮启用状态按当前操作条件判断。
 
 ## 工具
 
@@ -55,7 +55,7 @@
 }
 ```
 
-示例正文仅摘取首句，不是额外的摘要模式；实际返回完整的当前已展示正文。ID、数值和危险标记以当次观察为准。
+示例正文仅摘取首句；实际返回完整的当前已展示正文。ID、数值和危险标记以当次观察为准。
 
 - `event.status` 为 `visible`、`not_ready` 或 `covered`。被选牌、奖励、地图、占卜或弹窗覆盖时，其余事件字段全部为 `null`，不能穿透读取或点击。
 - `name`、`description` 只来自已经显示的当前页面；正文渐显未结束时先返回 `null` 并禁用选项动作，等待完成后才返回完整英文正文。
@@ -70,7 +70,7 @@ get_observation 的 full/default/summary 均使用 inspect_event.summary 的静�
 
 ## 后续交互与结算
 
-事件使用原生按钮和 `EventSynchronizer`，不根据选项文字自行扣血、发钱或给牌。点击后返回[精简动作回执](mcp.md#动作返回格式)，语义与[共享动作边界](end-turn.md#动作完成与画面稳定)一致。
+事件通过原生按钮和 `EventSynchronizer` 执行效果。点击后返回[精简动作回执](mcp.md#动作返回格式)，语义与[共享动作边界](end-turn.md#动作完成与画面稳定)一致。
 
 | 停止原因 | 后续处理 |
 | --- | --- |
@@ -82,7 +82,7 @@ get_observation 的 full/default/summary 均使用 inspect_event.summary 的静�
 | `manual_input_required` | 当前专属界面尚未支持，停止自动操作 |
 | `timeout` / `interrupted` | 结果不完整；重新观察，禁止自动重发动作 |
 
-支持移除、升级、附魔、变形、简单网格和多选等现有[选牌界面](card-selection.md)，以及卡牌、药水和其他原生[奖励](rewards.md)。父事件可能仍在等待这些输入，不能把父任务未完成当作不可操作；结束选择后则继续等待父效果及卡牌预览、资源显示稳定。
+支持移除、升级、附魔、变形、简单网格和多选等现有[选牌界面](card-selection.md)，以及卡牌、药水和其他原生[奖励](rewards.md)。父事件等待输入时返回子选择或奖励界面；输入完成后继续等待父效果、卡牌预览与资源显示稳定。
 
 动作回执保留上下文、可用工具和transition；进入选牌时另给类型与状态，具体内容按需查看。仅打开页面、翻页或展示尚未领取的奖励时，events可以为空；已发生的可见资源及物品变化由共用记录提供。
 
@@ -141,6 +141,8 @@ Trial 第二次拒绝会打开原生放弃本局确认框。`get_observation` �
 终章建筑师使用[终章接口](run-ending.md)。多人、第三方事件及其他专属 UI 未接通。注册事件数量及源码分类见[调研](../research/2026-10-31-events.md)，不代表所有事件、分支和遗物组合均已实测。
 
 ## 验证入口
+
+事件正文与选项读取见 [EventInspection](../../src/Sts2Agent/Observation/EventInspection.cs)，执行入口见 [GameAdapter.Event](../../src/Sts2Agent/Adapter/GameAdapter.Event.cs)，确认框动作见 [GameAdapter.Confirmation](../../src/Sts2Agent/Adapter/GameAdapter.Confirmation.cs)。
 
 先按[测试指南](roundtrip.md)编译并准备隔离实例。例如启动茶师事件：
 

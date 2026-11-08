@@ -1,12 +1,12 @@
 # 宝箱房
 
-页面主体的visible／not_ready／covered及部分内容提示遵循[共用展示状态](observation.md#页面主体的展示状态)，按钮可操作性另行判断。
-
 版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。
 
 当前支持实际单人宝箱，点击原生按钮完成开箱和领取，不自动前进或选路。
 
-下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。可见宝箱房的 `relic:null` 在 default 和 get_observation summary 中均保留，表示当前没有展示可领取遗物；covered 时仍省略，不推断未开箱或被覆盖的隐藏内容。
+含 null 的字段说明与示例按 full 表达；默认输出的空值处理见[公共预设](mcp.md#输出预设)。可见宝箱房的 `relic:null` 在 default 和 get_observation summary 中均保留，表示当前没有展示可领取遗物；covered 时仍省略，不推断未开箱或被覆盖的隐藏内容。
+
+页面主体的展示进度见[共用展示状态](observation.md#页面主体的展示状态)，按钮启用状态按当前操作条件判断。
 
 ## 观察与详情
 

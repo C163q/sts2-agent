@@ -4,7 +4,7 @@
 
 支持单人第三幕结束后的建筑师对话、胜负结算、必要解锁和返回主菜单。实现依据与验证范围见[源码及图形验证](../research/2026-10-31-run-ending-validation.md)。
 
-下文输出字段的空值与 JSON 示例以底层文件或 MCP full 为准；MCP 工具另接受[通用 preset](mcp.md#输出预设)，默认 default 省略普通空值。
+含 null 的字段说明与示例按 full 表达；默认输出的空值处理见[公共预设](mcp.md#输出预设)。
 
 ## 工具与流程
 
@@ -18,7 +18,13 @@
 
 第三幕最后 Boss 的奖励页 `proceed` 返回 `scene: "epilogue"`。依次操作观察提供的 `advance_dialogue` 或 `proceed`，不会跳过台词。结算使用 `scene: "run_result"`，按 `options` 继续、解锁、确认或返回。`main_menu` 按钮的文字有时是 Unlock，点击后先进入时间线；只有 `scene: "main_menu"`、结算字段为空时才真正回到菜单。工具不新开一局。
 
-成功动作使用现有 `transition`：`action_completed/complete=true` 表示下一页已就绪，可按许可规则继续；当前页内容和按钮通过观察或 `inspect_run_result` 按需读取。首次进入已就绪的胜利结算页返回 `run_won/complete=true`，失败结算页返回 `run_lost/complete=true`，依据与原生横幅相同的胜负判据。终局 available_actions 可保留实际可用的只读查看工具；列表不必为空，但不续接玩法许可。刚进入建筑师对话仍为 `action_completed`；结算后翻页、解锁和返回菜单同样为 `action_completed`，不重复报告胜负。终局回执不保留连续动作许可，需通过观察或详情取得当前结算操作。成功详情也刷新状态令牌；过期观察、超时、不确定结果或人工改动后重新读取当前状态。inspect_run_result接受default/full/summary，默认default；run_result_option另接受option_id，底层查看操作不接受额外参数；按钮、页面身份和状态令牌在游戏线程再次核对。工具将时间线绑定到本次结算的原生菜单栈；人工返回菜单同样结束关联。工具入口不用于操作平常打开的时间线或其他主菜单页面。
+### 动作结果与许可
+
+成功动作使用 `transition`：`action_completed/complete=true` 表示下一页已就绪，可按许可规则继续；当前页内容和按钮通过观察或 `inspect_run_result` 按需读取。首次进入已就绪的胜利结算页返回 `run_won/complete=true`，失败结算页返回 `run_lost/complete=true`，依据与原生横幅相同的胜负判据。终局 available_actions 保留实际可用的只读查看工具，玩法许可在终局撤销。刚进入建筑师对话仍为 `action_completed`；结算后翻页、解锁和返回菜单同样为 `action_completed`，不重复报告胜负。
+
+终局后通过观察或详情取得当前结算操作的许可。成功详情也刷新状态令牌；过期观察、超时、不确定结果或人工改动后重新读取当前状态。
+
+`inspect_run_result` 接受 default/full/summary，默认 default；run_result_option另接受option_id，底层查看操作不接受额外参数；按钮、页面身份和状态令牌在游戏线程再次核对。工具将时间线绑定到本次结算的原生菜单栈；人工返回菜单同样结束关联。工具入口不用于操作平常打开的时间线或其他主菜单页面。
 
 advance_dialogue的明确点击前拒绝保留已有许可，并区分页面覆盖、等待对话／按钮就绪和最终前进；可直接关闭覆盖页或改用proceed。已有许可的恢复遵循[统一错误语义](mcp.md#调用和错误语义)。两类对话的参数均只有default/full，建筑师可用性由EpilogueInspection.DialogueUnavailableReason集中维护，执行、continue.enabled及available_actions共用；最终proceed继续沿用原生胜利流程。
 
@@ -39,7 +45,7 @@ run_result_option在明确未交互的拒绝后保留已有许可，并提示没
 }
 ```
 
-示例仅展示相关字段；具体台词及按钮文字由当前原生对话决定。只读取已出现且显示完整的当前气泡，不返回整段脚本、未来台词、访问次数或选择的随机分支。
+示例仅展示相关字段；具体台词及按钮文字由当前原生对话决定。读取当前已出现且显示完整的气泡，后续台词在推进后提供。
 
 ## 结算观察
 
@@ -81,14 +87,16 @@ inspect_run_result.summary同样省略页面提示的description、药水／遗�
 
 与地图／牌组浏览一致，当前时间线中可浏览的条目完整列出；选择离屏条目时先沿原生滚动流程将它展示，再重新核对相同页面及按钮。每个章节和确认页分别返回。进度解锁不属于本局牌组／物品获得，普通翻页events为空。
 
-就绪检查包括打字、原生结算创建的补间动画、分数条及各解锁页的入场动画；按钮启用不等于所有可见计数已经稳定。到达已知边界后仍要求观察连续 250 毫秒不变，25 秒内未满足则返回 `timeout/complete=false`。未知模态不自动点击。
+就绪检查包括打字、原生结算创建的补间动画、分数条及各解锁页的入场动画；可行动边界还须等待可见计数稳定。到达已知边界后仍要求观察连续 250 毫秒不变，25 秒内未满足则返回 `timeout/complete=false`。未知模态不自动点击。
 
 每日挑战榜单按原生实际提供的按钮识别，尚未补充GUI实测；View Run的正常入口仍禁用。结算翻页和章节重读不改变本局胜负，验证范围见结算选项实施记录。
 
-建筑师使用原生战斗背景；当前可读的界面、对象、遗物、药水及地图工具会列入 `available_actions`，具体合法性仍由调用入口校验。关闭地图会恢复当前对话；不会因此提供普通出牌或结束回合。工具可用性核查见[验证记录](../research/2026-10-31-observation-presets-validation.md)。
+建筑师使用原生战斗背景，`available_actions` 列出当前可读的界面、对象、药水、遗物及原生允许的浏览工具。地图／牌组覆盖时隐藏底层对白和动作；关闭后恢复当前对话，查看条件见[工具可用性验证](../research/2026-10-31-observation-presets-validation.md)及[修复记录](../research/2026-11-02-available-actions-fix.md)。
 
-建筑师对话也可在原生按钮可用时查看牌组；覆盖期间保留 `screen.view: deck` 并隐藏底层对话，当前原生工具列表包含浏览及实际可读的药水／遗物详情。结算页的药水／遗物详情也根据实际可见、可悬停控件独立列出，不要求无关的结算文字动画完成；仍不能打开牌组或执行已结束对局的动作。实测范围见[可用工具修复记录](../research/2026-11-02-available-actions-fix.md)。
+五种基础观察预设均支持建筑师牌组覆盖；药水与遗物只读工具按控件实际可见、可悬停条件独立提供。结算页同样独立判断顶栏详情；牌组打开及已结束对局的玩法动作不在结算操作范围。覆盖页验证见[核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md#已确认缺陷建筑师牌组覆盖)。
 
-建筑师牌组覆盖期间，五种观察预设均可读取当前覆盖页，并接受原生允许的药水／遗物只读工具；底层对白和推进对话、使用药水等动作仍被覆盖。缺陷与修复的验证证据见[覆盖页核验记录](../research/2026-11-03-get-observation-divination-confirmation-epilogue.md#已确认缺陷建筑师牌组覆盖)。
+## 验证入口
+
+结算读取见 [RunResultInspection](../../src/Sts2Agent/Observation/RunResultInspection.cs)，对话与结算动作见 [GameAdapter.RunEnding](../../src/Sts2Agent/Adapter/GameAdapter.RunEnding.cs)，公开校验与预设见 [run_ending_details](../../src/sts2_mcp/output/run_ending_details.py)。
 
 结算动作验证使用[verify_result_option.py](../../tests/game/verifiers/verify_result_option.py)，隔离套件为[gui_suite_result_option.json](../../tests/game/data/gui_suite_result_option.json)；失败与胜利流程使用独立终局实例。胜利回执不续接玩法许可，后续检查原生解锁、稳定ID重读、章节翻页、滚动后拒绝及返回主菜单。读取预设另由[verify_result_inspection.py](../../tests/game/verifiers/verify_result_inspection.py)核验。

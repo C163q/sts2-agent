@@ -1,6 +1,6 @@
 # 当前幕地图查看
 
-版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。scene/screen 遵循[统一上下文](observation.md#场景上下文)，展开地图时仅 screen.view 为 map，scene 保留当前房间或战斗场景；原生房间为 MapRoom 时使用 scene:map（如换幕入口），不是根据地图是否展开来改名。
+版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。scene/screen 遵循[统一上下文](observation.md#场景上下文)，展开地图时仅 screen.view 为 map，scene 保留当前房间或战斗场景；原生房间为 MapRoom 时使用 scene:map（如换幕入口）。
 
 文件接口仍提供无参数 `inspect_map` 和 `close_map`；MCP 的 `inspect_map` 支持以下参数；`close_map` 只接受通用 preset。当前工具目录见 [MCP 指南](mcp.md)。
 
@@ -42,7 +42,7 @@ summary 先按相同的 `max_steps` 规则裁剪再分类；当前节点为第 0
 {"preset":"selectable","max_steps":3}
 ```
 
-最后一种调用与只传 `preset: "selectable"` 的结果一致。成功结果均可直接支持 `travel_to_node`；裁剪不授予额外可选节点，也不改变原生合法性检查。
+最后一种调用与只传 `preset: "selectable"` 的结果一致。成功结果提供当前许可，`travel_to_node` 仍以原生候选和当前状态复核合法性。
 
 ## JSON 格式
 
@@ -93,7 +93,7 @@ summary 先按相同的 `max_steps` 规则裁剪再分类；当前节点为第 0
 
 ## 地图选路
 
-`travel_to_node({"node_id":"map:1:2:3"})` 只接受当前已展开地图允许的节点。旅行真实离开当前房间，放弃未领取奖励；工具不会自动领取奖励、挑选路径或决定后续输入。飞鞋的合法路线与次数由原生 Hook 决定，不能只按 `next` 判断合法性。
+`travel_to_node({"node_id":"map:1:2:3"})` 只接受当前已展开地图允许的节点。旅行真实离开当前房间，放弃未领取奖励；进入房间后的操作由下一次调用决定。飞鞋的合法路线与次数由原生 Hook 决定，不能只按 `next` 判断合法性。
 
 基础观察在地图已就绪、暴露时返回整幕分类。get_observation 的 full/default/summary 共用这一地图表达；full 保留普通 null，default/summary 省略。基础观察不接受 max_steps，也不继承上次详情的筛选；只有 inspect_map.default/full 返回连接关系与节点详情。
 
@@ -128,11 +128,13 @@ MCP 本地参数错误保留已有许可；travel_to_node 对未开地图、覆�
 
 仅支持单人进行中的对局；候选选择页、弹窗、其他详情、过渡和正在移动期间拒绝。受支持选择先切至战场后允许打开地图。允许原生奖励页在地图底下保留，这是战后正常选路流程；关闭地图会露出原有奖励页。也支持[占卜棋盘](divination.md)在地图底下保留，覆盖时不返回棋盘内容与图像，关闭后可重新观察并继续。首次打开要求原生地图入口可见且启用，战斗中还须处于可行动阶段。当前幕起点等原生禁止返回的地图不能强行关闭。错误参数在 UI 操作前返回 `invalid_request`；页面或对局在异步等待期间变化返回 `illegal_action`，不自动重开页面。超时或异常不能自动重试。
 
-Godot 主线程发起操作，使用异步帧等待，遵循原生暂停/恢复与动画。底层文件接口关闭后保留完整基础观察。MCP 的 close_map 在完整校验后仅返回 actions_only 内容：scene/screen、available_actions，以及适用的 selection.type/status；仍只接受 default/full，不新增 summary，不返回 transition 或占卜 PNG。需要当前战斗、房间或棋盘图像时按需使用 get_observation 或相应详情工具。工具 UI 操作使旧动作令牌失效；MCP 使用成功结果的新令牌继续操作，仍校验当前页面与动作合法性。
+Godot 主线程发起操作，使用异步帧等待，遵循原生暂停/恢复与动画。底层文件接口关闭后保留完整基础观察。MCP 的 close_map 在完整校验后返回 actions_only 内容：scene/screen、available_actions，以及适用的 selection.type/status；preset 接受 default/full。战斗与房间内容按需通过 get_observation 或专项详情读取；棋盘图片使用 inspect_event 的 include_image 显式请求。工具 UI 操作使旧动作令牌失效；MCP 使用成功结果的新令牌继续操作，仍校验当前页面与动作合法性。
 
 MCP 在 IPC 前校验查看参数；`close_map` 除通用 preset 外拒绝全部额外参数，查看工具也拒绝未知字段。参数错误保留此前有效权限。合法查看与关闭请求在发送前清除旧令牌，成功后保存返回状态的新令牌。inspect_map／close_map 的点击前明确拒绝带有未交互保证时恢复已有令牌，允许直接改用合法操作；没有初始令牌不会创建许可。点击后变化、超时、异常或矛盾执行证据不恢复。关闭原因区分无对局、地图未打开、被卡牌页覆盖、过渡／动画未就绪、原生返回按钮禁用或不可见；available_actions 与执行校验使用同一判定入口。地图投影校验当前幕节点 ID、坐标、唯一引用、已走路径与候选布尔状态，逐层过滤附加字段；不会要求可选节点必须在 `next` 中。格式错误返回 `transport_error`。关闭结果若仍指向浏览页，同样拒绝。
 
 ## 调用与验证
+
+地图读取见 [MapInspection](../../src/Sts2Agent/Observation/MapInspection.cs)，旅行流程见 [GameAdapter.Navigation](../../src/Sts2Agent/Adapter/GameAdapter.Navigation.cs)，公开地图校验见 [map_details](../../src/sts2_mcp/output/map_details.py)。
 
 游戏已加载新版 Mod 并配置文件通信目录后，在仓库根目录分别执行：
 
