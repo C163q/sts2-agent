@@ -56,6 +56,38 @@ async def verify(args):
                 assert result.get('error', {}).get('code') == error, result
                 return result
 
+            if args.scenario.startswith('resource_'):
+                await call('get_observation')
+                await call('proceed')
+                graph = await call('inspect_map')
+                before = await native('check_test_navigation')
+                assert before['hp'] == 60 and before['gold'] == 100, before
+                hidden = args.scenario == 'resource_hidden'
+                if hidden:
+                    await native('set_test_relic_display', {'mode': 'hidden_top_bar'})
+                    graph = await call('inspect_map')
+                receipt = await call('travel_to_node', {'node_id': graph['selectable_nodes'][0]}, label='resource_arrival')
+                after = await native('check_test_navigation')
+                assert receipt['transition']['complete'], receipt
+                changes = [e for e in receipt['transition']['events'] if e['type'] in {'gold_changed', 'hp_changed'}]
+                gold = [e for e in changes if e['type'] == 'gold_changed']
+                assert [(e['before'], e['after']) for e in gold] == ([] if hidden else [(100, 112)]), receipt
+                health = [e for e in changes if e['type'] == 'hp_changed']
+                expected = [(60, 65)] if args.scenario == 'resource_unknown' else []
+                assert [(e['before'], e['after']) for e in health] == expected, receipt
+                assert after['gold'] == 112 and after['hp'] == (65 if expected else 60), after
+                if hidden:
+                    await native('set_test_relic_display', {'mode': 'normal'})
+                observed = await call('get_observation')
+                assert observed['top_bar']['gold'] == 112 and observed['top_bar']['hp'] == after['hp'], observed
+                if hidden:
+                    healed = await call('choose_rest_option', {'option_id': 'HEAL'}, label='visible_after_hidden_travel')
+                    assert [e['type'] for e in healed['transition']['events']] == ['hp_changed'], healed
+                    assert healed['transition']['events'][0]['before'] == 60, healed
+                if args.scenario == 'resource_rest':
+                    checks = await native('check_test_resources')
+                    assert checks['passed'], checks
+                return
             await call('travel_to_node', {'node_id': 'map:1:2:0'}, 'observation_required', 'no_permission')
             await call('get_observation')
             if args.scenario in {'entry', 'double'}:
@@ -151,6 +183,6 @@ async def verify(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--scenario', choices=('basic', 'flight', 'combat', 'choice', 'shop', 'treasure', 'unknown', 'entry', 'double', 'antler', 'scroll_failure'), required=True)
+    parser.add_argument('--scenario', choices=('basic', 'flight', 'combat', 'choice', 'shop', 'treasure', 'unknown', 'entry', 'double', 'antler', 'scroll_failure', 'resource_rest', 'resource_unknown', 'resource_combat', 'resource_hidden'), required=True)
     parser.add_argument('--report', type=Path, required=True)
     asyncio.run(verify(parser.parse_args()))

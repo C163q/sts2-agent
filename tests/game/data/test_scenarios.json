@@ -273,6 +273,10 @@
     "symbiote"
   ],
   "navigation": [
+    "resource_rest",
+    "resource_unknown",
+    "resource_combat",
+    "resource_hidden",
     "antler",
     "basic",
     "flight",

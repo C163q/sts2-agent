@@ -1,0 +1,17 @@
+[
+  {"name":"rest","scenarios":{"navigation":"resource_rest"},"steps":[
+    {"name":"verify","verifier":"verify_travel_review.py","args":["--scenario","resource_rest"]}
+  ]},
+  {"name":"unknown","scenarios":{"navigation":"resource_unknown"},"steps":[
+    {"name":"verify","verifier":"verify_travel_review.py","args":["--scenario","resource_unknown"]}
+  ]},
+  {"name":"combat","scenarios":{"navigation":"resource_combat"},"steps":[
+    {"name":"verify","verifier":"verify_travel_review.py","args":["--scenario","resource_combat"]}
+  ]},
+  {"name":"hidden","scenarios":{"navigation":"resource_hidden"},"steps":[
+    {"name":"verify","verifier":"verify_travel_review.py","args":["--scenario","resource_hidden"]}
+  ]},
+  {"name":"masks","scenarios":{"selection":"deck"},"steps":[
+    {"name":"verify","verifier":"verify_resource_events.py","args":["--scenario","masks"]}
+  ]}
+]

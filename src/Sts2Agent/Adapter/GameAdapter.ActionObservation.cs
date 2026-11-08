@@ -30,7 +30,9 @@ internal sealed partial class GameAdapter
             if (settling.Sample(reason, state, CardMotionPending() || RunUi.CardPreviewsPending()
                 || CombatMotion.Pending() || RunUi.ResourceMotionPending()
                 || CombatResourceJournal.Current?.Pending == true || OrbJournal.Current?.Pending == true
-                || TurnCapture.Journal?.Pending == true, timer.Elapsed, choiceMotionPending: RunUi.GoldMotionPending()))
+                || RunResourceJournal.Current?.Pending == true
+                || TurnCapture.Journal?.Pending == true, timer.Elapsed,
+                choiceMotionPending: RunUi.GoldMotionPending() || RunResourceJournal.Current?.Pending == true))
                 return (state, reason!);
         }
         return (state, "timeout");

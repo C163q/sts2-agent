@@ -156,7 +156,7 @@ def load_cases(path):
                 'verify_treasure_inspection_review.py': ('basic','empty','extra','nested','choice','no_treasure','map_pending','display_red','display'),
                 'verify_claim_reward_review.py': ('basic','full','linked','nested','returned','covered','no_rewards','transform','deck_covered','scroll_success','scroll_failure'),
                 'verify_reward_inspection_review.py': ('no_rewards','basic','linked','empty','nested','returned','escaped','deck_covered','legacy'),
-                'verify_travel_review.py': ('basic', 'flight', 'combat', 'choice', 'shop', 'treasure', 'unknown', 'entry', 'double', 'antler', 'scroll_failure'),
+                'verify_travel_review.py': ('basic', 'flight', 'combat', 'choice', 'shop', 'treasure', 'unknown', 'entry', 'double', 'antler', 'scroll_failure', 'resource_rest', 'resource_unknown', 'resource_combat', 'resource_hidden'),
                 'verify_close_map_review.py': ('no_map', 'combat', 'event', 'selection', 'entry', 'divination', 'legacy'),
                 'verify_map_summary.py': ('map', 'selection', 'act_entry'),
                 'verify_selection_view_review.py': ('no_selection', 'overlay', 'grid', 'hand_upgrade',

@@ -43,8 +43,8 @@ internal static class NavigationFixture
         var source = map.GetAllMapPoints().First(p => p.coord.row == 1 && p.Children.Count > 0
             && map.GetPointsInRow(2).Any(q => !p.Children.Contains(q)));
         foreach (var point in map.GetPointsInRow(2))
-            point.PointType = scenario switch { "combat" or "choice" or "antler" => MapPointType.Monster,
-                "shop" => MapPointType.Shop, "treasure" => MapPointType.Treasure, "unknown" => MapPointType.Unknown,
+            point.PointType = scenario switch { "combat" or "choice" or "antler" or "resource_combat" => MapPointType.Monster,
+                "shop" => MapPointType.Shop, "treasure" => MapPointType.Treasure, "unknown" or "resource_unknown" => MapPointType.Unknown,
                 _ => MapPointType.RestSite };
         run.AddVisitedMapCoord(source.coord);
         run.ActFloor = 2;
@@ -59,6 +59,13 @@ internal static class NavigationFixture
         if (scenario == "choice") await RelicCmd.Obtain<ChoicesParadox>(player);
         if (scenario == "antler") await RelicCmd.Obtain<BlessedAntler>(player);
         await RewardFixture.Configure("basic", player, frame);
+        if (scenario.StartsWith("resource_", StringComparison.Ordinal))
+        {
+            await RelicCmd.Obtain<MawBank>(player);
+            await RelicCmd.Obtain<Planisphere>(player);
+            await CreatureCmd.SetCurrentHp(player.Creature, 60);
+            await PlayerCmd.SetGold(100, player);
+        }
         screen.SetTravelEnabled(true);
     }
 
@@ -76,7 +83,7 @@ internal static class NavigationFixture
     public static object Read(Player player)
     {
         var run = RunManager.Instance.DebugOnlyGetState()!;
-        return new { gold = player.Gold, boots_used = player.Relics.OfType<WingedBoots>().SingleOrDefault()?.TimesUsed,
+        return new { gold = player.Gold, hp = player.Creature.CurrentHp, boots_used = player.Relics.OfType<WingedBoots>().SingleOrDefault()?.TimesUsed,
             current_node = run.CurrentMapCoord is { } coord ? MapInspection.Id(run, coord) : null,
             act = run.CurrentActIndex + 1, rewards = RewardInspection.Current != null,
             @event = (run.CurrentRoom as EventRoom)?.LocalMutableEvent.Id.Entry,

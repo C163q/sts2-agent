@@ -1,6 +1,6 @@
 # 房间资源与结算文字修复计划
 
-> 当前状态：实施中。共 2 项，已完成 0 项；正在补充复现检查，剩余共用记录修复、结算文字整理及验证。暂无阻塞。
+> 当前状态：实施中。共 2 项，已完成 1 项；资源记录及五组 GUI 验证完成，正在处理结算文字。暂无阻塞。
 
 > 执行方式：使用 executing-plans，在当前工作区的临时分支顺序实施，结束后一次独立审阅；用户已批准修复范围及自行合入 main。
 
@@ -27,17 +27,17 @@
 - 结算去重不误删与按钮／分数文字相同的独立正文。
 - outcome、summary、epoch、unlock、history 的正文及展示中状态均保留。
 
-## 任务 1：房间切换资源
+### Task 1: 房间切换资源
 
 **文件：** src/Sts2Agent/Events/RunResourceJournal.cs、新增同目录纯资源记录类；GameAdapter.ActionObservation.cs；测试 NavigationFixture、导航场景目录、纯 C# 检查及资源验证器。
 
 **接口：** 原生资源通知与公开数值进入记录器；输出仍为现有 hp_changed/max_hp_changed/gold_changed，使用同一 TurnEventBuffer。
 
-- [ ] 增加 Maw Bank、Planisphere 的原生导航夹具和验证器，先对旧实现运行，观察缺失事件的失败；补充纯状态边界检查。
-- [ ] 实现已知切换中的延迟记录与显示确认，保留其他隐藏规则及战斗去重。
-- [ ] 构建并检查纯 C#、当前两遗物实际选路及原有资源隐藏检查；核对完整事件与顶栏端点，提交独立变更。
+- [x] 增加 Maw Bank、Planisphere 的原生导航夹具和验证器，先对旧实现运行，观察缺失事件的失败；补充纯状态边界检查。
+- [x] 实现已知切换中的延迟记录与显示确认，保留其他隐藏规则及战斗去重。
+- [x] 构建并检查纯 C#、当前两遗物实际选路及原有资源隐藏检查；核对完整事件与顶栏端点，提交独立变更。
 
-## 任务 2：结算正文
+### Task 2: 结算正文
 
 **文件：** src/Sts2Agent/Observation/RunResultInspection.cs、必要的专用文字读取模块、RunResultTextChecks、结算验证器及相关维护文档。
 

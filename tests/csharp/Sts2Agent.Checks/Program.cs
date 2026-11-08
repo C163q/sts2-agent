@@ -7,6 +7,7 @@ static void Check(bool value, string name)
 }
 
 VisibleResourceChecks.Run(Check);
+RoomResourceChecks.Run(Check);
 RelicCounterChecks.Run(Check);
 DisplaySupportChecks.Run(Check);
 ObservationSnapshotChecks.Run(Check);
