@@ -1,5 +1,10 @@
 [
   {
+    "name": "admission",
+    "scenarios": {"play": "energy"},
+    "steps": [{"name": "verify", "verifier": "verify_play_cards.py", "args": ["--scenario", "admission"]}]
+  },
+  {
     "name": "diagnostics",
     "scenarios": {
       "play": "hook"

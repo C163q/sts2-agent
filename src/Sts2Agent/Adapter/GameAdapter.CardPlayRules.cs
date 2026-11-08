@@ -55,10 +55,9 @@ internal sealed partial class GameAdapter
         if (card.Owner != LocalPlayer || card.Pile?.Type != PileType.Hand)
             return "This card is no longer in the local player's hand.";
         var targets = TargetInspection.Targets(card);
-        if (TargetInspection.Reason(card, targets) is { } reason) return reason;
         if (CardReferenceReason(card, input) is { } reference) return reference;
         if (input.TargetId.HasValue && (initialTarget == null || !targets.Contains(initialTarget)))
             return "The specified target is not currently available for this card.";
-        return card.CanPlayTargeting(initialTarget) ? null : "The card cannot be played with the specified target.";
+        return null;
     }
 }

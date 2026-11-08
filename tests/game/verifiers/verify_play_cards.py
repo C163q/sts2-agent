@@ -12,7 +12,7 @@ from sts2_mcp.roundtrip_client import Client
 from tests.game.support.verification_runtime import ensure_run, ipc_directory
 
 
-SCENARIOS = ('ordered', 'native_reject', 'default', 'single_entry', 'autoplay', 'pending_reset', 'after_reset', 'diagnostics', 'atomic', 'partial', 'zero', 'energy', 'stars', 'target',
+SCENARIOS = ('admission', 'ordered', 'native_reject', 'default', 'single_entry', 'autoplay', 'pending_reset', 'after_reset', 'diagnostics', 'atomic', 'partial', 'zero', 'energy', 'stars', 'target',
     'random_exhaust', 'hand_exhaust', 'automatic_hand', 'choose_one', 'immediate_choice',
     'combat_pile', 'victory', 'death', 'immediate_death')
 
@@ -45,6 +45,25 @@ async def verify(args):
 
             before = await call('get_observation')
             hand = (await call('inspect_hand'))['hand']
+            if args.scenario == 'admission':
+                assert before['player']['energy'] == 0
+                card = next(c for c in hand if c['name'] == 'Defend')
+                for tool in ('play_card', 'play_cards'):
+                    armed = await asyncio.to_thread(raw.call, 'arm_test_card_rejection', arguments={'card_id': card['id']})
+                    assert armed['ok'], armed
+                    result = await call(tool, {'card_id': card['id']} if tool == 'play_card' else
+                                        {'cards': [{'card_id': card['id']}]},
+                                        error='illegal_action' if tool == 'play_card' else None)
+                    reason = result['error']['message'] if tool == 'play_card' else result['card_plays']['results'][0]['reason']
+                    assert 'energy' in reason.lower(), result
+                    checked = await asyncio.to_thread(raw.call, 'arm_test_card_rejection', arguments={'card_id': card['id']})
+                    record({'native_operation': 'arm_test_card_rejection', 'response': checked})
+                    assert checked['state']['previous_attempts'] == 1, checked
+                    if tool == 'play_cards':
+                        assert result['card_plays']['results'][0]['status'] == 'not_submitted'
+                        assert result['transition']['events'] == []
+                assert (await call('end_turn'))['transition']['stop_reason'] == 'player_ready'
+                return
             if args.scenario == 'after_reset':
                 result = await call('end_turn')
                 assert 'card_plays' not in result

@@ -179,7 +179,7 @@ def load_cases(path):
                     + ('default', 'covered', 'slot_boundary', 'journal_boundary', 'fake_merchant', 'obtained_boundary', 'journal_hidden', 'map_context', 'slot_interaction'),
                 'verify_use_potion_review.py': tuple(mode for mode in CATALOG['potion'] if mode != 'inspection' and not mode.startswith('discard_'))
                     + ('default', 'covered', 'slot_boundary', 'journal_boundary', 'fake_merchant'),
-                'verify_play_cards.py': ('ordered', 'native_reject', 'default', 'single_entry', 'autoplay', 'pending_reset', 'after_reset', 'diagnostics', 'atomic', 'partial', 'zero', 'energy', 'stars', 'target',
+                'verify_play_cards.py': ('admission', 'ordered', 'native_reject', 'default', 'single_entry', 'autoplay', 'pending_reset', 'after_reset', 'diagnostics', 'atomic', 'partial', 'zero', 'energy', 'stars', 'target',
                     'random_exhaust', 'hand_exhaust', 'automatic_hand', 'choose_one', 'immediate_choice',
                     'combat_pile', 'victory', 'death', 'immediate_death'),
                 'verify_play_card_review.py': ('queue_ordered', 'queue_energy', 'queue_stars', 'queue_target',

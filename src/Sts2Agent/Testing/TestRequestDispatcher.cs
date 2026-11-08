@@ -125,8 +125,9 @@ internal sealed partial class GameAdapter
             if (inputs[0].TargetId.HasValue || !CanPlayCards()
                 || new TargetInspection(observation).FindCard(inputs[0].CardId) is not { } card)
                 return FileMailbox.Error(request.Id, "invalid_request", "Expected a current test hand card ID.");
+            int previousAttempts = CardPlayRejectionFixture.Attempts;
             CardPlayRejectionFixture.Arm(card);
-            return Success(request, JsonSerializer.Serialize(new { armed = true }));
+            return Success(request, JsonSerializer.Serialize(new { armed = true, previous_attempts = previousAttempts }));
         }
         if (request.Operation == "check_test_play_queue" && testMode
             && System.Environment.GetEnvironmentVariable("STS2_AGENT_TEST_SUITE") == "1")

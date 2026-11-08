@@ -61,7 +61,11 @@ internal sealed class ManualPlayBatch : IDisposable, ILifecycleObserver
         try
         {
             if (!item.Card.TryManualPlay(item.Target))
-            { item.Rejection = "The game rejected this card play before submission."; return false; }
+            {
+                item.Rejection = TargetInspection.Reason(item.Card, TargetInspection.Targets(item.Card))
+                    ?? "The game rejected this card play before submission.";
+                return false;
+            }
             if (item.Action == null)
             {
                 // A true return can also defer an action; it is not enqueue evidence.

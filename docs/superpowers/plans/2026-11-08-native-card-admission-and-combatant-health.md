@@ -1,6 +1,6 @@
 # 原生出牌接受与战斗对象生命实施计划
 
-> 当前状态：实施中，共 2 项，已完成 0 项。先处理原生出牌接受，再补齐战斗对象生命／格挡；无阻塞。
+> 当前状态：实施中，共 2 项，已完成 1 项。原生出牌接受已通过验证；正在补齐战斗对象生命／格挡，无阻塞。
 >
 > **For agentic workers:** 使用 superpowers:executing-plans 在当前会话逐项实施，按 RED→GREEN 验证；完成后一次独立审阅。
 
@@ -35,9 +35,9 @@
 
 **Interfaces:** 保持 CardSubmissionReason 签名但只校验身份与目标；ManualPlayBatch.Submit 的原生 false 使用只读拒绝诊断。
 
-- [ ] Step 1: 扩展仅测试模式原生入口观察，验证 0 能量单张与批量都实际到达 TryManualPlay，仍拒绝且可立即 end_turn；旧实现必须失败。
-- [ ] Step 2: 删除入队前的 CanPlay／CanPlayTargeting 门控，原生 false 后读取 TargetInspection.Reason 或通用原因。
-- [ ] Step 3: GUI 核对拒绝、Normality、正常队列、选择续接；Python 全套与 C# 检查通过，更新文档后提交。
+- [x] Step 1: 扩展仅测试模式原生入口观察，验证 0 能量单张与批量都实际到达 TryManualPlay，仍拒绝且可立即 end_turn；旧实现必须失败。
+- [x] Step 2: 删除入队前的 CanPlay／CanPlayTargeting 门控，原生 false 后读取 TargetInspection.Reason 或通用原因。
+- [x] Step 3: GUI 核对拒绝、Normality、正常队列、选择续接；Python 全套与 C# 检查通过，更新文档后提交。
 
 ### Task 2: 共用生命读取与战斗对象输出
 

@@ -29,7 +29,7 @@
 | 项目 | 当前版本或要求 | 核对入口 |
 | --- | --- | --- |
 | 游戏 | Linux `v0.107.1`，release 分支，构建 `59260271` | [目标程序集核对与验证](docs/research/2026-11-03-result-observation-implementation.md) |
-| Mod | `0.81.0` | [Mod 清单](src/Sts2Agent/Sts2Agent.json) |
+| Mod | `0.81.1` | [Mod 清单](src/Sts2Agent/Sts2Agent.json) |
 | MCP server | `0.84.0` | [服务入口](src/sts2_mcp/mcp_server.py) |
 | 底层观察 schema | `47` | [观察序列化](src/Sts2Agent/Observation/GameObservation.cs) |
 | RitsuLib | `0.6.10`，须使用游戏 `0.107.1` 兼容运行时 | [获取与构建](docs/development/roundtrip.md#前提与构建) |
