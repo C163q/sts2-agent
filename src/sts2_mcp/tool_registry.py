@@ -317,9 +317,8 @@ SPECS = (
     ToolSpec(
         name='get_observation',
         schema=OBSERVATION_SCHEMA,
-        description="Read an overview of the current visible screen. Includes available inspection/action names, excluding this tool and screenshots. "
-            "Exposed selections include all browsable candidates. summary compacts top bars, combat, and selection cards; top_bar adds top-bar values without relic details. "
-            "Use inspect_relics for relic details. Ordinary hand effects and hover help require dedicated inspections.",
+        description="Read the current screen overview and available tool names. "
+            "Card effects and hover help are available through dedicated inspections; exposed selections include all browsable candidates.",
         annotations=read_only,
         category='observation',
         effect='read',
@@ -437,9 +436,8 @@ SPECS = (
     ToolSpec(
         name='inspect_hand',
         schema=HAND_SCHEMA,
-        description="Read current visible hand cards, HUD energy/stars and pile counts, optionally filtering cards by card_ids. full includes effects and hover help; "
-            "summary keeps identity, visible costs, enchantments, afflictions and UI markers. Unavailable IDs are grouped in errors; valid cards remain. "
-            "Markers do not guarantee a legal play.",
+        description="Read current visible hand card details, HUD energy/stars and pile counts. "
+            "Playability markers do not guarantee a legal play; use inspect_targets for targeting hints.",
         annotations=read_only,
         category='inspection',
         effect='read',
@@ -470,7 +468,7 @@ SPECS = (
         name='play_cards',
         schema=BATCH_SCHEMA,
         description='Queue current hand cards in order using native rules. Invalidated plays may be skipped. '
-            'Stops at choices; already queued cards may resume after selection. Check card_plays for per-card status.',
+            "Choices can pause or cancel queued plays; unsubmitted entries are not saved for later. Check card_plays for each card's status.",
         annotations=action,
         category='action',
         effect='action',
@@ -499,8 +497,8 @@ SPECS = (
     ToolSpec(
         name='inspect_ui',
         schema=UI_SCHEMA,
-        description="Read help for exposed top-bar and combat UI. summary lists titles and sources; sources selects descriptions. Use inspect_combatants for occupied orbs; "
-            "use dedicated inspections for cards, potions and relics.",
+        description="Read hover help for exposed top-bar and combat UI. summary keeps titles and source paths; sources filters tips in any preset. "
+            "Use default/full with sources to read selected descriptions. Use dedicated inspections for combatants, cards, potions and relics.",
         annotations=read_only,
         category='inspection',
         effect='read',
@@ -650,9 +648,7 @@ SPECS = (
         name='inspect_map',
         schema=MAP_SCHEMA,
         description="Open/reuse the current-act map, replacing a covering card page. Leaves it open. "
-            "Returns the graph by default; summary groups node IDs by type without connections or details. "
-            "max_steps limits nodes within N drawn links; 0 keeps the entire map. "
-            "Does not travel or reveal unknown encounters; close with close_map.",
+            "Read routes and selectable nodes; close with close_map. Travel with travel_to_node.",
         annotations=view,
         category='view',
         effect='view',
@@ -683,11 +679,8 @@ SPECS = (
     ToolSpec(
         name='inspect_selection',
         schema=SELECTION_SCHEMA,
-        description="Read all browsable candidates, offered buttons and visible previews of the current card selection. "
-            "Card descriptions and hover help by default; summary compacts every card, including bundles and previews. "
-            "card_ids filters returned card details only; instructions and buttons remain. "
-            "view_upgrades toggles an available native checkbox and keeps that UI state; unsupported screens return current data plus errors. "
-            "Unavailable while the selection is hidden; never selects or confirms a card.",
+        description="Read all browsable candidates, bundles, offered buttons and visible previews of the exposed card selection. "
+            "view_upgrades can change the native preview setting. Use select_card or selection_option to choose.",
         annotations=view,
         category='inspection',
         effect='read',

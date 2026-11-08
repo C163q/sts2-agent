@@ -7,7 +7,7 @@ COMBATANT_SCHEMA = {'type': 'object', 'properties': {
     'preset': {'type': 'string', 'enum': ['full', 'summary'], 'default': 'full',
                'description': 'summary keeps static combatant data and omits all hover help.'},
     'sources': {'type': ['array', 'null'], 'items': {'type': 'string', 'minLength': 1},
-                'description': 'Canonical paths in the current unfiltered inspection; group prefixes include descendants. Omit/null for all; [] selects no objects. source_indices maps compact arrays to original positions.'}},
+                'description': 'Paths in the current unfiltered inspection, e.g. player, enemies, enemies.0, enemies.0.intents.0. Group prefixes include descendants. Omit/null for all; [] selects no objects. source_indices maps compact arrays to original positions.'}},
     'additionalProperties': False}
 ROOTS = ('player', 'enemies', 'allies')
 

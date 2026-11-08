@@ -4,10 +4,11 @@ from sts2_mcp.tool_registry import SPECS, NO_ARGUMENTS
 
 SERVER_INSTRUCTIONS = (
     "Control a local Slay the Spire 2 game; output is English. "
-    "Output preset defaults to default: full content with ordinary null object fields omitted. "
-    "Array positions, event nulls and card comparison sides remain. "
-    "Relic grayed_out/pulsing false flags are also omitted in default/summary; other omissions never mean zero, false, empty or unchanged. "
-    "Use full to preserve all existing nulls; other named presets retain their own behavior. "
+    "Output preset defaults to default: this tool's full content with ordinary null object fields omitted. "
+    "Array positions, transition event nulls, card comparison sides and displayed treasure.relic:null remain. "
+    "default also omits relic grayed_out/pulsing:false and card_played autoplay:false. "
+    "Named presets have additional reductions described by each tool. Use full for explicit nulls and these false flags. "
+    "Results are snapshots or action receipts, not incremental updates. "
     "Call tools sequentially and decide after each result. "
     "A page body status of not_ready means its display is still updating; visible does not mean all buttons are enabled. "
     "available_actions lists currently offered tool names; arguments and state are checked at call time. "

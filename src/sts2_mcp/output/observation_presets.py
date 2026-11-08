@@ -2,7 +2,7 @@ OBSERVATION_SCHEMA = {
     'type': 'object',
     'properties': {'preset': {
         'type': 'string', 'enum': ['full', 'actions_only', 'summary', 'top_bar'], 'default': 'full',
-        'description': 'All presets keep static event/divination summaries. full preserves basic observations with maps grouped by node type; summary compacts cards, combat and top bars; actions_only keeps context and tool names; top_bar adds values and relic_count without relic details. All refresh action permission.',
+        'description': 'full/default/summary use static event/divination summaries and group map nodes by type. summary further compacts cards, combat and top bars; actions_only returns context and available tool names; top_bar adds top-bar values and relic_count without relic details.',
     }},
     'additionalProperties': False,
 }

@@ -11,7 +11,7 @@ SELECTION_SCHEMA = {
                    'description': 'full keeps card descriptions and hover help; summary uses hand-summary fields for every candidate, bundle and preview card. Selection instructions and buttons remain.'},
         'card_ids': {'type': ['array', 'null'], 'items': {
             **CARD_ID, 'description': 'A current selection card ID from candidates, bundle contents or a visible preview; previews use the original card ID.'},
-                     'description': 'Optional current selection card IDs, including bundle contents and visible previews. Omit/null for all; [] returns no card details. Duplicates are ignored; native order remains. Previews use the original card ID. Unavailable IDs are grouped in errors[].card_ids alongside valid results.'},
+                     'description': 'Current selection card IDs, including bundle contents and visible previews. Omit/null for all; [] returns no card details. Instructions and buttons remain. Duplicates are ignored; native order remains. Previews use the original card ID. Unavailable IDs are grouped in errors[].card_ids alongside valid results.'},
         'view_upgrades': {'type': 'boolean',
                           'description': 'Toggle the native upgrade-preview checkbox when available; omit to keep its current state. Leaves the UI in that state. Unsupported screens return current cards plus errors[].code=upgrade_view_unavailable.'},
     },
