@@ -1,6 +1,33 @@
 """Validate shared static combatant fields without observation assembly."""
 from sts2_mcp.output.value_shapes import project, nullable
-from sts2_mcp.output.contracts.combat import BLADE, ORB, ORB_SLOTS
+from sts2_mcp.output.contracts.combat import BLADE, ORB, ORB_SLOTS, HEALTH
+
+
+def health_fields(value, *, required=False):
+    present = set(value) & set(HEALTH)
+    if not present and not required:
+        return {}
+    if present != set(HEALTH):
+        raise ValueError('Incomplete combatant health.')
+    result = project(value, HEALTH)
+    status = result['hp_display']
+    if (status not in {'numeric', 'dead', 'hidden', 'infinite', 'unknown'}
+            or any(result[key] is not None and result[key] < 0 for key in ('hp', 'max_hp', 'block'))
+            or status == 'numeric' and (result['hp'] is None or result['max_hp'] is None)
+            or status != 'numeric' and (result['hp'] is not None or result['max_hp'] is not None)):
+        raise ValueError('Invalid combatant health.')
+    return result
+
+
+def health_summary(compact, original):
+    status = original.get('hp_display')
+    hp, maximum = original.get('hp'), original.get('max_hp')
+    health = {'infinite': '∞', 'dead': 'dead', 'unknown': 'unknown'}.get(status)
+    if status == 'numeric' and type(hp) is int and type(maximum) is int:
+        health = f'{hp}/{maximum}'
+    for key in ('hp', 'max_hp', 'hp_display'):
+        compact.pop(key, None)
+    compact['health'] = health
 
 
 def validate_identities(items, maximum):

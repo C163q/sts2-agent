@@ -16,6 +16,8 @@ def preserve_null(path, parent):
         return True
     if path[:3] == ('transition', 'events', '*'):
         return True
+    if path in {('player', 'health'), ('enemies', '*', 'health'), ('allies', '*', 'health')}:
+        return True
     return any(path[:len(prefix)] == prefix and len(path) > len(prefix)
                and path[len(prefix)] in {'before', 'after'} for prefix in PREVIEW_PATHS)
 

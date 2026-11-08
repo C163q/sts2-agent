@@ -2,6 +2,8 @@
 
 核对日期：2026-11-08。代码基线 `e1936c1`，Mod `0.81.0`、MCP `0.84.0`、观察协议 47。反馈截图为 `.sts2-agent/screenshots/run01-*.png`；原始回执也已找到。本文记录核验和修改建议，尚未修改玩法实现。
 
+后续原生出牌接受调整和战斗对象生命补充已实现并验证，见[实施记录](2026-11-08-native-card-admission-and-combatant-health-implementation.md)；下文保留核验基线的结论。
+
 ## 结论
 
 | 反馈 | 当前情况 | 建议 |

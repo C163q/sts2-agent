@@ -1,6 +1,7 @@
 using System.Reflection;
 using Godot;
 using MegaCrit.Sts2.Core.Entities.Creatures;
+using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Models;
@@ -22,10 +23,42 @@ internal sealed class CombatantInspection(CombatantInspection.Level level)
     private readonly List<string> unavailable = [];
 
     internal sealed record PowerText(string? name, int? amount);
-    internal sealed record PlayerText(PowerText[]? powers, OrbInspection.OrbText?[]? orb_slots,
-        SovereignBladeInspection.BladeText[] sovereign_blades);
-    internal sealed record AllyText(uint? id, string? name, PowerText[]? powers);
-    internal sealed record EnemyText(uint? id, string? name, PowerText[]? powers, object[]? intents);
+    internal abstract class HealthText(NCreature node)
+    {
+        private readonly (int? current, int? maximum, string display) health = CombatObservation.Health(node);
+        public int? hp => health.current;
+        public int? max_hp => health.maximum;
+        public string hp_display => health.display;
+        public int? block { get; } = CombatObservation.Block(node);
+    }
+    internal sealed class PlayerText(NCreature node, PowerText[]? powers, OrbInspection.OrbText?[]? orbSlots,
+        SovereignBladeInspection.BladeText[] blades) : HealthText(node)
+    {
+        public PowerText[]? powers { get; } = powers;
+        public OrbInspection.OrbText?[]? orb_slots { get; } = orbSlots;
+        public SovereignBladeInspection.BladeText[] sovereign_blades { get; } = blades;
+    }
+    internal sealed class AllyText(NCreature node, PowerText[]? powers) : HealthText(node)
+    {
+        public uint? id { get; } = node.Entity.CombatId;
+        public string? name { get; } = EnglishCardText.Plain(node.Entity.Monster!.Title.GetFormattedText());
+        public PowerText[]? powers { get; } = powers;
+        public string? block_shared_with { get; } = SharedBlock(node);
+
+        private static string? SharedBlock(NCreature node)
+        {
+            var display = node.GetNodeOrNull<NCreatureStateDisplay>("%HealthBar");
+            return display != null && PrivateFields.Read(display, "_blockTrackingCreature") is Creature { IsPlayer: true } tracked
+                && ReferenceEquals(tracked.Player, node.Entity.PetOwner) && LocalContext.IsMe(tracked) ? "player" : null;
+        }
+    }
+    internal sealed class EnemyText(NCreature node, PowerText[]? powers, object[]? intents) : HealthText(node)
+    {
+        public uint? id { get; } = node.Entity.CombatId;
+        public string? name { get; } = EnglishCardText.Plain(node.Entity.Monster!.Title.GetFormattedText());
+        public PowerText[]? powers { get; } = powers;
+        public object[]? intents { get; } = intents;
+    }
     internal sealed record Result(PlayerText? player, EnemyText[] enemies, AllyText[] allies,
         HoverTextSources.Tip[] hover_tips, string[] unavailable_hover_sources);
 
@@ -46,12 +79,12 @@ internal sealed class CombatantInspection(CombatantInspection.Level level)
         if (UnavailableReason(level) is { } reason) throw new InvalidOperationException(reason);
         var playerNode = player == null ? null : NCombatRoom.Instance!.GetCreatureNode(player.Creature);
         var playerText = VisibleUi.Shown(playerNode) && VisibleUi.OnScreen(playerNode!.Body)
-            ? new PlayerText(Powers(playerNode, "player"), Orbs(playerNode), Blades(playerNode, cardId)) : null;
+            ? new PlayerText(playerNode, Powers(playerNode, "player"), Orbs(playerNode), Blades(playerNode, cardId)) : null;
         var enemies = CombatObservation.EnemyNodes().Select((node, index) => new EnemyText(
-            node.Entity.CombatId, EnglishCardText.Plain(node.Entity.Monster!.Title.GetFormattedText()),
+            node,
             Powers(node, $"enemies.{index}"), Intents(node, $"enemies.{index}"))).ToArray();
         var allies = CombatObservation.AllyNodes().Select((node, index) => new AllyText(
-            node.Entity.CombatId, EnglishCardText.Plain(node.Entity.Monster!.Title.GetFormattedText()),
+            node,
             Powers(node, $"allies.{index}"))).ToArray();
         return new Result(playerText, enemies, allies,
             tips.Items,

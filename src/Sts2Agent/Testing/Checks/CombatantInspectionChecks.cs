@@ -73,6 +73,21 @@ internal static class CombatantInspectionChecks
             try { item.Visible = false; Check(name, verify(CombatantInspection.Read(player, cardIds.Get))); }
             finally { item.Visible = visible; }
         }
+        var enemyHealth = enemy.GetNode<NCreatureStateDisplay>("%HealthBar");
+        var healthBar = enemyHealth.GetNode<NHealthBar>("%HealthBar");
+        Hidden(healthBar, "hidden_health_and_block_remain_unknown", state => state.enemies[0].hp == null
+            && state.enemies[0].max_hp == null && state.enemies[0].hp_display == "hidden" && state.enemies[0].block == null);
+        Hidden(healthBar.GetNode<CanvasItem>("%HpLabel"), "hidden_hp_label_never_uses_model_hp",
+            state => state.enemies[0].hp == null && state.enemies[0].max_hp == null && state.enemies[0].hp_display == "hidden");
+        var healthLabel = healthBar.GetNode<Label>("%HpLabel");
+        string healthText = healthLabel.Text;
+        try
+        {
+            healthLabel.Text = new LocString("gameplay_ui", "HEALTH_BAR.DEAD").GetFormattedText();
+            var dead = CombatantInspection.Read(player, cardIds.Get, CombatantInspection.Level.Summary).enemies[0];
+            Check("dead_health_preserves_display_instead_of_model_hp", dead.hp == null && dead.max_hp == null && dead.hp_display == "dead");
+        }
+        finally { healthLabel.Text = healthText; }
         Hidden(playerPowers, "hidden_player_powers_are_unknown", state => state.player?.powers == null
             && !state.hover_tips.Any(tip => tip.sources.Any(source => source.StartsWith("player.powers."))));
         Hidden(enemyPowers, "hidden_enemy_powers_are_unknown", state => state.enemies[0].powers == null);

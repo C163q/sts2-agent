@@ -69,6 +69,14 @@ internal static class EnglishCardText
         finally { activePower = previous; }
     });
 
+    internal static string LocalizedText(LocString text)
+    {
+        // UI label comparisons need the current locale even inside an English detail read.
+        bool previous = active;
+        try { active = false; return text.GetFormattedText(); }
+        finally { active = previous; }
+    }
+
     private static string Template(LocString text) => English.Entry(text.LocTable, text.LocEntryKey)
         ?? throw new InvalidOperationException("English localization is unavailable for this card detail.");
 

@@ -1,0 +1,20 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "allies": [
+    {
+      "id": 4,
+      "name": "Osty",
+      "powers": [
+        {
+          "name": "Die for You"
+        }
+      ],
+      "block": 0,
+      "block_shared_with": "player",
+      "health": "1/1"
+    }
+  ]
+}

@@ -66,14 +66,8 @@ def observation_summary(payload):
         return result
 
     def unit_summary(compact, original):
-        status = original.get('hp_display')
-        hp, maximum = original.get('hp'), original.get('max_hp')
-        health = {'infinite': '∞', 'dead': 'dead', 'unknown': 'unknown'}.get(status)
-        if status == 'numeric' and type(hp) is int and type(maximum) is int:
-            health = f'{hp}/{maximum}'
-        for key in ('hp', 'max_hp', 'hp_display'):
-            compact.pop(key, None)
-        compact['health'] = health
+        from sts2_mcp.output.combat_fields import health_summary
+        health_summary(compact, original)
         for key in ('powers', 'orb_slots', 'sovereign_blades'):
             if compact.get(key) == []:
                 compact.pop(key)

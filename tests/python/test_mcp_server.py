@@ -251,9 +251,9 @@ class GameToolsTests(unittest.IsolatedAsyncioTestCase):
             payload = game.combatant_payload
             payload.update(hand=[{"id": 9}], available_actions=["end_turn"], top_bar={"seed": "private"},
                            notes={"card_values": "private"})
-            payload["player"].update(hand=[{"seed": "private"}], hp=80)
+            payload["player"].update(hand=[{"seed": "private"}], max_energy=80)
             payload["player"]["powers"][0]["model_id"] = "private"
-            payload["enemies"][0].update(next_move="private", hp=20)
+            payload["enemies"][0].update(next_move="private", future_hp=20)
             payload["enemies"][0]["powers"][0]["model_id"] = "private"
             payload["enemies"][0]["intents"][0]["future"] = "private"
             payload["hover_tips"][0]["debug"] = "private"

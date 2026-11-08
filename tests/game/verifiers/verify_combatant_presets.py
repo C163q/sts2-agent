@@ -59,12 +59,24 @@ async def verify(args):
             default = await call('inspect_combatants', {'preset': 'default'})
             assert default == apply_preset(full, 'default')
             summary = await call('inspect_combatants', {'preset': 'summary'})
-            assert summary == apply_preset({k: v for k, v in full.items() if k != 'hover_tips'}, 'default')
+            summary_observed = await call('get_observation', {'preset': 'summary'})
+            for group in ('player', 'enemies', 'allies'):
+                units = [summary[group]] if group == 'player' else summary[group]
+                observed_units = [summary_observed[group]] if group == 'player' else summary_observed[group]
+                for unit, other in zip(units, observed_units, strict=True):
+                    assert unit['health'] == other['health']
+                    assert unit.get('block') == other.get('block')
+                    assert not {'hp', 'max_hp', 'hp_display'} & unit.keys()
             assert 'hover_tips' not in summary
             assert await call('inspect_combatants', {'sources': None}) == full
             enemies = await call('inspect_combatants', {'preset': 'summary', 'sources': ['enemies']})
             assert set(enemies) <= {'scene', 'screen', 'enemies', 'notes'}
             assert enemies['enemies'] == summary['enemies']
+            hp_only = await call('inspect_combatants', {'sources': ['enemies.0.hp', 'enemies.0.block']})
+            assert hp_only['enemies'] == [{k: full['enemies'][0][k] for k in ('id', 'name', 'hp', 'block')}]
+            assert hp_only['hover_tips'] == []
+            health_only = await call('inspect_combatants', {'preset': 'summary', 'sources': ['enemies.0.health']})
+            assert health_only['enemies'] == [{k: summary['enemies'][0][k] for k in ('id', 'name', 'health')}]
             empty = await call('inspect_combatants', {'sources': []})
             assert set(empty) == {'scene', 'screen'}, empty
             last = len(full['enemies']) - 1
@@ -119,7 +131,7 @@ async def verify(args):
                     assert not any(disabled in tip['sources'] for tip in detailed['hover_tips'])
                     static = await call('inspect_combatants', {'preset': 'summary'})
                     assert 'hover_tips' not in static and 'hover_tips_unavailable' not in static['notes']
-                    assert static['enemies'] == apply_preset({'enemies': detailed['enemies']}, 'default')['enemies']
+                    assert static['enemies'] == summary['enemies']
                     filtered = await call('inspect_combatants', {'sources': ['player']})
                     assert 'hover_tips_unavailable' not in filtered.get('notes', {})
                     await call('capture_screenshot', {'filename': 'disabled-hover.png'})

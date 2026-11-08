@@ -1,0 +1,18 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "enemies": [
+    {
+      "id": 1,
+      "name": "Leaf Slime (S)",
+      "health": "15/15"
+    }
+  ],
+  "source_indices": {
+    "enemies": [
+      0
+    ]
+  }
+}

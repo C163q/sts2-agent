@@ -4,7 +4,7 @@
 
 早期全流程反馈的[收尾复核](2026-11-08-early-playtest-feedback-review.md)确认佩尔后续前进及战败后的直接结算查看已可用；地图移动期间资源漏记和结算文字重复已完成[修复及验证](2026-11-08-room-resource-and-result-text-implementation.md)。
 
-中期游玩反馈的[复核](2026-11-08-mid-playtest-feedback-review.md)确认批量能量事件合并后与最终观察一致；建议让原生调用决定出牌接受与否，并为战斗对象详情补充生命／格挡，尚未实施。
+中期游玩反馈的[复核](2026-11-08-mid-playtest-feedback-review.md)确认批量能量事件合并后与最终观察一致；原生调用决定出牌接受、战斗对象详情生命／格挡已完成[实现与验证](2026-11-08-native-card-admission-and-combatant-health-implementation.md)。
 
 [共用链路重构计划](../superpowers/plans/2026-11-03-tool-architecture-refactor.md)的七阶段已完成，验收映射、范围及完整返回样例见[重构验收](2026-11-04-refactor-stage-7.md)。现在恢复下述逐工具内容审阅；结构重构不增加本清单完成数。
 

@@ -1,0 +1,20 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "enemies": [
+    {
+      "id": 1,
+      "name": "Leaf Slime (S)",
+      "hp": 15,
+      "block": 0
+    }
+  ],
+  "source_indices": {
+    "enemies": [
+      0
+    ]
+  },
+  "hover_tips": []
+}

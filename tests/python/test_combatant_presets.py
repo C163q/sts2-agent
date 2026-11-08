@@ -127,6 +127,76 @@ class CombatantClient(ActionClient):
 
 
 class CombatantToolTests(unittest.IsolatedAsyncioTestCase):
+    def health_client(self):
+        client = CombatantClient()
+        def populate(state):
+            state['schema_version'] = 48
+            state['player'].update(hp=70, max_hp=80, hp_display='numeric', block=5)
+            for enemy in state['enemies']:
+                enemy.update(hp=12, max_hp=20, hp_display='numeric', block=0)
+            state['allies'][0].update(hp=8, max_hp=10, hp_display='numeric', block=5, block_shared_with='player')
+        client.mutate = populate
+        return client
+
+    async def test_health_full_and_summary_include_visible_values_and_shared_block(self):
+        tools = GameTools(self.health_client())
+        full = await tools.inspect_combatants({'preset': 'full'})
+        self.assertEqual({k: full['player'][k] for k in ('hp', 'max_hp', 'hp_display', 'block')},
+                         {'hp': 70, 'max_hp': 80, 'hp_display': 'numeric', 'block': 5})
+        summary = await tools.inspect_combatants({'preset': 'summary'})
+        self.assertEqual(summary['player']['health'], '70/80')
+        self.assertEqual(summary['enemies'][0]['health'], '12/20')
+        self.assertEqual(summary['allies'][0]['health'], '8/10')
+        self.assertEqual(summary['allies'][0]['block_shared_with'], 'player')
+        self.assertEqual(summary['allies'][0]['block'], 5)
+        self.assertNotIn('hp', summary['player'])
+        self.assertNotIn('hover_tips', summary)
+
+    async def test_health_sources_select_only_requested_values_and_original_positions(self):
+        tools = GameTools(self.health_client())
+        full = await tools.inspect_combatants({'preset': 'full', 'sources': ['enemies.2.hp', 'enemies.0.block']})
+        self.assertEqual(full['enemies'], [{'id': 10, 'name': 'A', 'block': 0}, {'id': 12, 'name': 'C', 'hp': 12}])
+        self.assertEqual(full['source_indices'], {'enemies': [0, 2]})
+        self.assertEqual(full['hover_tips'], [])
+        summary = await tools.inspect_combatants({'preset': 'summary', 'sources': ['enemies.2.health']})
+        self.assertEqual(summary['enemies'], [{'id': 12, 'name': 'C', 'health': '12/20'}])
+        self.assertNotIn('errors', summary)
+
+    async def test_health_summary_preserves_hidden_null_and_non_numeric_displays(self):
+        for status, expected in [('hidden', None), ('infinite', '∞'), ('dead', 'dead'), ('unknown', 'unknown')]:
+            client = self.health_client(); populate = client.mutate
+            def mutate(state):
+                populate(state)
+                state['enemies'][0].update(hp=None, max_hp=None, hp_display=status, block=None)
+            client.mutate = mutate
+            with self.subTest(status=status):
+                tools = GameTools(client)
+                summary = await tools.inspect_combatants({'preset': 'summary'})
+                self.assertIn('health', summary['enemies'][0])
+                self.assertEqual(summary['enemies'][0]['health'], expected)
+                self.assertNotIn('block', summary['enemies'][0])
+                default = await tools.inspect_combatants()
+                self.assertEqual(default['enemies'][0]['hp_display'], status)
+                self.assertNotIn('hp', default['enemies'][0])
+
+    async def test_invalid_health_is_rejected_before_empty_filter_can_hide_it(self):
+        for bad in ({'hp': True}, {'block': -1}, {'hp_display': 'private'}, {'hp': None}, {'block_shared_with': 'enemy'}):
+            client = self.health_client(); populate = client.mutate
+            def mutate(state):
+                populate(state)
+                state['allies'][0].update(bad)
+            client.mutate = mutate
+            with self.subTest(bad=bad):
+                result = await GameTools(client).inspect_combatants({'preset': 'summary', 'sources': []})
+                self.assertEqual(result['error']['code'], 'transport_error')
+        client = self.health_client(); populate = client.mutate
+        def missing(state):
+            populate(state)
+            state['enemies'][0].pop('max_hp')
+        client.mutate = missing
+        result = await GameTools(client).inspect_combatants({'sources': []})
+        self.assertEqual(result['error']['code'], 'transport_error')
+
     async def test_summary_requests_static_level_and_can_authorize_an_action(self):
         client = CombatantClient(); tools = GameTools(client)
         result = await tools.inspect_combatants({'preset': 'summary', 'sources': ['enemies']})

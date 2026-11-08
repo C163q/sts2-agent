@@ -3,11 +3,12 @@ from sts2_mcp.output.player_output import ENEMY_ATTACK_INTENT_NOTE
 
 
 def assert_combatant_inspection(details, observed):
+    health_keys = {'hp', 'max_hp', 'hp_display', 'block'}
     assert {k: details[k] for k in ('scene', 'screen')} == {k: observed[k] for k in ('scene', 'screen')}
     assert {'scene', 'screen', 'player', 'enemies', 'allies', 'hover_tips'} <= details.keys(), details
     assert set(details) <= {'scene', 'screen', 'player', 'enemies', 'allies', 'hover_tips', 'notes'}, details
     if details['player'] is not None:
-        assert set(details['player']) == {'powers', 'orb_slots', 'sovereign_blades'}, details['player']
+        assert set(details['player']) == health_keys | {'powers', 'orb_slots', 'sovereign_blades'}, details['player']
         for key in details['player']:
             assert details['player'][key] == observed['player'][key], (key, details['player'], observed['player'])
     for group in ('enemies', 'allies'):
@@ -15,10 +16,10 @@ def assert_combatant_inspection(details, observed):
         expected = observed[group]
         assert [item['id'] for item in actual] == [item['id'] for item in expected], (group, actual, expected)
         for item, original in zip(actual, expected, strict=True):
-            keys = {'id', 'name', 'powers'} | ({'intents'} if group == 'enemies' else set())
+            keys = health_keys | {'id', 'name', 'powers'} | ({'intents'} if group == 'enemies' else {'block_shared_with'})
             assert set(item) == keys, item
             for key in keys:
-                assert item[key] == original[key], (group, key, item, original)
+                assert item[key] == original.get(key), (group, key, item, original)
     tips = details['hover_tips']
     assert len(tips) == len({(tip['title'], tip['description']) for tip in tips}), tips
     for tip in tips:

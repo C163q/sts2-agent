@@ -1,6 +1,6 @@
 from sts2_mcp.output.scene_context import scene_context
 import re
-from sts2_mcp.output.combat_fields import blade_refs, orb_slots, validate_identities
+from sts2_mcp.output.combat_fields import blade_refs, orb_slots, validate_identities, health_fields
 
 
 def nullable_text(value):
@@ -68,9 +68,12 @@ def validate_source(source, player, enemies, allies):
 
 def combatant_details(state):
     context = scene_context(state)
+    required = state.get('schema_version', 0) >= 48
     if not isinstance(state["enemies"], list):
         raise ValueError("Invalid combatant details.")
     player = None if state["player"] is None else {"powers": powers(state["player"]["powers"])}
+    if player is not None:
+        player.update(health_fields(state['player'], required=required))
     if player is not None and 'orb_slots' in state['player']:
         player['orb_slots'] = orb_slots(state['player']['orb_slots'])
     if player is not None and 'sovereign_blades' in state['player']:
@@ -79,8 +82,14 @@ def combatant_details(state):
     if state.get('allies') is not None:
         if not isinstance(state['allies'], list):
             raise ValueError('Invalid public allies.')
-        allies = [{'id': item['id'], 'name': nullable_text(item['name']), 'powers': powers(item['powers'])}
+        allies = [{'id': item['id'], 'name': nullable_text(item['name']), 'powers': powers(item['powers']),
+                   **health_fields(item, required=required)}
                   for item in state['allies']]
+        for source, ally in zip(state['allies'], allies, strict=True):
+            if 'block_shared_with' in source:
+                if source['block_shared_with'] not in (None, 'player'):
+                    raise ValueError('Invalid shared combatant block.')
+                ally['block_shared_with'] = source['block_shared_with']
         validate_identities(allies, 4294967295)
     enemies = []
     for enemy in state["enemies"]:
@@ -88,7 +97,8 @@ def combatant_details(state):
         if identity is not None and (type(identity) is not int or not 0 <= identity <= 4294967295):
             raise ValueError("Invalid combatant identity.")
         enemies.append({"id": identity, "name": nullable_text(enemy["name"]),
-                        "powers": powers(enemy["powers"]), "intents": intents(enemy["intents"])})
+                        "powers": powers(enemy["powers"]), "intents": intents(enemy["intents"]),
+                        **health_fields(enemy, required=required)})
     if not isinstance(state["hover_tips"], list):
         raise ValueError("Invalid combatant hover tips.")
     tips = []

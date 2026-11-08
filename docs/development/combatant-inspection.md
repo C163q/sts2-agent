@@ -6,7 +6,7 @@
 
 | 参数 | 默认值 | 含义 |
 | --- | --- | --- |
-| preset | default | full 保留完整静态数据及可读取的原生悬停说明；default 经[共用空值规则](mcp.md#输出预设)过滤；summary 仅保留静态数据，完全省略 hover_tips，并过滤普通 null |
+| preset | default | full 保留完整静态数据及可读取的原生悬停说明；default 经[共用空值规则](mcp.md#输出预设)过滤；summary 合并生命显示，完全省略 hover_tips，并过滤普通 null |
 | sources | 省略／null | 选择对象或条目及其关联说明；省略或 null 取全部，[] 不取任何对象，只保留 scene/screen、仍适用的 notes 和路径错误 |
 
 ```json
@@ -20,17 +20,20 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 | 字段 | 内容 |
 | --- | --- |
 | scene/screen | 本次快照的房间／结算场景和页面；不因查看战场对象改写 scene |
+| player／enemies[]／allies[] 的 hp/max_hp/hp_display/block | full/default 的可见生命、生命显示状态和格挡，与基础观察相同；没有格挡图标时为 0，生命条不可读时为 null |
+| player／enemies[]／allies[] 的 health | summary 的生命摘要：例如 "70/80"、"∞"、"dead"、"unknown"；隐藏生命显式保留 null |
 | player.powers | 当前展示的状态 name/amount |
 | player.orb_slots | 原生球槽队列，保留真正的空槽 null；每个球为 name/passive/evoke，数值只取已展示标签 |
 | player.sovereign_blades | 当前悬浮剑的绑定卡牌 id/name，沿用基础观察与手牌的稳定 ID；按 ID 排列 |
-| enemies | 从左到右的敌人 id/name/powers/intents；意图为 category/value |
-| allies | 从左到右的友方召唤物 id/name/powers；奥斯提不进入 enemies |
+| enemies | 从左到右的敌人 id/name、生命、格挡、powers/intents；意图为 category/value |
+| allies | 从左到右的友方召唤物 id/name、生命、格挡、powers；奥斯提不进入 enemies |
+| allies[].block_shared_with | 实际格挡控件跟踪本地玩家时为 "player"，表示玩家同一份格挡的重复显示 |
 | hover_tips | full/default 的原生主说明与附带解释，title/description/sources；summary 完全不返回 |
 | source_indices | 筛选压缩数组时的原下标映射，键为未筛选结果中的数组路径；没有压缩则不增加该项 |
 | errors | 无法匹配的选择器合并为 combatant_sources_unavailable，sources 保留首次请求顺序；有效部分继续返回，isError:false |
 | notes | 与返回内容相关的数值说明、未完成选择的导航，以及 full/default 的不可悬停提示 |
 
-该工具不提供生命、格挡、资源、手牌、牌堆计数、available_actions 或 transition；基础战况与动作范围由 get_observation 提供。不可读玩家在 full 中为 player:null；隐藏容器为 powers/intents:null，已展示但没有条目为 []；无显示计数为 amount:null，不以模型 Amount 补齐。default/summary 省略普通 null，球槽数组中的真实空位保留。
+能量、手牌、牌堆计数及可用动作分别通过 inspect_hand、牌堆工具或 get_observation 查看。不可读玩家在 full 中为 player:null；隐藏容器为 powers/intents:null，已展示但没有条目为 []；无显示计数为 amount:null，不以模型 Amount 补齐。default/summary 省略普通 null，球槽数组中的真实空位与 summary 的 health:null 保留。
 
 ## 对象与来源筛选
 
@@ -38,16 +41,21 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 
 | 路径示例 | 选择范围 |
 | --- | --- |
-| player | 玩家状态、球槽、悬浮剑 |
+| player | 玩家生命、格挡、状态、球槽、悬浮剑 |
+| player.block / enemies.0.block | 玩家／第一敌人的格挡 |
+| enemies.0.hp / enemies.0.max_hp / enemies.0.hp_display | full/default 的第一敌人生命字段 |
+| enemies.0.health | summary 的第一敌人生命摘要 |
 | player.powers / player.powers.0 | 全部玩家状态／第一条状态 |
 | player.orb_slots.0 | 第一球槽，包括真实空槽 |
 | player.sovereign_blades.0 | 第一把悬浮剑 |
 | enemies | 全部敌人 |
-| enemies.0 | 第一敌人的全部状态与意图 |
+| enemies.0 | 第一敌人的生命、格挡、状态与意图 |
 | enemies.0.intents / enemies.0.intents.0 | 第一敌人的全部意图／第一条意图 |
 | allies.0 / allies.0.powers.0 | 第一友方召唤物／其第一条状态 |
 
 多个路径取并集；父路径已包含子路径时不重复返回。选择状态／意图时保留所属敌人或友方的 id/name，不附送其他未选中分支。合法空分组返回空分组，没有悬停说明的条目仍可返回静态数据；不存在的下标、错误路径或不支持的字段进入 errors。筛选不跳过原生响应的完整校验。
+
+叶路径对应当前预设的未筛选输出：full/default 使用 hp、max_hp、hp_display，summary 使用合并后的 health。选择生命或格挡不会附送其他状态及悬停说明。
 
 数组紧凑返回，不用 null 填补未选中的位置。例如选择 enemies.2.powers.1，可产生以下定位映射：
 
@@ -64,7 +72,9 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 
 ## 读取边界
 
-get_observation 的 full/summary 和本工具 summary 共用同一个战斗对象读取入口的静态级别；生命、资源和手牌仍由独立入口组装，外部观察格式保持。内部静态结果保留原始 null、空列表和数字，各工具最后应用自己的公开预设。full 在同一静态顺序上补充说明，不能因鼠标交互禁用而移除状态或意图。
+get_observation 的 full/summary 和本工具 summary 共用战斗对象读取入口的静态级别，包含可见生命、格挡和同伴共享关系；基础观察另行组装资源与手牌。两工具共用生命摘要格式。内部静态结果保留原始 null、空列表和数字，各工具最后应用自己的公开预设。full 在同一静态顺序上补充说明，不能因鼠标交互禁用而移除状态或意图。
+
+底层 schema 48 的战斗对象必须包含完整生命字段；旧响应未提供这些字段时按旧格式读取，不推断缺少的数字。部分生命字段、错误类型或不合法显示状态均视为坏响应，空 sources 不能掩盖这些问题。
 
 支持无遮挡战场及原生可查看的建筑师背景。选牌覆盖、地图、牌组、牌堆、模态框、未就绪或隐藏战场拒绝；通过眼睛切回战场可读，保留 notes.selection。没有额外要求必须是玩家回合或动作队列为空，但不保证动画任意时点都稳定。
 

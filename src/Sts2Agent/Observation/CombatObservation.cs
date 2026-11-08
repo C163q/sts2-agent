@@ -84,12 +84,11 @@ internal sealed class CombatObservation
         NCreature? node = room.GetCreatureNode(player.Creature);
         if (!VisibleUi.Shown(node) || !VisibleUi.OnScreen(node!.Body))
             return null;
-        var hp = Health(node!);
         var resources = CombatResources.Read();
         return new
         {
             character = player.Character.Id.Entry,
-            hp = hp.current, max_hp = hp.maximum, hp_display = hp.display, block = Block(node!),
+            common.player.hp, common.player.max_hp, common.player.hp_display, common.player.block,
             energy = resources.Energy, max_energy = resources.Maximum, stars = resources.Stars,
             powers = common.player.powers,
             orb_slots = common.player.orb_slots,
@@ -118,7 +117,7 @@ internal sealed class CombatObservation
         var nodes = EnemyNodes().ToArray();
         if (!nodes.Select(node => node.Entity.CombatId).SequenceEqual(common.enemies.Select(item => item.id)))
             throw new InvalidOperationException("Displayed enemies changed during observation.");
-        return nodes.Select((node, index) => Enemy(node, common.enemies[index])).ToArray();
+        return common.enemies.Cast<object>().ToArray();
     }
 
     internal static IEnumerable<NCreature> VisibleCreatureNodes() =>
@@ -140,30 +139,15 @@ internal sealed class CombatObservation
         return nodes.Select((node, index) =>
         {
             var shared = common.allies[index];
-            var hp = Health(node);
             var result = new Dictionary<string, object?>
             {
                 ["id"] = shared.id, ["name"] = shared.name,
-                ["hp"] = hp.current, ["max_hp"] = hp.maximum, ["hp_display"] = hp.display,
-                ["block"] = Block(node), ["powers"] = shared.powers
+                ["hp"] = shared.hp, ["max_hp"] = shared.max_hp, ["hp_display"] = shared.hp_display,
+                ["block"] = shared.block, ["powers"] = shared.powers
             };
-            var display = node.GetNodeOrNull<NCreatureStateDisplay>("%HealthBar");
-            if (display != null && PrivateFields.Read(display, "_blockTrackingCreature") is Creature { IsPlayer: true } tracked
-                && ReferenceEquals(tracked.Player, node.Entity.PetOwner) && LocalContext.IsMe(tracked))
-                result["block_shared_with"] = "player";
+            if (shared.block_shared_with != null) result["block_shared_with"] = shared.block_shared_with;
             return (object)result;
         }).ToArray();
-    }
-
-    private object Enemy(NCreature node, CombatantInspection.EnemyText shared)
-    {
-        var hp = Health(node);
-        return new
-        {
-            id = shared.id, name = shared.name,
-            hp = hp.current, max_hp = hp.maximum, hp_display = hp.display, block = Block(node),
-            powers = shared.powers, intents = shared.intents
-        };
     }
 
     internal static object Intent(NIntent intent)
@@ -227,7 +211,7 @@ internal sealed class CombatObservation
         string? text = VisibleUi.Text(bar, "%HpLabel");
         var pair = Pair(text);
         string display = pair.current.HasValue ? "numeric"
-            : text == new LocString("gameplay_ui", "HEALTH_BAR.DEAD").GetFormattedText() ? "dead"
+            : text == EnglishCardText.LocalizedText(new LocString("gameplay_ui", "HEALTH_BAR.DEAD")) ? "dead"
             : VisibleUi.OnScreen(bar?.GetNodeOrNull<TextureRect>("%InfinityTex")) ? "infinite"
             : text != null ? "unknown" : "hidden";
         return (pair.current, pair.maximum, display);
@@ -239,7 +223,7 @@ internal sealed class CombatObservation
         return VisibleUi.Shown(node) && Health(node!).display is "numeric" or "dead";
     }
 
-    private static int? Block(NCreature node)
+    internal static int? Block(NCreature node)
     {
         var bar = node.GetNodeOrNull<NCreatureStateDisplay>("%HealthBar")?.GetNodeOrNull<NHealthBar>("%HealthBar");
         if (!VisibleUi.Shown(bar) || !VisibleUi.OnScreen(bar!.HpBarContainer))

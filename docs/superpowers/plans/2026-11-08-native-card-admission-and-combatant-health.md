@@ -1,6 +1,6 @@
 # 原生出牌接受与战斗对象生命实施计划
 
-> 当前状态：实施中，共 2 项，已完成 1 项。原生出牌接受已通过验证；正在补齐战斗对象生命／格挡，无阻塞。
+> 当前状态：两项实现及验证完成，共 2 项，已完成 2 项。正在进行一次独立全分支审阅，之后合入 main；无阻塞。
 >
 > **For agentic workers:** 使用 superpowers:executing-plans 在当前会话逐项实施，按 RED→GREEN 验证；完成后一次独立审阅。
 
@@ -45,10 +45,10 @@
 
 **Interfaces:** 共用静态对象新增生命字段；共用 Python health_summary 格式化 health，get_observation 保持既有外部结构。
 
-- [ ] Step 1: Python 先覆盖完整／摘要生命、静态字段筛选、空筛选校验坏数据及旧响应；当前实现失败。GUI 断言新增生命与基础观察一致。
-- [ ] Step 2: 共用原生生命读取及同伴关系；投影与校验新增字段，summary 共用格式，sources 接入新增字段；新 schema 要求完整字段，旧响应仅在包含字段时校验。
-- [ ] Step 3: 新增隐藏生命／格挡原生检查；运行 basic／osty／blade／orbs／selection 与任务 1 回归 GUI；Python 全套、C# 检查通过。
-- [ ] Step 4: 更新持续文档、版本和实际 JSON 样本；记录验证证据并提交。
+- [x] Step 1: Python 先覆盖完整／摘要生命、静态字段筛选、空筛选校验坏数据及旧响应；当前实现失败。GUI 断言新增生命与基础观察一致。
+- [x] Step 2: 共用原生生命读取及同伴关系；投影与校验新增字段，summary 共用格式，sources 接入新增字段；新 schema 要求完整字段，旧响应仅在包含字段时校验。
+- [x] Step 3: 新增隐藏生命／格挡原生检查；运行 basic／osty／blade／orbs／selection 与任务 1 回归 GUI；Python 全套、C# 检查通过。
+- [x] Step 4: 更新持续文档、版本和实际 JSON 样本；记录验证证据并提交。
 
 ## 收尾
 

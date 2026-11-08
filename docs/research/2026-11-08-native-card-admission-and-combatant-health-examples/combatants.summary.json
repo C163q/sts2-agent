@@ -1,0 +1,58 @@
+{
+  "scene": "combat",
+  "screen": {
+    "status": "visible"
+  },
+  "player": {
+    "powers": [],
+    "block": 0,
+    "orb_slots": [],
+    "sovereign_blades": [],
+    "health": "80/80"
+  },
+  "enemies": [
+    {
+      "id": 1,
+      "name": "Leaf Slime (S)",
+      "powers": [],
+      "intents": [
+        {
+          "category": "attack",
+          "value": "3"
+        }
+      ],
+      "block": 0,
+      "health": "15/15"
+    },
+    {
+      "id": 2,
+      "name": "Leaf Slime (M)",
+      "powers": [],
+      "intents": [
+        {
+          "category": "status",
+          "value": "2"
+        }
+      ],
+      "block": 0,
+      "health": "34/34"
+    },
+    {
+      "id": 3,
+      "name": "Twig Slime (S)",
+      "powers": [],
+      "intents": [
+        {
+          "category": "attack",
+          "value": "4"
+        }
+      ],
+      "block": 0,
+      "health": "10/10"
+    }
+  ],
+  "allies": [],
+  "notes": {
+    "enemy_attack_intents": "Enemy attack intents already include current preview modifiers, including effects on you. Do not apply those modifiers again; the number is not guaranteed HP loss."
+  }
+}

@@ -71,7 +71,7 @@ Mod 构建需要自行安装游戏程序集，见[构建前提](roundtrip.md#前
 
 游戏 API 或生命周期变化须验证加载和相关行为。只修改外部输出时，可先检查错误输入、真实 stdio 及合法游戏样本回放，但须明确是否重新运行真实游戏。历史检查数量和样本只在带日期的验证记录中维护。
 
-战斗对象静态字段由 CombatantInspection.Read 的 Summary 级统一读取，get_observation 组合独立的生命、资源与手牌字段；Full 只在同一对象顺序上增加悬停说明。原生校验、Python 对象筛选和公共空值过滤分别负责不同阶段，见[战斗对象契约](combatant-inspection.md)。
+战斗对象的可见生命、格挡、状态、意图及同伴共享关系由 CombatantInspection.Read 的 Summary 级统一读取，get_observation 另行组合资源与手牌字段；Full 只在同一对象顺序上增加悬停说明。生命摘要也使用公共格式入口。原生校验、Python 对象筛选和公共空值过滤分别负责不同阶段，见[战斗对象契约](combatant-inspection.md)。
 
 ## Python 输出依赖
 

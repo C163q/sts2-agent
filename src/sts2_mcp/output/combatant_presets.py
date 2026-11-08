@@ -1,6 +1,9 @@
 from sts2_mcp.output.filtering import optional_filter, linked_help, filter_indices
 """Select static combatant subtrees while preserving canonical source addresses."""
 from copy import deepcopy
+from sts2_mcp.output.combat_fields import health_summary
+
+HEALTH_FIELDS = ('hp', 'max_hp', 'hp_display', 'health', 'block')
 
 
 COMBATANT_SCHEMA = {'type': 'object', 'properties': {
@@ -38,17 +41,22 @@ def _source_paths(payload):
             for field in fields:
                 if field in value: entries(f'{path}.{field}', value[field])
 
-    if 'player' in payload: owner('player', payload['player'], ('powers', 'orb_slots', 'sovereign_blades'))
+    if 'player' in payload: owner('player', payload['player'], (*HEALTH_FIELDS, 'powers', 'orb_slots', 'sovereign_blades'))
     for root in ('enemies', 'allies'):
         if root not in payload: continue
         paths.add(root)
         for index, item in enumerate(payload[root] or []):
-            owner(f'{root}.{index}', item, ('powers', 'intents') if root == 'enemies' else ('powers',))
+            owner(f'{root}.{index}', item, (*HEALTH_FIELDS, 'powers', 'intents') if root == 'enemies'
+                  else (*HEALTH_FIELDS, 'powers', 'block_shared_with'))
     return paths
 
 
 def combatant_preset(payload, preset, sources):
     if 'error' in payload or preset == 'full' and sources is None: return payload
+    if preset == 'summary':
+        payload = deepcopy(payload)
+        for unit in [payload.get('player'), *(payload.get('enemies') or []), *(payload.get('allies') or [])]:
+            if unit is not None and 'hp_display' in unit: health_summary(unit, unit.copy())
     requested = None if sources is None else list(dict.fromkeys(sources))
     known = _source_paths(payload)
     valid = None if requested is None else [source for source in requested if source in known]
