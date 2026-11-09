@@ -28,7 +28,7 @@ def observation_details(state):
     if count is not None and count < 0:
         raise ValueError('Invalid relic count.')
     if result['player'] is not None and 'orb_slots' in result['player']:
-        result['player']['orb_slots'] = orb_slots(result['player']['orb_slots'])
+        result['player']['orb_slots'] = orb_slots(result['player']['orb_slots'], indexed=state.get('schema_version', 0) >= 50)
     if result['player'] is not None and 'sovereign_blades' in result['player']:
         result['player']['sovereign_blades'] = blade_refs(result['player']['sovereign_blades'])
     if result.get('allies') is not None:

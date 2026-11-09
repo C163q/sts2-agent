@@ -13,7 +13,7 @@
 {"preset":"summary","sources":["enemies"]}
 ```
 
-sources 接受非空字符串数组或 null，重复路径去重，结果保持原生顺序；未知参数、错误类型和不支持的 preset 整次 invalid_request。成功读取本身刷新动作许可，无须固定再调用 get_observation；明确拒绝保留已有许可，未知结果与状态过期的规则见[MCP 错误语义](mcp.md#调用和错误语义)。
+sources 接受非空字符串数组或 null，重复路径去重，结果保持未筛选数组的顺序；未知参数、错误类型和不支持的 preset 整次 invalid_request。成功读取本身刷新动作许可，无须固定再调用 get_observation；明确拒绝保留已有许可，未知结果与状态过期的规则见[MCP 错误语义](mcp.md#调用和错误语义)。
 
 ## 数据范围
 
@@ -24,7 +24,7 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 | player／enemies[]／allies[] 的 health | summary 的生命摘要：例如 "70/80"、"∞"、"dead"、"unknown"；隐藏生命显式保留 null |
 | player／enemies[]／allies[] 的 hp_preview | [血条预示](#血条预示)：毒的绿色段、灾厄的紫色段和致死字体颜色；各预设共用 |
 | player.powers | 当前展示的状态 name/amount |
-| player.orb_slots | 原生球槽队列，保留真正的空槽 null；每个球为 name/passive/evoke，数值只取已展示标签 |
+| player.orb_slots | 从左到右的球槽数组，保留真正的空槽 null；每个球为 slot_index/name/passive/evoke，编号与位置见[充能球顺序](#充能球顺序)，数值只取已展示标签 |
 | player.sovereign_blades | 当前悬浮剑的绑定卡牌 id/name，沿用基础观察与手牌的稳定 ID；按 ID 排列 |
 | enemies | 从左到右的敌人 id/name、生命、格挡、powers/intents；意图为 category/value |
 | allies | 从左到右的友方召唤物 id/name、生命、格挡、powers；奥斯提不进入 enemies |
@@ -35,6 +35,20 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 | notes | 与返回内容相关的数值说明、未完成选择的导航，以及 full/default 的不可悬停提示 |
 
 能量、手牌、牌堆计数及可用动作分别通过 inspect_hand、牌堆工具或 get_observation 查看。不可读玩家在 full 中为 player:null；隐藏容器为 powers/intents:null，已展示但没有条目为 []；无显示计数为 amount:null，不以模型 Amount 补齐。default/summary 省略普通 null，球槽数组中的真实空位与 summary 的 health:null 保留。
+
+## 充能球顺序
+
+`orb_slots` 按屏幕从左到右排列，保留全部空槽。每个非空球对象的 `slot_index` 沿原生队列从右到左编号：0 为最右槽，也是 Dualcast 等原生“最右侧充能球”效果使用的位置。三个槽只有一个闪电球时，full 返回：
+
+```json
+[null, null, {"slot_index": 0, "name": "Lightning", "passive": 3, "evoke": null}]
+```
+
+数组下标与槽位编号分别使用：容量为 n 时，数组下标 i 对应 `slot_index = n - 1 - i`。`sources` 和悬停来源路径使用数组下标；上例的球位于 `player.orb_slots.2`。筛选后 `slot_index` 保持原编号，`source_indices` 继续报告未筛选数组的下标。空槽为 null，其槽位编号可由完整数组位置确定。
+
+[充能球事件](end-turn.md#事件语义)使用同一 `slot_index`。满三个槽时，再充能会先激发并移除 0 号球，再把新球放入 2 号槽；事件中的不同编号对应不同球。球移动或槽位容量变化后，编号随当前队列更新。
+
+schema 50 起，非空球必须提供位置一致的整数 `slot_index`，各预设均保留；校验在筛选前完成。旧 schema 响应仍按原格式解码，其数组沿原生顺序从右到左且没有显式编号；更新 Mod 后获得上述新格式。
 
 ## 血条预示
 
@@ -62,7 +76,7 @@ sources 接受非空字符串数组或 null，重复路径去重，结果保持�
 | enemies.0.health | summary 的第一敌人生命摘要 |
 | enemies.0.hp_preview / enemies.0.hp_preview.poison_damage | 第一敌人的整个血条预示／毒掉血预示；同样支持 doom_threshold 和 lethal |
 | player.powers / player.powers.0 | 全部玩家状态／第一条状态 |
-| player.orb_slots.0 | 第一球槽，包括真实空槽 |
+| player.orb_slots.0 | 未筛选数组的最左槽，包括真实空槽 |
 | player.sovereign_blades.0 | 第一把悬浮剑 |
 | enemies | 全部敌人 |
 | enemies.0 | 第一敌人的生命、格挡、状态与意图 |

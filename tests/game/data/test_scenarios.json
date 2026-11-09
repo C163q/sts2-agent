@@ -221,7 +221,9 @@
     "parasol_sozu",
     "cauldron_sozu",
     "hidden_price",
-    "targeting"
+    "targeting",
+    "enchanted_remove",
+    "parasol_enchanted"
   ],
   "ancient": [
     "basic",

@@ -95,6 +95,7 @@ SUPPORTED_VERIFIERS = {
     'verify_selection_presets.py',
     'verify_resource_events.py',
     'verify_inventory_events.py',
+    'verify_defect_feedback.py',
     'verify_combat_resources.py',
     'verify_capacity.py',
     'verify_permanent_cards.py',
@@ -138,6 +139,7 @@ def load_cases(path):
             if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
+                'verify_defect_feedback.py': ('shop', 'parasol'),
                 'verify_necrobinder_feedback.py': ('pen_nib', 'soul', 'manual_sources'),
                 'verify_screenshots.py': ('gui',),
                 'verify_result_option.py': ('basic', 'history'),

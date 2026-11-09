@@ -1,0 +1,178 @@
+[
+  {
+    "name": "permanent_clones",
+    "scenarios": {
+      "play": "permanent_genetic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_permanent_cards.py",
+        "args": [
+          "--scenario",
+          "checks"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "inventory_changes",
+    "scenarios": {
+      "event": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_inventory_events.py",
+        "args": [
+          "--scenario",
+          "visibility"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "shop_removal",
+    "scenarios": {
+      "shop": "enchanted_remove"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_defect_feedback.py",
+        "args": [
+          "--scenario",
+          "shop"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "parasol_removal",
+    "scenarios": {
+      "shop": "parasol_enchanted"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_defect_feedback.py",
+        "args": [
+          "--scenario",
+          "parasol"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "orb_layout",
+    "scenarios": {
+      "play": "orbs"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_capacity.py",
+        "args": [
+          "--scenario",
+          "orbs"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "orb_visibility",
+    "scenarios": {
+      "play": "orbs"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_capacity.py",
+        "args": [
+          "--scenario",
+          "orb_visibility"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "orb_filtering",
+    "scenarios": {
+      "play": "orbs"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_combatant_presets.py",
+        "args": [
+          "--scenario",
+          "orbs"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "orb_summary",
+    "scenarios": {
+      "play": "orbs"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_observation_presets.py",
+        "args": [
+          "--scenario",
+          "orbs"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "orb_events",
+    "scenarios": {
+      "play": "orbs"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_orb_events.py",
+        "args": [
+          "--scenario",
+          "play"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "orb_boundaries",
+    "scenarios": {
+      "play": "orbs"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_orb_events.py",
+        "args": [
+          "--scenario",
+          "checks"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "orb_chain",
+    "scenarios": {
+      "play": "orb_chain"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_orb_events.py",
+        "args": [
+          "--scenario",
+          "chain"
+        ]
+      }
+    ]
+  }
+]

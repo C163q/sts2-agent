@@ -318,6 +318,7 @@ SPECS = (
         name='get_observation',
         schema=OBSERVATION_SCHEMA,
         description="Read the current screen overview and available tool names. "
+            "Orb arrays run left to right; each orb's slot_index counts from the right (0 is rightmost). "
             "Card effects and hover help are available through dedicated inspections; exposed selections include all browsable candidates.",
         annotations=read_only,
         category='observation',
@@ -562,6 +563,7 @@ SPECS = (
         name='inspect_combatants',
         schema=COMBATANT_SCHEMA,
         description="Read exposed combatant health, poison/Doom health-bar previews, Block, powers, intents, orbs and floating Sovereign Blades. "
+            "Orb arrays run left to right; slot_index counts from the right (0 is rightmost). Source paths use array indices. "
             "summary keeps static data without hover help. sources selects objects or groups by canonical paths; [] selects none. "
             "Full hover help is unavailable during card drag/aim/play; disabled icons remain with a note.",
         annotations=read_only,

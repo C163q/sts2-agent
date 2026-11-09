@@ -89,7 +89,7 @@ internal static class UiInspection
         var orbSlots = room.GetCreatureNode(player.Creature) is { } creature ? OrbInspection.VisibleNodes(creature) : null;
         for (int i = 0; i < (orbSlots?.Length ?? 0); i++)
             if (orbSlots![i].Model == null && OrbInspection.Hoverable(orbSlots[i]))
-                tips.Add(OrbModel.EmptySlotHoverTipHoverTip, $"player.orb_slots.{i}");
+                tips.Add(OrbModel.EmptySlotHoverTipHoverTip, $"player.orb_slots.{OrbInspection.ArrayIndex(i, orbSlots.Length)}");
 
         void Pile(NCombatCardPile pile, string key, string source)
         {

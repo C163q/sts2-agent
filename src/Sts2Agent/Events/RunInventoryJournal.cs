@@ -111,6 +111,11 @@ internal sealed class RunInventoryJournal : IDisposable
         if (Visible && TracksPermanent(card) && numericChanges.Add((card, type))) Card(type, card);
     }
 
+    internal void EnchantmentChanged(CardModel card)
+    {
+        if (TracksPermanent(card)) Card("card_enchantment_changed", card);
+    }
+
     private void Defer(string type, Func<Dictionary<string, object?>?> fields, Func<bool>? areaVisible = null)
     {
         if (!Visible || areaVisible?.Invoke() == false || buffer.Reserve(type) is not { } slot) return;
@@ -151,13 +156,8 @@ internal sealed class RunInventoryJournal : IDisposable
             if (!player.Deck.Cards.Contains(card) || before == level) return;
             Card(level > before ? "card_upgraded" : "card_downgraded", card);
         }
-        void Enchanted()
-        {
-            if (player.Deck.Cards.Contains(card)) Card("card_enchantment_changed", card);
-        }
         card.Upgraded += Upgraded;
-        card.EnchantmentChanged += Enchanted;
-        cleanup.Add(() => { card.Upgraded -= Upgraded; card.EnchantmentChanged -= Enchanted; });
+        cleanup.Add(() => card.Upgraded -= Upgraded);
     }
 
     private void Watch(RelicModel relic)

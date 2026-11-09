@@ -49,7 +49,7 @@ summary 可先列出可查询来源，再用 default 加 sources 读取所需正
 
 - 标题与正文来自原生悬停帮助，移除颜色、字体标记，保留换行、实际快捷键及 `<Energy>/<Star>` 图标占位符。full 保留 `title:null`，default/summary 省略无标题字段。
 - sources 关联完整基础观察中的字段，不重复字段值；不随观察摘要合并生命／能量字段而改名。顶栏 HP 使用 `top_bar.hp/top_bar.max_hp`，头像与进阶帮助使用 `top_bar.ascension`；战斗资源如 `player.energy` 沿用对应来源。
-- 同标题同正文合并，来源去重；同标题不同正文分别保留。空球槽来源如 `player.orb_slots.4`，下标从 0 起，对应完整可读栏位；多个空槽的共同帮助只输出一次。
+- 同标题同正文合并，来源去重；同标题不同正文分别保留。空球槽来源如 `player.orb_slots.4`，下标从 0 起，对应完整球槽数组从左到右的位置；球对象与事件的 `slot_index` 从右到左，完整映射见[充能球顺序](combatant-inspection.md#充能球顺序)；多个空槽的共同帮助只输出一次。
 - 无可用提示或 sources 筛选为空时保留 `hover_tips:[]`；不可读页面返回结构化错误，不用空数组表示失败。不包含资源当前值、动作 transition 或 available_actions；可用操作由 get_observation 提供。
 - MCP 的 JSON 文本与 structuredContent 一致。成功查看刷新内部许可；参数错误与明确读取拒绝保留已有许可，坏响应、超时、异常或取消仍清除许可。首次失败不生成许可。完整规则见 [MCP 调用语义](mcp.md#调用和错误语义)。文件客户端 `--raw` 另保留通信包装与 snapshot_id。
 

@@ -132,6 +132,21 @@ internal static class PermanentCardChecks
         });
         Check("enchantment attachment and direct amount changes are distinct", Kinds(events,
             "card_enchantment_changed", "card_enchantment_changed"));
+        events = await Capture("enchantment_previews", async scope =>
+        {
+            var enchantment = attack.Enchantment;
+            for (int i = 0; i < 3; i++)
+            {
+                var clone = (CardModel)attack.MutableClone();
+                clone.Enchantment!.Amount += 1;
+                clone.ClearEnchantmentInternal();
+                EnglishCardText.Read(() => BrowsedCard.Read(attack, "test", PileType.Deck, false, true));
+            }
+            Check("preview cloning preserves the owned enchantment", ReferenceEquals(attack.Enchantment, enchantment)
+                && attack.Enchantment!.Amount == 5);
+            await frame();
+        });
+        Check("cloned enchantment callbacks never report permanent changes", events.Length == 0);
         events = await Capture("enchantment_unchanged", async scope =>
         {
             attack.Enchantment!.Amount = 5;

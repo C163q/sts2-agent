@@ -126,7 +126,7 @@ actions_only/top_bar 按上表的最小范围返回。基础观察独立读取�
 | `block`、`energy`、`max_energy`、`stars` | 当前可见资源与计数 |
 | `player.hand[]` | 从左到右排列的当前可见手牌，包含稳定 ID、名称、固有属性、显示费用与标记，不含卡牌正文 |
 | `deck[]`、`view_upgrades`、`sort` | 仅在当前牌组页可读时出现；完整排序列表及 UI 实际设置，卡牌无正文／悬停解释 |
-| `player.orb_slots` | 按原生队列排列的充能球槽；整个字段 `null` 表示不可读，`[]` 表示没有槽位，数组项 `null` 表示空槽。非空项含 `name/passive/evoke`，数字仅取实际显示标签 |
+| `player.orb_slots` | 按屏幕从左到右排列的充能球槽；整个字段 `null` 表示不可读，`[]` 表示没有槽位，数组项 `null` 表示空槽。非空项含 `slot_index/name/passive/evoke`，槽位编号从右到左，数字仅取实际显示标签 |
 | `powers[]` | 实际显示状态图标的英语名称和可见计数，不枚举全部模型状态 |
 | `enemies[]` | 从左到右排列的可见敌人身份、定位 ID、生命、格挡、状态图标和当前意图 |
 | `allies[]` | 从左到右排列的可见友方召唤物，包含 `id/name/hp/max_hp/hp_display/block/powers`；奥斯提不属于敌人 |
@@ -156,7 +156,7 @@ actions_only/top_bar 按上表的最小范围返回。基础观察独立读取�
 
 `allies: null` 表示战场不可读，`[]` 表示当前可见范围中没有友方召唤物；死亡奥斯提的身体仍可识别，但已隐藏的生命数字保持 `null`，不从模型补出 0。悬浮剑按卡牌稳定 ID 排列，公转不改变顺序或状态令牌；隐藏、零缩放或被实际裁剪的剑不列出；已展示剑不按视口坐标截断，也不借其读取其他隐藏卡牌。剑离开手牌后，只要悬浮对象仍然可见，就仍可通过 [inspect_combatants](combatant-inspection.md) 查看原生卡牌预览；消耗及变牌后随原生对象移除。来源和验证见[奥斯提与君王之剑](../research/2026-11-02-companions.md)。
 
-充能球按当前 UI 队列顺序输出，首项是最先激发的槽位，不按屏幕横坐标排序；不包含已脱离队列但仍在淡出的旧图像。球种可以按外观识别，普通球未显示的激发数值为 `null`，等离子球不补出模型数字。任一槽位隐藏或被裁剪时，整个 `orb_slots` 为 `null`，避免把未知槽当空槽。已生成球的悬停说明由 [inspect_combatants](combatant-inspection.md) 提供；空槽的通用帮助由 [inspect_ui](ui-inspection.md) 提供。
+充能球数组按屏幕从左到右输出，球对象的 `slot_index` 沿原生队列从右到左编号，0 对应最右槽。空槽、编号与来源路径的完整规则见[充能球顺序](combatant-inspection.md#充能球顺序)。不包含已脱离队列但仍在淡出的旧图像。球种可以按外观识别，普通球未显示的激发数值为 `null`，等离子球不补出模型数字。任一槽位隐藏或被裁剪时，整个 `orb_slots` 为 `null`，避免把未知槽当空槽。已生成球的悬停说明由 [inspect_combatants](combatant-inspection.md) 提供；空槽的通用帮助由 [inspect_ui](ui-inspection.md) 提供。
 
 ## 数值预览说明
 

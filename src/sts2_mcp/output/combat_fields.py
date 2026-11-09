@@ -64,9 +64,13 @@ def blade_refs(value):
     return result
 
 
-def orb_slots(value):
+def orb_slots(value, *, indexed=False):
     result = project(value, ORB_SLOTS)
-    if result is not None and (len(result) > 10 or any(
-            slot is not None and (set(slot) != set(ORB) or not slot['name']) for slot in result)):
-        raise ValueError('Invalid public orb slots.')
+    if result is not None:
+        required = set(ORB) if indexed else set(ORB) - {'slot_index'}
+        if len(result) > 10 or any(slot is not None and (
+                not required <= set(slot) or not slot['name']
+                or 'slot_index' in slot and slot['slot_index'] != len(result) - 1 - i)
+                for i, slot in enumerate(result)):
+            raise ValueError('Invalid public orb slots.')
     return result

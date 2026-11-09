@@ -94,10 +94,10 @@ async def verify(args):
 
             if args.scenario == 'orbs':
                 slots = full['player']['orb_slots']
-                assert len(slots) == 5 and slots[-1] is None
-                slot = await call('inspect_combatants', {'preset': 'summary', 'sources': ['player.orb_slots.4']})
+                assert len(slots) == 5 and slots[0] is None
+                slot = await call('inspect_combatants', {'preset': 'summary', 'sources': ['player.orb_slots.0']})
                 assert slot['player'] == {'orb_slots': [None]}
-                assert slot['source_indices'] == {'player.orb_slots': [4]}
+                assert slot['source_indices'] == {'player.orb_slots': [0]}
                 assert 'hover_tips' not in slot
             elif args.scenario == 'osty':
                 ally = await call('inspect_combatants', {'preset': 'summary', 'sources': ['allies']})

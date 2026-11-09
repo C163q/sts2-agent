@@ -7,7 +7,7 @@ namespace Sts2Agent;
 internal static class OrbInspection
 {
     private static readonly EnglishText English = new();
-    internal sealed record OrbText(string? name, int? passive, int? evoke);
+    internal sealed record OrbText(int slot_index, string? name, int? passive, int? evoke);
 
     public static NOrb[]? VisibleNodes(NCreature node)
     {
@@ -44,9 +44,12 @@ internal static class OrbInspection
 
     public static OrbText?[]? Read(NCreature node) => ReadSlots(VisibleNodes(node));
 
-    internal static OrbText?[]? ReadSlots(NOrb[]? slots) => slots?.Select(slot => slot.Model == null ? null
-        : new OrbText(English.Name(slot.Model.Title), VisibleUi.DisplayedNumber(slot, "%PassiveAmount"),
-            VisibleUi.DisplayedNumber(slot, "%EvokeAmount"))).ToArray();
+    // Native slots start at the right; public arrays follow the screen from left to right.
+    internal static int ArrayIndex(int slotIndex, int capacity) => capacity - 1 - slotIndex;
+
+    internal static OrbText?[]? ReadSlots(NOrb[]? slots) => slots?.Select((slot, index) => slot.Model == null ? null
+        : new OrbText(index, English.Name(slot.Model.Title), VisibleUi.DisplayedNumber(slot, "%PassiveAmount"),
+            VisibleUi.DisplayedNumber(slot, "%EvokeAmount"))).Reverse().ToArray();
 
     public static bool Hoverable(NOrb node) => node.IsEnabled && node.MouseFilter != Control.MouseFilterEnum.Ignore;
 }

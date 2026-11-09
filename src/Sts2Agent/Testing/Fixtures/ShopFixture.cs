@@ -1,9 +1,11 @@
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Commands;
+using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Merchant;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Events;
+using MegaCrit.Sts2.Core.Models.Enchantments;
 using MegaCrit.Sts2.Core.Models.Potions;
 using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Nodes;
@@ -25,6 +27,13 @@ internal static class ShopFixture
         scenario = name;
         RunManager.Instance.DebugOnlyGetState()!.ActFloor = 1;
         await PlayerCmd.GainGold(2000, player);
+        if (name is "enchanted_remove" or "parasol_enchanted")
+        {
+            var attacks = player.Deck.Cards.Where(card => card.Type == CardType.Attack).ToArray();
+            foreach (var card in attacks.Take(3)) CardCmd.Enchant<Sharp>(card, 3);
+            CardCmd.Enchant<Spiral>(attacks.First(card => card.Enchantment == null
+                && ModelDb.Enchantment<Spiral>().CanEnchant(card)), 1);
+        }
         if (name.Contains("sozu", StringComparison.Ordinal)) await RelicCmd.Obtain<Sozu>(player);
         if (name is "courier" or "parasol_courier" or "fake") await RelicCmd.Obtain<TheCourier>(player);
         if (name.StartsWith("parasol", StringComparison.Ordinal)) await RelicCmd.Obtain<LordsParasol>(player);
@@ -87,6 +96,10 @@ internal static class ShopFixture
         targeting_pending = targetingTask is { IsCompleted: false },
         gold = player.Gold, deck_count = player.Deck.Cards.Count,
         deck = player.Deck.Cards.Select(c => c.Id.Entry).ToArray(),
+        enchantments = player.Deck.Cards.Where(card => card.Enchantment != null).Select(card => new
+        {
+            card = card.Id.Entry, enchantment = card.Enchantment!.Id.Entry, amount = card.Enchantment.Amount
+        }).ToArray(),
         relics = player.Relics.Select(r => r.Id.Entry).ToArray(),
         potions = player.PotionSlots.Select(p => p?.Id.Entry).ToArray(),
         pending = ShopTransactions.Pending, obtaining = RelicObtainTracker.Pending,

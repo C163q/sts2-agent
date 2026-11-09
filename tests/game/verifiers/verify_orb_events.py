@@ -86,7 +86,7 @@ async def verify(args):
                 await call('end_turn')
                 state = await call('get_observation')
                 assert [s['name'] if s else None for s in state['player']['orb_slots']] == [
-                    'Frost', 'Dark', 'Plasma', 'Lightning', None, None, None], state
+                    None, None, None, 'Lightning', 'Plasma', 'Dark', 'Frost'], state
     print(f'PASS orb events: {args.scenario}')
 
 

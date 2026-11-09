@@ -29,6 +29,11 @@ internal static class OrbVisibilityChecks
         bool NoTips() => !CombatantInspection.Read(player, cardIds.Get).hover_tips.Any(t => t.sources.Any(s => s.StartsWith("player.orb_slots.")))
             && !UiInspection.Read().Any(t => t.sources.Any(s => s.StartsWith("player.orb_slots.")));
         Check("native five slots are exposed", ReadPlayer().GetProperty("orb_slots").GetArrayLength() == 5);
+        Check("native slot zero is the rightmost displayed slot", slots.Zip(slots.Skip(1))
+            .All(pair => pair.First.GlobalPosition.X > pair.Second.GlobalPosition.X));
+        Check("public arrays follow visual order with native slot numbers", ReadPlayer().GetProperty("orb_slots")
+            .EnumerateArray().Select((slot, index) => slot.ValueKind == JsonValueKind.Null
+                || slot.GetProperty("slot_index").GetInt32() == slots.Length - 1 - index).All(ok => ok));
         foreach (var (item, name) in new (CanvasItem, string)[] {
             (manager, "manager"), (slots[4].GetNode<Control>("%Outline"), "empty outline"),
             ((CanvasItem)PrivateFields.Read(slots[0], "_sprite")!, "orb sprite"), (slots[0], "orb node") })
@@ -42,7 +47,7 @@ internal static class OrbVisibilityChecks
         try
         {
             label.Hide(); await frame();
-            var lightning = ReadPlayer().GetProperty("orb_slots")[0];
+            var lightning = ReadPlayer().GetProperty("orb_slots")[4];
             Check("hidden label never uses model amount", lightning.GetProperty("name").GetString() == "Lightning"
                 && lightning.GetProperty("passive").ValueKind == JsonValueKind.Null);
         }
@@ -88,7 +93,7 @@ internal static class OrbVisibilityChecks
             try
             {
                 slots[i].MouseFilter = Control.MouseFilterEnum.Ignore; await frame();
-                string source = $"player.orb_slots.{i}";
+                string source = $"player.orb_slots.{slots.Length - 1 - i}";
                 Check("non-hoverable slot has no help: " + i, !CombatantInspection.Read(player, cardIds.Get).hover_tips.Any(t => t.sources.Contains(source))
                     && !UiInspection.Read().Any(t => t.sources.Contains(source)));
             }
@@ -116,9 +121,9 @@ internal static class OrbVisibilityChecks
         await OrbCmd.Channel<GlassOrb>(new ThrowingPlayerChoiceContext(), player);
         deadline = DateTime.UtcNow.AddSeconds(8);
         do { await frame(); }
-        while (OrbInspection.Read(node) is not [{ name: "Glass" }, null, null] && DateTime.UtcNow < deadline);
+        while (OrbInspection.Read(node) is not [null, null, { name: "Glass" }] && DateTime.UtcNow < deadline);
         Check("glass orb is identified without inventing evoke number", OrbInspection.Read(node) is
-            [{ name: "Glass", passive: not null, evoke: null }, null, null]);
+            [null, null, { slot_index: 0, name: "Glass", passive: not null, evoke: null }]);
         return new { passed, checks };
     }
 }

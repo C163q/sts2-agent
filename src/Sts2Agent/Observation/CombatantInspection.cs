@@ -119,7 +119,7 @@ internal sealed class CombatantInspection(CombatantInspection.Level level)
             for (int i = 0; i < slots.Length; i++)
                 if (slots[i].Model is { } model)
                 {
-                    string source = $"player.orb_slots.{i}";
+                    string source = $"player.orb_slots.{OrbInspection.ArrayIndex(i, slots.Length)}";
                     if (OrbInspection.Hoverable(slots[i])) Add(model.HoverTips, source);
                     else unavailable.Add(source);
                 }

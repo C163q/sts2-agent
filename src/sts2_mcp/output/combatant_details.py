@@ -76,7 +76,7 @@ def combatant_details(state):
     if player is not None:
         player.update(health_fields(state['player'], required=required, preview_required=preview_required))
     if player is not None and 'orb_slots' in state['player']:
-        player['orb_slots'] = orb_slots(state['player']['orb_slots'])
+        player['orb_slots'] = orb_slots(state['player']['orb_slots'], indexed=state.get('schema_version', 0) >= 50)
     if player is not None and 'sovereign_blades' in state['player']:
         player['sovereign_blades'] = blade_refs(state['player']['sovereign_blades'])
     allies = None

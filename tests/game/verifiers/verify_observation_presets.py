@@ -80,8 +80,8 @@ async def verify(args):
                 details = await call('inspect_hand', {'preset': 'summary'})
                 assert player['hand'] == apply_preset(details, 'default')['hand']
                 if args.scenario == 'orbs':
-                    assert len(player['orb_slots']) == 5 and player['orb_slots'][-1] is None
-                    assert player['orb_slots'][3] == {'name': 'Plasma'}
+                    assert len(player['orb_slots']) == 5 and player['orb_slots'][0] is None
+                    assert player['orb_slots'][1] == {'slot_index': 3, 'name': 'Plasma'}
                 elif args.scenario == 'osty':
                     assert summary['allies'][0]['name'] == 'Osty'
                     assert summary['allies'][0]['block_shared_with'] == 'player'

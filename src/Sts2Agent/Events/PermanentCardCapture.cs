@@ -10,6 +10,7 @@ namespace Sts2Agent;
 internal static class PermanentCardCapture
 {
     internal sealed record Change(CardModel Card, string Type, decimal Before);
+    private sealed record EnchantmentChange(CardModel? Suppressed, EnchantmentModel? Before);
     [ThreadStatic] private static Dictionary<CardModel, int>? suppressed;
 
     public static void Initialize()
@@ -24,10 +25,15 @@ internal static class PermanentCardCapture
             prefix: new HarmonyMethod(typeof(PermanentCardCapture), nameof(BeforeCost)),
             postfix: new HarmonyMethod(typeof(PermanentCardCapture), nameof(AfterCost)));
         foreach (string method in new[] { nameof(CardModel.UpgradeInternal), nameof(CardModel.FinalizeUpgradeInternal),
-                nameof(CardModel.DowngradeInternal), nameof(CardModel.EnchantInternal), nameof(CardModel.ClearEnchantmentInternal) })
+                nameof(CardModel.DowngradeInternal) })
             harmony.Patch(AccessTools.Method(typeof(CardModel), method),
                 prefix: new HarmonyMethod(typeof(PermanentCardCapture), nameof(BeforeCard)),
                 finalizer: new HarmonyMethod(typeof(PermanentCardCapture), nameof(Restore)));
+        foreach (string method in new[] { nameof(CardModel.EnchantInternal), nameof(CardModel.ClearEnchantmentInternal) })
+            harmony.Patch(AccessTools.Method(typeof(CardModel), method),
+                prefix: new HarmonyMethod(typeof(PermanentCardCapture), nameof(BeforeEnchantment)),
+                postfix: new HarmonyMethod(typeof(PermanentCardCapture), nameof(AfterEnchantment)),
+                finalizer: new HarmonyMethod(typeof(PermanentCardCapture), nameof(RestoreEnchantment)));
         harmony.Patch(AccessTools.Method(typeof(CardCmd), nameof(CardCmd.Enchant), [typeof(EnchantmentModel), typeof(CardModel), typeof(decimal)]),
             prefix: new HarmonyMethod(typeof(PermanentCardCapture), nameof(BeforeEnchant)),
             finalizer: new HarmonyMethod(typeof(PermanentCardCapture), nameof(Restore)));
@@ -82,6 +88,18 @@ internal static class PermanentCardCapture
         state = card;
     }
     private static void BeforeCard(CardModel __instance, out CardModel? __state) => Enter(__instance, out __state);
+    private static void BeforeEnchantment(CardModel __instance, out EnchantmentChange __state)
+    {
+        Enter(__instance, out var card);
+        __state = new(card, __instance.Enchantment);
+    }
+    private static void AfterEnchantment(CardModel __instance, EnchantmentChange __state)
+    {
+        // DeepCloneFields fires copied callbacks before AfterCloned clears their subscriptions.
+        if (__state.Suppressed != null && !ReferenceEquals(__state.Before, __instance.Enchantment))
+            RunInventoryJournal.Current?.EnchantmentChanged(__instance);
+    }
+    private static void RestoreEnchantment(EnchantmentChange __state) => Restore(__state.Suppressed);
     private static void BeforeEnchant(CardModel __1, out CardModel? __state) => Enter(__1, out __state);
     private static void BeforeModify(EnchantmentModel __instance, out CardModel? __state) =>
         Enter(__instance is { IsMutable: true, HasCard: true } ? __instance.Card : null, out __state);
