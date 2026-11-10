@@ -1,0 +1,12 @@
+[
+  {
+    "name": "doom_reward_continuation",
+    "scenarios": {"turn": "doom"},
+    "steps": [{"name": "verify", "verifier": "verify_v111_navigation.py", "args": []}]
+  },
+  {
+    "name": "beautiful_bracelet",
+    "scenarios": {"ancient": "bracelet"},
+    "steps": [{"name": "verify", "verifier": "verify_ancients.py", "args": ["--scenario", "bracelet"]}]
+  }
+]

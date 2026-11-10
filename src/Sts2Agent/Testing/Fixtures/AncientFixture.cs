@@ -20,16 +20,17 @@ internal static class AncientFixture
     public static async Task Configure(string scenario, Player player, Func<Task> frame)
     {
         RunManager.Instance.DebugOnlyGetState()!.ActFloor = 1;
-        if (scenario == "cape_lethal")
+        if (scenario == "talon_lethal")
             await CreatureCmd.LoseMaxHp(new ThrowingPlayerChoiceContext(), player.Creature, player.Creature.MaxHp - 9, isFromCard: false);
         (AncientEventModel model, string option) = scenario switch {
             "touch" => ((AncientEventModel)ModelDb.Event<Orobas>(), "TOUCH_OF_OROBAS"),
             "tooth" => ((AncientEventModel)ModelDb.Event<Pael>(), "PAELS_TOOTH"),
             "eye" => ((AncientEventModel)ModelDb.Event<Pael>(), "PAELS_EYE"),
-            "cape" or "cape_lethal" => ((AncientEventModel)ModelDb.Event<Vakuu>(), "DISTINGUISHED_CAPE"),
+            "talon" or "talon_lethal" => ((AncientEventModel)ModelDb.Event<Vakuu>(), "SERE_TALON"),
             "earring" => ((AncientEventModel)ModelDb.Event<Vakuu>(), "WHISPERING_EARRING"),
             "shrymp" => ((AncientEventModel)ModelDb.Event<Orobas>(), "ELECTRIC_SHRYMP"),
             "multi" => ((AncientEventModel)ModelDb.Event<Tanx>(), "TRI_BOOMERANG"),
+            "bracelet" => ((AncientEventModel)ModelDb.Event<Nonupeipe>(), "BEAUTIFUL_BRACELET"),
             "transform" => ((AncientEventModel)ModelDb.Event<Neow>(), "NEW_LEAF"),
             "bundle" => ((AncientEventModel)ModelDb.Event<Neow>(), "SCROLL_BOXES"),
             "nested" => ((AncientEventModel)ModelDb.Event<Neow>(), "LOST_COFFER"),

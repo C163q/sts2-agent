@@ -10,7 +10,7 @@
 - `RitsuLibDir` 指向兼容 RitsuLib 的完整目录，可直接使用 Steam 创意工坊安装。目录须直接包含 `RitsuLib.References.props`、`mod_manifest.json`、根 DLL、`assets.zip`、`shared/` 和匹配的 `compat/` 子目录。
 - 构建引用上述本地库与游戏自带程序集，不下载 NuGet 包；[NuGet.Config](../../src/Sts2Agent/NuGet.Config)不启用远程源。
 
-当前迁移分支以游戏 `v0.111.0` 和 RitsuLib `0.6.10` 的 `compat/0.111.0` 为构建目标，进度及验证范围见[迁移记录](../research/2026-11-10-v0.111-migration-investigation.md)。手工获取 RitsuLib 时，从[作者发布页](https://github.com/BAKAOLC/STS2-RitsuLib/releases/tag/v0.6.10)选择包含该目标的完整兼容包，完整解压后作为 `RitsuLibDir`。
+构建目标为游戏 `v0.111.0` 和 RitsuLib `0.6.10` 的 `compat/0.111.0`，验证依据见[迁移记录](../research/2026-11-10-v0.111-migration-investigation.md)。手工获取 RitsuLib 时，从[作者发布页](https://github.com/BAKAOLC/STS2-RitsuLib/releases/tag/v0.6.10)选择包含该目标的完整兼容包，完整解压后作为 `RitsuLibDir`。
 
 ### 路径配置
 

@@ -170,7 +170,7 @@ async def verify(args):
                         assert len(subset['shop']['items']) == int(target['id'] in rows), subset
                     finally: await native('set_test_shop_display', {'mode': 'normal', 'kind': kind})
                 guards = await native('check_test_dispatch')
-                assert all(count == 81 for count in guards.values()), guards
+                assert guards['test_mode_off'] == guards['suite_and_scenarios_off'] >= 81, guards
                 return
 
             if scenario == 'basic':

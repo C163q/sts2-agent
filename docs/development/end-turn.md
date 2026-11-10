@@ -54,6 +54,8 @@ MCP `end_turn()` 接受可选的[通用 preset](mcp.md#输出预设)，默认 de
 
 胜负及不完整回执仍保留当前快照中合法、无需许可的查看工具，游戏动作许可继续独立撤销；支持的可见选择还可列出对应选牌操作。调用成功的详情或页面工具可以刷新后续许可，不能仅因终态列有查看工具便认为结束回合或其他游戏动作已获授权。
 
+胜利回执等待原生战后奖励展示或无奖励离房任务，并核对后续页面就绪。奖励页可通过 `inspect_rewards` 取得领取或前进的许可。任务跟踪位于 [CombatJournalScope](../../src/Sts2Agent/Events/CombatJournalScope.cs)，页面边界由 [GameAdapter.Rewards](../../src/Sts2Agent/Adapter/GameAdapter.Rewards.cs)共用判断；灾厄胜利的复现与验证见[v0.111.0 迁移记录](../research/2026-11-10-v0.111-migration-investigation.md)。
+
 ## 动作完成与画面稳定
 
 出牌、药水、战斗内选牌继续结算及结束回合共用动作等待。停止原因在等待期间持续重新判断；`player_ready`、`action_completed`、`action_canceled` 以及胜利边界，须等待全局 UI 的四种卡牌预览容器及战斗 UI 的普通、散列预览容器清空，再等待原生 `NCardFlyVfx`、`NCardFlyShuffleVfx`、`NCardFlyPowerVfx` 离开场景，同时等待顶栏金币计数和药水入栏动画结束，再确认观察连续 250 毫秒不变。预览即使暂时被覆盖或尚未显示，也可能随后启动飞牌并改变可见计数，不能仅按当前可见性判断等待结束。原因、状态或可行动条件变化都会重新计时。帧持续推进时按 25 秒截止时间检查，未满足时返回 `timeout/complete=false`，不沿用先前已出现过的正常原因。

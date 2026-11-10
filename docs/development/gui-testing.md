@@ -22,6 +22,8 @@
 
 | 专项 | 清单与验证记录 |
 | --- | --- |
+| 灾厄胜利至奖励／地图的许可续接与 Beautiful Bracelet 随机附魔 | [v0_111_navigation](../../tests/game/data/gui_suite_v0_111_navigation.json)；[迁移记录](../research/2026-11-10-v0.111-migration-investigation.md) |
+| 第三幕入口与建筑师前进 | [run_ending](../../tests/game/data/gui_suite_run_ending.json)；完整胜负／解锁按[结算验证](run-ending.md#验证入口)使用独立实例 |
 | v0.111.0 迁移的卡牌／遗物重做与可选手牌选择 | [v0_111_combat](../../tests/game/data/gui_suite_v0_111_combat.json)；[迁移记录](../research/2026-11-10-v0.111-migration-investigation.md) |
 | v0.111.0 迁移的动作链、首回合事件与战斗 UI | [v0_111_bootstrap](../../tests/game/data/gui_suite_v0_111_bootstrap.json)；[迁移记录](../research/2026-11-10-v0.111-migration-investigation.md) |
 | 占卜工具冷切换、重复选择、覆盖拒绝恢复及揭开续接 | [divination_tool_view](../../tests/game/data/gui_suite_divination_tool_view.json)；[输出定稿](../research/2026-11-07-set-divination-tool-review.md#输出定稿) |

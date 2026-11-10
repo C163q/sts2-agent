@@ -16,6 +16,7 @@ from sts2_mcp.roundtrip_client import Client
 
 CATALOG = json.loads((ROOT / 'tests/game/data/test_scenarios.json').read_text())
 SUPPORTED_VERIFIERS = {
+    'verify_v111_navigation.py',
     'verify_v111_combat.py',
     'verify_end_turn.py',
     'verify_selection.py',
@@ -163,7 +164,7 @@ def load_cases(path):
                 'verify_shop_inspection_review.py': ('no_shop','basic','remove','courier','hidden_price','fake','full','nested','parasol','display'),
                 'verify_choose_rest_option_review.py': ('no_rest','basic','disabled','selection','rewards','counters','combat','targets'),
                 'verify_rest_site_inspection_review.py': ('no_rest','basic','disabled','tent','selection','heal_rewards','dig','display_red','display'),
-                'verify_proceed_review.py': ('combat','reward_skip','reward_empty','nested_reward','treasure_skip','treasure_collected','rest','tent','shop','event','ancient','divination','boss1','event_resume','selection','confirmation'),
+                'verify_proceed_review.py': ('combat','reward_skip','reward_empty','nested_reward','treasure_skip','treasure_collected','rest','tent','shop','event','ancient','divination','boss1','boss2','event_resume','selection','confirmation','architect'),
                 'verify_loot_treasure_review.py': ('basic','open','empty','extra','nested','choice','covered','no_treasure','map_pending','display'),
                 'verify_treasure_inspection_review.py': ('basic','empty','extra','nested','choice','no_treasure','map_pending','display_red','display'),
                 'verify_claim_reward_review.py': ('basic','full','linked','nested','returned','covered','no_rewards','transform','deck_covered','scroll_success','scroll_failure'),

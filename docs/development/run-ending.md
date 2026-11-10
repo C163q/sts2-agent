@@ -99,4 +99,6 @@ inspect_run_result.summary同样省略页面提示的description、药水／遗�
 
 结算读取见 [RunResultInspection](../../src/Sts2Agent/Observation/RunResultInspection.cs)，对话与结算动作见 [GameAdapter.RunEnding](../../src/Sts2Agent/Adapter/GameAdapter.RunEnding.cs)，公开校验与预设见 [run_ending_details](../../src/sts2_mcp/output/run_ending_details.py)。
 
-结算动作验证使用[verify_result_option.py](../../tests/game/verifiers/verify_result_option.py)，隔离套件为[gui_suite_result_option.json](../../tests/game/data/gui_suite_result_option.json)；失败与胜利流程使用独立终局实例。胜利回执不续接玩法许可，后续检查原生解锁、稳定ID重读、章节翻页、滚动后拒绝及返回主菜单。读取预设另由[verify_result_inspection.py](../../tests/game/verifiers/verify_result_inspection.py)核验。
+结算动作验证使用[verify_result_option.py](../../tests/game/verifiers/verify_result_option.py)，隔离套件为[gui_suite_result_option.json](../../tests/game/data/gui_suite_result_option.json)；[gui_suite_run_ending.json](../../tests/game/data/gui_suite_run_ending.json)覆盖第三幕入口和建筑师前进。
+
+完整胜负及解锁使用 `run_roundtrip.py --ending-scenario` 启动独立进程与用户目录，再运行 [verify_run_ending.py](../../tests/game/verifiers/verify_run_ending.py)；通过 `STS2_AGENT_VERIFY_IPC_DIR` 指定该实例的 IPC 目录。终局夹具会改写测试进度，因此不加入复用进程套件。验证覆盖原生解锁、稳定 ID 重读、章节翻页、返回主菜单及人工退出时间线。胜利回执按[许可规则](#动作结果与许可)刷新后再继续。读取预设另由[verify_result_inspection.py](../../tests/game/verifiers/verify_result_inspection.py)核验；当前兼容基线的实测证据见[v0.111.0 迁移记录](../research/2026-11-10-v0.111-migration-investigation.md)。

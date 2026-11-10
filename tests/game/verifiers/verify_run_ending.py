@@ -136,15 +136,20 @@ async def verify(args):
                 assert enabled, data
                 if 'Cards Unlocked!' in data['run_result']['texts']:
                     assert len(data['run_result']['cards']) == 3, data
-                    assert all(c.get('name') and c.get('description') for c in data['run_result']['cards']), data
-                    assert data['run_result']['cards'] == details['run_result']['cards'], (data, details)
+                    assert all(c.get('name') for c in data['run_result']['cards']), data
+                    assert all(c.get('name') and c.get('description') for c in details['run_result']['cards']), details
+                    assert data['run_result']['cards'] == [
+                        {key: value for key, value in card.items() if key not in {'description', 'hover_tips'}}
+                        for card in details['run_result']['cards']], (data, details)
                     assert all('hover_tips' in card and 'enchantment' in card and 'affliction' in card
-                               for card in data['run_result']['cards']), data
+                               for card in details['run_result']['cards']), details
                 if phase == 'timeline':
                     expected = {o['id'] for o in data['run_result']['options'] if o['id'].startswith('epoch:')}
                     actual = {t['source'] for t in details['run_result']['hover_tips'] if t['source'].startswith('epoch:')}
                     assert expected <= actual, details
-                option = next((o for o in enabled if o['id'] in {'continue', 'confirm', 'back'}), enabled[0])
+                option = next((o for o in enabled if o['id'] in {'continue', 'confirm', 'back'}), None)
+                if option is None:
+                    option = next((o for o in enabled if o['text'] == 'Reveal'), enabled[0])
                 if args.external_back and option['id'] == 'back':
                     response = await asyncio.to_thread(raw.call, 'external_back_test_result')
                     assert response['ok'], response

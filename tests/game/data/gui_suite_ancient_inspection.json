@@ -114,7 +114,7 @@
   {
     "name": "safe",
     "scenarios": {
-      "ancient": "cape"
+      "ancient": "talon"
     },
     "steps": [
       {
@@ -130,7 +130,7 @@
   {
     "name": "lethal",
     "scenarios": {
-      "ancient": "cape_lethal"
+      "ancient": "talon_lethal"
     },
     "steps": [
       {

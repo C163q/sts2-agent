@@ -25,6 +25,8 @@ internal sealed partial class GameAdapter
             if (CombatJournalScope.Current is { StartedCombat: true } entering
                 && reason is not ("interrupted" or "manual_input_required"))
                 reason = entering.StopReason(CanPlayCards());
+            if (reason == "combat_won" && NonCombatBoundary(includeRunOutcome: false) == null)
+                reason = null;
             state = Observe();
             // Logical actions finish before independent UI motion stops changing the observation.
             if (settling.Sample(reason, state, CardMotionPending() || RunUi.CardPreviewsPending()

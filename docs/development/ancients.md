@@ -90,7 +90,7 @@ choose_ancient_option和advance_dialogue在明确点击前拒绝且未改UI时�
 
 已识别的原生选牌页在进入／退出过渡中，仍真实画出的顶栏继续参与资源及物品事件采样。卡牌包打开时记录已显示的Scroll Boxes获取一次，未选定包内卡牌不提前记录加入；真实隐藏UI的变动仍不公开，恢复显示也不回放隐藏期间事件。
 
-低最大生命下选择卓越斗篷（Distinguished Cape）存在崩溃记录，包含隔离环境证据与原版复现反馈，根因待确认。[用户TODO](TODO.md)要求游戏升级至v0.111后复测。原审阅和反馈来源见[选择馈赠核验](../research/2026-11-07-choose-ancient-option-review.md)。
+旧版低最大生命下选择卓越斗篷（Distinguished Cape）存在崩溃记录。v0.111.0 将 9 点最大生命代价转移至 Sere Talon，原复现前提已变化；当前警告读取验证使用 Sere Talon。[用户 TODO](TODO.md)中的原版／Mod 致死领取对照仍待单独复测，本次仅验证提示。原始证据见[选择馈赠核验](../research/2026-11-07-choose-ancient-option-review.md)，新版核对见[迁移记录](../research/2026-11-10-v0.111-migration-investigation.md)。
 
 到达房间、继续对话及返回页面时，可行动条件还检查原生内容滚动、说明淡入、名称横幅显隐及其入场补间。可行动结果须等上述有限过渡结束，确保称号等可见字段稳定。称号仍按当时的实际可见性输出，状态指纹不忽略它。详情可以在过渡中读取已显示内容，此时选项的`enabled`可能为false；成功详情中选项为`enabled:true`时可直接选择，不要求额外调用 `get_observation`。复现和验证见[先古之民入场稳定性修复](../research/2026-11-01-ancient-stability.md)及[详情核验](../research/2026-11-07-inspect-ancient-development-notes.md)。
 

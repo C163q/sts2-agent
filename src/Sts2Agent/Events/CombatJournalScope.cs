@@ -2,6 +2,8 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Nodes;
+using MegaCrit.Sts2.Core.Nodes.Combat;
+using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace Sts2Agent;
@@ -55,8 +57,14 @@ internal sealed class CombatJournalScope : IDisposable
             prefix: new HarmonyMethod(typeof(CombatJournalScope), nameof(Starting)));
         harmony.Patch(AccessTools.Method(typeof(CombatManager), nameof(CombatManager.Reset)),
             prefix: new HarmonyMethod(typeof(CombatJournalScope), nameof(Resetting)));
-        foreach (string method in new[] { nameof(RunManager.EnterRoom), nameof(RunManager.EnterRoomWithoutExitingCurrentRoom) })
-            harmony.Patch(AccessTools.Method(typeof(RunManager), method),
+        // Victory launches an independent delay before rewards or an event-room resume.
+        var transitions = new[] {
+            AccessTools.Method(typeof(RunManager), nameof(RunManager.EnterRoom)),
+            AccessTools.Method(typeof(RunManager), nameof(RunManager.EnterRoomWithoutExitingCurrentRoom)),
+            AccessTools.Method(typeof(NCombatUi), "ShowRewards", [typeof(CombatRoom)]),
+            AccessTools.Method(typeof(NCombatUi), nameof(NCombatUi.ProceedWithoutRewards), Type.EmptyTypes) };
+        foreach (var method in transitions)
+            harmony.Patch(method,
                 prefix: new HarmonyMethod(typeof(CombatJournalScope), nameof(Entering)),
                 postfix: new HarmonyMethod(typeof(CombatJournalScope), nameof(Entered)),
                 finalizer: new HarmonyMethod(typeof(CombatJournalScope), nameof(EnterFailed)));

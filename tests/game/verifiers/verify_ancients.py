@@ -6,6 +6,7 @@ import asyncio
 import json
 import re
 import time
+from collections import Counter
 from pathlib import Path
 
 from mcp import ClientSession, StdioServerParameters
@@ -131,6 +132,17 @@ async def verify(args):
             if args.scenario == 'tooth': assert len(after['deck']) == len(first['deck']) - 5 and after['tooth_count'] == 5, after
             if args.scenario == 'shrymp': assert sum(c['enchantment'] == 'IMBUED' for c in after['deck']) == 1, after
             if args.scenario == 'multi': assert sum(c['enchantment'] == 'INSTINCT' for c in after['deck']) == 3, after
+            if args.scenario == 'bracelet':
+                assert not any(c['enchantment'] for c in first['deck']), first
+                assert sum(c['enchantment'] == 'SWIFT' for c in after['deck']) == 4, after
+                changes = [e for e in result['transition']['events'] if e['type'] == 'card_enchantment_changed']
+                assert len(changes) == 4, result
+                deck = (await call('inspect_deck'))['deck']
+                enchanted = [c for c in deck if (c.get('enchantment') or {}).get('name') == 'Swift']
+                assert len(enchanted) == 4 and all(c['enchantment']['amount'] == 2 for c in enchanted), deck
+                assert len({e['card']['id'] for e in changes}) == 4, changes
+                assert Counter(e['card']['name'] for e in changes) == Counter(c['name'] for c in enchanted), (changes, enchanted)
+                await call('close_card_view')
             if args.scenario == 'bundle': assert len(after['deck']) > len(first['deck']), after
             await call('capture_screenshot', {'filename': 'obtained.png'})
             await call('choose_ancient_option', {'option_id': option['id']}, error='illegal_action')

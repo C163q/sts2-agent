@@ -115,15 +115,15 @@ async def verify(args):
             picture = await asyncio.to_thread(raw.call, 'capture_screenshot')
             assert picture['ok'], picture
             report.with_suffix('.png').write_bytes(base64.b64decode(picture['state']['png_base64']))
-            cape = next(o for o in original['options'] if o['title'] == 'Distinguished Cape')
-            assert cape['lethal_warning'] is expected, value
-            default = await call('inspect_ancient', {'preset': 'default'}, label='cape_default')
-            assert next(o for o in default['ancient']['options'] if o['id'] == cape['id'])['lethal_warning'] is expected
+            talon = next(o for o in original['options'] if o['title'] == 'Sere Talon')
+            assert talon['lethal_warning'] is expected, value
+            default = await call('inspect_ancient', {'preset': 'default'}, label='talon_default')
+            assert next(o for o in default['ancient']['options'] if o['id'] == talon['id'])['lethal_warning'] is expected
             for preset in ('full', 'default', 'summary'):
-                observed = await call('get_observation', {'preset': preset}, label='cape_observation_' + preset)
-                row = next(o for o in observed['ancient']['options'] if o['id'] == cape['id'])
+                observed = await call('get_observation', {'preset': preset}, label='talon_observation_' + preset)
+                row = next(o for o in observed['ancient']['options'] if o['id'] == talon['id'])
                 assert row.get('lethal_warning') is True if expected else 'lethal_warning' not in row, observed
-            compact = await call('inspect_ancient', {'preset': 'summary', 'option_ids': [cape['id']]}, label='cape_summary')
+            compact = await call('inspect_ancient', {'preset': 'summary', 'option_ids': [talon['id']]}, label='talon_summary')
             assert compact['ancient']['options'][0].get('lethal_warning') is True if expected else 'lethal_warning' not in compact['ancient']['options'][0], compact
             return
 

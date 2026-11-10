@@ -64,7 +64,7 @@ async def verify(args):
             details = arrival if args.scenario == 'travel_action' else await call('inspect_ancient')
             assert details['ancient']['name'] == 'Pael', details
             # Receipt-only continuation uses native evidence for the fixture's option ID.
-            option = next(o for o in details['ancient']['options'] if o['title'] == "Pael's Blood")
+            option = next(o for o in details['ancient']['options'] if o['enabled'])
             assert option['enabled'], details
             # The raw detail response retains the exact token saved by MCP.
             latest = max((raw.directory / 'responses').glob('*.json'), key=lambda p: p.stat().st_mtime_ns)
@@ -83,12 +83,12 @@ async def verify(args):
                         'changes': differences({k: v for k, v in baseline.items() if k != 'transition'}, current)})
             # Raw diagnostics never refresh this MCP connection's saved permission.
             result = await call('choose_ancient_option', {'option_id': option['id']})
-            assert result['transition']['complete'], result
+            assert result['transition']['complete'] and result['transition']['stop_reason'] == 'action_completed', result
             assert all(s['snapshot_id'] == inspected['snapshot_id'] for s in samples), 'Arrival invalidated the inspection token.'
             if arrival:
                 assert all(s['snapshot_id'] == arrival['snapshot_id'] for s in samples), 'Completed travel returned an unsettled ancient.'
             obtained = await call('inspect_relics')
-            assert sum(r['name'] == "Pael's Blood" for r in obtained['relics']) == 1, obtained
+            assert sum(r['name'] == option['title'] for r in obtained['relics']) == 1, obtained
 
             await call('inspect_ancient')
             current = await asyncio.to_thread(raw.call, 'get_state')

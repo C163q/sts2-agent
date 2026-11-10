@@ -1,0 +1,34 @@
+[
+  {
+    "name": "act_three_entry",
+    "scenarios": {
+      "navigation": "boss2"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "boss2"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "architect_proceed",
+    "scenarios": {
+      "navigation": "boss3"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_proceed_review.py",
+        "args": [
+          "--scenario",
+          "architect"
+        ]
+      }
+    ]
+  }
+]

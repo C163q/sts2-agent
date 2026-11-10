@@ -229,6 +229,7 @@
     "parasol_enchanted"
   ],
   "ancient": [
+    "bracelet",
     "basic",
     "dialogue",
     "touch",
@@ -241,8 +242,8 @@
     "bundle",
     "nested",
     "pandora",
-    "cape",
-    "cape_lethal"
+    "talon",
+    "talon_lethal"
   ],
   "event": [
     "basic",

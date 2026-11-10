@@ -14,7 +14,7 @@ from sts2_mcp.output.available_tools import GAME_ACTIONS
 from tests.game.support.verification_runtime import ensure_run, ipc_directory
 
 SCENARIOS = ('combat', 'reward_skip', 'reward_empty', 'nested_reward', 'treasure_skip', 'treasure_collected',
-    'rest', 'tent', 'shop', 'event', 'ancient', 'divination', 'boss1', 'event_resume', 'selection', 'confirmation', 'architect')
+    'rest', 'tent', 'shop', 'event', 'ancient', 'divination', 'boss1', 'boss2', 'event_resume', 'selection', 'confirmation', 'architect')
 
 
 async def verify(args):
@@ -174,15 +174,16 @@ async def verify(args):
             if scenario == 'confirmation':
                 await call('choose_event_option', {'option_id': state['event']['options'][1]['id']})
                 current = await observed('choose_event_option')
-                option = next(o for o in current['event']['options'] if o['enabled'] and o['lethal_warning'])
+                option = next(o for o in current['event']['options'] if o['enabled'] and o.get('lethal_warning'))
                 await call('choose_event_option', {'option_id': option['id']})
                 await reject('event_confirmation_covered', 'respond_to_confirmation')
                 await call('respond_to_confirmation', {'option': 'cancel'}, label='after_confirmation_rejection')
                 return
-            if scenario == 'boss1':
+            if scenario in {'boss1', 'boss2'}:
                 result = await proceed('next_act')
                 assert result['scene'] == 'map' and result['screen']['view'] == 'map', result
                 immediate = await observed(); assert immediate['scene'] == 'map', immediate
+                assert (await call('inspect_map'))['act'] == (2 if scenario == 'boss1' else 3)
                 return
             if scenario == 'event_resume':
                 await call('choose_event_option', {'option_id': state['event']['options'][1]['id']})

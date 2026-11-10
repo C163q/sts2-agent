@@ -16,7 +16,7 @@
 
 当前 Mod、MCP、游戏及依赖兼容基线统一维护在[项目 README](../README.md#当前版本与前提)；专题文档链接该基线，带日期的证据保留其核对版本。
 
-核对组件版本时，查看[Mod 清单](../src/Sts2Agent/Sts2Agent.json)与[MCP 服务入口](../src/sts2_mcp/mcp_server.py)。游戏基线的证据见[目标程序集核对与验证](research/2026-11-03-result-observation-implementation.md)，底层观察结构版本见[观察格式说明](development/observation.md)。
+核对组件版本时，查看[Mod 清单](../src/Sts2Agent/Sts2Agent.json)与[MCP 服务入口](../src/sts2_mcp/mcp_server.py)。游戏基线的证据见[v0.111.0 迁移核验](research/2026-11-10-v0.111-migration-investigation.md)，底层观察结构版本见[观察格式说明](development/observation.md)。
 
 ## 游戏与上游资料
 
