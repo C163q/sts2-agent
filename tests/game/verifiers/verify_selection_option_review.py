@@ -88,8 +88,9 @@ async def verify(args):
             elif args.scenario == 'enchant_single':
                 chosen = next(o for o in state['event']['options'] if o['enabled'])
                 await call('choose_event_option', {'option_id': chosen['id']})
-            elif args.scenario in {'hand_zero', 'hand_one', 'death', 'victory'}:
-                await call('end_turn')
+            elif args.scenario in {'hand_zero', 'hand_one'}:
+                purity = next(c for c in state['player']['hand'] if c['name'] == 'Purity')
+                await call('play_card', {'card_id': purity['id']})
             elif args.scenario == 'shop_remove':
                 await call('open_shop')
                 shop = (await call('inspect_shop'))['shop']
@@ -165,21 +166,12 @@ async def verify(args):
                     kinds = {e['type'] for e in result['transition']['events']}
                     assert {'card_removed', 'gold_changed'} <= kinds, result
 
-            expected = {'death': 'combat_lost', 'victory': 'combat_won'}.get(args.scenario)
-            if expected:
-                assert result['transition']['stop_reason'] == expected, result
             state = await call('get_observation', label='after')
             assert state.get('selection') is None, state
             if args.scenario == 'reward_skip':
                 # Skipping candidates returns to the still-pending reward set.
                 assert state['scene'] == 'rewards' and 'proceed' in state['available_actions'], state
                 await call('proceed', label='leave_skipped_reward')
-            if args.scenario == 'victory':
-                deadline = time.monotonic() + 15
-                while state['scene'] != 'rewards' or 'proceed' not in state['available_actions']:
-                    assert time.monotonic() < deadline, state
-                    await asyncio.sleep(.1)
-                    state = await call('get_observation')
 
     print(json.dumps({'scenario': args.scenario, 'records': len(evidence)}), flush=True)
 

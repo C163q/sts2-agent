@@ -173,8 +173,8 @@ RitsuLib 提供统一通知，用于出牌、生成牌、角色加入及生命�
 python3 -m tests.game.verifiers.verify_end_turn --ipc-dir .tmp/roundtrip/ipc --scenario tyranny --report .tmp/turn-tyranny.json
 ```
 
-验证只用于带相同场景参数的新测试实例主菜单。场景入口改变测试初始条件，仅由 `STS2_AGENT_TEST_MODE=1` 下的 `start_test_combat` 使用，不是公开玩法工具。每个场景须重启实例，不能在正式对局执行；`--windowed` 可验证图形显示。
+单独执行验证时，从带相同场景参数的新测试实例主菜单开始；[图形套件](gui-testing.md)也可调用同一验证器，由框架配置 `turn` 场景并重置每局。场景入口改变测试初始条件，仅由 `STS2_AGENT_TEST_MODE=1` 下的 `start_test_combat` 使用。验证使用隔离实例，`--windowed` 可验证图形显示。
 
-其他场景名称：`normal`、`wither`、`wither_death`、`enemy_death`、`retain_choice`、`boulder`、`doom`、`stampede`、`revive`、`blocked`、`hellraiser`、`exhaust_block`、`hidden_hp`。其中 `revive` 连续验证多个回合，以同时取得千足虫死亡及后续复活证据；`hellraiser` 和 `exhaust_block` 检查触发顺序，`hidden_hp` 检查未公开生命数字不进入日志。
+其他场景名称：`normal`、`wither`、`wither_death`、`enemy_death`、`well_laid_plans`、`boulder`、`doom`、`stampede`、`revive`、`blocked`、`hellraiser`、`exhaust_block`、`hidden_hp`。其中 `well_laid_plans` 检查整手牌跨回合保留，`revive` 连续验证多个回合，以同时取得千足虫死亡及后续复活证据；`hellraiser` 和 `exhaust_block` 检查触发顺序，`hidden_hp` 检查未公开生命数字不进入日志。
 
 [选牌](card-selection.md)、[出牌](card-play.md)、[搜刮](rewards.md)及其他游戏动作复用本页停止原因和事件格式；各自允许的输入及后续流程见对应接口。资源、永久牌组、充能球与战斗交接的专项验证见上文记录，历史数量不表示当前代码已重新验证。

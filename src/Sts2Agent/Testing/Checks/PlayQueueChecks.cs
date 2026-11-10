@@ -132,13 +132,13 @@ internal static class PlayQueueChecks
                     && submissions.Skip(1).All(s => !JsonSerializer.SerializeToElement(s).GetProperty("accepted").GetBoolean()),
                 "survivor_manual" => Played(0) && !Played(1) && !Played(2) && WasCanceled(1) && WasCanceled(2),
                 "dagger_manual" => Played(0) && !Played(1) && WasCanceled(1),
-                "survivor_auto" => Played(0) && !Played(1) && !WasCanceled(1)
+                "survivor_auto" => Played(0) && !Played(1) && WasCanceled(1)
                     && player.PlayerCombatState!.DiscardPile.Cards.Any(c => c is PiercingWail),
                 "dagger_auto" => Played(0) && player.PlayerCombatState!.DiscardPile.Cards.Any(c => c is PiercingWail),
                 "energy" or "stars" => Played(0) && Played(1) && !Played(2) && WasCanceled(2) && Played(3),
                 "target" => Played(0) && !Played(1) && WasCanceled(1) && Played(2),
                 "hand_exhaust" => Played(0) && !Played(1) && !Played(2) && WasCanceled(1) && WasCanceled(2),
-                "automatic_hand" => Played(0) && !Played(1) && !WasCanceled(1),
+                "automatic_hand" => Played(0) && !Played(1) && WasCanceled(1),
                 "random_exhaust" => Played(0) && (Played(1) != Played(2)) && !WasCanceled(1) && !WasCanceled(2),
                 "victory" => Played(0) && !Played(1) && !Played(2) && WasCanceled(1) && WasCanceled(2),
                 "death" => Played(0) && Played(1) && !Played(2) && !Played(3) && !player.Creature.IsAlive,

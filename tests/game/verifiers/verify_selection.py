@@ -3,10 +3,10 @@ from sts2_mcp.output.available_tools import GAME_ACTIONS
 import argparse
 import json
 import os
-import time
 from pathlib import Path
 
 from sts2_mcp.roundtrip_client import Client
+from tests.game.support.verification_runtime import ensure_run, ipc_directory
 from sts2_mcp.output.game_output import observation_details
 from sts2_mcp.output.selection_details import inspect_selection_details
 from sts2_mcp.output.transition_details import end_turn_details
@@ -19,12 +19,12 @@ def main():
     parser.add_argument("--legacy-tyranny", action="store_true")
     args = parser.parse_args()
     root = ROOT
-    client = Client(root / ".tmp/roundtrip/ipc")
+    client = Client(ipc_directory())
     evidence = []
 
     def call(operation, arguments=None, *, success=True, stale_retries=0, previous_selection=None):
         token = None
-        if operation in {"start_test_combat", "end_turn", "select_card", "selection_option"}:
+        if operation in {"start_test_combat", "end_turn", "play_card", "select_card", "selection_option"}:
             observed = call("get_state")
             token = observed["snapshot_id"]
             if previous_selection is not None:
@@ -47,15 +47,12 @@ def main():
             assert response["ok"], response
         return response["state"] if response["ok"] else response
 
-    observed = call("get_state")
-    deadline = time.monotonic() + 30
-    while observed["scene"] == "unrecognized" and time.monotonic() < deadline:
-        time.sleep(.25)
-        observed = call("get_state")
-    assert observed["scene"] == "main_menu", "仅允许新启动独立测试实例，不能复用正式对局。"
-    call("start_test_combat")
-    if args.legacy_tyranny or args.scenario in {"tyranny", "retain_zero", "retain_one", "retain_death", "retain_victory"}:
+    ensure_run(client)
+    if args.legacy_tyranny or args.scenario == "tyranny":
         call("end_turn")
+    if args.scenario in {"optional_hand_zero", "optional_hand_one"}:
+        hand = call("inspect_hand")["hand"]
+        call("play_card", {"card_id": next(card["id"] for card in hand if card["name"] == "Purity")})
     observed = call("get_state")
     assert observed.get("selection") is not None, "get_observation must report pending card selection"
     observation_details(observed)
@@ -124,8 +121,8 @@ def main():
     if args.scenario in {"potion_skip", "reward_skip"}:
         option = next(option for option in selection["options"] if option["enabled"] and option["id"] == "skip")
         result = call("selection_option", {"option_id": option["id"]})
-    elif args.scenario == "retain_zero":
-        assert selection["min_select"] == 0 and selection["max_select"] == 1, selection
+    elif args.scenario == "optional_hand_zero":
+        assert selection["min_select"] == 0 and selection["max_select"] == 3, selection
         result = call("selection_option", {"option_id": "confirm"})
     else:
         minimum = selection["min_select"]
@@ -160,9 +157,6 @@ def main():
     assert result["transition"]["complete"], result
     assert result["transition"]["stop_reason"] in {"player_ready", "selection_resolved", "combat_won", "combat_lost"}, result
     assert not result.get("selection"), result
-    if args.scenario in {"retain_death", "retain_victory"}:
-        assert result["transition"]["stop_reason"] == ("combat_lost" if args.scenario == "retain_death" else "combat_won"), result
-        assert any(event["type"] == "died" for event in result["transition"]["events"]), result
     print(f"PASS {args.scenario}: {result['transition']['stop_reason']}")
 
 

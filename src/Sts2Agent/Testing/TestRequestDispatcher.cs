@@ -574,7 +574,7 @@ internal sealed partial class GameAdapter
                 RunManager.Instance.DebugOnlyGetState()!.ActFloor = 1;
                 NRun.Instance!.GlobalUi.MapScreen.SetTravelEnabled(false);
                 await SelectionFixture.Configure(selectionScenario, LocalPlayer!);
-                if (selectionScenario is not ("tyranny" or "retain_zero" or "retain_one" or "retain_death" or "retain_victory"))
+                if (selectionScenario is not ("tyranny" or "optional_hand_zero" or "optional_hand_one"))
                 {
                     await WaitUntil(() => SelectionFixture.Pending?.IsFaulted == true || CardSelection.Current is { Status: "visible" });
                     if (SelectionFixture.Pending?.IsFaulted == true) await SelectionFixture.Pending;
@@ -647,6 +647,7 @@ internal sealed partial class GameAdapter
                 await PowerCmd.Apply<ShrinkPower>(choices, player, -1, enemies[0], null);
                 await PowerCmd.Apply<EscapeArtistPower>(choices, enemies[0], 5, enemies[0], null);
             }
+            await WaitForTestExhaustEffects();
             return Success(request, await SettledObservation());
         }
         return null;

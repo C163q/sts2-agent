@@ -25,6 +25,11 @@ internal static class PlayFixture
 {
     public static async Task Configure(string scenario, Player player)
     {
+        if (scenario.StartsWith("v111_", StringComparison.Ordinal))
+        {
+            await MigrationCombatFixture.Configure(scenario[5..], player);
+            return;
+        }
         var combat = CombatManager.Instance.DebugOnlyGetState()!;
         var state = player.PlayerCombatState!;
         if (scenario.StartsWith("companions_", StringComparison.Ordinal))
@@ -88,6 +93,7 @@ internal static class PlayFixture
         else if (scenario is "blade_dance" or "blade_dance_full") Add<BladeDance>();
         else if (scenario == "pommel_strike") Add<PommelStrike>();
         else if (scenario == "headbutt") Add<Headbutt>();
+        else if (scenario == "purity") Add<Purity>();
         else if (scenario == "shining_strike") Add<ShiningStrike>();
         else if (scenario == "thrumming_hatchet") { Add<ThrummingHatchet>(); Add<Headbutt>(); }
         else if (scenario == "knife_trap") { Add<KnifeTrap>(); Add<BladeDance>(); }

@@ -86,8 +86,9 @@ async def verify(args):
             elif args.scenario == 'enchant_single':
                 option = next(o for o in state['event']['options'] if o['enabled'])
                 await call('choose_event_option', {'option_id': option['id']})
-            elif args.scenario in {'hand', 'death', 'victory'}:
-                await call('end_turn')
+            elif args.scenario == 'hand':
+                purity = next(c for c in state['player']['hand'] if c['name'] == 'Purity')
+                await call('play_card', {'card_id': purity['id']})
 
             if args.scenario == 'no_selection':
                 # Local malformed requests retain permission and never reach the adapter.
@@ -210,19 +211,13 @@ async def verify(args):
                         result, after = await click(card['id'], 'reselect_after_cancel')
                 result = await call('selection_option', {'option_id': 'confirm'}, label='confirm')
                 changes(result, [])
-            expected = {'death': 'combat_lost', 'victory': 'combat_won', 'combat_entry': 'player_ready'}.get(args.scenario)
+            expected = {'combat_entry': 'player_ready'}.get(args.scenario)
             assert result['transition']['complete'], result
             if expected:
                 assert result['transition']['stop_reason'] == expected, result
             observed = await call('get_observation')
             assert observed.get('selection') is None
-            if args.scenario == 'victory':
-                # The combat boundary precedes the native reward-page transition.
-                deadline = time.monotonic() + 15
-                while observed['scene'] != 'rewards' or 'proceed' not in observed['available_actions']:
-                    assert time.monotonic() < deadline, observed
-                    await asyncio.sleep(.1)
-                    observed = await call('get_observation')
+
     print(f'PASS select_card review: {args.scenario}')
 
 

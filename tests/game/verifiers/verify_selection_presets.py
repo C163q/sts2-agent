@@ -158,7 +158,8 @@ async def verify(args):
                 row = next(r for r in rewards['rewards']['items'] if r['type'] == 'card')
                 await call('claim_reward', {'reward_id': row['id']})
             elif args.scenario == 'hand':
-                await call('end_turn')
+                purity = next(c for c in state['player']['hand'] if c['name'] == 'Purity')
+                await call('play_card', {'card_id': purity['id']})
 
             choice = await presets('candidates')
             expected = {'discovery': 'choose_one', 'hand_upgrade': 'hand_upgrade', 'smith': 'deck_upgrade',

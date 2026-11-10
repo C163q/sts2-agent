@@ -34,7 +34,7 @@ internal static class TurnFixture
         }
         else if (scenario == "enemy_death") await CreatureCmd.SetCurrentHp(player.Creature, 1);
         else if (scenario == "tyranny") await PowerCmd.Apply<TyrannyPower>(choice, player.Creature, 1, player.Creature, null);
-        else if (scenario == "retain_choice") await PowerCmd.Apply<WellLaidPlansPower>(choice, player.Creature, 1, player.Creature, null);
+        else if (scenario == "well_laid_plans") await PowerCmd.Apply<WellLaidPlansPower>(choice, player.Creature, 1, player.Creature, null);
         else if (scenario == "boulder") await PowerCmd.Apply<RollingBoulderPower>(choice, player.Creature, 999, player.Creature, null);
         else if (scenario == "doom")
         {

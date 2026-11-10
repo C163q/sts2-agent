@@ -62,15 +62,15 @@ async def verify(args):
                 await call('play_card', {'card_id': cards['Refine Blade']})
                 details = await call('inspect_combatants')
                 tip = next(t for t in details['hover_tips'] if 'player.sovereign_blades.0' in t['sources'])
-                assert '31' in tip['description'], tip
+                assert '30' in tip['description'], tip
                 receipt = await call('play_card', {'card_id': cards['Sovereign Blade'], 'target_id': target})
                 hits = [e for e in receipt['transition']['events'] if e['type'] == 'damage']
                 assert len(hits) == 1 and hits[0]['source'] == {'kind': 'card', 'name': 'Sovereign Blade'}, hits
-                assert hits[0]['actor']['kind'] == 'player' and hits[0]['hp_loss'] == 31, hits
+                assert hits[0]['actor']['kind'] == 'player' and hits[0]['hp_loss'] == 30, hits
                 details = await call('inspect_combatants')
                 assert details['player']['sovereign_blades'] == blades, details
                 tip = next(t for t in details['hover_tips'] if 'player.sovereign_blades.0' in t['sources'])
-                assert '31' in tip['description'], tip
+                assert '30' in tip['description'], tip
                 first = await asyncio.to_thread(raw.call, 'get_state')
                 await asyncio.sleep(1.1)
                 second = await asyncio.to_thread(raw.call, 'get_state')

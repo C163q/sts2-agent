@@ -128,7 +128,7 @@
   {
     "name": "hand",
     "scenarios": {
-      "selection": "retain_one"
+      "selection": "optional_hand_one"
     },
     "steps": [
       {
@@ -297,38 +297,6 @@
         "args": [
           "--scenario",
           "chain"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "death",
-    "scenarios": {
-      "selection": "retain_death"
-    },
-    "steps": [
-      {
-        "name": "verify",
-        "verifier": "verify_select_card_review.py",
-        "args": [
-          "--scenario",
-          "death"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "victory",
-    "scenarios": {
-      "selection": "retain_victory"
-    },
-    "steps": [
-      {
-        "name": "verify",
-        "verifier": "verify_select_card_review.py",
-        "args": [
-          "--scenario",
-          "victory"
         ]
       }
     ]

@@ -16,6 +16,9 @@ from sts2_mcp.roundtrip_client import Client
 
 CATALOG = json.loads((ROOT / 'tests/game/data/test_scenarios.json').read_text())
 SUPPORTED_VERIFIERS = {
+    'verify_v111_combat.py',
+    'verify_end_turn.py',
+    'verify_selection.py',
     'verify_necrobinder_feedback.py',
     'verify_relic_settling.py',
     'verify_hp_preview.py',
@@ -139,6 +142,9 @@ def load_cases(path):
             if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
                 raise ValueError('Verifier arguments must be strings.')
             scenario_options = {
+                'verify_selection.py': ('optional_hand_zero', 'optional_hand_one'),
+                'verify_end_turn.py': ('normal', 'wither', 'wither_death', 'enemy_death', 'tyranny', 'well_laid_plans', 'boulder', 'doom', 'stampede', 'revive', 'blocked', 'hellraiser', 'exhaust_block', 'hidden_hp'),
+                'verify_v111_combat.py': ('outbreak', 'well_laid_plans', 'expertise', 'toasty_mittens'),
                 'verify_defect_feedback.py': ('shop', 'parasol'),
                 'verify_necrobinder_feedback.py': ('pen_nib', 'soul', 'manual_sources'),
                 'verify_screenshots.py': ('gui',),
@@ -170,11 +176,11 @@ def load_cases(path):
                 'verify_selection_option_review.py': ('no_selection', 'invalid_option', 'disabled', 'battlefield',
                     'covered', 'choose_skip', 'reward_skip', 'grid_manual', 'hand_zero', 'hand_one',
                     'hand_upgrade', 'deck_cancel', 'deck_preview', 'smith', 'multi_upgrade', 'enchant_single',
-                    'enchant_multi', 'transform', 'bundle', 'view_cards', 'death', 'victory', 'shop_remove'),
+                    'enchant_multi', 'transform', 'bundle', 'view_cards', 'shop_remove'),
                 'verify_select_card_review.py': ('no_selection', 'invalid_candidate', 'covered', 'scroll_race',
                     'choose_one', 'reward', 'grid', 'scroll', 'hand', 'hand_upgrade', 'combat_pile', 'deck', 'smith',
                     'multi_upgrade', 'enchant_single', 'enchant_multi', 'transform', 'bundle', 'view_cards',
-                    'chain', 'death', 'victory', 'combat_entry', 'hand_replace', 'grid_manual', 'upgrade_view'),
+                    'chain', 'combat_entry', 'hand_replace', 'grid_manual', 'upgrade_view'),
                 'verify_selection_review.py': ('no_selection', 'covered', 'hand_upgrade', 'bundle', 'view_cards'),
                 'verify_potion_discard_queue.py': ('choose_one', 'hand', 'pile', 'noncombat_upgrade', 'immediate',
                     'cancel', 'hidden', 'multiple', 'skip', 'pending_reset', 'after_reset', 'card_choice', 'card_pile', 'hand_upgrade', 'fault', 'foreign'),
@@ -380,10 +386,22 @@ class GameSession:
         return self.identity()
 
     def reset_run(self):
-        state = self.request('get_state')['state']
-        result = self.request('reset_test_run', state['snapshot_id'])['state']
+        deadline = time.monotonic() + 10
+        while True:
+            state = self.request('get_state')['state']
+            response = self.client.call('reset_test_run', state['snapshot_id'])
+            if response.get('ok'):
+                result = response['state']
+                break
+            if (response.get('error', {}).get('code') != 'stale_state'
+                    or response.get('execution', {}).get('ui_interaction_started') is not False
+                    or time.monotonic() >= deadline):
+                raise RuntimeError(response)
+            time.sleep(.1)
         if result['run_id'] is not None:
             raise RuntimeError('The old test run survived cleanup.')
+        if "but it's already been freed!" in (self.work / 'stdout.log').read_text():
+            raise RuntimeError('Native cleanup returned an object to its pool twice; restart the test process.')
 
     def run_step(self, step, directory):
         directory.mkdir()

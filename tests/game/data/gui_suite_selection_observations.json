@@ -50,7 +50,7 @@
   {
     "name": "hand",
     "scenarios": {
-      "selection": "retain_one"
+      "selection": "optional_hand_one"
     },
     "steps": [
       {

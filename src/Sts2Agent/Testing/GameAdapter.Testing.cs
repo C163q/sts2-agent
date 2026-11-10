@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Nodes;
+using MegaCrit.Sts2.Core.Nodes.Vfx.Cards;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace Sts2Agent;
@@ -12,6 +13,11 @@ internal sealed partial class GameAdapter
     private readonly ConditionalWeakTable<object, TestRunIdentity> testRuns = new();
     private sealed record TestRunIdentity(string Id);
     private bool testResetFailed;
+
+    // Exhaust effects keep pooled cards alive for their delayed particle cleanup.
+    private static Task WaitForTestExhaustEffects() => WaitUntil(() =>
+        !VisibleUi.Descendants<Godot.Node>(NGame.Instance!)
+            .Any(node => node is NCardExhaustVfx or NCardExhaustQuickVfx));
 
     private object TestSession()
     {
@@ -61,6 +67,7 @@ internal sealed partial class GameAdapter
         // Native cleanup cancels player choices and disposes the run's action synchronizers.
         var pending = new[] { SelectionFixture.Pending, RewardFixture.Pending, ShopFixture.Pending, TreasureFixture.Pending, CombatHandoffFixture.Pending }
             .Where(task => task != null).Cast<Task>().ToArray();
+        await WaitForTestExhaustEffects();
         await NGame.Instance!.ReturnToMainMenu();
         try { await Task.WhenAll(pending).WaitAsync(TimeSpan.FromSeconds(5)); }
         catch (OperationCanceledException) { }

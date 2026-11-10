@@ -1,0 +1,162 @@
+[
+  {
+    "name": "outbreak",
+    "scenarios": {
+      "play": "v111_outbreak"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_v111_combat.py",
+        "args": [
+          "--scenario",
+          "outbreak"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "well_laid_plans",
+    "scenarios": {
+      "play": "v111_well_laid_plans"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_v111_combat.py",
+        "args": [
+          "--scenario",
+          "well_laid_plans"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "expertise",
+    "scenarios": {
+      "play": "v111_expertise"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_v111_combat.py",
+        "args": [
+          "--scenario",
+          "expertise"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "toasty_mittens",
+    "scenarios": {
+      "play": "v111_toasty_mittens"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_v111_combat.py",
+        "args": [
+          "--scenario",
+          "toasty_mittens"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "selection_option_review_hand_zero",
+    "scenarios": {
+      "selection": "optional_hand_zero"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "hand_zero"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "selection_option_review_hand_one",
+    "scenarios": {
+      "selection": "optional_hand_one"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_option_review.py",
+        "args": [
+          "--scenario",
+          "hand_one"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "select_card_review_hand",
+    "scenarios": {
+      "selection": "optional_hand_one"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_select_card_review.py",
+        "args": [
+          "--scenario",
+          "hand"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "selection_observations_hand",
+    "scenarios": {
+      "selection": "optional_hand_one"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection_presets.py",
+        "args": [
+          "--scenario",
+          "hand"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "legacy_optional_hand_zero",
+    "scenarios": {
+      "selection": "optional_hand_zero"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection.py",
+        "args": [
+          "--scenario",
+          "optional_hand_zero"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "legacy_optional_hand_one",
+    "scenarios": {
+      "selection": "optional_hand_one"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_selection.py",
+        "args": [
+          "--scenario",
+          "optional_hand_one"
+        ]
+      }
+    ]
+  }
+]

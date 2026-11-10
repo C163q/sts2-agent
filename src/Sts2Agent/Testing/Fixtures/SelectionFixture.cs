@@ -31,13 +31,7 @@ internal static class SelectionFixture
     {
         if (scenario == "paradox") return;
         if (scenario == "tyranny") { await TurnFixture.Configure("tyranny", player); return; }
-        if (scenario is "retain_zero" or "retain_one") { await TurnFixture.Configure("retain_choice", player); return; }
-        if (scenario is "retain_death" or "retain_victory")
-        {
-            await TurnFixture.Configure("retain_choice", player);
-            await TurnFixture.Configure(scenario == "retain_death" ? "enemy_death" : "doom", player);
-            return;
-        }
+        if (scenario is "optional_hand_zero" or "optional_hand_one") { await PlayFixture.Configure("purity", player); return; }
         if (scenario.StartsWith("potion", StringComparison.Ordinal))
         {
             await PotionCmd.TryToProcure<SkillPotion>(player);

@@ -38,6 +38,40 @@ class SessionDouble:
 
 
 class GuiSuiteTests(unittest.TestCase):
+    def test_reset_refreshes_a_stale_read_before_any_ui_interaction(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory)
+            (work / 'stdout.log').write_text('')
+            session = gui_suite.GameSession(work)
+            requests = []
+
+            def reply(operation, token=None, arguments=None):
+                requests.append((operation, token))
+                if operation == 'get_state':
+                    return {'ok': True, 'state': {'snapshot_id': 'old' if len(requests) == 1 else 'new'}}
+                if token == 'old':
+                    return {'ok': False, 'error': {'code': 'stale_state'},
+                            'execution': {'ui_interaction_started': False}}
+                return {'ok': True, 'state': {'run_id': None}}
+
+            with patch.object(session, 'check_process'), patch.object(session.client, 'call', side_effect=reply):
+                try:
+                    session.reset_run()
+                except RuntimeError as error:
+                    self.fail(f'Unsubmitted stale cleanup should refresh its observation: {error}')
+            self.assertEqual(requests, [('get_state', None), ('reset_test_run', 'old'),
+                                        ('get_state', None), ('reset_test_run', 'new')])
+
+    def test_reset_preserves_failures_after_possible_ui_interaction(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = gui_suite.GameSession(Path(directory))
+            responses = [{'ok': True, 'state': {'snapshot_id': 'old'}},
+                         {'ok': False, 'error': {'code': 'stale_state'},
+                          'execution': {'ui_interaction_started': True}}]
+            with patch.object(session, 'check_process'), patch.object(session.client, 'call', side_effect=responses):
+                with self.assertRaises(RuntimeError):
+                    session.reset_run()
+
     def test_discard_fixture_names_are_not_use_verifier_arguments(self):
         for verifier in ('verify_potion_recovery.py', 'verify_use_potion_review.py'):
             with self.subTest(verifier=verifier), self.assertRaises(ValueError):

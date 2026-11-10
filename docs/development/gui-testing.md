@@ -22,6 +22,7 @@
 
 | 专项 | 清单与验证记录 |
 | --- | --- |
+| v0.111.0 迁移的卡牌／遗物重做与可选手牌选择 | [v0_111_combat](../../tests/game/data/gui_suite_v0_111_combat.json)；[迁移记录](../research/2026-11-10-v0.111-migration-investigation.md) |
 | v0.111.0 迁移的动作链、首回合事件与战斗 UI | [v0_111_bootstrap](../../tests/game/data/gui_suite_v0_111_bootstrap.json)；[迁移记录](../research/2026-11-10-v0.111-migration-investigation.md) |
 | 占卜工具冷切换、重复选择、覆盖拒绝恢复及揭开续接 | [divination_tool_view](../../tests/game/data/gui_suite_divination_tool_view.json)；[输出定稿](../research/2026-11-07-set-divination-tool-review.md#输出定稿) |
 | 事件选择的具体拒绝、直接恢复、翻页、选牌、奖励、确认框、占卜与战斗进入 | [choose_event_option_review](../../tests/game/data/gui_suite_choose_event_option_review.json)；[输出定稿](../research/2026-11-07-choose-event-option-review.md#输出定稿) |
@@ -118,7 +119,7 @@
 
 套件通过 `STS2_AGENT_TEST_MODE=1` 与 `STS2_AGENT_TEST_SUITE=1` 双重门控提供仅文件 IPC 可用的 `configure_test_run`、`reset_test_run`、`get_test_session`。前两项需要最新状态令牌，配置只允许在没有对局的主菜单执行。
 
-局间使用原生 `NGame.ReturnToMainMenu`／`RunManager.CleanUp`，等待夹具任务结束、释放引用并移除专用补丁。无法确认清理完成时将进程标为不可复用并关闭；不直接重写玩家状态伪造新局。这不是正常游玩的“放弃对局”工具。
+局间使用原生 `NGame.ReturnToMainMenu`／`RunManager.CleanUp`，等待夹具任务结束、释放引用并移除专用补丁。测试准备结束及退出本局前，等待普通／快速消耗特效自行退场，以完成持有卡牌节点的延迟回收。重复归还池节点的原生错误会令套件失败。无法确认清理完成时将进程标为不可复用并关闭；不直接重写玩家状态伪造新局。这不是正常游玩的“放弃对局”工具。
 
 | 输出 | 内容 |
 | --- | --- |

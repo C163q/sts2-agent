@@ -1,16 +1,16 @@
 from scripts._bootstrap import ROOT
 import argparse
 import json
-import time
 from pathlib import Path
 
 from sts2_mcp.roundtrip_client import Client
 from sts2_mcp.output.transition_details import end_turn_details
+from tests.game.support.verification_runtime import ensure_run, ipc_directory
 
 
 EXPECTED = {
     "normal": "player_ready", "wither": "player_ready", "wither_death": "combat_lost",
-    "enemy_death": "combat_lost", "tyranny": "choice_required", "retain_choice": "choice_required",
+    "enemy_death": "combat_lost", "tyranny": "choice_required", "well_laid_plans": "player_ready",
     "boulder": "combat_won", "doom": "combat_won", "stampede": "combat_won",
     "revive": "player_ready", "blocked": "player_ready",
     "hellraiser": "player_ready", "exhaust_block": "player_ready", "hidden_hp": "player_ready",
@@ -19,13 +19,13 @@ EXPECTED = {
 
 def main():
     parser = argparse.ArgumentParser(description="验证已启动独立测试实例中的结束回合机制。")
-    parser.add_argument("--ipc-dir", required=True, type=Path)
+    parser.add_argument("--ipc-dir", default=ipc_directory(), type=Path)
     parser.add_argument("--report", required=True, type=Path)
     parser.add_argument("--scenario", required=True, choices=EXPECTED)
     args = parser.parse_args()
     directory = args.ipc_dir.expanduser().resolve()
-    if directory != ROOT / ".tmp" / "roundtrip" / "ipc":
-        raise SystemExit("本验证仅允许 .tmp/roundtrip/ipc，不能操作正式对局。")
+    if directory != ipc_directory().resolve():
+        raise SystemExit("本验证仅允许当前隔离实例的 IPC 目录。")
     client = Client(directory)
     evidence = []
 
@@ -37,14 +37,9 @@ def main():
         assert response["ok"], response
         return response["state"]
 
+    ensure_run(client)
     observed = call("get_state")
-    deadline = time.monotonic() + 30
-    while observed["scene"] == "unrecognized" and time.monotonic() < deadline:
-        time.sleep(0.25)
-        observed = call("get_state")
-    assert observed["scene"] == "main_menu", "须从带匹配 --turn-scenario 参数的新测试实例主菜单执行。"
-    call("start_test_combat", observed["snapshot_id"])
-    observed = call("get_state")
+    retained_ids = {c["id"] for c in observed["player"]["hand"]}
     result = end_turn_details(call("end_turn", observed["snapshot_id"]))
     history = [result["transition"]]
     if args.scenario == "revive":
@@ -79,7 +74,10 @@ def main():
         assert "revived" in kinds, transition
     if args.scenario == "blocked":
         assert any(e["type"] == "damage" and e["blocked"] > 0 and e["hp_loss"] == 0 for e in events), transition
-    if args.scenario in ("tyranny", "retain_choice"):
+    if args.scenario == "well_laid_plans":
+        after = call("get_state")
+        assert retained_ids <= {c["id"] for c in after["player"]["hand"]}, after
+    if args.scenario == "tyranny":
         assert "end_turn" not in result["available_actions"] and result["selection"]["status"] == "visible", result
         assert "select_card" in result["available_actions"], result
     if args.scenario == "hellraiser":
