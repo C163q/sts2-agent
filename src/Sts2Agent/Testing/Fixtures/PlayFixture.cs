@@ -257,7 +257,7 @@ internal static class PlayFixture
 
     public static object Read(Player player) => new
     {
-        rng_counter = player.RunState.Rng.CombatTargets.Counter,
+        rng_counter = player.RunState.Rng.CombatTargets.ToSerializable().counter,
         energy = player.PlayerCombatState!.Energy,
         in_card_play = NPlayerHand.Instance!.InCardPlay,
         targeting = NTargetManager.Instance.IsInSelection,

@@ -84,7 +84,8 @@ internal sealed class CardMovementJournal : IDisposable
             prefix: new HarmonyMethod(typeof(CardMovementJournal), nameof(BeforeDraw)),
             postfix: new HarmonyMethod(typeof(CardMovementJournal), nameof(DrawTask)),
             finalizer: new HarmonyMethod(typeof(CardMovementJournal), nameof(AfterDraw)));
-        harmony.Patch(AccessTools.Method(typeof(NCardFlyVfx), nameof(NCardFlyVfx.Create)),
+        harmony.Patch(AccessTools.Method(typeof(NCardFlyVfx), nameof(NCardFlyVfx.Create),
+            [typeof(NCard), typeof(PileType), typeof(bool), typeof(string)]),
             postfix: new HarmonyMethod(typeof(CardMovementJournal), nameof(Flying)));
         harmony.Patch(AccessTools.Method(typeof(NCardFlyShuffleVfx), nameof(NCardFlyShuffleVfx.Create)),
             postfix: new HarmonyMethod(typeof(CardMovementJournal), nameof(FlyingBack)));

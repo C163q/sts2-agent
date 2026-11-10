@@ -77,7 +77,7 @@ internal static class CompanionChecks
         {
             if (player.IsOstyMissing) await OstyCmd.Summon(choice, player, scenario.hp, null);
             else { await CreatureCmd.SetMaxHp(osty, scenario.hp); await CreatureCmd.Heal(osty, scenario.hp); }
-            await CreatureCmd.LoseBlock(player.Creature, player.Creature.Block);
+            await CreatureCmd.LoseBlock(choice, player.Creature, player.Creature.Block, null);
             await CreatureCmd.GainBlock(player.Creature, scenario.block, ValueProp.Unpowered, null);
             await Settle();
             using var action = new ActionEventScope();
@@ -92,7 +92,7 @@ internal static class CompanionChecks
             samples.Add(new { scenario = scenario.name, events = action.Buffer.Events });
         }
         Check("capture subscriptions are released", TurnCapture.Journal == null);
-        await CreatureCmd.LoseBlock(player.Creature, player.Creature.Block);
+        await CreatureCmd.LoseBlock(choice, player.Creature, player.Creature.Block, null);
         await CreatureCmd.GainBlock(player.Creature, 12, ValueProp.Unpowered, null);
         await Settle();
         var playerBlock = NCombatRoom.Instance!.GetCreatureNode(player.Creature)!.GetNode<NCreatureStateDisplay>("%HealthBar")

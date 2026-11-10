@@ -22,6 +22,7 @@
 
 | 专项 | 清单与验证记录 |
 | --- | --- |
+| v0.111.0 迁移的动作链、首回合事件与战斗 UI | [v0_111_bootstrap](../../tests/game/data/gui_suite_v0_111_bootstrap.json)；[迁移记录](../research/2026-11-10-v0.111-migration-investigation.md) |
 | 占卜工具冷切换、重复选择、覆盖拒绝恢复及揭开续接 | [divination_tool_view](../../tests/game/data/gui_suite_divination_tool_view.json)；[输出定稿](../research/2026-11-07-set-divination-tool-review.md#输出定稿) |
 | 事件选择的具体拒绝、直接恢复、翻页、选牌、奖励、确认框、占卜与战斗进入 | [choose_event_option_review](../../tests/game/data/gui_suite_choose_event_option_review.json)；[输出定稿](../research/2026-11-07-choose-event-option-review.md#输出定稿) |
 | 占卜揭开范围、明确拒绝后直接继续、奖励与诅咒时机 | [divination_recovery](../../tests/game/data/gui_suite_divination_recovery.json)；[输出定稿](../research/2026-11-07-divine-review.md#输出定稿) |

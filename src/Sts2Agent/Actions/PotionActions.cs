@@ -31,7 +31,7 @@ internal static class PotionActions
         if (!potion.Owner.Creature.IsAlive) return "The potion's owner is no longer alive.";
         if (potion.HasBeenRemovedFromState) return "This potion is no longer in the belt.";
         if (potion.IsQueued) return "This potion is already queued; wait for its current action to finish.";
-        if (!potion.Owner.CanRemovePotions) return "Potions cannot be removed now.";
+        if (!potion.Owner.CanUseOrRemovePotions) return "Potions cannot be removed now.";
         int slot = potion.Owner.GetPotionSlotIndex(potion);
         var holder = Find(slot);
         if (holder == null || !ReferenceEquals(holder.Potion!.Model, potion))

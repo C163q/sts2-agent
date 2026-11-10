@@ -29,7 +29,7 @@ internal static class DivinationFixture
                 cell_size = DivinationInspection.Cells(screen)[0].Size.ToString(),
                 texture = item.GetNode<TextureRect>("Icon").Texture?.ResourcePath,
                 banner = item.GetNode<TextureRect>("%CardBanner").Material?.ResourcePath }).ToArray(),
-            rng = model.Rng.Counter, gold = player.Gold,
+            rng = model.Rng.ToSerializable().ToString(), gold = player.Gold,
             deck = player.Deck.Cards.Select(c => c.Id.Entry).ToArray(),
             items = model.Items.Select(i => new { kind = i.GetType().Name, x = i.Position.X, y = i.Position.Y, width = i.Size.X, height = i.Size.Y }).ToArray(),
             pending = DivinationTasks.Pending(screen), event_pending = EventTaskTracker.Pending,

@@ -17,17 +17,20 @@ def main():
     build = root / "src" / "Sts2Agent" / "bin" / "Debug" / "net9.0"
     if not (game / "SlayTheSpire2").is_file():
         parser.error("游戏目录中缺少 SlayTheSpire2。")
+    release = json.loads((game / "release_info.json").read_text())
+    if release.get("version") != "v0.111.0":
+        parser.error("当前构建目标为 v0.111.0，请使用该版本的完整游戏目录。")
     if not (build / "Sts2Agent.dll").is_file():
         parser.error("请先构建 src/Sts2Agent/Sts2Agent.csproj。")
     if not args.ritsu_lib_dir:
         parser.error("请配置 RitsuLibDir 或 --ritsu-lib-dir，指向完整的 RitsuLib 0.6.10 运行时。")
     library = args.ritsu_lib_dir.expanduser().resolve()
     required = ("mod_manifest.json", "RitsuLib.References.props", "assets.zip", "STS2-RitsuLib.dll",
-                "ritsulib-variants.manifest", "compat/0.107.1/STS2-RitsuLib.dll",
-                "compat/0.107.1/STS2-RitsuLib.Runtime.dll", "shared/STS2-RitsuLib.Shared.dll",
+                "ritsulib-variants.manifest", "compat/0.111.0/STS2-RitsuLib.dll",
+                "compat/0.111.0/STS2-RitsuLib.Runtime.dll", "shared/STS2-RitsuLib.Shared.dll",
                 "shared/STS2-RitsuLib.Ui.dll", "shared/STS2-RitsuLib.Settings.dll")
     if any(not (library / name).is_file() for name in required):
-        parser.error("RitsuLib 目录不完整或缺少 0.107.1 兼容目标。")
+        parser.error("RitsuLib 目录不完整或缺少 0.111.0 兼容目标。")
     manifest = json.loads((library / "mod_manifest.json").read_text())
     if manifest.get("id") != "STS2-RitsuLib" or manifest.get("version") != "0.6.10":
         parser.error("本原型要求 RitsuLib 0.6.10。")
@@ -56,14 +59,14 @@ def main():
     settings = runtime.parent / "userdata" / "sts2_agent-roundtrip" / "default" / "1" / "settings.save"
     settings.parent.mkdir(parents=True, exist_ok=True)
     settings.write_text(json.dumps({
-        "schema_version": 5, "language": args.language, "fullscreen": False,
+        "schema_version": 8, "language": args.language, "fullscreen": False,
         "skip_intro_logo": True, "seen_ea_disclaimer": True,
         "mod_settings": {"mods_enabled": True, "mod_list": []},
     }, indent=2) + "\n")
     installation.write_text(json.dumps({
         "game_dir": str(game), "runtime": str(runtime),
-        "release": json.loads((game / "release_info.json").read_text()),
-        "ritsulib": {"version": "0.6.10", "api": "0.107.1", "source": str(library)},
+        "release": release,
+        "ritsulib": {"version": "0.6.10", "api": "0.111.0", "source": str(library)},
     }, indent=2) + "\n")
     print(runtime)
 

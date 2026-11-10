@@ -103,7 +103,7 @@ internal static class ShopFixture
         relics = player.Relics.Select(r => r.Id.Entry).ToArray(),
         potions = player.PotionSlots.Select(p => p?.Id.Entry).ToArray(),
         pending = ShopTransactions.Pending, obtaining = RelicObtainTracker.Pending,
-        previews = RunUi.CardPreviewsPending(), rng_counter = player.PlayerRng.Shops.Counter,
+        previews = RunUi.CardPreviewsPending(), rng_counter = player.PlayerRng.Shops.ToSerializable().counter,
         removal_used = ShopInspection.Current?.Inventory.Inventory?.CardRemovalEntry?.Used,
         removals = player.ExtraFields.CardShopRemovalsUsed,
         base_prices = ShopInspection.Current?.Inventory.Inventory?.AllEntries.Select(e => (int)PrivateFields.Read(e, "_cost")!).ToArray(),

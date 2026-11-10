@@ -49,7 +49,9 @@ internal sealed class CombatJournalScope : IDisposable
     public static void Initialize()
     {
         var harmony = new Harmony("sts2_agent.combat_journal_scope");
-        harmony.Patch(AccessTools.Method(typeof(CombatManager), nameof(CombatManager.StartCombatInternal)),
+        // Attach before BeforeCombatStart hooks and the first turn's shuffle/draw.
+        var turnState = typeof(CombatManager).Assembly.GetType("MegaCrit.Sts2.Core.Combat.CombatTurnState", throwOnError: true)!;
+        harmony.Patch(AccessTools.Method(typeof(CombatManager), "StartCombatInternal", [turnState]),
             prefix: new HarmonyMethod(typeof(CombatJournalScope), nameof(Starting)));
         harmony.Patch(AccessTools.Method(typeof(CombatManager), nameof(CombatManager.Reset)),
             prefix: new HarmonyMethod(typeof(CombatJournalScope), nameof(Resetting)));

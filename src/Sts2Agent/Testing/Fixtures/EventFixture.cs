@@ -84,7 +84,7 @@ internal static class EventFixture
         enchantments = player.Deck.Cards.Count(c => c.Enchantment != null),
         relics = player.Relics.Select(r => r.Id.Entry).ToArray(),
         potions = player.PotionSlots.Select(p => p?.Id.Entry).ToArray(),
-        event_rng = EventInspection.Current?.Model.Rng.Counter,
+        event_rng = EventInspection.Current?.Model.Rng.ToSerializable().ToString(),
         pending = EventTaskTracker.Pending, previews = RunUi.CardPreviewsPending(),
         option_keys = EventInspection.Current?.Layout.OptionButtons.Select(b => b.Option.TextKey).ToArray(),
         room_count = player.RunState.CurrentRoomCount

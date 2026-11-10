@@ -1,5 +1,6 @@
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Commands;
+using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
@@ -28,7 +29,7 @@ internal static class TurnCapture
         var harmony = new Harmony("sts2_agent.turn_capture");
         harmony.Patch(AccessTools.Method(typeof(CreatureCmd), nameof(CreatureCmd.Damage),
             [typeof(PlayerChoiceContext), typeof(IEnumerable<Creature>), typeof(decimal), typeof(ValueProp),
-                typeof(Creature), typeof(CardModel)]),
+                typeof(Creature), typeof(CardModel), typeof(CardPlay)]),
             prefix: new HarmonyMethod(typeof(TurnCapture), nameof(Damage)),
             finalizer: new HarmonyMethod(typeof(TurnCapture), nameof(Restore)));
         harmony.Patch(AccessTools.Method(typeof(CardCmd), nameof(CardCmd.AutoPlay)),

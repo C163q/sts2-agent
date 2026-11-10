@@ -1,0 +1,69 @@
+[
+  {
+    "name": "chain",
+    "scenarios": {
+      "play": "armaments_free",
+      "potion": "skill"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_action_observations.py",
+        "args": []
+      },
+      {
+        "name": "continue",
+        "verifier": "verify_suite_continuation.py",
+        "args": []
+      }
+    ]
+  },
+  {
+    "name": "potion_combat_entry_events",
+    "scenarios": {
+      "shop": "fake"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_combat_resources.py",
+        "args": [
+          "--scenario",
+          "fake_merchant"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "selection_combat_entry_events",
+    "scenarios": {
+      "selection": "combat_entry"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_combat_resources.py",
+        "args": [
+          "--scenario",
+          "selection_entry"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "combat",
+    "scenarios": {
+      "play": "basic"
+    },
+    "steps": [
+      {
+        "name": "verify",
+        "verifier": "verify_ui_context.py",
+        "args": [
+          "--scenario",
+          "combat"
+        ]
+      }
+    ]
+  }
+]

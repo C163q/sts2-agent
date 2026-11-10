@@ -84,7 +84,7 @@ internal static class PotionFixture
         if (scenario == "noncombat_reward")
             SelectionFixture.Pending = new RewardsSet(player).WithCustomRewards([
                 new PotionReward(ModelDb.Potion<BlockPotion>().ToMutable(), player)]).Offer();
-        if (scenario == "blocked") player.CanRemovePotions = false;
+        if (scenario == "blocked") player.CanUseOrRemovePotions = false;
         if (scenario == "unhittable")
             await PowerCmd.Apply<MockUnhittablePower>(new ThrowingPlayerChoiceContext(), player.Creature.CombatState!.Enemies.First(), 1, player.Creature, null);
         if (scenario == "discard_cancel") PotionDiscardCancelFixture.Arm(player.NetId);
@@ -121,7 +121,7 @@ internal static class PotionFixture
             ? FoulPotion.GetFoulPotionMerchantTarget(room).button : null;
         return new
         {
-            rng_counter = player.RunState.Rng.CombatTargets.Counter,
+            rng_counter = player.RunState.Rng.CombatTargets.ToSerializable().counter,
             targeting = NTargetManager.Instance.IsInSelection,
             queue_empty = RunManager.Instance.ActionQueueSet.IsEmpty,
             slots = player.PotionSlots.Select(p => p?.Id.Entry).ToArray(),

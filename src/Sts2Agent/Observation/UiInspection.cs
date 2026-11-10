@@ -97,13 +97,13 @@ internal static class UiInspection
                 return;
             string? hotkey = ((string[]?)pile.GetType().GetProperty("Hotkeys", PrivateInstance)?.GetValue(pile))?.FirstOrDefault();
             tips.Static(pile, key, [source], configure: (title, _) => title.Add("Hotkey",
-                hotkey == null ? "None" : NInputManager.Instance!.GetShortcutKey(hotkey).ToString()));
+                hotkey == null ? "None" : NInputManager.Instance!.GetCurrentHotkey(hotkey).ToString()));
         }
         Pile(room.Ui.DrawPile, "DRAW_PILE", "player.draw_count");
         Pile(room.Ui.DiscardPile, "DISCARD_PILE", "player.discard_count");
         Pile(room.Ui.ExhaustPile, "EXHAUST_PILE", "player.exhaust_count");
         if (!CombatManager.Instance.IsPlayerReadyToEndTurn(player))
-            tips.Static(room.Ui.EndTurnButton, "END_TURN", ["buttons.end_turn"], MegaInput.accept);
+            tips.Static(room.Ui.EndTurnButton, "END_TURN", ["buttons.end_turn"], MegaInput.endTurn);
     }
 
     private sealed class TipCollector
@@ -125,7 +125,7 @@ internal static class UiInspection
             var title = new LocString("static_hover_tips", key + ".title");
             var description = new LocString("static_hover_tips", key + ".description");
             if (hotkey != null)
-                title.Add("Hotkey", NInputManager.Instance!.GetShortcutKey(hotkey).ToString());
+                title.Add("Hotkey", NInputManager.Instance!.GetCurrentHotkey(hotkey).ToString());
             configure?.Invoke(title, description);
             Add(new HoverTip(title, description), sources);
         }

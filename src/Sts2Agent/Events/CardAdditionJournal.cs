@@ -54,9 +54,12 @@ internal sealed class CardAdditionJournal : IDisposable
     public static void Initialize()
     {
         var harmony = new Harmony("sts2_agent.card_add_destinations");
-        harmony.Patch(AccessTools.Method(typeof(NCardFlyVfx), nameof(NCardFlyVfx.Create)),
+        harmony.Patch(AccessTools.Method(typeof(NCardFlyVfx), nameof(NCardFlyVfx.Create),
+            [typeof(NCard), typeof(PileType), typeof(bool), typeof(string)]),
             postfix: new HarmonyMethod(typeof(CardAdditionJournal), nameof(Flying)));
-        harmony.Patch(AccessTools.Method(typeof(NExhaustVfx), nameof(NExhaustVfx.Create)),
+        harmony.Patch(AccessTools.Method(typeof(NCardExhaustVfx), nameof(NCardExhaustVfx.Create), [typeof(NCard)]),
+            postfix: new HarmonyMethod(typeof(CardAdditionJournal), nameof(Exhausting)));
+        harmony.Patch(AccessTools.Method(typeof(NCardExhaustQuickVfx), nameof(NCardExhaustQuickVfx.Create), [typeof(NCard)]),
             postfix: new HarmonyMethod(typeof(CardAdditionJournal), nameof(Exhausting)));
     }
 
@@ -64,7 +67,7 @@ internal sealed class CardAdditionJournal : IDisposable
     {
         if (__2 && __result != null && NGame.IsMainThread()) current?.Witness(__0, __result, __1);
     }
-    private static void Exhausting(NCard __0, NExhaustVfx? __result)
+    private static void Exhausting(NCard __0, CanvasItem? __result)
     {
         if (__result != null && NGame.IsMainThread()) current?.Witness(__0, __result, PileType.Exhaust);
     }

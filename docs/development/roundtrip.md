@@ -10,7 +10,7 @@
 - `RitsuLibDir` 指向兼容 RitsuLib 的完整目录，可直接使用 Steam 创意工坊安装。目录须直接包含 `RitsuLib.References.props`、`mod_manifest.json`、根 DLL、`assets.zip`、`shared/` 和匹配的 `compat/` 子目录。
 - 构建引用上述本地库与游戏自带程序集，不下载 NuGet 包；[NuGet.Config](../../src/Sts2Agent/NuGet.Config)不启用远程源。
 
-手工获取 RitsuLib 时，使用[作者发布的兼容包](https://github.com/BAKAOLC/STS2-RitsuLib/releases/tag/v0.6.10) `STS2.RitsuLib.Compat.0.107.1.0.6.10.github.zip`，完整解压后作为 `RitsuLibDir`。已核对的发布包 SHA-256 为 `3c7dafb8a8d36d66891abd6c601aec6f43de9890693d1b583e67e2c6d71ebfb5`。
+当前迁移分支以游戏 `v0.111.0` 和 RitsuLib `0.6.10` 的 `compat/0.111.0` 为构建目标，进度及验证范围见[迁移记录](../research/2026-11-10-v0.111-migration-investigation.md)。手工获取 RitsuLib 时，从[作者发布页](https://github.com/BAKAOLC/STS2-RitsuLib/releases/tag/v0.6.10)选择包含该目标的完整兼容包，完整解压后作为 `RitsuLibDir`。
 
 ### 路径配置
 
@@ -40,7 +40,7 @@ env DOTNET_CLI_HOME=/tmp/sts2-agent-dotnet NUGET_PACKAGES=/tmp/sts2-agent-nuget 
 python3 scripts/prepare_roundtrip.py --game-dir "${Sts2Dir:?请先配置并加载 .env}" --ritsu-lib-dir "${RitsuLibDir:?请先配置并加载 .env}"
 ```
 
-准备脚本把可执行文件、本项目 Mod 和完整 RitsuLib 运行时复制到 `.tmp/roundtrip/runtime/`，用符号链接读取原游戏资源，写入独立测试设置。它不在原游戏目录安装 Mod。重新准备前先停止测试实例。运行目录通过 `installation.json` 绑定首次使用的安装位置；更换位置或发现缺少安装记录的非空运行目录时会拒绝操作，应先保留验证证据再重建 `.tmp/roundtrip`。
+准备脚本核对游戏版本后，把可执行文件、本项目 Mod 和完整 RitsuLib 运行时复制到 `.tmp/roundtrip/runtime/`，用符号链接读取原游戏资源，写入 schema 8 的独立测试设置。它不在原游戏目录安装 Mod。重新准备前先停止测试实例；Steam 更新同一安装目录后也须重新准备，使可执行文件和链接资源保持同版。运行目录通过 `installation.json` 绑定首次使用的安装位置；更换位置或发现缺少安装记录的非空运行目录时会拒绝操作，应先保留验证证据再重建 `.tmp/roundtrip`。
 
 ## 启动与验证
 
