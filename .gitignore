@@ -2,6 +2,7 @@
 /.env
 /mcp-config.json
 /.sts2-agent/
+/docs/local.md
 **/bin/
 **/obj/
 __pycache__/
