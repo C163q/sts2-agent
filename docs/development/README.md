@@ -42,3 +42,5 @@
 - [用户后续待办](TODO.md)：按用户明确授权维护与实施。
 - [工具逐项核验清单及流程](../research/2026-11-02-mcp-tool-review.md)：已完成逐项审阅的结论、验证证据和适用基线。
 - [v0.111.0 迁移调查](../research/2026-11-10-v0.111-migration-investigation.md)：与 v0.107.1 的差异、确定需要迁移的接入点及游戏验证范围。
+
+- [v0.111.0 致死馈赠复测](../research/2026-11-10-ancient-lethal-gift-retest.md)：斗篷与 Sere Talon 在 9/9 下的原版／MCP 领取及结算对照。

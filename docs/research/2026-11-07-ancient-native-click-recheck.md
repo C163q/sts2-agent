@@ -2,6 +2,8 @@
 
 > 当前状态：复查完成。有效原生鼠标点击也触发相同运行时致命错误；用户随后报告原版也崩溃，现按原版可复现问题记录，具体底层根因仍未确定。未修改产品。
 
+v0.111.0 的后续对照已完成，当前结果见[复测记录](2026-11-10-ancient-lethal-gift-retest.md)；下文保留 v0.107.1 的原始证据。
+
 关联[选择馈赠审阅](2026-11-07-choose-ancient-option-review.md)及[开发核验](2026-11-07-choose-ancient-option-development-notes.md)。
 
 ## 条件与有效输入
