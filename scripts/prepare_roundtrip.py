@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import shutil
+import tempfile
 from pathlib import Path
 
 
@@ -18,12 +19,12 @@ def main():
     if not (game / "SlayTheSpire2").is_file():
         parser.error("游戏目录中缺少 SlayTheSpire2。")
     release = json.loads((game / "release_info.json").read_text())
-    if release.get("version") != "v0.111.0":
-        parser.error("当前构建目标为 v0.111.0，请使用该版本的完整游戏目录。")
+    if release.get("version") != "v0.111.1":
+        parser.error("当前构建目标为 v0.111.1，请使用该版本的完整游戏目录。")
     if not (build / "Sts2Agent.dll").is_file():
         parser.error("请先构建 src/Sts2Agent/Sts2Agent.csproj。")
     if not args.ritsu_lib_dir:
-        parser.error("请配置 RitsuLibDir 或 --ritsu-lib-dir，指向完整的 RitsuLib 0.6.10 运行时。")
+        parser.error("请配置 RitsuLibDir 或 --ritsu-lib-dir，指向完整的 RitsuLib 0.6.15 运行时。")
     library = args.ritsu_lib_dir.expanduser().resolve()
     required = ("mod_manifest.json", "RitsuLib.References.props", "assets.zip", "STS2-RitsuLib.dll",
                 "ritsulib-variants.manifest", "compat/0.111.0/STS2-RitsuLib.dll",
@@ -32,8 +33,8 @@ def main():
     if any(not (library / name).is_file() for name in required):
         parser.error("RitsuLib 目录不完整或缺少 0.111.0 兼容目标。")
     manifest = json.loads((library / "mod_manifest.json").read_text())
-    if manifest.get("id") != "STS2-RitsuLib" or manifest.get("version") != "0.6.10":
-        parser.error("本原型要求 RitsuLib 0.6.10。")
+    if manifest.get("id") != "STS2-RitsuLib" or manifest.get("version") != "0.6.15":
+        parser.error("本原型要求 RitsuLib 0.6.15。")
     installation = runtime.parent / "installation.json"
     if installation.exists():
         previous = json.loads(installation.read_text())
@@ -51,7 +52,16 @@ def main():
     destination.mkdir(parents=True, exist_ok=True)
     for name in ("Sts2Agent.dll", "Sts2Agent.json"):
         shutil.copy2(build / name, destination / name)
-    shutil.copytree(library, runtime / "mods" / "STS2-RitsuLib", dirs_exist_ok=True)
+    installed_library = runtime / "mods" / "STS2-RitsuLib"
+    # Stage the complete package before replacing the generated runtime copy.
+    with tempfile.TemporaryDirectory(dir=runtime.parent) as staging:
+        staged_library = Path(staging) / "STS2-RitsuLib"
+        shutil.copytree(library, staged_library)
+        if installed_library.is_symlink():
+            installed_library.unlink()
+        elif installed_library.exists():
+            shutil.rmtree(installed_library)
+        staged_library.rename(installed_library)
     (runtime / "override.cfg").write_text(
         '[application]\nconfig/use_custom_user_dir=true\n'
         'config/custom_user_dir_name="sts2_agent-roundtrip"\n'
@@ -66,7 +76,7 @@ def main():
     installation.write_text(json.dumps({
         "game_dir": str(game), "runtime": str(runtime),
         "release": release,
-        "ritsulib": {"version": "0.6.10", "api": "0.111.0", "source": str(library)},
+        "ritsulib": {"version": "0.6.15", "api": "0.111.0", "source": str(library)},
     }, indent=2) + "\n")
     print(runtime)
 

@@ -22,7 +22,7 @@
     <None Include="Sts2Agent.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <Target Name="CheckGamePath" BeforeTargets="ResolveReferences">
-    <Error Condition="!Exists('$(RitsuLibDir)/RitsuLib.References.props')" Text="Set RitsuLibDir to a complete RitsuLib 0.6.10 runtime for game 0.111.0." />
+    <Error Condition="!Exists('$(RitsuLibDir)/RitsuLib.References.props')" Text="Set RitsuLibDir to a complete RitsuLib 0.6.15 runtime with compat/0.111.0 for game 0.111.1." />
     <Error Condition="!Exists('$(GameDataDir)/sts2.dll')" Text="Set Sts2Dir to the Linux game installation directory." />
   </Target>
 </Project>

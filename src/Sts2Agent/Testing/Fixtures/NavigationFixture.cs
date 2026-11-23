@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 using MegaCrit.Sts2.Core.Random;
 using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
+using MegaCrit.Sts2.Core.Saves;
 using MegaCrit.Sts2.Core.Unlocks;
 
 namespace Sts2Agent;
@@ -33,6 +34,8 @@ internal static class NavigationFixture
         var screen = NMapScreen.Instance!;
         if (scenario is "boss1" or "boss2" or "boss3" or "double")
         {
+            // The Architect's victory summary saves badges even for a non-saving test run.
+            if (scenario == "boss3") SaveManager.Instance.Progress.GetOrCreateCharacterStats(player.Character.Id);
             run.AddVisitedMapCoord(map.BossMapPoint.coord);
             screen.SetMap(map, run.Rng.Seed, clearDrawings: true);
             manager.MapSelectionSynchronizer.OnLocationChanged(run.MapLocation);

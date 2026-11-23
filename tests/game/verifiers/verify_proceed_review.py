@@ -218,7 +218,10 @@ async def verify(args):
                 assert not set(result['available_actions']) & GAME_ACTIONS, result
                 await call('proceed', error='observation_required', label='terminal_has_no_permission')
                 await call('inspect_run_result'); await reject('result_requires_result_tool', 'run_result_option')
-                await call('run_result_option', {'option_id': 'continue'}, label='after_result_rejection')
+                continued = await call('run_result_option', {'option_id': 'continue'}, label='after_result_rejection')
+                assert continued['transition']['stop_reason'] == 'action_completed' and continued['transition']['complete'], continued
+                summary = await call('inspect_run_result')
+                assert summary['run_result']['phase'] == 'summary', summary
                 return
 
 

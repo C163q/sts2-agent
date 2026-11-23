@@ -27,26 +27,26 @@ class PrepareRoundtripTests(unittest.TestCase):
                 path = library / name
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text("fixture")
-            (library / "mod_manifest.json").write_text(json.dumps({"id": "STS2-RitsuLib", "version": "0.6.10"}))
+            (library / "mod_manifest.json").write_text(json.dumps({"id": "STS2-RitsuLib", "version": "0.6.15"}))
             games = []
             for label in ("A", "B"):
                 game = root / label
                 game.mkdir()
                 (game / "SlayTheSpire2").write_text(label)
                 (game / "resource.dat").write_text(label)
-                (game / "release_info.json").write_text(json.dumps({"version": "v0.111.0", "commit": label}))
+                (game / "release_info.json").write_text(json.dumps({"version": "v0.111.1", "commit": label}))
                 games.append(game)
             missing = subprocess.run([sys.executable, str(script), "--game-dir", str(games[0]),
                                       "--ritsu-lib-dir", str(root / "missing")], capture_output=True, text=True)
             self.assertNotEqual(missing.returncode, 0)
             self.assertFalse((root / ".tmp" / "roundtrip" / "runtime").exists())
             release_path = games[0] / "release_info.json"
-            release_path.write_text(json.dumps({"version": "v0.107.1"}))
+            release_path.write_text(json.dumps({"version": "v0.111.0"}))
             incompatible = subprocess.run([sys.executable, str(script), "--game-dir", str(games[0]),
                                            "--ritsu-lib-dir", str(library)], capture_output=True, text=True)
             self.assertNotEqual(incompatible.returncode, 0, incompatible.stdout)
             self.assertFalse((root / ".tmp" / "roundtrip" / "runtime").exists())
-            release_path.write_text(json.dumps({"version": "v0.111.0", "commit": "A"}))
+            release_path.write_text(json.dumps({"version": "v0.111.1", "commit": "A"}))
             first = subprocess.run([sys.executable, str(script), "--game-dir", str(games[0]),
                                     "--ritsu-lib-dir", str(library)],
                                    capture_output=True, text=True)
@@ -64,6 +64,17 @@ class PrepareRoundtripTests(unittest.TestCase):
             self.assertEqual((work / "runtime" / "SlayTheSpire2").read_text(), "A")
             self.assertEqual((work / "runtime" / "resource.dat").resolve(), games[0] / "resource.dat")
             self.assertEqual((work / "installation.json").read_text(), record)
+
+            # A dependency upgrade must replace compatibility DLLs absent from the new package.
+            installed_library = work / "runtime/mods/STS2-RitsuLib"
+            obsolete = installed_library / "compat/0.110.0/STS2-RitsuLib.dll"
+            obsolete.parent.mkdir()
+            obsolete.write_text("previous runtime")
+            updated = subprocess.run([sys.executable, str(script), "--game-dir", str(games[0]),
+                                      "--ritsu-lib-dir", str(library)], capture_output=True, text=True)
+            self.assertEqual(updated.returncode, 0, updated.stderr)
+            self.assertFalse(obsolete.exists())
+            self.assertTrue((installed_library / "compat/0.111.0/STS2-RitsuLib.dll").is_file())
 
 
 if __name__ == "__main__":
