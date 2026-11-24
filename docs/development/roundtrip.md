@@ -5,7 +5,7 @@
 ## 前提与构建
 
 - 自行安装 Linux 版《杀戮尖塔 2》。游戏路径通过 `Sts2Dir` 和 `--game-dir` 传入。
-- 按 [global.json](../../global.json) 安装兼容 SDK，需要对应的 .NET 引用包，单独安装运行时不足以编译。
+- 按 [global.json](../../global.json) 安装 .NET 10 SDK，并在 .NET 安装根目录的 `packs/` 下提供 .NET 9 目标框架引用包（`Microsoft.NETCore.App.Ref` 9.0.x）。Mod 编译为 `net9.0`，由游戏自带的 .NET 9 运行时加载。
 - 安装 Python 3；本文原有文件客户端和验证脚本只使用标准库，MCP 服务的额外依赖见接入指南。
 - `RitsuLibDir` 指向兼容 RitsuLib 的完整目录，可直接使用 Steam 创意工坊安装。目录须直接包含 `RitsuLib.References.props`、`mod_manifest.json`、根 DLL、`assets.zip`、`shared/` 和匹配的 `compat/` 子目录。
 - 构建引用上述本地库与游戏自带程序集，不下载 NuGet 包；[NuGet.Config](../../src/Sts2Agent/NuGet.Config)不启用远程源。

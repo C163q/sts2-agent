@@ -65,7 +65,7 @@ C# 使用根 [Sts2Agent.sln](../../Sts2Agent.sln)，包含 Mod 和纯检查项�
 .tmp/mcp-venv/bin/python -m unittest discover -s tests -t . -p 'test_output_boundaries.py'
 ```
 
-C# 停止条件与缓冲的纯检查：
+C# 停止条件与缓冲的纯检查使用系统安装的 .NET 9 运行时：
 
 ```sh
 dotnet run --project tests/csharp/Sts2Agent.Checks/Sts2Agent.Checks.csproj

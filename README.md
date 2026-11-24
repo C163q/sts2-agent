@@ -40,7 +40,7 @@
 | 本项目 Mod | `0.87.1` |
 | MCP 服务 | `0.89.1` |
 | RitsuLib | `0.6.15`，使用 `compat/0.111.0` 运行时，获取方式见[构建指南](docs/development/roundtrip.md#前提与构建) |
-| .NET | 9 SDK，用于从源码构建 Mod |
+| .NET | 10 LTS SDK，用于从源码构建 Mod |
 | Python | 3.10 或以上，按[MCP 接入指南](docs/development/mcp.md#安装与游戏前提)安装依赖 |
 
 另需支持 stdio MCP 的 agent 客户端。
