@@ -1,6 +1,7 @@
 import base64
 import copy
 import json
+import os
 import struct
 import tempfile
 import unittest
@@ -80,12 +81,18 @@ class ScreenshotStoreTests(unittest.TestCase):
                 store.save(png_payload(), {'filename': '01-选择.png'})
             self.assertEqual(raised.exception.code, 'file_exists')
             victim = root / 'victim'; victim.write_text('unchanged')
-            (root / 'nested/link.png').symlink_to(victim)
-            with self.assertRaises(ScreenshotError):
-                store.save(png_payload(), {'filename': 'link.png'})
-            self.assertEqual(victim.read_text(), 'unchanged')
             automatic = store.save(png_payload(), {})
             self.assertTrue(Path(automatic['path']).name.endswith('.png'))
+            with self.subTest('symlink destination'):
+                try:
+                    (root / 'nested/link.png').symlink_to(victim)
+                except OSError as error:
+                    if getattr(error, 'winerror', None) == 1314:
+                        self.skipTest('Creating Windows symlinks requires Developer Mode or privileges.')
+                    raise
+                with self.assertRaises(ScreenshotError):
+                    store.save(png_payload(), {'filename': 'link.png'})
+                self.assertEqual(victim.read_text(), 'unchanged')
 
     def test_invalid_arguments_never_escape_directory(self):
         from sts2_mcp.screenshot_tool import screenshot_arguments
@@ -95,6 +102,13 @@ class ScreenshotStoreTests(unittest.TestCase):
                       {'filename': 'bad.jpg'}, {'filename': 'x' * 129 + '.png'}]:
             with self.subTest(value=value), self.assertRaises(ValueError):
                 screenshot_arguments(value)
+
+    @unittest.skipUnless(os.name == 'nt', 'Windows filename rules')
+    def test_windows_filename_rejects_reserved_and_non_leaf_paths(self):
+        from sts2_mcp.screenshot_tool import screenshot_arguments
+        for name in ('D:relative.png', 'shot.png:stream.png', 'NUL.png', 'bad?.png'):
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                screenshot_arguments({'filename': name})
 
     def test_malformed_or_mismatched_png_is_rejected_before_writing(self):
         from sts2_mcp.screenshot_tool import ScreenshotStore
@@ -204,7 +218,7 @@ class ScreenshotStdioTests(unittest.IsolatedAsyncioTestCase):
             config = game.directory / 'config.json'
             for enabled in (False, True):
                 config.write_text(json.dumps({'screenshots': {'enabled': enabled, 'directory': 'captures'}}))
-                parameters = StdioServerParameters(command=sys.executable, cwd='/tmp', args=[str(SERVER),
+                parameters = StdioServerParameters(command=sys.executable, cwd=str(game.directory), args=[str(SERVER),
                     '--ipc-dir', str(game.directory), '--config', str(config)])
                 async with stdio_client(parameters) as (read, write):
                     async with ClientSession(read, write) as session:

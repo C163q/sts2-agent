@@ -64,6 +64,12 @@ def storage_failure(error, stage):
     return ScreenshotError('screenshot_save_failed', reason)
 
 
+def reserved_windows_name(name):
+    if hasattr(os.path, 'isreserved'):
+        return os.path.isreserved(name)
+    return any(character in name for character in '<>:"|?*') or Path(name).is_reserved()
+
+
 def screenshot_arguments(arguments):
     if arguments is None:
         return {}
@@ -73,7 +79,8 @@ def screenshot_arguments(arguments):
         name = arguments["filename"]
         if (not isinstance(name, str) or not 5 <= len(name) <= 128 or not name.endswith(".png")
                 or any(character in name for character in ("/", "\\", "\0"))
-                or any(ord(character) < 32 or ord(character) == 127 for character in name)):
+                or any(ord(character) < 32 or ord(character) == 127 for character in name)
+                or os.name == 'nt' and reserved_windows_name(name)):
             raise ValueError("Expected a PNG filename without directory components.")
     return dict(arguments)
 

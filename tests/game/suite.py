@@ -467,6 +467,8 @@ def main():
     parser.add_argument('--output', type=Path, required=True, help='新建的证据目录，不得已存在')
     parser.add_argument('--python', default=sys.executable, help='已安装 MCP 依赖的 Python')
     args = parser.parse_args()
+    if os.name == 'nt':
+        parser.error('图形套件在 Linux 上运行。Windows 请按往返指南启动独立实例并单独执行验证器。')
     cases = load_cases(args.suite)
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)

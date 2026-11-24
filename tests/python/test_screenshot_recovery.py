@@ -1,6 +1,7 @@
 """Exercise screenshot filesystem refusals without borrowing or creating permission."""
 import copy
 import errno
+import os
 import tempfile
 import threading
 import unittest
@@ -44,9 +45,11 @@ class ScreenshotRecoveryTests(unittest.IsolatedAsyncioTestCase):
     async def test_directory_and_unicode_filename_errors_are_specific_and_recoverable(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory); blocked = root / 'blocked'; blocked.write_text('not a directory')
-            for destination, arguments, message, recovery in (
-                    (blocked, {}, 'file', 'check_screenshot_directory'),
-                    (root / 'valid', {'filename': '界' * 90 + '.png'}, 'long', 'change_filename')):
+            cases = [(blocked, {}, 'file', 'check_screenshot_directory')]
+            if os.name != 'nt':
+                # This name exceeds a 255-byte limit and fits the Windows UTF-16 component limit.
+                cases.append((root / 'valid', {'filename': '界' * 90 + '.png'}, 'long', 'change_filename'))
+            for destination, arguments, message, recovery in cases:
                 with self.subTest(destination=destination):
                     client = EvidencedCaptureClient(); tools = GameTools(client, screenshot_directory=destination)
                     await tools.get_observation()

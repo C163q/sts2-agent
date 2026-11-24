@@ -3,7 +3,6 @@ from scripts._bootstrap import ROOT
 
 import json
 import os
-import select
 import signal
 import subprocess
 import sys
@@ -12,8 +11,20 @@ import time
 import unittest
 from contextlib import contextmanager
 from pathlib import Path
+from queue import Empty, Queue
+from threading import Thread
 
 from sts2_mcp.controller_lease import ControllerLease
+
+
+WINDOWS = os.name == 'nt'
+
+
+def console_signals():
+    if not WINDOWS:
+        return (signal.SIGINT, signal.SIGTERM)
+    import ctypes
+    return (signal.CTRL_BREAK_EVENT,) if ctypes.windll.kernel32.GetConsoleCP() else ()
 
 
 class ShutdownTests(unittest.TestCase):
@@ -27,15 +38,18 @@ class ShutdownTests(unittest.TestCase):
                 [sys.executable, str(ROOT / 'scripts/mcp_server.py'),
                  '--ipc-dir', directory, '--config', str(config), '--timeout', '30'],
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                start_new_session=True,
+                bufsize=0,
+                **({'creationflags': subprocess.CREATE_NEW_PROCESS_GROUP}
+                   if WINDOWS else {'start_new_session': True}),
             )
             try:
                 self.send(process, {'jsonrpc': '2.0', 'id': 1, 'method': 'initialize', 'params': {
                     'protocolVersion': '2024-11-05', 'capabilities': {},
                     'clientInfo': {'name': 'shutdown-test', 'version': '1'},
                 }})
-                self.assertTrue(select.select([process.stdout], [], [], 5)[0], 'MCP handshake timed out')
-                self.assertEqual(json.loads(process.stdout.readline())['id'], 1)
+                line = self.read_stdout(process.stdout.readline)
+                self.assertTrue(line, process.stderr.read() if process.poll() is not None else line)
+                self.assertEqual(json.loads(line)['id'], 1)
                 self.send(process, {'jsonrpc': '2.0', 'method': 'notifications/initialized'})
                 yield process, ipc
             finally:
@@ -50,6 +64,14 @@ class ShutdownTests(unittest.TestCase):
     def send(process, message):
         process.stdin.write((json.dumps(message) + '\n').encode())
         process.stdin.flush()
+
+    def read_stdout(self, read):
+        result = Queue(maxsize=1)
+        Thread(target=lambda: result.put(read()), daemon=True).start()
+        try:
+            return result.get(timeout=5)
+        except Empty:
+            self.fail('MCP stdout read timed out')
 
     def wait_for_request(self, process, ipc):
         self.send(process, {'jsonrpc': '2.0', 'id': 2, 'method': 'tools/call',
@@ -75,7 +97,9 @@ class ShutdownTests(unittest.TestCase):
         return stdout
 
     def test_signals_exit_cleanly_with_stdin_open(self):
-        for sig in (signal.SIGINT, signal.SIGTERM):
+        if not console_signals():
+            self.skipTest('Windows console signal delivery requires an attached console.')
+        for sig in console_signals():
             with self.subTest(signal=sig), self.server() as (process, ipc):
                 process.send_signal(sig)
                 # Keep stdin open: communicate() would close it and hide a blocked reader.
@@ -86,7 +110,8 @@ class ShutdownTests(unittest.TestCase):
                 self.finish(process, ipc)
 
     def test_shutdown_cancels_pending_file_wait_and_releases_control(self):
-        for mode in ('sigint', 'sigterm', 'eof', 'process_group'):
+        modes = ('eof', *console_signals()) if WINDOWS else ('sigint', 'sigterm', 'eof', 'process_group')
+        for mode in modes:
             with self.subTest(mode=mode), self.server() as (process, ipc):
                 requests = self.wait_for_request(process, ipc)
                 with self.assertRaises(BlockingIOError):
@@ -95,6 +120,8 @@ class ShutdownTests(unittest.TestCase):
                 if mode == 'eof':
                     process.stdin.close()
                     process.stdin = None
+                elif WINDOWS:
+                    process.send_signal(mode)
                 elif mode == 'process_group':
                     os.killpg(process.pid, signal.SIGINT)
                 else:
@@ -121,18 +148,19 @@ class ShutdownTests(unittest.TestCase):
             self.finish(process, ipc)
 
     def test_signal_cancels_output_when_client_stops_reading(self):
+        if not console_signals():
+            self.skipTest('Windows console signal delivery requires an attached console.')
         with self.server() as (process, ipc):
             self.send(process, {'jsonrpc': '2.0', 'id': 2, 'method': 'tools/list'})
-            self.assertTrue(select.select([process.stdout], [], [], 2)[0], 'No tool catalog output')
-            process.send_signal(signal.SIGINT)
+            self.assertTrue(self.read_stdout(lambda: process.stdout.read(1)), 'No tool catalog output')
+            process.send_signal(console_signals()[0])
             self.finish(process, ipc)
 
     def test_unexpected_stream_errors_remain_visible(self):
         with self.server() as (process, ipc):
             process.stdin.write(b'\xff\n')
             process.stdin.flush()
-            process.wait(timeout=2)
-            _, stderr = process.communicate(timeout=2)
+            _, stderr = process.communicate(timeout=5)
             self.assertNotEqual(process.returncode, 0)
             self.assertIn(b'UnicodeDecodeError', stderr)
 

@@ -2,12 +2,12 @@ import argparse
 import json
 import os
 import shutil
-import tempfile
+import uuid
 from pathlib import Path
 
 
 def main():
-    parser = argparse.ArgumentParser(description="准备独立的 Linux 游戏验证目录。")
+    parser = argparse.ArgumentParser(description="准备独立的游戏验证目录。")
     parser.add_argument("--game-dir", required=True, type=Path)
     parser.add_argument("--ritsu-lib-dir", type=Path, default=os.environ.get("RitsuLibDir"))
     parser.add_argument("--language", choices=("eng", "zhs"), default="eng")
@@ -16,9 +16,11 @@ def main():
     game = args.game_dir.expanduser().resolve()
     runtime = root / ".tmp" / "roundtrip" / "runtime"
     build = root / "src" / "Sts2Agent" / "bin" / "Debug" / "net9.0"
-    if not (game / "SlayTheSpire2").is_file():
-        parser.error("游戏目录中缺少 SlayTheSpire2。")
-    release = json.loads((game / "release_info.json").read_text())
+    windows = os.name == "nt"
+    executable = "SlayTheSpire2.exe" if windows else "SlayTheSpire2"
+    if not (game / executable).is_file():
+        parser.error(f"游戏目录中缺少 {executable}。")
+    release = json.loads((game / "release_info.json").read_text(encoding="utf-8"))
     if release.get("version") != "v0.111.1":
         parser.error("当前构建目标为 v0.111.1，请使用该版本的完整游戏目录。")
     if not (build / "Sts2Agent.dll").is_file():
@@ -32,7 +34,7 @@ def main():
                 "shared/STS2-RitsuLib.Ui.dll", "shared/STS2-RitsuLib.Settings.dll")
     if any(not (library / name).is_file() for name in required):
         parser.error("RitsuLib 目录不完整或缺少 0.111.0 兼容目标。")
-    manifest = json.loads((library / "mod_manifest.json").read_text())
+    manifest = json.loads((library / "mod_manifest.json").read_text(encoding="utf-8"))
     if manifest.get("id") != "STS2-RitsuLib" or manifest.get("version") != "0.6.15":
         parser.error("本原型要求 RitsuLib 0.6.15。")
     installation = runtime.parent / "installation.json"
@@ -44,24 +46,35 @@ def main():
         parser.error("运行目录已有文件但缺少安装记录；请先保留证据并重建 .tmp/roundtrip。")
     runtime.mkdir(parents=True, exist_ok=True)
     for source in game.iterdir():
-        if source.name == "SlayTheSpire2":
-            shutil.copy2(source, runtime / source.name)
-        elif source.name not in ("mods", "override.cfg", "probe.gd") and not (runtime / source.name).exists():
-            (runtime / source.name).symlink_to(source, target_is_directory=source.is_dir())
+        name = source.name.casefold() if windows else source.name
+        if name in ("mods", "_disable", "override.cfg", "probe.gd"):
+            continue
+        target = runtime / source.name
+        if windows or source.name == executable:
+            if source.is_dir():
+                shutil.copytree(source, target, dirs_exist_ok=True)
+            else:
+                shutil.copy2(source, target)
+        elif not target.exists():
+            target.symlink_to(source, target_is_directory=source.is_dir())
     destination = runtime / "mods" / "Sts2Agent"
     destination.mkdir(parents=True, exist_ok=True)
     for name in ("Sts2Agent.dll", "Sts2Agent.json"):
         shutil.copy2(build / name, destination / name)
     installed_library = runtime / "mods" / "STS2-RitsuLib"
-    # Stage the complete package before replacing the generated runtime copy.
-    with tempfile.TemporaryDirectory(dir=runtime.parent) as staging:
-        staged_library = Path(staging) / "STS2-RitsuLib"
+    # Inherit workspace permissions so the desktop game can read a copy staged over SSH.
+    staging = runtime.parent / f".ritsulib-{uuid.uuid4().hex}"
+    staging.mkdir()
+    try:
+        staged_library = staging / "STS2-RitsuLib"
         shutil.copytree(library, staged_library)
         if installed_library.is_symlink():
             installed_library.unlink()
         elif installed_library.exists():
             shutil.rmtree(installed_library)
         staged_library.rename(installed_library)
+    finally:
+        shutil.rmtree(staging)
     (runtime / "override.cfg").write_text(
         '[application]\nconfig/use_custom_user_dir=true\n'
         'config/custom_user_dir_name="sts2_agent-roundtrip"\n'

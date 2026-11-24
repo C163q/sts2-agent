@@ -25,7 +25,7 @@ cp mcp-config.json.example mcp-config.json
 
 MCP 启动时默认读取仓库根目录的 `mcp-config.json`，与启动进程的工作目录无关。默认文件不存在、没有 `screenshots` 或 `enabled=false` 时，截图工具不进入目录，调用会被拒绝；`enabled=true` 时公开 capture_screenshot。完整数量与目录见[MCP 工具范围](mcp.md#工具范围)。运行中不重新读取配置，修改后须重启 MCP 连接。
 
-`directory` 在启用时必填。绝对路径直接使用；相对路径以配置文件所在目录为基准，支持开头的 `~`，不展开 `$HOME` 等环境变量。首次保存时创建缺少的目录，PNG 使用当前 MCP 进程的文件权限保存。目录不可写或磁盘空间不足时返回保存错误。
+`directory` 在启用时必填。绝对路径直接使用，相对路径以配置文件所在目录为基准。支持开头的 `~`。首次保存时创建缺少的目录，PNG 使用当前 MCP 进程的文件权限保存。目录须位于支持硬链接的文件系统，例如 Windows 的 NTFS。
 
 也可在原有启动参数中增加 `--config /absolute/path/mcp-config.json`。显式指定的文件不存在、JSON 损坏、重复键、未知字段或类型错误都会使启动失败，原因写到标准错误。实际配置已被 Git 忽略；`.env` 仍只用于构建和安装环境，MCP 不读取它。
 

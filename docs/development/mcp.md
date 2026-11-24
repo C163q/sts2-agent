@@ -1,6 +1,6 @@
 # 本地 MCP 接入
 
-Linux 本地 stdio MCP server 在游戏外运行，通过文件 IPC 与 Mod 通信。游戏由用户启动，模型由 agent 客户端调用。接入时先完成[安装](#安装与游戏前提)与客户端配置，再读取当前观察检查连通性。
+本地 stdio MCP server 在游戏外运行，通过文件 IPC 与 Mod 通信。游戏由用户启动，模型由 agent 客户端调用。接入时先完成[安装](#安装与游戏前提)与客户端配置，再读取当前观察检查连通性。
 
 ## 通信方式与连接状态
 
@@ -82,7 +82,7 @@ flowchart LR
 
 需要支持 stdio MCP 的客户端，并安装[当前基线](../../README.md#当前版本与前提)中的 Mod、依赖与 Python。安装、更新及两端版本排错见[正常游戏指南](live-game.md#更新与排错)。MCP 的 Python 依赖由 [requirements-mcp.txt](../../requirements-mcp.txt)定义；标准库文件客户端不需要 MCP SDK。
 
-在仓库根目录创建虚拟环境并安装依赖：
+在 Linux 仓库根目录创建虚拟环境并安装依赖。
 
 ```sh
 python3 -m venv .tmp/mcp-venv
@@ -98,14 +98,28 @@ python3 -m venv .tmp/mcp-venv
 uv pip install --python .tmp/mcp-venv/bin/python -r requirements-mcp.txt
 ```
 
+在 Windows 仓库根目录使用 Python 3.12 或以上版本执行。
+
+```powershell
+python -m venv .tmp\mcp-venv
+.\.tmp\mcp-venv\Scripts\python.exe -m pip install -r requirements-mcp.txt
+```
+
 正常 Steam 游戏的 Mod 安装和启动变量见 [正常游戏加载与读取](live-game.md)。游戏的 `STS2_AGENT_IPC_DIR` 必须与 MCP 的 `--ipc-dir` 指向同一目录，例如 `.tmp/live/ipc`。
 
 ## 接入 Codex
 
-在仓库根目录执行以下命令，注册本地工具。命令使用绝对路径，后续不要求从仓库目录启动 Codex：
+在 Linux 仓库根目录执行以下命令注册本地工具。绝对路径允许从任意目录启动 Codex。
 
 ```sh
 codex mcp add sts2 -- "$PWD/.tmp/mcp-venv/bin/python" "$PWD/scripts/mcp_server.py" --ipc-dir "$PWD/.tmp/live/ipc"
+```
+
+在 Windows 仓库根目录使用 PowerShell 注册。
+
+```powershell
+$root = (Get-Location).Path
+codex mcp add sts2 -- "$root\.tmp\mcp-venv\Scripts\python.exe" "$root\scripts\mcp_server.py" --ipc-dir "$root\.tmp\live\ipc"
 ```
 
 ```sh
@@ -271,9 +285,9 @@ MCP 会话保存最近一次有效观察的状态令牌，并将其用于动作�
 
 ### 服务退出
 
-服务收到 `SIGINT`（包括 Ctrl+C）、`SIGTERM`、stdin EOF 或 stdout 管道断开时，取消当前会话与文件响应等待，释放控制锁，以状态码 0 退出。正常关闭过程保持 stderr 安静；其他运行错误仍按错误路径报告。已发布到游戏的请求可能继续执行，重新连接后应先读取当前状态。
+stdin EOF、stdout 管道断开或控制台中断会取消会话和文件响应等待，释放控制锁，以状态码 0 退出。Linux 处理 `SIGINT` 和 `SIGTERM`，Windows 处理 Ctrl+C 和 Ctrl+Break。已发布到游戏的请求可能继续执行，重新连接后先读取当前状态。
 
-[stdio 退出流程](../../src/sts2_mcp/mcp_server.py)负责信号与会话取消；[stdio 流适配](../../src/sts2_mcp/stdio_transport.py)为 SDK 提供可取消的 POSIX 读写。[文件客户端](../../src/sts2_mcp/roundtrip_client.py)通过可选的 `check_cancelled` 回调停止等待，独立 CLI 使用原有超时。回归验证见[退出测试](../../tests/python/test_mcp_shutdown.py)。
+[stdio 退出流程](../../src/sts2_mcp/mcp_server.py)负责信号与会话取消，[stdio 流适配](../../src/sts2_mcp/stdio_transport.py)为 SDK 提供可取消的管道读写。[文件客户端](../../src/sts2_mcp/roundtrip_client.py)通过 `check_cancelled` 回调停止等待。回归验证见[退出测试](../../tests/python/test_mcp_shutdown.py)。
 
 ## 验证与范围
 

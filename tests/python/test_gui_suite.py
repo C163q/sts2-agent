@@ -178,6 +178,7 @@ class GuiSuiteTests(unittest.TestCase):
                 self.load(value)
         self.assertEqual(len(self.load(self.cases())), 2)
 
+    @unittest.skipUnless(sys.platform == 'linux', 'The suite uses Linux process groups and procfs.')
     def test_timed_out_verifier_and_its_children_are_stopped(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -212,6 +213,7 @@ time.sleep(30)
             with self.subTest(name=name, args=args), self.assertRaises(ValueError):
                 self.load([case])
 
+    @unittest.skipUnless(sys.platform == 'linux', 'The suite uses Linux process groups.')
     def test_zero_exit_without_evidence_is_not_a_pass(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

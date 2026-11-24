@@ -6,7 +6,8 @@
     <AssemblyName>Sts2Agent</AssemblyName>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <DisableTransitiveFrameworkReferenceDownloads>true</DisableTransitiveFrameworkReferenceDownloads>
-    <GameDataDir>$(Sts2Dir)/data_sts2_linuxbsd_x86_64</GameDataDir>
+    <GameDataDir Condition="'$(GameDataDir)' == '' And Exists('$(Sts2Dir)/data_sts2_windows_x86_64/sts2.dll')">$(Sts2Dir)/data_sts2_windows_x86_64</GameDataDir>
+    <GameDataDir Condition="'$(GameDataDir)' == ''">$(Sts2Dir)/data_sts2_linuxbsd_x86_64</GameDataDir>
   </PropertyGroup>
   <PropertyGroup>
     <RitsuLibReferenceTarget>0.111.0</RitsuLibReferenceTarget>
@@ -23,6 +24,6 @@
   </ItemGroup>
   <Target Name="CheckGamePath" BeforeTargets="ResolveReferences">
     <Error Condition="!Exists('$(RitsuLibDir)/RitsuLib.References.props')" Text="Set RitsuLibDir to a complete RitsuLib 0.6.15 runtime with compat/0.111.0 for game 0.111.1." />
-    <Error Condition="!Exists('$(GameDataDir)/sts2.dll')" Text="Set Sts2Dir to the Linux game installation directory." />
+    <Error Condition="!Exists('$(GameDataDir)/sts2.dll')" Text="Set Sts2Dir to the Linux or Windows x64 game installation directory." />
   </Target>
 </Project>

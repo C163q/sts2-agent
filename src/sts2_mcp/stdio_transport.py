@@ -1,12 +1,60 @@
-"""Cancellable POSIX streams for the SDK's stdio framing."""
+"""Cancellable streams for the SDK's stdio framing."""
 import os
-import select
 
 import anyio
 
 
+POLL_INTERVAL = 0.025
+
+
+if os.name == 'nt':
+    import time
+    import _winapi
+    import msvcrt
+
+    def configure(descriptor):
+        msvcrt.setmode(descriptor, os.O_BINARY)
+        os.set_blocking(descriptor, False)
+
+    def read_chunk(descriptor):
+        try:
+            return os.read(descriptor, 65536)
+        except BlockingIOError:
+            time.sleep(POLL_INTERVAL)
+            return None
+
+    def write_chunk(descriptor, data):
+        # Keep the Win32 error code: the CRT maps a disconnected pipe to EINVAL.
+        try:
+            written, _ = _winapi.WriteFile(msvcrt.get_osfhandle(descriptor), data[:4096])
+        except OSError as error:
+            if error.winerror in (_winapi.ERROR_BROKEN_PIPE, _winapi.ERROR_NO_DATA):
+                raise BrokenPipeError from error
+            raise
+        if not written:
+            time.sleep(POLL_INTERVAL)
+        return written
+else:
+    import select
+
+    def configure(descriptor):
+        pass
+
+    def read_chunk(descriptor):
+        if select.select([descriptor], [], [], POLL_INTERVAL)[0]:
+            return os.read(descriptor, 65536)
+        return None
+
+    def write_chunk(descriptor, data):
+        if select.select([], [descriptor], [], POLL_INTERVAL)[1]:
+            # A ready POSIX pipe accepts PIPE_BUF bytes without blocking.
+            return os.write(descriptor, data[:select.PIPE_BUF])
+        return 0
+
+
 class Stdin:
     def __init__(self, descriptor, cancel_scope):
+        configure(descriptor)
         self.descriptor = descriptor
         self.cancel_scope = cancel_scope
         self.buffer = b''
@@ -15,8 +63,8 @@ class Stdin:
     def _readline(self):
         while b'\n' not in self.buffer and not self.eof:
             anyio.from_thread.check_cancelled()
-            if select.select([self.descriptor], [], [], 0.025)[0]:
-                chunk = os.read(self.descriptor, 65536)
+            chunk = read_chunk(self.descriptor)
+            if chunk is not None:
                 self.buffer += chunk
                 self.eof = not chunk
         line, separator, self.buffer = self.buffer.partition(b'\n')
@@ -31,6 +79,7 @@ class Stdin:
 
 class Stdout:
     def __init__(self, descriptor, cancel_scope):
+        configure(descriptor)
         self.descriptor = descriptor
         self.cancel_scope = cancel_scope
 
@@ -38,10 +87,8 @@ class Stdout:
         remaining = memoryview(data)
         while remaining:
             anyio.from_thread.check_cancelled()
-            if select.select([], [self.descriptor], [], 0.025)[1]:
-                # A ready POSIX pipe accepts PIPE_BUF bytes without blocking.
-                written = os.write(self.descriptor, remaining[:select.PIPE_BUF])
-                remaining = remaining[written:]
+            written = write_chunk(self.descriptor, remaining)
+            remaining = remaining[written:]
 
     async def write(self, text):
         try:

@@ -1,10 +1,10 @@
 # 最小流程验证指南
 
-适用于 `src/Sts2Agent/` 中的 Linux 验证原型。版本与依赖基线见[项目 README](../../README.md#当前版本与前提)。本指南的最小验证内容是读取状态、通过正常动作队列结束回合、读回下一回合状态。本文说明底层文件协议；agent 接入使用 [本地 MCP server](mcp.md)，当前工具能力见[项目 README](../../README.md#当前能力)。
+本指南说明 Mod 的构建、独立实例验证及底层文件接口。版本与依赖见[项目 README](../../README.md#当前版本与前提)，agent 接入见[本地 MCP server](mcp.md)。
 
 ## 前提与构建
 
-- 自行安装 Linux 版《杀戮尖塔 2》。游戏路径通过 `Sts2Dir` 和 `--game-dir` 传入。
+- 自行安装 Linux 或 Windows x64 版《杀戮尖塔 2》。游戏路径通过 `Sts2Dir` 和 `--game-dir` 传入，构建从安装目录识别对应平台的程序集。
 - 按 [global.json](../../global.json) 安装 .NET 10 SDK，并在 .NET 安装根目录的 `packs/` 下提供 .NET 9 目标框架引用包（`Microsoft.NETCore.App.Ref` 9.0.x）。Mod 编译为 `net9.0`，由游戏自带的 .NET 9 运行时加载。
 - 安装 Python 3；本文原有文件客户端和验证脚本只使用标准库，MCP 服务的额外依赖见接入指南。
 - `RitsuLibDir` 指向兼容 RitsuLib 的完整目录，可直接使用 Steam 创意工坊安装。目录须直接包含 `RitsuLib.References.props`、`mod_manifest.json`、根 DLL、`assets.zip`、`shared/` 和匹配的 `compat/` 子目录。
@@ -14,7 +14,7 @@
 
 ### 路径配置
 
-在仓库根目录复制[配置示例](../../.env.example)：
+在 Linux 仓库根目录复制[配置示例](../../.env.example)。
 
 ```sh
 cp .env.example .env
@@ -26,12 +26,25 @@ cp .env.example .env
 . ./.env
 ```
 
+在 Windows PowerShell 中设置同名环境变量，并将示例路径替换为实际路径。
+
+```powershell
+$env:Sts2Dir = 'C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2'
+$env:RitsuLibDir = 'C:\Program Files (x86)\Steam\steamapps\workshop\content\2868840\3747602295'
+```
+
 ### 构建与测试准备
 
-在仓库根目录构建 Mod：
+在 Linux 仓库根目录构建 Mod。
 
 ```sh
 env DOTNET_CLI_HOME=/tmp/sts2-agent-dotnet NUGET_PACKAGES=/tmp/sts2-agent-nuget DOTNET_CLI_TELEMETRY_OPTOUT=1 dotnet build src/Sts2Agent/Sts2Agent.csproj -p:Sts2Dir="${Sts2Dir:?请先配置并加载 .env}" -p:RitsuLibDir="${RitsuLibDir:?请先配置并加载 .env}"
+```
+
+在 Windows 仓库根目录的 PowerShell 中构建。
+
+```powershell
+dotnet build src/Sts2Agent/Sts2Agent.csproj
 ```
 
 正常游戏安装继续按[加载指南](live-game.md#安装文件)操作。需要独立测试实例时，再执行：
@@ -40,11 +53,17 @@ env DOTNET_CLI_HOME=/tmp/sts2-agent-dotnet NUGET_PACKAGES=/tmp/sts2-agent-nuget 
 python3 scripts/prepare_roundtrip.py --game-dir "${Sts2Dir:?请先配置并加载 .env}" --ritsu-lib-dir "${RitsuLibDir:?请先配置并加载 .env}"
 ```
 
-准备脚本核对游戏版本后，将可执行文件和 Mod 复制到 `.tmp/roundtrip/runtime/`，把隔离目录中的 RitsuLib 整包替换为配置的版本，用符号链接读取原游戏资源，并写入 schema 8 的测试设置。重新准备前先停止测试实例；Steam 更新同一安装目录后也须重新准备，使可执行文件和链接资源保持同版。运行目录通过 `installation.json` 绑定首次使用的安装位置；更换位置或发现缺少安装记录的非空运行目录时会拒绝操作，应先保留验证证据再重建 `.tmp/roundtrip`。
+Windows 使用 PowerShell 执行同一准备脚本。
+
+```powershell
+python scripts/prepare_roundtrip.py --game-dir $env:Sts2Dir --ritsu-lib-dir $env:RitsuLibDir
+```
+
+准备脚本核对游戏版本后，在 `.tmp/roundtrip/runtime/` 放置游戏可执行文件、Mod 和完整的 RitsuLib，并写入测试设置。Linux 链接原游戏资源，Windows 复制资源。重新准备前先停止测试实例。游戏安装更新后应重建隔离运行时，以使可执行文件和资源保持同版。运行目录通过 `installation.json` 绑定首次使用的安装位置。更换位置或使用缺少安装记录的非空目录时，先保留验证证据再重建 `.tmp/roundtrip`。
 
 ## 启动与验证
 
-批量图形回归可使用[复用进程的图形测试框架](gui-testing.md)，一个窗口运行多个新局，显式步骤可以复用同一局。以下仍是单用例启动方式。
+以下命令用于单用例验证。Linux 批量回归使用[图形测试套件](gui-testing.md)。在 Windows 将命令中的 `python3` 换成 `python`，图形验证从已登录的桌面终端启动并加 `--windowed`。
 
 终端一执行：
 
@@ -52,7 +71,7 @@ python3 scripts/prepare_roundtrip.py --game-dir "${Sts2Dir:?请先配置并加�
 python3 scripts/run_roundtrip.py
 ```
 
-启动脚本设置独立的 `XDG_DATA_HOME`，配合 `override.cfg` 将用户数据放在 `.tmp/roundtrip/userdata/sts2_agent-roundtrip/`。使用已核对的 `--force-steam off` 禁用 Steam 初始化；此实例不使用正式存档或 Steam 云存档。日志写入 `.tmp/roundtrip/stdout.log` 和 `.tmp/roundtrip/game.log`。按 Ctrl+C 停止。
+启动脚本为游戏进程设置独立的 `XDG_DATA_HOME`（Linux）或 `APPDATA`（Windows），配合 `override.cfg` 将用户数据放在 `.tmp/roundtrip/userdata/sts2_agent-roundtrip/`。`--force-steam off` 禁用 Steam 初始化。日志写入 `.tmp/roundtrip/stdout.log` 和 `.tmp/roundtrip/game.log`。按 Ctrl+C 停止。
 
 终端二执行：
 

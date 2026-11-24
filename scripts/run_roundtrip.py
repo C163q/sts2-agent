@@ -2,7 +2,8 @@ import argparse
 import json
 import os
 import shutil
-import tempfile
+import subprocess
+import uuid
 from pathlib import Path
 
 
@@ -46,15 +47,14 @@ def main():
         parser.error('--suite 暂未接入 --check-* 内嵌检查，请单独启动。')
     if args.suite and any(getattr(args, name + '_scenario') for name in catalog):
         parser.error('--suite 场景由每局配置，不接受启动场景。')
-    executable = runtime / "SlayTheSpire2"
+    windows = os.name == "nt"
+    executable = runtime / ("SlayTheSpire2.exe" if windows else "SlayTheSpire2")
     if not executable.is_file():
         raise SystemExit("请先运行 scripts/prepare_roundtrip.py。")
     environment = os.environ.copy()
-    environment.update({
-        "XDG_DATA_HOME": str(work / "userdata"),
-        "STS2_AGENT_IPC_DIR": str(work / "ipc"),
-        "STS2_AGENT_TEST_MODE": "1",
-    })
+    userdata_variable = "APPDATA" if windows else "XDG_DATA_HOME"
+    environment[userdata_variable] = str(work / "userdata")
+    environment["STS2_AGENT_IPC_DIR"] = str(work / "ipc")
     for variable in list(environment):
         if variable.startswith('STS2_AGENT_TEST_'):
             del environment[variable]
@@ -62,12 +62,13 @@ def main():
     if args.suite:
         environment['STS2_AGENT_TEST_SUITE'] = '1'
     if args.ending_scenario:
-        isolated = Path(tempfile.mkdtemp(prefix='ending-userdata-', dir=work))
+        isolated = work / f'ending-userdata-{uuid.uuid4().hex}'
+        isolated.mkdir()
         settings_path = Path('sts2_agent-roundtrip/default/1/settings.save')
         target = isolated / settings_path
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(work / 'userdata' / settings_path, target)
-        environment['XDG_DATA_HOME'] = str(isolated)
+        environment[userdata_variable] = str(isolated)
         environment['STS2_AGENT_TEST_ENDING_SCENARIO'] = args.ending_scenario
     for name in catalog:
         value = getattr(args, name + '_scenario')
@@ -98,6 +99,17 @@ def main():
                  "--force-steam", "off", "--log-file", str(work / "game.log"), "--max-fps", "30"]
     arguments += ["--windowed", "--resolution", "1280x720"] if args.windowed else ["--headless"]
     with (work / "stdout.log").open("w") as output:
+        if windows:
+            game = subprocess.Popen(arguments, cwd=runtime, env=environment, stdout=output,
+                                    stderr=subprocess.STDOUT)
+            try:
+                return game.wait()
+            except KeyboardInterrupt:
+                return 130
+            finally:
+                if game.poll() is None:
+                    game.terminate()
+                    game.wait()
         os.dup2(output.fileno(), 1)
         os.dup2(output.fileno(), 2)
     os.chdir(runtime)
@@ -105,4 +117,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

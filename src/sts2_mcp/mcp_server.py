@@ -1,8 +1,11 @@
 import argparse
+import asyncio
 import json
 import math
+import os
 import signal
 import sys
+from contextlib import ExitStack
 from pathlib import Path
 
 import anyio
@@ -57,19 +60,19 @@ def create_server(tools, *, screenshots_enabled=False):
 
 async def run_stdio(tools, screenshots_enabled=False):
     server = create_server(tools, screenshots_enabled=screenshots_enabled)
-    with anyio.open_signal_receiver(signal.SIGINT, signal.SIGTERM) as signals:
-        async with anyio.create_task_group() as group:
-            async def stop_on_signal():
-                async for _ in signals:
-                    group.cancel_scope.cancel()
-                    return
+    loop = asyncio.get_running_loop()
+    async with anyio.create_task_group() as group:
+        def stop_on_signal(*_):
+            loop.call_soon_threadsafe(group.cancel_scope.cancel)
 
-            group.start_soon(stop_on_signal)
+        with ExitStack() as handlers:
+            signals = (signal.SIGINT, signal.SIGBREAK) if os.name == 'nt' else (signal.SIGINT, signal.SIGTERM)
+            for sig in signals:
+                handlers.callback(signal.signal, sig, signal.signal(sig, stop_on_signal))
             stdin = Stdin(sys.stdin.fileno(), group.cancel_scope)
             stdout = Stdout(sys.stdout.fileno(), group.cancel_scope)
             async with stdio_server(stdin=stdin, stdout=stdout) as (read, write):
                 await server.run(read, write, server.create_initialization_options())
-            group.cancel_scope.cancel()
 
 
 def main():
@@ -78,6 +81,8 @@ def main():
     parser.add_argument("--config", type=Path, help="MCP JSON 配置；默认读取仓库根 mcp-config.json，不存在时截图关闭")
     parser.add_argument("--timeout", type=float, default=40, help="文件通信超时秒数，默认 40")
     args = parser.parse_args()
+    if os.name == 'nt' and sys.version_info < (3, 12):
+        parser.error("Windows 需要 Python 3.12 或以上。")
     if not math.isfinite(args.timeout) or args.timeout <= 0:
         parser.error("--timeout 必须是有限正数。")
     try:

@@ -1,10 +1,10 @@
 # 在正常游戏中加载 Mod 并读取状态
 
-本文说明 Linux Steam 游戏的安装、通信配置及更新排错。当前版本与依赖基线统一见[项目 README](../../README.md#当前版本与前提)，工具与字段见[开发文档索引](README.md)。独立测试实例另按[最小流程验证指南](roundtrip.md)准备；以下操作用于正常游戏的 Mod 存档环境。
+本文说明 Linux 和 Windows Steam 游戏的 Mod 安装、通信配置及更新排错。版本与依赖见[项目 README](../../README.md#当前版本与前提)。独立测试实例按[最小流程验证指南](roundtrip.md)准备。
 
 ## 安装文件
 
-按[路径配置](roundtrip.md#路径配置)在当前终端加载 `.env`，再按[构建指南](roundtrip.md#前提与构建)生成产物。退出游戏后，在仓库根目录分别执行：
+按[构建指南](roundtrip.md#前提与构建)配置路径并生成产物。退出游戏后，在 Linux 仓库根目录执行以下两条命令。
 
 ```sh
 mkdir -p "${Sts2Dir:?请先配置并加载 .env}/mods/Sts2Agent"
@@ -12,6 +12,15 @@ mkdir -p "${Sts2Dir:?请先配置并加载 .env}/mods/Sts2Agent"
 
 ```sh
 cp src/Sts2Agent/bin/Debug/net9.0/Sts2Agent.dll src/Sts2Agent/bin/Debug/net9.0/Sts2Agent.json "${Sts2Dir:?请先配置并加载 .env}/mods/Sts2Agent/"
+```
+
+在 Windows 仓库根目录的 PowerShell 中执行。
+
+```powershell
+$modDir = Join-Path $env:Sts2Dir 'mods\Sts2Agent'
+New-Item -ItemType Directory -Path $modDir -Force | Out-Null
+Copy-Item -LiteralPath 'src\Sts2Agent\bin\Debug\net9.0\Sts2Agent.dll',
+    'src\Sts2Agent\bin\Debug\net9.0\Sts2Agent.json' -Destination $modDir
 ```
 
 DLL 与清单必须来自同一次构建。已有 Steam 创意工坊管理的兼容 RitsuLib 时保留该安装，不再复制另一套。
@@ -22,13 +31,22 @@ DLL 与清单必须来自同一次构建。已有 Steam 创意工坊管理的兼
 
 ## Steam 启动配置
 
-在游戏“属性 → 通用 → 启动选项”中设置通信目录，把示例路径替换为实际绝对路径：
+Linux 在游戏“属性 → 通用 → 启动选项”中设置通信目录，把示例路径替换为实际绝对路径。
 
 ```text
 env STS2_AGENT_IPC_DIR="/absolute/path/to/sts2_agent/.tmp/live/ipc" %command%
 ```
 
-保留 `%command%` 和已有启动设置；包装方式见[Steam 支持说明](https://help.steampowered.com/en/faqs/view/145A-FE54-F37B-278A)。修改后完整重启游戏。正常游戏不设置 `STS2_AGENT_TEST_MODE=1` 或其他测试夹具变量。
+保留 `%command%` 和已有启动设置。修改后完整重启游戏。 [Steam 启动选项说明](https://help.steampowered.com/en/faqs/view/145A-FE54-F37B-278A)
+
+Windows 使用当前用户的环境变量。以下示例从仓库根目录运行，将通信目录设为仓库内的 `.tmp/live/ipc`。
+
+```powershell
+$ipcDir = Join-Path (Get-Location).Path '.tmp\live\ipc'
+[Environment]::SetEnvironmentVariable('STS2_AGENT_IPC_DIR', $ipcDir, 'User')
+```
+
+完全退出 Steam 后，从开始菜单重新启动 Steam 和游戏，使游戏继承该变量。使用旧环境启动的会话可以注销 Windows 后重新登录。正常游戏只需设置通信变量。
 
 ## 读取敌人
 
@@ -37,6 +55,8 @@ env STS2_AGENT_IPC_DIR="/absolute/path/to/sts2_agent/.tmp/live/ipc" %command%
 ```sh
 python3 scripts/roundtrip_client.py --ipc-dir .tmp/live/ipc get_state
 ```
+
+Windows 在仓库根目录使用 `python` 执行同一命令。
 
 无遮挡战斗使用 `scene:"combat"`，`enemies` 提供当前可见敌人；被覆盖时不补出隐藏战场。主菜单没有敌人，`enemies:null` 属于正常结果。该文件客户端默认保留空值，加 `--raw` 可查看原始响应及状态令牌；字段见[游戏基础观察 JSON](observation.md)。每次命令只读取一次，不提交游戏动作。
 

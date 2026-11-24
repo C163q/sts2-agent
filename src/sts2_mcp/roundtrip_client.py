@@ -47,7 +47,7 @@ class Client:
         while time.monotonic() < deadline:
             self.check_cancelled()
             if response.exists():
-                result = json.loads(response.read_text())
+                result = json.loads(response.read_text(encoding="utf-8"))
                 if result["id"] != request_id:
                     raise RuntimeError("Response id mismatch.")
                 return result
